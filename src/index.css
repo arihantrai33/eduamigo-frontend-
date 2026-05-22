@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: sans-serif;
+  background: #f0f4f8;
+  color: #111;
+}
+
+input, button {
+  font-family: sans-serif;
+}
+
+#root {
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100vh;
+  overflow: hidden;
+  background: white;
+}
+
+@media (min-width: 768px) {
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px 0;
+  }
+
+  #root {
+    min-height: calc(100vh - 40px);
+    border-radius: 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+}

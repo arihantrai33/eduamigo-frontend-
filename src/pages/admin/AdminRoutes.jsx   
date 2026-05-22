@@ -1,0 +1,60 @@
+import { Routes, Route } from "react-router-dom";
+import Home from "./Home";
+import Students from "./Students";
+import AddStudent from "./AddStudent";
+import AddParent from "./AddParent";
+import Teachers from "./Teachers";
+import AddTeacher from "./AddTeacher";
+import Attendance from "./Attendance";
+import AttendanceReport from "./AttendanceRepo";
+import Chat from "./Chat";
+import Circulars from "./Circulars";
+import ExamSchedule from "./ExamSchedule";
+import FeeCollection from "./FeeCollection";
+import FeeReports from "./FeeReports";
+import FeeStructure from "./FeeStructure";
+import LeaveRequests from "./LeaveRequests";
+import Library from "./Library";
+import Marks from "./Marks";
+import Notifications from "./Notifications";
+import Reports from "./Reports";
+import Results from "./Results";
+import Settings from "./Settings";
+import StudentProfile from "./StudentProfile";
+import TeacherProfile from "./TeacherProfile";
+import Timetable from "./Timetable";
+import Transport from "./Transport";
+import UserManagement from "./UserManagement";
+
+export default function AdminRoutes() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="students" element={<Students />} />
+      <Route path="students/add" element={<AddStudent />} />
+      <Route path="students/:id" element={<StudentProfile />} />
+      <Route path="parents/add" element={<AddParent />} />
+      <Route path="teachers" element={<Teachers />} />
+      <Route path="teachers/add" element={<AddTeacher />} />
+      <Route path="teachers/:id" element={<TeacherProfile />} />
+      <Route path="attendance" element={<Attendance />} />
+      <Route path="attendance/report" element={<AttendanceReport />} />
+      <Route path="chat" element={<Chat />} />
+      <Route path="circulars" element={<Circulars />} />
+      <Route path="exam-schedule" element={<ExamSchedule />} />
+      <Route path="fee-collection" element={<FeeCollection />} />
+      <Route path="fee-reports" element={<FeeReports />} />
+      <Route path="fee-structure" element={<FeeStructure />} />
+      <Route path="leave-requests" element={<LeaveRequests />} />
+      <Route path="library" element={<Library />} />
+      <Route path="marks" element={<Marks />} />
+      <Route path="notifications" element={<Notifications />} />
+      <Route path="reports" element={<Reports />} />
+      <Route path="results" element={<Results />} />
+      <Route path="settings" element={<Settings />} />
+      <Route path="timetable" element={<Timetable />} />
+      <Route path="transport" element={<Transport />} />
+      <Route path="user-management" element={<UserManagement />} />
+    </Routes>
+  );
+}
