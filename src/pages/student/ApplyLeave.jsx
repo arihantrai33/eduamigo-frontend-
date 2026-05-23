@@ -38,7 +38,7 @@ export default function ApplyLeave() {
 
   const fetchQuota = async () => {
     try {
-      const res = await fetch(`${API}/api/leaves/quota`, { headers });
+      const res = await fetch(`${API}/leaves/quota`, { headers });
       const data = await res.json();
       if (data.success) setQuota(data.data);
     } catch {
@@ -50,7 +50,7 @@ export default function ApplyLeave() {
 
   const fetchHistory = async () => {
     try {
-      const res = await fetch(`${API}/api/leaves/my`, { headers });
+      const res = await fetch(`${API}/leaves/my`, { headers });
       const data = await res.json();
       if (data.success) setLeaveHistory(data.data);
     } catch {
@@ -79,7 +79,7 @@ export default function ApplyLeave() {
     }
     setLoading(true);
     try {
-      const res = await fetch(`${API}/api/leaves/apply`, {
+      const res = await fetch(`${API}/leaves/apply`, {
         method: "POST",
         headers: { ...headers, "Content-Type": "application/json" },
         body: JSON.stringify({ leaveType, fromDate, toDate, reason }),
