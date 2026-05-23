@@ -9,6 +9,19 @@ const authHeader = () => ({
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+const getDateForDay = (day) => {
+  const dayMap = { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+  const target = dayMap[day];
+  const today = new Date();
+  const current = today.getDay() === 0 ? 7 : today.getDay();
+  const diff = target - current;
+  const date = new Date(today);
+  date.setDate(today.getDate() + diff);
+  return date.toLocaleDateString("en-US", {
+    weekday: "long", day: "numeric", month: "long", year: "numeric"
+  }).toUpperCase();
+};
+
 const getStatus = (startTime) => {
   const now = new Date();
   const hour = now.getHours();
@@ -63,9 +76,6 @@ export default function Timetable() {
   };
 
   const classes = timetableCache[selectedDay] || [];
-  const dateStr = now.toLocaleDateString("en-US", {
-    weekday: "long", day: "numeric", month: "long", year: "numeric"
-  }).toUpperCase();
 
   return (
     <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "#f5f6fa", fontFamily: "sans-serif" }}>
@@ -89,7 +99,7 @@ export default function Timetable() {
 
       <div style={{ flex: 1, overflowY: "auto", padding: "16px" }}>
         <div style={{ fontSize: "11px", fontWeight: "700", color: "#999", marginBottom: "12px", letterSpacing: "1px" }}>
-          {dateStr}
+          {getDateForDay(selectedDay)}
         </div>
 
         {loading ? (
