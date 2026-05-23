@@ -27,7 +27,8 @@ function getAvatarColor(name = "") {
   return avatarColors[i];
 }
 
-const feeBadge = {
+const feeBadge
+ = {
   Paid:    { bg: "#D1FAE5", color: "#065F46" },
   Pending: { bg: "#FEE2E2", color: "#991B1B" },
   Partial: { bg: "#FEF3C7", color: "#92400E" },
@@ -312,8 +313,10 @@ export default function Students() {
                 <td style={{ padding: "14px 16px" }}>
                   <span style={{
                     padding: "4px 10px", borderRadius: 20, fontSize: 12, fontWeight: 600,
-                    ...(feeBadge[s.feeStatus] || { bg: "#F3F4F6", color: "#6B7280" }),
-                    background: (feebadge[s.feeStatus] || { bg: "#F3F4F6" }).bg,
+                    ...(feeBadge
+[s.feeStatus] || { bg: "#F3F4F6", color: "#6B7280" }),
+                    background: (feeBadge
+[s.feeStatus] || { bg: "#F3F4F6" }).bg,
                   }}>
                     {s.feeStatus}
                   </span>
