@@ -61,8 +61,8 @@ export default function Notes() {
   const fetchAll = async () => {
     try {
       const [notesRes, assignRes] = await Promise.allSettled([
-        axios.get(`${API}/notes/my`,          authHeader()),
-        axios.get(`${API}/notes/assignments`, authHeader()),
+        axios.get(`${API}/api/notes/my`,          authHeader()),
+        axios.get(`${API}/api/notes/assignments`, authHeader()),
       ]);
       if (notesRes.status === 'fulfilled' && notesRes.value.data.success)
         setNotes(notesRes.value.data.data || []);
