@@ -1,117 +1,135 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-
-const mockTeachers = [
-  { id: "TCH001", name: "Mr. Sharma",  subject: "Mathematics"       },
-  { id: "TCH002", name: "Ms. Verma",   subject: "Physics"            },
-  { id: "TCH003", name: "Mr. Joshi",   subject: "Chemistry"          },
-  { id: "TCH004", name: "Mrs. Gupta",  subject: "English Literature" },
-  { id: "TCH005", name: "Mrs. Singh",  subject: "Hindi"              },
-  { id: "TCH006", name: "Mr. Kapoor",  subject: "Computer Science"   },
-];
-
-const subjectColors = ["#4f46e5","#7c3aed","#0891b2","#059669","#d97706","#dc2626"];
-
-const initialMessages = {
-  TCH001: [
-    { id: "1", text: "Hello Rahul! Any doubts in Mathematics?", senderId: "TCH001", createdAt: new Date(Date.now() - 300000) },
-    { id: "2", text: "Yes sir, I have a doubt in Chapter 8 Trigonometry.", senderId: "student", createdAt: new Date(Date.now() - 240000) },
-    { id: "3", text: "Sure! Come to my desk after class tomorrow.", senderId: "TCH001", createdAt: new Date(Date.now() - 180000) },
-  ],
-  TCH002: [
-    { id: "1", text: "Rahul, your Physics practical file is due tomorrow!", senderId: "TCH002", createdAt: new Date(Date.now() - 600000) },
-  ],
-  TCH003: [], TCH004: [], TCH005: [], TCH006: [],
+const API = import.meta.env.VITE_API_URL;
+const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+const avatarColor = (name = '') => {
+  const colors = ['#4f46e5','#7c3aed','#0891b2','#059669','#d97706','#dc2626','#0284c7'];
+  let hash = 0;
+  for (let c of name) hash = c.charCodeAt(0) + ((hash << 5) - hash);
+  return colors[Math.abs(hash) % colors.length];
 };
-
+const formatTime = (d) => {
+  try {
+    const date = d instanceof Date ? d : new Date(d);
+    return date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+  } catch { return ''; }
+};
+const formatDate = (d) => {
+  try {
+    const date = d instanceof Date ? d : new Date(d);
+    const today = new Date();
+    if (date.toDateString() === today.toDateString()) return 'Today';
+    const yesterday = new Date(today); yesterday.setDate(today.getDate() - 1);
+    if (date.toDateString() === yesterday.toDateString()) return 'Yesterday';
+    return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+  } catch { return ''; }
+};
 export default function Chat() {
-  const [teachers]              = useState(mockTeachers);
+  const navigate = useNavigate();
+  const [tab, setTab] = useState('chats');
+  const [teachers, setTeachers] = useState([]);
+  const [adminContact, setAdminContact] = useState(null);
+  const [broadcasts, setBroadcasts] = useState([]);
+  const [messages, setMessages] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
-  const [allMessages, setAllMessages] = useState(initialMessages);
-  const [input, setInput]       = useState("");
-  const { user }                = useAuth();
-  const navigate                = useNavigate();
-  const messagesEndRef          = useRef(null);
-
-  const messages = activeChat ? (allMessages[activeChat.teacherId] || []) : [];
-
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState(null);
+  const messagesEndRef = useRef(null);
+  const pollRef = useRef(null);
   useEffect(() => {
-    setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
+    fetchInitial();
+    return () => clearInterval(pollRef.current);
+  }, []);
+  useEffect(() => {
+    if (activeChat) {
+      fetchMessages(activeChat.roomId);
+      clearInterval(pollRef.current);
+      pollRef.current = setInterval(() => fetchMessages(activeChat.roomId), 5000);
+    }
+    return () => clearInterval(pollRef.current);
+  }, [activeChat]);
+  useEffect(() => {
+    setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
   }, [messages]);
-
-  const sendMessage = () => {
-    if (!input.trim() || !activeChat) return;
-    const newMsg = {
-      id: Date.now().toString(),
-      text: input.trim(),
-      senderId: user?.id || "student",
-      createdAt: new Date(),
-    };
-    setAllMessages(prev => ({
-      ...prev,
-      [activeChat.teacherId]: [...(prev[activeChat.teacherId] || []), newMsg],
-    }));
-    setInput("");
-  };
-
-  const formatTime = (date) => {
+  const fetchInitial = async () => {
     try {
-      return date instanceof Date
-        ? date.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })
-        : date?.toDate?.().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }) || "";
-    } catch { return ""; }
+      const token = localStorage.getItem('token');
+      if (token) {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        setCurrentUserId(payload.id || payload._id);
+      }
+      const [teachersRes, adminRes, broadcastsRes] = await Promise.allSettled([
+        fetch(`${API}/chat/teachers`, authHeader()).then(r => r.json()),
+        fetch(`${API}/chat/admin`, authHeader()).then(r => r.json()),
+        fetch(`${API}/chat/broadcasts`, authHeader()).then(r => r.json()),
+      ]);
+      if (teachersRes.status === 'fulfilled' && teachersRes.value.success)
+        setTeachers(teachersRes.value.data || []);
+      if (adminRes.status === 'fulfilled' && adminRes.value.success)
+        setAdminContact(adminRes.value.data);
+      if (broadcastsRes.status === 'fulfilled' && broadcastsRes.value.success)
+        setBroadcasts(broadcastsRes.value.data || []);
+    } catch (err) { console.error(err); }
+    finally { setLoading(false); }
   };
-
-  const getUnread = (teacherId) => (allMessages[teacherId] || []).filter(m => m.senderId !== (user?.id || "student")).length;
-  const getLastMsg = (teacherId) => {
-    const msgs = allMessages[teacherId] || [];
-    return msgs.length ? msgs[msgs.length - 1].text : "Tap to start chatting";
+  const fetchMessages = async (roomId) => {
+    try {
+      const res = await fetch(`${API}/chat/messages/${roomId}`, authHeader());
+      const data = await res.json();
+      if (data.success) setMessages(data.data || []);
+    } catch (err) { console.error(err); }
   };
-
-  // ── Chat window ──
+  const sendMessage = async () => {
+    if (!input.trim() || !activeChat || sending) return;
+    setSending(true);
+    try {
+      const res = await fetch(`${API}/chat/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeader().headers },
+        body: JSON.stringify({ receiverId: activeChat.receiverId, text: input.trim(), roomId: activeChat.roomId }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setMessages(prev => [...prev, data.data]);
+        setInput('');
+      }
+    } catch (err) { console.error(err); }
+    finally { setSending(false); }
+  };
+  // Chat Window
   if (activeChat) return (
-    <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", background: "#f5f6fa", fontFamily: "sans-serif" }}>
-
-      {/* Header */}
-      <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 16px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
-        <button onClick={() => setActiveChat(null)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "18px" }}>←</button>
-        <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "700", fontSize: "18px", flexShrink: 0 }}>
-          {activeChat.teacherName[0]}
-        </div>
+    <div style={S.screen}>
+      <div style={S.chatHeader}>
+        <button style={S.backBtn} onClick={() => { setActiveChat(null); clearInterval(pollRef.current); }}>←</button>
+        <div style={{ ...S.avatar, background: avatarColor(activeChat.name) }}>{activeChat.name[0]}</div>
         <div>
-          <div style={{ fontWeight: "700", fontSize: "15px" }}>{activeChat.teacherName}</div>
-          <div style={{ fontSize: "11px", opacity: 0.8 }}>{activeChat.subject} • Online</div>
+          <div style={S.chatName}>{activeChat.name}</div>
+          <div style={S.chatSub}>{activeChat.sub}</div>
         </div>
       </div>
-
-      {/* Messages */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
+      <div style={S.msgList}>
         {messages.length === 0 && (
-          <div style={{ textAlign: "center", color: "#aaa", padding: "40px 0", fontSize: "13px" }}>
-            <div style={{ fontSize: "40px", marginBottom: "8px" }}>💬</div>
-            Start a conversation with {activeChat.teacherName}
+          <div style={S.emptyChat}>
+            <div style={{ fontSize: 40, marginBottom: 8 }}>💬</div>
+            <div style={{ color: '#999', fontSize: 13 }}>Start a conversation</div>
           </div>
         )}
-        {messages.map(m => {
-          const isMe = m.senderId === (user?.id || "student");
+        {messages.map((m, i) => {
+          const isMe = m.senderId?.toString() === currentUserId?.toString();
+          const showDate = i === 0 || formatDate(messages[i-1].createdAt) !== formatDate(m.createdAt);
           return (
-            <div key={m.id} style={{ display: "flex", justifyContent: isMe ? "flex-end" : "flex-start" }}>
-              {!isMe && (
-                <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "#4f46e5", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: "700", fontSize: "12px", marginRight: "8px", flexShrink: 0, alignSelf: "flex-end" }}>
-                  {activeChat.teacherName[0]}
-                </div>
-              )}
-              <div style={{
-                maxWidth: "75%", padding: "10px 14px",
-                borderRadius: isMe ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
-                background: isMe ? "linear-gradient(135deg, #4f46e5, #7c3aed)" : "white",
-                color: isMe ? "white" : "#111",
-                fontSize: "14px", boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
-              }}>
-                {m.text}
-                <div style={{ fontSize: "10px", opacity: 0.7, marginTop: "4px", textAlign: "right" }}>
-                  {formatTime(m.createdAt)}
+            <div key={m._id || i}>
+              {showDate && <div style={S.dateDivider}>{formatDate(m.createdAt)}</div>}
+              <div style={{ display: 'flex', justifyContent: isMe ? 'flex-end' : 'flex-start', marginBottom: 6 }}>
+                {!isMe && <div style={{ ...S.miniAvatar, background: avatarColor(activeChat.name) }}>{activeChat.name[0]}</div>}
+                <div style={{ ...S.bubble, ...(isMe ? S.bubbleMe : S.bubbleThem) }}>
+                  <div style={{ fontSize: 14 }}>{m.text}</div>
+                  <div style={S.timeRow}>
+                    <span style={S.timeText}>{formatTime(m.createdAt)}</span>
+                    {isMe && <span style={{ fontSize: 11, color: m.read ? '#7c3aed' : 'rgba(255,255,255,0.5)' }}>{m.read ? '✓✓' : '✓'}</span>}
+                  </div>
                 </div>
               </div>
             </div>
@@ -119,62 +137,118 @@ export default function Chat() {
         })}
         <div ref={messagesEndRef} />
       </div>
-
-      {/* Input */}
-      <div style={{ padding: "12px 16px", background: "white", display: "flex", gap: "10px", alignItems: "center", boxShadow: "0 -2px 8px rgba(0,0,0,0.06)", flexShrink: 0 }}>
-        <input
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={e => e.key === "Enter" && sendMessage()}
-          placeholder={`Message ${activeChat.teacherName}...`}
-          style={{ flex: 1, border: "1.5px solid #e5e7eb", borderRadius: "24px", padding: "10px 16px", fontSize: "14px", outline: "none", fontFamily: "sans-serif" }}
-        />
-        <button onClick={sendMessage} style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", color: "white", border: "none", borderRadius: "50%", width: "44px", height: "44px", fontSize: "18px", cursor: "pointer", flexShrink: 0 }}>
-          ➤
-        </button>
+      <div style={S.inputRow}>
+        <input style={S.input} value={input} onChange={e => setInput(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && sendMessage()}
+          placeholder={`Message ${activeChat.name}...`} />
+        <button style={{ ...S.sendBtn, opacity: sending ? 0.6 : 1 }} onClick={sendMessage} disabled={sending}>➤</button>
       </div>
     </div>
   );
-
-  // ── Teacher list ──
+  // Main Screen
   return (
-    <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", background: "#f5f6fa", fontFamily: "sans-serif" }}>
-
-      {/* Header */}
-      <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 40px", color: "white", flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "4px" }}>
-          <button onClick={() => navigate(-1)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "18px" }}>←</button>
-          <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>💬 Chat with Teachers</h2>
-        </div>
-        <p style={{ margin: "8px 0 0 50px", fontSize: "13px", opacity: 0.8 }}>Your subject teachers — Class X-A</p>
+    <div style={S.screen}>
+      <div style={S.header}>
+        <button style={S.headerBack} onClick={() => navigate('/student/home')}>←</button>
+        <h2 style={S.headerTitle}>💬 Messages</h2>
       </div>
-
-      {/* List */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "16px", marginTop: "-20px" }}>
-        {teachers.map((t, i) => {
-          const unread  = getUnread(t.id);
-          const lastMsg = getLastMsg(t.id);
-          return (
-            <div key={t.id} onClick={() => setActiveChat({ teacherId: t.id, teacherName: t.name, subject: t.subject })}
-              style={{ background: "white", borderRadius: "16px", padding: "16px", marginBottom: "10px", boxShadow: "0 2px 8px rgba(0,0,0,0.07)", display: "flex", alignItems: "center", gap: "14px", cursor: "pointer" }}>
-              <div style={{ width: "48px", height: "48px", borderRadius: "50%", background: subjectColors[i % subjectColors.length], display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: "700", fontSize: "20px", flexShrink: 0 }}>
-                {t.name[0]}
+      {/* Tabs */}
+      <div style={S.tabRow}>
+        {[['chats','💬 Chats'],['broadcasts','📢 Broadcasts']].map(([key, label]) => (
+          <button key={key} style={{ ...S.tabBtn, ...(tab === key ? S.tabActive : {}) }} onClick={() => setTab(key)}>{label}</button>
+        ))}
+      </div>
+      {loading ? (
+        <div style={S.center}><div style={{ color: '#4f46e5', fontWeight: 600 }}>Loading...</div></div>
+      ) : tab === 'chats' ? (
+        <div style={S.list}>
+          {/* Admin Section */}
+          <div style={S.sectionLabel}>🏫 SCHOOL ADMINISTRATION</div>
+          {adminContact && (
+            <div style={S.chatRow} onClick={() => setActiveChat({ name: adminContact.name, sub: 'Admin · Complaints & Queries', receiverId: adminContact.userId, roomId: adminContact.roomId })}>
+              <div style={{ ...S.avatar, background: '#dc2626' }}>A</div>
+              <div style={{ flex: 1 }}>
+                <div style={S.rowName}>{adminContact.name}</div>
+                <div style={S.rowSub}>Complaints · Queries · Updates</div>
               </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontWeight: "700", fontSize: "14px", color: "#111" }}>{t.name}</div>
-                <div style={{ fontSize: "12px", color: "#4f46e5", fontWeight: "600", marginBottom: "2px" }}>{t.subject}</div>
-                <div style={{ fontSize: "12px", color: "#888", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{lastMsg}</div>
-              </div>
-              {unread > 0 && (
-                <div style={{ background: "#4f46e5", color: "white", borderRadius: "50%", width: "22px", height: "22px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px", fontWeight: "700", flexShrink: 0 }}>
-                  {unread}
-                </div>
-              )}
-              <div style={{ fontSize: "20px", color: "#ccc" }}>›</div>
+              <div style={S.chevron}>›</div>
             </div>
-          );
-        })}
-      </div>
+          )}
+          {/* Teachers Section */}
+          <div style={{ ...S.sectionLabel, marginTop: 16 }}>👨‍🏫 YOUR TEACHERS</div>
+          {teachers.length === 0 ? (
+            <div style={S.emptyBox}>No teachers found</div>
+          ) : teachers.map((t, i) => (
+            <div key={t._id} style={S.chatRow} onClick={() => setActiveChat({ name: t.name, sub: t.subject, receiverId: t.userId, roomId: t.roomId })}>
+              <div style={{ ...S.avatar, background: avatarColor(t.name) }}>{t.name[0]}</div>
+              <div style={{ flex: 1 }}>
+                <div style={S.rowName}>{t.name}</div>
+                <div style={S.rowSub}>{t.subject}</div>
+              </div>
+              <div style={S.chevron}>›</div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div style={S.list}>
+          <div style={S.sectionLabel}>📢 CLASS BROADCASTS</div>
+          {broadcasts.length === 0 ? (
+            <div style={S.emptyBox}>
+              <div style={{ fontSize: 36, marginBottom: 8 }}>📢</div>
+              <div style={{ color: '#999', fontSize: 13 }}>No broadcasts yet</div>
+            </div>
+          ) : broadcasts.map((b, i) => (
+            <div key={b._id || i} style={S.broadcastCard}>
+              <div style={S.broadcastTop}>
+                <div style={{ ...S.miniAvatar, background: avatarColor(b.teacherName) }}>{b.teacherName?.[0]}</div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#111' }}>{b.teacherName}</div>
+                  <div style={{ fontSize: 11, color: '#888' }}>{formatDate(b.createdAt)} · {formatTime(b.createdAt)}</div>
+                </div>
+              </div>
+              <div style={S.broadcastText}>{b.text}</div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
+const S = {
+  screen: { maxWidth: 420, margin: '0 auto', minHeight: '100vh', background: '#f5f6fa', fontFamily: 'Inter, sans-serif', display: 'flex', flexDirection: 'column' },
+  header: { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', padding: '48px 20px 16px', display: 'flex', alignItems: 'center', gap: 12 },
+  headerBack: { background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: '8px 12px', color: 'white', cursor: 'pointer', fontSize: 18 },
+  headerTitle: { color: 'white', fontSize: 20, fontWeight: 800, margin: 0 },
+  tabRow: { display: 'flex', background: 'white', borderBottom: '1px solid #f0f0f0', padding: '0 16px' },
+  tabBtn: { flex: 1, padding: '12px 0', border: 'none', background: 'none', fontSize: 13, fontWeight: 600, color: '#888', cursor: 'pointer' },
+  tabActive: { color: '#4f46e5', borderBottom: '2px solid #4f46e5' },
+  list: { flex: 1, overflowY: 'auto', padding: '12px 16px 80px' },
+  sectionLabel: { fontSize: 11, fontWeight: 700, color: '#999', letterSpacing: 1, marginBottom: 8, marginTop: 4 },
+  chatRow: { background: 'white', borderRadius: 14, padding: '14px', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10, boxShadow: '0 1px 6px rgba(0,0,0,0.06)', cursor: 'pointer' },
+  avatar: { width: 46, height: 46, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 18, flexShrink: 0 },
+  rowName: { fontSize: 14, fontWeight: 700, color: '#111', marginBottom: 3 },
+  rowSub: { fontSize: 12, color: '#888' },
+  chevron: { fontSize: 22, color: '#ccc' },
+  emptyBox: { textAlign: 'center', padding: '32px 0', color: '#999', fontSize: 13 },
+  center: { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  broadcastCard: { background: 'white', borderRadius: 14, padding: 16, marginBottom: 10, boxShadow: '0 1px 6px rgba(0,0,0,0.06)' },
+  broadcastTop: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 },
+  broadcastText: { fontSize: 14, color: '#333', lineHeight: 1.5 },
+  // Chat window
+  chatHeader: { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', padding: '48px 16px 16px', display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 },
+  backBtn: { background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: '8px 12px', color: 'white', cursor: 'pointer', fontSize: 18 },
+  chatName: { color: 'white', fontSize: 16, fontWeight: 700 },
+  chatSub: { color: 'rgba(255,255,255,0.7)', fontSize: 11, marginTop: 2 },
+  msgList: { flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column' },
+  emptyChat: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 0' },
+  dateDivider: { textAlign: 'center', fontSize: 11, color: '#aaa', background: '#eee', borderRadius: 20, padding: '3px 12px', margin: '10px auto', width: 'fit-content' },
+  miniAvatar: { width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 12, marginRight: 8, flexShrink: 0, alignSelf: 'flex-end' },
+  bubble: { maxWidth: '75%', padding: '10px 14px', borderRadius: 18, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' },
+  bubbleMe: { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', borderBottomRightRadius: 4 },
+  bubbleThem: { background: 'white', color: '#111', borderBottomLeftRadius: 4 },
+  timeRow: { display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4, marginTop: 4 },
+  timeText: { fontSize: 10, opacity: 0.7 },
+  inputRow: { padding: '12px 16px', background: 'white', display: 'flex', gap: 10, alignItems: 'center', boxShadow: '0 -2px 8px rgba(0,0,0,0.06)', flexShrink: 0 },
+  input: { flex: 1, border: '1.5px solid #e5e7eb', borderRadius: 24, padding: '10px 16px', fontSize: 14, outline: 'none', fontFamily: 'Inter, sans-serif' },
+  sendBtn: { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', border: 'none', borderRadius: '50%', width: 44, height: 44, fontSize: 18, cursor: 'pointer', flexShrink: 0 },
+};
