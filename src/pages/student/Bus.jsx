@@ -210,7 +210,7 @@ export default function ParentBus() {
     const fetchBusInfo = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res   = await fetch('http://localhost:8000/api/transport/my-child-bus', {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/transport/my-child-bus`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const data  = await res.json();
