@@ -13,7 +13,8 @@ const LEAVE_TYPES = [
 ];
 
 export default function ApplyLeave() {
-  const { user, token } = useAuth();
+  const { user } = useAuth();
+  const token = user?.token;
   const navigate = useNavigate();
 
   const [fromDate, setFromDate] = useState("");
