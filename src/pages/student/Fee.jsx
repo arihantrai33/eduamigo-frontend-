@@ -1,149 +1,195 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import axios from "axios";
 
-export default function Fee() {
-  const [fees, setFees] = useState([]);
-  const [summary, setSummary] = useState({ total: 0, paid: 0, pending: 0 });
-  const { user } = useAuth();
+const API = import.meta.env.VITE_API_URL;
+const authHeader = () => ({
+  headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+});
+
+export default function StudentFee() {
   const navigate = useNavigate();
+  const [fees, setFees] = useState([]);
+  const [summary, setSummary] = useState({ total: 0, totalPaid: 0, totalDue: 0 });
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("pending");
 
   useEffect(() => {
-    const mockFees = [
-      { id: 1, feeType: "Tuition Fee",        amount: 12000, dueDate: "7 Apr 2026",  status: "pending" },
-      { id: 2, feeType: "Bus Fee",             amount: 3500,  dueDate: "7 Apr 2026",  status: "pending" },
-      { id: 3, feeType: "Lab & Activity Fee",  amount: 2000,  dueDate: "7 Apr 2026",  status: "pending" },
-      { id: 4, feeType: "Library & Smart Card",amount: 1000,  dueDate: "7 Apr 2026",  status: "pending" },
-      { id: 5, feeType: "Tuition Fee Q1",      amount: 12000, dueDate: "15 Jan 2026", status: "paid", paidDate: "15 Jan 2026" },
-      { id: 6, feeType: "Bus Fee Q1",          amount: 3500,  dueDate: "15 Jan 2026", status: "paid", paidDate: "10 Oct 2025" },
-      { id: 7, feeType: "Tuition Fee Q2",      amount: 12000, dueDate: "5 Jul 2025",  status: "paid", paidDate: "5 Jul 2025"  },
-    ];
-    setFees(mockFees);
-    const total   = mockFees.filter(f => f.status === "pending").reduce((a, f) => a + f.amount, 0);
-    const paid    = mockFees.filter(f => f.status === "paid").reduce((a, f) => a + f.amount, 0);
-    const pending = total;
-    setSummary({ total: total + paid, paid, pending });
+    fetchFees();
   }, []);
 
-  const statusColor = { paid: "#22c55e", pending: "#f59e0b", overdue: "#ef4444" };
+  const fetchFees = async () => {
+    try {
+      const res = await axios.get(`${API}/fees/my`, authHeader());
+      if (res.data.success) {
+        setFees(res.data.data || []);
+        setSummary(res.data.summary || { total: 0, totalPaid: 0, totalDue: 0 });
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const pendingFees = fees.filter(f => f.status === "pending");
-  const paidFees    = fees.filter(f => f.status === "paid");
+  const pendingFees = fees.filter(f => f.status === "Unpaid");
+  const paidFees    = fees.filter(f => f.status === "Paid");
+  const nearestDue  = pendingFees.reduce((nearest, f) => {
+    if (!nearest) return f;
+    return new Date(f.dueDate) < new Date(nearest.dueDate) ? f : nearest;
+  }, null);
+
+  const formatDate = (d) => d ? new Date(d).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "—";
+  const formatAmount = (n) => `₹${Number(n || 0).toLocaleString("en-IN")}`;
+
+  if (loading) {
+    return (
+      <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f5f6fa" }}>
+        <div style={{ fontSize: 14, color: "#999" }}>Loading fee details...</div>
+      </div>
+    );
+  }
 
   return (
-    <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", background: "#f5f6fa", fontFamily: "'Poppins', sans-serif" }}>
+    <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "#f5f6fa", fontFamily: "Inter, sans-serif" }}>
 
       {/* Header */}
-      <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 70px", color: "white", flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
-          <button onClick={() => navigate(-1)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "10px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "18px" }}>←</button>
-          <div>
-            <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>💳 Fee Status</h2>
-            {user?.role === "parent" && (
-              <div style={{ fontSize: "11px", opacity: .8, marginTop: 2 }}>Rahul Kumar — Class X-A</div>
-            )}
-          </div>
+      <div style={{ background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)", padding: "48px 20px 24px", flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+          <button onClick={() => navigate(-1)} style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(255,255,255,0.2)", border: "none", color: "white", fontSize: 18, cursor: "pointer" }}>←</button>
+          <div style={{ fontSize: 18, fontWeight: 800, color: "white" }}>Fee Statement</div>
         </div>
 
-        {/* Summary Cards */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px" }}>
+        {/* Summary */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
           {[
-            { label: "Total",   value: summary.total,   color: "#fff"     },
-            { label: "Paid",    value: summary.paid,    color: "#bbf7d0"  },
-            { label: "Pending", value: summary.pending, color: "#fde68a"  },
+            { label: "Total Fees",  value: formatAmount(summary.total),     color: "#fff"     },
+            { label: "Paid",        value: formatAmount(summary.totalPaid),  color: "#bbf7d0"  },
+            { label: "Outstanding", value: formatAmount(summary.totalDue),   color: "#fde68a"  },
           ].map(s => (
-            <div key={s.label} style={{ background: "rgba(255,255,255,0.15)", borderRadius: "12px", padding: "12px", textAlign: "center" }}>
-              <div style={{ fontSize: "11px", opacity: 0.8, fontWeight: 600 }}>{s.label}</div>
-              <div style={{ fontWeight: "800", fontSize: "16px", color: s.color, marginTop: 3 }}>₹{s.value.toLocaleString()}</div>
+            <div key={s.label} style={{ background: "rgba(255,255,255,0.15)", borderRadius: 12, padding: "12px 8px", textAlign: "center" }}>
+              <div style={{ fontSize: 10, color: "rgba(255,255,255,0.75)", fontWeight: 600, marginBottom: 4 }}>{s.label}</div>
+              <div style={{ fontSize: 15, fontWeight: 800, color: s.color }}>{s.value}</div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Scrollable content */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "16px", marginTop: "-30px" }}>
-
-        {/* Reminder banner */}
-        {summary.pending > 0 && (
-          <div style={{ background: "#FFF8E1", borderRadius: "16px", padding: "14px 16px", marginBottom: "14px", borderLeft: "4px solid #FFB300", display: "flex", gap: "12px", alignItems: "flex-start" }}>
-            <div style={{ fontSize: "22px" }}>⏰</div>
-            <div>
-              <div style={{ fontSize: "13px", fontWeight: "800", color: "#E65100" }}>Payment Due — 7 April 2026</div>
-              <div style={{ fontSize: "11.5px", color: "#7B8099", marginTop: "2px", lineHeight: 1.6 }}>Pay before due date to avoid late charges.</div>
-            </div>
+      {/* Due Alert */}
+      {nearestDue && (
+        <div style={{ margin: "16px 16px 0", background: "#FFF8E1", borderRadius: 14, padding: "14px 16px", borderLeft: "4px solid #f59e0b", display: "flex", gap: 12, alignItems: "center" }}>
+          <div style={{ fontSize: 22 }}>⚠️</div>
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#92400e" }}>Payment Due: {formatDate(nearestDue.dueDate)}</div>
+            <div style={{ fontSize: 12, color: "#78716c", marginTop: 2 }}>Please clear outstanding dues to avoid late charges.</div>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Pending fees */}
-        {pendingFees.length > 0 && (
+      {/* Tabs */}
+      <div style={{ display: "flex", margin: "16px 16px 0", background: "white", borderRadius: 12, padding: 4, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+        {[
+          { key: "pending", label: `Outstanding (${pendingFees.length})` },
+          { key: "paid",    label: `Paid (${paidFees.length})` },
+        ].map(tab => (
+          <button key={tab.key} onClick={() => setActiveTab(tab.key)}
+            style={{ flex: 1, padding: "10px 0", border: "none", borderRadius: 10, cursor: "pointer", fontWeight: 700, fontSize: 13, transition: "all 0.2s",
+              background: activeTab === tab.key ? "linear-gradient(135deg, #4f46e5, #7c3aed)" : "transparent",
+              color: activeTab === tab.key ? "white" : "#888",
+            }}>
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Fee List */}
+      <div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 100px" }}>
+        {activeTab === "pending" && (
           <>
-            <div style={{ fontSize: "11px", fontWeight: "700", color: "#7B8099", textTransform: "uppercase", letterSpacing: ".6px", marginBottom: "10px" }}>
-              Pending Payment
-            </div>
-            {pendingFees.map((f, i) => (
-              <div key={f.id} style={{ background: "white", borderRadius: "16px", padding: "16px", marginBottom: "10px", boxShadow: "0 2px 12px rgba(0,0,0,0.07)", borderLeft: "3px solid #f59e0b" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div>
-                    <div style={{ fontWeight: "700", fontSize: "14px", color: "#111" }}>{f.feeType}</div>
-                    <div style={{ fontSize: "12px", color: "#888", marginTop: "4px" }}>Due: {f.dueDate}</div>
-                  </div>
-                  <div style={{ textAlign: "right" }}>
-                    <div style={{ fontWeight: "800", fontSize: "16px", color: "#111" }}>₹{f.amount.toLocaleString()}</div>
-                    <div style={{ fontSize: "11px", fontWeight: "700", color: statusColor[f.status], background: statusColor[f.status] + "20", padding: "3px 8px", borderRadius: "20px", marginTop: "4px" }}>
-                      {f.status.toUpperCase()}
+            {pendingFees.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "48px 0", color: "#22c55e" }}>
+                <div style={{ fontSize: 40, marginBottom: 12 }}>✅</div>
+                <div style={{ fontSize: 15, fontWeight: 700 }}>All fees cleared</div>
+                <div style={{ fontSize: 13, color: "#999", marginTop: 4 }}>No outstanding payments</div>
+              </div>
+            ) : (
+              <>
+                {pendingFees.map((f) => (
+                  <div key={f._id} style={{ background: "white", borderRadius: 16, padding: 16, marginBottom: 12, boxShadow: "0 2px 10px rgba(0,0,0,0.06)", borderLeft: "4px solid #f59e0b" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                      <div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: "#111" }}>{f.feeType}</div>
+                        <div style={{ fontSize: 12, color: "#888", marginTop: 3 }}>{f.month} {f.year}</div>
+                        <div style={{ fontSize: 12, color: "#ef4444", marginTop: 2 }}>Due: {formatDate(f.dueDate)}</div>
+                      </div>
+                      <div style={{ textAlign: "right" }}>
+                        <div style={{ fontSize: 17, fontWeight: 800, color: "#111" }}>{formatAmount(f.amount)}</div>
+                        <div style={{ fontSize: 11, fontWeight: 700, color: "#f59e0b", background: "#fef3c7", padding: "3px 10px", borderRadius: 20, marginTop: 4 }}>UNPAID</div>
+                      </div>
                     </div>
                   </div>
+                ))}
+
+                {/* Total + Pay Button */}
+                <div style={{ background: "white", borderRadius: 16, padding: 16, marginTop: 4, boxShadow: "0 2px 10px rgba(0,0,0,0.06)", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: "#111" }}>Total Outstanding</div>
+                  <div style={{ fontSize: 20, fontWeight: 900, color: "#ef4444" }}>{formatAmount(summary.totalDue)}</div>
                 </div>
                 <button
-                  onClick={() => alert("🎉 Redirecting to Payment Gateway...")}
-                  style={{ marginTop: "12px", width: "100%", background: "linear-gradient(135deg, #4f46e5, #7c3aed)", color: "white", border: "none", borderRadius: "10px", padding: "10px", fontWeight: "700", cursor: "pointer", fontFamily: "'Poppins', sans-serif", fontSize: "13px" }}>
-                  💳 Pay Now — ₹{f.amount.toLocaleString()}
+                  onClick={() => alert("Payment gateway integration coming soon.")}
+                  style={{ width: "100%", background: "linear-gradient(135deg, #4f46e5, #7c3aed)", color: "white", border: "none", borderRadius: 14, padding: "15px", fontWeight: 700, cursor: "pointer", fontSize: 15, boxShadow: "0 6px 20px rgba(79,70,229,0.35)" }}>
+                  Pay Total — {formatAmount(summary.totalDue)}
                 </button>
-              </div>
-            ))}
-
-            {/* Total due */}
-            <div style={{ background: "white", borderRadius: "16px", padding: "16px", marginBottom: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.07)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div style={{ fontSize: "15px", fontWeight: "800", color: "#111" }}>Total Due</div>
-              <div style={{ fontSize: "20px", fontWeight: "900", color: "#ef4444" }}>₹{summary.pending.toLocaleString()}</div>
-            </div>
-
-            <button
-              onClick={() => alert("🎉 Redirecting to Payment Gateway...")}
-              style={{ width: "100%", background: "linear-gradient(135deg, #4f46e5, #7c3aed)", color: "white", border: "none", borderRadius: "14px", padding: "14px", fontWeight: "700", cursor: "pointer", fontFamily: "'Poppins', sans-serif", fontSize: "15px", marginBottom: "20px", boxShadow: "0 6px 20px rgba(79,70,229,.35)" }}>
-              💳 Pay All — ₹{summary.pending.toLocaleString()}
-            </button>
+              </>
+            )}
           </>
         )}
 
-        {/* Payment History */}
-        {paidFees.length > 0 && (
+        {activeTab === "paid" && (
           <>
-            <div style={{ fontSize: "11px", fontWeight: "700", color: "#7B8099", textTransform: "uppercase", letterSpacing: ".6px", marginBottom: "10px" }}>
-              Payment History
-            </div>
-            {paidFees.map(f => (
-              <div key={f.id} style={{ background: "white", borderRadius: "16px", padding: "16px", marginBottom: "10px", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div>
-                    <div style={{ fontWeight: "600", fontSize: "14px", color: "#111" }}>{f.feeType}</div>
-                    <div style={{ fontSize: "12px", color: "#888", marginTop: "4px" }}>Due: {f.dueDate}</div>
-                    {f.paidDate && (
-                      <div style={{ fontSize: "11px", color: "#22c55e", marginTop: "2px" }}>✓ Paid on {f.paidDate}</div>
-                    )}
-                  </div>
-                  <div style={{ textAlign: "right" }}>
-                    <div style={{ fontWeight: "700", fontSize: "16px", color: "#111" }}>₹{f.amount.toLocaleString()}</div>
-                    <div style={{ fontSize: "11px", fontWeight: "700", color: statusColor[f.status], background: statusColor[f.status] + "20", padding: "3px 8px", borderRadius: "20px", marginTop: "4px" }}>
-                      ✅ PAID
+            {paidFees.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "48px 0", color: "#999" }}>
+                <div style={{ fontSize: 40, marginBottom: 12 }}>📋</div>
+                <div style={{ fontSize: 15, fontWeight: 700 }}>No payment history</div>
+              </div>
+            ) : (
+              paidFees.map((f) => (
+                <div key={f._id} style={{ background: "white", borderRadius: 16, padding: 16, marginBottom: 12, boxShadow: "0 2px 8px rgba(0,0,0,0.05)", borderLeft: "4px solid #22c55e" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: "#111" }}>{f.feeType}</div>
+                      <div style={{ fontSize: 12, color: "#888", marginTop: 3 }}>{f.month} {f.year}</div>
+                      {f.paidDate && (
+                        <div style={{ fontSize: 12, color: "#22c55e", marginTop: 2 }}>Paid on {formatDate(f.paidDate)}</div>
+                      )}
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ fontSize: 17, fontWeight: 800, color: "#111" }}>{formatAmount(f.amount)}</div>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: "#22c55e", background: "#dcfce7", padding: "3px 10px", borderRadius: 20, marginTop: 4 }}>PAID</div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </>
         )}
+      </div>
 
+      {/* Bottom Nav */}
+      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: "white", borderTop: "1px solid #eee", display: "flex", padding: "8px 0 16px", boxShadow: "0 -4px 12px rgba(0,0,0,0.06)" }}>
+        {[
+          { icon: "🏠", label: "Home",  path: "/student/home" },
+          { icon: "🚌", label: "Bus",   path: "/student/bus"  },
+          { icon: "📚", label: "Learn", path: "/student/notes" },
+          { icon: "💬", label: "Chat",  path: "/student/chat" },
+          { icon: "👤", label: "Me",    path: "/student/profile" },
+        ].map((tab) => (
+          <button key={tab.label} onClick={() => navigate(tab.path)}
+            style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, color: "#999" }}>
+            <span style={{ fontSize: 22 }}>{tab.icon}</span>
+            <span style={{ fontSize: 10, fontWeight: 500 }}>{tab.label}</span>
+          </button>
+        ))}
       </div>
     </div>
   );
