@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { db } from "../../firebase";
-import { ref, push, serverTimestamp, onValue } from "firebase/database";
+
+const API = import.meta.env.VITE_API_URL;
 
 const LEAVE_TYPES = [
   "Medical / Sick Leave",
@@ -13,7 +13,7 @@ const LEAVE_TYPES = [
 ];
 
 export default function ApplyLeave() {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const navigate = useNavigate();
 
   const [fromDate, setFromDate] = useState("");
@@ -24,48 +24,80 @@ export default function ApplyLeave() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [leaveHistory, setLeaveHistory] = useState([]);
+  const [quota, setQuota] = useState({ total: 0, used: 0, available: 0 });
+  const [quotaLoading, setQuotaLoading] = useState(true);
+  const [historyLoading, setHistoryLoading] = useState(true);
+  const [formError, setFormError] = useState("");
+
+  const headers = { Authorization: `Bearer ${token}` };
 
   useEffect(() => {
-    const leavesRef = ref(db, "leaves");
-    const unsub = onValue(leavesRef, (snap) => {
-      const data = snap.val();
-      if (!data) return;
-      const myLeaves = Object.values(data)
-        .filter((l) => l.userId === user.id)
-        .sort((a, b) => b.timestamp - a.timestamp);
-      setLeaveHistory(myLeaves);
-    });
-    return () => unsub();
+    fetchQuota();
+    fetchHistory();
   }, []);
 
-  const total = 12;
-  const used = leaveHistory.filter((l) => l.status === "approved").length;
-  const available = total - used;
+  const fetchQuota = async () => {
+    try {
+      const res = await fetch(`${API}/api/leaves/quota`, { headers });
+      const data = await res.json();
+      if (data.success) setQuota(data.data);
+    } catch {
+      // quota fetch failed silently
+    } finally {
+      setQuotaLoading(false);
+    }
+  };
+
+  const fetchHistory = async () => {
+    try {
+      const res = await fetch(`${API}/api/leaves/my`, { headers });
+      const data = await res.json();
+      if (data.success) setLeaveHistory(data.data);
+    } catch {
+      // history fetch failed silently
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
+
+  const calcDays = () => {
+    if (!fromDate || !toDate) return 0;
+    const diff = new Date(toDate) - new Date(fromDate);
+    if (diff < 0) return 0;
+    return Math.round(diff / (1000 * 60 * 60 * 24)) + 1;
+  };
 
   const handleSubmit = async () => {
-    if (!fromDate || !toDate || !reason) {
-      alert("Please fill all fields.");
+    setFormError("");
+    if (!fromDate || !toDate || !reason.trim()) {
+      setFormError("Please fill all required fields.");
+      return;
+    }
+    if (new Date(toDate) < new Date(fromDate)) {
+      setFormError("End date cannot be before start date.");
       return;
     }
     setLoading(true);
     try {
-      await push(ref(db, "leaves"), {
-        userId: user.id,
-        appliedBy: "student",
-        leaveType,
-        fromDate,
-        toDate,
-        reason,
-        attachedFileName: attachedFile ? attachedFile.name : null,
-        status: "pending",
-        timestamp: serverTimestamp(),
+      const res = await fetch(`${API}/api/leaves/apply`, {
+        method: "POST",
+        headers: { ...headers, "Content-Type": "application/json" },
+        body: JSON.stringify({ leaveType, fromDate, toDate, reason }),
       });
-      setSuccess(true);
-    } catch (e) {
-      alert("Error: " + e.message);
+      const data = await res.json();
+      if (!data.success) {
+        setFormError(data.message || "Submission failed. Please try again.");
+      } else {
+        setSuccess(true);
+      }
+    } catch {
+      setFormError("Network error. Please check your connection.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
+
+  const days = calcDays();
 
   if (success) {
     return (
@@ -101,7 +133,6 @@ export default function ApplyLeave() {
       minHeight: "100vh", background: "#f5f6fa",
       fontFamily: "'Poppins', sans-serif", paddingBottom: "32px",
     }}>
-
       {/* Header */}
       <div style={{
         background: "linear-gradient(135deg, #1a73e8, #6c63ff)",
@@ -118,36 +149,42 @@ export default function ApplyLeave() {
           >←</button>
           <div>
             <div style={{ color: "white", fontWeight: "800", fontSize: "18px" }}>
-              📝 Leave Application
+              Leave Application
             </div>
             <div style={{ color: "rgba(255,255,255,0.8)", fontSize: "12px" }}>
-              Apply for your leave
+              Submit and track your leave requests
             </div>
           </div>
         </div>
 
-        {/* Stats */}
+        {/* Quota Stats */}
         <div style={{
           display: "grid", gridTemplateColumns: "1fr 1fr 1fr",
           gap: "12px", marginTop: "20px",
         }}>
-          {[
-            { label: "TOTAL", value: total, color: "#1a73e8" },
-            { label: "AVAILABLE", value: available, color: "#22c55e" },
-            { label: "USED", value: used, color: "#ef4444" },
-          ].map((stat) => (
-            <div key={stat.label} style={{
-              background: "white", borderRadius: "12px",
-              padding: "12px", textAlign: "center",
-            }}>
-              <div style={{ fontSize: "24px", fontWeight: "800", color: stat.color }}>
-                {stat.value}
-              </div>
-              <div style={{ fontSize: "10px", color: "#999", fontWeight: "700", letterSpacing: "0.5px" }}>
-                {stat.label}
-              </div>
+          {quotaLoading ? (
+            <div style={{ gridColumn: "1/-1", textAlign: "center", color: "rgba(255,255,255,0.7)", fontSize: "13px" }}>
+              Loading balance...
             </div>
-          ))}
+          ) : (
+            [
+              { label: "TOTAL", value: quota.total, color: "#1a73e8" },
+              { label: "AVAILABLE", value: quota.available, color: "#22c55e" },
+              { label: "USED", value: quota.used, color: "#ef4444" },
+            ].map((stat) => (
+              <div key={stat.label} style={{
+                background: "white", borderRadius: "12px",
+                padding: "12px", textAlign: "center",
+              }}>
+                <div style={{ fontSize: "24px", fontWeight: "800", color: stat.color }}>
+                  {stat.value}
+                </div>
+                <div style={{ fontSize: "10px", color: "#999", fontWeight: "700", letterSpacing: "0.5px" }}>
+                  {stat.label}
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
 
@@ -184,7 +221,7 @@ export default function ApplyLeave() {
           </div>
 
           {/* From / To Date */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "16px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "8px" }}>
             <div>
               <label style={{ fontSize: "11px", fontWeight: "700", color: "#666", letterSpacing: "0.5px" }}>
                 FROM DATE
@@ -192,7 +229,7 @@ export default function ApplyLeave() {
               <input
                 type="date"
                 value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
+                onChange={(e) => { setFromDate(e.target.value); setFormError(""); }}
                 style={{
                   width: "100%", marginTop: "8px", padding: "12px",
                   borderRadius: "10px", border: "1px solid #e0e0e0",
@@ -208,7 +245,7 @@ export default function ApplyLeave() {
               <input
                 type="date"
                 value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
+                onChange={(e) => { setToDate(e.target.value); setFormError(""); }}
                 style={{
                   width: "100%", marginTop: "8px", padding: "12px",
                   borderRadius: "10px", border: "1px solid #e0e0e0",
@@ -219,6 +256,17 @@ export default function ApplyLeave() {
             </div>
           </div>
 
+          {/* Live days counter */}
+          {days > 0 && (
+            <div style={{
+              marginBottom: "16px", padding: "8px 12px",
+              background: "#f0f4ff", borderRadius: "8px",
+              fontSize: "12px", color: "#1a73e8", fontWeight: "600",
+            }}>
+              Duration: {days} day{days > 1 ? "s" : ""}
+            </div>
+          )}
+
           {/* Reason */}
           <div style={{ marginBottom: "16px" }}>
             <label style={{ fontSize: "11px", fontWeight: "700", color: "#666", letterSpacing: "0.5px" }}>
@@ -226,7 +274,7 @@ export default function ApplyLeave() {
             </label>
             <textarea
               value={reason}
-              onChange={(e) => setReason(e.target.value)}
+              onChange={(e) => { setReason(e.target.value); setFormError(""); }}
               placeholder="Explain the reason for leave..."
               rows={4}
               style={{
@@ -266,9 +314,7 @@ export default function ApplyLeave() {
                 <span
                   onClick={(e) => { e.stopPropagation(); setAttachedFile(null); }}
                   style={{ fontSize: "18px", color: "#999", cursor: "pointer" }}
-                >
-                  ✕
-                </span>
+                >✕</span>
               )}
             </div>
             <input
@@ -279,6 +325,18 @@ export default function ApplyLeave() {
               onChange={(e) => setAttachedFile(e.target.files[0] || null)}
             />
           </div>
+
+          {/* Inline Error */}
+          {formError && (
+            <div style={{
+              marginBottom: "12px", padding: "10px 14px",
+              background: "#fff5f5", borderRadius: "8px",
+              border: "1px solid #fee2e2",
+              fontSize: "13px", color: "#ef4444", fontWeight: "600",
+            }}>
+              {formError}
+            </div>
+          )}
 
           {/* Submit */}
           <button
@@ -298,60 +356,76 @@ export default function ApplyLeave() {
         </div>
 
         {/* Leave History */}
-        {leaveHistory.length > 0 && (
-          <div style={{
-            background: "white", borderRadius: "16px", padding: "20px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-          }}>
-            <div style={{ fontSize: "12px", fontWeight: "700", color: "#999", letterSpacing: "1px", marginBottom: "16px" }}>
-              LEAVE HISTORY
+        <div style={{
+          background: "white", borderRadius: "16px", padding: "20px",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+        }}>
+          <div style={{ fontSize: "12px", fontWeight: "700", color: "#999", letterSpacing: "1px", marginBottom: "16px" }}>
+            LEAVE HISTORY
+          </div>
+
+          {historyLoading ? (
+            <div style={{ textAlign: "center", color: "#aaa", fontSize: "13px", padding: "20px 0" }}>
+              Loading history...
             </div>
-            {leaveHistory.map((leave, i) => {
+          ) : leaveHistory.length === 0 ? (
+            <div style={{ textAlign: "center", color: "#aaa", fontSize: "13px", padding: "20px 0" }}>
+              No leave requests found.
+            </div>
+          ) : (
+            leaveHistory.map((leave, i) => {
               const statusColor =
-                leave.status === "approved" ? "#22c55e" :
-                leave.status === "rejected" ? "#ef4444" : "#f59e0b";
-              const days = leave.fromDate && leave.toDate
+                leave.status === "Approved" ? "#22c55e" :
+                leave.status === "Rejected" ? "#ef4444" : "#f59e0b";
+              const statusLabel =
+                leave.status === "Approved" ? "Approved" :
+                leave.status === "Rejected" ? "Rejected" : "Pending";
+              const leaveDays = leave.fromDate && leave.toDate
                 ? Math.max(1, Math.round(
-                    (new Date(leave.toDate) - new Date(leave.fromDate)) / (1000 * 60 * 60 * 24) + 1
-                  ))
+                  (new Date(leave.toDate) - new Date(leave.fromDate)) / (1000 * 60 * 60 * 24) + 1
+                ))
                 : 1;
               return (
-                <div key={i} style={{
+                <div key={leave._id || i} style={{
                   padding: "14px", borderRadius: "12px",
-                  background: leave.status === "rejected" ? "#fff5f5" : "#f9fafb",
+                  background: leave.status === "Rejected" ? "#fff5f5" : "#f9fafb",
                   marginBottom: "10px",
-                  border: `1px solid ${leave.status === "rejected" ? "#fee2e2" : "#f0f0f0"}`,
+                  border: `1px solid ${leave.status === "Rejected" ? "#fee2e2" : "#f0f0f0"}`,
                 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div style={{ fontWeight: "700", fontSize: "14px", color: "#111" }}>
                       {leave.leaveType}
                     </div>
-                    <span style={{ fontSize: "11px", fontWeight: "700", color: statusColor }}>
-                      {leave.status === "pending" ? "⏳ Pending" :
-                       leave.status === "approved" ? "Approved" : "Rejected"}
+                    <span style={{
+                      fontSize: "11px", fontWeight: "700", color: statusColor,
+                      background: `${statusColor}18`, padding: "3px 10px",
+                      borderRadius: "20px",
+                    }}>
+                      {statusLabel}
                     </span>
                   </div>
                   <div style={{ fontSize: "12px", color: "#888", marginTop: "4px" }}>
-                    {leave.fromDate} — {leave.toDate} • {days} day{days > 1 ? "s" : ""}
+                    {new Date(leave.fromDate).toLocaleDateString("en-GB")} — {new Date(leave.toDate).toLocaleDateString("en-GB")} • {leaveDays} day{leaveDays > 1 ? "s" : ""}
                   </div>
                   {leave.reason && (
                     <div style={{ fontSize: "12px", color: "#aaa", marginTop: "4px" }}>
                       {leave.reason}
                     </div>
                   )}
-                  {leave.attachedFileName && (
+                  {leave.reviewNote && (
                     <div style={{
-                      marginTop: "8px", fontSize: "11px", color: "#1a73e8",
-                      display: "flex", alignItems: "center", gap: "4px",
+                      marginTop: "8px", fontSize: "11px", color: "#666",
+                      background: "#f0f4ff", padding: "6px 10px",
+                      borderRadius: "6px",
                     }}>
-                      📎 {leave.attachedFileName}
+                      Reviewer Note: {leave.reviewNote}
                     </div>
                   )}
                 </div>
               );
-            })}
-          </div>
-        )}
+            })
+          )}
+        </div>
       </div>
     </div>
   );
