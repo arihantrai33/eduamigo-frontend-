@@ -7,7 +7,6 @@ const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 });
-
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 function getGreeting() {
@@ -16,33 +15,32 @@ function getGreeting() {
   if (h < 17) return "Good Afternoon 🌤️";
   return "Good Evening 🌙";
 }
-
 function getInitials(name = "") {
   return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
 }
 
 export default function StudentHome() {
   const navigate = useNavigate();
-  const { user }  = useAuth();
+  const { user } = useAuth();
 
-  const [profile,    setProfile]    = useState(null);
-  const [attendance, setAttendance] = useState(null);
-  const [results,    setResults]    = useState(null);
-  const [timetable,  setTimetable]  = useState([]);
-  const [notices,    setNotices]    = useState([]);
-  const [feeStatus,  setFeeStatus]  = useState(null);
-  const [loading,    setLoading]    = useState(true);
+  const [profile,      setProfile]      = useState(null);
+  const [attendance,   setAttendance]   = useState(null);
+  const [results,      setResults]      = useState(null);
+  const [avgMarks,     setAvgMarks]     = useState(null);
+  const [overallGrade, setOverallGrade] = useState(null);
+  const [timetable,    setTimetable]    = useState([]);
+  const [notices,      setNotices]      = useState([]);
+  const [feeStatus,    setFeeStatus]    = useState(null);
+  const [loading,      setLoading]      = useState(true);
 
-  useEffect(() => {
-    fetchAll();
-  }, []);
+  useEffect(() => { fetchAll(); }, []);
 
   const fetchAll = async () => {
     try {
       const [profileRes, attendanceRes, noticesRes] = await Promise.allSettled([
-        axios.get(`${API}/students/my-profile`,    authHeader()),
-        axios.get(`${API}/attendance/my-summary`,  authHeader()),
-        axios.get(`${API}/notifications/my`,       authHeader()),
+        axios.get(`${API}/students/my-profile`,   authHeader()),
+        axios.get(`${API}/attendance/my-summary`, authHeader()),
+        axios.get(`${API}/notifications/my`,      authHeader()),
       ]);
 
       if (profileRes.status === "fulfilled" && profileRes.value.data.success) {
@@ -60,16 +58,18 @@ export default function StudentHome() {
       // Timetable — today's classes
       const today = days[new Date().getDay() - 1] || "Mon";
       try {
-        const ttRes = await axios.get(
-          `${API}/timetable/my?day=${today}`, authHeader()
-        );
+        const ttRes = await axios.get(`${API}/timetable/my?day=${today}`, authHeader());
         if (ttRes.data.success) setTimetable(ttRes.data.data || []);
       } catch (_) {}
 
-      // Results — latest
+      // Results — average + grade
       try {
         const resRes = await axios.get(`${API}/exams/my-results`, authHeader());
-        if (resRes.data.success) setResults(resRes.data.data?.[0] || null);
+        if (resRes.data.success) {
+          setResults(resRes.data.data?.[0] || null);
+          setAvgMarks(resRes.data.averagePercentage);
+          setOverallGrade(resRes.data.overallGrade);
+        }
       } catch (_) {}
 
     } catch (err) {
@@ -78,6 +78,10 @@ export default function StudentHome() {
       setLoading(false);
     }
   };
+
+  const attendancePct = attendance?.percentage ? `${attendance.percentage}%` : "—";
+  const grade         = overallGrade ?? "—";
+  const marks         = avgMarks     ? `${avgMarks}%` : "—";
 
   const quickTiles = [
     {
@@ -92,7 +96,7 @@ export default function StudentHome() {
     },
     {
       icon: "📊", label: "Results",
-      sub: results ? `${results.examName} • ${results.percentage ?? "—"}%` : "View results",
+      sub: results ? `${results.subject} • ${results.percentage ?? "—"}%` : "View results",
       path: "/student/result",
     },
     {
@@ -111,13 +115,6 @@ export default function StudentHome() {
       path: "/student/apply-leave",
     },
   ];
-
-  const attendancePct = attendance?.percentage
-    ? `${attendance.percentage}%`
-    : "—";
-
-  const grade   = results?.grade      ?? "—";
-  const marks   = results?.percentage ?? "—";
 
   if (loading) {
     return (
@@ -179,10 +176,10 @@ export default function StudentHome() {
           {/* Stats Row */}
           <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
             {[
-              { val: attendancePct, label: "Attendance" },
-              { val: grade,         label: "Grade"      },
-              { val: marks !== "—" ? `${marks}%` : "—", label: "Marks" },
-              { val: feeStatus ?? "—", label: "Fee"     },
+              { val: attendancePct,  label: "Attendance" },
+              { val: grade,          label: "Grade"      },
+              { val: marks,          label: "Marks"      },
+              { val: feeStatus ?? "—", label: "Fee"      },
             ].map((stat) => (
               <div key={stat.label} style={{ flex: 1, background: "rgba(255,255,255,0.15)", borderRadius: 10, padding: "8px 4px", textAlign: "center" }}>
                 <div style={{ fontSize: 14, fontWeight: 800, color: "#fff" }}>{stat.val}</div>
@@ -266,7 +263,7 @@ export default function StudentHome() {
       {/* ── Bottom Nav ── */}
       <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: "white", borderTop: "1px solid #eee", display: "flex", padding: "8px 0 16px", boxShadow: "0 -4px 12px rgba(0,0,0,0.06)" }}>
         {[
-          { icon: "🏠", label: "Home",  path: "/student/home",         active: true },
+          { icon: "🏠", label: "Home",  path: "/student/home",  active: true },
           { icon: "🚌", label: "Bus",   path: "/student/bus" },
           { icon: "📚", label: "Learn", path: "/student/notes" },
           { icon: "💬", label: "Chat",  path: "/student/chat" },
