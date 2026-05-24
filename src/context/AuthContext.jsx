@@ -15,7 +15,7 @@ export function AuthProvider({ children }) {
         setUser({ ...parsedUser, token });
       }
       setLoading(false);
-    }, 1600);
+    }, 2600);
     return () => clearTimeout(timer);
   }, []);
 

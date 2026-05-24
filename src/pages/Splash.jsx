@@ -8,13 +8,13 @@ export default function Splash() {
   const redirected = useRef(false);
   const [minTimeDone, setMinTimeDone] = useState(false);
 
-  // Minimum splash display time — always 2500ms regardless of auth speed
+  // Always show splash for minimum 3000ms
   useEffect(() => {
-    const timer = setTimeout(() => setMinTimeDone(true), 2500);
+    const timer = setTimeout(() => setMinTimeDone(true), 3000);
     return () => clearTimeout(timer);
   }, []);
 
-  // Redirect only when BOTH conditions met: auth resolved + min time passed
+  // Redirect only when BOTH: auth loaded + min time passed
   useEffect(() => {
     if (!loading && minTimeDone && !redirected.current) {
       redirected.current = true;
@@ -140,7 +140,8 @@ export default function Splash() {
       {/* Bottom watermark */}
       <p style={{
         position: "absolute", bottom: "28px",
-        color: "#1E3A6E", fontSize: "10px", letterSpacing: "3px", margin: 0,
+        color: "#1E3A6E", fontSize: "10px",
+        letterSpacing: "3px", margin: 0,
         animation: "floatUp 0.6s ease-out 0.5s both",
       }}>
         POWERED BY EDUAMIGO
