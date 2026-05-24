@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 
 const API = import.meta.env.VITE_API_URL;
@@ -10,36 +9,30 @@ const authHeader = () => ({
 
 export default function ParentAttendance() {
   const navigate = useNavigate();
-  const { user } = useAuth();
-
-  const [child,      setChild]      = useState(null);
-  const [summary,    setSummary]    = useState(null);
-  const [records,    setRecords]    = useState([]);
-  const [loading,    setLoading]    = useState(true);
-  const [error,      setError]      = useState("");
+  const [child,   setChild]   = useState(null);
+  const [summary, setSummary] = useState(null);
+  const [records, setRecords] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error,   setError]   = useState("");
 
   useEffect(() => { fetchData(); }, []);
 
   const fetchData = async () => {
     try {
-      // Step 1 — get child
       const parentRes = await axios.get(`${API}/parents/my-child`, authHeader());
       if (!parentRes.data.success) { setError("Could not load child info"); setLoading(false); return; }
       const childData = parentRes.data.data.children?.[0];
       if (!childData) { setError("No child linked to this account"); setLoading(false); return; }
       setChild(childData);
 
-      // Step 2 — get attendance
       const [sumRes, recRes] = await Promise.allSettled([
-        axios.get(`${API}/attendance/student/${childData._id}/summary`, authHeader()),
-        axios.get(`${API}/attendance/student/${childData._id}`,         authHeader()),
+        axios.get(`${API}/attendance/child-summary`, authHeader()),
+        axios.get(`${API}/attendance/child-records`, authHeader()),
       ]);
-
       if (sumRes.status === "fulfilled" && sumRes.value.data.success)
         setSummary(sumRes.value.data.data);
       if (recRes.status === "fulfilled" && recRes.value.data.success)
         setRecords(recRes.value.data.data || []);
-
     } catch (err) {
       setError("Failed to load attendance data");
     } finally {
@@ -47,22 +40,18 @@ export default function ParentAttendance() {
     }
   };
 
-  // Build calendar for current month
   const buildCalendar = () => {
     const now         = new Date();
     const year        = now.getFullYear();
     const month       = now.getMonth();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const firstDay    = new Date(year, month, 1).getDay();
-
-    // Map records to date keys
-    const recordMap = {};
+    const recordMap   = {};
     records.forEach((r) => {
-      const d = new Date(r.date);
+      const d   = new Date(r.date);
       const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
       recordMap[key] = r.status;
     });
-
     const cells = [];
     for (let i = 0; i < firstDay; i++) cells.push(null);
     for (let d = 1; d <= daysInMonth; d++) {
@@ -74,7 +63,6 @@ export default function ParentAttendance() {
   };
 
   const { cells, monthLabel } = buildCalendar();
-
   const absentRecords = records.filter((r) => r.status === "Absent" || r.status === "Leave");
 
   if (loading) return (
@@ -102,12 +90,8 @@ export default function ParentAttendance() {
           <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800 }}>✅ Attendance Report</h2>
         </div>
         <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: 12, opacity: 0.8 }}>
-            {monthLabel} — {child?.name || ""}
-          </div>
-          <div style={{ fontSize: 64, fontWeight: 900, lineHeight: 1.1 }}>
-            {summary?.percentage ?? "—"}%
-          </div>
+          <div style={{ fontSize: 12, opacity: 0.8 }}>{monthLabel} — {child?.name || ""}</div>
+          <div style={{ fontSize: 64, fontWeight: 900, lineHeight: 1.1 }}>{summary?.percentage ?? "—"}%</div>
           <div style={{ fontSize: 13, opacity: 0.85 }}>
             {summary?.present ?? 0} Present &nbsp;•&nbsp; {summary?.absent ?? 0} Absent &nbsp;•&nbsp; {summary?.late ?? 0} Late
           </div>
@@ -126,17 +110,27 @@ export default function ParentAttendance() {
             {cells.map((c, i) => (
               <div key={i} style={{
                 padding: "6px 2px", borderRadius: 8, fontSize: 12, fontWeight: 600,
-                background: !c ? "transparent"
-                  : c.today           ? "#4f46e5"
-                  : c.status === "Present" ? "#e8f5e9"
-                  : c.status === "Absent"  ? "#ffebee"
-                  : c.status === "Leave"   ? "#fef9c3"
+                background: !c
+                  ? "transparent"
+                  : c.today
+                  ? "#4f46e5"
+                  : c.status === "Present"
+                  ? "#e8f5e9"
+                  : c.status === "Absent"
+                  ? "#ffebee"
+                  : c.status === "Leave"
+                  ? "#fef9c3"
                   : "transparent",
-                color: !c ? "transparent"
-                  : c.today           ? "white"
-                  : c.status === "Present" ? "#2e7d32"
-                  : c.status === "Absent"  ? "#ef4444"
-                  : c.status === "Leave"   ? "#854d0e"
+                color: !c
+                  ? "transparent"
+                  : c.today
+                  ? "white"
+                  : c.status === "Present"
+                  ? "#2e7d32"
+                  : c.status === "Absent"
+                  ? "#ef4444"
+                  : c.status === "Leave"
+                  ? "#854d0e"
                   : "#ccc",
               }}>
                 {c?.d || ""}
@@ -160,13 +154,26 @@ export default function ParentAttendance() {
           </div>
         </div>
 
+        {/* Stats Cards */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10, marginBottom: 16 }}>
+          {[
+            { label: "Present", value: summary?.present ?? 0, color: "#16a34a", bg: "#dcfce7" },
+            { label: "Absent",  value: summary?.absent  ?? 0, color: "#ef4444", bg: "#fee2e2" },
+            { label: "Leave",   value: summary?.leave   ?? 0, color: "#ca8a04", bg: "#fef9c3" },
+          ].map((s) => (
+            <div key={s.label} style={{ background: s.bg, borderRadius: 14, padding: "14px 10px", textAlign: "center" }}>
+              <div style={{ fontSize: 24, fontWeight: 900, color: s.color }}>{s.value}</div>
+              <div style={{ fontSize: 11, fontWeight: 600, color: s.color, marginTop: 2 }}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+
         {/* Absent / Leave Days */}
         <div style={{ background: "white", borderRadius: 16, padding: 16, boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}>
           <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 12 }}>Absent / Leave Days</div>
-
           {absentRecords.length === 0 ? (
             <div style={{ textAlign: "center", color: "#999", padding: "20px 0", fontSize: 13 }}>
-              No absences recorded this month
+              No absences recorded
             </div>
           ) : (
             absentRecords.map((r, i) => {
@@ -198,6 +205,7 @@ export default function ParentAttendance() {
             })
           )}
         </div>
+
       </div>
     </div>
   );

@@ -50,26 +50,26 @@ export const assignStudents = async (busId, studentIds) => {
 
 // DRIVER
 export const getDriverBus = async (token) => {
-  const res = await axios.get(`${API}/api/transport/driver/${token}`, { headers: { 'ngrok-skip-browser-warning': 'true' } });
+  const res = await axios.get(`${API}/transport/driver/${token}`);
   return res.data;
 };
 
 export const startTrip = async (token) => {
-  const res = await axios.patch(`${API}/api/transport/driver/${token}/start-trip`);
+  const res = await axios.patch(`${API}/transport/driver/${token}/start-trip`);
   return res.data;
 };
 
 export const endTrip = async (token) => {
-  const res = await axios.patch(`${API}/api/transport/driver/${token}/end-trip`);
+  const res = await axios.patch(`${API}/transport/driver/${token}/end-trip`);
   return res.data;
 };
 
 export const markStopDone = async (token) => {
-  const res = await axios.patch(`${API}/api/transport/driver/${token}/stop-done`);
+  const res = await axios.patch(`${API}/transport/driver/${token}/stop-done`);
   return res.data;
 };
 
 export const updateDriverLocation = async (token, lat, lng) => {
-  const res = await axios.post(`${API}/api/transport/driver/${token}/update-location`, { lat, lng });
+  const res = await axios.post(`${API}/transport/driver/${token}/update-location`, { lat, lng });
   return res.data;
 };
