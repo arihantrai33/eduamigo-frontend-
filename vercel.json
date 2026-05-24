@@ -1,7 +1,27 @@
 {
   "rewrites": [
     {
-      "source": "/((?!$).*)",
+      "source": "/student/:path*",
+      "destination": "/"
+    },
+    {
+      "source": "/parent/:path*",
+      "destination": "/"
+    },
+    {
+      "source": "/teacher/:path*",
+      "destination": "/"
+    },
+    {
+      "source": "/admin/:path*",
+      "destination": "/"
+    },
+    {
+      "source": "/driver/:path*",
+      "destination": "/"
+    },
+    {
+      "source": "/login",
       "destination": "/"
     }
   ]
