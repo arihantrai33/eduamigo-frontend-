@@ -1,177 +1,269 @@
-// src/pages/parent/Chat.jsx
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { db } from "../../firebase";
-import { ref, onValue, push, serverTimestamp } from "firebase/database";
-import { useAuth } from "../../context/AuthContext";
 
-function BottomNav({ active }) {
-  const navigate = useNavigate();
-  return (
-    <div style={{ position:"fixed", bottom:0, left:"50%", transform:"translateX(-50%)", width:"100%", maxWidth:430, background:"white", borderTop:"1px solid #eee", display:"flex", padding:"8px 0 16px", boxShadow:"0 -4px 12px rgba(0,0,0,0.06)" }}>
-      {[
-        { icon:"🏠", label:"Home", path:"/parent/home" },
-        { icon:"💬", label:"Teachers", path:"/parent/chat" },
-        { icon:"💳", label:"Fees", path:"/parent/fee" },
-        { icon:"🔔", label:"Alerts", path:"/parent/notifications" },
-        { icon:"👤", label:"Me", path:"/parent/profile" },
-      ].map(tab => (
-        <button key={tab.label} onClick={() => navigate(tab.path)}
-          style={{ flex:1, background:"none", border:"none", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:2, color: active===tab.label.toLowerCase() ? "#4f46e5" : "#999" }}>
-          <span style={{ fontSize:22 }}>{tab.icon}</span>
-          <span style={{ fontSize:10, fontWeight: active===tab.label.toLowerCase() ? "700" : "500" }}>{tab.label}</span>
-        </button>
-      ))}
-    </div>
-  );
-}
+const API = import.meta.env.VITE_API_URL;
+const authHeader = () => ({
+  headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+});
+
+const avatarColor = (name = '') => {
+  const colors = ['#4f46e5','#7c3aed','#0891b2','#059669','#d97706','#dc2626','#0284c7'];
+  let hash = 0;
+  for (let c of name) hash = c.charCodeAt(0) + ((hash << 5) - hash);
+  return colors[Math.abs(hash) % colors.length];
+};
+
+const formatTime = (d) => {
+  try {
+    const date = d instanceof Date ? d : new Date(d);
+    return date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+  } catch { return ''; }
+};
+
+const formatDate = (d) => {
+  try {
+    const date = d instanceof Date ? d : new Date(d);
+    const today = new Date();
+    if (date.toDateString() === today.toDateString()) return 'Today';
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+    if (date.toDateString() === yesterday.toDateString()) return 'Yesterday';
+    return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+  } catch { return ''; }
+};
 
 export default function ParentChat() {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const [teachers, setTeachers]     = useState([]);
+  const [data, setData]           = useState({ child: null, teachers: [], admin: null });
   const [activeChat, setActiveChat] = useState(null);
-  const [messages, setMessages]     = useState([]);
-  const [input, setInput]           = useState("");
-  const bottomRef = useRef(null);
+  const [messages, setMessages]   = useState([]);
+  const [input, setInput]         = useState('');
+  const [loading, setLoading]     = useState(true);
+  const [sending, setSending]     = useState(false);
+  const [currentUserId, setCurrentUserId] = useState(null);
+  const messagesEndRef = useRef(null);
+  const pollRef        = useRef(null);
 
   useEffect(() => {
-    if (!user?.childClass) return;
-    const unsub = onValue(ref(db, `classes/${user.childClass}/teachers`), (snap) => {
-      if (snap.exists()) setTeachers(Object.values(snap.val()));
-    });
-    return () => unsub();
-  }, [user]);
+    fetchInitial();
+    return () => clearInterval(pollRef.current);
+  }, []);
 
   useEffect(() => {
-    if (!activeChat || !user?.uid) return;
-    const chatId = [user.uid, activeChat.teacherId].sort().join("_");
-    const unsub  = onValue(ref(db, `chats/${chatId}/messages`), (snap) => {
-      if (snap.exists()) {
-        setMessages(Object.values(snap.val()).sort((a,b) => a.timestamp - b.timestamp));
-      } else {
-        setMessages([]);
-      }
-    });
-    return () => unsub();
-  }, [activeChat, user]);
+    if (activeChat) {
+      fetchMessages(activeChat.roomId);
+      clearInterval(pollRef.current);
+      pollRef.current = setInterval(() => fetchMessages(activeChat.roomId), 5000);
+    }
+    return () => clearInterval(pollRef.current);
+  }, [activeChat]);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior:"smooth" });
+    setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
   }, [messages]);
 
-  const sendMessage = async () => {
-    const text = input.trim();
-    if (!text || !activeChat || !user?.uid) return;
-    const chatId = [user.uid, activeChat.teacherId].sort().join("_");
-    await push(ref(db, `chats/${chatId}/messages`), {
-      text,
-      senderId:   user.uid,
-      senderName: user.name,
-      senderRole: "parent",
-      timestamp:  serverTimestamp(),
-    });
-    setInput("");
+  const fetchInitial = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        setCurrentUserId(payload.id || payload._id);
+      }
+      const res  = await fetch(`${API}/chat/parent-teachers`, authHeader());
+      const json = await res.json();
+      if (json.success) setData(json.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if (!activeChat) {
-    return (
-      <div style={s.wrap}>
-        <div style={s.topBar}>
-          <button style={s.backBtn} onClick={() => navigate(-1)}>←</button>
-          <h2 style={s.title}>💬 Chat with Teachers</h2>
-        </div>
-        <div style={s.scroll}>
-          {teachers.length === 0 ? (
-            <p style={s.emptyText}>No teachers found</p>
-          ) : (
-            teachers.map((t) => (
-              <button key={t.teacherId} style={s.teacherCard} onClick={() => setActiveChat(t)}>
-                <div style={{ ...s.avatar, background:t.avatarBg||"#E3F2FD", color:t.avatarColor||"#1565C0" }}>
-                  {t.initials || t.teacherName?.substring(0,2).toUpperCase()}
-                </div>
-                <div style={s.teacherInfo}>
-                  <div style={s.teacherName}>{t.teacherName}</div>
-                  <div style={s.teacherSub}>{t.subject}</div>
-                </div>
-                <span style={s.chevron}>›</span>
-              </button>
-            ))
-          )}
-        </div>
-        <BottomNav active="teachers" />
-      </div>
-    );
-  }
+  const fetchMessages = async (roomId) => {
+    try {
+      const res  = await fetch(`${API}/chat/messages/${roomId}`, authHeader());
+      const json = await res.json();
+      if (json.success) setMessages(json.data || []);
+    } catch (err) { console.error(err); }
+  };
 
-  return (
-    <div style={{ ...s.wrap, display:"flex", flexDirection:"column" }}>
-      <div style={{ ...s.topBar, justifyContent:"flex-start", gap:10 }}>
-        <button style={s.backBtn} onClick={() => setActiveChat(null)}>←</button>
-        <div style={{ ...s.avatar, width:34, height:34, fontSize:11, background:"#E3F2FD", color:"#1565C0" }}>
-          {activeChat.initials}
+  const sendMessage = async () => {
+    if (!input.trim() || !activeChat || sending) return;
+    setSending(true);
+    try {
+      const res  = await fetch(`${API}/chat/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeader().headers },
+        body: JSON.stringify({ receiverId: activeChat.receiverId, text: input.trim(), roomId: activeChat.roomId }),
+      });
+      const json = await res.json();
+      if (json.success) { setMessages(prev => [...prev, json.data]); setInput(''); }
+    } catch (err) { console.error(err); }
+    finally { setSending(false); }
+  };
+
+  // ─── Chat Window ────────────────────────────────────────────────────────────
+  if (activeChat) return (
+    <div style={S.screen}>
+      <div style={S.chatHeader}>
+        <button style={S.backBtn} onClick={() => { setActiveChat(null); clearInterval(pollRef.current); }}>←</button>
+        <div style={{ ...S.avatar, background: avatarColor(activeChat.name) }}>{activeChat.name[0]}</div>
+        <div>
+          <div style={S.chatName}>{activeChat.name}</div>
+          <div style={S.chatSub}>{activeChat.sub}</div>
         </div>
-        <div style={{ flex:1 }}>
-          <div style={{ fontSize:15, fontWeight:700 }}>{activeChat.teacherName}</div>
-          <div style={{ fontSize:10.5, color:"#00BFA5", fontWeight:700 }}>🟢 Online</div>
-        </div>
-        <button style={s.iconBtn}>📞</button>
       </div>
-      <div style={s.msgArea}>
+
+      <div style={S.msgList}>
         {messages.length === 0 && (
-          <div style={s.emptyChat}>Send a message to {activeChat.teacherName}</div>
+          <div style={S.emptyChat}>
+            <div style={{ fontSize: 40, marginBottom: 8 }}>💬</div>
+            <div style={{ color: '#999', fontSize: 13 }}>Start a conversation</div>
+          </div>
         )}
-        {messages.map((msg, i) => {
-          const isMe = msg.senderRole === "parent";
+        {messages.map((m, i) => {
+          const isMe     = m.senderId?.toString() === currentUserId?.toString();
+          const showDate = i === 0 || formatDate(messages[i - 1].createdAt) !== formatDate(m.createdAt);
           return (
-            <div key={i} style={{ ...s.bubble, ...(isMe ? s.bubbleMe : s.bubbleThem) }}>
-              {msg.text}
-              <div style={s.bubbleTime}>
-                {msg.timestamp
-                  ? new Date(msg.timestamp).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})
-                  : "..."}
+            <div key={m._id || i}>
+              {showDate && <div style={S.dateDivider}>{formatDate(m.createdAt)}</div>}
+              <div style={{ display: 'flex', justifyContent: isMe ? 'flex-end' : 'flex-start', marginBottom: 6 }}>
+                {!isMe && (
+                  <div style={{ ...S.miniAvatar, background: avatarColor(activeChat.name) }}>
+                    {activeChat.name[0]}
+                  </div>
+                )}
+                <div style={{ ...S.bubble, ...(isMe ? S.bubbleMe : S.bubbleThem) }}>
+                  <div style={{ fontSize: 14 }}>{m.text}</div>
+                  <div style={S.timeRow}>
+                    <span style={S.timeText}>{formatTime(m.createdAt)}</span>
+                    {isMe && (
+                      <span style={{ fontSize: 11, color: m.read ? '#7c3aed' : 'rgba(255,255,255,0.5)' }}>
+                        {m.read ? '✓✓' : '✓'}
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           );
         })}
-        <div ref={bottomRef} />
+        <div ref={messagesEndRef} />
       </div>
-      <div style={s.inputBar}>
-        <span style={{ fontSize:20, cursor:"pointer" }}>📎</span>
+
+      <div style={S.inputRow}>
         <input
-          style={s.input}
+          style={S.input}
           value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => { if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); sendMessage(); }}}
-          placeholder="Message teacher..."
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && sendMessage()}
+          placeholder={`Message ${activeChat.name}...`}
         />
-        <button style={s.sendBtn} onClick={sendMessage}>➤</button>
+        <button style={{ ...S.sendBtn, opacity: sending ? 0.6 : 1 }} onClick={sendMessage} disabled={sending}>➤</button>
       </div>
+    </div>
+  );
+
+  // ─── Main List Screen ────────────────────────────────────────────────────────
+  return (
+    <div style={S.screen}>
+      <div style={S.header}>
+        <button style={S.headerBack} onClick={() => navigate('/parent/home')}>←</button>
+        <div>
+          <h2 style={S.headerTitle}>💬 Messages</h2>
+          {data.child && (
+            <div style={S.childBadge}>
+              👦 {data.child.name} · Class {data.child.class}
+              {data.child.section ? `-${data.child.section}` : ''}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {loading ? (
+        <div style={S.center}><div style={{ color: '#4f46e5', fontWeight: 600 }}>Loading...</div></div>
+      ) : (
+        <div style={S.list}>
+
+          {/* Admin Section */}
+          <div style={S.sectionLabel}>🏫 SCHOOL ADMINISTRATION</div>
+          {data.admin ? (
+            <div style={S.chatRow} onClick={() => setActiveChat({
+              name:       data.admin.name,
+              sub:        'Admin · Complaints & Queries',
+              receiverId: data.admin.userId,
+              roomId:     data.admin.roomId,
+            })}>
+              <div style={{ ...S.avatar, background: '#dc2626' }}>A</div>
+              <div style={{ flex: 1 }}>
+                <div style={S.rowName}>{data.admin.name}</div>
+                <div style={S.rowSub}>Complaints · Queries · Updates</div>
+              </div>
+              <div style={S.chevron}>›</div>
+            </div>
+          ) : (
+            <div style={S.emptyBox}>Admin contact not available</div>
+          )}
+
+          {/* Teachers Section */}
+          <div style={{ ...S.sectionLabel, marginTop: 20 }}>👨‍🏫 YOUR CHILD'S TEACHERS</div>
+          {data.teachers.length === 0 ? (
+            <div style={S.emptyBox}>
+              <div style={{ fontSize: 36, marginBottom: 8 }}>📚</div>
+              <div>No teachers assigned yet</div>
+              <div style={{ fontSize: 11, marginTop: 4, color: '#bbb' }}>Timetable mein teacher assign hone ke baad yahan dikhenge</div>
+            </div>
+          ) : data.teachers.map((t) => (
+            <div key={t._id} style={S.chatRow} onClick={() => setActiveChat({
+              name:       t.name,
+              sub:        t.subject,
+              receiverId: t.userId,
+              roomId:     t.roomId,
+            })}>
+              <div style={{ ...S.avatar, background: avatarColor(t.name) }}>{t.name[0]}</div>
+              <div style={{ flex: 1 }}>
+                <div style={S.rowName}>{t.name}</div>
+                <div style={S.rowSub}>{t.subject}</div>
+              </div>
+              <div style={S.chevron}>›</div>
+            </div>
+          ))}
+
+        </div>
+      )}
     </div>
   );
 }
 
-const s = {
-  wrap:        { minHeight:"100vh", background:"#F4F6FB", fontFamily:"'Poppins',sans-serif", maxWidth:430, margin:"0 auto" },
-  topBar:      { background:"#fff", padding:"48px 20px 14px", display:"flex", alignItems:"center", gap:12, borderBottom:"1px solid #E8EAF0" },
-  backBtn:     { background:"none", border:"none", fontSize:20, cursor:"pointer", color:"#1C2033", fontWeight:700 },
-  title:       { fontSize:17, fontWeight:700, color:"#1C2033" },
-  scroll:      { flex:1, overflowY:"auto", padding:"14px 16px 80px", display:"flex", flexDirection:"column", gap:10 },
-  teacherCard: { background:"#fff", border:"none", borderRadius:14, padding:"14px 16px", display:"flex", alignItems:"center", gap:12, cursor:"pointer", boxShadow:"0 2px 10px rgba(92,107,192,0.08)", textAlign:"left" },
-  avatar:      { width:42, height:42, borderRadius:14, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:700, fontSize:14, flexShrink:0 },
-  teacherInfo: { flex:1 },
-  teacherName: { fontSize:14, fontWeight:700, color:"#1C2033" },
-  teacherSub:  { fontSize:12, color:"#7B8099", marginTop:2 },
-  chevron:     { fontSize:20, color:"#7B8099" },
-  iconBtn:     { background:"none", border:"none", fontSize:20, cursor:"pointer" },
-  msgArea:     { flex:1, overflowY:"auto", padding:"14px 16px 80px", display:"flex", flexDirection:"column", gap:8 },
-  emptyChat:   { textAlign:"center", fontSize:13, color:"#7B8099", marginTop:40 },
-  emptyText:   { textAlign:"center", fontSize:13, color:"#7B8099", marginTop:40, padding:20 },
-  bubble:      { maxWidth:"78%", padding:"10px 14px", borderRadius:16, fontSize:13.5, lineHeight:1.5, wordBreak:"break-word" },
-  bubbleMe:    { background:"#5C6BC0", color:"#fff", alignSelf:"flex-end", borderBottomRightRadius:4 },
-  bubbleThem:  { background:"#fff", color:"#1C2033", alignSelf:"flex-start", borderBottomLeftRadius:4, boxShadow:"0 1px 4px rgba(0,0,0,0.08)" },
-  bubbleTime:  { fontSize:9.5, opacity:0.65, marginTop:4, textAlign:"right" },
-  inputBar:    { position:"fixed", bottom:0, left:"50%", transform:"translateX(-50%)", width:"100%", maxWidth:430, background:"#fff", borderTop:"1px solid #E8EAF0", padding:"10px 14px", display:"flex", alignItems:"center", gap:10, zIndex:100 },
-  input:       { flex:1, border:"1px solid #E8EAF0", borderRadius:24, padding:"10px 16px", fontSize:14, outline:"none", fontFamily:"'Poppins',sans-serif" },
-  sendBtn:     { background:"#5C6BC0", color:"#fff", border:"none", borderRadius:"50%", width:40, height:40, fontSize:16, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" },
+const S = {
+  screen:      { maxWidth: 420, margin: '0 auto', minHeight: '100vh', background: '#f5f6fa', fontFamily: 'Inter, sans-serif', display: 'flex', flexDirection: 'column' },
+  header:      { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', padding: '48px 20px 16px', display: 'flex', alignItems: 'center', gap: 12 },
+  headerBack:  { background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: '8px 12px', color: 'white', cursor: 'pointer', fontSize: 18 },
+  headerTitle: { color: 'white', fontSize: 20, fontWeight: 800, margin: 0 },
+  childBadge:  { color: 'rgba(255,255,255,0.8)', fontSize: 12, marginTop: 4 },
+  list:        { flex: 1, overflowY: 'auto', padding: '16px 16px 80px' },
+  sectionLabel:{ fontSize: 11, fontWeight: 700, color: '#999', letterSpacing: 1, marginBottom: 8 },
+  chatRow:     { background: 'white', borderRadius: 14, padding: '14px', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10, boxShadow: '0 1px 6px rgba(0,0,0,0.06)', cursor: 'pointer' },
+  avatar:      { width: 46, height: 46, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 18, flexShrink: 0 },
+  rowName:     { fontSize: 14, fontWeight: 700, color: '#111', marginBottom: 3 },
+  rowSub:      { fontSize: 12, color: '#888' },
+  chevron:     { fontSize: 22, color: '#ccc' },
+  emptyBox:    { textAlign: 'center', padding: '32px 0', color: '#999', fontSize: 13 },
+  center:      { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  chatHeader:  { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', padding: '48px 16px 16px', display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 },
+  backBtn:     { background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: '8px 12px', color: 'white', cursor: 'pointer', fontSize: 18 },
+  chatName:    { color: 'white', fontSize: 16, fontWeight: 700 },
+  chatSub:     { color: 'rgba(255,255,255,0.7)', fontSize: 11, marginTop: 2 },
+  msgList:     { flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column' },
+  emptyChat:   { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 0' },
+  dateDivider: { textAlign: 'center', fontSize: 11, color: '#aaa', background: '#eee', borderRadius: 20, padding: '3px 12px', margin: '10px auto', width: 'fit-content' },
+  miniAvatar:  { width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 12, marginRight: 8, flexShrink: 0, alignSelf: 'flex-end' },
+  bubble:      { maxWidth: '75%', padding: '10px 14px', borderRadius: 18, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' },
+  bubbleMe:    { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', borderBottomRightRadius: 4 },
+  bubbleThem:  { background: 'white', color: '#111', borderBottomLeftRadius: 4 },
+  timeRow:     { display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4, marginTop: 4 },
+  timeText:    { fontSize: 10, opacity: 0.7 },
+  inputRow:    { padding: '12px 16px', background: 'white', display: 'flex', gap: 10, alignItems: 'center', boxShadow: '0 -2px 8px rgba(0,0,0,0.06)', flexShrink: 0 },
+  input:       { flex: 1, border: '1.5px solid #e5e7eb', borderRadius: 24, padding: '10px 16px', fontSize: 14, outline: 'none', fontFamily: 'Inter, sans-serif' },
+  sendBtn:     { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', border: 'none', borderRadius: '50%', width: 44, height: 44, fontSize: 18, cursor: 'pointer', flexShrink: 0 },
 };
