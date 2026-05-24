@@ -21,8 +21,7 @@ function getGreeting() {
 
 export default function ParentHome() {
   const navigate = useNavigate();
-  const { user }  = useAuth();
-
+  const { user } = useAuth();
   const [child,      setChild]      = useState(null);
   const [attendance, setAttendance] = useState(null);
   const [results,    setResults]    = useState(null);
@@ -35,27 +34,27 @@ export default function ParentHome() {
   const fetchAll = async () => {
     try {
       const [childRes, noticesRes] = await Promise.allSettled([
-        axios.get(`${API}/parents/my-child`,   authHeader()),
-        axios.get(`${API}/notifications/my`,    authHeader()),
+        axios.get(`${API}/parents/my-child`, authHeader()),
+        axios.get(`${API}/notifications/my`, authHeader()),
       ]);
 
       if (childRes.status === "fulfilled" && childRes.value.data.success) {
         const s = childRes.value.data.data.children?.[0];
         setChild(s);
 
-        // Child ka attendance aur results fetch karo
-        const [attRes, resRes, busRes] = await Promise.allSettled([
-          axios.get(`${API}/attendance/student/${s._id}/summary`, authHeader()),
-          axios.get(`${API}/exams/student/${s._id}/results`,      authHeader()),
-          axios.get(`${API}/transport/my-child-bus`,              authHeader()),
-        ]);
-
-        if (attRes.status === "fulfilled" && attRes.value.data.success)
-          setAttendance(attRes.value.data.data);
-        if (resRes.status === "fulfilled" && resRes.value.data.success)
-          setResults(resRes.value.data.data?.[0] ?? null);
-        if (busRes.status === "fulfilled" && busRes.value.data.success)
-          setBusInfo(busRes.value.data.data);
+        if (s?._id) {
+          const [attRes, resRes, busRes] = await Promise.allSettled([
+            axios.get(`${API}/attendance/student/${s._id}/summary`, authHeader()),
+            axios.get(`${API}/exams/student/${s._id}/results`,      authHeader()),
+            axios.get(`${API}/transport/my-child-bus`,              authHeader()),
+          ]);
+          if (attRes.status === "fulfilled" && attRes.value.data.success)
+            setAttendance(attRes.value.data.data);
+          if (resRes.status === "fulfilled" && resRes.value.data.success)
+            setResults(resRes.value.data.data?.[0] ?? null);
+          if (busRes.status === "fulfilled" && busRes.value.data.success)
+            setBusInfo(busRes.value.data.data);
+        }
       }
 
       if (noticesRes.status === "fulfilled" && noticesRes.value.data.success)
@@ -69,42 +68,18 @@ export default function ParentHome() {
   };
 
   const tiles = [
-    {
-      icon: "💬", label: "Chat Teachers",
-      sub: "Message directly",
-      path: "/parent/chat",
-    },
-    {
-      icon: "💳", label: "Fee Status",
-      sub: child?.feeStatus ?? "Check status",
-      path: "/parent/fee",
-    },
-    {
-      icon: "📊", label: "Results",
-      sub: results ? `${results.examName} • ${results.percentage ?? "—"}%` : "View results",
-      path: "/parent/result",
-    },
-    {
-      icon: "🚌", label: "Track Bus",
-      sub: busInfo ? `${busInfo.busNumber} • ${busInfo.status ?? "Active"}` : "Not assigned",
-      path: "/parent/bus",
-    },
-    {
-      icon: "✅", label: "Attendance",
-      sub: attendance?.percentage ? `${attendance.percentage}% present` : "View attendance",
-      path: "/parent/attendance",
-    },
-    {
-      icon: "📅", label: "School Calendar",
-      sub: "Upcoming events",
-      path: "/parent/calendar",
-    },
+    { icon: "💬", label: "Chat Teachers", sub: "Message directly",                                                          path: "/parent/chat"          },
+    { icon: "💳", label: "Fee Status",    sub: child?.feeStatus ?? "Check status",                                          path: "/parent/fee"           },
+    { icon: "📊", label: "Results",       sub: results ? `${results.examName} • ${results.percentage ?? "—"}%` : "View results", path: "/parent/result"   },
+    { icon: "🚌", label: "Track Bus",     sub: busInfo ? `${busInfo.busNumber} • ${busInfo.status ?? "Active"}` : "Not assigned", path: "/parent/bus"     },
+    { icon: "✅", label: "Attendance",    sub: attendance?.percentage ? `${attendance.percentage}% present` : "View attendance", path: "/parent/attendance" },
+    { icon: "📅", label: "School Calendar", sub: "Upcoming events",                                                         path: "/parent/calendar"      },
   ];
 
   return (
     <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "#f5f6fa", fontFamily: "Inter, sans-serif" }}>
 
-      {/* ── Header ── */}
+      {/* Header */}
       <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 20px 20px", flexShrink: 0 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
@@ -115,7 +90,8 @@ export default function ParentHome() {
               {user?.name ?? "Parent"} 👩‍👧
             </div>
           </div>
-          <button onClick={() => navigate("/parent/notifications")}
+          <button
+            onClick={() => navigate("/parent/notifications")}
             style={{ width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.15)", border: "none", cursor: "pointer", fontSize: 16, position: "relative" }}>
             🔔
             {notices.length > 0 && (
@@ -127,6 +103,7 @@ export default function ParentHome() {
         {/* Child Card */}
         <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: 16, padding: 16, marginTop: 16, backdropFilter: "blur(10px)" }}>
           <div style={{ fontSize: 11, color: "rgba(255,255,255,0.75)", marginBottom: 4 }}>Monitoring</div>
+
           {loading ? (
             <div style={{ fontSize: 16, color: "rgba(255,255,255,0.8)" }}>Loading...</div>
           ) : child ? (
@@ -143,15 +120,22 @@ export default function ParentHome() {
                 </div>
               </div>
 
-              {/* Stats */}
+              {/* Clickable Stats */}
               <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
                 {[
-                  { val: attendance?.percentage ? `${attendance.percentage}%` : "—", label: "Attendance" },
-                  { val: results?.percentage    ? `${results.percentage}%`    : "—", label: "Marks"      },
-                  { val: results?.grade         ?? "—",                               label: "Grade"      },
-                  { val: child.feeStatus        ?? "—",                               label: "Fee"        },
+                  { val: attendance?.percentage ? `${attendance.percentage}%` : "—", label: "Attendance", path: "/parent/attendance" },
+                  { val: results?.percentage    ? `${results.percentage}%`    : "—", label: "Marks",      path: "/parent/result"     },
+                  { val: results?.grade         ?? "—",                               label: "Grade",      path: "/parent/result"     },
+                  { val: child.feeStatus        ?? "—",                               label: "Fee",        path: "/parent/fee"        },
                 ].map((s) => (
-                  <div key={s.label} style={{ flex: 1, background: "rgba(255,255,255,0.15)", borderRadius: 12, padding: "10px 6px", textAlign: "center" }}>
+                  <div
+                    key={s.label}
+                    onClick={() => navigate(s.path)}
+                    style={{
+                      flex: 1, background: "rgba(255,255,255,0.15)", borderRadius: 12,
+                      padding: "10px 6px", textAlign: "center", cursor: "pointer",
+                    }}
+                  >
                     <div style={{ fontSize: 15, fontWeight: 900, color: "#fff" }}>{s.val}</div>
                     <div style={{ fontSize: 9, color: "rgba(255,255,255,0.8)", marginTop: 2 }}>{s.label}</div>
                   </div>
@@ -166,7 +150,7 @@ export default function ParentHome() {
         </div>
       </div>
 
-      {/* ── Body ── */}
+      {/* Body */}
       <div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 80px" }}>
 
         {/* Quick Tiles */}
@@ -187,6 +171,7 @@ export default function ParentHome() {
           <span onClick={() => navigate("/parent/notifications")}
             style={{ fontSize: 13, color: "#4f46e5", cursor: "pointer" }}>View all →</span>
         </div>
+
         <div style={{ background: "white", borderRadius: 14, padding: "4px 12px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
           {notices.length === 0 ? (
             <div style={{ padding: "16px 0", textAlign: "center", color: "#999", fontSize: 13 }}>
@@ -208,14 +193,14 @@ export default function ParentHome() {
         </div>
       </div>
 
-      {/* ── Bottom Nav ── */}
+      {/* Bottom Nav */}
       <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: "white", borderTop: "1px solid #eee", display: "flex", padding: "8px 0 16px", boxShadow: "0 -4px 12px rgba(0,0,0,0.06)" }}>
         {[
           { icon: "🏠", label: "Home",     path: "/parent/home",          active: true },
-          { icon: "💬", label: "Teachers", path: "/parent/chat" },
-          { icon: "💳", label: "Fees",     path: "/parent/fee" },
-          { icon: "🔔", label: "Alerts",   path: "/parent/notifications" },
-          { icon: "👤", label: "Me",       path: "/parent/profile" },
+          { icon: "💬", label: "Teachers", path: "/parent/chat"                        },
+          { icon: "💳", label: "Fees",     path: "/parent/fee"                         },
+          { icon: "🔔", label: "Alerts",   path: "/parent/notifications"               },
+          { icon: "👤", label: "Me",       path: "/parent/profile"                     },
         ].map((tab) => (
           <button key={tab.label} onClick={() => navigate(tab.path)}
             style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, color: tab.active ? "#4f46e5" : "#999" }}>
@@ -224,6 +209,7 @@ export default function ParentHome() {
           </button>
         ))}
       </div>
+
     </div>
   );
 }
