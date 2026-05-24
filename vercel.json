@@ -19,10 +19,6 @@
     {
       "source": "/driver/:path*",
       "destination": "/"
-    },
-    {
-      "source": "/login",
-      "destination": "/"
     }
   ]
 }
