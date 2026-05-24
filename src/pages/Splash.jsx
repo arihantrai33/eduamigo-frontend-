@@ -1,30 +1,28 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 
 export default function Splash() {
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
-  const redirected = useRef(false);
-  const [minTimeDone, setMinTimeDone] = useState(false);
+  const [done, setDone] = useState(false);
 
-  // Always show splash for minimum 3000ms
   useEffect(() => {
-    const timer = setTimeout(() => setMinTimeDone(true), 3000);
+    const timer = setTimeout(() => {
+      setDone(true);
+    }, 3000);
     return () => clearTimeout(timer);
   }, []);
 
-  // Redirect only when BOTH: auth loaded + min time passed
   useEffect(() => {
-    if (!loading && minTimeDone && !redirected.current) {
-      redirected.current = true;
-      if (user) {
-        navigate(`/${user.role}/home`, { replace: true });
-      } else {
-        navigate("/login", { replace: true });
-      }
+    if (!done) return;
+    const stored = localStorage.getItem("eduamigo_user");
+    const token = localStorage.getItem("token");
+    if (stored && token) {
+      const user = JSON.parse(stored);
+      navigate(`/${user.role}/home`, { replace: true });
+    } else {
+      navigate("/login", { replace: true });
     }
-  }, [loading, minTimeDone, user, navigate]);
+  }, [done, navigate]);
 
   return (
     <div style={{
