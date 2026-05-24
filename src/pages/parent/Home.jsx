@@ -35,7 +35,7 @@ export default function ParentHome() {
   const fetchAll = async () => {
     try {
       const [childRes, noticesRes] = await Promise.allSettled([
-        axios.get(`${API}/students/my-child`,   authHeader()),
+        axios.get(`${API}/parents/my-child`,   authHeader()),
         axios.get(`${API}/notifications/my`,    authHeader()),
       ]);
 
