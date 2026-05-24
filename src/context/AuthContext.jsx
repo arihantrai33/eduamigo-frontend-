@@ -8,21 +8,26 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      const stored = localStorage.getItem('eduamigo_user');
-      if (stored) setUser(JSON.parse(stored));
+      const stored = localStorage.getItem("eduamigo_user");
+      const token = localStorage.getItem("token");
+      if (stored) {
+        const parsedUser = JSON.parse(stored);
+        setUser({ ...parsedUser, token });
+      }
       setLoading(false);
-    }, 1600); // ✅ splash (1500ms) ke 100ms baad
-
+    }, 1600);
     return () => clearTimeout(timer);
   }, []);
 
   const login = (userData) => {
-    localStorage.setItem('eduamigo_user', JSON.stringify(userData));
-    setUser(userData);
+    const token = localStorage.getItem("token");
+    localStorage.setItem("eduamigo_user", JSON.stringify(userData));
+    setUser({ ...userData, token });
   };
 
   const logout = () => {
-    localStorage.removeItem('eduamigo_user');
+    localStorage.removeItem("eduamigo_user");
+    localStorage.removeItem("token");
     setUser(null);
   };
 
