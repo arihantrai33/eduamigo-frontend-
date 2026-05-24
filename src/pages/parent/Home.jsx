@@ -40,7 +40,7 @@ export default function ParentHome() {
       ]);
 
       if (childRes.status === "fulfilled" && childRes.value.data.success) {
-        const s = childRes.value.data.data;
+        const s = childRes.value.data.data.children?.[0];
         setChild(s);
 
         // Child ka attendance aur results fetch karo
