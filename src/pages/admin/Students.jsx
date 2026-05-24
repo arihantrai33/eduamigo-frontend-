@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -32,6 +32,24 @@ const feeBadge = {
   Partial: { bg: "#FEF3C7", color: "#92400E" },
 };
 
+const inputSt = {
+  padding: "9px 12px", borderRadius: 8, border: "1px solid #E5E7EB",
+  fontSize: 13, color: "#111827", outline: "none", background: "#F9FAFB",
+  fontFamily: "Inter, sans-serif", width: "100%", boxSizing: "border-box",
+};
+
+function SectionTitle({ children }) {
+  return (
+    <div style={{
+      fontSize: 11, fontWeight: 700, color: "#534AB7",
+      textTransform: "uppercase", letterSpacing: "0.08em",
+      borderBottom: "1px solid #EEF2FF", paddingBottom: 8, marginBottom: 14,
+    }}>
+      {children}
+    </div>
+  );
+}
+
 function FormField({ label, required, children }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
@@ -42,12 +60,6 @@ function FormField({ label, required, children }) {
     </div>
   );
 }
-
-const inputSt = {
-  padding: "9px 12px", borderRadius: 8, border: "1px solid #E5E7EB",
-  fontSize: 13, color: "#111827", outline: "none", background: "#F9FAFB",
-  fontFamily: "Inter, sans-serif", width: "100%", boxSizing: "border-box",
-};
 
 export default function Students() {
   const navigate = useNavigate();
@@ -66,7 +78,6 @@ export default function Students() {
 
   useEffect(() => { fetchStudents(); }, []);
 
-  // Client-side filter — no API call on every keystroke
   useEffect(() => {
     let filtered = allStudents;
     if (search.trim()) {
@@ -203,8 +214,7 @@ export default function Students() {
           onClick={() => { setEditStudent(null); setForm(emptyForm); setCredentials(null); setShowModal(true); }}
           style={{
             padding: "10px 18px", borderRadius: 10, border: "none",
-            background: "#534AB7", color: "#fff", fontSize: 13,
-            fontWeight: 600, cursor: "pointer",
+            background: "#534AB7", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer",
           }}>
           + Add Student
         </button>
@@ -300,12 +310,9 @@ export default function Students() {
                 onMouseEnter={e => e.currentTarget.style.background = "#FAFAFA"}
                 onMouseLeave={e => e.currentTarget.style.background = "transparent"}
               >
-                {/* Student */}
                 <td style={{ padding: "14px 16px" }}>
-                  <div
-                    style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}
-                    onClick={() => navigate(`/admin/students/${s._id}`)}
-                  >
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}
+                    onClick={() => navigate(`/admin/students/${s._id}`)}>
                     <div style={{
                       width: 36, height: 36, borderRadius: 10,
                       background: getAvatarColor(s.name),
@@ -320,23 +327,12 @@ export default function Students() {
                     </div>
                   </div>
                 </td>
-
-                {/* Roll No */}
-                <td style={{ padding: "14px 16px", fontSize: 13, color: "#374151", fontWeight: 500 }}>
-                  #{s.rollNumber}
-                </td>
-
-                {/* Class */}
+                <td style={{ padding: "14px 16px", fontSize: 13, color: "#374151", fontWeight: 500 }}>#{s.rollNumber}</td>
                 <td style={{ padding: "14px 16px" }}>
-                  <span style={{
-                    background: "#EEF2FF", color: "#4338CA",
-                    padding: "4px 10px", borderRadius: 20, fontSize: 12, fontWeight: 600,
-                  }}>
+                  <span style={{ background: "#EEF2FF", color: "#4338CA", padding: "4px 10px", borderRadius: 20, fontSize: 12, fontWeight: 600 }}>
                     {s.class}-{s.section}
                   </span>
                 </td>
-
-                {/* Parent */}
                 <td style={{ padding: "14px 16px" }}>
                   {s.parentName ? (
                     <>
@@ -349,13 +345,7 @@ export default function Students() {
                     </span>
                   )}
                 </td>
-
-                {/* Phone */}
-                <td style={{ padding: "14px 16px", fontSize: 13, color: "#374151" }}>
-                  {s.phone}
-                </td>
-
-                {/* Fee Status */}
+                <td style={{ padding: "14px 16px", fontSize: 13, color: "#374151" }}>{s.phone}</td>
                 <td style={{ padding: "14px 16px" }}>
                   <span style={{
                     padding: "4px 10px", borderRadius: 20, fontSize: 12, fontWeight: 600,
@@ -365,33 +355,18 @@ export default function Students() {
                     {s.feeStatus || "Pending"}
                   </span>
                 </td>
-
-                {/* Actions */}
                 <td style={{ padding: "14px 16px" }}>
                   <div style={{ display: "flex", gap: 6 }}>
-                    <button
-                      onClick={() => navigate(`/admin/students/${s._id}`)}
-                      style={{
-                        padding: "6px 12px", borderRadius: 7, border: "1px solid #EEF2FF",
-                        background: "#EEF2FF", fontSize: 12, color: "#534AB7",
-                        cursor: "pointer", fontWeight: 500,
-                      }}>
+                    <button onClick={() => navigate(`/admin/students/${s._id}`)}
+                      style={{ padding: "6px 12px", borderRadius: 7, border: "1px solid #EEF2FF", background: "#EEF2FF", fontSize: 12, color: "#534AB7", cursor: "pointer", fontWeight: 500 }}>
                       View
                     </button>
                     <button onClick={() => handleEdit(s)}
-                      style={{
-                        padding: "6px 12px", borderRadius: 7, border: "1px solid #E5E7EB",
-                        background: "#fff", fontSize: 12, color: "#374151",
-                        cursor: "pointer", fontWeight: 500,
-                      }}>
+                      style={{ padding: "6px 12px", borderRadius: 7, border: "1px solid #E5E7EB", background: "#fff", fontSize: 12, color: "#374151", cursor: "pointer", fontWeight: 500 }}>
                       Edit
                     </button>
                     <button onClick={() => setDeleteId(s._id)}
-                      style={{
-                        padding: "6px 12px", borderRadius: 7, border: "1px solid #FECACA",
-                        background: "#FEF2F2", fontSize: 12, color: "#DC2626",
-                        cursor: "pointer", fontWeight: 500,
-                      }}>
+                      style={{ padding: "6px 12px", borderRadius: 7, border: "1px solid #FECACA", background: "#FEF2F2", fontSize: 12, color: "#DC2626", cursor: "pointer", fontWeight: 500 }}>
                       Delete
                     </button>
                   </div>
@@ -404,16 +379,8 @@ export default function Students() {
 
       {/* Add/Edit Modal */}
       {showModal && (
-        <div style={{
-          position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)",
-          display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000,
-        }}>
-          <div style={{
-            background: "#fff", borderRadius: 16, padding: 28,
-            width: "100%", maxWidth: 640,
-            maxHeight: "90vh", overflowY: "auto",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
-          }}>
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
+          <div style={{ background: "#fff", borderRadius: 16, padding: 28, width: "100%", maxWidth: 640, maxHeight: "90vh", overflowY: "auto", boxShadow: "0 20px 60px rgba(0,0,0,0.15)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
               <h2 style={{ fontSize: 18, fontWeight: 700, color: "#111827", margin: 0 }}>
                 {editStudent ? "Edit Student" : "Add New Student"}
@@ -422,7 +389,6 @@ export default function Students() {
                 style={{ background: "none", border: "none", fontSize: 22, cursor: "pointer", color: "#9CA3AF" }}>×</button>
             </div>
 
-            {/* Personal Information */}
             <SectionTitle>Personal Information</SectionTitle>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 20 }}>
               <FormField label="Full Name" required>
@@ -439,7 +405,6 @@ export default function Students() {
               </FormField>
             </div>
 
-            {/* Academic Information */}
             <SectionTitle>Academic Information</SectionTitle>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 20 }}>
               <FormField label="Roll Number" required>
@@ -477,7 +442,6 @@ export default function Students() {
               </FormField>
             </div>
 
-            {/* Parent / Guardian */}
             <SectionTitle>Parent / Guardian</SectionTitle>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 20 }}>
               <FormField label="Parent Name">
@@ -491,13 +455,8 @@ export default function Students() {
               </FormField>
             </div>
 
-            {/* Credentials Preview */}
             {!editStudent && (form.email || form.parentEmail) && (
-              <div style={{
-                background: "#FAFAFA", border: "1px solid #E5E7EB",
-                borderRadius: 10, padding: "12px 16px", marginBottom: 20,
-                fontSize: 12, color: "#6B7280",
-              }}>
+              <div style={{ background: "#FAFAFA", border: "1px solid #E5E7EB", borderRadius: 10, padding: "12px 16px", marginBottom: 20, fontSize: 12, color: "#6B7280" }}>
                 <div style={{ fontWeight: 600, color: "#374151", marginBottom: 4 }}>Login Credentials Preview</div>
                 {form.email && <div>Student: <strong>{form.email}</strong> / <strong>{form.phone || "phone number"}</strong></div>}
                 {form.parentEmail && <div style={{ marginTop: 2 }}>Parent: <strong>{form.parentEmail}</strong> / <strong>{form.parentPhone || form.phone || "phone number"}</strong></div>}
@@ -510,11 +469,7 @@ export default function Students() {
                 Cancel
               </button>
               <button onClick={handleSubmit} disabled={submitting}
-                style={{
-                  padding: "10px 24px", borderRadius: 9, border: "none",
-                  background: submitting ? "#A5B4FC" : "#534AB7",
-                  fontSize: 13, color: "#fff", cursor: submitting ? "not-allowed" : "pointer", fontWeight: 600,
-                }}>
+                style={{ padding: "10px 24px", borderRadius: 9, border: "none", background: submitting ? "#A5B4FC" : "#534AB7", fontSize: 13, color: "#fff", cursor: submitting ? "not-allowed" : "pointer", fontWeight: 600 }}>
                 {submitting ? "Saving..." : editStudent ? "Update Student" : "Add Student"}
               </button>
             </div>
@@ -524,14 +479,8 @@ export default function Students() {
 
       {/* Delete Confirm */}
       {deleteId && (
-        <div style={{
-          position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)",
-          display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000,
-        }}>
-          <div style={{
-            background: "#fff", borderRadius: 16, padding: 28,
-            width: 380, boxShadow: "0 20px 60px rgba(0,0,0,0.15)", textAlign: "center",
-          }}>
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
+          <div style={{ background: "#fff", borderRadius: 16, padding: 28, width: 380, boxShadow: "0 20px 60px rgba(0,0,0,0.15)", textAlign: "center" }}>
             <div style={{ fontSize: 40, marginBottom: 12 }}>🗑️</div>
             <h3 style={{ fontSize: 16, fontWeight: 700, color: "#111827", marginBottom: 8 }}>Remove Student?</h3>
             <p style={{ fontSize: 13, color: "#6B7280", marginBottom: 24 }}>
@@ -553,32 +502,3 @@ export default function Students() {
     </div>
   );
 }
-
-function SectionTitle({ children }) {
-  return (
-    <div style={{
-      fontSize: 11, fontWeight: 700, color: "#534AB7",
-      textTransform: "uppercase", letterSpacing: "0.08em",
-      borderBottom: "1px solid #EEF2FF", paddingBottom: 8, marginBottom: 14,
-    }}>
-      {children}
-    </div>
-  );
-}
-
-function FormField({ label, required, children }) {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-      <label style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-        {label} {required && <span style={{ color: "#EF4444" }}>*</span>}
-      </label>
-      {children}
-    </div>
-  );
-}
-
-const inputSt = {
-  padding: "9px 12px", borderRadius: 8, border: "1px solid #E5E7EB",
-  fontSize: 13, color: "#111827", outline: "none", background: "#F9FAFB",
-  fontFamily: "Inter, sans-serif", width: "100%", boxSizing: "border-box",
-};
