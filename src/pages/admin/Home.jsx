@@ -3,7 +3,7 @@ import { useNavigate, Routes, Route } from "react-router-dom";
 import axios from "axios";
 import {
   LayoutDashboard, Users, School, UserCircle, Bus,
-  CalendarCheck, FileBadge, Clock, Notebook, BadgeDollarSign,
+  CalendarCheck, FileBadge, Clock, Notebook, BadgeDollarSign, Layers,
   Bell, MessageCircle, BarChart2, Settings as SettingsIcon, Menu, X
 } from "lucide-react";
 import Students from "./Students";
@@ -49,7 +49,8 @@ const NAV = [
   { label: "Timetable",     icon: Clock,            path: "/admin/timetable" },
   { label: "Leave Requests", icon: Notebook,        path: "/admin/leaves" },
   { section: "Finance" },
-  { label: "Fee Management", icon: BadgeDollarSign, path: "/admin/fees" },
+  { label: "Fee Structure", icon: Layers, path: "/admin/fee-structure" },
+  { label: "Fee Collection", icon: BadgeDollarSign, path: "/admin/fees" },
   { section: "Communication" },
   { label: "Notifications", icon: Bell,             path: "/admin/notifications" },
   { label: "Chat",          icon: MessageCircle,    path: "/admin/chat" },
