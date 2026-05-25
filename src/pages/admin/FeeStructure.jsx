@@ -1,21 +1,18 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 });
-
 const inputStyle = {
   padding: "8px 10px", borderRadius: 8, border: "1px solid #e5e7eb",
   fontSize: 13, color: "#1a1a1a", outline: "none", background: "#f9fafb",
   fontFamily: "Inter, sans-serif", width: "100%", boxSizing: "border-box",
 };
-
 const CURRENT_YEAR = "2025-26";
 const YEARS = ["2024-25", "2025-26", "2026-27"];
 const MONTHS = ["January","February","March","April","May","June",
-                "July","August","September","October","November","December"];
+  "July","August","September","October","November","December"];
 const FEE_TYPES = ["Tuition","Transport","Library","Exam","Sports","Laboratory","Hostel","Miscellaneous"];
 
 export default function FeeStructure() {
@@ -28,13 +25,33 @@ export default function FeeStructure() {
   const [selYear,      setSelYear]      = useState(CURRENT_YEAR);
   const [applyForm,    setApplyForm]    = useState({ month: "", year: new Date().getFullYear() });
   const [applying,     setApplying]     = useState(false);
-
+  const [classes,      setClasses]      = useState([]);
+  const [sections,     setSections]     = useState([]);
   const [form, setForm] = useState({
     academicYear: CURRENT_YEAR, class: "", section: "All",
     feeType: "Tuition", amount: "", dueDate: "", description: "",
   });
 
   useEffect(() => { fetchStructures(); }, [selYear]);
+
+  useEffect(() => {
+    axios.get(`${API}/students`, authHeader()).then(res => {
+      const students = res.data.data || [];
+      const uniqueClasses = [...new Set(students.map(s => String(s.class)))].sort((a, b) => Number(a) - Number(b));
+      setClasses(uniqueClasses);
+    }).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (!form.class) { setSections([]); return; }
+    axios.get(`${API}/students`, authHeader()).then(res => {
+      const students = res.data.data || [];
+      const uniqueSections = [...new Set(
+        students.filter(s => String(s.class) === String(form.class)).map(s => s.section)
+      )].sort();
+      setSections(uniqueSections);
+    }).catch(() => {});
+  }, [form.class]);
 
   const fetchStructures = async () => {
     setLoading(true);
@@ -121,7 +138,6 @@ export default function FeeStructure() {
     setShowModal(true);
   };
 
-  // Group by class for display
   const grouped = structures.reduce((acc, s) => {
     const key = `Class ${s.class}`;
     if (!acc[key]) acc[key] = [];
@@ -131,25 +147,19 @@ export default function FeeStructure() {
 
   return (
     <div style={{ fontFamily: "Inter, sans-serif" }}>
-
-      {/* Toast */}
       {toast && (
         <div style={{ position: "fixed", top: 24, right: 24, zIndex: 9999, background: toast.type === "error" ? "#dc2626" : "#16a34a", color: "white", padding: "12px 20px", borderRadius: 10, fontSize: 13, fontWeight: 500, boxShadow: "0 4px 20px rgba(0,0,0,0.15)" }}>
           {toast.message}
         </div>
       )}
 
-      {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
         <div>
           <div style={{ fontSize: 20, fontWeight: 700, color: "#111827" }}>Fee Structure</div>
-          <div style={{ fontSize: 12, color: "#6b7280", marginTop: 3 }}>
-            Design fee structure once — apply to entire class anytime
-          </div>
+          <div style={{ fontSize: 12, color: "#6b7280", marginTop: 3 }}>Design fee structure once — apply to entire class anytime</div>
         </div>
         <div style={{ display: "flex", gap: 10 }}>
-          <select value={selYear} onChange={e => setSelYear(e.target.value)}
-            style={{ ...inputStyle, width: 130 }}>
+          <select value={selYear} onChange={e => setSelYear(e.target.value)} style={{ ...inputStyle, width: 130 }}>
             {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
           </select>
           <button onClick={() => { setEditItem(null); setForm({ academicYear: selYear, class: "", section: "All", feeType: "Tuition", amount: "", dueDate: "", description: "" }); setShowModal(true); }}
@@ -159,7 +169,6 @@ export default function FeeStructure() {
         </div>
       </div>
 
-      {/* Info Banner */}
       <div style={{ background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 12, padding: "14px 18px", marginBottom: 24, display: "flex", gap: 12, alignItems: "flex-start" }}>
         <div style={{ fontSize: 20 }}>💡</div>
         <div>
@@ -173,7 +182,6 @@ export default function FeeStructure() {
         </div>
       </div>
 
-      {/* Structures grouped by class */}
       {loading ? (
         <div style={{ textAlign: "center", padding: "48px 0", color: "#9ca3af" }}>Loading fee structures...</div>
       ) : structures.length === 0 ? (
@@ -185,9 +193,7 @@ export default function FeeStructure() {
       ) : (
         Object.entries(grouped).sort().map(([classLabel, items]) => (
           <div key={classLabel} style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#374151", marginBottom: 10, paddingLeft: 4 }}>
-              {classLabel}
-            </div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#374151", marginBottom: 10, paddingLeft: 4 }}>{classLabel}</div>
             <div style={{ background: "white", borderRadius: 14, border: "1px solid #f3f4f6", overflow: "hidden", boxShadow: "0 1px 6px rgba(0,0,0,0.05)" }}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr 180px", padding: "10px 20px", background: "#f9fafb", fontSize: 11, fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: 0.5 }}>
                 <span>Fee Type</span><span>Section</span><span>Amount</span><span>Due Date</span><span>Last Applied</span><span style={{ textAlign: "right" }}>Actions</span>
@@ -201,36 +207,21 @@ export default function FeeStructure() {
                     <span style={{ fontSize: 13, fontWeight: 700, color: "#111827" }}>{s.feeType}</span>
                     <span style={{ fontSize: 12, color: "#6b7280" }}>{s.section}</span>
                     <span style={{ fontSize: 14, fontWeight: 800, color: "#4f46e5" }}>₹{s.amount.toLocaleString("en-IN")}</span>
-                    <span style={{ fontSize: 12, color: "#6b7280" }}>
-                      {s.dueDate ? new Date(s.dueDate).toLocaleDateString("en-IN") : "—"}
-                    </span>
+                    <span style={{ fontSize: 12, color: "#6b7280" }}>{s.dueDate ? new Date(s.dueDate).toLocaleDateString("en-IN") : "—"}</span>
                     <div>
                       {lastApply ? (
                         <div>
-                          <div style={{ fontSize: 11, color: "#16a34a", fontWeight: 600 }}>
-                            {new Date(lastApply.appliedAt).toLocaleDateString("en-IN")}
-                          </div>
-                          <div style={{ fontSize: 10, color: "#9ca3af" }}>
-                            {lastApply.created} students
-                          </div>
+                          <div style={{ fontSize: 11, color: "#16a34a", fontWeight: 600 }}>{new Date(lastApply.appliedAt).toLocaleDateString("en-IN")}</div>
+                          <div style={{ fontSize: 10, color: "#9ca3af" }}>{lastApply.created} students</div>
                         </div>
                       ) : (
                         <span style={{ fontSize: 11, color: "#9ca3af" }}>Never applied</span>
                       )}
                     </div>
                     <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-                      <button onClick={() => setApplyModal(s)}
-                        style={{ padding: "6px 14px", borderRadius: 7, border: "none", background: "#dcfce7", color: "#16a34a", fontSize: 12, cursor: "pointer", fontWeight: 700 }}>
-                        Apply
-                      </button>
-                      <button onClick={() => openEdit(s)}
-                        style={{ padding: "6px 14px", borderRadius: 7, border: "none", background: "#ede9fe", color: "#4f46e5", fontSize: 12, cursor: "pointer", fontWeight: 700 }}>
-                        Edit
-                      </button>
-                      <button onClick={() => handleDelete(s._id)}
-                        style={{ padding: "6px 14px", borderRadius: 7, border: "none", background: "#fee2e2", color: "#dc2626", fontSize: 12, cursor: "pointer", fontWeight: 700 }}>
-                        Delete
-                      </button>
+                      <button onClick={() => setApplyModal(s)} style={{ padding: "6px 14px", borderRadius: 7, border: "none", background: "#dcfce7", color: "#16a34a", fontSize: 12, cursor: "pointer", fontWeight: 700 }}>Apply</button>
+                      <button onClick={() => openEdit(s)} style={{ padding: "6px 14px", borderRadius: 7, border: "none", background: "#ede9fe", color: "#4f46e5", fontSize: 12, cursor: "pointer", fontWeight: 700 }}>Edit</button>
+                      <button onClick={() => handleDelete(s._id)} style={{ padding: "6px 14px", borderRadius: 7, border: "none", background: "#fee2e2", color: "#dc2626", fontSize: 12, cursor: "pointer", fontWeight: 700 }}>Delete</button>
                     </div>
                   </div>
                 );
@@ -262,11 +253,17 @@ export default function FeeStructure() {
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 <label style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>Class *</label>
-                <input type="text" value={form.class} onChange={e => setForm(f => ({ ...f, class: e.target.value }))} placeholder="e.g. 10" style={inputStyle} disabled={!!editItem} />
+                <select value={form.class} onChange={e => setForm(f => ({ ...f, class: e.target.value, section: "All" }))} style={inputStyle} disabled={!!editItem}>
+                  <option value="">Select class</option>
+                  {classes.map(c => <option key={c} value={c}>Class {c}</option>)}
+                </select>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 <label style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>Section</label>
-                <input type="text" value={form.section} onChange={e => setForm(f => ({ ...f, section: e.target.value }))} placeholder="All / A / B" style={inputStyle} disabled={!!editItem} />
+                <select value={form.section} onChange={e => setForm(f => ({ ...f, section: e.target.value }))} style={inputStyle} disabled={!!editItem}>
+                  <option value="All">All Sections</option>
+                  {sections.map(s => <option key={s} value={s}>Section {s}</option>)}
+                </select>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 <label style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>Amount (₹) *</label>
