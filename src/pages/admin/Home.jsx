@@ -4,7 +4,8 @@ import axios from "axios";
 import {
   LayoutDashboard, Users, School, UserCircle, Bus,
   CalendarCheck, FileBadge, Clock, Notebook, BadgeDollarSign, Layers,
-  Bell, MessageCircle, BarChart2, Settings as SettingsIcon, Menu, X
+  Bell, MessageCircle, BarChart2, Settings as SettingsIcon, Menu, X,
+  TrendingUp, AlertCircle, CheckCircle, BookOpen
 } from "lucide-react";
 import Students from "./Students";
 import AddStudent from "./AddStudent";
@@ -39,114 +40,78 @@ const authHeader = () => ({
 const NAV = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/admin" },
   { section: "Management" },
-  { label: "Students",      icon: Users,            path: "/admin/students" },
-  { label: "Teachers",      icon: School,           path: "/admin/teachers" },
-  { label: "Parents",       icon: UserCircle,       path: "/admin/parents/add" },
-  { label: "Transport",     icon: Bus,              path: "/admin/transport" },
+  { label: "Students",       icon: Users,            path: "/admin/students" },
+  { label: "Teachers",       icon: School,           path: "/admin/teachers" },
+  { label: "Parents",        icon: UserCircle,       path: "/admin/parents/add" },
+  { label: "Transport",      icon: Bus,              path: "/admin/transport" },
   { section: "Academics" },
-  { label: "Attendance",    icon: CalendarCheck,    path: "/admin/attendance" },
-  { label: "Exams & Results", icon: FileBadge,      path: "/admin/exams" },
-  { label: "Timetable",     icon: Clock,            path: "/admin/timetable" },
-  { label: "Leave Requests", icon: Notebook,        path: "/admin/leaves" },
+  { label: "Attendance",     icon: CalendarCheck,    path: "/admin/attendance" },
+  { label: "Exams & Results",icon: FileBadge,        path: "/admin/exams" },
+  { label: "Timetable",      icon: Clock,            path: "/admin/timetable" },
+  { label: "Leave Requests", icon: Notebook,         path: "/admin/leaves" },
   { section: "Finance" },
-  { label: "Fee Structure", icon: Layers, path: "/admin/fee-structure" },
-  { label: "Fee Collection", icon: BadgeDollarSign, path: "/admin/fees" },
+  { label: "Fee Structure",  icon: Layers,           path: "/admin/fee-structure" },
+  { label: "Fee Collection", icon: BadgeDollarSign,  path: "/admin/fees" },
   { section: "Communication" },
-  { label: "Notifications", icon: Bell,             path: "/admin/notifications" },
-  { label: "Chat",          icon: MessageCircle,    path: "/admin/chat" },
+  { label: "Notifications",  icon: Bell,             path: "/admin/notifications" },
+  { label: "Chat",           icon: MessageCircle,    path: "/admin/chat" },
   { section: "System" },
-  { label: "Reports",       icon: BarChart2,        path: "/admin/reports" },
-  { label: "Settings",      icon: SettingsIcon,     path: "/admin/settings" },
+  { label: "Reports",        icon: BarChart2,        path: "/admin/reports" },
+  { label: "Settings",       icon: SettingsIcon,     path: "/admin/settings" },
 ];
 
 const MODULES = [
-  { emoji: "🎒", name: "Students",       desc: "Add, edit, view profiles",  path: "/admin/students" },
-  { emoji: "👩‍🏫", name: "Teachers",       desc: "Staff records & subjects",  path: "/admin/teachers" },
-  { emoji: "👨‍👩‍👧", name: "Add Parent",     desc: "Link parent to student",    path: "/admin/parents/add" },
-  { emoji: "💳", name: "Fee Management", desc: "Collect & track payments",  path: "/admin/fees" },
-  { emoji: "📋", name: "Attendance",     desc: "Daily class-wise entry",    path: "/admin/attendance" },
-  { emoji: "📝", name: "Exams",          desc: "Schedule & upload results", path: "/admin/exams" },
-  { emoji: "🕐", name: "Timetable",      desc: "Manage class schedule",     path: "/admin/timetable" },
-  { emoji: "🏖️", name: "Leave Requests", desc: "Approve / reject leaves",   path: "/admin/leaves" },
-  { emoji: "🚌", name: "Transport",      desc: "Manage buses & routes",     path: "/admin/transport" },
+  { icon: "🎒", name: "Students",       desc: "Add, edit, view profiles",  path: "/admin/students",      color: "#EEF2FF", accent: "#4F46E5" },
+  { icon: "👩‍🏫", name: "Teachers",       desc: "Staff records & subjects",  path: "/admin/teachers",      color: "#F0FDF4", accent: "#16A34A" },
+  { icon: "👨‍👩‍👧", name: "Add Parent",     desc: "Link parent to student",    path: "/admin/parents/add",   color: "#FFF7ED", accent: "#EA580C" },
+  { icon: "💳", name: "Fee Management", desc: "Collect & track payments",  path: "/admin/fees",          color: "#F0FDFA", accent: "#0D9488" },
+  { icon: "📋", name: "Attendance",     desc: "Daily class-wise entry",    path: "/admin/attendance",    color: "#FFF1F2", accent: "#E11D48" },
+  { icon: "📝", name: "Exams",          desc: "Schedule & upload results", path: "/admin/exams",         color: "#FFFBEB", accent: "#D97706" },
+  { icon: "🕐", name: "Timetable",      desc: "Manage class schedule",     path: "/admin/timetable",     color: "#EFF6FF", accent: "#2563EB" },
+  { icon: "🏖️", name: "Leave Requests", desc: "Approve / reject leaves",   path: "/admin/leaves",        color: "#FDF4FF", accent: "#9333EA" },
+  { icon: "🚌", name: "Transport",      desc: "Manage buses & routes",     path: "/admin/transport",     color: "#F0F9FF", accent: "#0284C7" },
 ];
 
-function StatCard({ emoji, value, label, sub, subColor }) {
-  return (
-    <div style={{ background: "#fff", border: "0.5px solid #E8E8E5", borderRadius: 12, padding: "1rem 1.25rem" }}>
-      <div style={{ fontSize: 22, marginBottom: 8 }}>{emoji}</div>
-      <div style={{ fontSize: 26, fontWeight: 600, color: "#1a1a1a", lineHeight: 1 }}>{value}</div>
-      <div style={{ fontSize: 12, color: "#666", marginTop: 4 }}>{label}</div>
-      <div style={{ fontSize: 11, marginTop: 5, color: subColor || "#999" }}>{sub}</div>
-    </div>
-  );
-}
-
 function DashboardContent({ isMobile, navigate, isTransport, setIsTransport }) {
-  const [stats, setStats]               = useState({ students: 0, teachers: 0, buses: 0, parents: 0 });
+  const [stats, setStats]                   = useState({ students: 0, teachers: 0, buses: 0, parents: 0 });
   const [recentStudents, setRecentStudents] = useState([]);
-  const [buses, setBuses]               = useState([]);
+  const [buses, setBuses]                   = useState([]);
   const [recentActivity, setRecentActivity] = useState([]);
-  const [classDist, setClassDist]       = useState([]);
-  const [pendingLeaves, setPendingLeaves] = useState(0);
-  const [loading, setLoading]           = useState(true);
+  const [classDist, setClassDist]           = useState([]);
+  const [pendingLeaves, setPendingLeaves]   = useState(0);
+  const [loading, setLoading]               = useState(true);
 
   useEffect(() => { fetchAll(); }, []);
 
   const fetchAll = async () => {
     try {
       const [studentsRes, teachersRes, busesRes, leavesRes] = await Promise.allSettled([
-        axios.get(`${API}/students`,      authHeader()),
-        axios.get(`${API}/teachers`,      authHeader()),
-        axios.get(`${API}/transport`,     authHeader()),
+        axios.get(`${API}/students`,       authHeader()),
+        axios.get(`${API}/teachers`,       authHeader()),
+        axios.get(`${API}/transport`,      authHeader()),
         axios.get(`${API}/leaves/pending`, authHeader()),
       ]);
-
       const students = studentsRes.status === "fulfilled" ? (studentsRes.value.data.data || []) : [];
       const teachers = teachersRes.status === "fulfilled" ? (teachersRes.value.data.data || []) : [];
-      const busData  = busesRes.status  === "fulfilled" ? (busesRes.value.data.data  || []) : [];
-      const leaves   = leavesRes.status === "fulfilled" ? (leavesRes.value.data.data || []) : [];
+      const busData  = busesRes.status  === "fulfilled"   ? (busesRes.value.data.data   || []) : [];
+      const leaves   = leavesRes.status === "fulfilled"   ? (leavesRes.value.data.data  || []) : [];
 
-      setStats({
-        students: students.length,
-        teachers: teachers.length,
-        buses:    busData.length,
-        parents:  students.filter(s => s.parentId).length,
-      });
-
+      setStats({ students: students.length, teachers: teachers.length, buses: busData.length, parents: students.filter(s => s.parentId).length });
       setRecentStudents(students.slice(-5).reverse());
       setBuses(busData.slice(0, 3));
       setPendingLeaves(leaves.length);
-
-      // Recent activity
-      setRecentActivity(
-        students.slice(-5).reverse().map(s => ({
-          ic: "🎒",
-          bg: "#EEEDFE",
-          text: `${s.name} added to class ${s.class}-${s.section}`,
-          time: new Date(s.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" }),
-        }))
-      );
-
-      // Class distribution — correct percentage based on class count
+      setRecentActivity(students.slice(-5).reverse().map(s => ({
+        ic: "🎒", bg: "#EEF2FF",
+        text: `${s.name} added to class ${s.class}-${s.section}`,
+        time: new Date(s.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" }),
+      })));
       const classMap = {};
-      students.forEach(s => {
-        const key = `${s.class}-${s.section}`;
-        classMap[key] = (classMap[key] || 0) + 1;
-      });
-      const total = students.length || 1;
-      const colors = ["#1D9E75", "#534AB7", "#0EA5E9", "#F59E0B", "#EF4444"];
-      setClassDist(
-        Object.entries(classMap)
-          .sort((a, b) => b[1] - a[1])
-          .slice(0, 5)
-          .map(([cls, count], i) => ({
-            cls,
-            count,
-            pct: Math.round((count / total) * 100),
-            color: colors[i % colors.length],
-          }))
-      );
+      students.forEach(s => { const key = `${s.class}-${s.section}`; classMap[key] = (classMap[key] || 0) + 1; });
+      const total  = students.length || 1;
+      const colors = ["#4F46E5", "#16A34A", "#0284C7", "#D97706", "#E11D48"];
+      setClassDist(Object.entries(classMap).sort((a,b) => b[1]-a[1]).slice(0,5).map(([cls,count],i) => ({
+        cls, count, pct: Math.round((count/total)*100), color: colors[i % colors.length]
+      })));
     } catch (err) {
       console.error(err);
     } finally {
@@ -154,127 +119,180 @@ function DashboardContent({ isMobile, navigate, isTransport, setIsTransport }) {
     }
   };
 
+  const statCards = [
+    { icon: "🎒", value: stats.students, label: "Total Students",  sub: "Enrolled this year",   color: "#4F46E5", bg: "#EEF2FF",  border: "#C7D2FE" },
+    { icon: "👩‍🏫", value: stats.teachers, label: "Total Teachers",  sub: "Active staff members", color: "#16A34A", bg: "#F0FDF4",  border: "#BBF7D0" },
+    { icon: "👨‍👩‍👧", value: stats.parents,  label: "Linked Parents",  sub: "Connected families",   color: "#EA580C", bg: "#FFF7ED",  border: "#FED7AA" },
+    { icon: "🚌", value: stats.buses,    label: "Total Buses",     sub: "Active fleet",          color: "#0284C7", bg: "#F0F9FF",  border: "#BAE6FD" },
+  ];
+
   return (
     <>
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.5rem" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.75rem" }}>
         <div>
-          <div style={{ fontSize: isMobile ? 15 : 20, fontWeight: 600, color: "#1a1a1a" }}>Dashboard</div>
-          <div style={{ fontSize: 11, color: "#999", marginTop: 2 }}>
+          <div style={{ fontSize: isMobile ? 18 : 24, fontWeight: 700, color: "#0F172A", letterSpacing: "-0.3px" }}>Dashboard</div>
+          <div style={{ fontSize: 12, color: "#94A3B8", marginTop: 3 }}>
             {new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           {pendingLeaves > 0 && (
-            <div
-              onClick={() => navigate("/admin/leaves")}
-              style={{ fontSize: 11, background: "#FFF3CD", color: "#856404", padding: "4px 10px", borderRadius: 20, cursor: "pointer", fontWeight: 500 }}>
+            <div onClick={() => navigate("/admin/leaves")}
+              style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, background: "#FEF3C7", color: "#92400E", padding: "5px 12px", borderRadius: 20, cursor: "pointer", fontWeight: 600, border: "1px solid #FDE68A" }}>
+              <AlertCircle size={12} />
               {pendingLeaves} leave{pendingLeaves > 1 ? "s" : ""} pending
             </div>
           )}
-          <div style={{ position: "relative", width: 36, height: 36, borderRadius: "50%", background: "#F5F5F3", border: "0.5px solid #E8E8E5", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-            <Bell size={16} color="#666" />
+          <div style={{ position: "relative", width: 38, height: 38, borderRadius: "50%", background: "#F8FAFC", border: "1px solid #E2E8F0", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+            <Bell size={16} color="#64748B" />
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 7, background: "#F5F5F3", border: "0.5px solid #E8E8E5", borderRadius: 20, padding: "4px 12px 4px 4px" }}>
-            <div style={{ width: 28, height: 28, borderRadius: "50%", background: "#EEEDFE", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 500, color: "#534AB7" }}>A</div>
-            <span style={{ fontSize: 12, fontWeight: 500, color: "#1a1a1a" }}>Admin</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, background: "#F8FAFC", border: "1px solid #E2E8F0", borderRadius: 24, padding: "5px 14px 5px 5px" }}>
+            <div style={{ width: 30, height: 30, borderRadius: "50%", background: "linear-gradient(135deg, #4F46E5, #7C3AED)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: "white" }}>A</div>
+            <span style={{ fontSize: 13, fontWeight: 600, color: "#0F172A" }}>Admin</span>
           </div>
         </div>
       </div>
 
-      {/* Stats */}
-      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2,1fr)" : "repeat(4,1fr)", gap: 12, marginBottom: "1.5rem" }}>
-        <StatCard emoji="🎒" value={loading ? "..." : stats.students} label="Total Students"  sub="Live from database" subColor="#3B6D11" />
-        <StatCard emoji="👩‍🏫" value={loading ? "..." : stats.teachers} label="Total Teachers"  sub="Live from database" subColor="#3B6D11" />
-        <StatCard emoji="👨‍👩‍👧" value={loading ? "..." : stats.parents}  label="Linked Parents"  sub="Students with parent" subColor="#534AB7" />
-        <StatCard emoji="🚌" value={loading ? "..." : stats.buses}    label="Total Buses"    sub="Live from database" subColor="#3B6D11" />
+      {/* Welcome Banner */}
+      <div style={{ background: "linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #A855F7 100%)", borderRadius: 20, padding: isMobile ? "20px 18px" : "24px 32px", marginBottom: "1.5rem", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: -20, right: -20, width: 140, height: 140, borderRadius: "50%", background: "rgba(255,255,255,0.07)" }} />
+        <div style={{ position: "absolute", bottom: -30, right: 60, width: 100, height: 100, borderRadius: "50%", background: "rgba(255,255,255,0.05)" }} />
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+            <BookOpen size={16} color="rgba(255,255,255,0.8)" />
+            <span style={{ fontSize: 12, color: "rgba(255,255,255,0.8)", fontWeight: 500 }}>EduAmigo School Management</span>
+          </div>
+          <div style={{ fontSize: isMobile ? 18 : 22, fontWeight: 800, color: "white", marginBottom: 6 }}>
+            Good {new Date().getHours() < 12 ? "Morning" : new Date().getHours() < 17 ? "Afternoon" : "Evening"}, Admin 👋
+          </div>
+          <div style={{ fontSize: 13, color: "rgba(255,255,255,0.75)" }}>
+            You have {stats.students} students and {stats.teachers} teachers enrolled.
+            {pendingLeaves > 0 && ` ${pendingLeaves} leave request${pendingLeaves > 1 ? "s" : ""} need your attention.`}
+          </div>
+        </div>
       </div>
 
-      {/* Quick Access */}
-      <div style={{ fontSize: 13, fontWeight: 500, color: "#666", marginBottom: 10 }}>Quick access</div>
-      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2,1fr)" : "repeat(5,1fr)", gap: 12, marginBottom: "1.5rem" }}>
-        {MODULES.map((m, i) => (
-          <div key={i} onClick={() => navigate(m.path)}
-            style={{ background: "#fff", border: "0.5px solid #E8E8E5", borderRadius: 12, padding: "1rem 1.25rem", cursor: "pointer", transition: "border-color 0.12s" }}
-            onMouseEnter={e => e.currentTarget.style.borderColor = "#534AB7"}
-            onMouseLeave={e => e.currentTarget.style.borderColor = "#E8E8E5"}>
-            <div style={{ fontSize: 24, marginBottom: 8 }}>{m.emoji}</div>
-            <div style={{ fontSize: 13, fontWeight: 500, color: "#1a1a1a" }}>{m.name}</div>
-            <div style={{ fontSize: 11, color: "#999", marginTop: 3 }}>{m.desc}</div>
+      {/* Stat Cards */}
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2,1fr)" : "repeat(4,1fr)", gap: 14, marginBottom: "1.75rem" }}>
+        {statCards.map((s, i) => (
+          <div key={i} style={{ background: "#fff", border: `1px solid ${s.border}`, borderRadius: 16, padding: "18px 20px", position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", top: -10, right: -10, width: 60, height: 60, borderRadius: "50%", background: s.bg, opacity: 0.8 }} />
+            <div style={{ fontSize: 26, marginBottom: 10 }}>{s.icon}</div>
+            <div style={{ fontSize: loading ? 14 : 30, fontWeight: 800, color: s.color, lineHeight: 1 }}>
+              {loading ? "Loading..." : s.value}
+            </div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "#0F172A", marginTop: 6 }}>{s.label}</div>
+            <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 3 }}>{s.sub}</div>
           </div>
         ))}
       </div>
 
-      {/* Class Distribution + Recent Activity */}
-      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 12, marginBottom: 12 }}>
+      {/* Quick Access */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: "#0F172A" }}>Quick Access</div>
+        <div style={{ fontSize: 11, color: "#94A3B8" }}>All modules</div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(3,1fr)" : "repeat(9,1fr)", gap: 10, marginBottom: "1.75rem" }}>
+        {MODULES.map((m, i) => (
+          <div key={i} onClick={() => navigate(m.path)}
+            style={{ background: m.bg, border: `1px solid ${m.color}33`, borderRadius: 14, padding: "14px 10px", cursor: "pointer", textAlign: "center", transition: "all 0.15s" }}
+            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 4px 16px ${m.accent}22`; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}>
+            <div style={{ fontSize: 22, marginBottom: 6 }}>{m.icon}</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: m.accent, lineHeight: 1.3 }}>{m.name}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Charts Row */}
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 14, marginBottom: 14 }}>
 
         {/* Class Distribution */}
-        <div style={{ background: "#fff", border: "0.5px solid #E8E8E5", borderRadius: 12, padding: "1rem 1.25rem" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-            <span style={{ fontSize: 13, fontWeight: 500, color: "#1a1a1a" }}>📊 Students by class</span>
-            <span style={{ fontSize: 11, color: "#534AB7", cursor: "pointer" }} onClick={() => navigate("/admin/students")}>View all</span>
+        <div style={{ background: "#fff", border: "1px solid #E2E8F0", borderRadius: 16, padding: "20px 24px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#0F172A" }}>Students by Class</div>
+              <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>Distribution across grades</div>
+            </div>
+            <span onClick={() => navigate("/admin/students")}
+              style={{ fontSize: 11, color: "#4F46E5", cursor: "pointer", fontWeight: 600, background: "#EEF2FF", padding: "4px 10px", borderRadius: 20 }}>
+              View all
+            </span>
           </div>
           {loading ? (
-            <div style={{ color: "#999", fontSize: 13, textAlign: "center", padding: "20px 0" }}>Loading...</div>
+            <div style={{ color: "#94A3B8", fontSize: 13, textAlign: "center", padding: "20px 0" }}>Loading...</div>
           ) : classDist.length === 0 ? (
-            <div style={{ color: "#ccc", fontSize: 13, textAlign: "center", padding: "20px 0" }}>No students yet</div>
+            <div style={{ color: "#CBD5E1", fontSize: 13, textAlign: "center", padding: "20px 0" }}>No students yet</div>
           ) : classDist.map((a, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-              <span style={{ fontSize: 12, color: "#666", width: 42, flexShrink: 0 }}>{a.cls}</span>
-              <div style={{ flex: 1, height: 6, background: "#F0F0EE", borderRadius: 3, overflow: "hidden" }}>
-                <div style={{ width: `${a.pct}%`, height: "100%", background: a.color, borderRadius: 3, transition: "width 0.4s ease" }} />
+            <div key={i} style={{ marginBottom: 14 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
+                <span style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>Class {a.cls}</span>
+                <span style={{ fontSize: 12, fontWeight: 700, color: a.color }}>{a.count} students ({a.pct}%)</span>
               </div>
-              <span style={{ fontSize: 12, fontWeight: 500, width: 52, textAlign: "right", color: a.color }}>
-                {a.count} ({a.pct}%)
-              </span>
+              <div style={{ height: 8, background: "#F1F5F9", borderRadius: 4, overflow: "hidden" }}>
+                <div style={{ width: `${a.pct}%`, height: "100%", background: `linear-gradient(90deg, ${a.color}, ${a.color}99)`, borderRadius: 4, transition: "width 0.6s ease" }} />
+              </div>
             </div>
           ))}
         </div>
 
         {/* Recent Activity */}
-        <div style={{ background: "#fff", border: "0.5px solid #E8E8E5", borderRadius: 12, padding: "1rem 1.25rem" }}>
-          <div style={{ fontSize: 13, fontWeight: 500, color: "#1a1a1a", marginBottom: 12 }}>⚡ Recent activity</div>
+        <div style={{ background: "#fff", border: "1px solid #E2E8F0", borderRadius: 16, padding: "20px 24px" }}>
+          <div style={{ marginBottom: 18 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "#0F172A" }}>Recent Activity</div>
+            <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>Latest updates</div>
+          </div>
           {loading ? (
-            <div style={{ color: "#999", fontSize: 13, textAlign: "center", padding: "20px 0" }}>Loading...</div>
+            <div style={{ color: "#94A3B8", fontSize: 13, textAlign: "center", padding: "20px 0" }}>Loading...</div>
           ) : recentActivity.length === 0 ? (
-            <div style={{ color: "#ccc", fontSize: 13, textAlign: "center", padding: "20px 0" }}>No activity yet</div>
+            <div style={{ color: "#CBD5E1", fontSize: 13, textAlign: "center", padding: "20px 0" }}>No activity yet</div>
           ) : recentActivity.map((a, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 0", borderBottom: i < recentActivity.length - 1 ? "0.5px solid #E8E8E5" : "none" }}>
-              <div style={{ width: 28, height: 28, borderRadius: "50%", background: a.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, flexShrink: 0 }}>{a.ic}</div>
-              <div>
-                <div style={{ fontSize: 12, color: "#1a1a1a", lineHeight: 1.4 }}>{a.text}</div>
-                <div style={{ fontSize: 11, color: "#999", marginTop: 2 }}>{a.time}</div>
+            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "10px 0", borderBottom: i < recentActivity.length - 1 ? "1px solid #F1F5F9" : "none" }}>
+              <div style={{ width: 34, height: 34, borderRadius: 10, background: a.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>{a.ic}</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 13, color: "#1E293B", lineHeight: 1.4, fontWeight: 500 }}>{a.text}</div>
+                <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 3 }}>{a.time}</div>
               </div>
+              <CheckCircle size={14} color="#BBF7D0" />
             </div>
           ))}
         </div>
       </div>
 
-      {/* Recent Students + Fleet */}
-      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 12, marginBottom: 24 }}>
+      {/* Bottom Row */}
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 14, marginBottom: 32 }}>
 
         {/* Recent Students */}
-        <div style={{ background: "#fff", border: "0.5px solid #E8E8E5", borderRadius: 12, padding: "1rem 1.25rem" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-            <span style={{ fontSize: 13, fontWeight: 500, color: "#1a1a1a" }}>🎒 Recently added students</span>
-            <span style={{ fontSize: 11, color: "#534AB7", cursor: "pointer" }} onClick={() => navigate("/admin/students")}>View all</span>
+        <div style={{ background: "#fff", border: "1px solid #E2E8F0", borderRadius: 16, padding: "20px 24px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#0F172A" }}>Recently Added</div>
+              <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>New student enrollments</div>
+            </div>
+            <span onClick={() => navigate("/admin/students")}
+              style={{ fontSize: 11, color: "#4F46E5", cursor: "pointer", fontWeight: 600, background: "#EEF2FF", padding: "4px 10px", borderRadius: 20 }}>
+              View all
+            </span>
           </div>
           {loading ? (
-            <div style={{ color: "#999", fontSize: 13, textAlign: "center", padding: "20px 0" }}>Loading...</div>
+            <div style={{ color: "#94A3B8", fontSize: 13, textAlign: "center", padding: "20px 0" }}>Loading...</div>
           ) : recentStudents.length === 0 ? (
-            <div style={{ color: "#ccc", fontSize: 13, textAlign: "center", padding: "20px 0" }}>No students yet</div>
+            <div style={{ color: "#CBD5E1", fontSize: 13, textAlign: "center", padding: "20px 0" }}>No students yet</div>
           ) : recentStudents.map((s, i) => (
-            <div key={i}
-              onClick={() => navigate(`/admin/students/${s._id}`)}
-              style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: i < recentStudents.length - 1 ? "0.5px solid #E8E8E5" : "none", cursor: "pointer" }}>
-              <div style={{ width: 30, height: 30, borderRadius: "50%", background: "#EEEDFE", color: "#534AB7", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 600, flexShrink: 0 }}>
+            <div key={i} onClick={() => navigate(`/admin/students/${s._id}`)}
+              style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: i < recentStudents.length - 1 ? "1px solid #F1F5F9" : "none", cursor: "pointer" }}>
+              <div style={{ width: 36, height: 36, borderRadius: 12, background: "linear-gradient(135deg, #EEF2FF, #C7D2FE)", color: "#4F46E5", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, flexShrink: 0 }}>
                 {s.name?.[0]?.toUpperCase()}
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 13, fontWeight: 500, color: "#1a1a1a" }}>{s.name}</div>
-                <div style={{ fontSize: 11, color: "#999" }}>Class {s.class}-{s.section} · Roll {s.rollNumber}</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#0F172A" }}>{s.name}</div>
+                <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 1 }}>Class {s.class}-{s.section} · Roll {s.rollNumber}</div>
               </div>
-              <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 20, fontWeight: 500, background: s.feeStatus === "Paid" ? "#EAF3DE" : "#FAEEDA", color: s.feeStatus === "Paid" ? "#3B6D11" : "#854F0B" }}>
+              <span style={{ fontSize: 10, padding: "3px 10px", borderRadius: 20, fontWeight: 600,
+                background: s.feeStatus === "Paid" ? "#F0FDF4" : "#FFF7ED",
+                color: s.feeStatus === "Paid" ? "#16A34A" : "#EA580C",
+                border: `1px solid ${s.feeStatus === "Paid" ? "#BBF7D0" : "#FED7AA"}` }}>
                 {s.feeStatus || "Pending"}
               </span>
             </div>
@@ -282,43 +300,49 @@ function DashboardContent({ isMobile, navigate, isTransport, setIsTransport }) {
         </div>
 
         {/* Fleet Status */}
-        <div style={{ background: "#fff", border: "0.5px solid #E8E8E5", borderRadius: 12, padding: "1rem 1.25rem" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-            <span style={{ fontSize: 13, fontWeight: 500, color: "#1a1a1a" }}>🚌 Fleet status</span>
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ fontSize: 11, color: "#999" }}>Show buses</span>
+        <div style={{ background: "#fff", border: "1px solid #E2E8F0", borderRadius: 16, padding: "20px 24px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#0F172A" }}>Fleet Status</div>
+              <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>Active bus routes</div>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 11, color: "#64748B" }}>Show buses</span>
               <div onClick={() => setIsTransport(!isTransport)}
-                style={{ width: 32, height: 18, borderRadius: 9, cursor: "pointer", position: "relative", transition: "background 0.2s", background: isTransport ? "#1D9E75" : "#B4B2A9" }}>
-                <div style={{ position: "absolute", top: 2, left: isTransport ? 16 : 2, width: 14, height: 14, borderRadius: "50%", background: "#fff", transition: "left 0.2s" }} />
+                style={{ width: 36, height: 20, borderRadius: 10, cursor: "pointer", position: "relative", transition: "background 0.2s", background: isTransport ? "#4F46E5" : "#CBD5E1" }}>
+                <div style={{ position: "absolute", top: 2, left: isTransport ? 18 : 2, width: 16, height: 16, borderRadius: "50%", background: "#fff", transition: "left 0.2s", boxShadow: "0 1px 4px rgba(0,0,0,0.2)" }} />
               </div>
             </div>
           </div>
           {isTransport ? (
             loading ? (
-              <div style={{ color: "#999", fontSize: 13, textAlign: "center", padding: "20px 0" }}>Loading...</div>
+              <div style={{ color: "#94A3B8", fontSize: 13, textAlign: "center", padding: "20px 0" }}>Loading...</div>
             ) : buses.length === 0 ? (
-              <div style={{ color: "#ccc", fontSize: 13, textAlign: "center", padding: "20px 0" }}>No buses added yet</div>
+              <div style={{ color: "#CBD5E1", fontSize: 13, textAlign: "center", padding: "20px 0" }}>No buses added yet</div>
             ) : buses.map((b, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: i < buses.length - 1 ? "0.5px solid #E8E8E5" : "none" }}>
-                <span style={{ fontSize: 20, flexShrink: 0 }}>🚌</span>
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: i < buses.length - 1 ? "1px solid #F1F5F9" : "none" }}>
+                <div style={{ width: 36, height: 36, borderRadius: 12, background: "#F0F9FF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>🚌</div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 500, color: "#1a1a1a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "#0F172A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                     {b.busNumber} — {b.driverName}
                   </div>
-                  <div style={{ fontSize: 11, color: "#999", marginTop: 1 }}>
+                  <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 1 }}>
                     {b.routeName} · {b.stops?.length || 0} stops · {b.assignedStudents?.length || 0} students
                   </div>
                 </div>
-                <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 20, fontWeight: 500, flexShrink: 0, background: b.busStatus === "On Route" ? "#EAF3DE" : "#F5F5F3", color: b.busStatus === "On Route" ? "#3B6D11" : "#888" }}>
+                <span style={{ fontSize: 10, padding: "3px 10px", borderRadius: 20, fontWeight: 600, flexShrink: 0,
+                  background: b.busStatus === "On Route" ? "#F0FDF4" : "#F8FAFC",
+                  color: b.busStatus === "On Route" ? "#16A34A" : "#64748B",
+                  border: `1px solid ${b.busStatus === "On Route" ? "#BBF7D0" : "#E2E8F0"}` }}>
                   {b.busStatus || "Idle"}
                 </span>
               </div>
             ))
           ) : (
-            <div style={{ background: "#F5F5F3", border: "0.5px solid #E8E8E5", borderRadius: 12, padding: "1.25rem 1rem", textAlign: "center" }}>
-              <div style={{ fontSize: 28, marginBottom: 8 }}>🚌</div>
-              <div style={{ fontSize: 13, fontWeight: 500, color: "#1a1a1a", marginBottom: 4 }}>Fleet hidden</div>
-              <div style={{ fontSize: 11, color: "#999" }}>Toggle to show bus status.</div>
+            <div style={{ background: "#F8FAFC", border: "1px solid #E2E8F0", borderRadius: 12, padding: "28px 20px", textAlign: "center" }}>
+              <div style={{ fontSize: 32, marginBottom: 8 }}>🚌</div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 4 }}>Fleet Hidden</div>
+              <div style={{ fontSize: 11, color: "#94A3B8" }}>Toggle above to show bus status</div>
             </div>
           )}
         </div>
@@ -342,30 +366,37 @@ export default function AdminHome() {
 
   const SidebarContent = () => (
     <>
-      <div style={{ padding: "1rem 1.1rem 0.9rem", borderBottom: "0.5px solid #E8E8E5", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div>
-          <div style={{ fontSize: 17, fontWeight: 600, color: "#534AB7" }}>EduAmigo</div>
-          <div style={{ fontSize: 10, color: "#999", marginTop: 1 }}>Admin Portal</div>
+      <div style={{ padding: "20px 18px 16px", borderBottom: "1px solid #F1F5F9", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 34, height: 34, borderRadius: 10, background: "linear-gradient(135deg, #4F46E5, #7C3AED)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <BookOpen size={16} color="white" />
+          </div>
+          <div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#0F172A" }}>EduAmigo</div>
+            <div style={{ fontSize: 10, color: "#94A3B8", marginTop: 1 }}>Admin Portal</div>
+          </div>
         </div>
         {isMobile && (
           <div onClick={() => setSidebarOpen(false)} style={{ cursor: "pointer", padding: 4 }}>
-            <X size={18} color="#666" />
+            <X size={18} color="#64748B" />
           </div>
         )}
       </div>
-      <nav style={{ overflowY: "auto", flex: 1, paddingBottom: 16 }}>
+      <nav style={{ overflowY: "auto", flex: 1, padding: "10px 0 16px" }}>
         {NAV.map((item, i) => {
           if (item.section) return (
-            <div key={i} style={{ fontSize: 9, color: "#999", padding: "10px 1.1rem 3px", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+            <div key={i} style={{ fontSize: 9, color: "#94A3B8", padding: "12px 18px 4px", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 600 }}>
               {item.section}
             </div>
           );
-          const Icon = item.icon;
+          const Icon     = item.icon;
           const isActive = activeNav === item.path;
           return (
             <div key={i}
               onClick={() => { setActiveNav(item.path); navigate(item.path); if (isMobile) setSidebarOpen(false); }}
-              style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 1.1rem", fontSize: 12, cursor: "pointer", color: isActive ? "#534AB7" : "#666", background: isActive ? "#EEEDFE" : "transparent", fontWeight: isActive ? 500 : 400, borderLeft: isActive ? "2px solid #534AB7" : "2px solid transparent", transition: "all 0.12s" }}>
+              style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 18px", margin: "1px 8px", fontSize: 13, cursor: "pointer", color: isActive ? "#4F46E5" : "#64748B", background: isActive ? "#EEF2FF" : "transparent", fontWeight: isActive ? 600 : 400, borderRadius: 10, transition: "all 0.12s" }}
+              onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = "#F8FAFC"; e.currentTarget.style.color = "#0F172A"; } }}
+              onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#64748B"; } }}>
               <Icon size={15} />
               {item.label}
             </div>
@@ -376,26 +407,27 @@ export default function AdminHome() {
   );
 
   return (
-    <div style={{ display: "flex", width: "100vw", minHeight: "100vh", background: "#F5F5F3", fontFamily: "Inter, sans-serif", position: "fixed", top: 0, left: 0, overflow: "hidden" }}>
+    <div style={{ display: "flex", width: "100vw", minHeight: "100vh", background: "#F8FAFC", fontFamily: "'Inter', sans-serif", position: "fixed", top: 0, left: 0, overflow: "hidden" }}>
       {!isMobile && (
-        <aside style={{ width: 220, flexShrink: 0, background: "#fff", borderRight: "0.5px solid #E8E8E5", display: "flex", flexDirection: "column", height: "100vh", overflowY: "auto" }}>
+        <aside style={{ width: 224, flexShrink: 0, background: "#fff", borderRight: "1px solid #F1F5F9", display: "flex", flexDirection: "column", height: "100vh", overflowY: "auto", boxShadow: "2px 0 8px rgba(0,0,0,0.04)" }}>
           <SidebarContent />
         </aside>
       )}
       {isMobile && sidebarOpen && (
         <>
-          <div onClick={() => setSidebarOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 40 }} />
-          <aside style={{ position: "fixed", top: 0, left: 0, bottom: 0, width: 220, background: "#fff", zIndex: 50, display: "flex", flexDirection: "column", boxShadow: "4px 0 20px rgba(0,0,0,0.12)" }}>
+          <div onClick={() => setSidebarOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.45)", zIndex: 40, backdropFilter: "blur(2px)" }} />
+          <aside style={{ position: "fixed", top: 0, left: 0, bottom: 0, width: 224, background: "#fff", zIndex: 50, display: "flex", flexDirection: "column", boxShadow: "4px 0 24px rgba(0,0,0,0.12)" }}>
             <SidebarContent />
           </aside>
         </>
       )}
-      <main style={{ flex: 1, padding: isMobile ? "0.85rem" : "1.5rem 2rem", overflowY: "auto", height: "100vh", minWidth: 0 }}>
+      <main style={{ flex: 1, padding: isMobile ? "1rem" : "1.75rem 2.5rem", overflowY: "auto", height: "100vh", minWidth: 0 }}>
         {isMobile && (
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "1rem" }}>
-            <div onClick={() => setSidebarOpen(true)} style={{ width: 32, height: 32, borderRadius: 8, background: "#fff", border: "0.5px solid #E8E8E5", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-              <Menu size={16} color="#666" />
+            <div onClick={() => setSidebarOpen(true)} style={{ width: 36, height: 36, borderRadius: 10, background: "#fff", border: "1px solid #E2E8F0", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}>
+              <Menu size={16} color="#64748B" />
             </div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#0F172A" }}>EduAmigo</div>
           </div>
         )}
         <Routes>
