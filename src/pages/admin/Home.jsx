@@ -5,8 +5,9 @@ import {
   LayoutDashboard, Users, School, UserCircle, Bus,
   CalendarCheck, FileBadge, Clock, Notebook, BadgeDollarSign, Layers,
   Bell, MessageCircle, BarChart2, Settings as SettingsIcon, Menu, X,
-  TrendingUp, AlertCircle, CheckCircle, BookOpen
+  AlertCircle, CheckCircle, BookOpen
 } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
 import Students from "./Students";
 import AddStudent from "./AddStudent";
 import AddParent from "./AddParent";
@@ -38,7 +39,7 @@ const authHeader = () => ({
 });
 
 const NAV = [
-  { label: "Dashboard", icon: LayoutDashboard, path: "/admin" },
+  { label: "Dashboard",      icon: LayoutDashboard,  path: "/admin" },
   { section: "Management" },
   { label: "Students",       icon: Users,            path: "/admin/students" },
   { label: "Teachers",       icon: School,           path: "/admin/teachers" },
@@ -61,25 +62,25 @@ const NAV = [
 ];
 
 const MODULES = [
-  { icon: "🎒", name: "Students",       desc: "Add, edit, view profiles",  path: "/admin/students",      color: "#EEF2FF", accent: "#4F46E5" },
-  { icon: "👩‍🏫", name: "Teachers",       desc: "Staff records & subjects",  path: "/admin/teachers",      color: "#F0FDF4", accent: "#16A34A" },
-  { icon: "👨‍👩‍👧", name: "Add Parent",     desc: "Link parent to student",    path: "/admin/parents/add",   color: "#FFF7ED", accent: "#EA580C" },
-  { icon: "💳", name: "Fee Management", desc: "Collect & track payments",  path: "/admin/fees",          color: "#F0FDFA", accent: "#0D9488" },
-  { icon: "📋", name: "Attendance",     desc: "Daily class-wise entry",    path: "/admin/attendance",    color: "#FFF1F2", accent: "#E11D48" },
-  { icon: "📝", name: "Exams",          desc: "Schedule & upload results", path: "/admin/exams",         color: "#FFFBEB", accent: "#D97706" },
-  { icon: "🕐", name: "Timetable",      desc: "Manage class schedule",     path: "/admin/timetable",     color: "#EFF6FF", accent: "#2563EB" },
-  { icon: "🏖️", name: "Leave Requests", desc: "Approve / reject leaves",   path: "/admin/leaves",        color: "#FDF4FF", accent: "#9333EA" },
-  { icon: "🚌", name: "Transport",      desc: "Manage buses & routes",     path: "/admin/transport",     color: "#F0F9FF", accent: "#0284C7" },
+  { icon: "🎒", name: "Students",       path: "/admin/students",    color: "#EEF2FF", accent: "#4F46E5" },
+  { icon: "👩‍🏫", name: "Teachers",       path: "/admin/teachers",    color: "#F0FDF4", accent: "#16A34A" },
+  { icon: "👨‍👩‍👧", name: "Add Parent",     path: "/admin/parents/add", color: "#FFF7ED", accent: "#EA580C" },
+  { icon: "💳", name: "Fee Management", path: "/admin/fees",         color: "#F0FDFA", accent: "#0D9488" },
+  { icon: "📋", name: "Attendance",     path: "/admin/attendance",  color: "#FFF1F2", accent: "#E11D48" },
+  { icon: "📝", name: "Exams",          path: "/admin/exams",       color: "#FFFBEB", accent: "#D97706" },
+  { icon: "🕐", name: "Timetable",      path: "/admin/timetable",   color: "#EFF6FF", accent: "#2563EB" },
+  { icon: "🏖️", name: "Leave Requests", path: "/admin/leaves",      color: "#FDF4FF", accent: "#9333EA" },
+  { icon: "🚌", name: "Transport",      path: "/admin/transport",   color: "#F0F9FF", accent: "#0284C7" },
 ];
 
-function DashboardContent({ isMobile, navigate, isTransport, setIsTransport }) {
-  const [stats, setStats]                   = useState({ students: 0, teachers: 0, buses: 0, parents: 0 });
+function DashboardContent({ isMobile, navigate, isTransport, setIsTransport, user }) {
+  const [stats, setStats]               = useState({ students: 0, teachers: 0, buses: 0, parents: 0 });
   const [recentStudents, setRecentStudents] = useState([]);
-  const [buses, setBuses]                   = useState([]);
+  const [buses, setBuses]               = useState([]);
   const [recentActivity, setRecentActivity] = useState([]);
-  const [classDist, setClassDist]           = useState([]);
-  const [pendingLeaves, setPendingLeaves]   = useState(0);
-  const [loading, setLoading]               = useState(true);
+  const [classDist, setClassDist]       = useState([]);
+  const [pendingLeaves, setPendingLeaves] = useState(0);
+  const [loading, setLoading]           = useState(true);
 
   useEffect(() => { fetchAll(); }, []);
 
@@ -109,8 +110,8 @@ function DashboardContent({ isMobile, navigate, isTransport, setIsTransport }) {
       students.forEach(s => { const key = `${s.class}-${s.section}`; classMap[key] = (classMap[key] || 0) + 1; });
       const total  = students.length || 1;
       const colors = ["#4F46E5", "#16A34A", "#0284C7", "#D97706", "#E11D48"];
-      setClassDist(Object.entries(classMap).sort((a,b) => b[1]-a[1]).slice(0,5).map(([cls,count],i) => ({
-        cls, count, pct: Math.round((count/total)*100), color: colors[i % colors.length]
+      setClassDist(Object.entries(classMap).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([cls, count], i) => ({
+        cls, count, pct: Math.round((count / total) * 100), color: colors[i % colors.length]
       })));
     } catch (err) {
       console.error(err);
@@ -119,11 +120,14 @@ function DashboardContent({ isMobile, navigate, isTransport, setIsTransport }) {
     }
   };
 
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "Good Morning" : hour < 17 ? "Good Afternoon" : "Good Evening";
+
   const statCards = [
-    { icon: "🎒", value: stats.students, label: "Total Students",  sub: "Enrolled this year",   color: "#4F46E5", bg: "#EEF2FF",  border: "#C7D2FE" },
-    { icon: "👩‍🏫", value: stats.teachers, label: "Total Teachers",  sub: "Active staff members", color: "#16A34A", bg: "#F0FDF4",  border: "#BBF7D0" },
-    { icon: "👨‍👩‍👧", value: stats.parents,  label: "Linked Parents",  sub: "Connected families",   color: "#EA580C", bg: "#FFF7ED",  border: "#FED7AA" },
-    { icon: "🚌", value: stats.buses,    label: "Total Buses",     sub: "Active fleet",          color: "#0284C7", bg: "#F0F9FF",  border: "#BAE6FD" },
+    { icon: "🎒", value: stats.students, label: "Total Students",  sub: "Enrolled this year",   color: "#4F46E5", bg: "#EEF2FF", border: "#C7D2FE" },
+    { icon: "👩‍🏫", value: stats.teachers, label: "Total Teachers",  sub: "Active staff members", color: "#16A34A", bg: "#F0FDF4", border: "#BBF7D0" },
+    { icon: "👨‍👩‍👧", value: stats.parents,  label: "Linked Parents",  sub: "Connected families",   color: "#EA580C", bg: "#FFF7ED", border: "#FED7AA" },
+    { icon: "🚌", value: stats.buses,    label: "Total Buses",     sub: "Active fleet",          color: "#0284C7", bg: "#F0F9FF", border: "#BAE6FD" },
   ];
 
   return (
@@ -147,9 +151,12 @@ function DashboardContent({ isMobile, navigate, isTransport, setIsTransport }) {
           <div style={{ position: "relative", width: 38, height: 38, borderRadius: "50%", background: "#F8FAFC", border: "1px solid #E2E8F0", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
             <Bell size={16} color="#64748B" />
           </div>
+          {/* Avatar — real user name from DB */}
           <div style={{ display: "flex", alignItems: "center", gap: 8, background: "#F8FAFC", border: "1px solid #E2E8F0", borderRadius: 24, padding: "5px 14px 5px 5px" }}>
-            <div style={{ width: 30, height: 30, borderRadius: "50%", background: "linear-gradient(135deg, #4F46E5, #7C3AED)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: "white" }}>A</div>
-            <span style={{ fontSize: 13, fontWeight: 600, color: "#0F172A" }}>Admin</span>
+            <div style={{ width: 30, height: 30, borderRadius: "50%", background: "linear-gradient(135deg, #4F46E5, #7C3AED)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: "white" }}>
+              {user?.name?.[0]?.toUpperCase() || "?"}
+            </div>
+            <span style={{ fontSize: 13, fontWeight: 600, color: "#0F172A" }}>{user?.name || "..."}</span>
           </div>
         </div>
       </div>
@@ -161,10 +168,14 @@ function DashboardContent({ isMobile, navigate, isTransport, setIsTransport }) {
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
             <BookOpen size={16} color="rgba(255,255,255,0.8)" />
-            <span style={{ fontSize: 12, color: "rgba(255,255,255,0.8)", fontWeight: 500 }}>EduAmigo School Management</span>
+            {/* School name from DB */}
+            <span style={{ fontSize: 12, color: "rgba(255,255,255,0.8)", fontWeight: 500 }}>
+              {user?.school || "School Management"}
+            </span>
           </div>
+          {/* Greeting with real name */}
           <div style={{ fontSize: isMobile ? 18 : 22, fontWeight: 800, color: "white", marginBottom: 6 }}>
-            Good {new Date().getHours() < 12 ? "Morning" : new Date().getHours() < 17 ? "Afternoon" : "Evening"}, Admin 👋
+            {greeting}, {user?.name || "..."} 👋
           </div>
           <div style={{ fontSize: 13, color: "rgba(255,255,255,0.75)" }}>
             You have {stats.students} students and {stats.teachers} teachers enrolled.
@@ -196,7 +207,7 @@ function DashboardContent({ isMobile, navigate, isTransport, setIsTransport }) {
       <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(3,1fr)" : "repeat(9,1fr)", gap: 10, marginBottom: "1.75rem" }}>
         {MODULES.map((m, i) => (
           <div key={i} onClick={() => navigate(m.path)}
-            style={{ background: m.bg, border: `1px solid ${m.color}33`, borderRadius: 14, padding: "14px 10px", cursor: "pointer", textAlign: "center", transition: "all 0.15s" }}
+            style={{ background: m.color, border: `1px solid ${m.color}33`, borderRadius: 14, padding: "14px 10px", cursor: "pointer", textAlign: "center", transition: "all 0.15s" }}
             onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 4px 16px ${m.accent}22`; }}
             onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}>
             <div style={{ fontSize: 22, marginBottom: 6 }}>{m.icon}</div>
@@ -207,8 +218,6 @@ function DashboardContent({ isMobile, navigate, isTransport, setIsTransport }) {
 
       {/* Charts Row */}
       <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 14, marginBottom: 14 }}>
-
-        {/* Class Distribution */}
         <div style={{ background: "#fff", border: "1px solid #E2E8F0", borderRadius: 16, padding: "20px 24px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
             <div>
@@ -237,7 +246,6 @@ function DashboardContent({ isMobile, navigate, isTransport, setIsTransport }) {
           ))}
         </div>
 
-        {/* Recent Activity */}
         <div style={{ background: "#fff", border: "1px solid #E2E8F0", borderRadius: 16, padding: "20px 24px" }}>
           <div style={{ marginBottom: 18 }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: "#0F172A" }}>Recent Activity</div>
@@ -262,8 +270,6 @@ function DashboardContent({ isMobile, navigate, isTransport, setIsTransport }) {
 
       {/* Bottom Row */}
       <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 14, marginBottom: 32 }}>
-
-        {/* Recent Students */}
         <div style={{ background: "#fff", border: "1px solid #E2E8F0", borderRadius: 16, padding: "20px 24px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
             <div>
@@ -299,7 +305,6 @@ function DashboardContent({ isMobile, navigate, isTransport, setIsTransport }) {
           ))}
         </div>
 
-        {/* Fleet Status */}
         <div style={{ background: "#fff", border: "1px solid #E2E8F0", borderRadius: 16, padding: "20px 24px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
             <div>
@@ -353,6 +358,7 @@ function DashboardContent({ isMobile, navigate, isTransport, setIsTransport }) {
 
 export default function AdminHome() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [activeNav, setActiveNav]     = useState("/admin");
   const [isTransport, setIsTransport] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -372,8 +378,10 @@ export default function AdminHome() {
             <BookOpen size={16} color="white" />
           </div>
           <div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "#0F172A" }}>EduAmigo</div>
-            <div style={{ fontSize: 10, color: "#94A3B8", marginTop: 1 }}>Admin Portal</div>
+            {/* School name from DB */}
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#0F172A" }}>{user?.school || "..."}</div>
+            {/* Role from DB */}
+            <div style={{ fontSize: 10, color: "#94A3B8", marginTop: 1, textTransform: "capitalize" }}>{user?.role || "..."} Portal</div>
           </div>
         </div>
         {isMobile && (
@@ -389,7 +397,7 @@ export default function AdminHome() {
               {item.section}
             </div>
           );
-          const Icon     = item.icon;
+          const Icon = item.icon;
           const isActive = activeNav === item.path;
           return (
             <div key={i}
@@ -427,11 +435,12 @@ export default function AdminHome() {
             <div onClick={() => setSidebarOpen(true)} style={{ width: 36, height: 36, borderRadius: 10, background: "#fff", border: "1px solid #E2E8F0", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}>
               <Menu size={16} color="#64748B" />
             </div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: "#0F172A" }}>EduAmigo</div>
+            {/* School name from DB in mobile header */}
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#0F172A" }}>{user?.school || "..."}</div>
           </div>
         )}
         <Routes>
-          <Route path=""                  element={<DashboardContent isMobile={isMobile} navigate={navigate} isTransport={isTransport} setIsTransport={setIsTransport} />} />
+          <Route path=""                  element={<DashboardContent isMobile={isMobile} navigate={navigate} isTransport={isTransport} setIsTransport={setIsTransport} user={user} />} />
           <Route path="students"          element={<Students />} />
           <Route path="students/add"      element={<AddStudent />} />
           <Route path="students/:id"      element={<StudentProfile />} />
