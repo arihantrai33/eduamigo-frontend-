@@ -10,10 +10,7 @@ const roles = [
 ];
 
 const getFieldConfig = (role) => {
-  if (role === "student") {
-    return { label: "REGISTRATION NUMBER", placeholder: "e.g. STU2024001", type: "text" };
-  }
-  return { label: "EMAIL", placeholder: "e.g. teacher@school.edu.in", type: "email" };
+  return { label: "EMAIL", placeholder: "e.g. student@gmail.com", type: "email" };
 };
 
 export default function Login() {
