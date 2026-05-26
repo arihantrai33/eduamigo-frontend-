@@ -382,6 +382,8 @@ export default function ParentBus() {
       <TileLayer
         url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         attribution='&copy; OpenStreetMap contributors'
+        subdomains="abcd"
+        maxZoom={20}
       />
       {completedRoute.length > 1 && (
         <Polyline positions={completedRoute} color="#A5B4FC" weight={5} opacity={0.55} />
