@@ -270,7 +270,7 @@ export default function ParentBus() {
   // ✅ Firebase listener
   useEffect(() => {
     if (!driverToken) return;
-    const busRef      = ref(db, `transport/${driverToken}/location`
+    const busRef      = ref(db, `transport/${driverToken}/location`);
     const unsubscribe = onValue(busRef, async (snapshot) => {
       const data = snapshot.val();
       if (!data?.lat || !data?.lng) {
