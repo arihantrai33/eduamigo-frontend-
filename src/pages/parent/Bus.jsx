@@ -564,7 +564,7 @@ const styles = {
   fsSosBtn:       { display:"flex", alignItems:"center", gap:"6px", padding:"8px 12px", borderRadius:"20px", fontSize:"12px", fontWeight:600, background:"rgba(220,38,38,0.85)", backdropFilter:"blur(10px)", border:"1px solid rgba(255,255,255,0.2)", color:"white", cursor:"pointer" },
   fsMiniPill:     { position:"fixed", bottom:"max(24px, env(safe-area-inset-bottom, 24px))", left:"50%", transform:"translateX(-50%)", zIndex:10000, display:"flex", alignItems:"center", gap:"8px", padding:"10px 20px", borderRadius:"30px", background:"rgba(0,0,0,0.55)", backdropFilter:"blur(10px)", border:"1px solid rgba(255,255,255,0.15)", whiteSpace:"nowrap" },
   header:         { position:"absolute", top:0, left:0, right:0, zIndex:100, background:"linear-gradient(135deg, #0284C7 0%, #0EA5E9 100%)", paddingTop:"env(safe-area-inset-top, 44px)", paddingLeft:"16px", paddingRight:"16px", paddingBottom:"14px", borderRadius:"0 0 24px 24px", boxShadow:"0 4px 24px rgba(2,132,199,0.3)" },
-  navRow:         { display:"flex", alignItems:"center", gap:"12px", marginBottom:"12px", marginTop:"10px" },
+  navRow:         { display:"flex", alignItems:"center", gap:"6px", marginBottom:"12px", marginTop:"10px" },
   backBtn:        { width:"36px", height:"36px", borderRadius:"12px", background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", flexShrink:0 },
   navTitle:       { color:"white", fontSize:"17px", fontWeight:600, letterSpacing:"-0.3px" },
   navSub:         { color:"rgba(255,255,255,0.6)", fontSize:"12px", marginTop:"2px" },
