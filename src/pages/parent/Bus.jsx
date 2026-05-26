@@ -413,10 +413,7 @@ export default function ParentBus() {
               <p style={styles.navSub}>{busLabel}</p>
             </div>
             {tripActive && (
-              <div style={styles.livePill}>
-                <span style={styles.liveDot} />
-                <span style={styles.liveText}>LIVE</span>
-              </div>
+              <span style={{ ...styles.liveDot, marginRight:'2px' }} />
             )}
           </div>
           <div style={styles.childCard}>
