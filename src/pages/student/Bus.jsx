@@ -380,10 +380,8 @@ export default function ParentBus() {
       zoomControl={false}
     >
       <TileLayer
-        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; OpenStreetMap contributors'
-        subdomains="abcd"
-        maxZoom={20}
       />
       {completedRoute.length > 1 && (
         <Polyline positions={completedRoute} color="#A5B4FC" weight={5} opacity={0.55} />
