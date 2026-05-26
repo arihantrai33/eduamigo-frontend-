@@ -81,30 +81,32 @@ export default function DriverHome() {
           updatedAt: Date.now(),
         });
       },
-      (error) => {
-        if (error.code === 3 && trackingRef.current) {
+      (err) => {
+        // Timeout error — retry karo
+        if (err.code === 3 && trackingRef.current) {
           setTimeout(() => {
             if (!trackingRef.current) return;
-            const prevId = watchIdRef.current;
-            if (prevId) navigator.geolocation.clearWatch(prevId);
+            if (watchIdRef.current) navigator.geolocation.clearWatch(watchIdRef.current);
             const newId = startGPSWatch();
             watchIdRef.current = newId;
           }, 3000);
+        } else if (err.code === 1) {
+          // Permission denied
+          setStatus("error");
         } else {
           setStatus("error");
         }
       },
-      { enableHighAccuracy: true, timeout: 30000, maximumAge: 10000 }
+      { enableHighAccuracy: true, timeout: 30000, maximumAge: 5000 }
     );
-    watchIdRef.current = id;
     return id;
   };
 
+  // ✅ FIX: Sirf tab restart karo GPS jab tracking chal rahi ho
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible" && trackingRef.current) {
-        const prevId = watchIdRef.current;
-        if (prevId) navigator.geolocation.clearWatch(prevId);
+        if (watchIdRef.current) navigator.geolocation.clearWatch(watchIdRef.current);
         const newId = startGPSWatch();
         watchIdRef.current = newId;
         requestWakeLock();
@@ -116,11 +118,20 @@ export default function DriverHome() {
 
   const startTrip = async () => {
     if (!firebaseKeyRef.current) return;
+
+    // ✅ FIX: Pehle location permission lo
+    if (!navigator.geolocation) {
+      setStatus("error");
+      return;
+    }
+
+    // ✅ FIX: UI turant update karo, API ko wait mat karo
     trackingRef.current = true;
     setTracking(true);
     setStatus("idle");
     setCurrentStopIndex(0);
-    try { await apiStartTrip(token); } catch (e) {}
+
+    // Firebase pehle update karo — fast
     const firebasePath = `transport/${firebaseKeyRef.current}`;
     update(ref(db, firebasePath), {
       tripStartedAt: Date.now(),
@@ -129,15 +140,33 @@ export default function DriverHome() {
       currentStopIndex: 0,
       updatedAt: Date.now(),
     });
+
+    // GPS shuru karo
     await requestWakeLock();
-    startGPSWatch();
+    const id = startGPSWatch();
+    watchIdRef.current = id;
+
+    // ✅ FIX: API ko background mein call karo — await mat karo
+    apiStartTrip(token).catch(() => {});
   };
 
   const stopTrip = async () => {
+    // ✅ FIX: UI turant update karo
     trackingRef.current = false;
-    const prevId = watchIdRef.current;
-    if (prevId) navigator.geolocation.clearWatch(prevId);
-    watchIdRef.current = null;
+    setTracking(false);
+    setCoords(null);
+    setStatus("idle");
+    setCurrentStopIndex(0);
+
+    // GPS band karo
+    if (watchIdRef.current) {
+      navigator.geolocation.clearWatch(watchIdRef.current);
+      watchIdRef.current = null;
+    }
+
+    releaseWakeLock();
+
+    // Firebase update karo
     if (firebaseKeyRef.current) {
       const firebasePath = `transport/${firebaseKeyRef.current}`;
       await set(ref(db, `${firebasePath}/location`), null);
@@ -147,12 +176,9 @@ export default function DriverHome() {
         updatedAt: Date.now(),
       });
     }
-    releaseWakeLock();
-    try { await apiEndTrip(token); } catch (e) {}
-    setTracking(false);
-    setCoords(null);
-    setStatus("idle");
-    setCurrentStopIndex(0);
+
+    // ✅ FIX: API background mein
+    apiEndTrip(token).catch(() => {});
   };
 
   const markNextStop = () => {
@@ -170,8 +196,7 @@ export default function DriverHome() {
 
   useEffect(() => {
     return () => {
-      const prevId = watchIdRef.current;
-      if (prevId) navigator.geolocation.clearWatch(prevId);
+      if (watchIdRef.current) navigator.geolocation.clearWatch(watchIdRef.current);
       releaseWakeLock();
     };
   }, []);
