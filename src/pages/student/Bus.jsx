@@ -180,12 +180,10 @@ function CallModal({ onClose, driverName, driverPhone }) {
 export default function ParentBus() {
   const navigate = useNavigate();
 
-  // ── Bus info from API ──
   const [busInfo,        setBusInfo]        = useState(null);
   const [loading,        setLoading]        = useState(true);
   const [apiError,       setApiError]       = useState(null);
 
-  // ── Live tracking state ──
   const [busLocation,    setBusLocation]    = useState(null);
   const [busSpeed,       setBusSpeed]       = useState(0);
   const [eta,            setEta]            = useState("—");
@@ -195,7 +193,6 @@ export default function ParentBus() {
   const [remainingRoute, setRemainingRoute] = useState([]);
   const [completedRoute, setCompletedRoute] = useState([]);
 
-  // ── UI state ──
   const [isFullscreen,  setIsFullscreen]  = useState(false);
   const [panelExpanded, setPanelExpanded] = useState(false);
   const [showSOS,       setShowSOS]       = useState(false);
@@ -205,7 +202,7 @@ export default function ParentBus() {
   const headerRef     = useRef(null);
   const lastUpdateRef = useRef(null);
 
-  // ── 1. Fetch bus info from backend ──
+  // ── 1. Fetch bus info ──
   useEffect(() => {
     const fetchBusInfo = async () => {
       try {
@@ -213,7 +210,7 @@ export default function ParentBus() {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/transport/my-child-bus`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        const data  = await res.json();
+        const data = await res.json();
         if (!data.success) throw new Error(data.message);
         setBusInfo(data.data);
       } catch (err) {
@@ -225,7 +222,7 @@ export default function ParentBus() {
     fetchBusInfo();
   }, []);
 
-  // ── 2. Measure header height ──
+  // ── 2. Header height ──
   useEffect(() => {
     if (!headerRef.current) return;
     const ro = new ResizeObserver(([e]) => setHeaderHeight(e.contentRect.height));
@@ -233,7 +230,7 @@ export default function ParentBus() {
     return () => ro.disconnect();
   }, []);
 
-  // ── 3. Fetch full road route once stops are loaded ──
+  // ── 3. Full road route ──
   useEffect(() => {
     if (!busInfo?.stops?.length) return;
     const mapped = busInfo.stops
@@ -242,17 +239,29 @@ export default function ParentBus() {
     fetchFullRoute(mapped).then(setFullRoute);
   }, [busInfo]);
 
-  // ── 4. Firebase live tracking ──
+  // ── 4. Firebase live tracking — FIXED ──
   useEffect(() => {
     if (!busInfo?.firebasePath) return;
 
-    // Firebase path: transport/{driverToken}/location
-    const busRef = ref(db, `transport/${busInfo.firebasePath}/location`);
+    // Status listener — trip active/inactive decide karta hai
+    const statusRef = ref(db, `transport/${busInfo.firebasePath}/busStatus`);
+    const unsubscribeStatus = onValue(statusRef, (snap) => {
+      const status = snap.val();
+      if (status === 'Idle' || status === 'Completed' || !status) {
+        setTripActive(false);
+        setBusLocation(null);
+        setBusSpeed(0);
+        setEta("—");
+        setRemainingRoute([]);
+        setCompletedRoute([]);
+      }
+    });
 
-    const unsubscribe = onValue(busRef, async (snapshot) => {
+    // Location listener — live GPS updates
+    const busRef = ref(db, `transport/${busInfo.firebasePath}/location`);
+    const unsubscribeLocation = onValue(busRef, async (snapshot) => {
       const data = snapshot.val();
 
-      // No location data → bus not started
       if (!data?.lat || !data?.lng || (data.lat === 0 && data.lng === 0)) {
         setTripActive(false);
         setBusLocation(null);
@@ -282,9 +291,9 @@ export default function ParentBus() {
       setTripActive(true);
       setBusLocation({ lat: data.lat, lng: data.lng });
 
-      // Nearest stop
       if (busInfo.stops?.length) {
-        const stops = busInfo.stops.sort((a, b) => a.order - b.order)
+        const stops = busInfo.stops
+          .sort((a, b) => a.order - b.order)
           .map(s => ({ lat: s.latitude, lng: s.longitude }));
         const nearestIdx = getNearestStopIndex(stops, data.lat, data.lng);
         setCurrentStopIdx(nearestIdx);
@@ -298,17 +307,20 @@ export default function ParentBus() {
           setCompletedRoute(fullRoute.slice(0, splitIdx + 1));
         }
 
-        // ETA to last stop (school)
         const lastStop = stops[stops.length - 1];
         const etaResult = await fetchETA(data.lat, data.lng, lastStop.lat, lastStop.lng);
         if (etaResult) setEta(etaResult);
       }
     });
 
-    return () => unsubscribe();
+    // Dono listeners ka cleanup
+    return () => {
+      unsubscribeStatus();
+      unsubscribeLocation();
+    };
   }, [busInfo, fullRoute]);
 
-  // ── 5. Keyboard ESC ──
+  // ── 5. ESC key ──
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === "Escape") { setIsFullscreen(false); setShowSOS(false); setShowCall(false); }
@@ -329,17 +341,17 @@ export default function ParentBus() {
     : currentStopIdx === stops.length - 1 ? 100
     : Math.round((completedCount / Math.max(stops.length - 1, 1)) * 100);
 
-  const busLabel  = busInfo ? `Bus #${busInfo.busNumber}` : "Bus";
+  const busLabel   = busInfo ? `Bus #${busInfo.busNumber}` : "Bus";
   const routeLabel = busInfo?.routeName || "—";
 
   function getStopType(i) {
-    if (i < currentStopIdx)                  return "completed";
-    if (i === currentStopIdx && tripActive)  return "current";
-    if (i === stops.length - 1)             return "school";
+    if (i < currentStopIdx)                 return "completed";
+    if (i === currentStopIdx && tripActive) return "current";
+    if (i === stops.length - 1)            return "school";
     return "upcoming";
   }
 
-  // ── Loading / Error states ──
+  // ── Loading ──
   if (loading) {
     return (
       <div style={{ ...styles.pageShell, alignItems: "center", justifyContent: "center" }}>
@@ -423,7 +435,7 @@ export default function ParentBus() {
     </div>
   );
 
-  // ── Fullscreen mode ──
+  // ── Fullscreen ──
   if (isFullscreen) {
     return (
       <div style={styles.fullscreenRoot}>
@@ -454,7 +466,6 @@ export default function ParentBus() {
   return (
     <div style={styles.pageShell}>
       <div style={styles.phoneCard}>
-        {/* Map layer — header ke neeche */}
         <div style={{
           position: "absolute", top: headerHeight, left: 0, right: 0, bottom: 0,
           zIndex: 0, transition: "top 0.3s ease",
@@ -462,7 +473,6 @@ export default function ParentBus() {
           {mapContent}
         </div>
 
-        {/* Fullscreen button */}
         <button
           style={{ ...styles.fsBtn, bottom: panelExpanded ? "calc(70vh + 12px)" : "252px" }}
           onClick={() => setIsFullscreen(true)}
@@ -473,7 +483,6 @@ export default function ParentBus() {
           </svg>
         </button>
 
-        {/* Header */}
         <div ref={headerRef} style={styles.header}>
           <div style={styles.navRow}>
             <button style={styles.backBtn} onClick={() => navigate("/parent/home")}>
@@ -493,7 +502,6 @@ export default function ParentBus() {
             )}
           </div>
 
-          {/* Child info card */}
           <div style={styles.childCard}>
             <div style={{ fontSize: "32px" }}>🧒</div>
             <div style={{ flex: 1 }}>
@@ -515,7 +523,6 @@ export default function ParentBus() {
             </div>
           </div>
 
-          {/* Metrics */}
           <div style={styles.metricsRow}>
             <div style={styles.metricCard}>
               <p style={styles.metricLabel}>EST. ARRIVAL</p>
@@ -548,7 +555,6 @@ export default function ParentBus() {
           </div>
         </div>
 
-        {/* Stops Panel */}
         <div style={{ ...styles.stopsPanel, maxHeight: panelExpanded ? "70vh" : "240px" }}>
           <div style={styles.stopsHeader} onClick={() => setPanelExpanded(p => !p)}>
             <div style={styles.dragHandle} />
