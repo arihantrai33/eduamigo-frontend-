@@ -29,7 +29,9 @@ export default function DriverHome() {
       const res = await getDriverBus(t);
       if (res.success) {
         setBusData(res.data);
-        firebaseKeyRef.current = res.data.busId || res.data.driverToken;
+        setTracking(false);
+      setStatus("idle");
+      setCurrentStopIndex(0);
       } else {
         setError("Invalid token. Please try again.");
         setToken("");
