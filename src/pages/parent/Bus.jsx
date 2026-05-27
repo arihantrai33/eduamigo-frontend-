@@ -7,8 +7,6 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { getChildBus } from "../../api/transport";
 
-const API = import.meta.env.VITE_API_URL;
-
 const SCHOOL_FALLBACK = { id: "school", name: "School", lat: 28.4689, lng: 77.5030 };
 const COLOR = {
   primary: "#0EA5E9", primaryDark: "#0284C7", primaryLight: "#E0F2FE",
@@ -57,13 +55,13 @@ function getNearestStopIndex(stops, lat, lng) {
 
 function getTrafficStatus(speed) {
   if (!speed || speed === 0) return { color: "#9CA3AF", label: "Stationary" };
-  if (speed < 15) return { color: COLOR.danger,   label: "Heavy traffic — Delay possible" };
-  if (speed < 30) return { color: COLOR.warning,  label: "Moderate traffic" };
+  if (speed < 15) return { color: COLOR.danger,  label: "Heavy traffic — Delay possible" };
+  if (speed < 30) return { color: COLOR.warning, label: "Moderate traffic" };
   return { color: COLOR.safe, label: "Clear road" };
 }
 
 function getChildStatus(tripActive, currentStopIdx, stops) {
-  if (!tripActive) return { emoji: "🏠", label: "At Home",       color: COLOR.success, sub: "Trip not started yet" };
+  if (!tripActive) return { emoji: "🏠", label: "At Home", color: COLOR.success, sub: "Trip not started yet" };
   if (currentStopIdx === stops.length - 1) return { emoji: "🏫", label: "Reached School", color: COLOR.success, sub: "Safe at school" };
   return { emoji: "🚌", label: "On the Bus", color: COLOR.primary, sub: `Near ${stops[currentStopIdx]?.name}` };
 }
@@ -122,9 +120,9 @@ function getStopType(i, currentStopIdx, tripActive, stopsLength) {
 }
 
 function SmoothBusMarker({ position, driverName, busLabel }) {
-  const markerRef    = useRef(null);
-  const currentPos   = useRef(position);
-  const animFrame    = useRef(null);
+  const markerRef  = useRef(null);
+  const currentPos = useRef(position);
+  const animFrame  = useRef(null);
   useEffect(() => {
     if (!markerRef.current || !position) return;
     const start    = { ...currentPos.current };
@@ -133,8 +131,8 @@ function SmoothBusMarker({ position, driverName, busLabel }) {
     let startTime  = null;
     const animate  = (ts) => {
       if (!startTime) startTime = ts;
-      const t      = Math.min((ts - startTime) / duration, 1);
-      const eased  = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+      const t     = Math.min((ts - startTime) / duration, 1);
+      const eased = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
       markerRef.current?.setLatLng([start.lat+(end.lat-start.lat)*eased, start.lng+(end.lng-start.lng)*eased]);
       if (t < 1) animFrame.current = requestAnimationFrame(animate);
       else currentPos.current = end;
@@ -163,12 +161,14 @@ function SOSModal({ onClose, studentName }) {
   return (
     <div style={styles.modalOverlay}>
       <div style={styles.modalCard}>
-        <div style={{ fontSize: "52px", marginBottom: "12px" }}>🆘</div>
+        <div style={{ fontSize:"52px", marginBottom:"12px" }}>🆘</div>
         <p style={styles.modalTitle}>Send Emergency Alert?</p>
-        <p style={styles.modalSub}>This will immediately notify the school admin and driver about an emergency regarding <strong>{studentName}</strong>.</p>
+        <p style={styles.modalSub}>
+          This will immediately notify the school administration and driver about an emergency regarding <strong>{studentName}</strong>.
+        </p>
         <div style={styles.modalBtns}>
           <button style={styles.cancelBtn} onClick={onClose}>Cancel</button>
-          <button style={styles.confirmSosBtn} onClick={() => { alert("🆘 Emergency Alert Sent!"); onClose(); }}>🆘 Send Alert</button>
+          <button style={styles.confirmSosBtn} onClick={() => { alert("Emergency alert sent successfully."); onClose(); }}>Send Alert</button>
         </div>
       </div>
     </div>
@@ -180,17 +180,53 @@ function CallModal({ onClose, name, phone }) {
   return (
     <div style={styles.modalOverlay}>
       <div style={styles.modalCard}>
-        <div style={{ fontSize: "52px", marginBottom: "12px" }}>📞</div>
+        <div style={{ fontSize:"52px", marginBottom:"12px" }}>📞</div>
         <p style={styles.modalTitle}>Call {name}</p>
         <p style={styles.modalSub}>{phone}</p>
         <div style={styles.modalBtns}>
           <button style={styles.cancelBtn} onClick={onClose}>Cancel</button>
-          <a href={`tel:${phone}`} style={styles.callConfirmBtn}>📞 Call Now</a>
+          <a href={`tel:${phone}`} style={styles.callConfirmBtn}>Call Now</a>
         </div>
-        <button onClick={() => { navigator.clipboard.writeText(phone); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
-          style={{ marginTop:"10px", width:"100%", padding:"10px", borderRadius:"12px", border:"1px solid #E2E8F0", background: copied?"#F0FDF4":"#F8FAFC", color: copied?"#16A34A":"#64748B", fontSize:"13px", fontWeight:600, cursor:"pointer" }}>
-          {copied ? "✅ Copied!" : "📋 Copy Number"}
+        <button
+          onClick={() => { navigator.clipboard.writeText(phone); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
+          style={{ marginTop:"10px", width:"100%", padding:"10px", borderRadius:"12px", border:"1px solid #E2E8F0", background: copied?"#F0FDF4":"#F8FAFC", color: copied?"#16A34A":"#64748B", fontSize:"13px", fontWeight:600, cursor:"pointer" }}
+        >
+          {copied ? "Copied!" : "Copy Number"}
         </button>
+      </div>
+    </div>
+  );
+}
+
+function NotificationSettingsModal({ onClose, prefs, onChange }) {
+  const items = [
+    { key: "tripStartEnd", icon: "🚦", label: "Trip Started / Ended" },
+    { key: "stopReached",  icon: "📍", label: "Bus reached a stop" },
+    { key: "nearby",       icon: "📡", label: "Bus nearby (within 500m)" },
+    { key: "sos",          icon: "🆘", label: "Emergency alerts" },
+  ];
+  return (
+    <div style={styles.modalOverlay}>
+      <div style={styles.modalCard}>
+        <div style={{ fontSize:"36px", marginBottom:"8px" }}>🔔</div>
+        <p style={styles.modalTitle}>Notification Preferences</p>
+        <p style={{ fontSize:"13px", color:"#64748B", marginBottom:"16px" }}>Select which alerts you want to receive.</p>
+        {items.map(item => (
+          <div
+            key={item.key}
+            onClick={() => onChange(item.key)}
+            style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"12px 4px", borderBottom:"1px solid #F1F5F9", cursor:"pointer" }}
+          >
+            <div style={{ display:"flex", alignItems:"center", gap:"10px" }}>
+              <span style={{ fontSize:"20px" }}>{item.icon}</span>
+              <span style={{ fontSize:"13px", fontWeight:500, color:"#1E293B" }}>{item.label}</span>
+            </div>
+            <div style={{ width:"44px", height:"24px", borderRadius:"12px", background: prefs[item.key] ? "#0EA5E9" : "#E2E8F0", position:"relative", transition:"background 0.2s", flexShrink:0 }}>
+              <div style={{ position:"absolute", top:"3px", left: prefs[item.key] ? "23px" : "3px", width:"18px", height:"18px", borderRadius:"50%", background:"white", boxShadow:"0 1px 4px rgba(0,0,0,0.2)", transition:"left 0.2s" }} />
+            </div>
+          </div>
+        ))}
+        <button style={{ ...styles.cancelBtn, marginTop:"16px", width:"100%" }} onClick={onClose}>Done</button>
       </div>
     </div>
   );
@@ -198,31 +234,36 @@ function CallModal({ onClose, name, phone }) {
 
 export default function ParentBus() {
   const navigate = useNavigate();
-  const [stops,          setStops]          = useState([]);
-  const [studentData,    setStudentData]    = useState(null);
-  const [driverData,     setDriverData]     = useState(null);
-  const [driverToken,    setDriverToken]    = useState(null);
-  const [loading,        setLoading]        = useState(true);
-  const [busLocation,    setBusLocation]    = useState(null);
-  const [busSpeed,       setBusSpeed]       = useState(0);
-  const [eta,            setEta]            = useState("—");
-  const [tripActive,     setTripActive]     = useState(false);
-  const [currentStopIdx, setCurrentStopIdx] = useState(0);
-  const [fullRoute,      setFullRoute]      = useState([]);
-  const [remainingRoute, setRemainingRoute] = useState([]);
-  const [completedRoute, setCompletedRoute] = useState([]);
-  const [isFullscreen,   setIsFullscreen]   = useState(false);
-  const [panelExpanded,  setPanelExpanded]  = useState(false);
-  const [showSOS,        setShowSOS]        = useState(false);
-  const [showCallDriver, setShowCallDriver] = useState(false);
-  const [showCallSchool, setShowCallSchool] = useState(false);
-  const [notifications,  setNotifications]  = useState([]);
-  const [headerHeight,   setHeaderHeight]   = useState(0);
+  const [stops,               setStops]               = useState([]);
+  const [studentData,         setStudentData]         = useState(null);
+  const [driverData,          setDriverData]          = useState(null);
+  const [driverToken,         setDriverToken]         = useState(null);
+  const [loading,             setLoading]             = useState(true);
+  const [busLocation,         setBusLocation]         = useState(null);
+  const [busSpeed,            setBusSpeed]            = useState(0);
+  const [eta,                 setEta]                 = useState("—");
+  const [tripActive,          setTripActive]          = useState(false);
+  const [currentStopIdx,      setCurrentStopIdx]      = useState(0);
+  const [fullRoute,           setFullRoute]           = useState([]);
+  const [remainingRoute,      setRemainingRoute]      = useState([]);
+  const [completedRoute,      setCompletedRoute]      = useState([]);
+  const [isFullscreen,        setIsFullscreen]        = useState(false);
+  const [panelExpanded,       setPanelExpanded]       = useState(false);
+  const [showSOS,             setShowSOS]             = useState(false);
+  const [showCallDriver,      setShowCallDriver]      = useState(false);
+  const [showCallSchool,      setShowCallSchool]      = useState(false);
+  const [showNotifSettings,   setShowNotifSettings]   = useState(false);
+  const [notifPrefs,          setNotifPrefs]          = useState({ tripStartEnd: true, stopReached: true, nearby: true, sos: true });
+  const [notifications,       setNotifications]       = useState([]);
+  const [headerHeight,        setHeaderHeight]        = useState(0);
 
-  const headerRef      = useRef(null);
-  const lastUpdateRef  = useRef(null);
-  const traffic        = getTrafficStatus(busSpeed);
-  const SCHOOL         = stops[stops.length - 1] || SCHOOL_FALLBACK;
+  const headerRef     = useRef(null);
+  const lastUpdateRef = useRef(null);
+  const prevStopIdx   = useRef(null);
+  const prevTrip      = useRef(false);
+
+  const traffic = getTrafficStatus(busSpeed);
+  const SCHOOL  = stops[stops.length - 1] || SCHOOL_FALLBACK;
 
   useEffect(() => {
     if (!headerRef.current) return;
@@ -231,28 +272,17 @@ export default function ParentBus() {
     return () => ro.disconnect();
   }, []);
 
-  // ✅ Backend se bus + student data fetch
   useEffect(() => {
     const fetchBusData = async () => {
       try {
         const res = await getChildBus();
         if (!res.success) { setLoading(false); return; }
         const bus = res.data;
-
         setDriverData({ name: bus.driverName, phone: bus.driverPhone });
         setDriverToken(bus.firebasePath);
-        setStudentData({
-          name:  bus.studentName  || "Your Child",
-          class: bus.studentClass || "—",
-        });
-
-        if (bus.stops && bus.stops.length > 0) {
-          setStops(bus.stops.map(s => ({
-            id:   s._id,
-            name: s.name,
-            lat:  s.latitude  || 0,
-            lng:  s.longitude || 0,
-          })));
+        setStudentData({ name: bus.studentName || "Your Child", class: bus.studentClass || "—" });
+        if (bus.stops?.length > 0) {
+          setStops(bus.stops.map(s => ({ id: s._id, name: s.name, lat: s.latitude || 0, lng: s.longitude || 0 })));
         }
         setLoading(false);
       } catch (err) {
@@ -267,54 +297,95 @@ export default function ParentBus() {
     if (stops.length > 1) fetchFullRoute(stops).then(setFullRoute);
   }, [stops]);
 
-  // ✅ Firebase listener
+  // In-app notification helper
+  const pushNotif = (icon, text) => {
+    const id   = Date.now();
+    const time = new Date().toLocaleTimeString("en-US", { hour:"numeric", minute:"2-digit", hour12:true });
+    setNotifications(prev => [{ id, icon, text, time }, ...prev].slice(0, 20));
+    if (Notification.permission === "granted") new Notification(text, { icon: "/favicon.ico" });
+  };
+
   useEffect(() => {
     if (!driverToken) return;
     const busRef      = ref(db, `transport/${driverToken}/location`);
     const unsubscribe = onValue(busRef, async (snapshot) => {
       const data = snapshot.val();
       if (!data?.lat || !data?.lng) {
+        if (prevTrip.current && notifPrefs.tripStartEnd) pushNotif("🏁", "Trip has ended. Your child's bus has stopped.");
+        prevTrip.current = false;
         setTripActive(false); setBusLocation(null); setBusSpeed(0);
         setEta("—"); setCurrentStopIdx(0); setRemainingRoute([]); setCompletedRoute([]);
         return;
       }
+
       const now = Date.now();
       if (lastUpdateRef.current) {
         const { lat: pLat, lng: pLng, time: pTime } = lastUpdateRef.current;
         const timeDelta = (now - pTime) / 1000;
         const distance  = Math.sqrt(
-          ((data.lat-pLat)*111000)**2 +
-          ((data.lng-pLng)*111000*Math.cos(data.lat*(Math.PI/180)))**2
+          ((data.lat - pLat) * 111000) ** 2 +
+          ((data.lng - pLng) * 111000 * Math.cos(data.lat * (Math.PI / 180))) ** 2
         );
-        setBusSpeed(Math.round((distance/timeDelta)*3.6));
+        setBusSpeed(Math.round((distance / timeDelta) * 3.6));
       }
       lastUpdateRef.current = { lat: data.lat, lng: data.lng, time: now };
+
+      // Trip started notification
+      if (!prevTrip.current && notifPrefs.tripStartEnd) {
+        pushNotif("🚦", "Trip has started. Your child's bus is now on the way.");
+      }
+      prevTrip.current = true;
       setTripActive(true);
       setBusLocation({ lat: data.lat, lng: data.lng });
-      const nearestIdx  = getNearestStopIndex(stops, data.lat, data.lng);
+
+      const nearestIdx = getNearestStopIndex(stops, data.lat, data.lng);
       setCurrentStopIdx(nearestIdx);
-      const remaining   = await fetchRoadRoute(data.lat, data.lng, stops.slice(nearestIdx));
+
+      // Stop reached notification
+      if (prevStopIdx.current !== null && prevStopIdx.current !== nearestIdx && notifPrefs.stopReached) {
+        const stopName = stops[nearestIdx]?.name;
+        if (stopName) pushNotif("📍", `Bus has reached ${stopName}.`);
+      }
+      prevStopIdx.current = nearestIdx;
+
+      // Nearby notification (within ~500m using degree approximation)
+      if (notifPrefs.nearby && studentData) {
+        const myStop = stops[0];
+        if (myStop) {
+          const dist = Math.sqrt(((data.lat - myStop.lat) * 111000) ** 2 + ((data.lng - myStop.lng) * 111000) ** 2);
+          if (dist < 500) pushNotif("📡", `Bus is less than 500m away from your stop.`);
+        }
+      }
+
+      const remaining = await fetchRoadRoute(data.lat, data.lng, stops.slice(nearestIdx));
       setRemainingRoute(remaining);
       if (fullRoute.length > 0) {
         const splitIdx = getNearestPointIndex(fullRoute, data.lat, data.lng);
-        setCompletedRoute(fullRoute.slice(0, splitIdx+1));
+        setCompletedRoute(fullRoute.slice(0, splitIdx + 1));
       }
       const etaResult = await fetchETA(data.lat, data.lng, SCHOOL.lat, SCHOOL.lng);
       if (etaResult) setEta(etaResult);
     });
     return unsubscribe;
-  }, [driverToken, fullRoute, stops]);
+  }, [driverToken, fullRoute, stops, notifPrefs, studentData]);
+
+  useEffect(() => {
+    if (Notification.permission === "default") Notification.requestPermission();
+  }, []);
 
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === "Escape") { setIsFullscreen(false); setShowSOS(false); setShowCallDriver(false); setShowCallSchool(false); }
+      if (e.key === "Escape") {
+        setIsFullscreen(false); setShowSOS(false);
+        setShowCallDriver(false); setShowCallSchool(false); setShowNotifSettings(false);
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
   const completedCount = stops.filter((_, i) => i < currentStopIdx).length;
-  const progressPct    = !tripActive ? 0 : currentStopIdx === stops.length-1 ? 100 : Math.round((completedCount/(stops.length-1))*100);
+  const progressPct    = !tripActive ? 0 : currentStopIdx === stops.length - 1 ? 100 : Math.round((completedCount / (stops.length - 1)) * 100);
   const childStatus    = getChildStatus(tripActive, currentStopIdx, stops);
   const busLabel       = `Bus · ${driverData?.name || "—"}`;
 
@@ -322,7 +393,7 @@ export default function ParentBus() {
     return (
       <div style={{ minHeight:"100dvh", display:"flex", alignItems:"center", justifyContent:"center", background:"#F0F9FF", flexDirection:"column", gap:"16px" }}>
         <div style={{ fontSize:"48px" }}>🚌</div>
-        <p style={{ fontSize:"16px", color:"#0EA5E9", fontWeight:600 }}>Loading your child's bus...</p>
+        <p style={{ fontSize:"16px", color:"#0EA5E9", fontWeight:600 }}>Loading bus information...</p>
       </div>
     );
   }
@@ -331,7 +402,7 @@ export default function ParentBus() {
     return (
       <div style={{ minHeight:"100dvh", display:"flex", alignItems:"center", justifyContent:"center", background:"#F0F9FF", flexDirection:"column", gap:"16px" }}>
         <div style={{ fontSize:"48px" }}>🚌</div>
-        <p style={{ fontSize:"16px", color:"#64748B", fontWeight:600 }}>No bus assigned to your child yet.</p>
+        <p style={{ fontSize:"16px", color:"#64748B", fontWeight:600 }}>No bus has been assigned yet.</p>
         <button onClick={() => navigate("/parent/home")} style={{ padding:"10px 24px", borderRadius:"12px", background:"#0EA5E9", color:"white", border:"none", fontWeight:600, cursor:"pointer" }}>Go Back</button>
       </div>
     );
@@ -341,9 +412,9 @@ export default function ParentBus() {
     <MapContainer center={[busLocation.lat, busLocation.lng]} zoom={16} style={{ height:"100%", width:"100%" }} zoomControl={false}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; OpenStreetMap' />
       {completedRoute.length > 1 && <Polyline positions={completedRoute} color="#BAE6FD" weight={5} opacity={0.55} />}
-      {remainingRoute.length > 1 && <Polyline positions={remainingRoute} color={traffic.color} weight={6} opacity={0.92} dashArray={traffic.color===COLOR.danger?"10 6":undefined} />}
+      {remainingRoute.length > 1 && <Polyline positions={remainingRoute} color={traffic.color} weight={6} opacity={0.92} dashArray={traffic.color === COLOR.danger ? "10 6" : undefined} />}
       {fullRoute.length > 1 && <Polyline positions={fullRoute} color={COLOR.primary} weight={2} opacity={0.18} dashArray="8 10" />}
-      <SmoothBusMarker position={busLocation} driverName={driverData?.name||"Driver"} busLabel={busLabel} />
+      <SmoothBusMarker position={busLocation} driverName={driverData?.name || "Driver"} busLabel={busLabel} />
       <MapAutoCenter position={busLocation} />
       {stops.map((stop, i) => {
         const type = getStopType(i, currentStopIdx, tripActive, stops.length);
@@ -351,10 +422,10 @@ export default function ParentBus() {
           <Marker key={stop.id} position={[stop.lat, stop.lng]} icon={makeStopIcon(type)}>
             <Popup>
               <strong>{stop.name}</strong><br />
-              {type==="completed" && `✅ Departed ${getDepartureTime(i)}`}
-              {type==="current"   && "🚌 Bus is here now"}
-              {type==="school"    && `🏫 Destination — ETA ${eta}`}
-              {type==="upcoming"  && "⏳ Upcoming stop"}
+              {type === "completed" && `Departed at ${getDepartureTime(i)}`}
+              {type === "current"   && "Bus is here now"}
+              {type === "school"    && `Destination — ETA ${eta}`}
+              {type === "upcoming"  && "Upcoming stop"}
             </Popup>
           </Marker>
         );
@@ -363,7 +434,7 @@ export default function ParentBus() {
   ) : (
     <div style={styles.mapPlaceholder}>
       <div style={{ fontSize:"56px" }}>🚌</div>
-      <p style={styles.busEmptyTitle}>Bus not on route yet</p>
+      <p style={styles.busEmptyTitle}>Bus is not on route yet</p>
       <p style={styles.busEmptySub}>Trip has not started</p>
     </div>
   );
@@ -378,17 +449,18 @@ export default function ParentBus() {
         </button>
         <div style={styles.fsActionRow}>
           <button style={styles.fsCallBtn} onClick={() => setShowCallDriver(true)}>📞 Driver</button>
-          <button style={styles.fsCallBtn} onClick={() => setShowCallSchool(true)}>🏫 School</button>
-          <button style={styles.fsSosBtn}  onClick={() => setShowSOS(true)}>🆘 SOS</button>
+          <button style={styles.fsCallBtn} onClick={() => setShowCallSchool(true)}>School</button>
+          <button style={styles.fsSosBtn}  onClick={() => setShowSOS(true)}>SOS</button>
         </div>
         <div style={styles.fsMiniPill}>
           <span style={{ width:"8px", height:"8px", borderRadius:"50%", background:childStatus.color, display:"inline-block" }} />
-          <span style={{ color:"white", fontSize:"13px", fontWeight:500 }}>{studentData?.name||"Your child"}</span>
+          <span style={{ color:"white", fontSize:"13px", fontWeight:500 }}>{studentData?.name || "Your child"}</span>
           <span style={{ color:"rgba(255,255,255,0.6)", fontSize:"13px", marginLeft:"4px" }}>ETA {eta}</span>
         </div>
-        {showSOS        && <SOSModal  onClose={() => setShowSOS(false)}        studentName={studentData?.name||"Your child"} />}
-        {showCallDriver && <CallModal onClose={() => setShowCallDriver(false)} name={driverData?.name||"Driver"}  phone={driverData?.phone||"+91-0000000000"} />}
-        {showCallSchool && <CallModal onClose={() => setShowCallSchool(false)} name="School Office" phone="+91-1234567890" />}
+        {showSOS           && <SOSModal                onClose={() => setShowSOS(false)}             studentName={studentData?.name || "Your child"} />}
+        {showCallDriver    && <CallModal               onClose={() => setShowCallDriver(false)}       name={driverData?.name || "Driver"}  phone={driverData?.phone || ""} />}
+        {showCallSchool    && <CallModal               onClose={() => setShowCallSchool(false)}       name="School Office" phone="" />}
+        {showNotifSettings && <NotificationSettingsModal onClose={() => setShowNotifSettings(false)} prefs={notifPrefs} onChange={key => setNotifPrefs(p => ({ ...p, [key]: !p[key] }))} />}
       </div>
     );
   }
@@ -399,7 +471,7 @@ export default function ParentBus() {
         <div style={{ position:"absolute", top:headerHeight, left:0, right:0, bottom:0, zIndex:0, transition:"top 0.3s ease" }}>
           {mapContent}
         </div>
-        <button style={{ ...styles.fsBtn, bottom: panelExpanded?"calc(70vh + 12px)":"300px" }} onClick={() => setIsFullscreen(true)}>
+        <button style={{ ...styles.fsBtn, bottom: panelExpanded ? "calc(70vh + 12px)" : "300px" }} onClick={() => setIsFullscreen(true)}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
         </button>
 
@@ -413,14 +485,16 @@ export default function ParentBus() {
               <p style={styles.navSub}>{busLabel}</p>
             </div>
             {tripActive && (
-              <span style={{ ...styles.liveDot, marginRight:'2px' }} />
-            )}
+              <span style={{ ...styles.liveDot, marginRight:"2px" }} />
+              )}
+            <button onClick={() => setShowNotifSettings(true)} style={styles.notifBtn}>🔔</button>
           </div>
+
           <div style={styles.childCard}>
             <div style={styles.childAvatar}><span style={{ fontSize:"26px" }}>👦</span></div>
             <div style={{ flex:1 }}>
-              <p style={styles.childName}>{studentData?.name||"Your Child"}</p>
-              <p style={styles.childClass}>{studentData?.class||"—"}</p>
+              <p style={styles.childName}>{studentData?.name || "Your Child"}</p>
+              <p style={styles.childClass}>{studentData?.class || "—"}</p>
             </div>
             <div style={{ textAlign:"right" }}>
               <div style={{ ...styles.statusBadge, background:childStatus.color+"22", border:`1px solid ${childStatus.color}55` }}>
@@ -430,6 +504,7 @@ export default function ParentBus() {
               <p style={{ color:"rgba(255,255,255,0.5)", fontSize:"10px", marginTop:"4px" }}>{childStatus.sub}</p>
             </div>
           </div>
+
           <div style={styles.metricsRow}>
             <div style={styles.metricCard}>
               <p style={styles.metricLabel}>EST. ARRIVAL</p>
@@ -443,23 +518,24 @@ export default function ParentBus() {
                 ? <p style={{ ...styles.metricValue, fontSize:"15px", marginTop:"4px" }}>Stationary</p>
                 : <p style={styles.metricValue}>{busSpeed} <span style={styles.metricUnit}>km/h</span></p>
               }
-              <p style={styles.metricSub}>{busSpeed===0?"not moving":busSpeed<15?"slow":busSpeed<30?"moderate":"normal"}</p>
+              <p style={styles.metricSub}>{busSpeed === 0 ? "not moving" : busSpeed < 15 ? "slow" : busSpeed < 30 ? "moderate" : "normal"}</p>
             </div>
             <div style={styles.metricDivider} />
             <div style={styles.metricCard}>
               <p style={styles.metricLabel}>DRIVER</p>
-              <p style={{ ...styles.metricValue, fontSize:"13px", marginTop:"2px" }}>{driverData?.name?.split(" ")[0]||"—"}</p>
+              <p style={{ ...styles.metricValue, fontSize:"13px", marginTop:"2px" }}>{driverData?.name?.split(" ")[0] || "—"}</p>
               <p style={styles.metricSub}>on duty</p>
             </div>
           </div>
+
           <div style={styles.trafficStrip}>
             <span style={{ width:"8px", height:"8px", borderRadius:"50%", background:traffic.color, display:"inline-block", flexShrink:0 }} />
             <span style={styles.trafficLabel}>{traffic.label}</span>
-            <span style={styles.trafficRight}>{!tripActive?"Not Started":busSpeed===0?"Paused on Route":"Moving"}</span>
+            <span style={styles.trafficRight}>{!tripActive ? "Not Started" : busSpeed === 0 ? "Paused on Route" : "Moving"}</span>
           </div>
         </div>
 
-        <div style={{ ...styles.stopsPanel, maxHeight: panelExpanded?"70vh":"300px" }}>
+        <div style={{ ...styles.stopsPanel, maxHeight: panelExpanded ? "70vh" : "300px" }}>
           <div style={styles.stopsHeader} onClick={() => setPanelExpanded(p => !p)}>
             <div style={styles.dragHandle} />
             <div style={styles.stopsHeaderRow}>
@@ -472,16 +548,19 @@ export default function ParentBus() {
                   <div style={{ ...styles.progressFill, width:`${progressPct}%` }} />
                   <span style={styles.progressText}>{progressPct}% done</span>
                 </div>
-                <span style={{ ...styles.chevron, transform: panelExpanded?"rotate(180deg)":"rotate(0deg)" }}>▲</span>
+                <span style={{ ...styles.chevron, transform: panelExpanded ? "rotate(180deg)" : "rotate(0deg)" }}>▲</span>
               </div>
             </div>
           </div>
+
           <div style={styles.routeBar}><div style={{ ...styles.routeBarFill, width:`${progressPct}%` }} /></div>
+
           <div style={styles.panelActionRow}>
             <button style={styles.panelCallBtn}  onClick={() => setShowCallDriver(true)}>📞 Call Driver</button>
-            <button style={styles.panelSchoolBtn} onClick={() => setShowCallSchool(true)}>🏫 Call School</button>
-            <button style={styles.panelSosBtn}   onClick={() => setShowSOS(true)}>🆘 SOS</button>
+            <button style={styles.panelSchoolBtn} onClick={() => setShowCallSchool(true)}>Call School</button>
+            <button style={styles.panelSosBtn}   onClick={() => setShowSOS(true)}>SOS</button>
           </div>
+
           {notifications.length > 0 && (
             <div style={styles.notifSection}>
               <p style={styles.notifTitle}>Today's Updates</p>
@@ -496,17 +575,18 @@ export default function ParentBus() {
               ))}
             </div>
           )}
+
           <div style={styles.stopsList}>
             <p style={{ fontSize:"12px", fontWeight:700, color:"#64748B", marginBottom:"10px", textTransform:"uppercase", letterSpacing:"0.5px" }}>Route</p>
             {stops.map((stop, i) => {
               const type        = getStopType(i, currentStopIdx, tripActive, stops.length);
-              const isLast      = i === stops.length-1;
-              const isCompleted = type==="completed";
-              const isCurrent   = type==="current";
+              const isLast      = i === stops.length - 1;
+              const isCompleted = type === "completed";
+              const isCurrent   = type === "current";
               const isSchool    = isLast && !isCurrent;
-              const circleBg     = isCurrent?COLOR.primary:isCompleted?"#D1FAE5":isSchool?"#FFF7ED":"#F3F4F6";
-              const circleBorder = isCurrent?`2px solid ${COLOR.primary}`:isCompleted?"2px solid #6EE7B7":isSchool?"2px solid #FCD34D":"2px solid #E5E7EB";
-              const circleShadow = isCurrent?`0 0 0 4px ${COLOR.primaryLight}`:"none";
+              const circleBg     = isCurrent ? COLOR.primary : isCompleted ? "#D1FAE5" : isSchool ? "#FFF7ED" : "#F3F4F6";
+              const circleBorder = isCurrent ? `2px solid ${COLOR.primary}` : isCompleted ? "2px solid #6EE7B7" : isSchool ? "2px solid #FCD34D" : "2px solid #E5E7EB";
+              const circleShadow = isCurrent ? `0 0 0 4px ${COLOR.primaryLight}` : "none";
               return (
                 <div key={stop.id} style={styles.stopRow}>
                   <div style={styles.timeline}>
@@ -514,26 +594,26 @@ export default function ParentBus() {
                       {isCompleted ? <span style={{ fontSize:"9px", color:"#059669" }}>✓</span>
                         : isCurrent ? <span style={{ width:"6px", height:"6px", borderRadius:"50%", background:"white", display:"block" }} />
                         : isSchool  ? <span style={{ fontSize:"10px" }}>🏫</span>
-                        : <span style={{ fontSize:"9px", color:"#9CA3AF" }}>{i+1}</span>}
+                        : <span style={{ fontSize:"9px", color:"#9CA3AF" }}>{i + 1}</span>}
                     </div>
-                    {!isLast && <div style={{ ...styles.connector, background:isCompleted?"linear-gradient(to bottom, #6EE7B7, #D1FAE5)":isCurrent?`linear-gradient(to bottom, ${COLOR.primary}, #E5E7EB)`:"#E5E7EB" }} />}
+                    {!isLast && <div style={{ ...styles.connector, background: isCompleted ? "linear-gradient(to bottom, #6EE7B7, #D1FAE5)" : isCurrent ? `linear-gradient(to bottom, ${COLOR.primary}, #E5E7EB)` : "#E5E7EB" }} />}
                   </div>
-                  <div style={{ flex:1, minWidth:0, paddingBottom:isLast?4:"18px" }}>
+                  <div style={{ flex:1, minWidth:0, paddingBottom: isLast ? 4 : "18px" }}>
                     <div style={styles.stopContent}>
                       <div style={{ flex:1, minWidth:0 }}>
-                        <p style={{ ...styles.stopName, color:isCompleted?"#9CA3AF":isCurrent?COLOR.primary:isSchool?"#D97706":"#111827", textDecoration:isCompleted?"line-through":"none", fontWeight:isCurrent||isSchool?600:400 }}>{stop.name}</p>
+                        <p style={{ ...styles.stopName, color: isCompleted ? "#9CA3AF" : isCurrent ? COLOR.primary : isSchool ? "#D97706" : "#111827", textDecoration: isCompleted ? "line-through" : "none", fontWeight: isCurrent || isSchool ? 600 : 400 }}>{stop.name}</p>
                         <p style={styles.stopSub}>
-                          {isCompleted ? `Departed ${getDepartureTime(i)}`
-                            : isCurrent ? "🚌 Bus is here now"
-                            : isSchool  ? `🏁 Est. arrival — ${eta}`
+                          {isCompleted ? `Departed at ${getDepartureTime(i)}`
+                            : isCurrent ? "Bus is here now"
+                            : isSchool  ? `Estimated arrival — ${eta}`
                             : "Upcoming stop"}
                         </p>
                       </div>
                       <div style={{ flexShrink:0 }}>
-                        {isCompleted && <span style={{ ...styles.badge, background:"#F0FDF4", color:"#16A34A", border:"0.5px solid #BBF7D0" }}>Done</span>}
-                        {isCurrent   && <span style={{ ...styles.badge, background:COLOR.primaryLight, color:COLOR.primary, border:`0.5px solid #BAE6FD` }}>Live</span>}
-                        {isSchool    && <span style={{ ...styles.badge, background:"#FFF7ED", color:"#C2410C", border:"0.5px solid #FED7AA" }}>{eta}</span>}
-                        {type==="upcoming" && <span style={{ fontSize:"10px", color:"#D1D5DB" }}>—</span>}
+                        {isCompleted        && <span style={{ ...styles.badge, background:"#F0FDF4", color:"#16A34A", border:"0.5px solid #BBF7D0" }}>Done</span>}
+                        {isCurrent          && <span style={{ ...styles.badge, background:COLOR.primaryLight, color:COLOR.primary, border:`0.5px solid #BAE6FD` }}>Live</span>}
+                        {isSchool           && <span style={{ ...styles.badge, background:"#FFF7ED", color:"#C2410C", border:"0.5px solid #FED7AA" }}>{eta}</span>}
+                        {type === "upcoming" && <span style={{ fontSize:"10px", color:"#D1D5DB" }}>—</span>}
                       </div>
                     </div>
                   </div>
@@ -543,9 +623,10 @@ export default function ParentBus() {
           </div>
         </div>
 
-        {showSOS        && <SOSModal  onClose={() => setShowSOS(false)}        studentName={studentData?.name||"Your child"} />}
-        {showCallDriver && <CallModal onClose={() => setShowCallDriver(false)} name={driverData?.name||"Driver"}  phone={driverData?.phone||"+91-0000000000"} />}
-        {showCallSchool && <CallModal onClose={() => setShowCallSchool(false)} name="School Office" phone="+91-1234567890" />}
+        {showSOS           && <SOSModal                onClose={() => setShowSOS(false)}             studentName={studentData?.name || "Your child"} />}
+        {showCallDriver    && <CallModal               onClose={() => setShowCallDriver(false)}       name={driverData?.name || "Driver"}  phone={driverData?.phone || ""} />}
+        {showCallSchool    && <CallModal               onClose={() => setShowCallSchool(false)}       name="School Office" phone="" />}
+        {showNotifSettings && <NotificationSettingsModal onClose={() => setShowNotifSettings(false)} prefs={notifPrefs} onChange={key => setNotifPrefs(p => ({ ...p, [key]: !p[key] }))} />}
       </div>
     </div>
   );
@@ -564,8 +645,9 @@ const styles = {
   fsSosBtn:       { display:"flex", alignItems:"center", gap:"6px", padding:"8px 12px", borderRadius:"20px", fontSize:"12px", fontWeight:600, background:"rgba(220,38,38,0.85)", backdropFilter:"blur(10px)", border:"1px solid rgba(255,255,255,0.2)", color:"white", cursor:"pointer" },
   fsMiniPill:     { position:"fixed", bottom:"max(24px, env(safe-area-inset-bottom, 24px))", left:"50%", transform:"translateX(-50%)", zIndex:10000, display:"flex", alignItems:"center", gap:"8px", padding:"10px 20px", borderRadius:"30px", background:"rgba(0,0,0,0.55)", backdropFilter:"blur(10px)", border:"1px solid rgba(255,255,255,0.15)", whiteSpace:"nowrap" },
   header:         { position:"absolute", top:0, left:0, right:0, zIndex:100, background:"linear-gradient(135deg, #0284C7 0%, #0EA5E9 100%)", paddingTop:"env(safe-area-inset-top, 44px)", paddingLeft:"16px", paddingRight:"16px", paddingBottom:"14px", borderRadius:"0 0 24px 24px", boxShadow:"0 4px 24px rgba(2,132,199,0.3)" },
-  navRow:         { display:"flex", alignItems:"center", gap:"6px", marginBottom:"12px", marginTop:"10px" },
+  navRow:         { display:"flex", alignItems:"center", gap:"12px", marginBottom:"12px", marginTop:"10px" },
   backBtn:        { width:"36px", height:"36px", borderRadius:"12px", background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", flexShrink:0 },
+  notifBtn:       { width:"36px", height:"36px", borderRadius:"12px", background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", fontSize:"18px", flexShrink:0 },
   navTitle:       { color:"white", fontSize:"17px", fontWeight:600, letterSpacing:"-0.3px" },
   navSub:         { color:"rgba(255,255,255,0.6)", fontSize:"12px", marginTop:"2px" },
   livePill:       { display:"flex", alignItems:"center", gap:"5px", background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.25)", borderRadius:"20px", padding:"5px 10px" },
