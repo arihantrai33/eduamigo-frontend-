@@ -256,7 +256,12 @@ export default function ParentBus() {
         setCompletedRoute([]);
       }
     });
-
+    // currentStopIndex driver se sync
+    const stopIndexRef = ref(db, `transport/${busInfo.firebasePath}/currentStopIndex`);
+    const unsubscribeStopIndex = onValue(stopIndexRef, (snap) => {
+      const idx = snap.val();
+      if (idx !== null && idx !== undefined) setCurrentStopIdx(idx);
+    });
     // Location listener — live GPS updates
     const busRef = ref(db, `transport/${busInfo.firebasePath}/location`);
     const unsubscribeLocation = onValue(busRef, async (snapshot) => {
