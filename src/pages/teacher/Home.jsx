@@ -1,4 +1,3 @@
-export default function TeacherHome() { return <div>Teacher Home</div>; }
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 
@@ -121,8 +120,7 @@ export default function Teachers() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setFormError(null);
     setFormLoading(true);
     try {
@@ -170,7 +168,6 @@ export default function Teachers() {
           padding: "12px 20px", borderRadius: "8px",
           border: `1px solid ${toast.type === "error" ? "#fca5a5" : "#86efac"}`,
           fontSize: "14px", fontWeight: 500, maxWidth: "340px",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
         }}>
           {toast.message}
         </div>
@@ -186,7 +183,7 @@ export default function Teachers() {
           style={{
             background: "#6366f1", color: "#fff", border: "none",
             borderRadius: "8px", padding: "10px 20px", fontSize: "14px",
-            fontWeight: 500, cursor: "pointer", display: "flex", alignItems: "center", gap: "6px"
+            fontWeight: 500, cursor: "pointer",
           }}
         >
           + Add Teacher
@@ -269,10 +266,9 @@ export default function Teachers() {
             </thead>
             <tbody>
               {teachers.map((teacher, i) => (
-                <tr key={teacher._id} style={{
-                  borderBottom: i < teachers.length - 1 ? "0.5px solid var(--color-border-tertiary)" : "none",
-                  transition: "background 0.15s"
-                }}
+                <tr
+                  key={teacher._id}
+                  style={{ borderBottom: i < teachers.length - 1 ? "0.5px solid var(--color-border-tertiary)" : "none" }}
                   onMouseEnter={(e) => e.currentTarget.style.background = "var(--color-background-secondary)"}
                   onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
                 >
@@ -377,7 +373,7 @@ export default function Teachers() {
                     {formError}
                   </div>
                 )}
-                <form onSubmit={handleSubmit}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
                   {[
                     { label: "Full Name", name: "name", type: "text", required: true },
                     { label: "Email", name: "email", type: "email", required: true },
@@ -387,7 +383,7 @@ export default function Teachers() {
                     { label: "Qualification", name: "qualification", type: "text", required: false },
                     { label: "Experience (years)", name: "experience", type: "number", required: false },
                   ].map((field) => (
-                    <div key={field.name} style={{ marginBottom: "14px" }}>
+                    <div key={field.name}>
                       <label style={{ display: "block", fontSize: "13px", color: "var(--color-text-secondary)", marginBottom: "5px" }}>
                         {field.label}{field.required && <span style={{ color: "#dc2626" }}> *</span>}
                       </label>
@@ -396,7 +392,6 @@ export default function Teachers() {
                         name={field.name}
                         value={form[field.name]}
                         onChange={handleFormChange}
-                        required={field.required}
                         style={{
                           width: "100%", padding: "9px 12px", fontSize: "14px",
                           border: "0.5px solid var(--color-border-tertiary)", borderRadius: "8px",
@@ -406,7 +401,7 @@ export default function Teachers() {
                       />
                     </div>
                   ))}
-                  <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
+                  <div style={{ display: "flex", gap: "10px", marginTop: "6px" }}>
                     <button
                       type="button"
                       onClick={closeModal}
@@ -417,7 +412,8 @@ export default function Teachers() {
                       }}
                     >Cancel</button>
                     <button
-                      type="submit"
+                      type="button"
+                      onClick={handleSubmit}
                       disabled={formLoading}
                       style={{
                         flex: 1, padding: "10px", background: formLoading ? "#a5b4fc" : "#6366f1",
@@ -428,7 +424,7 @@ export default function Teachers() {
                       {formLoading ? "Saving..." : editTeacher ? "Update Teacher" : "Add Teacher"}
                     </button>
                   </div>
-                </form>
+                </div>
               </>
             )}
           </div>
@@ -451,6 +447,7 @@ export default function Teachers() {
             </p>
             <div style={{ display: "flex", gap: "10px" }}>
               <button
+                type="button"
                 onClick={() => setDeleteConfirm(null)}
                 style={{
                   flex: 1, padding: "10px", border: "0.5px solid var(--color-border-secondary)",
@@ -459,6 +456,7 @@ export default function Teachers() {
                 }}
               >Cancel</button>
               <button
+                type="button"
                 onClick={() => handleDelete(deleteConfirm._id)}
                 style={{
                   flex: 1, padding: "10px", background: "#dc2626", color: "#fff",
