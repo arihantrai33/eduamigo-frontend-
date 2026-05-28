@@ -9,10 +9,6 @@ const roles = [
   { id: "admin", label: "Admin", emoji: "🛡️" },
 ];
 
-const getFieldConfig = (role) => {
-  return { label: "EMAIL", placeholder: "e.g. student@gmail.com", type: "email" };
-};
-
 export default function Login() {
   const [selectedRole, setSelectedRole] = useState("student");
   const [userId, setUserId] = useState("");
@@ -21,7 +17,6 @@ export default function Login() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { login } = useAuth();
-  const fieldConfig = getFieldConfig(selectedRole);
 
   const handleRoleChange = (role) => {
     setSelectedRole(role);
@@ -31,7 +26,7 @@ export default function Login() {
 
   const handleLogin = async () => {
     if (!userId || !password) {
-      setError("Please fill in all fields");
+      setError("Please fill in all fields.");
       return;
     }
     setLoading(true);
@@ -40,19 +35,17 @@ export default function Login() {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/users/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: userId, password, role: selectedRole })
+        body: JSON.stringify({ email: userId, password, role: selectedRole }),
       });
       const data = await res.json();
       if (data.success) {
-        localStorage.setItem("token", data.token);
-        login(data.user);
-        setTimeout(() => navigate(`/${selectedRole}/home`), 100);
+        login(data.user, data.token);
+        navigate(`/${selectedRole}/home`);
       } else {
         setError(data.message || "Invalid credentials. Please try again.");
       }
-    } catch (err) {
-      setError("Something went wrong. Try again.");
-      console.error(err);
+    } catch {
+      setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -65,14 +58,14 @@ export default function Login() {
       display: "flex",
       flexDirection: "column",
       justifyContent: "flex-end",
-      fontFamily: "sans-serif"
+      fontFamily: "sans-serif",
     }}>
       <div style={{ flex: 1 }} />
       <div style={{
         background: "white",
         borderRadius: "28px 28px 0 0",
         padding: "32px 24px 40px",
-        boxShadow: "0 -4px 32px rgba(0,0,0,0.1)"
+        boxShadow: "0 -4px 32px rgba(0,0,0,0.1)",
       }}>
         <h2 style={{ margin: "0 0 4px", fontSize: "24px", fontWeight: "700" }}>
           Welcome Back 🎓
@@ -80,6 +73,8 @@ export default function Login() {
         <p style={{ margin: "0 0 24px", color: "#888", fontSize: "14px" }}>
           Select your role to continue
         </p>
+
+        {/* Role Selector */}
         <div style={{ display: "flex", gap: "10px", marginBottom: "24px" }}>
           {roles.map((role) => (
             <button
@@ -91,7 +86,7 @@ export default function Login() {
                 background: selectedRole === role.id ? "#f0f7ff" : "white",
                 color: selectedRole === role.id ? "#1a73e8" : "#666",
                 fontWeight: "600", fontSize: "12px", cursor: "pointer",
-                display: "flex", flexDirection: "column", alignItems: "center", gap: "4px"
+                display: "flex", flexDirection: "column", alignItems: "center", gap: "4px",
               }}
             >
               <span style={{ fontSize: "20px" }}>{role.emoji}</span>
@@ -99,21 +94,25 @@ export default function Login() {
             </button>
           ))}
         </div>
+
+        {/* Email */}
         <label style={{ fontSize: "11px", fontWeight: "700", color: "#999", letterSpacing: "1px" }}>
-          {fieldConfig.label}
+          EMAIL
         </label>
         <input
-          type={fieldConfig.type}
+          type="email"
           value={userId}
           onChange={(e) => setUserId(e.target.value)}
-          placeholder={fieldConfig.placeholder}
+          placeholder="e.g. user@school.com"
           style={{
             width: "100%", padding: "14px 16px", borderRadius: "12px",
             border: "1.5px solid #eee", fontSize: "15px", marginTop: "8px",
             marginBottom: "16px", outline: "none", boxSizing: "border-box",
-            color: "#111", background: "white"
+            color: "#111", background: "white",
           }}
         />
+
+        {/* Password */}
         <label style={{ fontSize: "11px", fontWeight: "700", color: "#999", letterSpacing: "1px" }}>
           PASSWORD
         </label>
@@ -122,17 +121,25 @@ export default function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="••••••••"
+          onKeyDown={(e) => e.key === "Enter" && handleLogin()}
           style={{
             width: "100%", padding: "14px 16px", borderRadius: "12px",
             border: "1.5px solid #eee", fontSize: "15px", marginTop: "8px",
             marginBottom: "8px", outline: "none", boxSizing: "border-box",
-            color: "#111", background: "white"
+            color: "#111", background: "white",
           }}
         />
+
+        {/* Error */}
         {error && (
-          <p style={{ color: "red", fontSize: "13px", marginBottom: "12px" }}>{error}</p>
+          <p style={{ color: "#E11D48", fontSize: "13px", marginBottom: "8px", fontWeight: "500" }}>
+            {error}
+          </p>
         )}
-        <div style={{ marginBottom: "24px" }} />
+
+        <div style={{ marginBottom: "16px" }} />
+
+        {/* Login Button */}
         <button
           onClick={handleLogin}
           disabled={loading}
@@ -140,14 +147,19 @@ export default function Login() {
             width: "100%", padding: "16px", borderRadius: "14px", border: "none",
             background: loading ? "#aaa" : "linear-gradient(135deg, #1a73e8, #6c63ff)",
             color: "white", fontSize: "16px", fontWeight: "700",
-            cursor: loading ? "not-allowed" : "pointer", letterSpacing: "0.5px"
+            cursor: loading ? "not-allowed" : "pointer", letterSpacing: "0.5px",
           }}
         >
           {loading ? "Logging in..." : "Login to EduAmigo →"}
         </button>
+
+        {/* Forgot Password */}
         <p style={{ textAlign: "center", marginTop: "16px", fontSize: "13px", color: "#888" }}>
           Forgot password?{" "}
-          <span style={{ color: "#1a73e8", fontWeight: "600", cursor: "pointer" }}>
+          <span
+            onClick={() => navigate("/forgot-password")}
+            style={{ color: "#1a73e8", fontWeight: "600", cursor: "pointer" }}
+          >
             Reset here
           </span>
         </p>

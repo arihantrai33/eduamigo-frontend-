@@ -7,21 +7,24 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    try {
       const stored = localStorage.getItem("eduamigo_user");
       const token = localStorage.getItem("token");
-      if (stored) {
+      if (stored && token) {
         const parsedUser = JSON.parse(stored);
         setUser({ ...parsedUser, token });
       }
+    } catch {
+      localStorage.removeItem("eduamigo_user");
+      localStorage.removeItem("token");
+    } finally {
       setLoading(false);
-    }, 2600);
-    return () => clearTimeout(timer);
+    }
   }, []);
 
-  const login = (userData) => {
-    const token = localStorage.getItem("token");
+  const login = (userData, token) => {
     localStorage.setItem("eduamigo_user", JSON.stringify(userData));
+    localStorage.setItem("token", token);
     setUser({ ...userData, token });
   };
 
