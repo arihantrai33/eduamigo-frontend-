@@ -1,0 +1,1 @@
+export default function ComingSoon() { return <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", fontFamily: "Poppins, sans-serif", color: "#7B8099", fontSize: 16 }}>Coming Soon...</div> }
