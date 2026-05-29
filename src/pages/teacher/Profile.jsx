@@ -1,414 +1,278 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-
-
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import axios from "axios";
 
 const API = import.meta.env.VITE_API_URL;
+const authHeader = () => ({
+  headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+});
 
 export default function TeacherProfile() {
-  const navigate = useNavigate();
   const { logout } = useAuth();
+  const navigate = useNavigate();
   const [teacher, setTeacher] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [showInfo, setShowInfo] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
+  const [showIdCard, setShowIdCard] = useState(false);
+  const [notifications, setNotifications] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
+  const [language, setLanguage] = useState("English");
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const user = JSON.parse(localStorage.getItem('eduamigo_user'));
-        const res = await fetch(`${API}/teachers/me`, {
-          headers: { Authorization: `Bearer ${user.token}` },
-        });
-        const data = await res.json();
-        if (!data.success) throw new Error(data.message || 'Failed to load profile');
-        setTeacher(data.data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProfile();
-  }, []);
+  useEffect(() => { fetchProfile(); }, []);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
+  const fetchProfile = async () => {
+    try {
+      const res = await axios.get(`${API}/teachers/me`, authHeader());
+      if (res.data.success) setTeacher(res.data.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  const handleLogout = () => { logout(); navigate("/login"); };
+  const getInitial = () => (teacher?.name || "T")[0].toUpperCase();
+
   if (loading) return (
-    <div style={styles.centered}>
-      <div style={styles.spinner} />
-      <p style={styles.loadingText}>Loading Profile...</p>
+    <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f5f6fa" }}>
+      <div style={{ fontSize: 14, color: "#999" }}>Loading...</div>
     </div>
   );
 
-  if (error) return (
-    <div style={styles.centered}>
-      <p style={styles.errorText}>⚠️ {error}</p>
-    </div>
-  );
-
-  if (!teacher) return (
-    <div style={styles.centered}>
-      <p style={styles.emptyText}>No profile data found.</p>
-    </div>
-  );
-
-  const initials = teacher.name
-    ? teacher.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
-    : 'T';
-
-  return (
-    <div style={styles.container}>
-      {/* Header */}
-      <div style={styles.header}>
-        <div style={styles.headerTop}>
-          <button onClick={() => navigate('/teacher/home')} style={styles.backBtn}>←</button>
-          <div>
-            <p style={styles.portalLabel}>TEACHER PORTAL</p>
-            <h1 style={styles.headerTitle}>My Profile</h1>
+  if (showProfile) return (
+    <div style={{ position: "absolute", inset: 0, background: "#f5f6fa", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
+      <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
+        <button onClick={() => setShowProfile(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
+        <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>My Information</h2>
+      </div>
+      <div style={{ flex: 1, overflowY: "auto", padding: "20px 16px" }}>
+        <div style={{ textAlign: "center", marginBottom: "24px" }}>
+          <div style={{ width: "84px", height: "84px", borderRadius: "50%", background: "linear-gradient(135deg,#4f46e5,#7c3aed)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto", fontSize: "32px", fontWeight: "700", color: "white", border: "3px solid #e5e7eb" }}>
+            {getInitial()}
           </div>
+          <div style={{ fontSize: "12px", color: "#888", marginTop: "8px" }}>Profile photo is managed by school admin</div>
         </div>
-
-        {/* Avatar inside header */}
-        <div style={styles.avatarSection}>
-          <div style={styles.avatar}>
-            {teacher.photo
-              ? <img src={teacher.photo} alt="Profile" style={styles.avatarImg} />
-              : <span style={styles.avatarInitials}>{initials}</span>
-            }
+        {[
+          { label: "Full Name",     value: teacher?.name || "—" },
+          { label: "Email",         value: teacher?.email || "—" },
+          { label: "Employee ID",   value: teacher?.employeeId || "—" },
+          { label: "Mobile",        value: teacher?.phone || "—" },
+          { label: "Gender",        value: teacher?.gender || "—" },
+          { label: "Date of Birth", value: teacher?.dateOfBirth ? new Date(teacher.dateOfBirth).toLocaleDateString("en-IN", { day: "2-digit", month: "long", year: "numeric" }) : "—" },
+          { label: "Joining Date",  value: teacher?.joiningDate ? new Date(teacher.joiningDate).toLocaleDateString("en-IN", { day: "2-digit", month: "long", year: "numeric" }) : "—" },
+          { label: "Address",       value: teacher?.address || "—" },
+        ].map(f => (
+          <div key={f.label} style={{ marginBottom: "14px" }}>
+            <label style={{ fontSize: "11px", fontWeight: "700", color: "#888", textTransform: "uppercase", letterSpacing: "1px" }}>{f.label}</label>
+            <div style={{ padding: "13px 15px", borderRadius: "12px", background: "#f5f6fa", border: "1.5px solid #e5e7eb", fontSize: "14px", marginTop: "6px", color: "#444" }}>{f.value}</div>
           </div>
-          <h2 style={styles.teacherName}>{teacher.name}</h2>
-          <p style={styles.teacherDesig}>
-            {teacher.subjects?.length > 0 ? teacher.subjects.join(' • ') : 'Teacher'}
-          </p>
-          <div style={styles.badgeRow}>
-            <span style={styles.badge}>🎓 {teacher.qualification || 'N/A'}</span>
-            <span style={styles.badge}>🏫 {teacher.experience ? `${teacher.experience} yrs exp` : 'N/A'}</span>
+        ))}
+        <div style={{ background: "#FFF9C4", borderRadius: "12px", padding: "12px 16px", marginTop: "8px", display: "flex", gap: "10px", alignItems: "flex-start" }}>
+          <span style={{ fontSize: "18px" }}>⚠️</span>
+          <div style={{ fontSize: "13px", color: "#F57F17", fontWeight: "600", lineHeight: 1.5 }}>
+            Profile details can only be changed by school administration. Contact HR for any corrections.
           </div>
         </div>
       </div>
+    </div>
+  );
 
-      <div style={styles.content}>
-
-        {/* Stats Row */}
-        <div style={styles.statsRow}>
-          <div style={styles.statBox}>
-            <span style={styles.statValue}>{teacher.assignedClasses?.length || 0}</span>
-            <span style={styles.statLabel}>CLASSES</span>
-          </div>
-          <div style={styles.statDivider} />
-          <div style={styles.statBox}>
-            <span style={styles.statValue}>{teacher.subjects?.length || 0}</span>
-            <span style={styles.statLabel}>SUBJECTS</span>
-          </div>
-          <div style={styles.statDivider} />
-          <div style={styles.statBox}>
-            <span style={styles.statValue}>{teacher.experience || 0}</span>
-            <span style={styles.statLabel}>YRS EXP</span>
-          </div>
-        </div>
-
-        {/* Menu Items */}
-        <div style={styles.menuCard}>
-          <MenuItem
-            icon="👤"
-            label="View Profile"
-            sublabel="Your school information"
-            onClick={() => setShowInfo(v => !v)}
-          />
-          <MenuItem
-            icon="🔔"
-            label="Notifications"
-            sublabel="View all notifications"
-            onClick={() => navigate('/teacher/notifications')}
-          />
-          <MenuItem
-            icon="⚙️"
-            label="Settings"
-            sublabel="App preferences"
-            onClick={() => {}}
-          />
-          <MenuItem
-            icon="🆔"
-            label="Teacher ID Card"
-            sublabel={`Employee ID: ${teacher.employeeId || 'N/A'}`}
-            onClick={() => {}}
-          />
-          <MenuItem
-            icon="🛟"
-            label="Help & Support"
-            sublabel="FAQs and contact"
-            onClick={() => {}}
-            last
-          />
-        </div>
-
-        {/* Expandable Profile Info */}
-        {showInfo && (
-          <>
-            <div style={styles.section}>
-              <h3 style={styles.sectionTitle}>Personal Information</h3>
-              <div style={styles.card}>
-                <InfoRow icon="✉️" label="Email" value={teacher.email || 'Not provided'} />
-                <InfoRow icon="📱" label="Mobile" value={teacher.phone || 'Not provided'} />
-                <InfoRow icon="⚧️" label="Gender" value={teacher.gender || 'Not provided'} />
-                <InfoRow icon="🎂" label="Date of Birth" value={
-                  teacher.dateOfBirth
-                    ? new Date(teacher.dateOfBirth).toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' })
-                    : 'Not provided'
-                } last />
+  if (showSettings) return (
+    <div style={{ position: "absolute", inset: 0, background: "#f5f6fa", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
+      <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
+        <button onClick={() => setShowSettings(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
+        <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Settings</h2>
+      </div>
+      <div style={{ flex: 1, overflowY: "auto", padding: "16px" }}>
+        <div style={{ background: "white", borderRadius: "16px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}>
+          {[
+            { label: "Push Notifications", sub: "Get alerts for attendance, results and notices", value: notifications, setter: setNotifications },
+            { label: "Dark Mode",           sub: "Switch to dark theme",                          value: darkMode,       setter: setDarkMode },
+          ].map((s, i, arr) => (
+            <div key={s.label} style={{ padding: "16px", borderBottom: i < arr.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div>
+                <div style={{ fontWeight: "600", fontSize: "14px" }}>{s.label}</div>
+                <div style={{ fontSize: "12px", color: "#888", marginTop: "2px" }}>{s.sub}</div>
+              </div>
+              <div onClick={() => s.setter(!s.value)} style={{ width: "46px", height: "26px", borderRadius: "13px", background: s.value ? "#4f46e5" : "#e5e7eb", cursor: "pointer", position: "relative", transition: "background .2s", flexShrink: 0 }}>
+                <div style={{ position: "absolute", top: "3px", left: s.value ? "23px" : "3px", width: "20px", height: "20px", borderRadius: "50%", background: "white", transition: "left .2s", boxShadow: "0 1px 4px rgba(0,0,0,0.2)" }} />
               </div>
             </div>
-
-            <div style={styles.section}>
-              <h3 style={styles.sectionTitle}>Professional Information</h3>
-              <div style={styles.card}>
-                <InfoRow icon="📚" label="Subjects" value={teacher.subjects?.length > 0 ? teacher.subjects.join(', ') : 'Not assigned'} />
-                <InfoRow icon="🏛️" label="Assigned Classes" value={teacher.assignedClasses?.length > 0 ? teacher.assignedClasses.join(', ') : 'Not assigned'} />
-                <InfoRow icon="🎓" label="Qualification" value={teacher.qualification || 'Not provided'} />
-                <InfoRow icon="💼" label="Experience" value={teacher.experience ? `${teacher.experience} Years` : 'Not provided'} />
-                <InfoRow icon="📅" label="Joining Date" value={
-                  teacher.joiningDate
-                    ? new Date(teacher.joiningDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' })
-                    : 'Not provided'
-                } last />
-              </div>
+          ))}
+          <div style={{ padding: "16px" }}>
+            <div style={{ fontWeight: "600", fontSize: "14px", marginBottom: "8px" }}>Language</div>
+            <select value={language} onChange={e => setLanguage(e.target.value)} style={{ width: "100%", padding: "10px", borderRadius: "10px", border: "1.5px solid #e5e7eb", fontSize: "14px", outline: "none", fontFamily: "Inter, sans-serif" }}>
+              <option>English</option>
+              <option>Hindi</option>
+            </select>
+          </div>
+        </div>
+        <div style={{ background: "white", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginTop: "12px" }}>
+          <div style={{ fontWeight: "700", fontSize: "13px", color: "#888", marginBottom: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>Account</div>
+          {["Change Password", "Privacy Policy", "Terms of Service"].map((item, i, arr) => (
+            <div key={item} style={{ padding: "14px 0", borderBottom: i < arr.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
+              <span style={{ fontSize: "14px", fontWeight: "600" }}>{item}</span>
+              <span style={{ color: "#ccc" }}>›</span>
             </div>
-          </>
-        )}
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 
-        {/* Logout Button */}
-        <div style={styles.logoutCard}>
-          <button onClick={handleLogout} style={styles.logoutBtn}>
-            <span style={styles.logoutIcon}>🚪</span>
-            <span style={styles.logoutText}>Log Out</span>
-            <span style={styles.logoutArrow}>›</span>
+  if (showIdCard) return (
+    <div style={{ position: "absolute", inset: 0, background: "#f5f6fa", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
+      <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
+        <button onClick={() => setShowIdCard(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
+        <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Teacher ID Card</h2>
+      </div>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "24px" }}>
+        <div style={{ width: "100%", maxWidth: "320px", background: "white", borderRadius: "20px", overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.15)" }}>
+          <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "20px", color: "white", textAlign: "center" }}>
+            <div style={{ fontSize: "13px", fontWeight: "700", letterSpacing: "2px", opacity: .8 }}>EDUAMIGO SCHOOL</div>
+            <div style={{ fontSize: "11px", opacity: .7 }}>Faculty Identity Card 2025-26</div>
+          </div>
+          <div style={{ padding: "20px", textAlign: "center" }}>
+            <div style={{ width: "72px", height: "72px", borderRadius: "50%", background: "linear-gradient(135deg,#4f46e5,#7c3aed)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px", fontSize: "28px", fontWeight: "700", color: "white", border: "3px solid #e5e7eb" }}>
+              {getInitial()}
+            </div>
+            <div style={{ fontWeight: "800", fontSize: "18px", color: "#111" }}>{teacher?.name || "—"}</div>
+            <div style={{ fontSize: "13px", color: "#666", marginTop: "4px" }}>{teacher?.subjects?.join(", ") || "—"} • {teacher?.qualification || "—"}</div>
+            <div style={{ marginTop: "16px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", textAlign: "left" }}>
+              {[
+                ["Employee ID", teacher?.employeeId || "—"],
+                ["Email",       teacher?.email || "—"],
+                ["Classes",     teacher?.assignedClasses?.join(", ") || "—"],
+                ["Session",     "2025-26"],
+              ].map(([l, v]) => (
+                <div key={l} style={{ background: "#f5f6fa", borderRadius: "10px", padding: "10px" }}>
+                  <div style={{ fontSize: "10px", color: "#888", fontWeight: "700", textTransform: "uppercase" }}>{l}</div>
+                  <div style={{ fontSize: "12px", fontWeight: "700", color: "#111", marginTop: "2px" }}>{v}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ background: "#f5f6fa", padding: "12px 20px", textAlign: "center" }}>
+            <div style={{ fontSize: "11px", color: "#888" }}>If found, please return to school administration</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (showHelp) return (
+    <div style={{ position: "absolute", inset: 0, background: "#f5f6fa", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
+      <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
+        <button onClick={() => setShowHelp(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
+        <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Help & Support</h2>
+      </div>
+      <div style={{ flex: 1, overflowY: "auto", padding: "16px" }}>
+        {[
+          { q: "How do I mark attendance?",   a: "Go to Attendance, select the class and date, then mark each student present or absent." },
+          { q: "How do I upload marks?",       a: "Go to Upload, select the exam and subject, then enter marks for each student." },
+          { q: "How do I apply for leave?",    a: "Go to Leave, fill in the leave request form and submit for admin approval." },
+          { q: "How do I message a student?",  a: "Go to Messages and select the student or parent to start a conversation." },
+          { q: "How do I view my timetable?",  a: "Go to Home and your daily schedule is shown on the timetable section." },
+          { q: "How do I change my password?", a: "Go to Profile, then Settings, then Change Password." },
+        ].map((faq, i) => (
+          <div key={i} style={{ background: "white", borderRadius: "14px", padding: "16px", marginBottom: "10px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+            <div style={{ fontWeight: "700", fontSize: "14px", color: "#111", marginBottom: "6px" }}>❓ {faq.q}</div>
+            <div style={{ fontSize: "13px", color: "#666", lineHeight: 1.6 }}>💡 {faq.a}</div>
+          </div>
+        ))}
+        <div style={{ background: "white", borderRadius: "14px", padding: "16px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)", textAlign: "center" }}>
+          <div style={{ fontSize: "16px", fontWeight: "700", marginBottom: "8px" }}>Still need help?</div>
+          <div style={{ fontSize: "13px", color: "#888", marginBottom: "12px" }}>Contact school administration</div>
+          <button style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", color: "white", border: "none", borderRadius: "12px", padding: "12px 24px", fontWeight: "700", cursor: "pointer", fontSize: "14px" }}>
+            📞 Call School
           </button>
         </div>
+      </div>
+    </div>
+  );
 
-        <div style={{ height: 100 }} />
+  const menuItems = [
+    { icon: "👤", label: "View Profile",    sub: "Your school information",  action: () => setShowProfile(true) },
+    { icon: "🔔", label: "Notifications",   sub: "View all notifications",   action: () => navigate("/teacher/notifications") },
+    { icon: "⚙️", label: "Settings",        sub: "App preferences",          action: () => setShowSettings(true) },
+    { icon: "🪪", label: "Teacher ID Card", sub: "View your faculty ID",     action: () => setShowIdCard(true) },
+    { icon: "🤝", label: "Help & Support",  sub: "FAQs and contact",         action: () => setShowHelp(true) },
+  ];
+
+  return (
+    <div style={{ position: "absolute", inset: 0, background: "#f5f6fa", fontFamily: "Inter, sans-serif", overflowY: "auto", paddingBottom: "80px" }}>
+      <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 40px", color: "white", textAlign: "center" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+          <button onClick={() => navigate(-1)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
+          <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>My Profile</h2>
+          <div style={{ width: "36px" }} />
+        </div>
+        <div style={{ width: "84px", height: "84px", borderRadius: "50%", background: "rgba(255,255,255,0.25)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "32px", fontWeight: "700", border: "3px solid rgba(255,255,255,0.5)", margin: "0 auto 12px" }}>
+          {getInitial()}
+        </div>
+        <div style={{ fontWeight: "700", fontSize: "22px" }}>{teacher?.name || "—"}</div>
+        <div style={{ fontSize: "13px", opacity: 0.8, marginTop: "4px" }}>{teacher?.subjects?.join(" • ") || "—"} • {teacher?.email || "—"}</div>
+        <div style={{ marginTop: "10px" }}>
+          <span style={{ background: "rgba(255,255,255,0.2)", padding: "4px 12px", borderRadius: "20px", fontSize: "12px", fontWeight: "600" }}>🏫 Faculty</span>
+        </div>
       </div>
 
-      {/* Bottom Nav */}
-      <div style={styles.bottomNav}>
-        <NavItem icon="🏠" label="Home" onClick={() => navigate('/teacher/home')} />
-        <NavItem icon="✅" label="Attendance" onClick={() => navigate('/teacher/attendance')} />
-        <NavItem icon="📤" label="Upload" onClick={() => navigate('/teacher/upload')} />
-        <NavItem icon="💬" label="Messages" onClick={() => navigate('/teacher/chat')} />
-        <NavItem icon="👤" label="Me" onClick={() => navigate('/teacher/profile')} active />
+      <div style={{ padding: "16px", marginTop: "-20px" }}>
+        <div style={{ background: "white", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: "16px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px", textAlign: "center" }}>
+            {[
+              { label: "CLASSES",    value: teacher?.assignedClasses?.length || "—" },
+              { label: "SUBJECTS",   value: teacher?.subjects?.length || "—" },
+              { label: "EXPERIENCE", value: teacher?.experience ? `${teacher.experience}Y` : "—" },
+            ].map(s => (
+              <div key={s.label}>
+                <div style={{ fontWeight: "700", fontSize: "18px", color: "#4f46e5" }}>{s.value}</div>
+                <div style={{ fontSize: "9px", color: "#888", marginTop: "2px" }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ background: "white", borderRadius: "16px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: "16px" }}>
+          {menuItems.map((item, i) => (
+            <div key={item.label} onClick={item.action} style={{ padding: "16px", borderBottom: i < menuItems.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", alignItems: "center", gap: "14px", cursor: "pointer" }}>
+              <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: "#f5f6ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>
+                {item.icon}
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: "600", fontSize: "14px", color: "#111" }}>{item.label}</div>
+                <div style={{ fontSize: "12px", color: "#888", marginTop: "2px" }}>{item.sub}</div>
+              </div>
+              <div style={{ color: "#ccc", fontSize: "18px" }}>›</div>
+            </div>
+          ))}
+        </div>
+
+        <div onClick={handleLogout} style={{ background: "white", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", display: "flex", alignItems: "center", gap: "14px", cursor: "pointer" }}>
+          <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: "#fff5f5", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>🚪</div>
+          <div style={{ flex: 1, fontWeight: "600", fontSize: "14px", color: "#ef4444" }}>Log Out</div>
+          <div style={{ color: "#ef4444", fontSize: "18px" }}>›</div>
+        </div>
+      </div>
+
+      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 420, background: "white", borderTop: "1px solid #f3f4f6", display: "flex", justifyContent: "space-around", padding: "8px 0 12px", zIndex: 100 }}>
+        {[
+          { icon: "🏠", label: "Home",       path: "/teacher/home" },
+          { icon: "✅", label: "Attendance", path: "/teacher/attendance" },
+          { icon: "📤", label: "Upload",     path: "/teacher/upload" },
+          { icon: "💬", label: "Messages",   path: "/teacher/chat" },
+          { icon: "👤", label: "Me",         path: "/teacher/profile" },
+        ].map(n => (
+          <button key={n.label} onClick={() => navigate(n.path)} style={{ background: "none", border: "none", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, cursor: "pointer", padding: "4px 12px" }}>
+            <span style={{ fontSize: 22 }}>{n.icon}</span>
+            <span style={{ fontSize: 10, fontWeight: 600, color: n.path === "/teacher/profile" ? "#4f46e5" : "#9E9E9E" }}>{n.label}</span>
+          </button>
+        ))}
       </div>
     </div>
   );
 }
-
-function MenuItem({ icon, label, sublabel, onClick, last }) {
-  return (
-    <button onClick={onClick} style={{ ...styles.menuItem, borderBottom: last ? 'none' : '1px solid #F0F0F0' }}>
-      <div style={styles.menuIconWrap}>
-        <span style={{ fontSize: 18 }}>{icon}</span>
-      </div>
-      <div style={styles.menuText}>
-        <p style={styles.menuLabel}>{label}</p>
-        <p style={styles.menuSublabel}>{sublabel}</p>
-      </div>
-      <span style={styles.menuArrow}>›</span>
-    </button>
-  );
-}
-
-function InfoRow({ icon, label, value, last }) {
-  return (
-    <div style={{ ...styles.infoRow, borderBottom: last ? 'none' : '1px solid #F0F0F0' }}>
-      <span style={styles.infoIcon}>{icon}</span>
-      <div style={styles.infoContent}>
-        <p style={styles.infoLabel}>{label}</p>
-        <p style={styles.infoValue}>{value}</p>
-      </div>
-    </div>
-  );
-}
-
-function NavItem({ icon, label, onClick, active }) {
-  return (
-    <button onClick={onClick} style={styles.navItem}>
-      <span style={{ fontSize: 22 }}>{icon}</span>
-      <span style={{ ...styles.navLabel, color: active ? '#5C6BC0' : '#9E9E9E' }}>{label}</span>
-    </button>
-  );
-}
-
-const styles = {
-  container: {
-    fontFamily: "'Poppins', sans-serif",
-    backgroundColor: '#F5F6FA',
-    minHeight: '100vh',
-    maxWidth: 420,
-    margin: '0 auto',
-    position: 'relative',
-  },
-  header: {
-    background: 'linear-gradient(135deg, #5C6BC0, #3949AB)',
-    padding: '20px 16px 32px',
-  },
-  headerTop: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 12,
-    marginBottom: 20,
-  },
-  backBtn: {
-    background: 'rgba(255,255,255,0.2)',
-    border: 'none',
-    color: '#fff',
-    fontSize: 20,
-    borderRadius: 10,
-    width: 36,
-    height: 36,
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  portalLabel: {
-    color: 'rgba(255,255,255,0.75)',
-    fontSize: 10,
-    fontWeight: 600,
-    letterSpacing: 1.5,
-    margin: 0,
-  },
-  headerTitle: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 700,
-    margin: 0,
-  },
-  avatarSection: {
-    textAlign: 'center',
-  },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: '50%',
-    background: 'rgba(255,255,255,0.25)',
-    border: '3px solid rgba(255,255,255,0.6)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: '0 auto 10px',
-    overflow: 'hidden',
-  },
-  avatarImg: { width: '100%', height: '100%', objectFit: 'cover' },
-  avatarInitials: { color: '#fff', fontSize: 28, fontWeight: 700 },
-  teacherName: { fontSize: 20, fontWeight: 700, color: '#fff', margin: '0 0 4px' },
-  teacherDesig: { fontSize: 13, color: 'rgba(255,255,255,0.8)', fontWeight: 500, margin: '0 0 10px' },
-  badgeRow: { display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' },
-  badge: {
-    background: 'rgba(255,255,255,0.2)',
-    color: '#fff',
-    fontSize: 11,
-    fontWeight: 600,
-    padding: '4px 10px',
-    borderRadius: 20,
-  },
-  content: { padding: '0 16px', marginTop: -16 },
-  statsRow: {
-    background: '#fff',
-    borderRadius: 14,
-    display: 'flex',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    padding: '16px 0',
-    marginBottom: 16,
-    boxShadow: '0 2px 12px rgba(92,107,192,0.10)',
-  },
-  statBox: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 },
-  statValue: { fontSize: 22, fontWeight: 700, color: '#3949AB' },
-  statLabel: { fontSize: 10, fontWeight: 600, color: '#9E9E9E', letterSpacing: 0.8 },
-  statDivider: { width: 1, height: 36, background: '#F0F0F0' },
-  menuCard: {
-    background: '#fff',
-    borderRadius: 14,
-    overflow: 'hidden',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-    marginBottom: 16,
-  },
-  menuItem: {
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    gap: 12,
-    padding: '14px 16px',
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    textAlign: 'left',
-  },
-  menuIconWrap: {
-    width: 38,
-    height: 38,
-    borderRadius: 10,
-    background: '#EEF0FF',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0,
-  },
-  menuText: { flex: 1 },
-  menuLabel: { fontSize: 14, fontWeight: 600, color: '#1A1A2E', margin: 0 },
-  menuSublabel: { fontSize: 11, color: '#9E9E9E', margin: 0, marginTop: 1 },
-  menuArrow: { fontSize: 20, color: '#BDBDBD', fontWeight: 300 },
-  logoutCard: {
-    background: '#fff',
-    borderRadius: 14,
-    overflow: 'hidden',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-    marginBottom: 16,
-  },
-  logoutBtn: {
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    gap: 12,
-    padding: '16px 16px',
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-  },
-  logoutIcon: { fontSize: 20 },
-  logoutText: { flex: 1, fontSize: 15, fontWeight: 600, color: '#E53935', textAlign: 'left' },
-  logoutArrow: { fontSize: 20, color: '#E53935' },
-  section: { marginBottom: 16 },
-  sectionTitle: {
-    fontSize: 13, fontWeight: 700, color: '#5C6BC0',
-    textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 8px 4px',
-  },
-  card: {
-    background: '#fff', borderRadius: 14,
-    overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-  },
-  infoRow: { display: 'flex', alignItems: 'flex-start', padding: '14px 16px', gap: 12 },
-  infoIcon: { fontSize: 18, marginTop: 2 },
-  infoContent: { flex: 1 },
-  infoLabel: { fontSize: 11, color: '#9E9E9E', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.8, margin: '0 0 2px' },
-  infoValue: { fontSize: 14, color: '#1A1A2E', fontWeight: 500, margin: 0, wordBreak: 'break-word' },
-  bottomNav: {
-    position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
-    width: '100%', maxWidth: 420, background: '#fff',
-    borderTop: '1px solid #EEEEEE', display: 'flex',
-    justifyContent: 'space-around', padding: '8px 0 12px', zIndex: 100,
-  },
-  navItem: {
-    background: 'none', border: 'none', display: 'flex',
-    flexDirection: 'column', alignItems: 'center', gap: 2, cursor: 'pointer', padding: '4px 12px',
-  },
-  navLabel: { fontSize: 10, fontWeight: 600 },
-  centered: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', fontFamily: "'Poppins', sans-serif" },
-  spinner: { width: 36, height: 36, border: '3px solid #EEF0FF', borderTop: '3px solid #5C6BC0', borderRadius: '50%', animation: 'spin 0.8s linear infinite' },
-  loadingText: { color: '#5C6BC0', fontSize: 14, marginTop: 12 },
-  errorText: { color: '#E53935', fontSize: 14 },
-  emptyText: { color: '#9E9E9E', fontSize: 14 },
-};
