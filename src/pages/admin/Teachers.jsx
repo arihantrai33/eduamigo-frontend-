@@ -12,7 +12,7 @@ const CLASSES  = ["1","2","3","4","5","6","7","8","9","10","11","12"];
 
 const emptyForm = {
   name: "", email: "", phone: "", employeeId: "",
-  subject: "", qualification: "", experience: "",
+  subjects: [], qualification: "", experience: "",
   salary: "", address: "", gender: "", dateOfBirth: "",
   assignedClasses: [],
 };
@@ -75,7 +75,7 @@ export default function Teachers() {
     const q = search.toLowerCase();
     setTeachers(allTeachers.filter(t =>
       t.name?.toLowerCase().includes(q) ||
-      t.subject?.toLowerCase().includes(q) ||
+      t.subjects?.some(s => s.toLowerCase().includes(q)) ||
       t.employeeId?.toLowerCase().includes(q)
     ));
   }, [search, allTeachers]);
@@ -100,9 +100,11 @@ export default function Teachers() {
   };
 
   const handleSubmit = async () => {
-    const required = ["name","email","phone","employeeId","subject"];
-    if (required.some(k => !form[k]?.trim())) {
+    if (!form.name?.trim() || !form.email?.trim() || !form.phone?.trim() || !form.employeeId?.trim()) {
       showToast("Please fill all required fields", "error"); return;
+    }
+    if (form.subjects.length === 0) {
+      showToast("Please select at least one subject", "error"); return;
     }
     setSubmitting(true);
     try {
@@ -127,7 +129,12 @@ export default function Teachers() {
 
   const handleEdit = (t) => {
     setEditTeacher(t);
-    setForm({ ...emptyForm, ...t, dateOfBirth: t.dateOfBirth?.split("T")[0] || "" });
+    setForm({
+      ...emptyForm, ...t,
+      subjects: Array.isArray(t.subjects) ? t.subjects : (t.subject ? [t.subject] : []),
+      assignedClasses: Array.isArray(t.assignedClasses) ? t.assignedClasses : [],
+      dateOfBirth: t.dateOfBirth?.split("T")[0] || "",
+    });
     setCredentials(null);
     setShowModal(true);
   };
@@ -141,6 +148,15 @@ export default function Teachers() {
     } catch (err) {
       showToast("Failed to delete teacher", "error");
     }
+  };
+
+  const toggleSubject = (s) => {
+    setForm(f => ({
+      ...f,
+      subjects: f.subjects.includes(s)
+        ? f.subjects.filter(x => x !== s)
+        : [...f.subjects, s],
+    }));
   };
 
   const toggleClass = (cls) => {
@@ -209,8 +225,8 @@ export default function Teachers() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, marginBottom: 24 }}>
         {[
           { label: "Total Teachers", val: allTeachers.length, color: "#534AB7" },
-          { label: "Active",         val: allTeachers.filter(t => t.isActive !== false).length, color: "#065F46" },
-          { label: "Subjects",       val: [...new Set(allTeachers.map(t => t.subject).filter(Boolean))].length, color: "#92400E" },
+          { label: "Active", val: allTeachers.filter(t => t.isActive !== false).length, color: "#065F46" },
+          { label: "Subjects", val: [...new Set(allTeachers.flatMap(t => t.subjects || []))].length, color: "#92400E" },
         ].map(s => (
           <div key={s.label} style={{
             background: "#fff", borderRadius: 12, padding: "16px 18px",
@@ -250,7 +266,7 @@ export default function Teachers() {
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ background: "#F9FAFB" }}>
-              {["Teacher", "Subject", "Emp ID", "Phone", "Experience", "Actions"].map(h => (
+              {["Teacher", "Subjects", "Emp ID", "Phone", "Experience", "Actions"].map(h => (
                 <th key={h} style={{
                   padding: "12px 16px", textAlign: "left",
                   fontSize: 11, fontWeight: 700, color: "#6B7280",
@@ -271,7 +287,7 @@ export default function Teachers() {
               </td></tr>
             ) : teachers.map((t, idx) => (
               <tr key={t._id}
-                style={{ borderBottom: idx < teachers.length - 1 ? "1px solid #F3F4F6" : "none", transition: "background 0.15s" }}
+                style={{ borderBottom: idx < teachers.length - 1 ? "1px solid #F3F4F6" : "none" }}
                 onMouseEnter={e => e.currentTarget.style.background = "#FAFAFA"}
                 onMouseLeave={e => e.currentTarget.style.background = "transparent"}
               >
@@ -293,19 +309,17 @@ export default function Teachers() {
                   </div>
                 </td>
                 <td style={{ padding: "14px 16px" }}>
-                  <span style={{ background: "#EEF2FF", color: "#4338CA", padding: "4px 10px", borderRadius: 20, fontSize: 12, fontWeight: 600 }}>
-                    {t.subject || "—"}
-                  </span>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                    {(t.subjects?.length > 0) ? t.subjects.map(s => (
+                      <span key={s} style={{ background: "#EEF2FF", color: "#4338CA", padding: "3px 8px", borderRadius: 20, fontSize: 11, fontWeight: 600 }}>
+                        {s}
+                      </span>
+                    )) : <span style={{ color: "#9CA3AF", fontSize: 12 }}>—</span>}
+                  </div>
                 </td>
-                <td style={{ padding: "14px 16px", fontSize: 13, color: "#374151", fontWeight: 500 }}>
-                  {t.employeeId || "—"}
-                </td>
-                <td style={{ padding: "14px 16px", fontSize: 13, color: "#374151" }}>
-                  {t.phone || "—"}
-                </td>
-                <td style={{ padding: "14px 16px", fontSize: 13, color: "#374151" }}>
-                  {t.experience ? `${t.experience} yrs` : "—"}
-                </td>
+                <td style={{ padding: "14px 16px", fontSize: 13, color: "#374151", fontWeight: 500 }}>{t.employeeId || "—"}</td>
+                <td style={{ padding: "14px 16px", fontSize: 13, color: "#374151" }}>{t.phone || "—"}</td>
+                <td style={{ padding: "14px 16px", fontSize: 13, color: "#374151" }}>{t.experience ? `${t.experience} yrs` : "—"}</td>
                 <td style={{ padding: "14px 16px" }}>
                   <div style={{ display: "flex", gap: 6 }}>
                     <button onClick={() => navigate(`/admin/teachers/${t._id}`)}
@@ -372,12 +386,6 @@ export default function Teachers() {
               <FormField label="Employee ID" required>
                 <input type="text" value={form.employeeId} onChange={e => setForm(f => ({ ...f, employeeId: e.target.value }))} style={inputSt} />
               </FormField>
-              <FormField label="Subject" required>
-                <select value={form.subject} onChange={e => setForm(f => ({ ...f, subject: e.target.value }))} style={inputSt}>
-                  <option value="">Select Subject</option>
-                  {SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
-                </select>
-              </FormField>
               <FormField label="Qualification">
                 <input type="text" value={form.qualification} onChange={e => setForm(f => ({ ...f, qualification: e.target.value }))} style={inputSt} placeholder="e.g. B.Ed, M.Sc" />
               </FormField>
@@ -389,24 +397,36 @@ export default function Teachers() {
               </FormField>
             </div>
 
+            <SectionTitle>Subjects</SectionTitle>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
+              {SUBJECTS.map(s => (
+                <div key={s} onClick={() => toggleSubject(s)} style={{
+                  padding: "6px 14px", borderRadius: 20, fontSize: 12, fontWeight: 500,
+                  cursor: "pointer",
+                  background: form.subjects.includes(s) ? "#534AB7" : "#F3F4F6",
+                  color: form.subjects.includes(s) ? "#fff" : "#374151",
+                  border: form.subjects.includes(s) ? "1px solid #534AB7" : "1px solid #E5E7EB",
+                }}>
+                  {s}
+                </div>
+              ))}
+            </div>
+
             <SectionTitle>Assigned Classes</SectionTitle>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
               {CLASSES.map(cls => (
-                <div key={cls}
-                  onClick={() => toggleClass(cls)}
-                  style={{
-                    padding: "6px 14px", borderRadius: 20, fontSize: 12, fontWeight: 500,
-                    cursor: "pointer", transition: "all 0.15s",
-                    background: form.assignedClasses.includes(cls) ? "#534AB7" : "#F3F4F6",
-                    color: form.assignedClasses.includes(cls) ? "#fff" : "#374151",
-                    border: form.assignedClasses.includes(cls) ? "1px solid #534AB7" : "1px solid #E5E7EB",
-                  }}>
+                <div key={cls} onClick={() => toggleClass(cls)} style={{
+                  padding: "6px 14px", borderRadius: 20, fontSize: 12, fontWeight: 500,
+                  cursor: "pointer",
+                  background: form.assignedClasses.includes(cls) ? "#534AB7" : "#F3F4F6",
+                  color: form.assignedClasses.includes(cls) ? "#fff" : "#374151",
+                  border: form.assignedClasses.includes(cls) ? "1px solid #534AB7" : "1px solid #E5E7EB",
+                }}>
                   Class {cls}
                 </div>
               ))}
             </div>
 
-            {/* Credentials Preview */}
             {!editTeacher && form.email && (
               <div style={{ background: "#FAFAFA", border: "1px solid #E5E7EB", borderRadius: 10, padding: "12px 16px", marginBottom: 20, fontSize: 12, color: "#6B7280" }}>
                 <div style={{ fontWeight: 600, color: "#374151", marginBottom: 4 }}>Login Credentials Preview</div>
