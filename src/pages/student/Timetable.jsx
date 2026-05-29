@@ -114,13 +114,13 @@ export default function Timetable() {
         ) : (
           <div style={{ background: "white", borderRadius: "16px", padding: "4px 16px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
             {classes.map((cls, i) => {
-              const status = cls.subject?.includes("Lunch") ? "Break" : getStatus(cls.startTime);
+              const status = cls.subject?.includes("Lunch") ? "Break" : getStatus(cls.time);
               const statusStyle = getStatusStyle(status);
               const timeStyle = getTimeStyle(status);
               return (
                 <div key={i} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "14px 0", borderBottom: i < classes.length - 1 ? "1px solid #f5f5f5" : "none" }}>
                   <div style={{ minWidth: "52px", background: timeStyle.bg, borderRadius: "10px", padding: "6px 4px", textAlign: "center", color: timeStyle.color, fontWeight: "800", fontSize: "13px" }}>
-                    {cls.startTime || "—"}
+                    {cls.time || "—"}
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: "15px", fontWeight: "700", color: "#111" }}>{cls.subject}</div>
