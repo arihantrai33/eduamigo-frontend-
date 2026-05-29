@@ -378,7 +378,7 @@ export default function ParentBus() {
             {apiError || "No bus found for your child"}
           </p>
           <button
-            onClick={() => navigate("/parent/home")}
+            onClick={() => navigate("/student/home")}
             style={{ padding: "10px 24px", borderRadius: "12px", background: "#4F46E5", color: "white", border: "none", cursor: "pointer", fontWeight: 600 }}
           >
             ← Go Back
@@ -490,7 +490,7 @@ export default function ParentBus() {
 
         <div ref={headerRef} style={styles.header}>
           <div style={styles.navRow}>
-            <button style={styles.backBtn} onClick={() => navigate("/parent/home")}>
+            <button style={styles.backBtn} onClick={() => navigate("/student/home")}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M19 12H5M12 5l-7 7 7 7"/>
               </svg>
