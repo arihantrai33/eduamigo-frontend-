@@ -358,7 +358,7 @@ function DashboardContent({ isMobile, navigate, isTransport, setIsTransport, use
 
 export default function AdminHome() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [activeNav, setActiveNav]     = useState("/admin");
   const [isTransport, setIsTransport] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -414,7 +414,7 @@ export default function AdminHome() {
       {/* Logout */}
       <div style={{ padding: "12px 8px", borderTop: "1px solid #F1F5F9" }}>
         <div
-          onClick={() => { const role = localStorage.getItem('role'); localStorage.clear(); if (role) localStorage.setItem('lastRole', role); navigate("/login"); }}
+          onClick={() => { logout(); navigate("/login"); }}
           style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 18px", borderRadius: 10, cursor: "pointer", color: "#EF4444", fontSize: 13, fontWeight: 500, transition: "all 0.12s" }}
           onMouseEnter={e => { e.currentTarget.style.background = "#FEF2F2"; }}
           onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}>
