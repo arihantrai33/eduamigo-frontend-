@@ -10,7 +10,7 @@ const ROLES = [
 ];
 
 export default function Login() {
-  const [role, setRole] = useState("student");
+  const [role, setRole] = useState(localStorage.getItem("lastRole") || "student");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
