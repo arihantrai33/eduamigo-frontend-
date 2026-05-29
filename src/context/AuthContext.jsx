@@ -29,6 +29,8 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
+    const role = localStorage.getItem("role") || (JSON.parse(localStorage.getItem("eduamigo_user") || "{}"))?.role;
+    if (role) localStorage.setItem("lastRole", role);
     localStorage.removeItem("eduamigo_user");
     localStorage.removeItem("token");
     setUser(null);
