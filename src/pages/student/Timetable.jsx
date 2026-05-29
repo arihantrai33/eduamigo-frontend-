@@ -15,21 +15,22 @@ const DAY_FULL = {
 // JS getDay(): 0=Sun,1=Mon,...,6=Sat — map to our DAYS index
 const JS_DAY_TO_INDEX = { 1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5 };
 
-const getDateForDay = (day) => {
+const MONTHS = ["January","February","March","April","May","June",
+               "July","August","September","October","November","December"];
+const WEEKDAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+const getDateForDay = (day, weekOffset = 0) => {
   const targetIndex = DAYS.indexOf(day); // 0=Mon … 5=Sat
   const today = new Date();
-  const jsDay = today.getDay(); // 0=Sun,1=Mon,...,6=Sat
-  // Convert JS day to our index (Mon=0 … Sat=5); Sun treated as 6 (end of week)
-  const todayIndex = jsDay === 0 ? 6 : jsDay - 1;
-  let diff = targetIndex - todayIndex;
-  // Always move forward — show this week's day if today, else next occurrence
-  if (diff < 0) diff += 7;
-  const date = new Date(today);
-  date.setDate(today.getDate() + diff);
-  const months = ["January","February","March","April","May","June",
-                  "July","August","September","October","November","December"];
-  const weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-  return `${weekdays[date.getDay()]}, ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`.toUpperCase();
+  const jsDay = today.getDay(); // 0=Sun … 6=Sat
+  const todayIndex = jsDay === 0 ? 6 : jsDay - 1; // Mon=0 … Sat=5, Sun=6
+  // Find this week's Monday
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - todayIndex + (weekOffset * 7));
+  // Target day = monday + targetIndex days
+  const date = new Date(monday);
+  date.setDate(monday.getDate() + targetIndex);
+  return `${WEEKDAYS[date.getDay()]}, ${date.getDate()} ${MONTHS[date.getMonth()]} ${date.getFullYear()}`.toUpperCase();
 };
 
 // time format: "09:00 - 09:45" — school hours assumed 07:00–18:00
@@ -65,10 +66,11 @@ export default function Timetable() {
 
   const getTodayKey = () => {
     const jsDay = new Date().getDay();
-    return jsDay === 0 || jsDay === 7 ? "Mon" : DAYS[jsDay - 1] ?? "Mon";
+    return jsDay === 0 ? "Mon" : DAYS[jsDay - 1] ?? "Mon";
   };
 
   const [selectedDay, setSelectedDay] = useState(getTodayKey);
+  const [weekOffset, setWeekOffset] = useState(0); // 0 = current week, 1 = next week, -1 = last week
   const [timetableCache, setTimetableCache] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -100,7 +102,7 @@ export default function Timetable() {
             style={{ background: "none", border: "none", fontSize: "20px", cursor: "pointer" }}>←</button>
           <div style={{ fontSize: "18px", fontWeight: "800", color: "#111" }}>Timetable</div>
         </div>
-        <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "16px" }}>
+        <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "8px" }}>
           {DAYS.map((day) => (
             <button key={day} onClick={() => setSelectedDay(day)}
               style={{
@@ -113,12 +115,26 @@ export default function Timetable() {
             </button>
           ))}
         </div>
+        {/* Week navigation */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingBottom: "12px", paddingTop: "4px" }}>
+          <button onClick={() => setWeekOffset(w => w - 1)}
+            style={{ background: "none", border: "none", fontSize: "13px", color: "#6366f1", fontWeight: "700", cursor: "pointer", padding: "4px 8px" }}>
+            ← Prev Week
+          </button>
+          <span style={{ fontSize: "12px", color: "#999", fontWeight: "600" }}>
+            {weekOffset === 0 ? "This Week" : weekOffset === 1 ? "Next Week" : weekOffset === -1 ? "Last Week" : `${weekOffset > 0 ? "+" : ""}${weekOffset} Weeks`}
+          </span>
+          <button onClick={() => setWeekOffset(w => w + 1)}
+            style={{ background: "none", border: "none", fontSize: "13px", color: "#6366f1", fontWeight: "700", cursor: "pointer", padding: "4px 8px" }}>
+            Next Week →
+          </button>
+        </div>
       </div>
 
       {/* Body */}
       <div style={{ flex: 1, overflowY: "auto", padding: "16px" }}>
         <div style={{ fontSize: "11px", fontWeight: "700", color: "#999", marginBottom: "12px", letterSpacing: "1px" }}>
-          {getDateForDay(selectedDay)}
+          {getDateForDay(selectedDay, weekOffset)}
         </div>
 
         {loading ? (
