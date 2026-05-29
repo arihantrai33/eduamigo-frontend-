@@ -47,7 +47,8 @@ setAttendance(attendanceRes.value.data.data);
 if (noticesRes.status === "fulfilled" && noticesRes.value.data.success) {
 setNotices(noticesRes.value.data.data?.slice(0, 3) || []);
       }
-const today = days[new Date().getDay() - 1] || "Mon";
+const jsDay = new Date().getDay();
+      const today = jsDay === 0 ? "Mon" : days[jsDay - 1] ?? "Mon";
 try {
 const ttRes = await axios.get(`${API}/timetable/my?day=${today}`, authHeader());
 if (ttRes.data.success) setTimetable(ttRes.data.data || []);
@@ -187,7 +188,7 @@ style={{ background: "white", borderRadius: 14, padding: 14, border: "none", cur
 </div>
 {/* Today's Classes */}
 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-<h3 style={{ fontSize: 15, fontWeight: 700, color: "#111", margin: 0 }}>📅 Today's Classes</h3>
+<h3 style={{ fontSize: 15, fontWeight: 700, color: "#111", margin: 0 }}>Today's Classes</h3>
 <span style={{ fontSize: 13, color: "#1a73e8", cursor: "pointer" }} onClick={() => navigate("/student/timetable")}>
             View all →
 </span>
@@ -201,11 +202,11 @@ style={{ background: "white", borderRadius: 14, padding: 14, border: "none", cur
 timetable.slice(0, 4).map((c, i) => (
 <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 0", borderBottom: i < 3 ? "1px solid #f0f0f0" : "none" }}>
 <div style={{ minWidth: 44, background: "#f5f6fa", borderRadius: 8, padding: 4, textAlign: "center", fontSize: 11, fontWeight: 700, color: "#555" }}>
-{c.startTime ?? c.time ?? "—"}
+{c.time ?? "—"}
 </div>
 <div style={{ flex: 1 }}>
 <div style={{ fontSize: 14, fontWeight: 700, color: "#111" }}>{c.subject}</div>
-<div style={{ fontSize: 11, color: "#999" }}>{c.teacher} {c.room ? `• ${c.room}` : ""}</div>
+<div style={{ fontSize: 11, color: "#999" }}>{c.teacher?.name ?? c.teacherName ?? "—"}{c.room ? ` • ${c.room}` : ""}</div>
 </div>
 </div>
             ))
@@ -213,7 +214,7 @@ timetable.slice(0, 4).map((c, i) => (
 </div>
 {/* Notices */}
 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-<h3 style={{ fontSize: 15, fontWeight: 700, color: "#111", margin: 0 }}>📢 Notices</h3>
+<h3 style={{ fontSize: 15, fontWeight: 700, color: "#111", margin: 0 }}>Notices</h3>
 <span style={{ fontSize: 13, color: "#1a73e8", cursor: "pointer" }} onClick={() => navigate("/student/notifications")}>
             View all →
 </span>
