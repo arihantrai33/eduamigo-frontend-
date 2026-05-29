@@ -52,7 +52,7 @@ export default function Notes() {
 
   // Upload form state
   const [form, setForm] = useState({
-    title: '', subject: 'Mathematics', type: 'Notes', class: '', section: '',
+    title: '', subject: 'Mathematics', type: 'Notes', class: user?.class || '', section: user?.section || '',
     fileUrl: '', fileName: '', fileSize: '', dueDate: '',
   });
 
@@ -98,7 +98,7 @@ export default function Notes() {
       setTimeout(() => {
         setUploaded(false);
         setShowModal(false);
-        setForm({ title: '', subject: 'Mathematics', type: 'Notes', class: '', section: '', fileUrl: '', fileName: '', fileSize: '', dueDate: '' });
+        setForm({ title: '', subject: 'Mathematics', type: 'Notes', class: user?.class || '', section: user?.section || '', fileUrl: '', fileName: '', fileSize: '', dueDate: '' });
         fetchAll();
       }, 2000);
     } catch (err) {
