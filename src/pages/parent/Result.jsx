@@ -27,7 +27,7 @@ export default function ParentResult() {
       const childData = parentRes.data.data.children?.[0];
       if (!childData) { setError("No child linked to this account"); setLoading(false); return; }
       setChild(childData);
-      const resRes = await axios.get(`${API}/exams/${childData._id}`, authHeader());
+      const resRes = await axios.get(`${API}/exams/student/${childData._id}/results`, authHeader());
       if (resRes.data.success) {
         const data = resRes.data.data || [];
         setResults(data);
