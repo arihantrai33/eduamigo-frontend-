@@ -16,13 +16,14 @@ const DAY_FULL = {
 const JS_DAY_TO_INDEX = { 1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5 };
 
 const getDateForDay = (day) => {
-  const targetIndex = DAYS.indexOf(day); // 0–5
+  const targetIndex = DAYS.indexOf(day); // 0=Mon … 5=Sat
   const today = new Date();
-  const jsDay = today.getDay(); // 0=Sun … 6=Sat
-  const todayIndex = jsDay === 0 ? -1 : jsDay - 1; // Sun → -1 (treat as before Mon)
+  const jsDay = today.getDay(); // 0=Sun,1=Mon,...,6=Sat
+  // Convert JS day to our index (Mon=0 … Sat=5); Sun treated as 6 (end of week)
+  const todayIndex = jsDay === 0 ? 6 : jsDay - 1;
   let diff = targetIndex - todayIndex;
-  // Always show current or upcoming week — never a past date
-  if (diff < 0) diff += 6;
+  // Always move forward — show this week's day if today, else next occurrence
+  if (diff < 0) diff += 7;
   const date = new Date(today);
   date.setDate(today.getDate() + diff);
   const months = ["January","February","March","April","May","June",
@@ -31,17 +32,21 @@ const getDateForDay = (day) => {
   return `${weekdays[date.getDay()]}, ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`.toUpperCase();
 };
 
-// time format: "09:00 - 09:45"
+// time format: "09:00 - 09:45" — school hours assumed 07:00–18:00
+// Hours below 7 are treated as PM (e.g. 01:00 → 13:00, 02:30 → 14:30)
+const toSchoolMins = (hhmm) => {
+  const [h, m] = hhmm.split(":").map(Number);
+  const hour = h < 7 ? h + 12 : h;
+  return hour * 60 + m;
+};
 const getStatus = (time, isBreak) => {
   if (isBreak) return "Break";
   if (!time) return "Upcoming";
   const now = new Date();
-  const [startStr, endStr] = time.split("-").map(s => s.trim());
-  const [startH, startM] = startStr.split(":").map(Number);
-  const [endH, endM] = (endStr || startStr).split(":").map(Number);
   const nowMins = now.getHours() * 60 + now.getMinutes();
-  const startMins = startH * 60 + startM;
-  const endMins = endH * 60 + endM;
+  const parts = time.split("-").map(s => s.trim());
+  const startMins = toSchoolMins(parts[0]);
+  const endMins = parts[1] ? toSchoolMins(parts[1]) : startMins + 45;
   if (nowMins > endMins) return "Done";
   if (nowMins >= startMins) return "Now";
   return "Upcoming";
