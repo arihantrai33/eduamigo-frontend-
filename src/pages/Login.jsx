@@ -108,4 +108,3 @@ const s = {
   btn: { width: "100%", padding: "13px", background: "linear-gradient(135deg, #1a3a8f, #4f8ef7)", color: "white", border: "none", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer" },
   footer: { textAlign: "center", marginTop: 18, fontSize: 11, color: "#94a3b8" },
 };
-EOF
