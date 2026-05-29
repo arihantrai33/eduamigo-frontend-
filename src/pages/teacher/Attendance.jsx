@@ -303,7 +303,7 @@ export default function TeacherAttendance() {
       </div>
 
       {/* Bottom Nav */}
-      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 420, background: "#fff", display: "flex", borderTop: "1px solid #E8EAF0", boxShadow: "0 -4px 24px rgba(92,107,192,.08)", zIndex: 200, height: 66 }}>
+      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 420, background: "#fff", display: "flex", borderTop: "1px solid #E8EAF0", overflowY: "auto", boxShadow: "0 -4px 24px rgba(92,107,192,.08)", zIndex: 200, height: 66 }}>
         {[
           { icon: "🏠", label: "Home",       path: "/teacher/home" },
           { icon: "✅", label: "Attendance", path: "/teacher/attendance" },
