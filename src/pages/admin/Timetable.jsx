@@ -72,7 +72,7 @@ export default function Timetable() {
     if (!selectedClass || !selectedSection) return;
     setSchedule({});
 
-    axios.get(`${API}/timetables/class/${selectedClass}`, authHeader())
+    axios.get(`${API}/timetable/class/${selectedClass}`, authHeader())
       .then(r => {
         const data = r.data?.data || [];
         const filtered = data.filter(t => t.section === selectedSection);
@@ -118,13 +118,13 @@ export default function Timetable() {
       };
 
       if (existing) {
-        await axios.put(`${API}/timetables/${existing._id}`, payload, authHeader());
+        await axios.put(`${API}/timetable/${existing._id}`, payload, authHeader());
       } else {
-        await axios.post(`${API}/timetables`, payload, authHeader());
+        await axios.post(`${API}/timetable`, payload, authHeader());
       }
 
       // Refresh
-      const r = await axios.get(`${API}/timetables/class/${selectedClass}`, authHeader());
+      const r = await axios.get(`${API}/timetable/class/${selectedClass}`, authHeader());
       const filtered = (r.data?.data || []).filter(t => t.section === selectedSection);
       setExistingTimetables(filtered);
       showToast(`${selectedDay} timetable saved!`, "success");
@@ -144,8 +144,8 @@ export default function Timetable() {
       try {
         const existing = existingTimetables.find(t => t.day === day);
         const payload = { class: selectedClass, section: selectedSection, day, periods, classTeacher: classTeacher || undefined };
-        if (existing) await axios.put(`${API}/timetables/${existing._id}`, payload, authHeader());
-        else await axios.post(`${API}/timetables`, payload, authHeader());
+        if (existing) await axios.put(`${API}/timetable/${existing._id}`, payload, authHeader());
+        else await axios.post(`${API}/timetable`, payload, authHeader());
       } catch { errors++; }
     }
     setSaving(false);
