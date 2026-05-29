@@ -5,7 +5,7 @@ import {
   LayoutDashboard, Users, School, UserCircle, Bus,
   CalendarCheck, FileBadge, Clock, Notebook, BadgeDollarSign, Layers,
   Bell, MessageCircle, BarChart2, Settings as SettingsIcon, Menu, X,
-  AlertCircle, CheckCircle, BookOpen
+  AlertCircle, CheckCircle, BookOpen, LogOut
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import Students from "./Students";
@@ -411,6 +411,17 @@ export default function AdminHome() {
           );
         })}
       </nav>
+      {/* Logout */}
+      <div style={{ padding: "12px 8px", borderTop: "1px solid #F1F5F9" }}>
+        <div
+          onClick={() => { localStorage.clear(); navigate("/login"); }}
+          style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 18px", borderRadius: 10, cursor: "pointer", color: "#EF4444", fontSize: 13, fontWeight: 500, transition: "all 0.12s" }}
+          onMouseEnter={e => { e.currentTarget.style.background = "#FEF2F2"; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}>
+          <LogOut size={15} />
+          Sign Out
+        </div>
+      </div>
     </>
   );
 
