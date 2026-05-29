@@ -7,8 +7,8 @@ const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 });
 
-const SUBJECTS = ["Mathematics","Science","English","Hindi","Social Studies","Physics","Chemistry","Biology","Computer Science","Physical Education","Art","Music"];
-const CLASSES  = ["1","2","3","4","5","6","7","8","9","10","11","12"];
+const DEFAULT_SUBJECTS = ["Mathematics","Science","English","Hindi","Social Studies","Physics","Chemistry","Biology","Computer Science","Physical Education","Art","Music"];
+const CLASSES = ["1","2","3","4","5","6","7","8","9","10","11","12"];
 
 const emptyForm = {
   name: "", email: "", phone: "", employeeId: "",
@@ -67,8 +67,10 @@ export default function Teachers() {
   const [toast,       setToast]       = useState(null);
   const [deleteId,    setDeleteId]    = useState(null);
   const [credentials, setCredentials] = useState(null);
+  const [allSubjects, setAllSubjects] = useState(DEFAULT_SUBJECTS);
+  const [newSubject,  setNewSubject]  = useState("");
 
-  useEffect(() => { fetchTeachers(); }, []);
+  useEffect(() => { fetchTeachers(); fetchSubjects(); }, []);
 
   useEffect(() => {
     if (!search.trim()) { setTeachers(allTeachers); return; }
@@ -96,6 +98,40 @@ export default function Teachers() {
       showToast("Failed to load teachers", "error");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchSubjects = async () => {
+    try {
+      const res = await axios.get(`${API}/schools/subjects`, authHeader());
+      if (res.data.data?.length > 0) {
+        setAllSubjects(prev => {
+          const merged = [...prev];
+          res.data.data.forEach(s => { if (!merged.includes(s)) merged.push(s); });
+          return merged;
+        });
+      }
+    } catch (err) {
+      // silently fail — default subjects already set
+    }
+  };
+
+  const addCustomSubject = async () => {
+    const val = newSubject.trim();
+    if (!val) return;
+    if (allSubjects.includes(val)) {
+      toggleSubject(val);
+      setNewSubject("");
+      return;
+    }
+    try {
+      await axios.post(`${API}/schools/subjects`, { subject: val }, authHeader());
+      setAllSubjects(prev => [...prev, val]);
+      toggleSubject(val);
+      setNewSubject("");
+      showToast(`"${val}" added to school subjects`);
+    } catch (err) {
+      showToast(err?.response?.data?.message || "Failed to add subject", "error");
     }
   };
 
@@ -310,7 +346,7 @@ export default function Teachers() {
                 </td>
                 <td style={{ padding: "14px 16px" }}>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
-                    {(t.subjects?.length > 0) ? t.subjects.map(s => (
+                    {t.subjects?.length > 0 ? t.subjects.map(s => (
                       <span key={s} style={{ background: "#EEF2FF", color: "#4338CA", padding: "3px 8px", borderRadius: 20, fontSize: 11, fontWeight: 600 }}>
                         {s}
                       </span>
@@ -398,8 +434,8 @@ export default function Teachers() {
             </div>
 
             <SectionTitle>Subjects</SectionTitle>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
-              {SUBJECTS.map(s => (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
+              {allSubjects.map(s => (
                 <div key={s} onClick={() => toggleSubject(s)} style={{
                   padding: "6px 14px", borderRadius: 20, fontSize: 12, fontWeight: 500,
                   cursor: "pointer",
@@ -410,6 +446,20 @@ export default function Teachers() {
                   {s}
                 </div>
               ))}
+            </div>
+            <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
+              <input
+                type="text"
+                placeholder="Add custom subject (e.g. Sanskrit, EVS, Moral Science...)"
+                value={newSubject}
+                onChange={e => setNewSubject(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && addCustomSubject()}
+                style={{ ...inputSt, flex: 1 }}
+              />
+              <button onClick={addCustomSubject} style={{
+                padding: "9px 16px", borderRadius: 8, border: "1px solid #534AB7",
+                background: "#EEF2FF", color: "#534AB7", fontSize: 12, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap"
+              }}>+ Add</button>
             </div>
 
             <SectionTitle>Assigned Classes</SectionTitle>
