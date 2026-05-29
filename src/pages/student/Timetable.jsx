@@ -8,6 +8,7 @@ const authHeader = () => ({
 });
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const dayFull = { Mon: "Monday", Tue: "Tuesday", Wed: "Wednesday", Thu: "Thursday", Fri: "Friday", Sat: "Saturday" };
 
 const getDateForDay = (day) => {
   const dayMap = { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
@@ -64,7 +65,7 @@ export default function Timetable() {
     if (timetableCache[day]) return;
     setLoading(true);
     try {
-      const res = await axios.get(`${API}/timetable/my?day=${day}`, authHeader());
+      const res = await axios.get(`${API}/timetable/my?day=${dayFull[day]}`, authHeader());
       if (res.data.success) {
         setTimetableCache(prev => ({ ...prev, [day]: res.data.data || [] }));
       }
