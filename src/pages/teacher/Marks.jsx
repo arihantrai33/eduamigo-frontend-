@@ -1,179 +1,244 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { db } from '../../firebase'
-import { ref, set } from 'firebase/database'
+import { useAuth } from '../../context/AuthContext'
 
-const classesData = ['Class X-A', 'Class X-B', 'Class IX-A', 'Class IX-B', 'Class VIII-A']
-
-const examTypesData = {
-  'Class X-A': [
-    { id: 'ut1', name: 'Unit Test 1', maxMarks: 20, weightage: 10, status: 'published' },
-    { id: 'midterm', name: 'Mid Term', maxMarks: 80, weightage: 30, status: 'published' },
-    { id: 'ut2', name: 'Unit Test 2', maxMarks: 20, weightage: 10, status: 'open' },
-    { id: 'annual', name: 'Annual Exam', maxMarks: 100, weightage: 50, status: 'open' },
-    { id: 'surprise1', name: 'Surprise Test', maxMarks: 10, weightage: 0, status: 'open', custom: true },
-  ],
-  'Class IX-A': [
-    { id: 'weekly1', name: 'Weekly Test 1', maxMarks: 25, weightage: 15, status: 'published' },
-    { id: 'weekly2', name: 'Weekly Test 2', maxMarks: 25, weightage: 15, status: 'open' },
-    { id: 'halfyearly', name: 'Half Yearly', maxMarks: 100, weightage: 35, status: 'open' },
-    { id: 'annual', name: 'Annual Exam', maxMarks: 100, weightage: 35, status: 'open' },
-  ],
-}
-
-const subjectsData = {
-  'Class X-A': [
-    { id: 'math', name: 'Mathematics', maxMarks: 100 },
-    { id: 'phy', name: 'Physics', maxMarks: 100 },
-    { id: 'chem', name: 'Chemistry', maxMarks: 100 },
-    { id: 'eng', name: 'English', maxMarks: 100 },
-    { id: 'bio', name: 'Biology', maxMarks: 100 },
-  ],
-  'Class IX-A': [
-    { id: 'math', name: 'Mathematics', maxMarks: 100 },
-    { id: 'sci', name: 'Science', maxMarks: 100 },
-    { id: 'eng', name: 'English', maxMarks: 100 },
-    { id: 'sst', name: 'Social Studies', maxMarks: 100 },
-    { id: 'hindi', name: 'Hindi', maxMarks: 100 },
-  ],
-}
-
-const studentsData = {
-  'Class X-A': [
-    { id: 1, name: 'Aarav Sharma', initials: 'AS', color: '#4361EE' },
-    { id: 2, name: 'Priya Verma', initials: 'PV', color: '#E91E63' },
-    { id: 3, name: 'Rohan Mehta', initials: 'RM', color: '#2E7D32' },
-    { id: 4, name: 'Sneha Patel', initials: 'SP', color: '#FF6B00' },
-    { id: 5, name: 'Arjun Singh', initials: 'AS', color: '#9C27B0' },
-    { id: 6, name: 'Rahul Kumar', initials: 'RK', color: '#00897B' },
-    { id: 7, name: 'Anjali Gupta', initials: 'AG', color: '#F57F17' },
-  ],
-  'Class IX-A': [
-    { id: 1, name: 'Amit Yadav', initials: 'AY', color: '#4361EE' },
-    { id: 2, name: 'Neha Joshi', initials: 'NJ', color: '#E91E63' },
-    { id: 3, name: 'Karan Malhotra', initials: 'KM', color: '#2E7D32' },
-  ],
-}
-
-const defaultStudents = [
-  { id: 1, name: 'Aarav Sharma', initials: 'AS', color: '#4361EE' },
-  { id: 2, name: 'Priya Verma', initials: 'PV', color: '#E91E63' },
-  { id: 3, name: 'Rohan Mehta', initials: 'RM', color: '#2E7D32' },
-  { id: 4, name: 'Sneha Patel', initials: 'SP', color: '#FF6B00' },
-  { id: 5, name: 'Arjun Singh', initials: 'AS', color: '#9C27B0' },
-  { id: 6, name: 'Rahul Kumar', initials: 'RK', color: '#00897B' },
-  { id: 7, name: 'Anjali Gupta', initials: 'AG', color: '#F57F17' },
-]
+const API = import.meta.env.VITE_API_URL
 
 export default function TeacherMarks() {
   const navigate = useNavigate()
+  const { user } = useAuth()
 
-  const [selectedClass, setSelectedClass] = useState('Class X-A')
-  const [selectedExamId, setSelectedExamId] = useState('ut2')
-  const [selectedSubjectId, setSelectedSubjectId] = useState('math')
-  const [marks, setMarks] = useState({})
+  const [classes, setClasses]         = useState([])
+  const [subjects, setSubjects]       = useState([])
+  const [students, setStudents]       = useState([])
+  const [existingMarks, setExistingMarks] = useState([])
+
+  const [selectedClass, setSelectedClass]     = useState('')
+  const [selectedSection, setSelectedSection] = useState('')
+  const [selectedSubject, setSelectedSubject] = useState('')
+  const [examName, setExamName]               = useState('')
+  const [examType, setExamType]               = useState('Unit Test')
+  const [maxMarks, setMaxMarks]               = useState(100)
+  const [weightage, setWeightage]             = useState(0)
+  const [academicYear, setAcademicYear]       = useState('2025-26')
+
+  const [marks, setMarks]                   = useState({})
+  const [isPublished, setIsPublished]       = useState(false)
   const [showPublishModal, setShowPublishModal] = useState(false)
-  const [published, setPublished] = useState(false)
   const [showCustomExam, setShowCustomExam] = useState(false)
   const [customExamName, setCustomExamName] = useState('')
   const [customMaxMarks, setCustomMaxMarks] = useState('')
   const [customWeightage, setCustomWeightage] = useState('')
-  const [examTypes, setExamTypes] = useState(examTypesData)
-  const [showSuccess, setShowSuccess] = useState(false)
-  const [saving, setSaving] = useState(false)
 
-  const exams = examTypes[selectedClass] || examTypes['Class X-A']
-  const subjects = subjectsData[selectedClass] || subjectsData['Class X-A']
-  const students = studentsData[selectedClass] || defaultStudents
-  const selectedExam = exams.find((e) => e.id === selectedExamId) || exams[0]
-  const selectedSubject = subjects.find((s) => s.id === selectedSubjectId) || subjects[0]
-  const isLocked = selectedExam?.status === 'published'
-  const maxMarks = selectedExam?.maxMarks || 100
+  const [loadingClasses, setLoadingClasses]   = useState(true)
+  const [loadingStudents, setLoadingStudents] = useState(false)
+  const [loadingMarks, setLoadingMarks]       = useState(false)
+  const [saving, setSaving]                   = useState(false)
+  const [publishing, setPublishing]           = useState(false)
+  const [toast, setToast]                     = useState(null)
+  const [error, setError]                     = useState(null)
+
+  const examTypes = ['Unit Test', 'Mid Term', 'Half Yearly', 'Annual', 'Custom']
+
+  const showToast = (msg, type = 'success') => {
+    setToast({ msg, type })
+    setTimeout(() => setToast(null), 3000)
+  }
+
+  // Fetch teacher's assigned classes & subjects
+  useEffect(() => {
+    const fetchClasses = async () => {
+      try {
+        setLoadingClasses(true)
+        const res = await fetch(`${API}/marks/classes`, {
+          headers: { Authorization: `Bearer ${user.token}` }
+        })
+        const data = await res.json()
+        if (!res.ok) throw new Error(data.message)
+        setClasses(data.classes || [])
+        setSubjects(data.subjects || [])
+        if (data.classes?.length > 0) {
+          const first = data.classes[0]
+          const parts = first.split('-')
+          setSelectedClass(parts[0]?.trim() || first)
+          setSelectedSection(parts[1]?.trim() || '')
+        }
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setLoadingClasses(false)
+      }
+    }
+    if (user?.token) fetchClasses()
+  }, [user])
+
+  // Fetch students when class/section changes
+  useEffect(() => {
+    if (!selectedClass) return
+    const fetchStudents = async () => {
+      try {
+        setLoadingStudents(true)
+        setStudents([])
+        setMarks({})
+        setExistingMarks([])
+        setIsPublished(false)
+        const res = await fetch(
+          `${API}/marks/students?class=${selectedClass}&section=${selectedSection}`,
+          { headers: { Authorization: `Bearer ${user.token}` } }
+        )
+        const data = await res.json()
+        if (!res.ok) throw new Error(data.message)
+        setStudents(data)
+      } catch (err) {
+        showToast(err.message, 'error')
+      } finally {
+        setLoadingStudents(false)
+      }
+    }
+    fetchStudents()
+  }, [selectedClass, selectedSection])
+
+  // Fetch existing marks when filters change
+  useEffect(() => {
+    if (!selectedClass || !selectedSubject || !examName) return
+    const fetchMarks = async () => {
+      try {
+        setLoadingMarks(true)
+        const res = await fetch(
+          `${API}/marks?class=${selectedClass}&section=${selectedSection}&subject=${selectedSubject}&examName=${examName}&academicYear=${academicYear}`,
+          { headers: { Authorization: `Bearer ${user.token}` } }
+        )
+        const data = await res.json()
+        if (!res.ok) throw new Error(data.message)
+        setExistingMarks(data)
+        const marksMap = {}
+        let published = false
+        data.forEach(m => {
+          marksMap[m.student._id] = m.marksObtained
+          if (m.status === 'published') published = true
+        })
+        setMarks(marksMap)
+        setIsPublished(published)
+      } catch (err) {
+        showToast(err.message, 'error')
+      } finally {
+        setLoadingMarks(false)
+      }
+    }
+    fetchMarks()
+  }, [selectedClass, selectedSection, selectedSubject, examName, academicYear])
+
+  const handleClassChange = (val) => {
+    const parts = val.split('-')
+    setSelectedClass(parts[0]?.trim() || val)
+    setSelectedSection(parts[1]?.trim() || '')
+  }
 
   const handleMarkChange = (studentId, value) => {
-    if (isLocked) return
+    if (isPublished) return
+    if (value === '') { setMarks(p => ({ ...p, [studentId]: '' })); return }
     const num = parseInt(value)
-    if (value === '') {
-      setMarks((prev) => ({ ...prev, [`${selectedExamId}_${selectedSubjectId}_${studentId}`]: '' }))
-      return
-    }
     if (!isNaN(num) && num >= 0 && num <= maxMarks) {
-      setMarks((prev) => ({ ...prev, [`${selectedExamId}_${selectedSubjectId}_${studentId}`]: num }))
+      setMarks(p => ({ ...p, [studentId]: num }))
     }
   }
 
-  const getMarkValue = (studentId) => {
-    const key = `${selectedExamId}_${selectedSubjectId}_${studentId}`
-    return marks[key] !== undefined ? marks[key] : ''
-  }
+  const filledCount = students.filter(s => marks[s._id] !== undefined && marks[s._id] !== '').length
 
-  const filledCount = students.filter((s) => getMarkValue(s.id) !== '').length
+  const handleSave = async () => {
+    if (!examName || !selectedSubject) {
+      showToast('Please select subject and enter exam name', 'error'); return
+    }
+    const marksData = students.map(s => ({
+      studentId: s._id,
+      marksObtained: marks[s._id] ?? null,
+    })).filter(m => m.marksObtained !== null && m.marksObtained !== '')
+
+    if (marksData.length === 0) {
+      showToast('No marks entered', 'error'); return
+    }
+    try {
+      setSaving(true)
+      const res = await fetch(`${API}/marks/save`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`
+        },
+        body: JSON.stringify({
+          marksData, class: selectedClass, section: selectedSection,
+          subject: selectedSubject, examName, examType,
+          maxMarks, weightage, academicYear,
+        })
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.message)
+      showToast('Marks saved successfully')
+    } catch (err) {
+      showToast(err.message, 'error')
+    } finally {
+      setSaving(false)
+    }
+  }
 
   const handlePublish = async () => {
-    setSaving(true)
     try {
-      const classKey = selectedClass.replace(/\s+/g, '_').replace(/-/g, '_')
-
-      const marksToSave = {}
-      students.forEach((s) => {
-        marksToSave[s.id] = {
-          name: s.name,
-          marks: getMarkValue(s.id),
-        }
+      setPublishing(true)
+      const res = await fetch(`${API}/marks/publish`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`
+        },
+        body: JSON.stringify({
+          class: selectedClass, section: selectedSection,
+          subject: selectedSubject, examName, academicYear,
+        })
       })
-
-      await set(
-        ref(db, `marks/${classKey}/${selectedExamId}/${selectedSubjectId}`),
-        {
-          studentMarks: marksToSave,
-          maxMarks: maxMarks,
-          examName: selectedExam?.name,
-          subjectName: selectedSubject?.name,
-          className: selectedClass,
-          publishedAt: new Date().toISOString(),
-        }
-      )
-
-      setExamTypes((prev) => {
-        const updated = { ...prev }
-        const classExams = [...(updated[selectedClass] || [])]
-        const idx = classExams.findIndex((e) => e.id === selectedExamId)
-        if (idx !== -1) classExams[idx] = { ...classExams[idx], status: 'published' }
-        updated[selectedClass] = classExams
-        return updated
-      })
-
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.message)
+      setIsPublished(true)
       setShowPublishModal(false)
-      setPublished(true)
-      setShowSuccess(true)
-      setTimeout(() => setShowSuccess(false), 3000)
-
-    } catch (error) {
-      alert('Firebase Error: ' + error.message)
+      showToast('Results published successfully')
+    } catch (err) {
+      showToast(err.message, 'error')
+    } finally {
+      setPublishing(false)
     }
-    setSaving(false)
   }
 
   const handleAddCustomExam = () => {
     if (!customExamName || !customMaxMarks) return
-    const newExam = {
-      id: `custom_${Date.now()}`,
-      name: customExamName,
-      maxMarks: parseInt(customMaxMarks),
-      weightage: parseInt(customWeightage) || 0,
-      status: 'open',
-      custom: true,
-    }
-    setExamTypes((prev) => ({
-      ...prev,
-      [selectedClass]: [...(prev[selectedClass] || []), newExam],
-    }))
-    setSelectedExamId(newExam.id)
+    setExamName(customExamName)
+    setExamType('Custom')
+    setMaxMarks(parseInt(customMaxMarks))
+    setWeightage(parseInt(customWeightage) || 0)
     setCustomExamName('')
     setCustomMaxMarks('')
     setCustomWeightage('')
     setShowCustomExam(false)
   }
+
+  const getInitials = (name) =>
+    name?.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) || '??'
+
+  const avatarColors = ['#4361EE','#E91E63','#2E7D32','#FF6B00','#9C27B0','#00897B','#F57F17','#0288D1']
+  const getColor = (idx) => avatarColors[idx % avatarColors.length]
+
+  if (loadingClasses) return (
+    <div style={styles.centered}>
+      <div style={styles.spinner} />
+      <p style={styles.loadingText}>Loading your classes...</p>
+    </div>
+  )
+
+  if (error) return (
+    <div style={styles.centered}>
+      <div style={{ fontSize: 48 }}>⚠️</div>
+      <p style={{ color: '#EF5350', fontWeight: 600 }}>{error}</p>
+      <button style={styles.retryBtn} onClick={() => window.location.reload()}>Retry</button>
+    </div>
+  )
 
   return (
     <div style={styles.screen}>
@@ -181,88 +246,113 @@ export default function TeacherMarks() {
       {/* Header */}
       <div style={styles.header}>
         <button style={styles.backBtn} onClick={() => navigate('/teacher/home')}>←</button>
-        <h1 style={styles.headerTitle}>📊 Enter Marks</h1>
+        <h1 style={styles.headerTitle}>Enter Marks</h1>
         <div style={{ width: 36 }} />
       </div>
 
       <div style={styles.scroll}>
 
-        {/* Class + Exam Row */}
-        <div style={styles.rowTwo}>
-          <div style={styles.fieldWrap}>
-            <div style={styles.fieldLabel}>CLASS</div>
+        {/* Filters */}
+        <div style={styles.card}>
+          <div style={styles.rowTwo}>
+            <div style={styles.fieldWrap}>
+              <div style={styles.fieldLabel}>CLASS</div>
+              <select
+                style={styles.select}
+                value={`${selectedClass}${selectedSection ? '-' + selectedSection : ''}`}
+                onChange={e => handleClassChange(e.target.value)}
+              >
+                {classes.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+            <div style={styles.fieldWrap}>
+              <div style={styles.fieldLabel}>ACADEMIC YEAR</div>
+              <select
+                style={styles.select}
+                value={academicYear}
+                onChange={e => setAcademicYear(e.target.value)}
+              >
+                {['2025-26', '2024-25', '2026-27'].map(y => <option key={y}>{y}</option>)}
+              </select>
+            </div>
+          </div>
+
+          <div style={styles.fieldWrapFull}>
+            <div style={styles.fieldLabel}>SUBJECT</div>
             <select
               style={styles.select}
-              value={selectedClass}
-              onChange={(e) => {
-                setSelectedClass(e.target.value)
-                setSelectedExamId(examTypes[e.target.value]?.[0]?.id || '')
-                setSelectedSubjectId(subjectsData[e.target.value]?.[0]?.id || 'math')
-                setMarks({})
-              }}
+              value={selectedSubject}
+              onChange={e => setSelectedSubject(e.target.value)}
             >
-              {classesData.map((c) => <option key={c}>{c}</option>)}
+              <option value=''>— Select Subject —</option>
+              {subjects.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
-          <div style={styles.fieldWrap}>
-            <div style={styles.fieldLabel}>EXAM</div>
-            <select
-              style={styles.select}
-              value={selectedExamId}
-              onChange={(e) => { setSelectedExamId(e.target.value); setMarks({}) }}
-            >
-              {exams.map((e) => (
-                <option key={e.id} value={e.id}>
-                  {e.name} {e.status === 'published' ? '🔒' : ''}
-                </option>
-              ))}
-            </select>
+
+          <div style={{ ...styles.rowTwo, marginTop: 14 }}>
+            <div style={styles.fieldWrap}>
+              <div style={styles.fieldLabel}>EXAM TYPE</div>
+              <select
+                style={styles.select}
+                value={examType}
+                onChange={e => setExamType(e.target.value)}
+              >
+                {examTypes.map(t => <option key={t}>{t}</option>)}
+              </select>
+            </div>
+            <div style={styles.fieldWrap}>
+              <div style={styles.fieldLabel}>MAX MARKS</div>
+              <input
+                style={styles.select}
+                type='number'
+                value={maxMarks}
+                onChange={e => setMaxMarks(parseInt(e.target.value) || 100)}
+                disabled={isPublished}
+              />
+            </div>
+          </div>
+
+          <div style={{ marginTop: 14 }}>
+            <div style={styles.fieldLabel}>EXAM NAME</div>
+            <input
+              style={{ ...styles.select, width: '100%' }}
+              placeholder='e.g. Unit Test 1, Mid Term'
+              value={examName}
+              onChange={e => setExamName(e.target.value)}
+              disabled={isPublished}
+            />
           </div>
         </div>
 
-        {/* Subject */}
-        <div style={styles.fieldWrapFull}>
-          <div style={styles.fieldLabel}>SUBJECT</div>
-          <select
-            style={styles.select}
-            value={selectedSubjectId}
-            onChange={(e) => setSelectedSubjectId(e.target.value)}
-          >
-            {subjects.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name} (Max: {maxMarks})
-              </option>
-            ))}
-          </select>
-        </div>
+        {/* Stats Bar */}
+        {examName && selectedSubject && (
+          <div style={styles.statsBar}>
+            <div style={styles.statItem}>
+              <div style={styles.statVal}>{students.length}</div>
+              <div style={styles.statLabel}>Total</div>
+            </div>
+            <div style={styles.statItem}>
+              <div style={{ ...styles.statVal, color: '#4361EE' }}>{filledCount}</div>
+              <div style={styles.statLabel}>Filled</div>
+            </div>
+            <div style={styles.statItem}>
+              <div style={{ ...styles.statVal, color: '#FF6B00' }}>{students.length - filledCount}</div>
+              <div style={styles.statLabel}>Pending</div>
+            </div>
+            <div style={{
+              ...styles.statusPill,
+              background: isPublished ? '#E8F5E9' : '#FFF8E1',
+              color: isPublished ? '#2E7D32' : '#F57F17',
+            }}>
+              {isPublished ? '🔒 Published' : '✏️ Draft'}
+            </div>
+          </div>
+        )}
 
-        {/* Exam Info Bar */}
-        <div style={styles.examInfoBar}>
-          <div style={styles.examInfoItem}>
-            <div style={styles.examInfoVal}>{maxMarks}</div>
-            <div style={styles.examInfoLabel}>Max Marks</div>
-          </div>
-          <div style={styles.examInfoItem}>
-            <div style={styles.examInfoVal}>{selectedExam?.weightage || 0}%</div>
-            <div style={styles.examInfoLabel}>Weightage</div>
-          </div>
-          <div style={styles.examInfoItem}>
-            <div style={styles.examInfoVal}>{filledCount}/{students.length}</div>
-            <div style={styles.examInfoLabel}>Filled</div>
-          </div>
-          <div style={{
-            ...styles.examStatusPill,
-            background: isLocked ? '#E8F5E9' : '#FFF8E1',
-            color: isLocked ? '#2E7D32' : '#F57F17',
-          }}>
-            {isLocked ? '🔒 Locked' : '✏️ Open'}
-          </div>
-        </div>
-
-        {/* Locked Warning */}
-        {isLocked && (
+        {/* Locked Banner */}
+        {isPublished && (
           <div style={styles.lockedBanner}>
-            <span style={{ fontSize: 18 }}>🔒</span>
+            <span style={{ fontSize: 20 }}>🔒</span>
             <div>
               <div style={styles.lockedTitle}>Results Published & Locked</div>
               <div style={styles.lockedSub}>Contact Admin to request edit unlock</div>
@@ -271,76 +361,113 @@ export default function TeacherMarks() {
         )}
 
         {/* Custom Exam Button */}
-        {!isLocked && (
-          <button style={styles.customExamBtn} onClick={() => setShowCustomExam(true)}>
-            ＋ Add Custom Exam / Surprise Test
+        {!isPublished && examName === '' && (
+          <button style={styles.customBtn} onClick={() => setShowCustomExam(true)}>
+            + Add Custom / Surprise Exam
           </button>
         )}
 
         {/* Students List */}
-        <div style={styles.sectionLabel}>
-          {selectedClass} — ENTER MARKS
-        </div>
-
-        <div style={styles.studentsList}>
-          {students.map((student) => (
-            <div key={student.id} style={styles.studentRow}>
-              <div style={{ ...styles.avatar, background: student.color }}>
-                {student.initials}
-              </div>
-              <div style={styles.studentName}>{student.name}</div>
-              <div style={styles.markInputWrap}>
-                <input
-                  style={{
-                    ...styles.markInput,
-                    ...(isLocked ? styles.markInputLocked : {}),
-                    ...(getMarkValue(student.id) !== '' ? styles.markInputFilled : {}),
-                  }}
-                  type="number"
-                  min="0"
-                  max={maxMarks}
-                  placeholder={isLocked ? '—' : ''}
-                  value={getMarkValue(student.id)}
-                  onChange={(e) => handleMarkChange(student.id, e.target.value)}
-                  disabled={isLocked}
-                />
-                <span style={styles.maxMarksLabel}>/{maxMarks}</span>
-              </div>
+        {selectedSubject && examName && (
+          <>
+            <div style={styles.sectionLabel}>
+              {selectedClass}{selectedSection ? ` - ${selectedSection}` : ''} — STUDENT MARKS
             </div>
-          ))}
-        </div>
 
-        <div style={{ height: 120 }} />
+            {loadingStudents || loadingMarks ? (
+              <div style={styles.centered}>
+                <div style={styles.spinner} />
+              </div>
+            ) : students.length === 0 ? (
+              <div style={styles.emptyState}>
+                No students found for this class.
+              </div>
+            ) : (
+              <div style={styles.studentsList}>
+                {students.map((student, idx) => (
+                  <div key={student._id} style={styles.studentRow}>
+                    <div style={{ ...styles.avatar, background: getColor(idx) }}>
+                      {getInitials(student.name)}
+                    </div>
+                    <div style={styles.studentInfo}>
+                      <div style={styles.studentName}>{student.name}</div>
+                      <div style={styles.studentRoll}>Roll: {student.rollNumber}</div>
+                    </div>
+                    <div style={styles.markInputWrap}>
+                      <input
+                        style={{
+                          ...styles.markInput,
+                          ...(isPublished ? styles.markInputLocked : {}),
+                          ...(marks[student._id] !== undefined && marks[student._id] !== ''
+                            ? styles.markInputFilled : {}),
+                        }}
+                        type='number'
+                        min='0'
+                        max={maxMarks}
+                        placeholder='—'
+                        value={marks[student._id] ?? ''}
+                        onChange={e => handleMarkChange(student._id, e.target.value)}
+                        disabled={isPublished}
+                      />
+                      <span style={styles.maxLabel}>/{maxMarks}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+
+        {(!selectedSubject || !examName) && (
+          <div style={styles.emptyState}>
+            Select subject and enter exam name to load students.
+          </div>
+        )}
+
+        <div style={{ height: 140 }} />
       </div>
 
-      {/* Bottom Publish Button */}
-      {!isLocked && (
+      {/* Bottom Action Bar */}
+      {!isPublished && selectedSubject && examName && students.length > 0 && (
         <div style={styles.bottomBar}>
           <div style={styles.progressRow}>
-            <div style={styles.progressBarBg}>
+            <div style={styles.progressBg}>
               <div style={{
-                ...styles.progressBarFill,
-                width: `${(filledCount / students.length) * 100}%`,
+                ...styles.progressFill,
+                width: `${students.length > 0 ? (filledCount / students.length) * 100 : 0}%`
               }} />
             </div>
-            <span style={styles.progressText}>{filledCount}/{students.length} filled</span>
+            <span style={styles.progressText}>{filledCount}/{students.length}</span>
           </div>
-          <button
-            style={{
-              ...styles.publishBtn,
-              opacity: filledCount === students.length ? 1 : 0.5,
-            }}
-            onClick={() => filledCount === students.length && setShowPublishModal(true)}
-          >
-            💾 Save & Publish Results
-          </button>
+          <div style={styles.actionRow}>
+            <button
+              style={{ ...styles.saveBtn, opacity: saving ? 0.7 : 1 }}
+              onClick={handleSave}
+              disabled={saving}
+            >
+              {saving ? 'Saving...' : 'Save Draft'}
+            </button>
+            <button
+              style={{
+                ...styles.publishBtn,
+                opacity: filledCount === students.length ? 1 : 0.4,
+              }}
+              onClick={() => filledCount === students.length && setShowPublishModal(true)}
+              disabled={filledCount !== students.length}
+            >
+              Publish Results
+            </button>
+          </div>
         </div>
       )}
 
-      {/* Success Toast */}
-      {showSuccess && (
-        <div style={styles.toast}>
-          ✅ Results saved to Firebase successfully!
+      {/* Toast */}
+      {toast && (
+        <div style={{
+          ...styles.toast,
+          background: toast.type === 'error' ? '#C62828' : '#2E7D32'
+        }}>
+          {toast.msg}
         </div>
       )}
 
@@ -349,36 +476,32 @@ export default function TeacherMarks() {
         <div style={styles.overlay}>
           <div style={styles.modal}>
             <div style={styles.dragHandle} />
-            <div style={{ fontSize: 48, textAlign: 'center' }}>🔒</div>
+            <div style={{ fontSize: 44, textAlign: 'center' }}>🔒</div>
             <h2 style={styles.modalTitle}>Publish Results?</h2>
             <p style={styles.modalSub}>
-              Once published, marks will be <strong>locked</strong> and visible to students.
-              Editing will require <strong>Admin approval</strong>.
+              Once published, marks will be locked and visible to students.
+              Editing will require Admin approval.
             </p>
             <div style={styles.modalInfo}>
-              <div style={styles.modalInfoRow}>
-                <span>📚 Class</span>
-                <span style={{ fontWeight: 700 }}>{selectedClass}</span>
-              </div>
-              <div style={styles.modalInfoRow}>
-                <span>📝 Exam</span>
-                <span style={{ fontWeight: 700 }}>{selectedExam?.name}</span>
-              </div>
-              <div style={styles.modalInfoRow}>
-                <span>🔬 Subject</span>
-                <span style={{ fontWeight: 700 }}>{selectedSubject?.name}</span>
-              </div>
-              <div style={styles.modalInfoRow}>
-                <span>👥 Students</span>
-                <span style={{ fontWeight: 700 }}>{students.length}</span>
-              </div>
+              {[
+                { label: 'Class', value: `${selectedClass}${selectedSection ? ' - ' + selectedSection : ''}` },
+                { label: 'Subject', value: selectedSubject },
+                { label: 'Exam', value: examName },
+                { label: 'Students', value: students.length },
+                { label: 'Academic Year', value: academicYear },
+              ].map(r => (
+                <div key={r.label} style={styles.modalRow}>
+                  <span style={styles.modalRowLabel}>{r.label}</span>
+                  <span style={styles.modalRowVal}>{r.value}</span>
+                </div>
+              ))}
             </div>
             <button
-              style={{ ...styles.confirmBtn, opacity: saving ? 0.7 : 1 }}
+              style={{ ...styles.confirmBtn, opacity: publishing ? 0.7 : 1 }}
               onClick={handlePublish}
-              disabled={saving}
+              disabled={publishing}
             >
-              {saving ? '⏳ Saving to Firebase...' : '✅ Yes, Publish & Lock'}
+              {publishing ? 'Publishing...' : 'Confirm & Publish'}
             </button>
             <button style={styles.cancelBtn} onClick={() => setShowPublishModal(false)}>
               Cancel
@@ -392,39 +515,38 @@ export default function TeacherMarks() {
         <div style={styles.overlay}>
           <div style={styles.modal}>
             <div style={styles.dragHandle} />
-            <h2 style={styles.modalTitle}>➕ Add Custom Exam</h2>
-            <p style={styles.modalSub}>Add a surprise test, weekly quiz, or any custom exam</p>
+            <h2 style={styles.modalTitle}>Add Custom Exam</h2>
             <div style={styles.fieldLabel}>EXAM NAME</div>
             <input
               style={styles.input}
-              placeholder="e.g. Surprise Test, Weekly Quiz"
+              placeholder='e.g. Surprise Test, Weekly Quiz'
               value={customExamName}
-              onChange={(e) => setCustomExamName(e.target.value)}
+              onChange={e => setCustomExamName(e.target.value)}
             />
             <div style={styles.rowTwo}>
               <div style={styles.fieldWrap}>
                 <div style={styles.fieldLabel}>MAX MARKS</div>
                 <input
                   style={styles.input}
-                  type="number"
-                  placeholder="e.g. 20"
+                  type='number'
+                  placeholder='e.g. 20'
                   value={customMaxMarks}
-                  onChange={(e) => setCustomMaxMarks(e.target.value)}
+                  onChange={e => setCustomMaxMarks(e.target.value)}
                 />
               </div>
               <div style={styles.fieldWrap}>
                 <div style={styles.fieldLabel}>WEIGHTAGE %</div>
                 <input
                   style={styles.input}
-                  type="number"
-                  placeholder="e.g. 5"
+                  type='number'
+                  placeholder='e.g. 5'
                   value={customWeightage}
-                  onChange={(e) => setCustomWeightage(e.target.value)}
+                  onChange={e => setCustomWeightage(e.target.value)}
                 />
               </div>
             </div>
             <button style={styles.confirmBtn} onClick={handleAddCustomExam}>
-              ➕ Add Exam
+              Add Exam
             </button>
             <button style={styles.cancelBtn} onClick={() => setShowCustomExam(false)}>
               Cancel
@@ -445,50 +567,73 @@ const styles = {
   },
   header: {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    padding: '16px 20px 12px', background: '#fff', borderBottom: '1px solid #F0F0F0',
-    position: 'sticky', top: 0, zIndex: 10,
+    padding: '16px 20px 12px', background: '#fff',
+    borderBottom: '1px solid #F0F0F0', position: 'sticky', top: 0, zIndex: 10,
   },
-  backBtn: { background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#333', padding: '4px 8px' },
+  backBtn: {
+    background: 'none', border: 'none', fontSize: 20,
+    cursor: 'pointer', color: '#333', padding: '4px 8px',
+  },
   headerTitle: { fontSize: 18, fontWeight: 700, color: '#1A1A2E', margin: 0 },
-  scroll: { flex: 1, overflowY: 'auto', padding: '0 16px' },
-  rowTwo: { display: 'flex', gap: 12, marginTop: 16 },
+  scroll: { flex: 1, overflowY: 'auto', padding: '16px' },
+  card: {
+    background: '#fff', borderRadius: 16,
+    padding: '16px', marginBottom: 14,
+    boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+  },
+  rowTwo: { display: 'flex', gap: 12 },
   fieldWrap: { flex: 1 },
   fieldWrapFull: { marginTop: 14 },
-  fieldLabel: { fontSize: 11, fontWeight: 700, color: '#999', letterSpacing: 1, marginBottom: 6 },
+  fieldLabel: {
+    fontSize: 11, fontWeight: 700, color: '#999',
+    letterSpacing: 1, marginBottom: 6, textTransform: 'uppercase',
+  },
   select: {
-    width: '100%', padding: '12px 14px', borderRadius: 12,
+    width: '100%', padding: '11px 14px', borderRadius: 10,
     border: '1.5px solid #E8E8F0', background: '#fff',
-    fontSize: 14, color: '#1A1A2E', outline: 'none', cursor: 'pointer',
+    fontSize: 14, color: '#1A1A2E', outline: 'none',
+    fontFamily: "'Poppins', sans-serif",
   },
   input: {
-    width: '100%', padding: '12px 14px', borderRadius: 12,
+    width: '100%', padding: '11px 14px', borderRadius: 10,
     border: '1.5px solid #E8E8F0', background: '#fff',
-    fontSize: 14, color: '#1A1A2E', outline: 'none', boxSizing: 'border-box', marginTop: 4,
+    fontSize: 14, color: '#1A1A2E', outline: 'none',
+    fontFamily: "'Poppins', sans-serif",
+    boxSizing: 'border-box', marginTop: 4, marginBottom: 12,
   },
-  examInfoBar: {
+  statsBar: {
     display: 'flex', alignItems: 'center', gap: 8,
     background: '#fff', borderRadius: 14, padding: '12px 16px',
-    marginTop: 14, boxShadow: '0 1px 6px rgba(0,0,0,0.05)',
+    marginBottom: 14, boxShadow: '0 1px 6px rgba(0,0,0,0.05)',
   },
-  examInfoItem: { flex: 1, textAlign: 'center' },
-  examInfoVal: { fontSize: 16, fontWeight: 800, color: '#4361EE' },
-  examInfoLabel: { fontSize: 10, color: '#888', marginTop: 2 },
-  examStatusPill: { padding: '6px 12px', borderRadius: 20, fontSize: 11, fontWeight: 700, flexShrink: 0 },
+  statItem: { flex: 1, textAlign: 'center' },
+  statVal: { fontSize: 18, fontWeight: 800, color: '#1A1A2E' },
+  statLabel: { fontSize: 10, color: '#888', marginTop: 2 },
+  statusPill: {
+    padding: '6px 12px', borderRadius: 20,
+    fontSize: 11, fontWeight: 700, flexShrink: 0,
+  },
   lockedBanner: {
     display: 'flex', alignItems: 'center', gap: 12,
-    background: '#FFF3E0', borderRadius: 14, padding: '14px 16px', marginTop: 14,
-    border: '1.5px solid #FFB74D',
+    background: '#FFF3E0', borderRadius: 14, padding: '14px 16px',
+    marginBottom: 14, border: '1.5px solid #FFB74D',
   },
   lockedTitle: { fontSize: 13, fontWeight: 700, color: '#E65100' },
   lockedSub: { fontSize: 12, color: '#F57F17', marginTop: 2 },
-  customExamBtn: {
-    width: '100%', marginTop: 12, padding: '11px',
+  customBtn: {
+    width: '100%', padding: '11px', marginBottom: 14,
     background: '#F0F4FF', border: '1.5px dashed #4361EE',
-    borderRadius: 12, color: '#4361EE', fontSize: 13, fontWeight: 700, cursor: 'pointer',
+    borderRadius: 12, color: '#4361EE', fontSize: 13,
+    fontWeight: 700, cursor: 'pointer',
+    fontFamily: "'Poppins', sans-serif",
   },
-  sectionLabel: { fontSize: 11, fontWeight: 700, color: '#999', letterSpacing: 1, margin: '20px 0 10px' },
+  sectionLabel: {
+    fontSize: 11, fontWeight: 700, color: '#999',
+    letterSpacing: 1, margin: '4px 0 10px',
+    textTransform: 'uppercase',
+  },
   studentsList: {
-    background: '#fff', borderRadius: 20,
+    background: '#fff', borderRadius: 16,
     boxShadow: '0 2px 12px rgba(0,0,0,0.06)', overflow: 'hidden',
   },
   studentRow: {
@@ -500,35 +645,49 @@ const styles = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     color: '#fff', fontWeight: 700, fontSize: 12, flexShrink: 0,
   },
-  studentName: { flex: 1, fontSize: 14, fontWeight: 600, color: '#1A1A2E' },
+  studentInfo: { flex: 1 },
+  studentName: { fontSize: 14, fontWeight: 600, color: '#1A1A2E' },
+  studentRoll: { fontSize: 11, color: '#999', marginTop: 2 },
   markInputWrap: { display: 'flex', alignItems: 'center', gap: 4 },
   markInput: {
     width: 64, padding: '8px 10px', borderRadius: 10,
     border: '1.5px solid #E0E0E0', background: '#F8F9FB',
-    fontSize: 14, fontWeight: 700, color: '#1A1A2E', outline: 'none', textAlign: 'center',
+    fontSize: 14, fontWeight: 700, color: '#1A1A2E',
+    outline: 'none', textAlign: 'center',
+    fontFamily: "'Poppins', sans-serif",
   },
   markInputFilled: { border: '1.5px solid #4361EE', background: '#F0F4FF' },
   markInputLocked: { background: '#F5F5F5', color: '#999', cursor: 'not-allowed' },
-  maxMarksLabel: { fontSize: 13, color: '#999', fontWeight: 600 },
+  maxLabel: { fontSize: 13, color: '#999', fontWeight: 600 },
   bottomBar: {
     position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
     width: '100%', maxWidth: 420, background: '#fff',
-    borderTop: '1px solid #F0F0F0', padding: '12px 16px 24px', zIndex: 100,
+    borderTop: '1px solid #F0F0F0', padding: '12px 16px 28px', zIndex: 100,
   },
   progressRow: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 },
-  progressBarBg: { flex: 1, height: 6, background: '#F0F0F0', borderRadius: 99, overflow: 'hidden' },
-  progressBarFill: { height: '100%', background: '#4361EE', borderRadius: 99, transition: 'width 0.3s ease' },
+  progressBg: { flex: 1, height: 5, background: '#F0F0F0', borderRadius: 99, overflow: 'hidden' },
+  progressFill: { height: '100%', background: '#4361EE', borderRadius: 99, transition: 'width 0.3s ease' },
   progressText: { fontSize: 12, fontWeight: 600, color: '#666', flexShrink: 0 },
+  actionRow: { display: 'flex', gap: 10 },
+  saveBtn: {
+    flex: 1, padding: '13px',
+    background: '#F0F4FF', color: '#4361EE',
+    border: '1.5px solid #4361EE', borderRadius: 12,
+    fontSize: 14, fontWeight: 700, cursor: 'pointer',
+    fontFamily: "'Poppins', sans-serif",
+  },
   publishBtn: {
-    width: '100%', padding: '14px',
+    flex: 2, padding: '13px',
     background: 'linear-gradient(135deg, #4361EE, #3A0CA3)',
-    color: '#fff', border: 'none', borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: 'pointer',
+    color: '#fff', border: 'none', borderRadius: 12,
+    fontSize: 14, fontWeight: 700, cursor: 'pointer',
+    fontFamily: "'Poppins', sans-serif",
   },
   toast: {
-    position: 'fixed', top: 80, left: '50%', transform: 'translateX(-50%)',
-    background: '#2E7D32', color: '#fff', padding: '12px 24px',
-    borderRadius: 30, fontSize: 13, fontWeight: 700, zIndex: 999,
-    boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
+    position: 'fixed', top: 72, left: '50%', transform: 'translateX(-50%)',
+    color: '#fff', padding: '12px 24px', borderRadius: 30,
+    fontSize: 13, fontWeight: 700, zIndex: 999,
+    boxShadow: '0 4px 20px rgba(0,0,0,0.2)', whiteSpace: 'nowrap',
   },
   overlay: {
     position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)',
@@ -536,23 +695,59 @@ const styles = {
   },
   modal: {
     background: '#fff', borderRadius: '24px 24px 0 0',
-    padding: '12px 24px 40px', width: '100%', maxWidth: 420, display: 'flex', flexDirection: 'column',
+    padding: '12px 24px 40px', width: '100%', maxWidth: 420,
+    display: 'flex', flexDirection: 'column',
   },
-  dragHandle: { width: 40, height: 4, background: '#E0E0E0', borderRadius: 4, alignSelf: 'center', marginBottom: 16 },
-  modalTitle: { fontSize: 20, fontWeight: 700, color: '#1A1A2E', margin: '8px 0', textAlign: 'center' },
-  modalSub: { fontSize: 13, color: '#666', textAlign: 'center', marginBottom: 20, lineHeight: 1.5 },
+  dragHandle: {
+    width: 40, height: 4, background: '#E0E0E0',
+    borderRadius: 4, alignSelf: 'center', marginBottom: 16,
+  },
+  modalTitle: {
+    fontSize: 20, fontWeight: 700, color: '#1A1A2E',
+    margin: '8px 0', textAlign: 'center',
+  },
+  modalSub: {
+    fontSize: 13, color: '#666', textAlign: 'center',
+    marginBottom: 20, lineHeight: 1.5,
+  },
   modalInfo: { background: '#F8F9FB', borderRadius: 14, padding: '14px 16px', marginBottom: 20 },
-  modalInfoRow: {
+  modalRow: {
     display: 'flex', justifyContent: 'space-between',
-    fontSize: 13, color: '#555', paddingBottom: 8, marginBottom: 8, borderBottom: '1px solid #F0F0F0',
+    fontSize: 13, color: '#555', paddingBottom: 8,
+    marginBottom: 8, borderBottom: '1px solid #F0F0F0',
   },
+  modalRowLabel: { color: '#888' },
+  modalRowVal: { fontWeight: 700, color: '#1A1A2E' },
   confirmBtn: {
     width: '100%', padding: '14px',
     background: 'linear-gradient(135deg, #4361EE, #3A0CA3)',
-    color: '#fff', border: 'none', borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: 'pointer',
+    color: '#fff', border: 'none', borderRadius: 14,
+    fontSize: 15, fontWeight: 700, cursor: 'pointer',
+    fontFamily: "'Poppins', sans-serif",
   },
   cancelBtn: {
     marginTop: 12, background: 'none', border: 'none',
-    color: '#4361EE', fontSize: 15, fontWeight: 600, cursor: 'pointer', alignSelf: 'center',
+    color: '#4361EE', fontSize: 15, fontWeight: 600,
+    cursor: 'pointer', alignSelf: 'center',
+    fontFamily: "'Poppins', sans-serif",
+  },
+  centered: {
+    display: 'flex', flexDirection: 'column',
+    alignItems: 'center', justifyContent: 'center',
+    height: '60vh', gap: 12,
+  },
+  spinner: {
+    width: 36, height: 36, borderRadius: '50%',
+    border: '3px solid #E8E8F0', borderTop: '3px solid #4361EE',
+    animation: 'spin 0.8s linear infinite',
+  },
+  loadingText: { fontSize: 14, color: '#888', fontWeight: 500 },
+  retryBtn: {
+    padding: '10px 24px', background: '#4361EE', color: '#fff',
+    border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: 'pointer',
+  },
+  emptyState: {
+    textAlign: 'center', padding: '40px 20px',
+    color: '#999', fontSize: 14, fontWeight: 500,
   },
 }
