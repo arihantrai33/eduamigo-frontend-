@@ -23,7 +23,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = (userData, token) => {
-    localStorage.setItem("eduamigo_user", JSON.stringify(userData));
+    localStorage.setItem("eduamigo_user", JSON.stringify({...userData, token}));
     localStorage.setItem("token", token);
     setUser({ ...userData, token });
   };
