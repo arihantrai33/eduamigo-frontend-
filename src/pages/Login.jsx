@@ -52,7 +52,7 @@ export default function Login() {
       </div>
       <div style={s.card}>
         <h2 style={s.heading}>Welcome Back</h2>
-        <p style={s.sub}>Sign in to continue</p>
+        <p style={s.sub}>Log in to continue</p>
         <div style={s.roles}>
           {ROLES.map(r => (
             <button key={r.id} onClick={() => { setRole(r.id); setError(""); }}
@@ -80,7 +80,7 @@ export default function Login() {
         {error && <div style={s.err}>⚠️ {error}</div>}
         <button onClick={handleLogin} disabled={loading}
           style={{ ...s.btn, opacity: loading ? 0.7 : 1 }}>
-          {loading ? "Signing in..." : `Sign in as ${ROLES.find(r => r.id === role)?.label}`}
+          {loading ? "Logging in..." : `Log in as ${ROLES.find(r => r.id === role)?.label}`}
         </button>
         <p style={s.footer}>© {new Date().getFullYear()} EduAmigo · All rights reserved</p>
       </div>

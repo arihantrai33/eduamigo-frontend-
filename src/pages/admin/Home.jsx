@@ -419,7 +419,7 @@ export default function AdminHome() {
           onMouseEnter={e => { e.currentTarget.style.background = "#FEF2F2"; }}
           onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}>
           <LogOut size={15} />
-          Sign Out
+          Log Out
         </div>
       </div>
     </>
