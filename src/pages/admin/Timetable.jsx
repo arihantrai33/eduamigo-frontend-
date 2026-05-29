@@ -144,7 +144,7 @@ export default function Timetable() {
       if (!periods) continue;
       try {
         const existing = existingTimetables.find(t => t.day === day);
-        const payload = { class: selectedClass, section: selectedSection, day, periods, classTeacher: classTeacher || undefined };
+        const cleanP = periods ? periods.map(p => ({ ...p, teacher: p.teacher || undefined })) : []; const payload = { class: selectedClass, section: selectedSection, day, periods: cleanP, classTeacher: classTeacher || undefined };
         if (existing) await axios.put(`${API}/timetable/${existing._id}`, payload, authHeader());
         else await axios.post(`${API}/timetable`, payload, authHeader());
       } catch { errors++; }
