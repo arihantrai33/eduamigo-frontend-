@@ -5,10 +5,10 @@ import { useAuth } from "../../context/AuthContext";
 const API = import.meta.env.VITE_API_URL;
 
 const LEAVE_TYPES = [
-  "Medical / Sick Leave",
-  "Family Emergency",
-  "Personal Leave",
-  "Vacation",
+  "Sick",
+  "Family",
+  "Personal",
+  "Other",
   "Other",
 ];
 
