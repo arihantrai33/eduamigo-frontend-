@@ -127,7 +127,7 @@ export default function TeacherAttendance() {
   const late    = students.filter(s => attendance[s._id]?.status === "Late").length
 
   return (
-    <div style={{ maxWidth: 420, margin: "0 auto", minHeight: "100vh", background: "#F4F6FB", fontFamily: "'Poppins', sans-serif", paddingBottom: 90 }}>
+    <div style={{ maxWidth: 420, margin: "0 auto", height: "100vh", overflowY: "auto", background: "#F4F6FB", fontFamily: "'Poppins', sans-serif", paddingBottom: 90 }}>
 
       {toast && (
         <div style={{
