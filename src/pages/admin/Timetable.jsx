@@ -109,11 +109,12 @@ export default function Timetable() {
     setSaving(true);
     try {
       const existing = existingTimetables.find(t => t.day === selectedDay);
+      const cleanPeriods = currentPeriods.map(p => ({ ...p, teacher: p.teacher || undefined }));
       const payload = {
         class: selectedClass,
         section: selectedSection,
         day: selectedDay,
-        periods: currentPeriods,
+        periods: cleanPeriods,
         classTeacher: classTeacher || undefined,
       };
 
