@@ -57,14 +57,14 @@ export default function Profile() {
   const getInitial = () => (profile?.name || user?.name || "S")[0].toUpperCase();
 
   if (loading) return (
-    <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f5f6fa" }}>
+    <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: darkMode ? "#1a1a2e" : "#f5f6fa" }}>
       <div style={{ fontSize: 14, color: "#999" }}>Loading...</div>
     </div>
   );
 
   // ── View Profile ──
   if (showProfile) return (
-    <div style={{ position: "absolute", inset: 0, background: "#f5f6fa", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
+    <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
       <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
         <button onClick={() => setShowProfile(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
         <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>My Information</h2>
@@ -74,7 +74,7 @@ export default function Profile() {
           <div style={{ width: "84px", height: "84px", borderRadius: "50%", background: "linear-gradient(135deg,#4f46e5,#7c3aed)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto", fontSize: "32px", fontWeight: "700", color: "white", border: "3px solid #e5e7eb" }}>
             {getInitial()}
           </div>
-          <div style={{ fontSize: "12px", color: "#888", marginTop: "8px" }}>Profile photo is managed by school admin</div>
+          <div style={{ fontSize: "12px", color: darkMode ? "#aaa" : "#888", marginTop: "8px" }}>Profile photo is managed by school admin</div>
         </div>
         {[
           { label: "Full Name",    value: profile?.name        || "—" },
@@ -86,8 +86,8 @@ export default function Profile() {
           { label: "Address",      value: profile?.address     || "—" },
         ].map(f => (
           <div key={f.label} style={{ marginBottom: "14px" }}>
-            <label style={{ fontSize: "11px", fontWeight: "700", color: "#888", textTransform: "uppercase", letterSpacing: "1px" }}>{f.label}</label>
-            <div style={{ padding: "13px 15px", borderRadius: "12px", background: "#f5f6fa", border: "1.5px solid #e5e7eb", fontSize: "14px", marginTop: "6px", color: "#444" }}>{f.value}</div>
+            <label style={{ fontSize: "11px", fontWeight: "700", color: darkMode ? "#aaa" : "#888", textTransform: "uppercase", letterSpacing: "1px" }}>{f.label}</label>
+            <div style={{ padding: "13px 15px", borderRadius: "12px", background: darkMode ? "#1a1a2e" : "#f5f6fa", border: "1.5px solid #e5e7eb", fontSize: "14px", marginTop: "6px", color: darkMode ? "#ccc" : "#444" }}>{f.value}</div>
           </div>
         ))}
         <div style={{ background: "#FFF9C4", borderRadius: "12px", padding: "12px 16px", marginTop: "8px", display: "flex", gap: "10px", alignItems: "flex-start" }}>
@@ -102,13 +102,13 @@ export default function Profile() {
 
   // ── Settings ──
   if (showSettings) return (
-    <div style={{ position: "absolute", inset: 0, background: "#f5f6fa", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
+    <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
       <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
         <button onClick={() => setShowSettings(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
         <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Settings</h2>
       </div>
       <div style={{ flex: 1, overflowY: "auto", padding: "16px" }}>
-        <div style={{ background: "white", borderRadius: "16px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}>
+        <div style={{ background: darkMode ? "#16213e" : "white", borderRadius: "16px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}>
           {[
             { label: "Push Notifications", sub: "Get alerts for fees, results and notices", value: notifications, setter: setNotifications },
             { label: "Dark Mode",           sub: "Switch to dark theme",                     value: darkMode,       setter: setDarkMode       },
@@ -116,10 +116,10 @@ export default function Profile() {
             <div key={s.label} style={{ padding: "16px", borderBottom: i < arr.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div>
                 <div style={{ fontWeight: "600", fontSize: "14px" }}>{s.label}</div>
-                <div style={{ fontSize: "12px", color: "#888", marginTop: "2px" }}>{s.sub}</div>
+                <div style={{ fontSize: "12px", color: darkMode ? "#aaa" : "#888", marginTop: "2px" }}>{s.sub}</div>
               </div>
               <div onClick={() => s.setter(!s.value)} style={{ width: "46px", height: "26px", borderRadius: "13px", background: s.value ? "#4f46e5" : "#e5e7eb", cursor: "pointer", position: "relative", transition: "background .2s", flexShrink: 0 }}>
-                <div style={{ position: "absolute", top: "3px", left: s.value ? "23px" : "3px", width: "20px", height: "20px", borderRadius: "50%", background: "white", transition: "left .2s", boxShadow: "0 1px 4px rgba(0,0,0,0.2)" }} />
+                <div style={{ position: "absolute", top: "3px", left: s.value ? "23px" : "3px", width: "20px", height: "20px", borderRadius: "50%", background: darkMode ? "#16213e" : "white", transition: "left .2s", boxShadow: "0 1px 4px rgba(0,0,0,0.2)" }} />
               </div>
             </div>
           ))}
@@ -132,8 +132,8 @@ export default function Profile() {
             </select>
           </div>
         </div>
-        <div style={{ background: "white", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginTop: "12px" }}>
-          <div style={{ fontWeight: "700", fontSize: "13px", color: "#888", marginBottom: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>Account</div>
+        <div style={{ background: darkMode ? "#16213e" : "white", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginTop: "12px" }}>
+          <div style={{ fontWeight: "700", fontSize: "13px", color: darkMode ? "#aaa" : "#888", marginBottom: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>Account</div>
           {["Change Password", "Privacy Policy", "Terms of Service"].map((item, i, arr) => (
             <div key={item} style={{ padding: "14px 0", borderBottom: i < arr.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
               <span style={{ fontSize: "14px", fontWeight: "600" }}>{item}</span>
@@ -147,13 +147,13 @@ export default function Profile() {
 
   // ── ID Card ──
   if (showIdCard) return (
-    <div style={{ position: "absolute", inset: 0, background: "#f5f6fa", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
+    <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
       <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
         <button onClick={() => setShowIdCard(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
         <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Student ID Card</h2>
       </div>
       <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "24px" }}>
-        <div style={{ width: "100%", maxWidth: "320px", background: "white", borderRadius: "20px", overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.15)" }}>
+        <div style={{ width: "100%", maxWidth: "320px", background: darkMode ? "#16213e" : "white", borderRadius: "20px", overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.15)" }}>
           <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "20px", color: "white", textAlign: "center" }}>
             <div style={{ fontSize: "13px", fontWeight: "700", letterSpacing: "2px", opacity: .8 }}>
               {profile?.school || "SCHOOL"}
@@ -164,8 +164,8 @@ export default function Profile() {
             <div style={{ width: "72px", height: "72px", borderRadius: "50%", background: "linear-gradient(135deg,#4f46e5,#7c3aed)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px", fontSize: "28px", fontWeight: "700", color: "white", border: "3px solid #e5e7eb" }}>
               {getInitial()}
             </div>
-            <div style={{ fontWeight: "800", fontSize: "18px", color: "#111" }}>{profile?.name || "—"}</div>
-            <div style={{ fontSize: "13px", color: "#666", marginTop: "4px" }}>
+            <div style={{ fontWeight: "800", fontSize: "18px", color: darkMode ? "#f1f1f1" : "#111" }}>{profile?.name || "—"}</div>
+            <div style={{ fontSize: "13px", color: darkMode ? "#bbb" : "#666", marginTop: "4px" }}>
               Class {profile?.class || "—"}-{profile?.section || "—"} • Roll #{profile?.rollNumber || "—"}
             </div>
             <div style={{ marginTop: "16px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", textAlign: "left" }}>
@@ -175,15 +175,15 @@ export default function Profile() {
                 ["Blood Group", profile?.bloodGroup || "—"],
                 ["Session",     "2025-26"],
               ].map(([l, v]) => (
-                <div key={l} style={{ background: "#f5f6fa", borderRadius: "10px", padding: "10px" }}>
-                  <div style={{ fontSize: "10px", color: "#888", fontWeight: "700", textTransform: "uppercase" }}>{l}</div>
-                  <div style={{ fontSize: "12px", fontWeight: "700", color: "#111", marginTop: "2px" }}>{v}</div>
+                <div key={l} style={{ background: darkMode ? "#1a1a2e" : "#f5f6fa", borderRadius: "10px", padding: "10px" }}>
+                  <div style={{ fontSize: "10px", color: darkMode ? "#aaa" : "#888", fontWeight: "700", textTransform: "uppercase" }}>{l}</div>
+                  <div style={{ fontSize: "12px", fontWeight: "700", color: darkMode ? "#f1f1f1" : "#111", marginTop: "2px" }}>{v}</div>
                 </div>
               ))}
             </div>
           </div>
-          <div style={{ background: "#f5f6fa", padding: "12px 20px", textAlign: "center" }}>
-            <div style={{ fontSize: "11px", color: "#888" }}>If found, please return to school administration</div>
+          <div style={{ background: darkMode ? "#1a1a2e" : "#f5f6fa", padding: "12px 20px", textAlign: "center" }}>
+            <div style={{ fontSize: "11px", color: darkMode ? "#aaa" : "#888" }}>If found, please return to school administration</div>
           </div>
         </div>
       </div>
@@ -192,7 +192,7 @@ export default function Profile() {
 
   // ── Help ──
   if (showHelp) return (
-    <div style={{ position: "absolute", inset: 0, background: "#f5f6fa", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
+    <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
       <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
         <button onClick={() => setShowHelp(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
         <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Help & Support</h2>
@@ -206,14 +206,14 @@ export default function Profile() {
           { q: "How do I change my password?",        a: "Go to Profile, then Settings, then Change Password." },
           { q: "How do I contact my teacher?",        a: "Go to Chat and select your subject teacher to send a message." },
         ].map((faq, i) => (
-          <div key={i} style={{ background: "white", borderRadius: "14px", padding: "16px", marginBottom: "10px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-            <div style={{ fontWeight: "700", fontSize: "14px", color: "#111", marginBottom: "6px" }}>❓ {faq.q}</div>
-            <div style={{ fontSize: "13px", color: "#666", lineHeight: 1.6 }}>💡 {faq.a}</div>
+          <div key={i} style={{ background: darkMode ? "#16213e" : "white", borderRadius: "14px", padding: "16px", marginBottom: "10px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+            <div style={{ fontWeight: "700", fontSize: "14px", color: darkMode ? "#f1f1f1" : "#111", marginBottom: "6px" }}>❓ {faq.q}</div>
+            <div style={{ fontSize: "13px", color: darkMode ? "#bbb" : "#666", lineHeight: 1.6 }}>💡 {faq.a}</div>
           </div>
         ))}
-        <div style={{ background: "white", borderRadius: "14px", padding: "16px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)", textAlign: "center" }}>
+        <div style={{ background: darkMode ? "#16213e" : "white", borderRadius: "14px", padding: "16px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)", textAlign: "center" }}>
           <div style={{ fontSize: "16px", fontWeight: "700", marginBottom: "8px" }}>Still need help?</div>
-          <div style={{ fontSize: "13px", color: "#888", marginBottom: "12px" }}>Contact school administration</div>
+          <div style={{ fontSize: "13px", color: darkMode ? "#aaa" : "#888", marginBottom: "12px" }}>Contact school administration</div>
           <button style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", color: "white", border: "none", borderRadius: "12px", padding: "12px 24px", fontWeight: "700", cursor: "pointer", fontSize: "14px" }}>
             📞 Call School
           </button>
@@ -232,7 +232,7 @@ export default function Profile() {
   ];
 
   return (
-    <div style={{ position: "absolute", inset: 0, background: "#f5f6fa", fontFamily: "Inter, sans-serif", overflowY: "auto", paddingBottom: "80px" }}>
+    <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "Inter, sans-serif", overflowY: "auto", paddingBottom: "80px" }}>
       {/* Header */}
       <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 40px", color: "white", textAlign: "center" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
@@ -254,7 +254,7 @@ export default function Profile() {
 
       <div style={{ padding: "16px", marginTop: "-20px" }}>
         {/* Stats */}
-        <div style={{ background: "white", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: "16px" }}>
+        <div style={{ background: darkMode ? "#16213e" : "white", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: "16px" }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "8px", textAlign: "center" }}>
             {[
               { label: "ATTENDANCE", value: attendance?.percentage ? `${attendance.percentage}%` : "—" },
@@ -264,14 +264,14 @@ export default function Profile() {
             ].map(s => (
               <div key={s.label}>
                 <div style={{ fontWeight: "700", fontSize: "18px", color: "#4f46e5" }}>{s.value}</div>
-                <div style={{ fontSize: "9px", color: "#888", marginTop: "2px" }}>{s.label}</div>
+                <div style={{ fontSize: "9px", color: darkMode ? "#aaa" : "#888", marginTop: "2px" }}>{s.label}</div>
               </div>
             ))}
           </div>
         </div>
 
         {/* Menu */}
-        <div style={{ background: "white", borderRadius: "16px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: "16px" }}>
+        <div style={{ background: darkMode ? "#16213e" : "white", borderRadius: "16px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: "16px" }}>
           {menuItems.map((item, i) => (
             <div key={item.label} onClick={item.action}
               style={{ padding: "16px", borderBottom: i < menuItems.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", alignItems: "center", gap: "14px", cursor: "pointer" }}>
@@ -279,8 +279,8 @@ export default function Profile() {
                 {item.icon}
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: "600", fontSize: "14px", color: "#111" }}>{item.label}</div>
-                <div style={{ fontSize: "12px", color: "#888", marginTop: "2px" }}>{item.sub}</div>
+                <div style={{ fontWeight: "600", fontSize: "14px", color: darkMode ? "#f1f1f1" : "#111" }}>{item.label}</div>
+                <div style={{ fontSize: "12px", color: darkMode ? "#aaa" : "#888", marginTop: "2px" }}>{item.sub}</div>
               </div>
               <div style={{ color: "#ccc", fontSize: "18px" }}>›</div>
             </div>
@@ -288,7 +288,7 @@ export default function Profile() {
         </div>
 
         {/* Logout */}
-        <div onClick={handleLogout} style={{ background: "white", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", display: "flex", alignItems: "center", gap: "14px", cursor: "pointer" }}>
+        <div onClick={handleLogout} style={{ background: darkMode ? "#16213e" : "white", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", display: "flex", alignItems: "center", gap: "14px", cursor: "pointer" }}>
           <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: "#fff5f5", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>🚪</div>
           <div style={{ flex: 1, fontWeight: "600", fontSize: "14px", color: "#ef4444" }}>Logout</div>
           <div style={{ color: "#ef4444", fontSize: "18px" }}>›</div>
