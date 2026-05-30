@@ -32,7 +32,6 @@ import TeacherProfile from "./TeacherProfile";
 import Timetable from "./Timetable";
 import Transport from "./Transport";
 import UserManagement from "./UserManagement";
-import { useTheme } from "../../context/ThemeContext";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -359,7 +358,6 @@ function DashboardContent({ isMobile, navigate, isTransport, setIsTransport, use
 
 export default function AdminHome() {
   const navigate = useNavigate();
-  const { colors } = useTheme();
   const { user, logout } = useAuth();
   const [activeNav, setActiveNav]     = useState("/admin");
   const [isTransport, setIsTransport] = useState(true);

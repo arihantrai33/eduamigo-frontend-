@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { useTheme } from "../../context/ThemeContext";
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -15,7 +14,6 @@ const LEAVE_TYPES = [
 
 export default function ApplyLeave() {
   const { user } = useAuth();
-  const { colors } = useTheme();
   const token = user?.token;
   const navigate = useNavigate();
 
@@ -107,13 +105,13 @@ export default function ApplyLeave() {
       <div style={{
         height: "100vh", display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
-        fontFamily: "'Poppins', sans-serif", background: colors.bg,
+        fontFamily: "'Poppins', sans-serif", background: "#f5f6fa",
       }}>
         <div style={{ fontSize: "64px" }}>✅</div>
-        <div style={{ fontWeight: "800", fontSize: "20px", marginTop: "16px", color: colors.text }}>
+        <div style={{ fontWeight: "800", fontSize: "20px", marginTop: "16px", color: "#111" }}>
           Leave Applied Successfully!
         </div>
-        <div style={{ color: colors.subtext, fontSize: "13px", marginTop: "8px" }}>
+        <div style={{ color: "#888", fontSize: "13px", marginTop: "8px" }}>
           Your request has been submitted for approval.
         </div>
         <button
@@ -133,7 +131,7 @@ export default function ApplyLeave() {
 
   return (
     <div style={{
-      minHeight: "100vh", background: colors.bg,
+      minHeight: "100vh", background: "#f5f6fa",
       fontFamily: "'Poppins', sans-serif", paddingBottom: "32px",
     }}>
       {/* Header */}
@@ -176,13 +174,13 @@ export default function ApplyLeave() {
               { label: "USED", value: quota.used, color: "#ef4444" },
             ].map((stat) => (
               <div key={stat.label} style={{
-                background: colors.card, borderRadius: "12px",
+                background: "white", borderRadius: "12px",
                 padding: "12px", textAlign: "center",
               }}>
                 <div style={{ fontSize: "24px", fontWeight: "800", color: stat.color }}>
                   {stat.value}
                 </div>
-                <div style={{ fontSize: "10px", color: colors.subtext, fontWeight: "700", letterSpacing: "0.5px" }}>
+                <div style={{ fontSize: "10px", color: "#888", fontWeight: "700", letterSpacing: "0.5px" }}>
                   {stat.label}
                 </div>
               </div>
@@ -194,16 +192,16 @@ export default function ApplyLeave() {
       {/* Form */}
       <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "16px" }}>
         <div style={{
-          background: colors.card, borderRadius: "16px", padding: "20px",
+          background: "white", borderRadius: "16px", padding: "20px",
           boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
         }}>
-          <div style={{ fontSize: "12px", fontWeight: "700", color: colors.subtext, letterSpacing: "1px", marginBottom: "16px" }}>
+          <div style={{ fontSize: "12px", fontWeight: "700", color: "#888", letterSpacing: "1px", marginBottom: "16px" }}>
             APPLY NEW LEAVE
           </div>
 
           {/* Leave Type */}
           <div style={{ marginBottom: "16px" }}>
-            <label style={{ fontSize: "11px", fontWeight: "700", color: colors.subtext2, letterSpacing: "0.5px" }}>
+            <label style={{ fontSize: "11px", fontWeight: "700", color: "#888"2, letterSpacing: "0.5px" }}>
               LEAVE TYPE
             </label>
             <select
@@ -212,9 +210,9 @@ export default function ApplyLeave() {
               style={{
                 width: "100%", marginTop: "8px", padding: "12px",
                 borderRadius: "10px", border: "1px solid #e0e0e0",
-                fontSize: "14px", color: colors.text, outline: "none",
+                fontSize: "14px", color: "#111", outline: "none",
                 fontFamily: "'Poppins', sans-serif",
-                background: colors.card, boxSizing: "border-box",
+                background: "white", boxSizing: "border-box",
               }}
             >
               {LEAVE_TYPES.map((t) => (
@@ -226,7 +224,7 @@ export default function ApplyLeave() {
           {/* From / To Date */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "8px" }}>
             <div>
-              <label style={{ fontSize: "11px", fontWeight: "700", color: colors.subtext2, letterSpacing: "0.5px" }}>
+              <label style={{ fontSize: "11px", fontWeight: "700", color: "#888"2, letterSpacing: "0.5px" }}>
                 FROM DATE
               </label>
               <input
@@ -236,13 +234,13 @@ export default function ApplyLeave() {
                 style={{
                   width: "100%", marginTop: "8px", padding: "12px",
                   borderRadius: "10px", border: "1px solid #e0e0e0",
-                  fontSize: "13px", outline: "none", color: colors.text,
+                  fontSize: "13px", outline: "none", color: "#111",
                   fontFamily: "'Poppins', sans-serif", boxSizing: "border-box",
                 }}
               />
             </div>
             <div>
-              <label style={{ fontSize: "11px", fontWeight: "700", color: colors.subtext2, letterSpacing: "0.5px" }}>
+              <label style={{ fontSize: "11px", fontWeight: "700", color: "#888"2, letterSpacing: "0.5px" }}>
                 TO DATE
               </label>
               <input
@@ -252,7 +250,7 @@ export default function ApplyLeave() {
                 style={{
                   width: "100%", marginTop: "8px", padding: "12px",
                   borderRadius: "10px", border: "1px solid #e0e0e0",
-                  fontSize: "13px", outline: "none", color: colors.text,
+                  fontSize: "13px", outline: "none", color: "#111",
                   fontFamily: "'Poppins', sans-serif", boxSizing: "border-box",
                 }}
               />
@@ -272,7 +270,7 @@ export default function ApplyLeave() {
 
           {/* Reason */}
           <div style={{ marginBottom: "16px" }}>
-            <label style={{ fontSize: "11px", fontWeight: "700", color: colors.subtext2, letterSpacing: "0.5px" }}>
+            <label style={{ fontSize: "11px", fontWeight: "700", color: "#888"2, letterSpacing: "0.5px" }}>
               REASON
             </label>
             <textarea
@@ -283,7 +281,7 @@ export default function ApplyLeave() {
               style={{
                 width: "100%", marginTop: "8px", padding: "12px",
                 borderRadius: "10px", border: "1px solid #e0e0e0",
-                fontSize: "14px", outline: "none", color: colors.text,
+                fontSize: "14px", outline: "none", color: "#111",
                 resize: "none", fontFamily: "'Poppins', sans-serif",
                 boxSizing: "border-box",
               }}
@@ -292,7 +290,7 @@ export default function ApplyLeave() {
 
           {/* Attach Document */}
           <div style={{ marginBottom: "16px" }}>
-            <label style={{ fontSize: "11px", fontWeight: "700", color: colors.subtext2, letterSpacing: "0.5px" }}>
+            <label style={{ fontSize: "11px", fontWeight: "700", color: "#888"2, letterSpacing: "0.5px" }}>
               ATTACH DOCUMENT (Optional)
             </label>
             <div
@@ -309,14 +307,14 @@ export default function ApplyLeave() {
                 <div style={{ fontSize: "13px", fontWeight: "600", color: "#444" }}>
                   {attachedFile ? attachedFile.name : "Attach Medical Report or Document"}
                 </div>
-                <div style={{ fontSize: "11px", color: colors.subtext, marginTop: "2px" }}>
+                <div style={{ fontSize: "11px", color: "#888", marginTop: "2px" }}>
                   {attachedFile ? `${(attachedFile.size / 1024).toFixed(1)} KB` : "PDF, JPG, PNG supported"}
                 </div>
               </div>
               {attachedFile && (
                 <span
                   onClick={(e) => { e.stopPropagation(); setAttachedFile(null); }}
-                  style={{ fontSize: "18px", color: colors.subtext, cursor: "pointer" }}
+                  style={{ fontSize: "18px", color: "#888", cursor: "pointer" }}
                 >✕</span>
               )}
             </div>
@@ -360,10 +358,10 @@ export default function ApplyLeave() {
 
         {/* Leave History */}
         <div style={{
-          background: colors.card, borderRadius: "16px", padding: "20px",
+          background: "white", borderRadius: "16px", padding: "20px",
           boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
         }}>
-          <div style={{ fontSize: "12px", fontWeight: "700", color: colors.subtext, letterSpacing: "1px", marginBottom: "16px" }}>
+          <div style={{ fontSize: "12px", fontWeight: "700", color: "#888", letterSpacing: "1px", marginBottom: "16px" }}>
             LEAVE HISTORY
           </div>
 
@@ -396,7 +394,7 @@ export default function ApplyLeave() {
                   border: `1px solid ${leave.status === "Rejected" ? "#fee2e2" : "#f0f0f0"}`,
                 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ fontWeight: "700", fontSize: "14px", color: colors.text }}>
+                    <div style={{ fontWeight: "700", fontSize: "14px", color: "#111" }}>
                       {leave.leaveType}
                     </div>
                     <span style={{
@@ -407,7 +405,7 @@ export default function ApplyLeave() {
                       {statusLabel}
                     </span>
                   </div>
-                  <div style={{ fontSize: "12px", color: colors.subtext, marginTop: "4px" }}>
+                  <div style={{ fontSize: "12px", color: "#888", marginTop: "4px" }}>
                     {new Date(leave.fromDate).toLocaleDateString("en-GB")} — {new Date(leave.toDate).toLocaleDateString("en-GB")} • {leaveDays} day{leaveDays > 1 ? "s" : ""}
                   </div>
                   {leave.reason && (
@@ -417,7 +415,7 @@ export default function ApplyLeave() {
                   )}
                   {leave.reviewNote && (
                     <div style={{
-                      marginTop: "8px", fontSize: "11px", color: colors.subtext2,
+                      marginTop: "8px", fontSize: "11px", color: "#888"2,
                       background: "#f0f4ff", padding: "6px 10px",
                       borderRadius: "6px",
                     }}>

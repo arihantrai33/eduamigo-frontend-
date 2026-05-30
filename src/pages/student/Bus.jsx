@@ -8,7 +8,6 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { useTheme } from "../../context/ThemeContext";
 
 // ── Utils ──────────────────────────────────────────────────────
 const getTrafficStatus = (speed) => {
@@ -180,7 +179,6 @@ function CallModal({ onClose, driverName, driverPhone }) {
 // ══════════════════════════════════════════════════════════════
 export default function ParentBus() {
   const navigate = useNavigate();
-  const { colors } = useTheme();
 
   const [busInfo,        setBusInfo]        = useState(null);
   const [loading,        setLoading]        = useState(true);
@@ -610,7 +608,7 @@ export default function ParentBus() {
                   <div style={styles.timeline}>
                     <div style={{ ...styles.stopCircle, background: circleBg, border: circleBorder, boxShadow: circleShadow }}>
                       {isCompleted ? <span style={{ fontSize: "9px", color: "#059669" }}>✓</span>
-                       : isCurrent ? <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: colors.card, display: "block" }} />
+                       : isCurrent ? <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "white", display: "block" }} />
                        : isSchool  ? <span style={{ fontSize: "10px" }}>🏫</span>
                        : <span style={{ fontSize: "9px", color: "#9CA3AF" }}>{i + 1}</span>}
                     </div>
@@ -697,8 +695,8 @@ const styles = {
   trafficLabel: { color: "rgba(255,255,255,0.85)", fontSize: "12px", flex: 1, fontWeight: 500 },
   trafficRight: { color: "rgba(255,255,255,0.45)", fontSize: "11px" },
   fsBtn: { position: "absolute", right: "14px", zIndex: 200, width: "40px", height: "40px", borderRadius: "12px", background: "rgba(79,70,229,0.85)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 2px 12px rgba(79,70,229,0.35)", transition: "bottom 0.35s cubic-bezier(0.4,0,0.2,1)" },
-  stopsPanel: { position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 100, background: colors.card, borderRadius: "24px 24px 0 0", boxShadow: "0 -4px 30px rgba(0,0,0,0.10)", overflowY: "auto", transition: "max-height 0.35s cubic-bezier(0.4,0,0.2,1)", paddingBottom: "env(safe-area-inset-bottom, 0px)", WebkitOverflowScrolling: "touch" },
-  stopsHeader: { position: "sticky", top: 0, background: colors.card, borderBottom: "1px solid #F1F5F9", paddingBottom: "10px", zIndex: 1, cursor: "pointer", userSelect: "none" },
+  stopsPanel: { position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 100, background: "white", borderRadius: "24px 24px 0 0", boxShadow: "0 -4px 30px rgba(0,0,0,0.10)", overflowY: "auto", transition: "max-height 0.35s cubic-bezier(0.4,0,0.2,1)", paddingBottom: "env(safe-area-inset-bottom, 0px)", WebkitOverflowScrolling: "touch" },
+  stopsHeader: { position: "sticky", top: 0, background: "white", borderBottom: "1px solid #F1F5F9", paddingBottom: "10px", zIndex: 1, cursor: "pointer", userSelect: "none" },
   dragHandle: { width: "36px", height: "4px", borderRadius: "2px", background: "#E2E8F0", margin: "10px auto 8px" },
   stopsHeaderRow: { display: "flex", alignItems: "center", justifyContent: "space-between", paddingLeft: "20px", paddingRight: "20px" },
   stopsTitle: { fontSize: "14px", fontWeight: 700, color: "#0F172A" },
@@ -722,7 +720,7 @@ const styles = {
   stopSub:  { fontSize: "11px", color: "#94A3B8", marginTop: "3px" },
   badge: { flexShrink: 0, fontSize: "10px", fontWeight: 600, padding: "3px 9px", borderRadius: "8px", letterSpacing: "0.2px", whiteSpace: "nowrap" },
   modalOverlay: { position: "fixed", inset: 0, zIndex: 99999, background: "rgba(0,0,0,0.55)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" },
-  modalCard: { background: colors.card, borderRadius: "24px", padding: "28px 24px", width: "100%", maxWidth: "340px", textAlign: "center", boxShadow: "0 20px 60px rgba(0,0,0,0.25)" },
+  modalCard: { background: "white", borderRadius: "24px", padding: "28px 24px", width: "100%", maxWidth: "340px", textAlign: "center", boxShadow: "0 20px 60px rgba(0,0,0,0.25)" },
   modalTitle: { fontSize: "18px", fontWeight: 700, color: "#0F172A", marginBottom: "8px" },
   modalSub:   { fontSize: "13px", color: "#64748B", lineHeight: 1.6, marginBottom: "20px" },
   modalBtns:  { display: "flex", gap: "10px" },

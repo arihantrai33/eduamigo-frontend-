@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { useTheme } from "../../context/ThemeContext";
 import axios from "axios";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -20,7 +19,6 @@ return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
 export default function StudentHome() {
 const navigate = useNavigate();
 const { user } = useAuth();
-  const { colors } = useTheme();
 const [profile,      setProfile]      = useState(null);
 const [attendance,   setAttendance]   = useState(null);
 const [results,      setResults]      = useState(null);
@@ -106,13 +104,13 @@ path: "/student/apply-leave",
   ];
 if (loading) {
 return (
-<div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: colors.bg }}>
-<div style={{ fontSize: 14, color: colors.subtext }}>Loading...</div>
+<div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f5f6fa" }}>
+<div style={{ fontSize: 14, color: "#888" }}>Loading...</div>
 </div>
     );
   }
 return (
-<div style={{ height: "100vh", display: "flex", flexDirection: "column", background: colors.bg, fontFamily: "Inter, sans-serif" }}>
+<div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "#f5f6fa", fontFamily: "Inter, sans-serif" }}>
 {/* ── Header ── */}
 <div style={{ background: "linear-gradient(135deg, #1a73e8 0%, #6c63ff 100%)", padding: "48px 20px 20px", flexShrink: 0 }}>
 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
@@ -181,34 +179,34 @@ style={{ flex: 1, background: "rgba(255,255,255,0.15)", borderRadius: 10, paddin
 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
 {quickTiles.map((tile) => (
 <button key={tile.label} onClick={() => navigate(tile.path)}
-style={{ background: colors.card, borderRadius: 14, padding: 14, border: "none", cursor: "pointer", textAlign: "left", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+style={{ background: "white", borderRadius: 14, padding: 14, border: "none", cursor: "pointer", textAlign: "left", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
 <div style={{ fontSize: 24, marginBottom: 6 }}>{tile.icon}</div>
-<div style={{ fontSize: 14, fontWeight: 700, color: colors.text }}>{tile.label}</div>
-<div style={{ fontSize: 11, color: colors.subtext, marginTop: 2 }}>{tile.sub}</div>
+<div style={{ fontSize: 14, fontWeight: 700, color: "#111" }}>{tile.label}</div>
+<div style={{ fontSize: 11, color: "#888", marginTop: 2 }}>{tile.sub}</div>
 </button>
           ))}
 </div>
 {/* Today's Classes */}
 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-<h3 style={{ fontSize: 15, fontWeight: 700, color: colors.text, margin: 0 }}>Today's Classes</h3>
+<h3 style={{ fontSize: 15, fontWeight: 700, color: "#111", margin: 0 }}>Today's Classes</h3>
 <span style={{ fontSize: 13, color: "#1a73e8", cursor: "pointer" }} onClick={() => navigate("/student/timetable")}>
             View all →
 </span>
 </div>
-<div style={{ background: colors.card, borderRadius: 14, padding: "4px 12px", marginBottom: 20, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+<div style={{ background: "white", borderRadius: 14, padding: "4px 12px", marginBottom: 20, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
 {timetable.length === 0 ? (
-<div style={{ padding: "16px 0", textAlign: "center", color: colors.subtext, fontSize: 13 }}>
+<div style={{ padding: "16px 0", textAlign: "center", color: "#888", fontSize: 13 }}>
               No classes scheduled for today
 </div>
           ) : (
 timetable.slice(0, 4).map((c, i) => (
 <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 0", borderBottom: i < 3 ? "1px solid #f0f0f0" : "none" }}>
-<div style={{ minWidth: 44, background: colors.bg, borderRadius: 8, padding: 4, textAlign: "center", fontSize: 11, fontWeight: 700, color: colors.subtext }}>
+<div style={{ minWidth: 44, background: "#f5f6fa", borderRadius: 8, padding: 4, textAlign: "center", fontSize: 11, fontWeight: 700, color: "#888" }}>
 {c.time ?? "—"}
 </div>
 <div style={{ flex: 1 }}>
-<div style={{ fontSize: 14, fontWeight: 700, color: colors.text }}>{c.subject}</div>
-<div style={{ fontSize: 11, color: colors.subtext }}>{c.teacher?.name ?? c.teacherName ?? "—"}{c.room ? ` • ${c.room}` : ""}</div>
+<div style={{ fontSize: 14, fontWeight: 700, color: "#111" }}>{c.subject}</div>
+<div style={{ fontSize: 11, color: "#888" }}>{c.teacher?.name ?? c.teacherName ?? "—"}{c.room ? ` • ${c.room}` : ""}</div>
 </div>
 </div>
             ))
@@ -216,14 +214,14 @@ timetable.slice(0, 4).map((c, i) => (
 </div>
 {/* Notices */}
 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-<h3 style={{ fontSize: 15, fontWeight: 700, color: colors.text, margin: 0 }}>Notices</h3>
+<h3 style={{ fontSize: 15, fontWeight: 700, color: "#111", margin: 0 }}>Notices</h3>
 <span style={{ fontSize: 13, color: "#1a73e8", cursor: "pointer" }} onClick={() => navigate("/student/notifications")}>
             View all →
 </span>
 </div>
-<div style={{ background: colors.card, borderRadius: 14, padding: "4px 12px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+<div style={{ background: "white", borderRadius: 14, padding: "4px 12px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
 {notices.length === 0 ? (
-<div style={{ padding: "16px 0", textAlign: "center", color: colors.subtext, fontSize: 13 }}>
+<div style={{ padding: "16px 0", textAlign: "center", color: "#888", fontSize: 13 }}>
               No notices at the moment
 </div>
           ) : (
@@ -231,8 +229,8 @@ notices.map((n, i) => (
 <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "12px 0", borderBottom: i < notices.length - 1 ? "1px solid #f0f0f0" : "none" }}>
 <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#5C6BC0", marginTop: 5, flexShrink: 0 }} />
 <div>
-<div style={{ fontSize: 13, fontWeight: 600, color: colors.text }}>{n.title}</div>
-<div style={{ fontSize: 11, color: colors.subtext, marginTop: 2 }}>
+<div style={{ fontSize: 13, fontWeight: 600, color: "#111" }}>{n.title}</div>
+<div style={{ fontSize: 11, color: "#888", marginTop: 2 }}>
 {n.createdAt ? new Date(n.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : ""}
 </div>
 </div>
@@ -242,7 +240,7 @@ notices.map((n, i) => (
 </div>
 </div>
 {/* ── Bottom Nav ── */}
-<div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: colors.card, borderTop: `1px solid ${colors.border}`, display: "flex", padding: "8px 0 16px", boxShadow: "0 -4px 12px rgba(0,0,0,0.06)" }}>
+<div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: "white", borderTop: `1px solid ${"#f0f0f0"}`, display: "flex", padding: "8px 0 16px", boxShadow: "0 -4px 12px rgba(0,0,0,0.06)" }}>
 {[
           { icon: "🏠", label: "Home",  path: "/student/home",  active: true },
           { icon: "🚌", label: "Bus",   path: "/student/bus" },

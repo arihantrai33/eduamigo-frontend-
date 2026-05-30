@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useTheme } from "../../context/ThemeContext";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -59,12 +58,11 @@ const STATUS_STYLE = {
   Now:      { bg: "#E3F2FD", color: "#1565C0" },
   Break:    { bg: "#F3E5F5", color: "#6A1B9A" },
   Upcoming: { bg: "#FFF3E0", color: "#E65100" },
-  default:  { bg: "#f5f5f5", color: colors.subtext },
+  default:  { bg: "#f5f5f5", color: "#888" },
 };
 
 export default function Timetable() {
   const navigate = useNavigate();
-  const { colors } = useTheme();
 
   const getTodayKey = () => {
     const jsDay = new Date().getDay();
@@ -96,13 +94,13 @@ export default function Timetable() {
   const classes = timetableCache[selectedDay] || [];
 
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: colors.bg, fontFamily: "sans-serif" }}>
+    <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "#f5f6fa", fontFamily: "sans-serif" }}>
       {/* Header */}
-      <div style={{ background: colors.card, padding: "48px 20px 0px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+      <div style={{ background: "white", padding: "48px 20px 0px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
           <button onClick={() => navigate("/student/home")}
             style={{ background: "none", border: "none", fontSize: "20px", cursor: "pointer" }}>←</button>
-          <div style={{ fontSize: "18px", fontWeight: "800", color: colors.text }}>Timetable</div>
+          <div style={{ fontSize: "18px", fontWeight: "800", color: "#111" }}>Timetable</div>
         </div>
         <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "8px" }}>
           {DAYS.map((day) => (
@@ -123,7 +121,7 @@ export default function Timetable() {
             style={{ background: "none", border: "none", fontSize: "13px", color: "#6366f1", fontWeight: "700", cursor: "pointer", padding: "4px 8px" }}>
             ← Prev Week
           </button>
-          <span style={{ fontSize: "12px", color: colors.subtext, fontWeight: "600" }}>
+          <span style={{ fontSize: "12px", color: "#888", fontWeight: "600" }}>
             {weekOffset === 0 ? "This Week" : weekOffset === 1 ? "Next Week" : weekOffset === -1 ? "Last Week" : weekOffset > 0 ? `+${weekOffset} Weeks` : `${weekOffset} Weeks`}
           </span>
           <button onClick={() => { setWeekOffset(w => w + 1); setSelectedDay("Mon"); }}
@@ -135,20 +133,20 @@ export default function Timetable() {
 
       {/* Body */}
       <div style={{ flex: 1, overflowY: "auto", padding: "16px" }}>
-        <div style={{ fontSize: "11px", fontWeight: "700", color: colors.subtext, marginBottom: "12px", letterSpacing: "1px" }}>
+        <div style={{ fontSize: "11px", fontWeight: "700", color: "#888", marginBottom: "12px", letterSpacing: "1px" }}>
           {getDateForDay(selectedDay, weekOffset)}
         </div>
 
         {loading ? (
-          <div style={{ textAlign: "center", padding: "40px 0", color: colors.subtext, fontSize: 14 }}>Loading...</div>
+          <div style={{ textAlign: "center", padding: "40px 0", color: "#888", fontSize: 14 }}>Loading...</div>
         ) : classes.length === 0 ? (
-          <div style={{ background: colors.card, borderRadius: "16px", padding: "40px 20px", textAlign: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+          <div style={{ background: "white", borderRadius: "16px", padding: "40px 20px", textAlign: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
             <div style={{ fontSize: 40, marginBottom: 12 }}>📭</div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: colors.text }}>No classes scheduled</div>
-            <div style={{ fontSize: 13, color: colors.subtext, marginTop: 4 }}>No timetable found for {DAY_FULL[selectedDay]}</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#111" }}>No classes scheduled</div>
+            <div style={{ fontSize: 13, color: "#888", marginTop: 4 }}>No timetable found for {DAY_FULL[selectedDay]}</div>
           </div>
         ) : (
-          <div style={{ background: colors.card, borderRadius: "16px", padding: "4px 16px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+          <div style={{ background: "white", borderRadius: "16px", padding: "4px 16px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
             {classes.map((cls, i) => {
               const isBreak = cls.subject === "Break" || cls.subject?.toLowerCase().includes("lunch");
               const status = getStatus(cls.time, isBreak);
@@ -179,7 +177,7 @@ export default function Timetable() {
                       {cls.subject || "—"}
                     </div>
                     {!isBreak && (
-                      <div style={{ fontSize: "12px", color: colors.subtext, marginTop: "2px" }}>
+                      <div style={{ fontSize: "12px", color: "#888", marginTop: "2px" }}>
                         {cls.teacher?.name || cls.teacherName || "—"}
                         {cls.room ? ` • Room ${cls.room}` : ""}
                       </div>
