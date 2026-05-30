@@ -98,12 +98,12 @@ export default function Notes() {
     <div style={{ maxWidth: 420, margin: '0 auto', minHeight: '100vh', background: dm ? '#0f172a' : '#F8F9FB', fontFamily: 'Inter, sans-serif', display: 'flex', flexDirection: 'column', position: 'relative', paddingBottom: 80 }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '48px 20px 12px', background: dm ? '#1e293b' : '#fff', borderBottom: `1px solid ${dm ? '#334155' : '#F0F0F0'}` }}>
-        <button style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: dm ? '#f1f5f9' : '#333', padding: '4px 8px' }} onClick={() => navigate('/student/home')}>←</button>
+        <button style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: dm ? '#ffffff' : '#333', padding: '4px 8px' }} onClick={() => navigate('/student/home')}>←</button>
         <h1 style={{ fontSize: 18, fontWeight: 700, color: dm ? '#f1f5f9' : '#1A1A2E', margin: 0 }}>📚 Notes & Assignments</h1>
         <button style={{ background: dm ? '#1e3a5f' : '#F0F4FF', border: 'none', borderRadius: 10, width: 36, height: 36, fontSize: 22, cursor: 'pointer', color: '#4361EE', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setShowModal(true)}>+</button>
       </div>
       {/* Search */}
-      <div style={{ display: 'flex', alignItems: 'center', background: dm ? '#1e293b' : '#F0F2F5', borderRadius: 12, margin: '12px 16px', padding: '10px 14px', gap: 8 }}>
+      <div style={{ display: 'flex', alignItems: 'center', background: dm ? '#0f172a' : '#F0F2F5', borderRadius: 12, margin: '12px 16px', padding: '10px 14px', gap: 8 }}>
         <span style={{ fontSize: 16, opacity: 0.5 }}>🔍</span>
         <input style={{ border: 'none', background: 'transparent', fontSize: 14, color: dm ? '#f1f5f9' : '#333', outline: 'none', width: '100%' }} placeholder="Search notes, subjects..." value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
