@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../../context/ThemeContext";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
 const avatarColor = (name = '') => {
@@ -25,6 +26,8 @@ const formatDate = (d) => {
   } catch { return ''; }
 };
 export default function Chat() {
+  const { darkMode } = useTheme();
+  const dm = darkMode;
   const navigate = useNavigate();
   const [tab, setTab] = useState('chats');
   const [teachers, setTeachers] = useState([]);
@@ -98,7 +101,43 @@ export default function Chat() {
     } catch (err) { console.error(err); }
     finally { setSending(false); }
   };
-  // Chat Window
+  const S = {
+    screen: { maxWidth: 420, margin: '0 auto', minHeight: '100vh', background: dm ? '#0f172a' : '#f5f6fa', fontFamily: 'Inter, sans-serif', display: 'flex', flexDirection: 'column' },
+    header: { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', padding: '48px 20px 16px', display: 'flex', alignItems: 'center', gap: 12 },
+    headerBack: { background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: '8px 12px', color: 'white', cursor: 'pointer', fontSize: 18 },
+    headerTitle: { color: 'white', fontSize: 20, fontWeight: 800, margin: 0 },
+    tabRow: { display: 'flex', background: dm ? '#1e293b' : 'white', borderBottom: dm ? '1px solid #334155' : '1px solid #f0f0f0', padding: '0 16px' },
+    tabBtn: { flex: 1, padding: '12px 0', border: 'none', background: 'none', fontSize: 13, fontWeight: 600, color: dm ? '#94a3b8' : '#888', cursor: 'pointer' },
+    tabActive: { color: '#4f46e5', borderBottom: '2px solid #4f46e5' },
+    list: { flex: 1, overflowY: 'auto', padding: '12px 16px 80px' },
+    sectionLabel: { fontSize: 11, fontWeight: 700, color: dm ? '#94a3b8' : '#999', letterSpacing: 1, marginBottom: 8, marginTop: 4 },
+    chatRow: { background: dm ? '#1e293b' : 'white', borderRadius: 14, padding: '14px', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10, boxShadow: dm ? '0 1px 6px rgba(0,0,0,0.3)' : '0 1px 6px rgba(0,0,0,0.06)', cursor: 'pointer' },
+    avatar: { width: 46, height: 46, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 18, flexShrink: 0 },
+    rowName: { fontSize: 14, fontWeight: 700, color: dm ? '#f1f5f9' : '#111', marginBottom: 3 },
+    rowSub: { fontSize: 12, color: dm ? '#94a3b8' : '#888' },
+    chevron: { fontSize: 22, color: dm ? '#475569' : '#ccc' },
+    emptyBox: { textAlign: 'center', padding: '32px 0', color: dm ? '#94a3b8' : '#999', fontSize: 13 },
+    center: { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' },
+    broadcastCard: { background: dm ? '#1e293b' : 'white', borderRadius: 14, padding: 16, marginBottom: 10, boxShadow: dm ? '0 1px 6px rgba(0,0,0,0.3)' : '0 1px 6px rgba(0,0,0,0.06)' },
+    broadcastTop: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 },
+    broadcastText: { fontSize: 14, color: dm ? '#cbd5e1' : '#333', lineHeight: 1.5 },
+    chatHeader: { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', padding: '48px 16px 16px', display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 },
+    backBtn: { background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: '8px 12px', color: 'white', cursor: 'pointer', fontSize: 18 },
+    chatName: { color: 'white', fontSize: 16, fontWeight: 700 },
+    chatSub: { color: 'rgba(255,255,255,0.7)', fontSize: 11, marginTop: 2 },
+    msgList: { flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column' },
+    emptyChat: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 0' },
+    dateDivider: { textAlign: 'center', fontSize: 11, color: dm ? '#94a3b8' : '#aaa', background: dm ? '#334155' : '#eee', borderRadius: 20, padding: '3px 12px', margin: '10px auto', width: 'fit-content' },
+    miniAvatar: { width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 12, marginRight: 8, flexShrink: 0, alignSelf: 'flex-end' },
+    bubble: { maxWidth: '75%', padding: '10px 14px', borderRadius: 18, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' },
+    bubbleMe: { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', borderBottomRightRadius: 4 },
+    bubbleThem: { background: dm ? '#1e293b' : 'white', color: dm ? '#f1f5f9' : '#111', borderBottomLeftRadius: 4 },
+    timeRow: { display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4, marginTop: 4 },
+    timeText: { fontSize: 10, opacity: 0.7 },
+    inputRow: { padding: '12px 16px', background: dm ? '#1e293b' : 'white', display: 'flex', gap: 10, alignItems: 'center', boxShadow: '0 -2px 8px rgba(0,0,0,0.06)', flexShrink: 0 },
+    input: { flex: 1, border: dm ? '1.5px solid #334155' : '1.5px solid #e5e7eb', borderRadius: 24, padding: '10px 16px', fontSize: 14, outline: 'none', fontFamily: 'Inter, sans-serif', background: dm ? '#0f172a' : 'white', color: dm ? '#f1f5f9' : '#111' },
+    sendBtn: { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', border: 'none', borderRadius: '50%', width: 44, height: 44, fontSize: 18, cursor: 'pointer', flexShrink: 0 },
+  };
   if (activeChat) return (
     <div style={S.screen}>
       <div style={S.chatHeader}>
@@ -113,7 +152,7 @@ export default function Chat() {
         {messages.length === 0 && (
           <div style={S.emptyChat}>
             <div style={{ fontSize: 40, marginBottom: 8 }}>💬</div>
-            <div style={{ color: '#999', fontSize: 13 }}>Start a conversation</div>
+            <div style={{ color: dm ? '#94a3b8' : '#999', fontSize: 13 }}>Start a conversation</div>
           </div>
         )}
         {messages.map((m, i) => {
@@ -145,14 +184,12 @@ export default function Chat() {
       </div>
     </div>
   );
-  // Main Screen
   return (
     <div style={S.screen}>
       <div style={S.header}>
         <button style={S.headerBack} onClick={() => navigate('/student/home')}>←</button>
         <h2 style={S.headerTitle}>💬 Messages</h2>
       </div>
-      {/* Tabs */}
       <div style={S.tabRow}>
         {[['chats','💬 Chats'],['broadcasts','📢 Broadcasts']].map(([key, label]) => (
           <button key={key} style={{ ...S.tabBtn, ...(tab === key ? S.tabActive : {}) }} onClick={() => setTab(key)}>{label}</button>
@@ -162,7 +199,6 @@ export default function Chat() {
         <div style={S.center}><div style={{ color: '#4f46e5', fontWeight: 600 }}>Loading...</div></div>
       ) : tab === 'chats' ? (
         <div style={S.list}>
-          {/* Admin Section */}
           <div style={S.sectionLabel}>🏫 SCHOOL ADMINISTRATION</div>
           {adminContact && (
             <div style={S.chatRow} onClick={() => setActiveChat({ name: adminContact.name, sub: 'Admin · Complaints & Queries', receiverId: adminContact.userId, roomId: adminContact.roomId })}>
@@ -174,11 +210,10 @@ export default function Chat() {
               <div style={S.chevron}>›</div>
             </div>
           )}
-          {/* Teachers Section */}
           <div style={{ ...S.sectionLabel, marginTop: 16 }}>👨‍🏫 YOUR TEACHERS</div>
           {teachers.length === 0 ? (
             <div style={S.emptyBox}>No teachers found</div>
-          ) : teachers.map((t, i) => (
+          ) : teachers.map((t) => (
             <div key={t._id} style={S.chatRow} onClick={() => setActiveChat({ name: t.name, sub: t.subject, receiverId: t.userId, roomId: t.roomId })}>
               <div style={{ ...S.avatar, background: avatarColor(t.name) }}>{t.name[0]}</div>
               <div style={{ flex: 1 }}>
@@ -195,15 +230,15 @@ export default function Chat() {
           {broadcasts.length === 0 ? (
             <div style={S.emptyBox}>
               <div style={{ fontSize: 36, marginBottom: 8 }}>📢</div>
-              <div style={{ color: '#999', fontSize: 13 }}>No broadcasts yet</div>
+              <div style={{ color: dm ? '#94a3b8' : '#999', fontSize: 13 }}>No broadcasts yet</div>
             </div>
           ) : broadcasts.map((b, i) => (
             <div key={b._id || i} style={S.broadcastCard}>
               <div style={S.broadcastTop}>
                 <div style={{ ...S.miniAvatar, background: avatarColor(b.teacherName) }}>{b.teacherName?.[0]}</div>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: '#111' }}>{b.teacherName}</div>
-                  <div style={{ fontSize: 11, color: '#888' }}>{formatDate(b.createdAt)} · {formatTime(b.createdAt)}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: dm ? '#f1f5f9' : '#111' }}>{b.teacherName}</div>
+                  <div style={{ fontSize: 11, color: dm ? '#94a3b8' : '#888' }}>{formatDate(b.createdAt)} · {formatTime(b.createdAt)}</div>
                 </div>
               </div>
               <div style={S.broadcastText}>{b.text}</div>
@@ -214,41 +249,3 @@ export default function Chat() {
     </div>
   );
 }
-const S = {
-  screen: { maxWidth: 420, margin: '0 auto', minHeight: '100vh', background: '#f5f6fa', fontFamily: 'Inter, sans-serif', display: 'flex', flexDirection: 'column' },
-  header: { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', padding: '48px 20px 16px', display: 'flex', alignItems: 'center', gap: 12 },
-  headerBack: { background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: '8px 12px', color: 'white', cursor: 'pointer', fontSize: 18 },
-  headerTitle: { color: 'white', fontSize: 20, fontWeight: 800, margin: 0 },
-  tabRow: { display: 'flex', background: 'white', borderBottom: '1px solid #f0f0f0', padding: '0 16px' },
-  tabBtn: { flex: 1, padding: '12px 0', border: 'none', background: 'none', fontSize: 13, fontWeight: 600, color: '#888', cursor: 'pointer' },
-  tabActive: { color: '#4f46e5', borderBottom: '2px solid #4f46e5' },
-  list: { flex: 1, overflowY: 'auto', padding: '12px 16px 80px' },
-  sectionLabel: { fontSize: 11, fontWeight: 700, color: '#999', letterSpacing: 1, marginBottom: 8, marginTop: 4 },
-  chatRow: { background: 'white', borderRadius: 14, padding: '14px', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10, boxShadow: '0 1px 6px rgba(0,0,0,0.06)', cursor: 'pointer' },
-  avatar: { width: 46, height: 46, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 18, flexShrink: 0 },
-  rowName: { fontSize: 14, fontWeight: 700, color: '#111', marginBottom: 3 },
-  rowSub: { fontSize: 12, color: '#888' },
-  chevron: { fontSize: 22, color: '#ccc' },
-  emptyBox: { textAlign: 'center', padding: '32px 0', color: '#999', fontSize: 13 },
-  center: { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  broadcastCard: { background: 'white', borderRadius: 14, padding: 16, marginBottom: 10, boxShadow: '0 1px 6px rgba(0,0,0,0.06)' },
-  broadcastTop: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 },
-  broadcastText: { fontSize: 14, color: '#333', lineHeight: 1.5 },
-  // Chat window
-  chatHeader: { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', padding: '48px 16px 16px', display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 },
-  backBtn: { background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: '8px 12px', color: 'white', cursor: 'pointer', fontSize: 18 },
-  chatName: { color: 'white', fontSize: 16, fontWeight: 700 },
-  chatSub: { color: 'rgba(255,255,255,0.7)', fontSize: 11, marginTop: 2 },
-  msgList: { flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column' },
-  emptyChat: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 0' },
-  dateDivider: { textAlign: 'center', fontSize: 11, color: '#aaa', background: '#eee', borderRadius: 20, padding: '3px 12px', margin: '10px auto', width: 'fit-content' },
-  miniAvatar: { width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 12, marginRight: 8, flexShrink: 0, alignSelf: 'flex-end' },
-  bubble: { maxWidth: '75%', padding: '10px 14px', borderRadius: 18, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' },
-  bubbleMe: { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', borderBottomRightRadius: 4 },
-  bubbleThem: { background: 'white', color: '#111', borderBottomLeftRadius: 4 },
-  timeRow: { display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4, marginTop: 4 },
-  timeText: { fontSize: 10, opacity: 0.7 },
-  inputRow: { padding: '12px 16px', background: 'white', display: 'flex', gap: 10, alignItems: 'center', boxShadow: '0 -2px 8px rgba(0,0,0,0.06)', flexShrink: 0 },
-  input: { flex: 1, border: '1.5px solid #e5e7eb', borderRadius: 24, padding: '10px 16px', fontSize: 14, outline: 'none', fontFamily: 'Inter, sans-serif' },
-  sendBtn: { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', border: 'none', borderRadius: '50%', width: 44, height: 44, fontSize: 18, cursor: 'pointer', flexShrink: 0 },
-};
