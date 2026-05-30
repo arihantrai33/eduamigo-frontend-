@@ -51,7 +51,7 @@ export default function TeacherMarks() {
       try {
         setLoadingClasses(true)
         const res = await fetch(`${API}/marks/classes`, {
-          headers: { Authorization: `Bearer ${user.token}` }
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
         })
         const data = await res.json()
         if (!res.ok) throw new Error(data.message)
@@ -84,7 +84,7 @@ export default function TeacherMarks() {
         setIsPublished(false)
         const res = await fetch(
           `${API}/marks/students?class=${selectedClass}&section=${selectedSection}`,
-          { headers: { Authorization: `Bearer ${user.token}` } }
+          { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
         )
         const data = await res.json()
         if (!res.ok) throw new Error(data.message)
@@ -106,7 +106,7 @@ export default function TeacherMarks() {
         setLoadingMarks(true)
         const res = await fetch(
           `${API}/marks?class=${selectedClass}&section=${selectedSection}&subject=${selectedSubject}&examName=${examName}&academicYear=${academicYear}`,
-          { headers: { Authorization: `Bearer ${user.token}` } }
+          { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
         )
         const data = await res.json()
         if (!res.ok) throw new Error(data.message)
@@ -163,7 +163,7 @@ export default function TeacherMarks() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${user.token}`
+          Authorization: `Bearer ${localStorage.getItem("token")}`
         },
         body: JSON.stringify({
           marksData, class: selectedClass, section: selectedSection,
@@ -188,7 +188,7 @@ export default function TeacherMarks() {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${user.token}`
+          Authorization: `Bearer ${localStorage.getItem("token")}`
         },
         body: JSON.stringify({
           class: selectedClass, section: selectedSection,
