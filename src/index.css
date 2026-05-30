@@ -1,39 +1,66 @@
 @tailwind base;
-
-html { color-scheme: light only !important; }
 @tailwind components;
 @tailwind utilities;
 
-* {
+html { color-scheme: light only !important; }
+
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html, body {
-  min-height: 100vh;
+html {
+  min-height: 100%;
   background: #f5f6fa;
-  font-family: sans-serif;
-  color: #111;
 }
 
-input, button {
-  font-family: sans-serif;
+body {
+  min-height: 100vh;
+  background: #f5f6fa;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  color: #111;
+  -webkit-font-smoothing: antialiased;
+}
+
+input, button, select, textarea {
+  font-family: inherit;
 }
 
 #root {
   width: 100%;
-  max-width: 480px;
-  margin: 0 auto;
   min-height: 100vh;
   background: #f5f6fa;
 }
 
+/* Desktop — centered app shell */
+@media (min-width: 600px) {
+  body {
+    display: flex;
+    justify-content: center;
+    background: #e2e8f0;
+  }
+  #root {
+    max-width: 430px;
+    min-height: 100vh;
+    box-shadow: 0 0 40px rgba(0,0,0,0.15);
+  }
+}
+
+/* Dark mode */
 [data-theme="dark"] html,
-[data-theme="dark"] body,
+[data-theme="dark"] body {
+  background: #0a0f1e;
+}
+
 [data-theme="dark"] #root {
   background: #0f172a;
-  color: #f1f5f9;
+}
+
+@media (min-width: 600px) {
+  [data-theme="dark"] body {
+    background: #060a14;
+  }
 }
 
 :root {
@@ -69,4 +96,11 @@ input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
   -webkit-text-fill-color: #111 !important;
+}
+
+[data-theme="dark"] input:-webkit-autofill,
+[data-theme="dark"] input:-webkit-autofill:hover,
+[data-theme="dark"] input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px #162032 inset !important;
+  -webkit-text-fill-color: #f1f5f9 !important;
 }
