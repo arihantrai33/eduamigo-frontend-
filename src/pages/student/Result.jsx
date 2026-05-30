@@ -1,7 +1,7 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ThemeContext } from '../../context/ThemeContext';
+import { useTheme } from '../../context/ThemeContext';
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -13,7 +13,7 @@ const gradeColor = (g) =>
   g === 'C' ? '#F4511E' : g === 'D' ? '#E53935' : '#B71C1C';
 
 export default function StudentResult() {
-  const { darkMode } = useContext(ThemeContext);
+  const { darkMode } = useTheme();
   const navigate = useNavigate();
   const [results, setResults]           = useState([]);
   const [avgMarks, setAvgMarks]         = useState(null);
