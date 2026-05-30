@@ -59,3 +59,11 @@ input, button {
 [data-theme="dark"] ::placeholder {
   color: rgba(255,255,255,0.4) !important;
 }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
+  -webkit-text-fill-color: #111 !important;
+  background-color: #ffffff !important;
+}
