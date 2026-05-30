@@ -14,7 +14,7 @@
 
 body {
   font-family: sans-serif;
-  background: #f5f6fa;
+  background: transparent;
   color: #111;
 }
 
@@ -28,7 +28,7 @@ input, button {
   margin: 0 auto;
   min-height: 100vh;
   overflow: hidden;
-  background: white;
+  background: transparent;
 }
 
 @media (min-width: 768px) {
