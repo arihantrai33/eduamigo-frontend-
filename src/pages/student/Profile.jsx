@@ -11,7 +11,7 @@ const authHeader = () => ({
 
 export default function Profile() {
   const { user, logout } = useAuth();
-  const { darkMode, setDarkMode } = useTheme();
+  const { darkMode, setDarkMode, colors } = useTheme();
   const navigate = useNavigate();
 
   const [profile,      setProfile]      = useState(null);
