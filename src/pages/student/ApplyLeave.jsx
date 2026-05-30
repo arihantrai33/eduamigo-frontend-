@@ -68,7 +68,7 @@ export default function ApplyLeave() {
     fontSize: "14px", outline: "none",
     color: dm ? "#f1f5f9" : "#111",
     background: dm ? "#0f172a" : "#fff",
-    fontFamily: "'Poppins', sans-serif", boxSizing: "border-box",
+    fontFamily: "'Poppins', sans-serif", boxSizing: "border-box", appearance: "none", WebkitAppearance: "none", colorScheme: dm ? "dark" : "light",
   };
   if (success) return (
     <div style={{ height: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "'Poppins', sans-serif", background: dm ? "#0f172a" : "#f5f6fa" }}>
