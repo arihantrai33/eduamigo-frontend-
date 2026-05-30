@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from "react";
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -39,6 +40,7 @@ const tabs = [
 
 export default function Notes() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const fileInputRef = useRef();
 
   const [activeTab,    setActiveTab]    = useState('Notes');
