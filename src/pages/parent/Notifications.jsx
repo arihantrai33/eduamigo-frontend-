@@ -43,7 +43,7 @@ export default function ParentNotifications() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f5f6fa", fontFamily: "Inter, sans-serif", paddingBottom: 80 }}>
+    <div style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "Inter, sans-serif", paddingBottom: 80 }}>
 
       {/* Header */}
       <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 40px", color: "white" }}>
@@ -60,7 +60,7 @@ export default function ParentNotifications() {
 
         {/* Loading */}
         {loading && (
-          <div style={{ textAlign: "center", padding: 40, color: "#888", fontSize: 14 }}>
+          <div style={{ textAlign: "center", padding: 40, color: "var(--subtext)", fontSize: 14 }}>
             Loading notifications...
           </div>
         )}
@@ -74,7 +74,7 @@ export default function ParentNotifications() {
 
         {/* Empty */}
         {!loading && !error && notifications.length === 0 && (
-          <div style={{ textAlign: "center", padding: 40, color: "#888" }}>
+          <div style={{ textAlign: "center", padding: 40, color: "var(--subtext)" }}>
             <div style={{ fontSize: 48 }}>🔔</div>
             <p style={{ fontSize: 14, marginTop: 12 }}>No notifications yet</p>
           </div>
@@ -96,10 +96,10 @@ export default function ParentNotifications() {
               <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
                 <span style={{ fontSize: 24 }}>{icons[n.type] ?? "📢"}</span>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: isRead ? 500 : 700, fontSize: 14, color: "#111" }}>
+                  <div style={{ fontWeight: isRead ? 500 : 700, fontSize: 14, color: "var(--text)" }}>
                     {n.title}
                   </div>
-                  <div style={{ fontSize: 12, color: "#666", marginTop: 4 }}>
+                  <div style={{ fontSize: 12, color: "var(--subtext2)", marginTop: 4 }}>
                     {n.message}
                   </div>
                   <div style={{ fontSize: 11, color: "#aaa", marginTop: 6 }}>

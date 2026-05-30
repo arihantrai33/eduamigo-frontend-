@@ -72,13 +72,13 @@ export default function ApplyLeave() {
       <div style={{
         height: "100vh", display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
-        fontFamily: "'Poppins', sans-serif", background: "#f5f6fa",
+        fontFamily: "'Poppins', sans-serif", background: "var(--bg)",
       }}>
         <div style={{ fontSize: "64px" }}>✅</div>
-        <div style={{ fontWeight: "800", fontSize: "20px", marginTop: "16px", color: "#111" }}>
+        <div style={{ fontWeight: "800", fontSize: "20px", marginTop: "16px", color: "var(--text)" }}>
           Leave Applied Successfully!
         </div>
-        <div style={{ color: "#888", fontSize: "13px", marginTop: "8px" }}>
+        <div style={{ color: "var(--subtext)", fontSize: "13px", marginTop: "8px" }}>
           Your request has been submitted for approval.
         </div>
         <button
@@ -98,7 +98,7 @@ export default function ApplyLeave() {
 
   return (
     <div style={{
-      minHeight: "100vh", background: "#f5f6fa",
+      minHeight: "100vh", background: "var(--bg)",
       fontFamily: "'Poppins', sans-serif", paddingBottom: "32px",
     }}>
 
@@ -137,13 +137,13 @@ export default function ApplyLeave() {
             { label: "USED", value: used, color: "#ef4444" },
           ].map((stat) => (
             <div key={stat.label} style={{
-              background: "white", borderRadius: "12px",
+              background: "var(--card)", borderRadius: "12px",
               padding: "12px", textAlign: "center",
             }}>
               <div style={{ fontSize: "24px", fontWeight: "800", color: stat.color }}>
                 {stat.value}
               </div>
-              <div style={{ fontSize: "10px", color: "#999", fontWeight: "700", letterSpacing: "0.5px" }}>
+              <div style={{ fontSize: "10px", color: "var(--subtext)", fontWeight: "700", letterSpacing: "0.5px" }}>
                 {stat.label}
               </div>
             </div>
@@ -154,16 +154,16 @@ export default function ApplyLeave() {
       {/* Form */}
       <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "16px" }}>
         <div style={{
-          background: "white", borderRadius: "16px", padding: "20px",
+          background: "var(--card)", borderRadius: "16px", padding: "20px",
           boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
         }}>
-          <div style={{ fontSize: "12px", fontWeight: "700", color: "#999", letterSpacing: "1px", marginBottom: "16px" }}>
+          <div style={{ fontSize: "12px", fontWeight: "700", color: "var(--subtext)", letterSpacing: "1px", marginBottom: "16px" }}>
             APPLY NEW LEAVE
           </div>
 
           {/* Leave Type */}
           <div style={{ marginBottom: "16px" }}>
-            <label style={{ fontSize: "11px", fontWeight: "700", color: "#666", letterSpacing: "0.5px" }}>
+            <label style={{ fontSize: "11px", fontWeight: "700", color: "var(--subtext2)", letterSpacing: "0.5px" }}>
               LEAVE TYPE
             </label>
             <select
@@ -172,9 +172,9 @@ export default function ApplyLeave() {
               style={{
                 width: "100%", marginTop: "8px", padding: "12px",
                 borderRadius: "10px", border: "1px solid #e0e0e0",
-                fontSize: "14px", color: "#111", outline: "none",
+                fontSize: "14px", color: "var(--text)", outline: "none",
                 fontFamily: "'Poppins', sans-serif",
-                background: "white", boxSizing: "border-box",
+                background: "var(--card)", boxSizing: "border-box",
               }}
             >
               {LEAVE_TYPES.map((t) => (
@@ -186,7 +186,7 @@ export default function ApplyLeave() {
           {/* From / To Date */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "16px" }}>
             <div>
-              <label style={{ fontSize: "11px", fontWeight: "700", color: "#666", letterSpacing: "0.5px" }}>
+              <label style={{ fontSize: "11px", fontWeight: "700", color: "var(--subtext2)", letterSpacing: "0.5px" }}>
                 FROM DATE
               </label>
               <input
@@ -196,13 +196,13 @@ export default function ApplyLeave() {
                 style={{
                   width: "100%", marginTop: "8px", padding: "12px",
                   borderRadius: "10px", border: "1px solid #e0e0e0",
-                  fontSize: "13px", outline: "none", color: "#111",
+                  fontSize: "13px", outline: "none", color: "var(--text)",
                   fontFamily: "'Poppins', sans-serif", boxSizing: "border-box",
                 }}
               />
             </div>
             <div>
-              <label style={{ fontSize: "11px", fontWeight: "700", color: "#666", letterSpacing: "0.5px" }}>
+              <label style={{ fontSize: "11px", fontWeight: "700", color: "var(--subtext2)", letterSpacing: "0.5px" }}>
                 TO DATE
               </label>
               <input
@@ -212,7 +212,7 @@ export default function ApplyLeave() {
                 style={{
                   width: "100%", marginTop: "8px", padding: "12px",
                   borderRadius: "10px", border: "1px solid #e0e0e0",
-                  fontSize: "13px", outline: "none", color: "#111",
+                  fontSize: "13px", outline: "none", color: "var(--text)",
                   fontFamily: "'Poppins', sans-serif", boxSizing: "border-box",
                 }}
               />
@@ -221,7 +221,7 @@ export default function ApplyLeave() {
 
           {/* Reason */}
           <div style={{ marginBottom: "16px" }}>
-            <label style={{ fontSize: "11px", fontWeight: "700", color: "#666", letterSpacing: "0.5px" }}>
+            <label style={{ fontSize: "11px", fontWeight: "700", color: "var(--subtext2)", letterSpacing: "0.5px" }}>
               REASON
             </label>
             <textarea
@@ -232,7 +232,7 @@ export default function ApplyLeave() {
               style={{
                 width: "100%", marginTop: "8px", padding: "12px",
                 borderRadius: "10px", border: "1px solid #e0e0e0",
-                fontSize: "14px", outline: "none", color: "#111",
+                fontSize: "14px", outline: "none", color: "var(--text)",
                 resize: "none", fontFamily: "'Poppins', sans-serif",
                 boxSizing: "border-box",
               }}
@@ -241,7 +241,7 @@ export default function ApplyLeave() {
 
           {/* Attach Document */}
           <div style={{ marginBottom: "16px" }}>
-            <label style={{ fontSize: "11px", fontWeight: "700", color: "#666", letterSpacing: "0.5px" }}>
+            <label style={{ fontSize: "11px", fontWeight: "700", color: "var(--subtext2)", letterSpacing: "0.5px" }}>
               ATTACH DOCUMENT (Optional)
             </label>
             <div
@@ -258,14 +258,14 @@ export default function ApplyLeave() {
                 <div style={{ fontSize: "13px", fontWeight: "600", color: "#444" }}>
                   {attachedFile ? attachedFile.name : "Attach Medical Report or Document"}
                 </div>
-                <div style={{ fontSize: "11px", color: "#999", marginTop: "2px" }}>
+                <div style={{ fontSize: "11px", color: "var(--subtext)", marginTop: "2px" }}>
                   {attachedFile ? `${(attachedFile.size / 1024).toFixed(1)} KB` : "PDF, JPG, PNG supported"}
                 </div>
               </div>
               {attachedFile && (
                 <span
                   onClick={(e) => { e.stopPropagation(); setAttachedFile(null); }}
-                  style={{ fontSize: "18px", color: "#999", cursor: "pointer" }}
+                  style={{ fontSize: "18px", color: "var(--subtext)", cursor: "pointer" }}
                 >
                   ✕
                 </span>
@@ -300,10 +300,10 @@ export default function ApplyLeave() {
         {/* Leave History */}
         {leaveHistory.length > 0 && (
           <div style={{
-            background: "white", borderRadius: "16px", padding: "20px",
+            background: "var(--card)", borderRadius: "16px", padding: "20px",
             boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
           }}>
-            <div style={{ fontSize: "12px", fontWeight: "700", color: "#999", letterSpacing: "1px", marginBottom: "16px" }}>
+            <div style={{ fontSize: "12px", fontWeight: "700", color: "var(--subtext)", letterSpacing: "1px", marginBottom: "16px" }}>
               LEAVE HISTORY
             </div>
             {leaveHistory.map((leave, i) => {
@@ -323,7 +323,7 @@ export default function ApplyLeave() {
                   border: `1px solid ${leave.status === "rejected" ? "#fee2e2" : "#f0f0f0"}`,
                 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ fontWeight: "700", fontSize: "14px", color: "#111" }}>
+                    <div style={{ fontWeight: "700", fontSize: "14px", color: "var(--text)" }}>
                       {leave.leaveType}
                     </div>
                     <span style={{ fontSize: "11px", fontWeight: "700", color: statusColor }}>
@@ -331,7 +331,7 @@ export default function ApplyLeave() {
                        leave.status === "approved" ? "Approved" : "Rejected"}
                     </span>
                   </div>
-                  <div style={{ fontSize: "12px", color: "#888", marginTop: "4px" }}>
+                  <div style={{ fontSize: "12px", color: "var(--subtext)", marginTop: "4px" }}>
                     {leave.fromDate} — {leave.toDate} • {days} day{days > 1 ? "s" : ""}
                   </div>
                   {leave.reason && (

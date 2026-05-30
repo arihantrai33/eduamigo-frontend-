@@ -67,7 +67,7 @@ export default function ParentAttendance() {
 
   if (loading) return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Inter, sans-serif" }}>
-      <div style={{ color: "#999", fontSize: 14 }}>Loading attendance...</div>
+      <div style={{ color: "var(--subtext)", fontSize: 14 }}>Loading attendance...</div>
     </div>
   );
 
@@ -78,7 +78,7 @@ export default function ParentAttendance() {
   );
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f5f6fa", fontFamily: "Inter, sans-serif", paddingBottom: 30 }}>
+    <div style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "Inter, sans-serif", paddingBottom: 30 }}>
 
       {/* Header */}
       <div style={{ background: "linear-gradient(135deg,#4f46e5,#7c3aed)", padding: "48px 16px 40px", color: "white" }}>
@@ -101,11 +101,11 @@ export default function ParentAttendance() {
       <div style={{ padding: 16, marginTop: -20 }}>
 
         {/* Calendar */}
-        <div style={{ background: "white", borderRadius: 16, padding: 16, boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: 16 }}>
+        <div style={{ background: "var(--card)", borderRadius: 16, padding: 16, boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: 16 }}>
           <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 12 }}>{monthLabel} Calendar</div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 4, textAlign: "center" }}>
             {["S","M","T","W","T","F","S"].map((d, i) => (
-              <div key={i} style={{ fontSize: 11, fontWeight: 700, color: "#888", padding: "4px 0" }}>{d}</div>
+              <div key={i} style={{ fontSize: 11, fontWeight: 700, color: "var(--subtext)", padding: "4px 0" }}>{d}</div>
             ))}
             {cells.map((c, i) => (
               <div key={i} style={{
@@ -169,10 +169,10 @@ export default function ParentAttendance() {
         </div>
 
         {/* Absent / Leave Days */}
-        <div style={{ background: "white", borderRadius: 16, padding: 16, boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}>
+        <div style={{ background: "var(--card)", borderRadius: 16, padding: 16, boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}>
           <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 12 }}>Absent / Leave Days</div>
           {absentRecords.length === 0 ? (
-            <div style={{ textAlign: "center", color: "#999", padding: "20px 0", fontSize: 13 }}>
+            <div style={{ textAlign: "center", color: "var(--subtext)", padding: "20px 0", fontSize: 13 }}>
               No absences recorded
             </div>
           ) : (
@@ -188,7 +188,7 @@ export default function ParentAttendance() {
                     <div style={{ fontWeight: 600, fontSize: 14 }}>
                       {new Date(r.date).toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" })}
                     </div>
-                    <div style={{ fontSize: 12, color: "#888", marginTop: 2 }}>
+                    <div style={{ fontSize: 12, color: "var(--subtext)", marginTop: 2 }}>
                       {r.note || (isLeave ? "Leave approved" : "Marked absent")}
                     </div>
                   </div>

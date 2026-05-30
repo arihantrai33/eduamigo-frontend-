@@ -18,7 +18,7 @@ export default function ParentCalendar() {
   ];
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f5f6fa", fontFamily: "sans-serif", paddingBottom: "30px" }}>
+    <div style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "sans-serif", paddingBottom: "30px" }}>
       <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 40px", color: "white" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <button onClick={() => navigate(-1)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
@@ -28,7 +28,7 @@ export default function ParentCalendar() {
 
       <div style={{ padding: "16px", marginTop: "-20px" }}>
         {/* Upcoming Events */}
-        <div style={{ background: "white", borderRadius: "16px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: "16px" }}>
+        <div style={{ background: "var(--card)", borderRadius: "16px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: "16px" }}>
           <div style={{ padding: "16px 16px 8px", fontWeight: "700", fontSize: "14px", color: "#444" }}>Upcoming Events — April 2026</div>
           {events.map((e, i) => (
             <div key={i} style={{ padding: "12px 16px", borderBottom: i < events.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", alignItems: "center", gap: "12px" }}>
@@ -37,7 +37,7 @@ export default function ParentCalendar() {
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: "600", fontSize: "14px" }}>{e.title}</div>
-                <div style={{ fontSize: "12px", color: "#888", marginTop: "2px" }}>{e.sub}</div>
+                <div style={{ fontSize: "12px", color: "var(--subtext)", marginTop: "2px" }}>{e.sub}</div>
               </div>
               <span style={{ fontSize: "11px", fontWeight: "700", color: e.badgeColor, background: e.badgeBg, padding: "4px 10px", borderRadius: "20px", flexShrink: 0 }}>{e.badge}</span>
             </div>
@@ -45,13 +45,13 @@ export default function ParentCalendar() {
         </div>
 
         {/* Exam Schedule */}
-        <div style={{ background: "white", borderRadius: "16px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}>
+        <div style={{ background: "var(--card)", borderRadius: "16px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}>
           <div style={{ padding: "16px 16px 8px", fontWeight: "700", fontSize: "14px", color: "#444" }}>Exam Schedule</div>
           {exams.map((e, i) => (
             <div key={i} style={{ padding: "12px 16px", borderBottom: i < exams.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div>
                 <div style={{ fontWeight: "600", fontSize: "14px" }}>{e.title}</div>
-                <div style={{ fontSize: "12px", color: "#888", marginTop: "2px" }}>{e.sub}</div>
+                <div style={{ fontSize: "12px", color: "var(--subtext)", marginTop: "2px" }}>{e.sub}</div>
               </div>
               <span style={{ fontSize: "11px", fontWeight: "700", color: e.badgeColor, background: e.badgeBg, padding: "4px 10px", borderRadius: "20px", flexShrink: 0, marginLeft: "8px" }}>{e.badge}</span>
             </div>

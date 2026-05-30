@@ -16,7 +16,8 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+  const { darkMode, setDarkMode } = useTheme();
   const { login } = useAuth();
 
   const handleLogin = async () => {
@@ -94,11 +95,11 @@ const s = {
   logoBox: { width: 64, height: 64, borderRadius: 18, background: "rgba(255,255,255,0.12)", border: "1.5px solid rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, marginBottom: 12 },
   brand: { color: "white", fontSize: 24, fontWeight: 700, margin: "0 0 4px", letterSpacing: 0.5 },
   tagline: { color: "rgba(255,255,255,0.5)", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", margin: 0 },
-  card: { flex: 1, background: "white", borderRadius: "24px 24px 0 0", padding: "24px 20px 32px", overflowY: "auto" },
+  card: { flex: 1, background: "var(--card)", borderRadius: "24px 24px 0 0", padding: "24px 20px 32px", overflowY: "auto" },
   heading: { fontSize: 20, fontWeight: 700, color: "#0f1b4c", margin: "0 0 2px" },
   sub: { fontSize: 13, color: "#64748b", margin: "0 0 20px" },
   roles: { display: "flex", gap: 6, marginBottom: 20 },
-  roleBtn: { flex: 1, padding: "8px 2px", border: "1.5px solid #e2e8f0", borderRadius: 10, background: "white", color: "#64748b", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 3 },
+  roleBtn: { flex: 1, padding: "8px 2px", border: "1.5px solid #e2e8f0", borderRadius: 10, background: "var(--card)", color: "#64748b", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 3 },
   roleBtnActive: { border: "1.5px solid #1a3a8f", background: "#eff4ff", color: "#1a3a8f" },
   label: { fontSize: 12, fontWeight: 600, color: "#374151", display: "block", marginBottom: 5, letterSpacing: 0.3 },
   input: { width: "100%", padding: "11px 13px", border: "1.5px solid #e2e8f0", borderRadius: 10, fontSize: 14, color: "#1a1a2e", outline: "none", boxSizing: "border-box", background: "#f8fafc", marginBottom: 14 },

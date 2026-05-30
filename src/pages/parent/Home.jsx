@@ -77,7 +77,7 @@ export default function ParentHome() {
   ];
 
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "#f5f6fa", fontFamily: "Inter, sans-serif" }}>
+    <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "Inter, sans-serif" }}>
 
       {/* Header */}
       <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 20px 20px", flexShrink: 0 }}>
@@ -157,24 +157,24 @@ export default function ParentHome() {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
           {tiles.map((t) => (
             <button key={t.label} onClick={() => navigate(t.path)}
-              style={{ background: "white", borderRadius: 14, padding: 14, border: "none", cursor: "pointer", textAlign: "left", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+              style={{ background: "var(--card)", borderRadius: 14, padding: 14, border: "none", cursor: "pointer", textAlign: "left", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
               <div style={{ fontSize: 24, marginBottom: 6 }}>{t.icon}</div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "#111" }}>{t.label}</div>
-              <div style={{ fontSize: 11, color: "#999", marginTop: 2 }}>{t.sub}</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text)" }}>{t.label}</div>
+              <div style={{ fontSize: 11, color: "var(--subtext)", marginTop: 2 }}>{t.sub}</div>
             </button>
           ))}
         </div>
 
         {/* Notices */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-          <h3 style={{ fontSize: 15, fontWeight: 700, color: "#111", margin: 0 }}>🔔 Notices</h3>
+          <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--text)", margin: 0 }}>🔔 Notices</h3>
           <span onClick={() => navigate("/parent/notifications")}
             style={{ fontSize: 13, color: "#4f46e5", cursor: "pointer" }}>View all →</span>
         </div>
 
-        <div style={{ background: "white", borderRadius: 14, padding: "4px 12px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+        <div style={{ background: "var(--card)", borderRadius: 14, padding: "4px 12px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
           {notices.length === 0 ? (
-            <div style={{ padding: "16px 0", textAlign: "center", color: "#999", fontSize: 13 }}>
+            <div style={{ padding: "16px 0", textAlign: "center", color: "var(--subtext)", fontSize: 13 }}>
               No notices at the moment
             </div>
           ) : (
@@ -182,8 +182,8 @@ export default function ParentHome() {
               <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "12px 0", borderBottom: i < notices.length - 1 ? "1px solid #f0f0f0" : "none" }}>
                 <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#7c3aed", marginTop: 5, flexShrink: 0 }} />
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: "#111" }}>{n.title}</div>
-                  <div style={{ fontSize: 11, color: "#999", marginTop: 2 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text)" }}>{n.title}</div>
+                  <div style={{ fontSize: 11, color: "var(--subtext)", marginTop: 2 }}>
                     {n.createdAt ? new Date(n.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : ""}
                   </div>
                 </div>
@@ -194,7 +194,7 @@ export default function ParentHome() {
       </div>
 
       {/* Bottom Nav */}
-      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: "white", borderTop: "1px solid #eee", display: "flex", padding: "8px 0 16px", boxShadow: "0 -4px 12px rgba(0,0,0,0.06)" }}>
+      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: "var(--card)", borderTop: "1px solid var(--border)", display: "flex", padding: "8px 0 16px", boxShadow: "0 -4px 12px rgba(0,0,0,0.06)" }}>
         {[
           { icon: "🏠", label: "Home",     path: "/parent/home",          active: true },
           { icon: "💬", label: "Teachers", path: "/parent/chat"                        },

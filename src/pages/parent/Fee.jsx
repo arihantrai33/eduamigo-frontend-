@@ -202,7 +202,7 @@ export default function ParentFee() {
                     {cfg.icon}
                   </div>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 700, fontSize: 14, color: "#111" }}>
+                    <div style={{ fontWeight: 700, fontSize: 14, color: "var(--text)" }}>
                       {f.feeType ?? "Fee"}
                     </div>
                     <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 3 }}>
@@ -263,7 +263,7 @@ export default function ParentFee() {
                       </div>
                     </div>
                     <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: "#111" }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text)" }}>
                         ₹{(f.amount ?? 0).toLocaleString("en-IN")}
                       </div>
                     </div>
@@ -300,7 +300,7 @@ export default function ParentFee() {
 const styles = {
   page: {
     minHeight: "100vh",
-    background: "#f5f6fa",
+    background: "var(--bg)",
     fontFamily: "'Inter', sans-serif",
     paddingBottom: 48,
   },
@@ -385,8 +385,8 @@ const styles = {
   },
   tab: {
     flex: 1, padding: "9px 4px",
-    border: "1px solid #e5e7eb",
-    borderRadius: 10, background: "white",
+    border: "1px solid var(--border)",
+    borderRadius: 10, background: "var(--card)",
     fontSize: 12, fontWeight: 600,
     color: "#6b7280", cursor: "pointer",
   },
@@ -396,7 +396,7 @@ const styles = {
     border: "1px solid #4f46e5",
   },
   card: {
-    background: "white", borderRadius: 16,
+    background: "var(--card)", borderRadius: 16,
     padding: 16, marginBottom: 14,
     boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
   },
@@ -427,7 +427,7 @@ const styles = {
     borderTop: "2px solid #f3f4f6",
   },
   paymentCard: {
-    background: "white", borderRadius: 16,
+    background: "var(--card)", borderRadius: 16,
     padding: "24px 20px", marginBottom: 14,
     boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
     display: "flex", flexDirection: "column",

@@ -11,7 +11,7 @@ const authHeader = () => ({
 function BottomNav({ active }) {
   const navigate = useNavigate();
   return (
-    <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: "white", borderTop: "1px solid #eee", display: "flex", padding: "8px 0 16px", boxShadow: "0 -4px 12px rgba(0,0,0,0.06)" }}>
+    <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: "var(--card)", borderTop: "1px solid var(--border)", display: "flex", padding: "8px 0 16px", boxShadow: "0 -4px 12px rgba(0,0,0,0.06)" }}>
       {[
         { icon: "🏠", label: "Home",     path: "/parent/home"          },
         { icon: "💬", label: "Teachers", path: "/parent/chat"          },
@@ -137,17 +137,17 @@ export default function ParentProfile() {
 
 const s = {
   wrap:     { minHeight: "100vh", background: "#F4F6FB", display: "flex", flexDirection: "column", fontFamily: "'Inter', sans-serif", maxWidth: 430, margin: "0 auto" },
-  topBar:   { background: "#fff", padding: "48px 20px 16px", display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid #E8EAF0" },
+  topBar:   { background: "var(--card)", padding: "48px 20px 16px", display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid #E8EAF0" },
   backBtn:  { background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#1C2033", fontWeight: 700 },
   title:    { fontSize: 17, fontWeight: 700, color: "#1C2033" },
   scroll:   { flex: 1, overflowY: "auto", padding: "16px 16px 80px", display: "flex", flexDirection: "column", gap: 14 },
-  hero:     { background: "#fff", borderRadius: 20, padding: "24px 16px", display: "flex", flexDirection: "column", alignItems: "center", gap: 6, boxShadow: "0 2px 12px rgba(92,107,192,0.08)" },
+  hero:     { background: "var(--card)", borderRadius: 20, padding: "24px 16px", display: "flex", flexDirection: "column", alignItems: "center", gap: 6, boxShadow: "0 2px 12px rgba(92,107,192,0.08)" },
   avatar:   { width: 72, height: 72, borderRadius: 24, background: "linear-gradient(135deg,#7E57C2,#5C6BC0)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, fontWeight: 800, marginBottom: 4 },
   name:     { fontSize: 20, fontWeight: 800, color: "#1C2033" },
   sub:      { fontSize: 13, color: "#7B8099" },
   badge:    { fontSize: 12, fontWeight: 700, background: "#E3F2FD", color: "#1565C0", padding: "4px 12px", borderRadius: 20, marginTop: 4 },
-  infoCard: { background: "#fff", borderRadius: 16, padding: "14px 16px", boxShadow: "0 2px 12px rgba(92,107,192,0.08)" },
-  menuCard: { background: "#fff", borderRadius: 16, overflow: "hidden", boxShadow: "0 2px 12px rgba(92,107,192,0.08)" },
+  infoCard: { background: "var(--card)", borderRadius: 16, padding: "14px 16px", boxShadow: "0 2px 12px rgba(92,107,192,0.08)" },
+  menuCard: { background: "var(--card)", borderRadius: 16, overflow: "hidden", boxShadow: "0 2px 12px rgba(92,107,192,0.08)" },
   menuRow:  { width: "100%", background: "none", border: "none", borderBottom: "1px solid #F0F2F8", padding: "14px 16px", display: "flex", alignItems: "center", gap: 12, cursor: "pointer", textAlign: "left" },
   menuIcon: { width: 36, height: 36, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 },
   version:  { textAlign: "center", fontSize: 11, color: "#B0B8CC", paddingBottom: 8 },

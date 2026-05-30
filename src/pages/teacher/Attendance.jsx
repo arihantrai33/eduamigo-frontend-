@@ -153,7 +153,7 @@ export default function TeacherAttendance() {
       <div style={{ padding: 16 }}>
 
         {/* Filters */}
-        <div style={{ background: "#fff", borderRadius: 20, padding: 16, marginBottom: 16, boxShadow: "0 2px 16px rgba(92,107,192,0.08)" }}>
+        <div style={{ background: "var(--card)", borderRadius: 20, padding: 16, marginBottom: 16, boxShadow: "0 2px 16px rgba(92,107,192,0.08)" }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: "#1C2033", marginBottom: 12 }}>Select Class</div>
 
           {/* Class Chips — only teacher's assigned classes */}
@@ -211,7 +211,7 @@ export default function TeacherAttendance() {
 
         {/* Mark All */}
         {students.length > 0 && (
-          <div style={{ background: "#fff", borderRadius: 20, padding: "12px 16px", marginBottom: 12, boxShadow: "0 2px 16px rgba(92,107,192,0.08)", display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+          <div style={{ background: "var(--card)", borderRadius: 20, padding: "12px 16px", marginBottom: 12, boxShadow: "0 2px 16px rgba(92,107,192,0.08)", display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
             <span style={{ fontSize: 12, fontWeight: 700, color: "#7B8099" }}>Mark All:</span>
             {["Present", "Absent", "Late", "Holiday"].map(st => (
               <button key={st} onClick={() => setAll(st)} style={{
@@ -235,7 +235,7 @@ export default function TeacherAttendance() {
             )}
             {students.map((s, i) => (
               <div key={s._id} style={{
-                background: "#fff", borderRadius: 20, padding: "14px 16px", marginBottom: 10,
+                background: "var(--card)", borderRadius: 20, padding: "14px 16px", marginBottom: 10,
                 boxShadow: "0 2px 16px rgba(92,107,192,0.08)",
                 border: attendance[s._id]?.status === "Absent" ? "2px solid #FECACA" : "2px solid transparent",
               }}>
@@ -303,7 +303,7 @@ export default function TeacherAttendance() {
       </div>
 
       {/* Bottom Nav */}
-      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 420, background: "#fff", display: "flex", borderTop: "1px solid #E8EAF0", overflowY: "auto", boxShadow: "0 -4px 24px rgba(92,107,192,.08)", zIndex: 200, height: 66 }}>
+      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 420, background: "var(--card)", display: "flex", borderTop: "1px solid #E8EAF0", overflowY: "auto", boxShadow: "0 -4px 24px rgba(92,107,192,.08)", zIndex: 200, height: 66 }}>
         {[
           { icon: "🏠", label: "Home",       path: "/teacher/home" },
           { icon: "✅", label: "Attendance", path: "/teacher/attendance" },

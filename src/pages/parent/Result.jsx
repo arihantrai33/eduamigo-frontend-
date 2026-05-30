@@ -48,7 +48,7 @@ export default function ParentResult() {
   const topGrade = filtered[0]?.grade ?? "—";
   if (loading) return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Inter, sans-serif" }}>
-      <div style={{ color: "#999", fontSize: 14 }}>Loading results...</div>
+      <div style={{ color: "var(--subtext)", fontSize: 14 }}>Loading results...</div>
     </div>
   );
   if (error) return (
@@ -103,7 +103,7 @@ export default function ParentResult() {
           </div>
         )}
         {filtered.length === 0 ? (
-          <div style={{ background: "white", borderRadius: 16, padding: "40px 20px", textAlign: "center", color: "#999", fontSize: 13 }}>
+          <div style={{ background: "var(--card)", borderRadius: 16, padding: "40px 20px", textAlign: "center", color: "var(--subtext)", fontSize: 13 }}>
             No results found
           </div>
         ) : (
@@ -112,7 +112,7 @@ export default function ParentResult() {
               const gc  = gradeColor(r.grade);
               const pct = r.totalMarks > 0 ? Math.round((r.marksObtained / r.totalMarks) * 100) : 0;
               return (
-                <div key={i} style={{ background: "white", borderRadius: 16, padding: "14px 16px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)", display: "flex", alignItems: "center", gap: 12 }}>
+                <div key={i} style={{ background: "var(--card)", borderRadius: 16, padding: "14px 16px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)", display: "flex", alignItems: "center", gap: 12 }}>
                   <div style={{ width: 44, height: 44, borderRadius: 14, background: gc.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 800, color: gc.color, flexShrink: 0 }}>
                     {r.grade ?? "—"}
                   </div>
@@ -122,7 +122,7 @@ export default function ParentResult() {
                   </div>
                   <div style={{ textAlign: "right" }}>
                     <div style={{ fontWeight: 800, fontSize: 16, color: "#1C2033" }}>
-                      {r.marksObtained}<span style={{ fontSize: 11, color: "#999" }}>/{r.totalMarks}</span>
+                      {r.marksObtained}<span style={{ fontSize: 11, color: "var(--subtext)" }}>/{r.totalMarks}</span>
                     </div>
                     <div style={{ fontSize: 11, color: "#7B8099" }}>{pct}%</div>
                   </div>

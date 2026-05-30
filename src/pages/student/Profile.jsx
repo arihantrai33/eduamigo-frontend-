@@ -56,7 +56,7 @@ export default function Profile() {
 
   if (loading) return (
     <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: darkMode ? "#1a1a2e" : "#f5f6fa" }}>
-      <div style={{ fontSize: 14, color: "#999" }}>Loading...</div>
+      <div style={{ fontSize: 14, color: "var(--subtext)" }}>Loading...</div>
     </div>
   );
 
@@ -85,7 +85,7 @@ export default function Profile() {
         ].map(f => (
           <div key={f.label} style={{ marginBottom: "14px" }}>
             <label style={{ fontSize: "11px", fontWeight: "700", color: darkMode ? "#aaa" : "#888", textTransform: "uppercase", letterSpacing: "1px" }}>{f.label}</label>
-            <div style={{ padding: "13px 15px", borderRadius: "12px", background: darkMode ? "#1a1a2e" : "#f5f6fa", border: "1.5px solid #e5e7eb", fontSize: "14px", marginTop: "6px", color: darkMode ? "#ccc" : "#444" }}>{f.value}</div>
+            <div style={{ padding: "13px 15px", borderRadius: "12px", background: darkMode ? "#1a1a2e" : "#f5f6fa", border: "1.5px solid var(--border)", fontSize: "14px", marginTop: "6px", color: darkMode ? "#ccc" : "#444" }}>{f.value}</div>
           </div>
         ))}
         <div style={{ background: "#FFF9C4", borderRadius: "12px", padding: "12px 16px", marginTop: "8px", display: "flex", gap: "10px", alignItems: "flex-start" }}>
@@ -124,7 +124,7 @@ export default function Profile() {
           <div style={{ padding: "16px" }}>
             <div style={{ fontWeight: "600", fontSize: "14px", marginBottom: "8px" }}>Language</div>
             <select value={language} onChange={e => setLanguage(e.target.value)}
-              style={{ width: "100%", padding: "10px", borderRadius: "10px", border: "1.5px solid #e5e7eb", fontSize: "14px", outline: "none", fontFamily: "Inter, sans-serif" }}>
+              style={{ width: "100%", padding: "10px", borderRadius: "10px", border: "1.5px solid var(--border)", fontSize: "14px", outline: "none", fontFamily: "Inter, sans-serif" }}>
               <option>English</option>
               <option>Hindi</option>
             </select>

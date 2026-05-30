@@ -44,13 +44,27 @@ input, button {
     box-shadow: 0 20px 60px rgba(0,0,0,0.2);
   }
 }
+
+:root {
+  --bg: #f5f6fa;
+  --card: #ffffff;
+  --card2: #f0f4f8;
+  --text: #111111;
+  --subtext: #888888;
+  --subtext2: #666666;
+  --border: #e5e7eb;
+  --nav: #ffffff;
+  --input: #f5f6fa;
+}
+
 [data-theme="dark"] {
-  color-scheme: dark;
-}
-[data-theme="dark"] body {
-  background: #0f0f0f;
-  color: #f1f1f1;
-}
-[data-theme="dark"] #root {
-  background: #1a1a2e;
+  --bg: #0f172a;
+  --card: #1e293b;
+  --card2: #162032;
+  --text: #f1f5f9;
+  --subtext: #94a3b8;
+  --subtext2: #cbd5e1;
+  --border: #2d3f55;
+  --nav: #1e293b;
+  --input: #162032;
 }
