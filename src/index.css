@@ -41,7 +41,7 @@ input, button {
   --subtext2: #666666;
   --border: #e5e7eb;
   --nav: #ffffff;
-  --input: #f5f6fa;
+  --input: #ffffff;
 }
 
 [data-theme="dark"] {
