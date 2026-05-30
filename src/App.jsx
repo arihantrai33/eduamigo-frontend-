@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
+import { useTheme } from './context/ThemeContext'
 import Toast from './components/Toast'
 import Splash from './pages/Splash'
 import Login from './pages/Login'
@@ -138,17 +139,18 @@ function AppRoutes() {
 
 function AppLayout() {
   const location = useLocation()
+  const { colors } = useTheme()
   const isAdmin = location.pathname.startsWith('/admin')
   if (isAdmin) {
     return (
-      <div style={{ minHeight: '100vh', width: '100%', background: '#F5F5F3' }}>
+      <div style={{ minHeight: '100vh', width: '100%', background: colors.bg }}>
         <AppRoutes />
       </div>
     )
   }
   return (
     <div style={{ minHeight: '100vh', background: '#0f0f1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ width: 390, height: '100vh', maxHeight: 844, position: 'relative', overflow: 'hidden', background: '#F4F6FB', boxShadow: '0 40px 100px rgba(0,0,0,.6)', borderRadius: 40 }}>
+      <div style={{ width: 390, height: '100vh', maxHeight: 844, position: 'relative', overflow: 'hidden', background: colors.bg, boxShadow: '0 40px 100px rgba(0,0,0,.6)', borderRadius: 40 }}>
         <AppRoutes />
       </div>
     </div>
