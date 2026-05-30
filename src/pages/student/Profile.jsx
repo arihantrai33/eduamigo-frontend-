@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
+import { useTheme } from "../../context/ThemeContext";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -10,6 +11,7 @@ const authHeader = () => ({
 
 export default function Profile() {
   const { user, logout } = useAuth();
+  const { darkMode, setDarkMode } = useTheme();
   const navigate = useNavigate();
 
   const [profile,      setProfile]      = useState(null);
@@ -24,7 +26,6 @@ export default function Profile() {
   const [showIdCard,   setShowIdCard]   = useState(false);
 
   const [notifications, setNotifications] = useState(true);
-  const [darkMode,      setDarkMode]      = useState(false);
   const [language,      setLanguage]      = useState("English");
 
   useEffect(() => { fetchAll(); }, []);

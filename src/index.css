@@ -44,3 +44,13 @@ input, button {
     box-shadow: 0 20px 60px rgba(0,0,0,0.2);
   }
 }
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+[data-theme="dark"] body {
+  background: #0f0f0f;
+  color: #f1f1f1;
+}
+[data-theme="dark"] #root {
+  background: #1a1a2e;
+}
