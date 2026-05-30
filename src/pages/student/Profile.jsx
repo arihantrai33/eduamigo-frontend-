@@ -275,7 +275,7 @@ export default function Profile() {
           {menuItems.map((item, i) => (
             <div key={item.label} onClick={item.action}
               style={{ padding: "16px", borderBottom: i < menuItems.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", alignItems: "center", gap: "14px", cursor: "pointer" }}>
-              <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: "#f5f6ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>
+              <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: darkMode ? "#1e293b" : "#f5f6ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>
                 {item.icon}
               </div>
               <div style={{ flex: 1 }}>
@@ -289,7 +289,7 @@ export default function Profile() {
 
         {/* Logout */}
         <div onClick={handleLogout} style={{ background: darkMode ? "#16213e" : "white", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", display: "flex", alignItems: "center", gap: "14px", cursor: "pointer" }}>
-          <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: "#fff5f5", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>🚪</div>
+          <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: darkMode ? "#2d1515" : "#fff5f5", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>🚪</div>
           <div style={{ flex: 1, fontWeight: "600", fontSize: "14px", color: "#ef4444" }}>Logout</div>
           <div style={{ color: "#ef4444", fontSize: "18px" }}>›</div>
         </div>
