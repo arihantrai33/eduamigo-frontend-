@@ -115,7 +115,7 @@ export default function Profile() {
           ].map((s, i, arr) => (
             <div key={s.label} style={{ padding: "16px", borderBottom: i < arr.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div>
-                <div style={{ fontWeight: "600", fontSize: "14px" }}>{s.label}</div>
+                <div style={{ fontWeight: "600", fontSize: "14px", color: darkMode ? "#f1f5f9" : "#111" }}>{s.label}</div>
                 <div style={{ fontSize: "12px", color: darkMode ? "#aaa" : "#888", marginTop: "2px" }}>{s.sub}</div>
               </div>
               <div onClick={() => s.setter(!s.value)} style={{ width: "46px", height: "26px", borderRadius: "13px", background: s.value ? "#4f46e5" : "#e5e7eb", cursor: "pointer", position: "relative", transition: "background .2s", flexShrink: 0 }}>
@@ -124,9 +124,9 @@ export default function Profile() {
             </div>
           ))}
           <div style={{ padding: "16px" }}>
-            <div style={{ fontWeight: "600", fontSize: "14px", marginBottom: "8px" }}>Language</div>
+            <div style={{ fontWeight: "600", fontSize: "14px", marginBottom: "8px", color: darkMode ? "#f1f5f9" : "#111" }}>Language</div>
             <select value={language} onChange={e => setLanguage(e.target.value)}
-              style={{ width: "100%", padding: "10px", borderRadius: "10px", border: "1.5px solid var(--border)", fontSize: "14px", outline: "none", fontFamily: "Inter, sans-serif" }}>
+              style={{ width: "100%", padding: "10px", borderRadius: "10px", border: darkMode ? "1.5px solid #334155" : "1.5px solid #e5e7eb", fontSize: "14px", outline: "none", fontFamily: "Inter, sans-serif", background: darkMode ? "#0f172a" : "white", color: darkMode ? "#f1f5f9" : "#111" }}>
               <option>English</option>
               <option>Hindi</option>
             </select>
@@ -136,7 +136,7 @@ export default function Profile() {
           <div style={{ fontWeight: "700", fontSize: "13px", color: darkMode ? "#aaa" : "#888", marginBottom: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>Account</div>
           {["Change Password", "Privacy Policy", "Terms of Service"].map((item, i, arr) => (
             <div key={item} style={{ padding: "14px 0", borderBottom: i < arr.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
-              <span style={{ fontSize: "14px", fontWeight: "600" }}>{item}</span>
+              <span style={{ fontSize: "14px", fontWeight: "600", color: darkMode ? "#f1f5f9" : "#111" }}>{item}</span>
               <span style={{ color: "#ccc" }}>›</span>
             </div>
           ))}
