@@ -88,7 +88,7 @@ export default function StudentAttendance() {
             <div key={s.label} style={{ background: s.bg, borderRadius: 14,
               padding: "14px 8px", textAlign: "center" }}>
               <div style={{ fontSize: 24, fontWeight: 900, color: s.color }}>{s.val}</div>
-              <div style={{ fontSize: 11, color: "#888"2, marginTop: 2 }}>{s.label}</div>
+              <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>{s.label}</div>
             </div>
           ))}
         </div>

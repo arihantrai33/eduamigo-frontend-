@@ -71,7 +71,7 @@ export default function Notifications() {
                 <span style={{ fontSize: "24px" }}>{icons[n.type] || "📢"}</span>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: n.read ? "500" : "700", fontSize: "14px", color: "#111" }}>{n.title}</div>
-                  <div style={{ fontSize: "12px", color: "#888"2, marginTop: "4px" }}>{n.message}</div>
+                  <div style={{ fontSize: "12px", color: "#666", marginTop: "4px" }}>{n.message}</div>
                   <div style={{ fontSize: "11px", color: "#aaa", marginTop: "6px" }}>
                     {n.createdAt ? new Date(n.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : ""}
                   </div>

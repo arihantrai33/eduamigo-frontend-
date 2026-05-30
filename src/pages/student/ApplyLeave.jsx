@@ -201,7 +201,7 @@ export default function ApplyLeave() {
 
           {/* Leave Type */}
           <div style={{ marginBottom: "16px" }}>
-            <label style={{ fontSize: "11px", fontWeight: "700", color: "#888"2, letterSpacing: "0.5px" }}>
+            <label style={{ fontSize: "11px", fontWeight: "700", color: "#666", letterSpacing: "0.5px" }}>
               LEAVE TYPE
             </label>
             <select
@@ -224,7 +224,7 @@ export default function ApplyLeave() {
           {/* From / To Date */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "8px" }}>
             <div>
-              <label style={{ fontSize: "11px", fontWeight: "700", color: "#888"2, letterSpacing: "0.5px" }}>
+              <label style={{ fontSize: "11px", fontWeight: "700", color: "#666", letterSpacing: "0.5px" }}>
                 FROM DATE
               </label>
               <input
@@ -240,7 +240,7 @@ export default function ApplyLeave() {
               />
             </div>
             <div>
-              <label style={{ fontSize: "11px", fontWeight: "700", color: "#888"2, letterSpacing: "0.5px" }}>
+              <label style={{ fontSize: "11px", fontWeight: "700", color: "#666", letterSpacing: "0.5px" }}>
                 TO DATE
               </label>
               <input
@@ -270,7 +270,7 @@ export default function ApplyLeave() {
 
           {/* Reason */}
           <div style={{ marginBottom: "16px" }}>
-            <label style={{ fontSize: "11px", fontWeight: "700", color: "#888"2, letterSpacing: "0.5px" }}>
+            <label style={{ fontSize: "11px", fontWeight: "700", color: "#666", letterSpacing: "0.5px" }}>
               REASON
             </label>
             <textarea
@@ -290,7 +290,7 @@ export default function ApplyLeave() {
 
           {/* Attach Document */}
           <div style={{ marginBottom: "16px" }}>
-            <label style={{ fontSize: "11px", fontWeight: "700", color: "#888"2, letterSpacing: "0.5px" }}>
+            <label style={{ fontSize: "11px", fontWeight: "700", color: "#666", letterSpacing: "0.5px" }}>
               ATTACH DOCUMENT (Optional)
             </label>
             <div
@@ -415,7 +415,7 @@ export default function ApplyLeave() {
                   )}
                   {leave.reviewNote && (
                     <div style={{
-                      marginTop: "8px", fontSize: "11px", color: "#888"2,
+                      marginTop: "8px", fontSize: "11px", color: "#666",
                       background: "#f0f4ff", padding: "6px 10px",
                       borderRadius: "6px",
                     }}>
