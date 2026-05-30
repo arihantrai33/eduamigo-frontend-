@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTheme } from "../../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
@@ -17,6 +18,7 @@ export default function Notifications() {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+  const { darkMode: dm } = useTheme();
   const navigate = useNavigate();
 
   useEffect(() => { fetchNotifications(); }, []);
@@ -66,7 +68,7 @@ export default function Notifications() {
         ) : (
           notifications.map(n => (
             <div key={n._id} onClick={() => markRead(n._id)}
-              style={{ background: n.read ? "white" : "#eff6ff", borderRadius: "12px", padding: "14px", marginBottom: "10px", boxShadow: "0 1px 4px rgba(0,0,0,0.08)", borderLeft: n.read ? "none" : "3px solid #4f46e5", cursor: "pointer" }}>
+              style={{ background: dm ? (n.read ? "#1e293b" : "#1e3a5f") : (n.read ? "white" : "#eff6ff"), borderRadius: "12px", padding: "14px", marginBottom: "10px", boxShadow: "0 1px 4px rgba(0,0,0,0.08)", borderLeft: n.read ? "none" : "3px solid #4f46e5", cursor: "pointer" }}>
               <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
                 <span style={{ fontSize: "24px" }}>{icons[n.type] || "📢"}</span>
                 <div style={{ flex: 1 }}>
