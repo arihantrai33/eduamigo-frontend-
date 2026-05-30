@@ -479,7 +479,7 @@ export default function ParentBus() {
         </div>
 
         <button
-          style={{ ...styles.fsBtn, bottom: panelExpanded ? "calc(70vh + 12px)" : "260px" }}
+          style={{ ...styles.fsBtn, bottom: panelExpanded ? "calc(70vh - 160px)" : "260px" }}
           onClick={() => setIsFullscreen(true)}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
