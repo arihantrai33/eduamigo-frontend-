@@ -105,7 +105,7 @@ export default function Notes() {
       {/* Search */}
       <div style={{ display: 'flex', alignItems: 'center', background: dm ? '#0f172a' : '#F0F2F5', borderRadius: 12, margin: '12px 16px', padding: '10px 14px', gap: 8 }}>
         <span style={{ fontSize: 16, opacity: 0.5 }}>🔍</span>
-        <input style={{ border: 'none', background: 'transparent', fontSize: 14, color: dm ? '#cbd5e1' : '#333', outline: 'none', width: '100%' }} placeholder="Search notes, subjects..." value={search} onChange={(e) => setSearch(e.target.value)} />
+        <input style={{ border: 'none', background: 'transparent', fontSize: 14, color: dm ? '#cbd5e1' : '#333', outline: 'none', width: '100%', colorScheme: dm ? 'dark' : 'light' }} placeholder="Search notes, subjects..." value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
       {/* Tabs */}
       <div style={{ display: 'flex', gap: 8, padding: '0 16px 12px' }}>
