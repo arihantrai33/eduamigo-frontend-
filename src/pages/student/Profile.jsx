@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
 import axios from "axios";
 
 const API = import.meta.env.VITE_API_URL;
@@ -10,6 +11,7 @@ const authHeader = () => ({
 
 export default function Profile() {
   const { user, logout } = useAuth();
+  const { darkMode, setDarkMode } = useTheme();
   const navigate = useNavigate();
 
   const [profile,      setProfile]      = useState(null);
