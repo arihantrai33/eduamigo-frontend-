@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 
@@ -22,6 +22,7 @@ function getGreeting() {
 export default function ParentHome() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const location = useLocation();
   const [child,      setChild]      = useState(null);
   const [attendance, setAttendance] = useState(null);
   const [results,    setResults]    = useState(null);
@@ -196,16 +197,16 @@ export default function ParentHome() {
       {/* Bottom Nav */}
       <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: "var(--card)", borderTop: "1px solid var(--border)", display: "flex", padding: "8px 0 16px", boxShadow: "0 -4px 12px rgba(0,0,0,0.06)" }}>
         {[
-          { icon: "🏠", label: "Home",     path: "/parent/home",          active: true },
+          { icon: "🏠", label: "Home",     path: "/parent/home",          },
           { icon: "💬", label: "Teachers", path: "/parent/chat"                        },
           { icon: "💳", label: "Fees",     path: "/parent/fee"                         },
           { icon: "🔔", label: "Alerts",   path: "/parent/notifications"               },
           { icon: "👤", label: "Me",       path: "/parent/profile"                     },
         ].map((tab) => (
           <button key={tab.label} onClick={() => navigate(tab.path)}
-            style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, color: tab.active ? "#4f46e5" : "#999" }}>
+            style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, color: location.pathname === tab.path ? "#4f46e5" : "#999" }}>
             <span style={{ fontSize: 22 }}>{tab.icon}</span>
-            <span style={{ fontSize: 10, fontWeight: tab.active ? 700 : 500 }}>{tab.label}</span>
+            <span style={{ fontSize: 10, fontWeight: location.pathname === tab.path ? 700 : 500 }}>{tab.label}</span>
           </button>
         ))}
       </div>
