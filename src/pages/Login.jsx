@@ -48,6 +48,14 @@ export default function Login() {
   return (
     <div style={s.page}>
       <div style={s.top}>
+        <button onClick={() => setDarkMode(!darkMode)} style={{
+          position: "absolute", top: 16, right: 16,
+          background: "rgba(255,255,255,0.2)", border: "none",
+          borderRadius: "50%", width: 38, height: 38,
+          fontSize: 20, cursor: "pointer"
+        }}>
+          {darkMode ? "☀️" : "🌙"}
+        </button>
         <div style={s.logoBox}>🎓</div>
         <h1 style={s.brand}>EduAmigo</h1>
         <p style={s.tagline}>School Management Platform</p>
@@ -92,7 +100,7 @@ export default function Login() {
 
 const s = {
   page: { height: "100%", display: "flex", flexDirection: "column", background: "linear-gradient(160deg, #0f1b4c 0%, #1a3a8f 50%, #0f1b4c 100%)", fontFamily: "'Inter','Segoe UI',sans-serif", overflowY: "auto" },
-  top: { display: "flex", flexDirection: "column", alignItems: "center", padding: "36px 24px 24px" },
+  top: { display: "flex", flexDirection: "column", alignItems: "center", padding: "36px 24px 24px", position: "relative" },
   logoBox: { width: 64, height: 64, borderRadius: 18, background: "rgba(255,255,255,0.12)", border: "1.5px solid rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, marginBottom: 12 },
   brand: { color: "white", fontSize: 24, fontWeight: 700, margin: "0 0 4px", letterSpacing: 0.5 },
   tagline: { color: "rgba(255,255,255,0.5)", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", margin: 0 },
