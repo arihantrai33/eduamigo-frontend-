@@ -43,8 +43,8 @@ export default function StudentResult() {
     ? results
     : results.filter(r => r.examType === activeExam);
 
-  const totalScored = filtered.reduce((a, r) => a + Number(r.marks), 0);
-  const totalMax    = filtered.reduce((a, r) => a + Number(r.maxMarks), 0);
+  const totalScored = filtered.reduce((a, r) => a + Number(r.marksObtained), 0);
+  const totalMax    = filtered.reduce((a, r) => a + Number(r.totalMarks), 0);
   const percentage  = totalMax > 0 ? ((totalScored / totalMax) * 100).toFixed(1) : null;
 
   const best  = filtered.length > 0 ? filtered.reduce((a, b) => Number(a.percentage) > Number(b.percentage) ? a : b) : null;
@@ -151,7 +151,7 @@ export default function StudentResult() {
             </div>
           ) : (
             filtered.map((r, i) => {
-              const pct = ((Number(r.marks) / Number(r.maxMarks)) * 100).toFixed(1);
+              const pct = ((Number(r.marksObtained) / Number(r.totalMarks)) * 100).toFixed(1);
               return (
                 <div key={r._id} style={{ marginBottom: i === filtered.length - 1 ? 0 : 16 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between',
@@ -165,7 +165,7 @@ export default function StudentResult() {
                         {r.grade}
                       </span>
                       <span style={{ fontSize: 13, fontWeight: 800, color: '#5C6BC0' }}>
-                        {r.marks}/{r.maxMarks}
+                        {r.marksObtained}/{r.totalMarks}
                       </span>
                     </div>
                   </div>
