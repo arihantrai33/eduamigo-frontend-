@@ -99,7 +99,7 @@ export default function Login() {
 }
 
 const s = {
-  page: { minHeight: "100vh", display: "flex", flexDirection: "column", background: "linear-gradient(160deg, #0f1b4c 0%, #1a3a8f 50%, #0f1b4c 100%)", fontFamily: "'Inter','Segoe UI',sans-serif", overflowY: "auto", justifyContent: "center" },
+  page: { minHeight: "100vh", height: "100vh", display: "flex", flexDirection: "column", background: "linear-gradient(160deg, #0f1b4c 0%, #1a3a8f 50%, #0f1b4c 100%)", fontFamily: "'Inter','Segoe UI',sans-serif", overflowY: "auto", justifyContent: "center" },
   top: { display: "flex", flexDirection: "column", alignItems: "center", padding: "36px 24px 24px", position: "relative" },
   logoBox: { width: 64, height: 64, borderRadius: 18, background: "rgba(255,255,255,0.12)", border: "1.5px solid rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, marginBottom: 12 },
   brand: { color: "white", fontSize: 24, fontWeight: 700, margin: "0 0 4px", letterSpacing: 0.5 },
