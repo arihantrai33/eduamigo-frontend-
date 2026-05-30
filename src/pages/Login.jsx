@@ -109,7 +109,7 @@ const s = {
   sub: { fontSize: 13, color: "var(--subtext)", margin: "0 0 20px" },
   roles: { display: "flex", gap: 6, marginBottom: 20 },
   roleBtn: { flex: 1, padding: "8px 2px", border: "1.5px solid var(--border)", borderRadius: 10, background: "var(--input)", color: "var(--subtext)", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 3 },
-  roleBtnActive: { border: "1.5px solid #1a3a8f", background: "#eff4ff", color: "#1a3a8f" },
+  roleBtnActive: { border: "1.5px solid #4f8ef7", background: "rgba(79,142,247,0.2)", color: "#4f8ef7" },
   label: { fontSize: 12, fontWeight: 600, color: "var(--text)", display: "block", marginBottom: 5, letterSpacing: 0.3 },
   input: { width: "100%", padding: "11px 13px", border: "1.5px solid var(--border)", borderRadius: 10, fontSize: 14, color: "var(--text)", outline: "none", boxSizing: "border-box", background: "var(--input)", marginBottom: 14, colorScheme: "dark light" },
   eye: { position: "absolute", right: 11, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: 15 },
