@@ -34,7 +34,7 @@ input, button, select, textarea {
 }
 
 /* Desktop — centered app shell */
-@media (min-width: 600px) {
+@media (min-width: 768px) {
   body {
     display: flex;
     justify-content: center;
@@ -57,7 +57,7 @@ input, button, select, textarea {
   background: #0f172a;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 768px) {
   [data-theme="dark"] body {
     background: #060a14;
   }
