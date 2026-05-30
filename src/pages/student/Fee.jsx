@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useTheme } from "../../context/ThemeContext";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -9,6 +10,7 @@ const authHeader = () => ({
 
 export default function StudentFee() {
   const navigate = useNavigate();
+  const { colors } = useTheme();
   const [fees,      setFees]      = useState([]);
   const [summary,   setSummary]   = useState({ total: 0, totalPaid: 0, totalDue: 0 });
   const [loading,   setLoading]   = useState(true);
@@ -42,13 +44,13 @@ export default function StudentFee() {
   const formatAmount = n => `₹${Number(n || 0).toLocaleString("en-IN")}`;
 
   if (loading) return (
-    <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f5f6fa" }}>
-      <div style={{ fontSize: 14, color: "#999" }}>Loading fee details...</div>
+    <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: colors.bg }}>
+      <div style={{ fontSize: 14, color: colors.subtext }}>Loading fee details...</div>
     </div>
   );
 
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "#f5f6fa", fontFamily: "Inter, sans-serif" }}>
+    <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: colors.bg, fontFamily: "Inter, sans-serif" }}>
 
       {/* Header */}
       <div style={{ background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)", padding: "48px 20px 24px", flexShrink: 0 }}>
@@ -82,7 +84,7 @@ export default function StudentFee() {
       )}
 
       {/* Tabs */}
-      <div style={{ display: "flex", margin: "16px 16px 0", background: "white", borderRadius: 12, padding: 4, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+      <div style={{ display: "flex", margin: "16px 16px 0", background: colors.card, borderRadius: 12, padding: 4, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         {[
           { key: "pending", label: `Outstanding (${pendingFees.length})` },
           { key: "paid",    label: `Paid (${paidFees.length})` },
@@ -105,28 +107,28 @@ export default function StudentFee() {
               <div style={{ textAlign: "center", padding: "48px 0" }}>
                 <div style={{ fontSize: 40, marginBottom: 12 }}>✅</div>
                 <div style={{ fontSize: 15, fontWeight: 700, color: "#22c55e" }}>All fees cleared</div>
-                <div style={{ fontSize: 13, color: "#999", marginTop: 4 }}>No outstanding payments</div>
+                <div style={{ fontSize: 13, color: colors.subtext, marginTop: 4 }}>No outstanding payments</div>
               </div>
             ) : (
               <>
                 {pendingFees.map(f => (
-                  <div key={f._id} style={{ background: "white", borderRadius: 16, padding: 16, marginBottom: 12, boxShadow: "0 2px 10px rgba(0,0,0,0.06)", borderLeft: "4px solid #f59e0b" }}>
+                  <div key={f._id} style={{ background: colors.card, borderRadius: 16, padding: 16, marginBottom: 12, boxShadow: "0 2px 10px rgba(0,0,0,0.06)", borderLeft: "4px solid #f59e0b" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                       <div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: "#111" }}>{f.feeType}</div>
-                        <div style={{ fontSize: 12, color: "#888", marginTop: 3 }}>{f.month} {f.year}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: colors.text }}>{f.feeType}</div>
+                        <div style={{ fontSize: 12, color: colors.subtext, marginTop: 3 }}>{f.month} {f.year}</div>
                         <div style={{ fontSize: 12, color: "#ef4444", marginTop: 2 }}>Due: {formatDate(f.dueDate)}</div>
                       </div>
                       <div style={{ textAlign: "right" }}>
-                        <div style={{ fontSize: 17, fontWeight: 800, color: "#111" }}>{formatAmount(f.amount)}</div>
+                        <div style={{ fontSize: 17, fontWeight: 800, color: colors.text }}>{formatAmount(f.amount)}</div>
                         <div style={{ fontSize: 11, fontWeight: 700, color: "#f59e0b", background: "#fef3c7", padding: "3px 10px", borderRadius: 20, marginTop: 4 }}>UNPAID</div>
                       </div>
                     </div>
                   </div>
                 ))}
 
-                <div style={{ background: "white", borderRadius: 16, padding: 16, boxShadow: "0 2px 10px rgba(0,0,0,0.06)", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: "#111" }}>Total Outstanding</div>
+                <div style={{ background: colors.card, borderRadius: 16, padding: 16, boxShadow: "0 2px 10px rgba(0,0,0,0.06)", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: colors.text }}>Total Outstanding</div>
                   <div style={{ fontSize: 20, fontWeight: 900, color: "#ef4444" }}>{formatAmount(summary.totalDue)}</div>
                 </div>
 
@@ -145,21 +147,21 @@ export default function StudentFee() {
         {activeTab === "paid" && (
           <>
             {paidFees.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "48px 0", color: "#999" }}>
+              <div style={{ textAlign: "center", padding: "48px 0", color: colors.subtext }}>
                 <div style={{ fontSize: 40, marginBottom: 12 }}>📋</div>
                 <div style={{ fontSize: 15, fontWeight: 700 }}>No payment history</div>
               </div>
             ) : (
               paidFees.map(f => (
-                <div key={f._id} style={{ background: "white", borderRadius: 16, padding: 16, marginBottom: 12, boxShadow: "0 2px 8px rgba(0,0,0,0.05)", borderLeft: "4px solid #22c55e" }}>
+                <div key={f._id} style={{ background: colors.card, borderRadius: 16, padding: 16, marginBottom: 12, boxShadow: "0 2px 8px rgba(0,0,0,0.05)", borderLeft: "4px solid #22c55e" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                     <div>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: "#111" }}>{f.feeType}</div>
-                      <div style={{ fontSize: 12, color: "#888", marginTop: 3 }}>{f.month} {f.year}</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: colors.text }}>{f.feeType}</div>
+                      <div style={{ fontSize: 12, color: colors.subtext, marginTop: 3 }}>{f.month} {f.year}</div>
                       {f.paidDate && <div style={{ fontSize: 12, color: "#22c55e", marginTop: 2 }}>Paid on {formatDate(f.paidDate)}</div>}
                     </div>
                     <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: 17, fontWeight: 800, color: "#111" }}>{formatAmount(f.amount)}</div>
+                      <div style={{ fontSize: 17, fontWeight: 800, color: colors.text }}>{formatAmount(f.amount)}</div>
                       <div style={{ fontSize: 11, fontWeight: 700, color: "#22c55e", background: "#dcfce7", padding: "3px 10px", borderRadius: 20, marginTop: 4 }}>PAID</div>
                     </div>
                   </div>
@@ -171,7 +173,7 @@ export default function StudentFee() {
       </div>
 
       {/* Bottom Nav */}
-      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: "white", borderTop: "1px solid #eee", display: "flex", padding: "8px 0 16px", boxShadow: "0 -4px 12px rgba(0,0,0,0.06)" }}>
+      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: colors.card, borderTop: `1px solid ${colors.border}`, display: "flex", padding: "8px 0 16px", boxShadow: "0 -4px 12px rgba(0,0,0,0.06)" }}>
         {[
           { icon: "🏠", label: "Home",  path: "/student/home"    },
           { icon: "🚌", label: "Bus",   path: "/student/bus"     },
@@ -180,7 +182,7 @@ export default function StudentFee() {
           { icon: "👤", label: "Me",    path: "/student/profile" },
         ].map(tab => (
           <button key={tab.label} onClick={() => navigate(tab.path)}
-            style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, color: "#999" }}>
+            style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, color: colors.subtext }}>
             <span style={{ fontSize: 22 }}>{tab.icon}</span>
             <span style={{ fontSize: 10, fontWeight: 500 }}>{tab.label}</span>
           </button>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../../context/ThemeContext";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
 const avatarColor = (name = '') => {
@@ -26,6 +27,7 @@ const formatDate = (d) => {
 };
 export default function Chat() {
   const navigate = useNavigate();
+  const { colors } = useTheme();
   const [tab, setTab] = useState('chats');
   const [teachers, setTeachers] = useState([]);
   const [adminContact, setAdminContact] = useState(null);

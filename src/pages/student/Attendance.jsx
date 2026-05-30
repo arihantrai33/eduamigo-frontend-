@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useTheme } from "../../context/ThemeContext";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -9,6 +10,7 @@ const authHeader = () => ({
 
 export default function StudentAttendance() {
   const navigate = useNavigate();
+  const { colors } = useTheme();
   const [attendance, setAttendance] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -33,14 +35,14 @@ export default function StudentAttendance() {
 
   if (loading) return (
     <div style={{ height: "100vh", display: "flex", alignItems: "center",
-      justifyContent: "center", background: "#f5f6fa" }}>
-      <div style={{ fontSize: 14, color: "#999" }}>Loading...</div>
+      justifyContent: "center", background: colors.bg }}>
+      <div style={{ fontSize: 14, color: colors.subtext }}>Loading...</div>
     </div>
   );
 
   return (
     <div style={{ height: "100vh", display: "flex", flexDirection: "column",
-      background: "#f5f6fa", fontFamily: "Inter, sans-serif" }}>
+      background: colors.bg, fontFamily: "Inter, sans-serif" }}>
 
       {/* Header */}
       <div style={{ background: "linear-gradient(135deg, #1a73e8 0%, #6c63ff 100%)",
@@ -88,16 +90,16 @@ export default function StudentAttendance() {
             <div key={s.label} style={{ background: s.bg, borderRadius: 14,
               padding: "14px 8px", textAlign: "center" }}>
               <div style={{ fontSize: 24, fontWeight: 900, color: s.color }}>{s.val}</div>
-              <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>{s.label}</div>
+              <div style={{ fontSize: 11, color: colors.subtext2, marginTop: 2 }}>{s.label}</div>
             </div>
           ))}
         </div>
 
         {/* Status Card — only show when data exists */}
         {total > 0 && (
-          <div style={{ background: "white", borderRadius: 14, padding: 16,
+          <div style={{ background: colors.card, borderRadius: 14, padding: 16,
             boxShadow: "0 2px 8px rgba(0,0,0,0.06)", marginBottom: 16 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#111", marginBottom: 8 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: colors.text, marginBottom: 8 }}>
               Attendance Status
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -122,10 +124,10 @@ export default function StudentAttendance() {
 
         {/* No data */}
         {total === 0 && (
-          <div style={{ background: "white", borderRadius: 14, padding: 24,
+          <div style={{ background: colors.card, borderRadius: 14, padding: 24,
             textAlign: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
             <div style={{ fontSize: 32, marginBottom: 8 }}>📭</div>
-            <div style={{ fontSize: 14, color: "#999" }}>No attendance records yet</div>
+            <div style={{ fontSize: 14, color: colors.subtext }}>No attendance records yet</div>
             <div style={{ fontSize: 12, color: "#bbb", marginTop: 4 }}>
               Attendance will appear here once it is marked by your teacher.
             </div>
@@ -135,7 +137,7 @@ export default function StudentAttendance() {
 
       {/* Bottom Nav */}
       <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)",
-        width: "100%", maxWidth: 430, background: "white", borderTop: "1px solid #eee",
+        width: "100%", maxWidth: 430, background: colors.card, borderTop: `1px solid ${colors.border}`,
         display: "flex", padding: "8px 0 16px", boxShadow: "0 -4px 12px rgba(0,0,0,0.06)" }}>
         {[
           { icon: "🏠", label: "Home",  path: "/student/home" },
@@ -147,7 +149,7 @@ export default function StudentAttendance() {
           <button key={tab.label} onClick={() => navigate(tab.path)}
             style={{ flex: 1, background: "none", border: "none", cursor: "pointer",
               display: "flex", flexDirection: "column", alignItems: "center",
-              gap: 2, color: "#999" }}>
+              gap: 2, color: colors.subtext }}>
             <span style={{ fontSize: 22 }}>{tab.icon}</span>
             <span style={{ fontSize: 10, fontWeight: 500 }}>{tab.label}</span>
           </button>

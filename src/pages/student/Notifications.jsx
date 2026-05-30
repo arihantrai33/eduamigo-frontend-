@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
 import axios from "axios";
 
 const API = import.meta.env.VITE_API_URL;
@@ -17,6 +18,7 @@ export default function Notifications() {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+  const { colors } = useTheme();
   const navigate = useNavigate();
 
   useEffect(() => { fetchNotifications(); }, []);
@@ -42,13 +44,13 @@ export default function Notifications() {
   };
 
   if (loading) return (
-    <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f5f6fa" }}>
-      <div style={{ fontSize: 14, color: "#999" }}>Loading...</div>
+    <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: colors.bg }}>
+      <div style={{ fontSize: 14, color: colors.subtext }}>Loading...</div>
     </div>
   );
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f5f6fa", paddingBottom: "80px" }}>
+    <div style={{ minHeight: "100vh", background: colors.bg, paddingBottom: "80px" }}>
       {/* Header */}
       <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 40px", color: "white" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -59,7 +61,7 @@ export default function Notifications() {
 
       <div style={{ padding: "16px", marginTop: "-20px" }}>
         {notifications.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "40px", color: "#888" }}>
+          <div style={{ textAlign: "center", padding: "40px", color: colors.subtext }}>
             <div style={{ fontSize: "48px" }}>🔔</div>
             <p>No notifications yet</p>
           </div>
@@ -70,8 +72,8 @@ export default function Notifications() {
               <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
                 <span style={{ fontSize: "24px" }}>{icons[n.type] || "📢"}</span>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: n.read ? "500" : "700", fontSize: "14px", color: "#111" }}>{n.title}</div>
-                  <div style={{ fontSize: "12px", color: "#666", marginTop: "4px" }}>{n.message}</div>
+                  <div style={{ fontWeight: n.read ? "500" : "700", fontSize: "14px", color: colors.text }}>{n.title}</div>
+                  <div style={{ fontSize: "12px", color: colors.subtext2, marginTop: "4px" }}>{n.message}</div>
                   <div style={{ fontSize: "11px", color: "#aaa", marginTop: "6px" }}>
                     {n.createdAt ? new Date(n.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : ""}
                   </div>
