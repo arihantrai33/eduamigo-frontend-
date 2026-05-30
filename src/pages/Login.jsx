@@ -104,7 +104,7 @@ const s = {
   logoBox: { width: 64, height: 64, borderRadius: 18, background: "rgba(255,255,255,0.12)", border: "1.5px solid rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, marginBottom: 12 },
   brand: { color: "white", fontSize: 24, fontWeight: 700, margin: "0 0 4px", letterSpacing: 0.5 },
   tagline: { color: "rgba(255,255,255,0.5)", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", margin: 0 },
-  card: { flex: "unset", background: "var(--card)", borderRadius: "24px 24px 24px 24px", padding: "24px 20px 40px", overflowY: "auto", justifyContent: "center" },
+  card: { flex: 1, background: "var(--card)", borderRadius: "24px 24px 24px 24px", padding: "24px 20px 40px", overflowY: "auto", justifyContent: "center" },
   heading: { fontSize: 20, fontWeight: 700, color: "var(--text)", margin: "0 0 2px" },
   sub: { fontSize: 13, color: "var(--subtext)", margin: "0 0 20px" },
   roles: { display: "flex", gap: 6, marginBottom: 20 },
