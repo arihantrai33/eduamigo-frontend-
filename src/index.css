@@ -8,13 +8,11 @@
   padding: 0;
 }
 
-body {
-  font-family: sans-serif;
-  background: #f5f6fa;
-  display: flex;
-  justify-content: center;
-  color: #111;
+html, body {
   min-height: 100vh;
+  background: #f5f6fa;
+  font-family: sans-serif;
+  color: #111;
 }
 
 input, button {
@@ -27,13 +25,13 @@ input, button {
   margin: 0 auto;
   min-height: 100vh;
   background: #f5f6fa;
-  display: flex;
-  justify-content: center;
 }
 
+[data-theme="dark"] html,
 [data-theme="dark"] body,
 [data-theme="dark"] #root {
   background: #0f172a;
+  color: #f1f5f9;
 }
 
 :root {
@@ -69,13 +67,4 @@ input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
   -webkit-text-fill-color: #111 !important;
-  background-color: #ffffff !important;
-}
-
-html {
-  background: #f5f6fa;
-}
-[data-theme="dark"] html,
-html:has([data-theme="dark"]) {
-  background: #0f172a;
 }
