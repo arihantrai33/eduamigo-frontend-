@@ -11,6 +11,8 @@
 body {
   font-family: sans-serif;
   background: #f5f6fa;
+  display: flex;
+  justify-content: center;
   color: #111;
   min-height: 100vh;
 }
@@ -25,6 +27,8 @@ input, button {
   margin: 0 auto;
   min-height: 100vh;
   background: #f5f6fa;
+  display: flex;
+  justify-content: center;
 }
 
 [data-theme="dark"] body,
@@ -66,4 +70,12 @@ input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
   -webkit-text-fill-color: #111 !important;
   background-color: #ffffff !important;
+}
+
+html {
+  background: #f5f6fa;
+}
+[data-theme="dark"] html,
+html:has([data-theme="dark"]) {
+  background: #0f172a;
 }
