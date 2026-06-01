@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, Routes, Route } from "react-router-dom";
 import axios from "axios";
 import {
@@ -361,8 +361,19 @@ export default function AdminHome() {
   const { user, logout } = useAuth();
   const [activeNav, setActiveNav]     = useState("/admin");
   const [isTransport, setIsTransport] = useState(true);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isMobile, setIsMobile]       = useState(window.innerWidth < 1024);
+  const [sidebarOpen, setSidebarOpen]   = useState(false);
+  const [isMobile, setIsMobile]         = useState(window.innerWidth < 1024);
+  const [unreadCount, setUnreadCount]   = useState(0);
+
+  const fetchUnread = useCallback(async () => {
+    try {
+      const res = await axios.get(`${API}/notifications`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+      const data = res.data.data || [];
+      setUnreadCount(data.filter(n => !n.isRead).length);
+    } catch {}
+  }, []);
+
+  useEffect(() => { fetchUnread(); const t = setInterval(fetchUnread, 30000); return () => clearInterval(t); }, [fetchUnread]);
 
   useEffect(() => {
     const handler = () => setIsMobile(window.innerWidth < 1024);
