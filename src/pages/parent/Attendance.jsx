@@ -112,25 +112,25 @@ export default function ParentAttendance() {
                 padding: "6px 2px", borderRadius: 8, fontSize: 12, fontWeight: 600,
                 background: !c
                   ? "transparent"
-                  : c.today
-                  ? "#4f46e5"
                   : c.status === "Present"
                   ? "#e8f5e9"
                   : c.status === "Absent"
                   ? "#ffebee"
                   : c.status === "Leave"
                   ? "#fef9c3"
+                  : c.today
+                  ? "#4f46e5"
                   : "transparent",
                 color: !c
                   ? "transparent"
-                  : c.today
-                  ? "white"
                   : c.status === "Present"
                   ? "#2e7d32"
                   : c.status === "Absent"
                   ? "#ef4444"
                   : c.status === "Leave"
                   ? "#854d0e"
+                  : c.today
+                  ? "white"
                   : "#ccc",
               }}>
                 {c?.d || ""}
