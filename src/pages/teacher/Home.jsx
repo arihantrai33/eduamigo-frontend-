@@ -147,7 +147,7 @@ export default function TeacherHome() {
         </div>
         <button onClick={() => navigate('/teacher/notifications')} style={styles.bellBtn}>
           🔔
-          {unreadCount > 0 && <div style={styles.bellDot} />}
+          {unreadCount > 0 && <div style={{ position: 'absolute', top: -4, right: -4, minWidth: 18, height: 18, background: '#EF5350', borderRadius: '50%', border: '2px solid white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: 'white', padding: '0 4px' }}>{unreadCount}</div>}
         </button>
       </div>
 

@@ -128,7 +128,7 @@ onClick={() => navigate("/student/notifications")}
 style={{ width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.15)", border: "none", cursor: "pointer", fontSize: 16, position: "relative" }}>
               🔔
 {notices.length > 0 && (
-<div style={{ position: "absolute", top: 6, right: 6, width: 8, height: 8, background: "#FF5252", borderRadius: "50%", border: "2px solid white" }} />
+<div style={{ position: "absolute", top: -4, right: -4, minWidth: 18, height: 18, background: "#FF5252", borderRadius: "50%", border: "2px solid white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: "white", padding: "0 4px" }}>{notices.length}</div>
               )}
 </button>
 <div style={{ width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, color: "#fff", fontSize: 13 }}>
