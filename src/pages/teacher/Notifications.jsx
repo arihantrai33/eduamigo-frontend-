@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { connectSocket, getSocket, disconnectSocket } from '../../utils/socket';
 import { useNavigate } from 'react-router-dom';
 
 const API = import.meta.env.VITE_API_URL;
@@ -52,6 +53,15 @@ export default function TeacherNotifications() {
       }
     };
     fetchNotifications();
+    connectSocket("teacher");
+    const socket = getSocket();
+    socket.on("new_notification", (notif) => {
+      setNotifications((prev) => [notif, ...prev]);
+    });
+    return () => {
+      socket.off("new_notification");
+      disconnectSocket();
+    };
   }, []);
 
   const filtered = filter === 'All'

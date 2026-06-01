@@ -3,12 +3,12 @@ import { useTheme } from "../../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
+import { connectSocket, getSocket, disconnectSocket } from "../../utils/socket";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 });
-
 const icons = {
   fee: "💰", attendance: "📋", result: "📊",
   leave: "📝", bus: "🚌", general: "📢"
@@ -21,7 +21,18 @@ export default function Notifications() {
   const { darkMode: dm } = useTheme();
   const navigate = useNavigate();
 
-  useEffect(() => { fetchNotifications(); }, []);
+  useEffect(() => {
+    fetchNotifications();
+    connectSocket("student");
+    const socket = getSocket();
+    socket.on("new_notification", (notif) => {
+      setNotifications((prev) => [notif, ...prev]);
+    });
+    return () => {
+      socket.off("new_notification");
+      disconnectSocket();
+    };
+  }, []);
 
   const fetchNotifications = async () => {
     try {
@@ -51,14 +62,12 @@ export default function Notifications() {
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--bg)", paddingBottom: "80px" }}>
-      {/* Header */}
       <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 40px", color: "white" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <button onClick={() => navigate(-1)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px", color: "white", cursor: "pointer" }}>←</button>
           <h2 style={{ margin: 0, fontSize: "18px" }}>Notifications</h2>
         </div>
       </div>
-
       <div style={{ padding: "16px", marginTop: "-20px" }}>
         {notifications.length === 0 ? (
           <div style={{ textAlign: "center", padding: "40px", color: "var(--subtext)" }}>

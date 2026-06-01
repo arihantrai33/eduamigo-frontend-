@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { connectSocket, getSocket, disconnectSocket } from "../../utils/socket";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 });
-
 const icons = {
   fee: "💰", attendance: "📋", result: "📊",
   leave: "📝", bus: "🚌", general: "📢",
@@ -18,7 +18,18 @@ export default function ParentNotifications() {
   const [loading,       setLoading]       = useState(true);
   const [error,         setError]         = useState("");
 
-  useEffect(() => { fetchNotifications(); }, []);
+  useEffect(() => {
+    fetchNotifications();
+    connectSocket("parent");
+    const socket = getSocket();
+    socket.on("new_notification", (notif) => {
+      setNotifications((prev) => [notif, ...prev]);
+    });
+    return () => {
+      socket.off("new_notification");
+      disconnectSocket();
+    };
+  }, []);
 
   const fetchNotifications = async () => {
     try {
@@ -37,15 +48,11 @@ export default function ParentNotifications() {
       setNotifications((prev) =>
         prev.map((n) => n._id === id ? { ...n, isRead: true } : n)
       );
-    } catch {
-      // silent fail
-    }
+    } catch { }
   };
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "Inter, sans-serif", paddingBottom: 80 }}>
-
-      {/* Header */}
       <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 40px", color: "white" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <button onClick={() => navigate(-1)}
@@ -55,32 +62,23 @@ export default function ParentNotifications() {
           <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800 }}>🔔 Notifications</h2>
         </div>
       </div>
-
       <div style={{ padding: 16, marginTop: -20 }}>
-
-        {/* Loading */}
         {loading && (
           <div style={{ textAlign: "center", padding: 40, color: "var(--subtext)", fontSize: 14 }}>
             Loading notifications...
           </div>
         )}
-
-        {/* Error */}
         {!loading && error && (
           <div style={{ textAlign: "center", padding: 40, color: "#ef4444", fontSize: 14 }}>
             {error}
           </div>
         )}
-
-        {/* Empty */}
         {!loading && !error && notifications.length === 0 && (
           <div style={{ textAlign: "center", padding: 40, color: "var(--subtext)" }}>
             <div style={{ fontSize: 48 }}>🔔</div>
             <p style={{ fontSize: 14, marginTop: 12 }}>No notifications yet</p>
           </div>
         )}
-
-        {/* List */}
         {!loading && notifications.map((n) => {
           const isRead = n.isRead ?? false;
           return (
@@ -103,9 +101,7 @@ export default function ParentNotifications() {
                     {n.message}
                   </div>
                   <div style={{ fontSize: 11, color: "#aaa", marginTop: 6 }}>
-                    {n.createdAt
-                      ? new Date(n.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })
-                      : ""}
+                    {n.createdAt ? new Date(n.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : ""}
                   </div>
                 </div>
                 {!isRead && (
