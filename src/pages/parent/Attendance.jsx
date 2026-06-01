@@ -15,7 +15,7 @@ export default function ParentAttendance() {
   const [loading, setLoading] = useState(true);
   const [error,   setError]   = useState("");
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => { fetchData(); const interval = setInterval(fetchData, 30000); return () => clearInterval(interval); }, []);
 
   const fetchData = async () => {
     try {
@@ -57,7 +57,7 @@ export default function ParentAttendance() {
     for (let d = 1; d <= daysInMonth; d++) {
       const key    = `${year}-${month}-${d}`;
       const status = recordMap[key];
-      cells.push({ d, status, today: d === now.getDate() });
+      cells.push({ d, status, today: d === now.getDate() && !status });
     }
     return { cells, monthLabel: now.toLocaleString("en-IN", { month: "long", year: "numeric" }) };
   };
