@@ -70,6 +70,7 @@ const NAV = [
   { label: "Notifications",    icon: Bell,             path: "/admin/notifications" },
   { label: "Chat",             icon: MessageCircle,    path: "/admin/chat" },
   { label: "Circulars",        icon: FileText,         path: "/admin/circulars" },
+  { label: "Notice Board",     icon: Bell,             path: "/admin/noticeboard" },
 
   { section: "⚙️ System" },
   { label: "Library",          icon: BookOpen,         path: "/admin/library" },
@@ -558,6 +559,7 @@ export default function AdminHome() {
           <Route path="user-management" element={<UserManagement />} />
           <Route path="parents" element={<ParentsList />} />
           <Route path="circulars" element={<Circulars />} />
+          <Route path="noticeboard" element={<NoticeBoard />} />
         </Routes>
       </main>
     </div>
