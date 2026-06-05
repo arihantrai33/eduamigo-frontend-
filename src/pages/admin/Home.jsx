@@ -5,7 +5,8 @@ import {
   LayoutDashboard, Users, School, UserCircle, Bus,
   CalendarCheck, FileBadge, Clock, Notebook, BadgeDollarSign, Layers,
   Bell, MessageCircle, BarChart2, Settings as SettingsIcon, Menu, X,
-  AlertCircle, CheckCircle, BookOpen, LogOut, TrendingUp, Zap
+  AlertCircle, CheckCircle, BookOpen, LogOut, TrendingUp, Zap,
+  Award, Shield, FileText
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import Students from "./Students";
@@ -39,27 +40,41 @@ const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 const NAV = [
-  { label: "Dashboard",      icon: LayoutDashboard,  path: "/admin" },
-  { section: "Management" },
-  { label: "Students",       icon: Users,            path: "/admin/students" },
-  { label: "Teachers",       icon: School,           path: "/admin/teachers" },
-  { label: "Parents",        icon: UserCircle,       path: "/admin/parents" },
-  { label: "Transport",      icon: Bus,              path: "/admin/transport" },
-  { section: "Academics" },
-  { label: "Attendance",     icon: CalendarCheck,    path: "/admin/attendance" },
-  { label: "Exams & Results",icon: FileBadge,        path: "/admin/exams" },
-  { label: "Timetable",      icon: Clock,            path: "/admin/timetable" },
-  { label: "Leave Requests", icon: Notebook,         path: "/admin/leaves" },
-  { section: "Finance" },
-  { label: "Fee Structure",  icon: Layers,           path: "/admin/fee-structure" },
-  { label: "Fee Collection", icon: BadgeDollarSign,  path: "/admin/fees" },
-  { section: "Communication" },
-  { label: "Notifications",  icon: Bell,             path: "/admin/notifications" },
-  { label: "Chat",           icon: MessageCircle,    path: "/admin/chat" },
-  { label: "Circulars",      icon: Bell,             path: "/admin/circulars" },
-  { section: "System" },
-  { label: "Reports",        icon: BarChart2,        path: "/admin/reports" },
-  { label: "Settings",       icon: SettingsIcon,     path: "/admin/settings" },
+  { label: "Dashboard",        icon: LayoutDashboard,  path: "/admin" },
+
+  { section: "🎓 Students" },
+  { label: "All Students",     icon: Users,            path: "/admin/students" },
+  { label: "Attendance",       icon: CalendarCheck,    path: "/admin/attendance" },
+  { label: "Leave Requests",   icon: Notebook,         path: "/admin/leaves" },
+  { label: "Exam Results",     icon: FileBadge,        path: "/admin/results" },
+  { label: "Marks & Grades",   icon: Award,            path: "/admin/marks" },
+
+  { section: "👩‍🏫 Teachers" },
+  { label: "All Teachers",     icon: School,           path: "/admin/teachers" },
+  { label: "Timetable",        icon: Clock,            path: "/admin/timetable" },
+  { label: "Exams & Schedule", icon: BookOpen,         path: "/admin/exams" },
+
+  { section: "👨‍👩‍👧 Parents & Staff" },
+  { label: "Parents",          icon: UserCircle,       path: "/admin/parents" },
+  { label: "User Management",  icon: Shield,           path: "/admin/user-management" },
+
+  { section: "💰 Finance" },
+  { label: "Fee Structure",    icon: Layers,           path: "/admin/fee-structure" },
+  { label: "Fee Collection",   icon: BadgeDollarSign,  path: "/admin/fees" },
+  { label: "Fee Reports",      icon: TrendingUp,       path: "/admin/fee-reports" },
+
+  { section: "🚌 Transport" },
+  { label: "Bus Management",   icon: Bus,              path: "/admin/transport" },
+
+  { section: "📢 Communication" },
+  { label: "Notifications",    icon: Bell,             path: "/admin/notifications" },
+  { label: "Chat",             icon: MessageCircle,    path: "/admin/chat" },
+  { label: "Circulars",        icon: FileText,         path: "/admin/circulars" },
+
+  { section: "⚙️ System" },
+  { label: "Library",          icon: BookOpen,         path: "/admin/library" },
+  { label: "Reports",          icon: BarChart2,        path: "/admin/reports" },
+  { label: "Settings",         icon: SettingsIcon,     path: "/admin/settings" },
 ];
 
 const MODULES = [
@@ -492,7 +507,7 @@ export default function AdminHome() {
   );
 
   return (
-    <div style={{ display: "flex", width: "100vw", minHeight: "100vh", background: "linear-gradient(135deg,#F0F4FF 0%,#F8FAFF 50%,#EEF2FF 100%)", fontFamily: "'Inter',sans-serif", position: "fixed", top: 0, left: 0, overflow: "hidden" }}>
+    <div style={{ display: "flex", width: "100vw", minHeight: "100vh", background: "#E8ECF4", fontFamily: "'Inter',sans-serif", position: "fixed", top: 0, left: 0, overflow: "hidden" }}>
       {!isMobile && (
         <aside style={{ width: 230, flexShrink: 0, background: "linear-gradient(180deg,#0F172A 0%,#1E1B4B 100%)", display: "flex", flexDirection: "column", height: "100vh", overflowY: "auto", boxShadow: "4px 0 24px rgba(0,0,0,0.15)" }}>
           <SidebarContent />
