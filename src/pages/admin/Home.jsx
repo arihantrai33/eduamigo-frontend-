@@ -35,6 +35,7 @@ import Transport from "./Transport";
 import UserManagement from "./UserManagement";
 import ParentsList from "./ParentsList";
 import Circulars from "./Circulars";
+import NoticeBoard from "./NoticeBoard";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -70,6 +71,7 @@ const NAV = [
   { label: "Notifications",    icon: Bell,             path: "/admin/notifications" },
   { label: "Chat",             icon: MessageCircle,    path: "/admin/chat" },
   { label: "Circulars",        icon: FileText,         path: "/admin/circulars" },
+  { label: "Notice Board",     icon: Bell,             path: "/admin/notice-board" },
   { label: "Notice Board",     icon: Bell,             path: "/admin/noticeboard" },
 
   { section: "⚙️ System" },
@@ -559,6 +561,7 @@ export default function AdminHome() {
           <Route path="user-management" element={<UserManagement />} />
           <Route path="parents" element={<ParentsList />} />
           <Route path="circulars" element={<Circulars />} />
+          <Route path="notice-board" element={<NoticeBoard />} />
           <Route path="noticeboard" element={<NoticeBoard />} />
         </Routes>
       </main>
