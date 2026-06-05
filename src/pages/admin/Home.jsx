@@ -75,7 +75,7 @@ const MODULES = [
 ];
 
 // Counter animation hook
-function useCounter(target, duration = 1200) {
+function useCounter(target, duration = 400) {
   const [count, setCount] = useState(0);
   useEffect(() => {
     if (!target) return;
