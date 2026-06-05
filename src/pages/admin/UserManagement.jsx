@@ -112,7 +112,7 @@ export default function UserManagement() {
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by name or email..."
             style={{ ...inp, paddingLeft: 36 }} />
         </div>
-        <div style={{ display: "flex", gap: 6" }}>
+        <div style={{ display: "flex", gap: 6 }}>
           {["all", ...Object.keys(ROLE_META)].map(r => (
             <button key={r} onClick={() => setFilter(r)}
               style={{ padding: "6px 14px", borderRadius: 20, fontSize: 11, cursor: "pointer", border: `1px solid ${filter === r ? "#4F46E5" : "#E2E8F0"}`, background: filter === r ? "#EEF2FF" : "#fff", color: filter === r ? "#4F46E5" : "#64748B", fontWeight: filter === r ? 600 : 400, textTransform: "capitalize" }}>
