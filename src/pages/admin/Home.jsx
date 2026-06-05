@@ -72,7 +72,6 @@ const NAV = [
   { label: "Chat",             icon: MessageCircle,    path: "/admin/chat" },
   { label: "Circulars",        icon: FileText,         path: "/admin/circulars" },
   { label: "Notice Board",     icon: Bell,             path: "/admin/notice-board" },
-  { label: "Notice Board",     icon: Bell,             path: "/admin/noticeboard" },
 
   { section: "⚙️ System" },
   { label: "Library",          icon: BookOpen,         path: "/admin/library" },
