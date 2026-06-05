@@ -63,15 +63,15 @@ const NAV = [
 ];
 
 const MODULES = [
-  { icon: "\u{1F392}", name: "Students",   path: "/admin/students",   grad: "linear-gradient(135deg,#6366F1,#8B5CF6)" },
-  { icon: "\u{1F469}\u200D\u{1F3EB}", name: "Teachers",   path: "/admin/teachers",   grad: "linear-gradient(135deg,#10B981,#059669)" },
-  { icon: "\u{1F468}\u200D\u{1F469}\u200D\u{1F467}", name: "Parents",    path: "/admin/parents",    grad: "linear-gradient(135deg,#F59E0B,#EF4444)" },
-  { icon: "\u{1F4B3}", name: "Fee Mgmt",   path: "/admin/fees",       grad: "linear-gradient(135deg,#06B6D4,#3B82F6)" },
-  { icon: "\u{1F4CB}", name: "Attendance", path: "/admin/attendance",  grad: "linear-gradient(135deg,#EC4899,#F43F5E)" },
-  { icon: "\u{1F4DD}", name: "Exams",      path: "/admin/exams",       grad: "linear-gradient(135deg,#F97316,#EF4444)" },
-  { icon: "\u{1F550}", name: "Timetable",  path: "/admin/timetable",   grad: "linear-gradient(135deg,#3B82F6,#6366F1)" },
-  { icon: "\u{1F3D6}\uFE0F", name: "Leaves",     path: "/admin/leaves",      grad: "linear-gradient(135deg,#8B5CF6,#A855F7)" },
-  { icon: "\u{1F68C}", name: "Transport",  path: "/admin/transport",   grad: "linear-gradient(135deg,#0EA5E9,#06B6D4)" },
+  { icon: "🎒", name: "Students",   path: "/admin/students",   grad: "linear-gradient(135deg,#6366F1,#8B5CF6)" },
+  { icon: "\u{1F469}\u200D🏫", name: "Teachers",   path: "/admin/teachers",   grad: "linear-gradient(135deg,#10B981,#059669)" },
+  { icon: "👨‍👩‍👧", name: "Parents",    path: "/admin/parents",    grad: "linear-gradient(135deg,#F59E0B,#EF4444)" },
+  { icon: "💳", name: "Fee Mgmt",   path: "/admin/fees",       grad: "linear-gradient(135deg,#06B6D4,#3B82F6)" },
+  { icon: "📋", name: "Attendance", path: "/admin/attendance",  grad: "linear-gradient(135deg,#EC4899,#F43F5E)" },
+  { icon: "📝", name: "Exams",      path: "/admin/exams",       grad: "linear-gradient(135deg,#F97316,#EF4444)" },
+  { icon: "🕐", name: "Timetable",  path: "/admin/timetable",   grad: "linear-gradient(135deg,#3B82F6,#6366F1)" },
+  { icon: "🏖️", name: "Leaves",     path: "/admin/leaves",      grad: "linear-gradient(135deg,#8B5CF6,#A855F7)" },
+  { icon: "🚌", name: "Transport",  path: "/admin/transport",   grad: "linear-gradient(135deg,#0EA5E9,#06B6D4)" },
 ];
 
 function useCounter(target, duration = 400) {
@@ -164,7 +164,7 @@ function DashboardContent({ isMobile, navigate, user }) {
       setAttendanceStats({ present: presentCount, absent: att.length - presentCount, total: att.length });
 
       setRecentActivity(students.slice(-6).reverse().map(s => ({
-        ic: "\u{1F392}", text: `${s.name} added to class ${s.class}-${s.section}`,
+        ic: "🎒", text: `${s.name} added to class ${s.class}-${s.section}`,
         time: new Date(s.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" }),
       })));
 
@@ -181,13 +181,13 @@ function DashboardContent({ isMobile, navigate, user }) {
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good Morning" : hour < 17 ? "Good Afternoon" : "Good Evening";
-  const greetEmoji = hour < 12 ? "\u{1F305}" : hour < 17 ? "\u2600\uFE0F" : "\u{1F319}";
+  const greetEmoji = hour < 12 ? "🌅" : hour < 17 ? "☀️" : "🌙";
 
   const statCards = [
-    { icon: "\u{1F392}", value: stats.students, label: "Total Students",  sub: "Enrolled this year",   grad: "linear-gradient(135deg,#6366F1,#8B5CF6)", delay: 0 },
-    { icon: "\u{1F469}\u200D\u{1F3EB}", value: stats.teachers, label: "Total Teachers",  sub: "Active staff members", grad: "linear-gradient(135deg,#10B981,#059669)", delay: 80 },
-    { icon: "\u{1F468}\u200D\u{1F469}\u200D\u{1F467}", value: stats.parents,  label: "Linked Parents",  sub: "Connected families",   grad: "linear-gradient(135deg,#F59E0B,#EF4444)", delay: 160 },
-    { icon: "\u{1F68C}", value: stats.buses,    label: "Total Buses",     sub: "Active fleet",          grad: "linear-gradient(135deg,#0EA5E9,#3B82F6)", delay: 240 },
+    { icon: "🎒", value: stats.students, label: "Total Students",  sub: "Enrolled this year",   grad: "linear-gradient(135deg,#6366F1,#8B5CF6)", delay: 0 },
+    { icon: "\u{1F469}\u200D🏫", value: stats.teachers, label: "Total Teachers",  sub: "Active staff members", grad: "linear-gradient(135deg,#10B981,#059669)", delay: 80 },
+    { icon: "👨‍👩‍👧", value: stats.parents,  label: "Linked Parents",  sub: "Connected families",   grad: "linear-gradient(135deg,#F59E0B,#EF4444)", delay: 160 },
+    { icon: "🚌", value: stats.buses,    label: "Total Buses",     sub: "Active fleet",          grad: "linear-gradient(135deg,#0EA5E9,#3B82F6)", delay: 240 },
   ];
 
   const attPct = attendanceStats.total > 0 ? Math.round((attendanceStats.present / attendanceStats.total) * 100) : 0;
@@ -223,7 +223,7 @@ function DashboardContent({ isMobile, navigate, user }) {
           <div style={{ position: "relative", zIndex: 1 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
               <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: 8, padding: "3px 10px", fontSize: 11, color: "rgba(255,255,255,0.9)", fontWeight: 600, backdropFilter: "blur(8px)" }}>
-                \u{1F3EB} {user?.school || "EduAmigo School"}
+                🏫 {user?.school || "EduAmigo School"}
               </div>
             </div>
             <div style={{ fontSize: isMobile ? 20 : 26, fontWeight: 800, color: "white", marginBottom: 8, letterSpacing: "-0.3px" }}>
@@ -329,7 +329,7 @@ function DashboardContent({ isMobile, navigate, user }) {
             </div>
             <div style={{ fontSize: 48, fontWeight: 800, color: pendingLeaves > 0 ? "#EF4444" : "#10B981", lineHeight: 1, marginBottom: 8 }}>{pendingLeaves}</div>
             <div style={{ fontSize: 12, color: pendingLeaves > 0 ? "#EF4444" : "#10B981", fontWeight: 700 }}>
-              {pendingLeaves > 0 ? `${pendingLeaves} requests pending \u2192` : "All caught up! \u2713"}
+              {pendingLeaves > 0 ? `${pendingLeaves} requests pending →` : "All caught up! ✓"}
             </div>
           </div>
         </AnimatedItem>
