@@ -32,6 +32,8 @@ import TeacherProfile from "./TeacherProfile";
 import Timetable from "./Timetable";
 import Transport from "./Transport";
 import UserManagement from "./UserManagement";
+import ParentsList from "./ParentsList";
+import Circulars from "./Circulars";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -43,7 +45,7 @@ const NAV = [
   { section: "Management" },
   { label: "Students",       icon: Users,            path: "/admin/students" },
   { label: "Teachers",       icon: School,           path: "/admin/teachers" },
-  { label: "Parents",        icon: UserCircle,       path: "/admin/parents/add" },
+  { label: "Parents",        icon: UserCircle,       path: "/admin/parents" },
   { label: "Transport",      icon: Bus,              path: "/admin/transport" },
   { section: "Academics" },
   { label: "Attendance",     icon: CalendarCheck,    path: "/admin/attendance" },
@@ -56,6 +58,7 @@ const NAV = [
   { section: "Communication" },
   { label: "Notifications",  icon: Bell,             path: "/admin/notifications" },
   { label: "Chat",           icon: MessageCircle,    path: "/admin/chat" },
+  { label: "Circulars",      icon: Bell,             path: "/admin/circulars" },
   { section: "System" },
   { label: "Reports",        icon: BarChart2,        path: "/admin/reports" },
   { label: "Settings",       icon: SettingsIcon,     path: "/admin/settings" },
@@ -487,6 +490,8 @@ export default function AdminHome() {
           <Route path="timetable"         element={<Timetable />} />
           <Route path="transport"         element={<Transport />} />
           <Route path="user-management"   element={<UserManagement />} />
+          <Route path="parents"            element={<ParentsList />} />
+          <Route path="circulars"          element={<Circulars />} />
         </Routes>
       </main>
     </div>
