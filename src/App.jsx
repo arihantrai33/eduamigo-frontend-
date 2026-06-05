@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Toast from './components/Toast'
 import Splash from './pages/Splash'
@@ -137,6 +138,14 @@ function AppRoutes() {
 }
 
 function AppLayout() {
+  const location2 = useLocation()
+  useEffect(() => {
+    if (location2.pathname.startsWith("/admin")) {
+      document.body.classList.add("admin-body")
+    } else {
+      document.body.classList.remove("admin-body")
+    }
+  }, [location2.pathname])
   const location = useLocation()
   const isAdmin = location.pathname.startsWith('/admin')
   if (isAdmin) {

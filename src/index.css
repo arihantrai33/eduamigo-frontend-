@@ -13,6 +13,7 @@ html { color-scheme: light only !important; }
 html {
   min-height: 100%;
   background: #f5f6fa;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -21,6 +22,7 @@ body {
   font-family: 'Inter', 'Segoe UI', sans-serif;
   color: #111;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 input, button, select, textarea {
@@ -33,36 +35,67 @@ input, button, select, textarea {
   background: #f5f6fa;
 }
 
-/* Desktop — centered app shell */
+/* Mobile app shell — only for non-admin pages */
 @media (min-width: 768px) {
-  body {
+  body:not(.admin-body) {
     display: flex;
     justify-content: center;
-    background: #e2e8f0;
+    background: #0f0f1a;
   }
-  #root {
+  body:not(.admin-body) #root {
     max-width: 430px;
     min-height: 100vh;
-    box-shadow: 0 0 40px rgba(0,0,0,0.15);
+    box-shadow: 0 0 60px rgba(0,0,0,0.4);
+    border-radius: 0;
   }
 }
 
-/* Dark mode */
-[data-theme="dark"] html,
-[data-theme="dark"] body {
-  background: #0a0f1e;
+/* Admin full width */
+body.admin-body {
+  background: #F1F5F9 !important;
+  display: block !important;
+}
+body.admin-body #root {
+  max-width: 100% !important;
+  box-shadow: none !important;
 }
 
-[data-theme="dark"] #root {
-  background: #0f172a;
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(99,102,241,0.25);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(99,102,241,0.5);
 }
 
-@media (min-width: 768px) {
-  [data-theme="dark"] body {
-    background: #060a14;
-  }
+/* Smooth transitions globally */
+* {
+  transition-property: background-color, border-color, color, box-shadow;
+  transition-duration: 0.15s;
+  transition-timing-function: ease;
 }
 
+/* Selection color */
+::selection {
+  background: rgba(99,102,241,0.2);
+  color: #4338CA;
+}
+
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid #6366F1;
+  outline-offset: 2px;
+}
+
+/* CSS Variables */
 :root {
   --bg: #f5f6fa;
   --card: #ffffff;
@@ -73,8 +106,11 @@ input, button, select, textarea {
   --border: #e5e7eb;
   --nav: #ffffff;
   --input: #ffffff;
+  --primary: #6366F1;
+  --primary-light: #EEF2FF;
 }
 
+/* Dark mode */
 [data-theme="dark"] {
   --bg: #0f172a;
   --card: #1e293b;
@@ -87,20 +123,60 @@ input, button, select, textarea {
   --input: #162032;
 }
 
+[data-theme="dark"] html,
+[data-theme="dark"] body {
+  background: #0a0f1e;
+}
+[data-theme="dark"] #root {
+  background: #0f172a;
+}
 [data-theme="dark"] ::placeholder {
   color: rgba(255,255,255,0.4) !important;
 }
 
+/* Autofill */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
   -webkit-text-fill-color: #111 !important;
 }
-
 [data-theme="dark"] input:-webkit-autofill,
 [data-theme="dark"] input:-webkit-autofill:hover,
 [data-theme="dark"] input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0px 1000px #162032 inset !important;
   -webkit-text-fill-color: #f1f5f9 !important;
+}
+
+/* Page fade-in animation */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(99,102,241,0.3); }
+  50%       { box-shadow: 0 0 0 8px rgba(99,102,241,0); }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.35s ease forwards;
+}
+.fade-in {
+  animation: fadeIn 0.25s ease forwards;
+}
+
+/* Skeleton shimmer */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
 }
