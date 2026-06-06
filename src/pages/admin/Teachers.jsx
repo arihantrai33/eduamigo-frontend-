@@ -167,12 +167,12 @@ export default function Teachers() {
     setDeleteId(null);
   };
 
-  const allSubjects = [...new Set(teachers.flatMap(t => (t.subjects||"").split(",").map(s => s.trim()).filter(Boolean)))].sort();
+  const allSubjects = [...new Set(teachers.flatMap(t => Array.isArray(t.subjects) ? t.subjects : (t.subjects||"").split(",").map(s => s.trim()).filter(Boolean)))].sort();
 
   const filtered = teachers.filter(t =>
     (!search || t.name?.toLowerCase().includes(search.toLowerCase()) || t.email?.toLowerCase().includes(search.toLowerCase()) || t.employeeId?.toLowerCase().includes(search.toLowerCase())) &&
     (!filterStatus || t.status === filterStatus) &&
-    (!filterSubject || (t.subjects||"").includes(filterSubject))
+    (!filterSubject || (Array.isArray(t.subjects) ? t.subjects.join(",") : (t.subjects||"")).includes(filterSubject))
   );
 
   const stats = {
@@ -269,7 +269,7 @@ export default function Teachers() {
             ) : filtered.map((t, i) => {
               const status = t.status || "Active";
               const cfg = STATUS_CONFIG[status] || STATUS_CONFIG.Active;
-              const subjects = (t.subjects||"").split(",").map(s => s.trim()).filter(Boolean);
+              const subjects = Array.isArray(t.subjects) ? t.subjects : (t.subjects||"").split(",").map(s => s.trim()).filter(Boolean);
               return (
                 <tr key={t._id} className="t-row" style={{ borderBottom:"1px solid #F1F5F9", animation:`fadeUp 0.3s ease ${i*0.04}s both` }}>
                   <td style={{ padding:"14px 18px" }}>
