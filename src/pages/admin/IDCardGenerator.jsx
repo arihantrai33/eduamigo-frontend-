@@ -131,35 +131,50 @@ function TeacherCard({ teacher, animPhase }) {
 
 function BuildingAnimation() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 20, padding: "40px 0" }}>
-      <div style={{ width: 340, height: 220, borderRadius: 20, border: "2px dashed #C7D2FE", background: "linear-gradient(135deg,#EEF2FF,#F5F3FF)", position: "relative", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 80, background: "linear-gradient(135deg,rgba(99,102,241,0.15),rgba(139,92,246,0.15))", borderBottom: "2px dashed #C7D2FE" }} />
-        <div style={{ position: "absolute", top: 55, left: 18, width: 60, height: 60, borderRadius: "50%", border: "3px dashed #A5B4FC", background: "rgba(99,102,241,0.08)" }} />
-        <div style={{ position: "absolute", top: 28, left: 18, right: 18, display: "flex", flexDirection: "column", gap: 4 }}>
-          <div style={{ height: 8, width: 120, borderRadius: 4, background: "rgba(99,102,241,0.2)" }} />
-          <div style={{ height: 6, width: 80, borderRadius: 4, background: "rgba(99,102,241,0.12)" }} />
-        </div>
-        <div style={{ position: "absolute", bottom: 40, left: 18, right: 18, display: "flex", flexDirection: "column", gap: 6 }}>
-          <div style={{ display: "flex", gap: 6 }}>
-            {[1,2,3].map(i => <div key={i} style={{ flex: 1, height: 32, borderRadius: 8, background: "rgba(99,102,241,0.08)", border: "1px dashed #C7D2FE" }} />)}
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 20, padding: "20px 0" }}>
+      <style>{`
+        @keyframes scanLine { 0% { top: 10px; opacity: 1; } 100% { top: 210px; opacity: 0.3; } }
+        @keyframes pulse { 0%,100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.15); opacity: 1; } }
+        @keyframes neuron { 0% { stroke-dashoffset: 200; opacity: 0; } 50% { opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0.8; } }
+        @keyframes blink { 0%,100% { opacity: 0.2; } 50% { opacity: 1; } }
+        @keyframes shimmerCard { 0% { background-position: -340px 0; } 100% { background-position: 340px 0; } }
+      `}</style>
+      <div style={{ width: 340, height: 220, borderRadius: 20, border: "1.5px solid #C7D2FE", background: "#0F1729", position: "relative", overflow: "hidden" }}>
+        <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} viewBox="0 0 340 220">
+          <defs>
+            <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#6366F1" stopOpacity="0.3" />
+              <stop offset="100%" stopColor="#6366F1" stopOpacity="0" />
+            </radialGradient>
+          </defs>
+          <rect width="340" height="220" fill="url(#glow)" />
+          {[[40,40,160,40],[40,40,40,180],[300,40,300,180],[40,180,300,180]].map(([x1,y1,x2,y2],i) => (
+            <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#6366F1" strokeWidth="0.5" strokeOpacity="0.3" strokeDasharray="4 4" />
+          ))}
+          {[[80,70],[170,50],[260,80],[100,150],[200,160],[280,130],[150,110],[230,100]].map(([cx,cy],i) => (
+            <g key={i}>
+              <circle cx={cx} cy={cy} r="3" fill="#6366F1" style={{ animation:  }} />
+              <circle cx={cx} cy={cy} r="8" fill="none" stroke="#6366F1" strokeWidth="0.5" strokeOpacity="0.3" />
+            </g>
+          ))}
+          {[[80,70,170,50],[170,50,260,80],[80,70,100,150],[170,50,150,110],[260,80,280,130],[100,150,200,160],[200,160,280,130],[150,110,230,100],[230,100,280,130]].map(([x1,y1,x2,y2],i) => (
+            <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#818CF8" strokeWidth="0.8" strokeOpacity="0.5" strokeDasharray="200" strokeDashoffset="200" style={{ animation:  }} />
+          ))}
+        </svg>
+        <div style={{ position: "absolute", left: 10, right: 10, height: "2px", background: "linear-gradient(90deg,transparent,#6366F1,#A5B4FC,#6366F1,transparent)", boxShadow: "0 0 12px #6366F1", animation: "scanLine 1.8s ease-in-out infinite", top: 10 }} />
+        <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10 }}>
+          <div style={{ width: 52, height: 52, borderRadius: "50%", border: "2px solid #6366F1", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(99,102,241,0.15)", boxShadow: "0 0 20px rgba(99,102,241,0.4)" }}>
+            <div style={{ fontSize: 22 }}>🪪</div>
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div style={{ height: 8, width: 80, borderRadius: 4, background: "rgba(99,102,241,0.1)" }} />
-            <div style={{ width: 70, height: 28, borderRadius: 4, background: "rgba(99,102,241,0.08)", border: "1px dashed #C7D2FE" }} />
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#A5B4FC", letterSpacing: "0.08em" }}>SCANNING...</div>
+          <div style={{ display: "flex", gap: 5 }}>
+            {[0,1,2,3,4].map(i => (
+              <div key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: "#6366F1", animation:  }} />
+            ))}
           </div>
-        </div>
-        <div style={{ textAlign: "center", zIndex: 10 }}>
-          <div style={{ fontSize: 36, marginBottom: 8, animation: "spin 1.5s linear infinite", display: "inline-block" }}>⚙️</div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#6366F1" }}>Building ID Card...</div>
         </div>
       </div>
-      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
-      <div style={{ display: "flex", gap: 6 }}>
-        {[0,1,2].map(i => (
-          <div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: "#6366F1", animation: `bounce 0.8s ease-in-out ${i * 0.15}s infinite alternate` }} />
-        ))}
-      </div>
-      <style>{`@keyframes bounce { from { transform: translateY(0); opacity: 0.4; } to { transform: translateY(-8px); opacity: 1; } }`}</style>
+      <div style={{ fontSize: 12, color: "#94A3B8", fontWeight: 600, letterSpacing: "0.04em" }}>Generating ID Card — please wait</div>
     </div>
   );
 }
