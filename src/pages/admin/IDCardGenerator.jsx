@@ -153,12 +153,12 @@ function BuildingAnimation() {
           ))}
           {[[80,70],[170,50],[260,80],[100,150],[200,160],[280,130],[150,110],[230,100]].map(([cx,cy],i) => (
             <g key={i}>
-              <circle cx={cx} cy={cy} r="3" fill="#6366F1" style={{ animation:  }} />
+              <circle cx={cx} cy={cy} r="3" fill="#6366F1" style={{ animation: `pulse 1.5s ease-in-out ${i*0.2}s infinite` }} />
               <circle cx={cx} cy={cy} r="8" fill="none" stroke="#6366F1" strokeWidth="0.5" strokeOpacity="0.3" />
             </g>
           ))}
           {[[80,70,170,50],[170,50,260,80],[80,70,100,150],[170,50,150,110],[260,80,280,130],[100,150,200,160],[200,160,280,130],[150,110,230,100],[230,100,280,130]].map(([x1,y1,x2,y2],i) => (
-            <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#818CF8" strokeWidth="0.8" strokeOpacity="0.5" strokeDasharray="200" strokeDashoffset="200" style={{ animation:  }} />
+            <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#818CF8" strokeWidth="0.8" strokeOpacity="0.5" strokeDasharray="200" strokeDashoffset="200" style={{ animation: `pulse 1.5s ease-in-out ${i*0.2}s infinite` }} />
           ))}
         </svg>
         <div style={{ position: "absolute", left: 10, right: 10, height: "2px", background: "linear-gradient(90deg,transparent,#6366F1,#A5B4FC,#6366F1,transparent)", boxShadow: "0 0 12px #6366F1", animation: "scanLine 1.8s ease-in-out infinite", top: 10 }} />
