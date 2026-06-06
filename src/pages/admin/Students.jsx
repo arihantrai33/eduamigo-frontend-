@@ -18,7 +18,7 @@ const FEE_BADGE = {
   Partial: { bg:"#FFF7ED", color:"#C2410C", dot:"#F97316" },
 };
 
-function StatCard({ label, value, icon, gradient, delay }) {
+function StatCard({ label, value, icon, gradient, delay, border }) {
   const [count, setCount] = useState(0);
   useEffect(() => {
     if (typeof value !== "number") return;
@@ -223,10 +223,10 @@ export default function Students() {
       </div>
 
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:28 }}>
-        <StatCard label="TOTAL STUDENTS" value={stats.total} icon="🎒" gradient="linear-gradient(135deg,#6366F1,#8B5CF6)" delay={0} />
-        <StatCard label="FEE PAID" value={stats.paid} icon="✅" gradient="linear-gradient(135deg,#10B981,#059669)" delay={0.08} />
-        <StatCard label="FEE PENDING" value={stats.pending} icon="⏳" gradient="linear-gradient(135deg,#F59E0B,#D97706)" delay={0.16} />
-        <StatCard label="PARTIAL" value={stats.partial} icon="⚡" gradient="linear-gradient(135deg,#F97316,#EA580C)" delay={0.24} />
+        <StatCard label="TOTAL STUDENTS" value={stats.total} icon="��" gradient="linear-gradient(135deg,#6366F1,#8B5CF6)" delay={0} border="#6366F1" />
+        <StatCard label="FEE PAID" value={stats.paid} icon="✅" gradient="linear-gradient(135deg,#10B981,#059669)" delay={0.08} border="#10B981" />
+        <StatCard label="FEE PENDING" value={stats.pending} icon="⏳" gradient="linear-gradient(135deg,#F59E0B,#D97706)" delay={0.16} border="#F59E0B" />
+        <StatCard label="PARTIAL" value={stats.partial} icon="⚡" gradient="linear-gradient(135deg,#F97316,#EA580C)" delay={0.24} border="#F97316" />
       </div>
 
       <div style={{ display:"flex", gap:12, marginBottom:20, alignItems:"center", animation:"fadeSlideUp 0.5s ease 0.1s both" }}>
