@@ -1,3 +1,47 @@
+import { useState, useEffect } from "react";
+import axios from "axios";
+
+const API = import.meta.env.VITE_API_URL;
+const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+const SCHOOL_NAME = "EduAmigo School";
+
+function generateBarcode(text) {
+  const bars = [];
+  for (let i = 0; i < text.length; i++) {
+    const code = text.charCodeAt(i);
+    bars.push((code % 3) + 1, ((code >> 2) % 3) + 1, ((code >> 4) % 3) + 1);
+  }
+  return bars;
+}
+
+function BarcodeStrip({ value }) {
+  const bars = generateBarcode(value.slice(0, 12));
+  const total = bars.reduce((a, b) => a + b, 0);
+  const scale = 60 / total;
+  let x = 0;
+  return (
+    <svg width="100" height="32" viewBox="0 0 100 32">
+      {bars.map((w, i) => {
+        const barW = w * scale * (100 / 60);
+        const rect = i % 2 === 0 ? <rect key={i} x={x} y={0} width={barW} height={28} fill="#1E293B" rx={0.5} /> : null;
+        x += barW;
+        return rect;
+      })}
+      <text x="50" y="31" textAnchor="middle" fontSize="5" fill="#64748B" fontFamily="monospace">{value.slice(0, 12).toUpperCase()}</text>
+    </svg>
+  );
+}
+
+function Avatar({ name, photo, size = 56 }) {
+  const initials = name ? name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase() : "?";
+  if (photo) return <img src={photo} alt={name} style={{ width: size, height: size, borderRadius: "50%", objectFit: "cover", border: "3px solid white", boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }} />;
+  return (
+    <div style={{ width: size, height: size, borderRadius: "50%", background: "linear-gradient(135deg,#6366F1,#8B5CF6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: size * 0.3, fontWeight: 800, color: "white", border: "3px solid white", boxShadow: "0 4px 12px rgba(99,102,241,0.3)" }}>
+      {initials}
+    </div>
+  );
+}
+
 function BuildingAnimation() {
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16, padding: "40px 0" }}>
