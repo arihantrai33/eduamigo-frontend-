@@ -1,525 +1,341 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const API = import.meta.env.VITE_API_URL;
-const authHeader = () => ({
-  headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-});
+const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
-const DEFAULT_SUBJECTS = ["Mathematics","Science","English","Hindi","Social Studies","Physics","Chemistry","Biology","Computer Science","Physical Education","Art","Music"];
-const CLASSES = ["1","2","3","4","5","6","7","8","9","10","11","12"];
+const SUBJECT_COLORS = {
+  "Math":        "#6366F1", "Science":     "#10B981", "English":     "#F59E0B",
+  "Hindi":       "#EC4899", "History":     "#F97316", "Geography":   "#14B8A6",
+  "Physics":     "#8B5CF6", "Chemistry":   "#EF4444", "Biology":     "#22C55E",
+  "Computer":    "#06B6D4", "Economics":   "#F43F5E", "Commerce":    "#3B82F6",
+  "default":     "#94A3B8"
+};
+const getSubjectColor = (sub) => SUBJECT_COLORS[sub] || SUBJECT_COLORS.default;
 
-const emptyForm = {
-  name: "", email: "", phone: "", employeeId: "",
-  subjects: [], qualification: "", experience: "",
-  salary: "", address: "", gender: "", dateOfBirth: "",
-  assignedClasses: [],
+const STATUS_CONFIG = {
+  Active:   { bg: "#F0FDF4", color: "#15803D", dot: "#22C55E" },
+  Inactive: { bg: "#FEF2F2", color: "#DC2626", dot: "#EF4444" },
+  "On Leave": { bg: "#FFFBEB", color: "#D97706", dot: "#F59E0B" },
 };
 
-const avatarColors = ["#6366F1","#8B5CF6","#EC4899","#F59E0B","#10B981","#3B82F6","#EF4444","#14B8A6"];
-function getAvatarColor(name = "") {
-  return avatarColors[name.charCodeAt(0) % avatarColors.length];
-}
-function getInitials(name = "") {
-  return name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
-}
-
-const inputSt = {
-  padding: "9px 12px", borderRadius: 8, border: "1px solid #E5E7EB",
-  fontSize: 13, color: "#111827", outline: "none", background: "#F9FAFB",
-  fontFamily: "Inter, sans-serif", width: "100%", boxSizing: "border-box",
-};
-
-function SectionTitle({ children }) {
+function Avatar({ name, photo, size = 40 }) {
+  const colors = ["#6366F1","#8B5CF6","#EC4899","#F43F5E","#F97316","#22C55E","#14B8A6","#06B6D4","#3B82F6","#EAB308"];
+  const color = colors[(name?.charCodeAt(0) || 0) % colors.length];
+  const initials = name ? name.split(" ").map(n => n[0]).join("").slice(0,2).toUpperCase() : "?";
+  if (photo) return <img src={photo} alt={name} style={{ width:size, height:size, borderRadius:"50%", objectFit:"cover", border:"2px solid white", boxShadow:"0 2px 8px rgba(0,0,0,0.1)" }} />;
   return (
-    <div style={{
-      fontSize: 11, fontWeight: 700, color: "#534AB7",
-      textTransform: "uppercase", letterSpacing: "0.08em",
-      borderBottom: "1px solid #EEF2FF", paddingBottom: 8, marginBottom: 14,
-    }}>
-      {children}
+    <div style={{ width:size, height:size, borderRadius:"50%", background:`linear-gradient(135deg,${color},${color}BB)`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:size*0.32, fontWeight:800, color:"white", border:"2px solid white", boxShadow:`0 2px 8px ${color}44`, flexShrink:0 }}>
+      {initials}
     </div>
   );
 }
 
-function FormField({ label, required, children }) {
+function StatCard({ label, value, icon, color, border, delay }) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (typeof value !== "number") return;
+    let start = 0;
+    const step = Math.ceil(value / 20) || 1;
+    const t = setInterval(() => {
+      start += step;
+      if (start >= value) { setCount(value); clearInterval(t); }
+      else setCount(start);
+    }, 40);
+    return () => clearInterval(t);
+  }, [value]);
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-      <label style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-        {label} {required && <span style={{ color: "#EF4444" }}>*</span>}
-      </label>
-      {children}
+    <div style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${border}`, position:"relative", overflow:"hidden", animation:`fadeUp 0.5s ease ${delay}s both` }}>
+      <div style={{ position:"absolute", top:-20, right:-20, width:80, height:80, borderRadius:"50%", background:color, opacity:0.1 }} />
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+        <div>
+          <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", letterSpacing:"0.08em", marginBottom:8 }}>{label}</div>
+          <div style={{ fontSize:28, fontWeight:900, color:"#0F172A" }}>{typeof value === "number" ? count : value}</div>
+        </div>
+        <div style={{ width:42, height:42, borderRadius:12, background:color, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>{icon}</div>
+      </div>
+    </div>
+  );
+}
+
+function Modal({ show, onClose, title, children }) {
+  if (!show) return null;
+  return (
+    <div style={{ position:"fixed", inset:0, background:"rgba(15,23,42,0.5)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:1000, backdropFilter:"blur(6px)", animation:"fadeIn 0.2s ease" }}>
+      <div style={{ background:"white", borderRadius:24, padding:32, width:540, maxHeight:"90vh", overflowY:"auto", boxShadow:"0 32px 80px rgba(0,0,0,0.25)", animation:"slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1)" }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:24 }}>
+          <div style={{ fontSize:18, fontWeight:800, color:"#0F172A" }}>{title}</div>
+          <button onClick={onClose} style={{ width:32, height:32, borderRadius:"50%", border:"none", background:"#F1F5F9", cursor:"pointer", fontSize:16, color:"#64748B" }}>×</button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function TeacherForm({ form, setForm, onSave, loading, onClose }) {
+  const f = (k, v) => setForm(p => ({ ...p, [k]: v }));
+  const inp = (label, key, type="text", placeholder="") => (
+    <div>
+      <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
+      <input type={type} value={form[key]||""} onChange={e => f(key, e.target.value)} placeholder={placeholder}
+        style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", transition:"border 0.2s" }}
+        onFocus={e => e.target.style.borderColor="#10B981"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
+    </div>
+  );
+  const sel = (label, key, options) => (
+    <div>
+      <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
+      <select value={form[key]||""} onChange={e => f(key, e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
+        <option value="">Select</option>
+        {options.map(o => <option key={o} value={o}>{o}</option>)}
+      </select>
+    </div>
+  );
+  return (
+    <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+      <div style={{ fontSize:12, fontWeight:700, color:"#10B981", letterSpacing:"0.06em" }}>PERSONAL INFO</div>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+        {inp("FULL NAME","name","text","e.g. Priya Sharma")}
+        {inp("EMAIL","email","email","teacher@school.com")}
+        {inp("PHONE","phone","tel","10-digit number")}
+        {inp("EMPLOYEE ID","employeeId","text","e.g. TCH001")}
+      </div>
+      {sel("GENDER","gender",["Male","Female","Other"])}
+      <div style={{ height:1, background:"#F1F5F9", margin:"4px 0" }} />
+      <div style={{ fontSize:12, fontWeight:700, color:"#10B981", letterSpacing:"0.06em" }}>PROFESSIONAL INFO</div>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+        {inp("SUBJECTS","subjects","text","e.g. Math, Science")}
+        {inp("QUALIFICATION","qualification","text","e.g. B.Ed, M.Sc")}
+        {inp("EXPERIENCE (years)","experience","number","e.g. 5")}
+        {sel("STATUS","status",["Active","Inactive","On Leave"])}
+      </div>
+      {inp("PASSWORD","password","password","Login password")}
+      <div style={{ display:"flex", gap:10, marginTop:8, justifyContent:"flex-end" }}>
+        <button onClick={onClose} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
+        <button onClick={onSave} disabled={loading} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#10B981,#059669)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 14px rgba(16,185,129,0.4)", opacity:loading?0.7:1 }}>
+          {loading ? "Saving..." : "Save Teacher"}
+        </button>
+      </div>
     </div>
   );
 }
 
 export default function Teachers() {
   const navigate = useNavigate();
-  const [allTeachers, setAllTeachers] = useState([]);
-  const [teachers,    setTeachers]    = useState([]);
-  const [loading,     setLoading]     = useState(true);
-  const [search,      setSearch]      = useState("");
-  const [showModal,   setShowModal]   = useState(false);
+  const [teachers, setTeachers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
+  const [filterSubject, setFilterSubject] = useState("");
+  const [showModal, setShowModal] = useState(false);
   const [editTeacher, setEditTeacher] = useState(null);
-  const [form,        setForm]        = useState(emptyForm);
-  const [submitting,  setSubmitting]  = useState(false);
-  const [toast,       setToast]       = useState(null);
-  const [deleteId,    setDeleteId]    = useState(null);
-  const [credentials, setCredentials] = useState(null);
-  const [allSubjects, setAllSubjects] = useState(DEFAULT_SUBJECTS);
-  const [newSubject,  setNewSubject]  = useState("");
+  const [form, setForm] = useState({});
+  const [saving, setSaving] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
 
-  useEffect(() => { fetchTeachers(); fetchSubjects(); }, []);
-
-  useEffect(() => {
-    if (!search.trim()) { setTeachers(allTeachers); return; }
-    const q = search.toLowerCase();
-    setTeachers(allTeachers.filter(t =>
-      t.name?.toLowerCase().includes(q) ||
-      t.subjects?.some(s => s.toLowerCase().includes(q)) ||
-      t.employeeId?.toLowerCase().includes(q)
-    ));
-  }, [search, allTeachers]);
-
-  const showToast = (msg, type = "success") => {
-    setToast({ msg, type });
-    setTimeout(() => setToast(null), 4000);
-  };
+  useEffect(() => { fetchTeachers(); }, []);
 
   const fetchTeachers = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const res = await axios.get(`${API}/teachers`, authHeader());
-      const data = res.data.data || [];
-      setAllTeachers(data);
-      setTeachers(data);
-    } catch (err) {
-      showToast("Failed to load teachers", "error");
-    } finally {
-      setLoading(false);
-    }
+      const r = await axios.get(`${API}/teachers`, auth());
+      setTeachers(r.data.data || []);
+    } catch(e) {}
+    setLoading(false);
   };
 
-  const fetchSubjects = async () => {
-    try {
-      const res = await axios.get(`${API}/schools/subjects`, authHeader());
-      if (res.data.data?.length > 0) {
-        setAllSubjects(prev => {
-          const merged = [...prev];
-          res.data.data.forEach(s => { if (!merged.includes(s)) merged.push(s); });
-          return merged;
-        });
-      }
-    } catch (err) {
-      // silently fail — default subjects already set
-    }
-  };
+  const openAdd = () => { setEditTeacher(null); setForm({ status:"Active" }); setShowModal(true); };
+  const openEdit = (t) => { setEditTeacher(t); setForm({...t}); setShowModal(true); };
 
-  const addCustomSubject = async () => {
-    const val = newSubject.trim();
-    if (!val) return;
-    if (allSubjects.includes(val)) {
-      toggleSubject(val);
-      setNewSubject("");
-      return;
-    }
+  const handleSave = async () => {
+    if (!form.name || !form.email || !form.employeeId) return alert("Name, email and employee ID required");
+    setSaving(true);
     try {
-      await axios.post(`${API}/schools/subjects`, { subject: val }, authHeader());
-      setAllSubjects(prev => [...prev, val]);
-      toggleSubject(val);
-      setNewSubject("");
-      showToast(`"${val}" added to school subjects`);
-    } catch (err) {
-      showToast(err?.response?.data?.message || "Failed to add subject", "error");
-    }
-  };
-
-  const handleSubmit = async () => {
-    if (!form.name?.trim() || !form.email?.trim() || !form.phone?.trim() || !form.employeeId?.trim()) {
-      showToast("Please fill all required fields", "error"); return;
-    }
-    if (form.subjects.length === 0) {
-      showToast("Please select at least one subject", "error"); return;
-    }
-    setSubmitting(true);
-    try {
-      if (editTeacher) {
-        await axios.put(`${API}/teachers/${editTeacher._id}`, form, authHeader());
-        showToast("Teacher updated successfully");
-      } else {
-        const res = await axios.post(`${API}/teachers`, form, authHeader());
-        if (res.data.credentials) setCredentials(res.data.credentials);
-        showToast("Teacher added successfully");
-      }
+      if (editTeacher) await axios.put(`${API}/teachers/${editTeacher._id}`, form, auth());
+      else await axios.post(`${API}/teachers`, form, auth());
       setShowModal(false);
-      setEditTeacher(null);
-      setForm(emptyForm);
       fetchTeachers();
-    } catch (err) {
-      showToast(err?.response?.data?.message || "Something went wrong", "error");
-    } finally {
-      setSubmitting(false);
-    }
+    } catch(e) { alert(e.response?.data?.message || "Error"); }
+    setSaving(false);
   };
 
-  const handleEdit = (t) => {
-    setEditTeacher(t);
-    setForm({
-      ...emptyForm, ...t,
-      subjects: Array.isArray(t.subjects) ? t.subjects : (t.subject ? [t.subject] : []),
-      assignedClasses: Array.isArray(t.assignedClasses) ? t.assignedClasses : [],
-      dateOfBirth: t.dateOfBirth?.split("T")[0] || "",
-    });
-    setCredentials(null);
-    setShowModal(true);
+  const handleDelete = async (id) => {
+    try { await axios.delete(`${API}/teachers/${id}`, auth()); fetchTeachers(); }
+    catch(e) {}
+    setDeleteId(null);
   };
 
-  const handleDelete = async () => {
-    try {
-      await axios.delete(`${API}/teachers/${deleteId}`, authHeader());
-      showToast("Teacher removed successfully");
-      setDeleteId(null);
-      fetchTeachers();
-    } catch (err) {
-      showToast("Failed to delete teacher", "error");
-    }
-  };
+  const allSubjects = [...new Set(teachers.flatMap(t => (t.subjects||"").split(",").map(s => s.trim()).filter(Boolean)))].sort();
 
-  const toggleSubject = (s) => {
-    setForm(f => ({
-      ...f,
-      subjects: f.subjects.includes(s)
-        ? f.subjects.filter(x => x !== s)
-        : [...f.subjects, s],
-    }));
-  };
+  const filtered = teachers.filter(t =>
+    (!search || t.name?.toLowerCase().includes(search.toLowerCase()) || t.email?.toLowerCase().includes(search.toLowerCase()) || t.employeeId?.toLowerCase().includes(search.toLowerCase())) &&
+    (!filterStatus || t.status === filterStatus) &&
+    (!filterSubject || (t.subjects||"").includes(filterSubject))
+  );
 
-  const toggleClass = (cls) => {
-    setForm(f => ({
-      ...f,
-      assignedClasses: f.assignedClasses.includes(cls)
-        ? f.assignedClasses.filter(c => c !== cls)
-        : [...f.assignedClasses, cls],
-    }));
+  const stats = {
+    total: teachers.length,
+    active: teachers.filter(t => t.status === "Active" || !t.status).length,
+    onLeave: teachers.filter(t => t.status === "On Leave").length,
+    inactive: teachers.filter(t => t.status === "Inactive").length,
   };
 
   return (
-    <div style={{ fontFamily: "Inter, sans-serif", minHeight: "100vh", background: "#F8F9FC", padding: "24px" }}>
-
-      {/* Toast */}
-      {toast && (
-        <div style={{
-          position: "fixed", top: 20, right: 20, zIndex: 9999,
-          background: toast.type === "error" ? "#FEF2F2" : "#F0FDF4",
-          border: `1px solid ${toast.type === "error" ? "#FECACA" : "#BBF7D0"}`,
-          color: toast.type === "error" ? "#DC2626" : "#15803D",
-          padding: "12px 18px", borderRadius: 10, fontSize: 13, fontWeight: 500,
-          boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-        }}>
-          {toast.type === "error" ? "⚠️" : "✅"} {toast.msg}
-        </div>
-      )}
-
-      {/* Credentials Card */}
-      {credentials && (
-        <div style={{
-          background: "#F0FDF4", border: "1px solid #86EFAC", borderRadius: 12,
-          padding: "14px 18px", marginBottom: 20,
-          display: "flex", justifyContent: "space-between", alignItems: "center",
-        }}>
-          <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#15803D", marginBottom: 6 }}>
-              ✅ Teacher Account Created — Save these credentials
-            </div>
-            <div style={{ fontSize: 12, color: "#166534" }}>
-              Login: <strong>{credentials.email}</strong> &nbsp;|&nbsp; Password: <strong>{credentials.password}</strong>
-            </div>
-          </div>
-          <button onClick={() => setCredentials(null)}
-            style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#6B7280" }}>×</button>
-        </div>
-      )}
+    <div style={{ fontFamily:"Inter,sans-serif" }}>
+      <style>{`
+        @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+        @keyframes slideUp { from { opacity:0; transform:translateY(24px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+        @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+        .t-row:hover { background: linear-gradient(90deg,#F0FDF8,#ECFDF5) !important; transform:translateX(2px); }
+        .t-row { transition: all 0.15s ease; }
+        .act-btn:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,0.1); }
+        .act-btn { transition: all 0.15s ease; }
+      `}</style>
 
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
-        <div>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111827", margin: 0 }}>Teachers</h1>
-          <p style={{ fontSize: 13, color: "#9CA3AF", margin: "4px 0 0" }}>Manage all teaching staff</p>
-        </div>
-        <button
-          onClick={() => { setEditTeacher(null); setForm(emptyForm); setCredentials(null); setShowModal(true); }}
-          style={{
-            padding: "10px 18px", borderRadius: 10, border: "none",
-            background: "#534AB7", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer",
-          }}>
-          + Add Teacher
-        </button>
-      </div>
-
-      {/* Stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, marginBottom: 24 }}>
-        {[
-          { label: "Total Teachers", val: allTeachers.length, color: "#534AB7" },
-          { label: "Active", val: allTeachers.filter(t => t.isActive !== false).length, color: "#065F46" },
-          { label: "Subjects", val: [...new Set(allTeachers.flatMap(t => t.subjects || []))].length, color: "#92400E" },
-        ].map(s => (
-          <div key={s.label} style={{
-            background: "#fff", borderRadius: 12, padding: "16px 18px",
-            border: "1px solid #E5E7EB", boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-          }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-              {s.label}
-            </div>
-            <div style={{ fontSize: 28, fontWeight: 800, color: s.color, marginTop: 6 }}>{s.val}</div>
+      <div style={{ background:"linear-gradient(135deg,#10B981,#059669,#047857)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
+        <div style={{ position:"absolute", top:-40, right:-40, width:180, height:180, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
+        <div style={{ position:"absolute", bottom:-30, left:100, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", position:"relative" }}>
+          <div>
+            <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>Teachers</div>
+            <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Manage all teaching staff · {teachers.length} total</div>
           </div>
-        ))}
+          <button onClick={openAdd}
+            style={{ display:"flex", alignItems:"center", gap:8, padding:"12px 24px", borderRadius:14, border:"none", background:"rgba(255,255,255,0.2)", color:"white", fontWeight:700, fontSize:14, cursor:"pointer", backdropFilter:"blur(8px)", transition:"all 0.2s", border:"1px solid rgba(255,255,255,0.3)" }}
+            onMouseEnter={e => e.currentTarget.style.background="rgba(255,255,255,0.3)"}
+            onMouseLeave={e => e.currentTarget.style.background="rgba(255,255,255,0.2)"}>
+            <span style={{ fontSize:18 }}>+</span> Add Teacher
+          </button>
+        </div>
       </div>
 
-      {/* Search */}
-      <div style={{ display: "flex", gap: 12, marginBottom: 20, alignItems: "center" }}>
-        <input
-          type="text" placeholder="Search by name, subject or employee ID..."
-          value={search} onChange={e => setSearch(e.target.value)}
-          style={{
-            padding: "9px 14px", borderRadius: 9, border: "1px solid #E5E7EB",
-            fontSize: 13, outline: "none", background: "#fff", width: 340,
-          }}
-        />
-        {search && (
-          <button onClick={() => setSearch("")}
-            style={{ padding: "9px 14px", borderRadius: 9, border: "1px solid #E5E7EB", background: "#fff", fontSize: 12, color: "#6B7280", cursor: "pointer" }}>
-            Clear
-          </button>
-        )}
-        <span style={{ fontSize: 12, color: "#9CA3AF", marginLeft: "auto" }}>
-          Showing {teachers.length} of {allTeachers.length} teachers
-        </span>
+      {/* Stat Cards */}
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
+        <StatCard label="TOTAL TEACHERS" value={stats.total}    icon="👩‍🏫" color="#EEF2FF" border="#6366F1" delay={0} />
+        <StatCard label="ACTIVE"         value={stats.active}   icon="✅"   color="#F0FDF4" border="#10B981" delay={0.08} />
+        <StatCard label="ON LEAVE"       value={stats.onLeave}  icon="🌴"   color="#FFFBEB" border="#F59E0B" delay={0.16} />
+        <StatCard label="INACTIVE"       value={stats.inactive} icon="⛔"   color="#FEF2F2" border="#EF4444" delay={0.24} />
+      </div>
+
+      {/* Filters */}
+      <div style={{ display:"flex", gap:12, marginBottom:20, alignItems:"center", animation:"fadeUp 0.5s ease 0.1s both" }}>
+        <div style={{ flex:1, position:"relative" }}>
+          <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:16, color:"#94A3B8" }}>🔍</span>
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by name, email or employee ID..."
+            style={{ width:"100%", padding:"11px 14px 11px 40px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
+            onFocus={e => e.target.style.borderColor="#10B981"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
+        </div>
+        <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
+          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:140 }}>
+          <option value="">All Status</option>
+          {["Active","On Leave","Inactive"].map(s => <option key={s} value={s}>{s}</option>)}
+        </select>
+        <select value={filterSubject} onChange={e => setFilterSubject(e.target.value)}
+          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:140 }}>
+          <option value="">All Subjects</option>
+          {allSubjects.map(s => <option key={s} value={s}>{s}</option>)}
+        </select>
+        <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600, whiteSpace:"nowrap" }}>{filtered.length} of {teachers.length}</div>
       </div>
 
       {/* Table */}
-      <div style={{ background: "#fff", borderRadius: 14, border: "1px solid #E5E7EB", overflow: "hidden", boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <div style={{ background:"white", borderRadius:20, boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid rgba(226,232,240,0.8)", overflow:"hidden", animation:"fadeUp 0.5s ease 0.15s both" }}>
+        <table style={{ width:"100%", borderCollapse:"collapse" }}>
           <thead>
-            <tr style={{ background: "#F9FAFB" }}>
-              {["Teacher", "Subjects", "Emp ID", "Phone", "Experience", "Actions"].map(h => (
-                <th key={h} style={{
-                  padding: "12px 16px", textAlign: "left",
-                  fontSize: 11, fontWeight: 700, color: "#6B7280",
-                  textTransform: "uppercase", letterSpacing: "0.05em",
-                  borderBottom: "1px solid #E5E7EB",
-                }}>
-                  {h}
-                </th>
+            <tr style={{ background:"linear-gradient(90deg,#F8FAFC,#F1F5F9)" }}>
+              {["Teacher","Employee ID","Subjects","Qualification","Experience","Status","Actions"].map(h => (
+                <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#64748B", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan="6" style={{ padding: "48px", textAlign: "center", color: "#9CA3AF", fontSize: 14 }}>Loading teachers...</td></tr>
-            ) : teachers.length === 0 ? (
-              <tr><td colSpan="6" style={{ padding: "48px", textAlign: "center", color: "#9CA3AF", fontSize: 14 }}>
-                {search ? "No teachers match your search" : "No teachers added yet"}
+              <tr><td colSpan={7} style={{ padding:"60px 0", textAlign:"center" }}>
+                <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:12 }}>
+                  <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid #10B981", animation:"spin 0.8s linear infinite" }} />
+                  <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading teachers...</div>
+                </div>
               </td></tr>
-            ) : teachers.map((t, idx) => (
-              <tr key={t._id}
-                style={{ borderBottom: idx < teachers.length - 1 ? "1px solid #F3F4F6" : "none" }}
-                onMouseEnter={e => e.currentTarget.style.background = "#FAFAFA"}
-                onMouseLeave={e => e.currentTarget.style.background = "transparent"}
-              >
-                <td style={{ padding: "14px 16px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}
-                    onClick={() => navigate(`/admin/teachers/${t._id}`)}>
-                    <div style={{
-                      width: 36, height: 36, borderRadius: 10,
-                      background: getAvatarColor(t.name),
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      fontWeight: 700, color: "#fff", fontSize: 13, flexShrink: 0,
-                    }}>
-                      {getInitials(t.name)}
+            ) : filtered.length === 0 ? (
+              <tr><td colSpan={7} style={{ padding:"80px 0", textAlign:"center" }}>
+                <div style={{ fontSize:48, marginBottom:12 }}>🔍</div>
+                <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No teachers found</div>
+                <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Try adjusting your filters</div>
+              </td></tr>
+            ) : filtered.map((t, i) => {
+              const status = t.status || "Active";
+              const cfg = STATUS_CONFIG[status] || STATUS_CONFIG.Active;
+              const subjects = (t.subjects||"").split(",").map(s => s.trim()).filter(Boolean);
+              return (
+                <tr key={t._id} className="t-row" style={{ borderBottom:"1px solid #F1F5F9", animation:`fadeUp 0.3s ease ${i*0.04}s both` }}>
+                  <td style={{ padding:"14px 18px" }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+                      <Avatar name={t.name} photo={t.photo} size={40} />
+                      <div>
+                        <div style={{ fontSize:14, fontWeight:700, color:"#0F172A", cursor:"pointer" }}
+                          onClick={() => navigate(`/admin/teachers/${t._id}`)}
+                          onMouseEnter={e => e.target.style.color="#10B981"} onMouseLeave={e => e.target.style.color="#0F172A"}>
+                          {t.name}
+                        </div>
+                        <div style={{ fontSize:12, color:"#94A3B8", marginTop:1 }}>{t.email}</div>
+                      </div>
                     </div>
-                    <div>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: "#534AB7", textDecoration: "underline" }}>{t.name}</div>
-                      <div style={{ fontSize: 11, color: "#9CA3AF" }}>{t.email}</div>
+                  </td>
+                  <td style={{ padding:"14px 18px" }}>
+                    <span style={{ fontSize:13, fontWeight:700, color:"#374151", background:"#F8FAFC", padding:"4px 10px", borderRadius:8, border:"1px solid #E2E8F0" }}>{t.employeeId || "—"}</span>
+                  </td>
+                  <td style={{ padding:"14px 18px" }}>
+                    <div style={{ display:"flex", gap:4, flexWrap:"wrap" }}>
+                      {subjects.slice(0,3).map((s,j) => (
+                        <span key={j} style={{ fontSize:11, fontWeight:700, padding:"3px 8px", borderRadius:6, background:`${getSubjectColor(s)}18`, color:getSubjectColor(s), border:`1px solid ${getSubjectColor(s)}30` }}>{s}</span>
+                      ))}
+                      {subjects.length > 3 && <span style={{ fontSize:11, color:"#94A3B8", fontWeight:600 }}>+{subjects.length-3}</span>}
                     </div>
-                  </div>
-                </td>
-                <td style={{ padding: "14px 16px" }}>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
-                    {t.subjects?.length > 0 ? t.subjects.map(s => (
-                      <span key={s} style={{ background: "#EEF2FF", color: "#4338CA", padding: "3px 8px", borderRadius: 20, fontSize: 11, fontWeight: 600 }}>
-                        {s}
-                      </span>
-                    )) : <span style={{ color: "#9CA3AF", fontSize: 12 }}>—</span>}
-                  </div>
-                </td>
-                <td style={{ padding: "14px 16px", fontSize: 13, color: "#374151", fontWeight: 500 }}>{t.employeeId || "—"}</td>
-                <td style={{ padding: "14px 16px", fontSize: 13, color: "#374151" }}>{t.phone || "—"}</td>
-                <td style={{ padding: "14px 16px", fontSize: 13, color: "#374151" }}>{t.experience ? `${t.experience} yrs` : "—"}</td>
-                <td style={{ padding: "14px 16px" }}>
-                  <div style={{ display: "flex", gap: 6 }}>
-                    <button onClick={() => navigate(`/admin/teachers/${t._id}`)}
-                      style={{ padding: "6px 12px", borderRadius: 7, border: "1px solid #EEF2FF", background: "#EEF2FF", fontSize: 12, color: "#534AB7", cursor: "pointer", fontWeight: 500 }}>
-                      View
-                    </button>
-                    <button onClick={() => handleEdit(t)}
-                      style={{ padding: "6px 12px", borderRadius: 7, border: "1px solid #E5E7EB", background: "#fff", fontSize: 12, color: "#374151", cursor: "pointer", fontWeight: 500 }}>
-                      Edit
-                    </button>
-                    <button onClick={() => setDeleteId(t._id)}
-                      style={{ padding: "6px 12px", borderRadius: 7, border: "1px solid #FECACA", background: "#FEF2F2", fontSize: 12, color: "#DC2626", cursor: "pointer", fontWeight: 500 }}>
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  </td>
+                  <td style={{ padding:"14px 18px", fontSize:13, color:"#374151", fontWeight:600 }}>{t.qualification || "—"}</td>
+                  <td style={{ padding:"14px 18px", fontSize:13, color:"#374151", fontWeight:600 }}>{t.experience ? `${t.experience} yrs` : "—"}</td>
+                  <td style={{ padding:"14px 18px" }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:6, padding:"5px 12px", borderRadius:20, background:cfg.bg, width:"fit-content" }}>
+                      <div style={{ width:6, height:6, borderRadius:"50%", background:cfg.dot }} />
+                      <span style={{ fontSize:12, fontWeight:700, color:cfg.color }}>{status}</span>
+                    </div>
+                  </td>
+                  <td style={{ padding:"14px 18px" }}>
+                    <div style={{ display:"flex", gap:6 }}>
+                      <button className="act-btn" onClick={() => navigate(`/admin/teachers/${t._id}`)}
+                        style={{ padding:"6px 14px", borderRadius:8, border:"none", background:"#ECFDF5", color:"#059669", fontSize:12, fontWeight:700, cursor:"pointer" }}>View</button>
+                      <button className="act-btn" onClick={() => openEdit(t)}
+                        style={{ padding:"6px 14px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", color:"#374151", fontSize:12, fontWeight:700, cursor:"pointer" }}>Edit</button>
+                      <button className="act-btn" onClick={() => setDeleteId(t._id)}
+                        style={{ padding:"6px 12px", borderRadius:8, border:"none", background:"#FEF2F2", color:"#DC2626", fontSize:12, fontWeight:700, cursor:"pointer" }}>🗑️</button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
 
-      {/* Add/Edit Modal */}
-      {showModal && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
-          <div style={{ background: "#fff", borderRadius: 16, padding: 28, width: "100%", maxWidth: 640, maxHeight: "90vh", overflowY: "auto", boxShadow: "0 20px 60px rgba(0,0,0,0.15)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-              <h2 style={{ fontSize: 18, fontWeight: 700, color: "#111827", margin: 0 }}>
-                {editTeacher ? "Edit Teacher" : "Add New Teacher"}
-              </h2>
-              <button onClick={() => setShowModal(false)}
-                style={{ background: "none", border: "none", fontSize: 22, cursor: "pointer", color: "#9CA3AF" }}>×</button>
-            </div>
+      <Modal show={showModal} onClose={() => setShowModal(false)} title={editTeacher ? "Edit Teacher" : "Add New Teacher"}>
+        <TeacherForm form={form} setForm={setForm} onSave={handleSave} loading={saving} onClose={() => setShowModal(false)} />
+      </Modal>
 
-            <SectionTitle>Personal Information</SectionTitle>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 20 }}>
-              <FormField label="Full Name" required>
-                <input type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} style={inputSt} />
-              </FormField>
-              <FormField label="Email Address" required>
-                <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} style={inputSt} />
-              </FormField>
-              <FormField label="Phone Number" required>
-                <input type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} style={inputSt} />
-              </FormField>
-              <FormField label="Gender">
-                <select value={form.gender} onChange={e => setForm(f => ({ ...f, gender: e.target.value }))} style={inputSt}>
-                  <option value="">Select Gender</option>
-                  <option>Male</option>
-                  <option>Female</option>
-                  <option>Other</option>
-                </select>
-              </FormField>
-              <FormField label="Date of Birth">
-                <input type="date" value={form.dateOfBirth} onChange={e => setForm(f => ({ ...f, dateOfBirth: e.target.value }))} style={inputSt} />
-              </FormField>
-              <FormField label="Address">
-                <input type="text" value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} style={inputSt} />
-              </FormField>
-            </div>
-
-            <SectionTitle>Professional Information</SectionTitle>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 20 }}>
-              <FormField label="Employee ID" required>
-                <input type="text" value={form.employeeId} onChange={e => setForm(f => ({ ...f, employeeId: e.target.value }))} style={inputSt} />
-              </FormField>
-              <FormField label="Qualification">
-                <input type="text" value={form.qualification} onChange={e => setForm(f => ({ ...f, qualification: e.target.value }))} style={inputSt} placeholder="e.g. B.Ed, M.Sc" />
-              </FormField>
-              <FormField label="Experience (years)">
-                <input type="number" value={form.experience} onChange={e => setForm(f => ({ ...f, experience: e.target.value }))} style={inputSt} min="0" />
-              </FormField>
-              <FormField label="Salary">
-                <input type="number" value={form.salary} onChange={e => setForm(f => ({ ...f, salary: e.target.value }))} style={inputSt} placeholder="Monthly salary" />
-              </FormField>
-            </div>
-
-            <SectionTitle>Subjects</SectionTitle>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
-              {allSubjects.map(s => (
-                <div key={s} onClick={() => toggleSubject(s)} style={{
-                  padding: "6px 14px", borderRadius: 20, fontSize: 12, fontWeight: 500,
-                  cursor: "pointer",
-                  background: form.subjects.includes(s) ? "#534AB7" : "#F3F4F6",
-                  color: form.subjects.includes(s) ? "#fff" : "#374151",
-                  border: form.subjects.includes(s) ? "1px solid #534AB7" : "1px solid #E5E7EB",
-                }}>
-                  {s}
-                </div>
-              ))}
-            </div>
-            <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
-              <input
-                type="text"
-                placeholder="Add custom subject (e.g. Sanskrit, EVS, Moral Science...)"
-                value={newSubject}
-                onChange={e => setNewSubject(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && addCustomSubject()}
-                style={{ ...inputSt, flex: 1 }}
-              />
-              <button onClick={addCustomSubject} style={{
-                padding: "9px 16px", borderRadius: 8, border: "1px solid #534AB7",
-                background: "#EEF2FF", color: "#534AB7", fontSize: 12, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap"
-              }}>+ Add</button>
-            </div>
-
-            <SectionTitle>Assigned Classes</SectionTitle>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
-              {CLASSES.map(cls => (
-                <div key={cls} onClick={() => toggleClass(cls)} style={{
-                  padding: "6px 14px", borderRadius: 20, fontSize: 12, fontWeight: 500,
-                  cursor: "pointer",
-                  background: form.assignedClasses.includes(cls) ? "#534AB7" : "#F3F4F6",
-                  color: form.assignedClasses.includes(cls) ? "#fff" : "#374151",
-                  border: form.assignedClasses.includes(cls) ? "1px solid #534AB7" : "1px solid #E5E7EB",
-                }}>
-                  Class {cls}
-                </div>
-              ))}
-            </div>
-
-            {!editTeacher && form.email && (
-              <div style={{ background: "#FAFAFA", border: "1px solid #E5E7EB", borderRadius: 10, padding: "12px 16px", marginBottom: 20, fontSize: 12, color: "#6B7280" }}>
-                <div style={{ fontWeight: 600, color: "#374151", marginBottom: 4 }}>Login Credentials Preview</div>
-                <div>Email: <strong>{form.email}</strong> / Password: <strong>{form.phone || "phone number"}</strong></div>
-              </div>
-            )}
-
-            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
-              <button onClick={() => setShowModal(false)}
-                style={{ padding: "10px 20px", borderRadius: 9, border: "1px solid #E5E7EB", background: "#F9FAFB", fontSize: 13, color: "#374151", cursor: "pointer" }}>
-                Cancel
-              </button>
-              <button onClick={handleSubmit} disabled={submitting}
-                style={{ padding: "10px 24px", borderRadius: 9, border: "none", background: submitting ? "#A5B4FC" : "#534AB7", fontSize: 13, color: "#fff", cursor: submitting ? "not-allowed" : "pointer", fontWeight: 600 }}>
-                {submitting ? "Saving..." : editTeacher ? "Update Teacher" : "Add Teacher"}
-              </button>
-            </div>
+      <Modal show={!!deleteId} onClose={() => setDeleteId(null)} title="Delete Teacher">
+        <div style={{ textAlign:"center", padding:"8px 0 24px" }}>
+          <div style={{ fontSize:52, marginBottom:16 }}>🗑️</div>
+          <div style={{ fontSize:16, fontWeight:700, color:"#0F172A", marginBottom:8 }}>Are you sure?</div>
+          <div style={{ fontSize:13, color:"#94A3B8", marginBottom:24 }}>This teacher record will be permanently deleted.</div>
+          <div style={{ display:"flex", gap:10, justifyContent:"center" }}>
+            <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
+            <button onClick={() => handleDelete(deleteId)} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#EF4444,#DC2626)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 14px rgba(239,68,68,0.4)" }}>Delete</button>
           </div>
         </div>
-      )}
-
-      {/* Delete Confirm */}
-      {deleteId && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
-          <div style={{ background: "#fff", borderRadius: 16, padding: 28, width: 380, boxShadow: "0 20px 60px rgba(0,0,0,0.15)", textAlign: "center" }}>
-            <div style={{ fontSize: 40, marginBottom: 12 }}>🗑️</div>
-            <h3 style={{ fontSize: 16, fontWeight: 700, color: "#111827", marginBottom: 8 }}>Remove Teacher?</h3>
-            <p style={{ fontSize: 13, color: "#6B7280", marginBottom: 24 }}>
-              This will permanently remove the teacher and deactivate their account.
-            </p>
-            <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
-              <button onClick={() => setDeleteId(null)}
-                style={{ padding: "10px 22px", borderRadius: 9, border: "1px solid #E5E7EB", background: "#F9FAFB", fontSize: 13, cursor: "pointer" }}>
-                Cancel
-              </button>
-              <button onClick={handleDelete}
-                style={{ padding: "10px 22px", borderRadius: 9, border: "none", background: "#EF4444", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
-                Remove
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      </Modal>
     </div>
   );
 }
