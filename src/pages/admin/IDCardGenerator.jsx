@@ -42,7 +42,7 @@ function Avatar({ name, photo, size = 56 }) {
   );
 }
 
-function BuildingAnimation() {
+function BuildingAnimation({ tab }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16, padding: "40px 0" }}>
       <style>{`
@@ -50,7 +50,7 @@ function BuildingAnimation() {
         @keyframes dotPulse { 0%,100% { opacity: 0.2; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
       `}</style>
       <div style={{ width: 340, height: 210, borderRadius: 20, background: "white", boxShadow: "0 8px 32px rgba(99,102,241,0.1)", border: "1.5px solid #E0E7FF", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 70, background: "linear-gradient(135deg,#6366F1,#8B5CF6)" }} />
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 70, background: tab === "teacher" ? "linear-gradient(135deg,#0F172A,#1E3A5F)" : "linear-gradient(135deg,#6366F1,#8B5CF6)" }} />
         <div style={{ position: "absolute", top: 42, left: 18, width: 52, height: 52, borderRadius: "50%", background: "rgba(255,255,255,0.25)", border: "2px solid rgba(255,255,255,0.4)" }} />
         <div style={{ position: "absolute", top: 50, left: 80, display: "flex", flexDirection: "column", gap: 5 }}>
           <div style={{ height: 8, width: 100, borderRadius: 6, background: "rgba(255,255,255,0.5)" }} />
@@ -337,7 +337,7 @@ export default function IDCardGenerator() {
               </div>
             </div>
           )}
-          {animPhase === 1 && <BuildingAnimation />}
+          {animPhase === 1 && <BuildingAnimation tab={tab} />}
           {animPhase === 2 && selected && (
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 24 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
