@@ -1,46 +1,39 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-
-const API = import.meta.env.VITE_API_URL;
-const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
-const SCHOOL_NAME = "EduAmigo School";
-
-function generateBarcode(text) {
-  const bars = [];
-  for (let i = 0; i < text.length; i++) {
-    const code = text.charCodeAt(i);
-    bars.push((code % 3) + 1, ((code >> 2) % 3) + 1, ((code >> 4) % 3) + 1);
-  }
-  return bars;
-}
-
-function BarcodeStrip({ value }) {
-  const bars = generateBarcode(value.slice(0, 12));
-  const total = bars.reduce((a, b) => a + b, 0);
-  const scale = 60 / total;
-  let x = 0;
+function BuildingAnimation() {
   return (
-    <svg width="100" height="32" viewBox="0 0 100 32">
-      {bars.map((w, i) => {
-        const barW = w * scale * (100 / 60);
-        const rect = i % 2 === 0 ? <rect key={i} x={x} y={0} width={barW} height={28} fill="#1E293B" rx={0.5} /> : null;
-        x += barW;
-        return rect;
-      })}
-      <text x="50" y="31" textAnchor="middle" fontSize="5" fill="#64748B" fontFamily="monospace">{value.slice(0, 12).toUpperCase()}</text>
-    </svg>
-  );
-}
-
-function Avatar({ name, photo, size = 56 }) {
-  const initials = name ? name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase() : "?";
-  if (photo) return <img src={photo} alt={name} style={{ width: size, height: size, borderRadius: "50%", objectFit: "cover", border: "3px solid white", boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }} />;
-  return (
-    <div style={{ width: size, height: size, borderRadius: "50%", background: "linear-gradient(135deg,#6366F1,#8B5CF6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: size * 0.3, fontWeight: 800, color: "white", border: "3px solid white", boxShadow: "0 4px 12px rgba(99,102,241,0.3)" }}>
-      {initials}
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16, padding: "40px 0" }}>
+      <style>{`
+        @keyframes scanDown { 0% { top: 0%; opacity: 0.9; } 100% { top: 88%; opacity: 0; } }
+        @keyframes dotPulse { 0%,100% { opacity: 0.2; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
+      `}</style>
+      <div style={{ width: 340, height: 210, borderRadius: 20, background: "white", boxShadow: "0 8px 32px rgba(99,102,241,0.1)", border: "1.5px solid #E0E7FF", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 70, background: "linear-gradient(135deg,#6366F1,#8B5CF6)" }} />
+        <div style={{ position: "absolute", top: 42, left: 18, width: 52, height: 52, borderRadius: "50%", background: "rgba(255,255,255,0.25)", border: "2px solid rgba(255,255,255,0.4)" }} />
+        <div style={{ position: "absolute", top: 50, left: 80, display: "flex", flexDirection: "column", gap: 5 }}>
+          <div style={{ height: 8, width: 100, borderRadius: 6, background: "rgba(255,255,255,0.5)" }} />
+          <div style={{ height: 6, width: 60, borderRadius: 6, background: "rgba(255,255,255,0.3)" }} />
+        </div>
+        <div style={{ position: "absolute", top: 90, left: 18, right: 18, display: "flex", gap: 8 }}>
+          {[80,70,60].map((w,i) => <div key={i} style={{ height: 36, width: w, borderRadius: 8, background: "#F1F5F9" }} />)}
+        </div>
+        <div style={{ position: "absolute", bottom: 20, left: 18, right: 18, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <div style={{ height: 6, width: 80, borderRadius: 4, background: "#E2E8F0" }} />
+            <div style={{ height: 6, width: 60, borderRadius: 4, background: "#E2E8F0" }} />
+          </div>
+          <div style={{ width: 80, height: 24, borderRadius: 4, background: "#F1F5F9" }} />
+        </div>
+        <div style={{ position: "absolute", left: 0, right: 0, height: 2, background: "linear-gradient(90deg, transparent, #6366F1, #8B5CF6, transparent)", boxShadow: "0 0 6px rgba(99,102,241,0.3)", animation: "scanDown 1.6s ease-in-out infinite", top: 0 }} />
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+        <div style={{ fontSize: 12, fontWeight: 600, color: "#6366F1", letterSpacing: "0.06em" }}>Generating ID Card</div>
+        <div style={{ display: "flex", gap: 5 }}>
+          {[0,1,2].map(i => <div key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: "#6366F1", animation: `dotPulse 1s ease-in-out ${i*0.2}s infinite` }} />)}
+        </div>
+      </div>
     </div>
   );
 }
+
 
 function StudentCard({ student, animPhase }) {
   return (
@@ -51,9 +44,6 @@ function StudentCard({ student, animPhase }) {
         <div style={{ padding: "12px 18px" }}>
           <div style={{ fontSize: 12, fontWeight: 800, color: "white", letterSpacing: "0.06em" }}>{SCHOOL_NAME.toUpperCase()}</div>
           <div style={{ fontSize: 9, color: "rgba(255,255,255,0.7)", marginTop: 2, letterSpacing: "0.04em" }}>STUDENT IDENTITY CARD</div>
-        </div>
-        <div style={{ position: "absolute", right: 18, top: 16, width: 32, height: 22, borderRadius: 5, background: "linear-gradient(135deg,#FCD34D,#F59E0B)", boxShadow: "0 2px 8px rgba(245,158,11,0.5)", display: "grid", gridTemplateColumns: "repeat(3,1fr)", gridTemplateRows: "repeat(3,1fr)", gap: 1.5, padding: 3, boxSizing: "border-box" }}>
-          {Array(9).fill(0).map((_,i) => <div key={i} style={{ background: "rgba(0,0,0,0.15)", borderRadius: 1 }} />)}
         </div>
       </div>
       <div style={{ padding: "0 18px 16px", position: "relative" }}>
@@ -94,9 +84,6 @@ function TeacherCard({ teacher, animPhase }) {
         <div style={{ padding: "12px 18px" }}>
           <div style={{ fontSize: 12, fontWeight: 800, color: "white", letterSpacing: "0.06em" }}>{SCHOOL_NAME.toUpperCase()}</div>
           <div style={{ fontSize: 9, color: "rgba(255,255,255,0.6)", marginTop: 2, letterSpacing: "0.04em" }}>FACULTY IDENTITY CARD</div>
-        </div>
-        <div style={{ position: "absolute", right: 18, top: 16, width: 32, height: 22, borderRadius: 5, background: "linear-gradient(135deg,#FCD34D,#F59E0B)", boxShadow: "0 2px 8px rgba(245,158,11,0.5)", display: "grid", gridTemplateColumns: "repeat(3,1fr)", gridTemplateRows: "repeat(3,1fr)", gap: 1.5, padding: 3, boxSizing: "border-box" }}>
-          {Array(9).fill(0).map((_,i) => <div key={i} style={{ background: "rgba(0,0,0,0.15)", borderRadius: 1 }} />)}
         </div>
       </div>
       <div style={{ padding: "0 18px 16px", position: "relative" }}>
