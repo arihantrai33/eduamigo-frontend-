@@ -294,7 +294,7 @@ function DashboardContent({ isMobile, navigate, user }) {
 
       <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3,1fr)", gap: 16, marginBottom: "1.5rem" }}>
         <AnimatedItem delay={420}>
-          <div style={{ ...CARD, cursor:"pointer" }} onClick={() => navigate("/admin/attendance-reports")}
+          <div style={{ ...CARD, cursor:"pointer" }} onClick={() => navigate("/admin/attendance-reports")}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 800, color: "#0F172A" }}>Attendance Overview</div>
