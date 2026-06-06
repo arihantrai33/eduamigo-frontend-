@@ -33,7 +33,7 @@ function StatCard({ label, value, icon, gradient, delay, border }) {
   }, [value]);
 
   return (
-    <div style={{ background:"white", borderRadius:20, padding:"20px 24px", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid rgba(226,232,240,0.8)", position:"relative", overflow:"hidden", animation:`fadeSlideUp 0.5s ease ${delay}s both`, cursor:"default" }}
+    <div style={{ background:"white", borderRadius:20, padding:"20px 24px", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid rgba(226,232,240,0.8)", position:"relative", overflow:"hidden", animation:`fadeSlideUp 0.5s ease ${delay}s both`, cursor:"default", border:`2px solid ${border}` }}
       onMouseEnter={e => e.currentTarget.style.transform = "translateY(-3px)"}
       onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"} >
       <div style={{ position:"absolute", top:-20, right:-20, width:90, height:90, borderRadius:"50%", background:gradient, opacity:0.08 }} />
