@@ -3,7 +3,7 @@ import { useNavigate, Routes, Route, useLocation } from "react-router-dom";
 import axios from "axios";
 import {
   LayoutDashboard, Users, School, UserCircle, Bus,
-  CalendarCheck, FileBadge, Clock, Notebook, BadgeDollarSign, Layers,
+  CalendarCheck, CreditCard, FileBadge, Clock, Notebook, BadgeDollarSign, Layers,
   Bell, MessageCircle, BarChart2, Settings as SettingsIcon, Menu, X,
   AlertCircle, CheckCircle, BookOpen, LogOut, TrendingUp, Zap,
   Award, Shield, FileText
@@ -37,6 +37,7 @@ import ParentsList from "./ParentsList";
 import Circulars from "./Circulars";
 import NoticeBoard from "./NoticeBoard";
 import EventCalendar from "./EventCalendar";
+import IDCardGenerator from "./IDCardGenerator";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -74,6 +75,7 @@ const NAV = [
   { label: "Circulars",        icon: FileText,         path: "/admin/circulars" },
   { label: "Notice Board",     icon: Bell,             path: "/admin/notice-board" },
   { label: "Event Calendar",   icon: CalendarCheck,    path: "/admin/event-calendar" },
+  { label: "ID Card Generator", icon: CreditCard,       path: "/admin/id-card-generator" },
 
   { section: "⚙️ System" },
   { label: "Library",          icon: BookOpen,         path: "/admin/library" },
@@ -564,6 +566,7 @@ export default function AdminHome() {
           <Route path="circulars" element={<Circulars />} />
           <Route path="notice-board" element={<NoticeBoard />} />
           <Route path="event-calendar" element={<EventCalendar />} />
+          <Route path="id-card-generator" element={<IDCardGenerator />} />
           <Route path="noticeboard" element={<NoticeBoard />} />
         </Routes>
       </main>
