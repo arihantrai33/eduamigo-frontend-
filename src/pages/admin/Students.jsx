@@ -1,504 +1,342 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const API = import.meta.env.VITE_API_URL;
-const authHeader = () => ({
-  headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-});
+const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
-const CLASSES  = ["1","2","3","4","5","6","7","8","9","10","11","12"];
-const SECTIONS = ["A","B","C","D","E"];
+const CLASS_COLORS = {
+  "1":"#F43F5E","2":"#F97316","3":"#EAB308","4":"#22C55E","5":"#14B8A6",
+  "6":"#06B6D4","7":"#3B82F6","8":"#6366F1","9":"#8B5CF6","10":"#EC4899",
+  "11":"#F43F5E","12":"#0EA5E9"
+};
+const getClassColor = (cls) => CLASS_COLORS[String(cls)] || "#6366F1";
 
-const emptyForm = {
-  name: "", email: "", phone: "", rollNumber: "",
-  class: "", section: "", gender: "", dateOfBirth: "",
-  address: "", parentName: "", parentPhone: "", parentEmail: "",
-  feeStatus: "Pending",
+const FEE_BADGE = {
+  Paid:    { bg:"#F0FDF4", color:"#15803D", dot:"#22C55E" },
+  Pending: { bg:"#FEF9C3", color:"#854D0E", dot:"#EAB308" },
+  Partial: { bg:"#FFF7ED", color:"#C2410C", dot:"#F97316" },
 };
 
-function getInitials(name = "") {
-  return name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
-}
+function StatCard({ label, value, icon, gradient, delay }) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (typeof value !== "number") return;
+    let start = 0;
+    const step = Math.ceil(value / 20);
+    const t = setInterval(() => {
+      start += step;
+      if (start >= value) { setCount(value); clearInterval(t); }
+      else setCount(start);
+    }, 40);
+    return () => clearInterval(t);
+  }, [value]);
 
-const avatarColors = ["#6366F1","#8B5CF6","#EC4899","#F59E0B","#10B981","#3B82F6","#EF4444","#14B8A6"];
-function getAvatarColor(name = "") {
-  return avatarColors[name.charCodeAt(0) % avatarColors.length];
-}
-
-const feeBadge = {
-  Paid:    { bg: "#D1FAE5", color: "#065F46" },
-  Pending: { bg: "#FEE2E2", color: "#991B1B" },
-  Partial: { bg: "#FEF3C7", color: "#92400E" },
-};
-
-const inputSt = {
-  padding: "9px 12px", borderRadius: 8, border: "1px solid #E5E7EB",
-  fontSize: 13, color: "#111827", outline: "none", background: "#F9FAFB",
-  fontFamily: "Inter, sans-serif", width: "100%", boxSizing: "border-box",
-};
-
-function SectionTitle({ children }) {
   return (
-    <div style={{
-      fontSize: 11, fontWeight: 700, color: "#534AB7",
-      textTransform: "uppercase", letterSpacing: "0.08em",
-      borderBottom: "1px solid #EEF2FF", paddingBottom: 8, marginBottom: 14,
-    }}>
-      {children}
+    <div style={{ background:"white", borderRadius:20, padding:"20px 24px", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid rgba(226,232,240,0.8)", position:"relative", overflow:"hidden", animation:`fadeSlideUp 0.5s ease ${delay}s both`, cursor:"default" }}
+      onMouseEnter={e => e.currentTarget.style.transform = "translateY(-3px)"}
+      onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"} >
+      <div style={{ position:"absolute", top:-20, right:-20, width:90, height:90, borderRadius:"50%", background:gradient, opacity:0.08 }} />
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+        <div>
+          <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", letterSpacing:"0.08em", marginBottom:10 }}>{label}</div>
+          <div style={{ fontSize:32, fontWeight:900, color:"#0F172A", letterSpacing:"-1px" }}>
+            {typeof value === "number" ? count : value}
+          </div>
+        </div>
+        <div style={{ width:44, height:44, borderRadius:14, background:gradient, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, boxShadow:`0 4px 14px ${gradient}44` }}>
+          {icon}
+        </div>
+      </div>
     </div>
   );
 }
 
-function FormField({ label, required, children }) {
+function Avatar({ name, photo, size=38 }) {
+  const colors = ["#6366F1","#8B5CF6","#EC4899","#F43F5E","#F97316","#EAB308","#22C55E","#14B8A6","#06B6D4","#3B82F6"];
+  const color = colors[(name?.charCodeAt(0) || 0) % colors.length];
+  const initials = name ? name.split(" ").map(n=>n[0]).join("").slice(0,2).toUpperCase() : "?";
+  if (photo) return <img src={photo} alt={name} style={{ width:size, height:size, borderRadius:"50%", objectFit:"cover", border:"2px solid white", boxShadow:"0 2px 8px rgba(0,0,0,0.1)" }} />;
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-      <label style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-        {label} {required && <span style={{ color: "#EF4444" }}>*</span>}
-      </label>
-      {children}
+    <div style={{ width:size, height:size, borderRadius:"50%", background:`linear-gradient(135deg,${color},${color}BB)`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:size*0.32, fontWeight:800, color:"white", border:"2px solid white", boxShadow:`0 2px 8px ${color}44`, flexShrink:0 }}>
+      {initials}
+    </div>
+  );
+}
+
+function Modal({ show, onClose, title, children }) {
+  if (!show) return null;
+  return (
+    <div style={{ position:"fixed", inset:0, background:"rgba(15,23,42,0.5)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:1000, backdropFilter:"blur(6px)", animation:"fadeIn 0.2s ease" }}>
+      <div style={{ background:"white", borderRadius:24, padding:32, width:520, maxHeight:"88vh", overflowY:"auto", boxShadow:"0 32px 80px rgba(0,0,0,0.25)", animation:"slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1)" }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:24 }}>
+          <div style={{ fontSize:18, fontWeight:800, color:"#0F172A" }}>{title}</div>
+          <button onClick={onClose} style={{ width:32, height:32, borderRadius:"50%", border:"none", background:"#F1F5F9", cursor:"pointer", fontSize:16, color:"#64748B", display:"flex", alignItems:"center", justifyContent:"center" }}>×</button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function StudentForm({ form, setForm, onSave, loading, onClose }) {
+  const f = (k,v) => setForm(p => ({ ...p, [k]:v }));
+  const inp = (label, key, type="text", placeholder="") => (
+    <div>
+      <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
+      <input type={type} value={form[key]||""} onChange={e=>f(key,e.target.value)} placeholder={placeholder}
+        style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", transition:"border 0.2s" }}
+        onFocus={e=>e.target.style.borderColor="#6366F1"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
+    </div>
+  );
+  const sel = (label, key, options) => (
+    <div>
+      <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
+      <select value={form[key]||""} onChange={e=>f(key,e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
+        <option value="">Select</option>
+        {options.map(o => <option key={o} value={o}>{o}</option>)}
+      </select>
+    </div>
+  );
+  return (
+    <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+      <div style={{ fontSize:12, fontWeight:700, color:"#6366F1", marginBottom:2, letterSpacing:"0.06em" }}>PERSONAL INFO</div>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+        {inp("FULL NAME","name","text","e.g. Rahul Sharma")}
+        {inp("EMAIL","email","email","student@school.com")}
+        {inp("PHONE","phone","tel","10-digit number")}
+        {inp("DATE OF BIRTH","dob","date")}
+      </div>
+      {sel("GENDER","gender",["Male","Female","Other"])}
+      <div style={{ height:1, background:"#F1F5F9", margin:"4px 0" }} />
+      <div style={{ fontSize:12, fontWeight:700, color:"#6366F1", marginBottom:2, letterSpacing:"0.06em" }}>ACADEMIC INFO</div>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:12 }}>
+        {inp("CLASS","class","text","e.g. 10")}
+        {inp("SECTION","section","text","e.g. A")}
+        {inp("ROLL NUMBER","rollNumber","text","e.g. 23")}
+      </div>
+      <div style={{ height:1, background:"#F1F5F9", margin:"4px 0" }} />
+      <div style={{ fontSize:12, fontWeight:700, color:"#6366F1", marginBottom:2, letterSpacing:"0.06em" }}>PARENT INFO</div>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+        {inp("PARENT NAME","parentName","text","e.g. Rajesh Sharma")}
+        {inp("PARENT PHONE","parentPhone","tel","10-digit number")}
+        {inp("PARENT EMAIL","parentEmail","email","parent@email.com")}
+        {sel("FEE STATUS","feeStatus",["Paid","Pending","Partial"])}
+      </div>
+      <div style={{ display:"flex", gap:10, marginTop:8, justifyContent:"flex-end" }}>
+        <button onClick={onClose} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
+        <button onClick={onSave} disabled={loading} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 14px rgba(99,102,241,0.4)", opacity:loading?0.7:1 }}>
+          {loading ? "Saving..." : "Save Student"}
+        </button>
+      </div>
     </div>
   );
 }
 
 export default function Students() {
   const navigate = useNavigate();
-  const [allStudents,  setAllStudents]  = useState([]);
-  const [students,     setStudents]     = useState([]);
-  const [loading,      setLoading]      = useState(true);
-  const [search,       setSearch]       = useState("");
-  const [filterClass,  setFilterClass]  = useState("");
-  const [showModal,    setShowModal]    = useState(false);
-  const [editStudent,  setEditStudent]  = useState(null);
-  const [form,         setForm]         = useState(emptyForm);
-  const [submitting,   setSubmitting]   = useState(false);
-  const [toast,        setToast]        = useState(null);
-  const [deleteId,     setDeleteId]     = useState(null);
-  const [credentials,  setCredentials]  = useState(null);
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [filterClass, setFilterClass] = useState("");
+  const [filterFee, setFilterFee] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [editStudent, setEditStudent] = useState(null);
+  const [form, setForm] = useState({});
+  const [saving, setSaving] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
 
   useEffect(() => { fetchStudents(); }, []);
 
-  useEffect(() => {
-    let filtered = allStudents;
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      filtered = filtered.filter(s =>
-        s.name?.toLowerCase().includes(q) ||
-        s.email?.toLowerCase().includes(q) ||
-        s.rollNumber?.toString().includes(q)
-      );
-    }
-    if (filterClass) {
-      filtered = filtered.filter(s => s.class === filterClass);
-    }
-    setStudents(filtered);
-  }, [search, filterClass, allStudents]);
-
-  const showToast = (msg, type = "success") => {
-    setToast({ msg, type });
-    setTimeout(() => setToast(null), 4000);
-  };
-
   const fetchStudents = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const res = await axios.get(`${API}/students`, authHeader());
-      const data = res.data.data || [];
-      setAllStudents(data);
-      setStudents(data);
-    } catch (err) {
-      showToast("Failed to load students", "error");
-    } finally {
-      setLoading(false);
-    }
+      const r = await axios.get(`${API}/students`, auth());
+      setStudents(r.data.data || []);
+    } catch(e) {}
+    setLoading(false);
   };
 
-  const handleSubmit = async () => {
-    const required = ["name","email","phone","rollNumber","class","section"];
-    if (required.some(k => !form[k]?.trim())) {
-      showToast("Please fill all required fields", "error"); return;
-    }
-    setSubmitting(true);
+  const openAdd = () => { setEditStudent(null); setForm({}); setShowModal(true); };
+  const openEdit = (s) => { setEditStudent(s); setForm({...s}); setShowModal(true); };
+
+  const handleSave = async () => {
+    if (!form.name || !form.class || !form.section || !form.rollNumber) return alert("Name, class, section, roll number required");
+    setSaving(true);
     try {
-      if (editStudent) {
-        await axios.put(`${API}/students/${editStudent._id}`, form, authHeader());
-        showToast("Student updated successfully");
-      } else {
-        const res = await axios.post(`${API}/students`, form, authHeader());
-        if (res.data.credentials) setCredentials(res.data.credentials);
-        showToast("Student added successfully");
-      }
+      if (editStudent) await axios.put(`${API}/students/${editStudent._id}`, form, auth());
+      else await axios.post(`${API}/students`, form, auth());
       setShowModal(false);
-      setEditStudent(null);
-      setForm(emptyForm);
       fetchStudents();
-    } catch (err) {
-      showToast(err?.response?.data?.message || "Something went wrong", "error");
-    } finally {
-      setSubmitting(false);
-    }
+    } catch(e) { alert(e.response?.data?.message || "Error"); }
+    setSaving(false);
   };
 
-  const handleEdit = (s) => {
-    setEditStudent(s);
-    setForm({ ...emptyForm, ...s, dateOfBirth: s.dateOfBirth?.split("T")[0] || "" });
-    setCredentials(null);
-    setShowModal(true);
+  const handleDelete = async (id) => {
+    try { await axios.delete(`${API}/students/${id}`, auth()); fetchStudents(); }
+    catch(e) {}
+    setDeleteId(null);
   };
 
-  const handleDelete = async () => {
-    try {
-      await axios.delete(`${API}/students/${deleteId}`, authHeader());
-      showToast("Student removed successfully");
-      setDeleteId(null);
-      fetchStudents();
-    } catch (err) {
-      showToast("Failed to delete student", "error");
-    }
-  };
+  const classes = [...new Set(students.map(s => s.class))].sort();
+  const filtered = students.filter(s =>
+    (!search || s.name?.toLowerCase().includes(search.toLowerCase()) || s.email?.toLowerCase().includes(search.toLowerCase()) || s.rollNumber?.includes(search)) &&
+    (!filterClass || s.class === filterClass) &&
+    (!filterFee || s.feeStatus === filterFee)
+  );
 
-  const total   = allStudents.length;
-  const paid    = allStudents.filter(s => s.feeStatus === "Paid").length;
-  const pending = allStudents.filter(s => s.feeStatus === "Pending").length;
-  const partial = allStudents.filter(s => s.feeStatus === "Partial").length;
+  const stats = {
+    total: students.length,
+    paid: students.filter(s => s.feeStatus === "Paid").length,
+    pending: students.filter(s => s.feeStatus === "Pending").length,
+    partial: students.filter(s => s.feeStatus === "Partial").length,
+  };
 
   return (
-    <div style={{ fontFamily: "Inter, sans-serif", minHeight: "100vh", background: "#F8F9FC", padding: "24px" }}>
+    <div style={{ fontFamily:"'Inter',sans-serif" }}>
+      <style>{`
+        @keyframes fadeSlideUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+        @keyframes slideUp { from { opacity:0; transform:translateY(24px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+        @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+        .row-hover:hover { background: linear-gradient(90deg,#F8FAFF,#F5F3FF) !important; transform: translateX(2px); }
+        .row-hover { transition: all 0.15s ease; }
+        .action-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .action-btn { transition: all 0.15s ease; }
+      `}</style>
 
-      {/* Toast */}
-      {toast && (
-        <div style={{
-          position: "fixed", top: 20, right: 20, zIndex: 9999,
-          background: toast.type === "error" ? "#FEF2F2" : "#F0FDF4",
-          border: `1px solid ${toast.type === "error" ? "#FECACA" : "#BBF7D0"}`,
-          color: toast.type === "error" ? "#DC2626" : "#15803D",
-          padding: "12px 18px", borderRadius: 10, fontSize: 13, fontWeight: 500,
-          boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-        }}>
-          {toast.type === "error" ? "⚠️" : "✅"} {toast.msg}
-        </div>
-      )}
-
-      {/* Credentials Card */}
-      {credentials && (
-        <div style={{
-          background: "#F0FDF4", border: "1px solid #86EFAC", borderRadius: 12,
-          padding: "14px 18px", marginBottom: 20,
-          display: "flex", justifyContent: "space-between", alignItems: "center",
-        }}>
-          <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#15803D", marginBottom: 6 }}>
-              ✅ Student Account Created — Save these credentials
-            </div>
-            <div style={{ fontSize: 12, color: "#166534" }}>
-              Student Login: <strong>{credentials.student?.email}</strong> &nbsp;|&nbsp; Password: <strong>{credentials.student?.password}</strong>
-            </div>
-            {credentials.parent && (
-              <div style={{ fontSize: 12, color: "#166534", marginTop: 4 }}>
-                Parent Login: <strong>{credentials.parent?.email}</strong> &nbsp;|&nbsp; Password: <strong>{credentials.parent?.password}</strong>
-              </div>
-            )}
-          </div>
-          <button onClick={() => setCredentials(null)}
-            style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#6B7280" }}>×</button>
-        </div>
-      )}
-
-      {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:28, animation:"fadeSlideUp 0.4s ease" }}>
         <div>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111827", margin: 0 }}>Students</h1>
-          <p style={{ fontSize: 13, color: "#9CA3AF", margin: "4px 0 0" }}>Manage all students</p>
+          <div style={{ fontSize:26, fontWeight:900, color:"#0F172A", letterSpacing:"-0.5px" }}>Students</div>
+          <div style={{ fontSize:13, color:"#94A3B8", marginTop:4 }}>Manage all enrolled students · {students.length} total</div>
         </div>
-        <button
-          onClick={() => { setEditStudent(null); setForm(emptyForm); setCredentials(null); setShowModal(true); }}
-          style={{
-            padding: "10px 18px", borderRadius: 10, border: "none",
-            background: "#534AB7", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer",
-          }}>
-          + Add Student
+        <button onClick={openAdd}
+          style={{ display:"flex", alignItems:"center", gap:8, padding:"12px 24px", borderRadius:14, border:"none", background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"white", fontWeight:700, fontSize:14, cursor:"pointer", boxShadow:"0 4px 20px rgba(99,102,241,0.4)", transition:"all 0.2s" }}
+          onMouseEnter={e=>e.currentTarget.style.transform="translateY(-2px)"}
+          onMouseLeave={e=>e.currentTarget.style.transform="translateY(0)"}>
+          <span style={{ fontSize:18 }}>+</span> Add Student
         </button>
       </div>
 
-      {/* Stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginBottom: 24 }}>
-        {[
-          { label: "Total Students", val: total,   color: "#534AB7" },
-          { label: "Fee Paid",       val: paid,    color: "#065F46" },
-          { label: "Fee Pending",    val: pending, color: "#991B1B" },
-          { label: "Partial",        val: partial, color: "#92400E" },
-        ].map(s => (
-          <div key={s.label} style={{
-            background: "#fff", borderRadius: 12, padding: "16px 18px",
-            border: "1px solid #E5E7EB", boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-          }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-              {s.label}
-            </div>
-            <div style={{ fontSize: 28, fontWeight: 800, color: s.color, marginTop: 6 }}>{s.val}</div>
-          </div>
-        ))}
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:28 }}>
+        <StatCard label="TOTAL STUDENTS" value={stats.total} icon="🎒" gradient="linear-gradient(135deg,#6366F1,#8B5CF6)" delay={0} />
+        <StatCard label="FEE PAID" value={stats.paid} icon="✅" gradient="linear-gradient(135deg,#10B981,#059669)" delay={0.08} />
+        <StatCard label="FEE PENDING" value={stats.pending} icon="⏳" gradient="linear-gradient(135deg,#F59E0B,#D97706)" delay={0.16} />
+        <StatCard label="PARTIAL" value={stats.partial} icon="⚡" gradient="linear-gradient(135deg,#F97316,#EA580C)" delay={0.24} />
       </div>
 
-      {/* Filters */}
-      <div style={{ display: "flex", gap: 12, marginBottom: 20, alignItems: "center" }}>
-        <input
-          type="text" placeholder="Search by name, email or roll number..."
-          value={search} onChange={e => setSearch(e.target.value)}
-          style={{
-            padding: "9px 14px", borderRadius: 9, border: "1px solid #E5E7EB",
-            fontSize: 13, outline: "none", background: "#fff", width: 300,
-          }}
-        />
-        <select
-          value={filterClass} onChange={e => setFilterClass(e.target.value)}
-          style={{
-            padding: "9px 14px", borderRadius: 9, border: "1px solid #E5E7EB",
-            fontSize: 13, outline: "none", background: "#fff",
-          }}>
+      <div style={{ display:"flex", gap:12, marginBottom:20, alignItems:"center", animation:"fadeSlideUp 0.5s ease 0.1s both" }}>
+        <div style={{ flex:1, position:"relative" }}>
+          <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:16, color:"#94A3B8" }}>🔍</span>
+          <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search by name, email or roll number..."
+            style={{ width:"100%", padding:"11px 14px 11px 40px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", transition:"border 0.2s", background:"white" }}
+            onFocus={e=>e.target.style.borderColor="#6366F1"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
+        </div>
+        <select value={filterClass} onChange={e=>setFilterClass(e.target.value)}
+          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:140 }}>
           <option value="">All Classes</option>
-          {CLASSES.map(c => <option key={c} value={c}>Class {c}</option>)}
+          {classes.map(c => <option key={c} value={c}>Class {c}</option>)}
         </select>
-        {(search || filterClass) && (
-          <button
-            onClick={() => { setSearch(""); setFilterClass(""); }}
-            style={{
-              padding: "9px 14px", borderRadius: 9, border: "1px solid #E5E7EB",
-              background: "#fff", fontSize: 12, color: "#6B7280", cursor: "pointer",
-            }}>
-            Clear filters
-          </button>
-        )}
-        <span style={{ fontSize: 12, color: "#9CA3AF", marginLeft: "auto" }}>
-          Showing {students.length} of {total} students
-        </span>
+        <select value={filterFee} onChange={e=>setFilterFee(e.target.value)}
+          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:140 }}>
+          <option value="">All Fee Status</option>
+          {["Paid","Pending","Partial"].map(f => <option key={f} value={f}>{f}</option>)}
+        </select>
+        <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600, whiteSpace:"nowrap" }}>{filtered.length} of {students.length}</div>
       </div>
 
-      {/* Table */}
-      <div style={{ background: "#fff", borderRadius: 14, border: "1px solid #E5E7EB", overflow: "hidden", boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <div style={{ background:"white", borderRadius:20, boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid rgba(226,232,240,0.8)", overflow:"hidden", animation:"fadeSlideUp 0.5s ease 0.15s both" }}>
+        <table style={{ width:"100%", borderCollapse:"collapse" }}>
           <thead>
-            <tr style={{ background: "#F9FAFB" }}>
-              {["Student", "Roll No", "Class", "Parent", "Phone", "Fee Status", "Actions"].map(h => (
-                <th key={h} style={{
-                  padding: "12px 16px", textAlign: "left",
-                  fontSize: 11, fontWeight: 700, color: "#6B7280",
-                  textTransform: "uppercase", letterSpacing: "0.05em",
-                  borderBottom: "1px solid #E5E7EB",
-                }}>
-                  {h}
-                </th>
+            <tr style={{ background:"linear-gradient(90deg,#F8FAFC,#F1F5F9)" }}>
+              {["Student","Roll No","Class","Parent","Phone","Fee Status","Actions"].map(h => (
+                <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#64748B", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr>
-                <td colSpan="7" style={{ padding: "48px", textAlign: "center", color: "#9CA3AF", fontSize: 14 }}>
-                  Loading students...
-                </td>
-              </tr>
-            ) : students.length === 0 ? (
-              <tr>
-                <td colSpan="7" style={{ padding: "48px", textAlign: "center", color: "#9CA3AF", fontSize: 14 }}>
-                  {search || filterClass ? "No students match your filters" : "No students added yet"}
-                </td>
-              </tr>
-            ) : students.map((s, idx) => (
-              <tr key={s._id}
-                style={{ borderBottom: idx < students.length - 1 ? "1px solid #F3F4F6" : "none", transition: "background 0.15s" }}
-                onMouseEnter={e => e.currentTarget.style.background = "#FAFAFA"}
-                onMouseLeave={e => e.currentTarget.style.background = "transparent"}
-              >
-                <td style={{ padding: "14px 16px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}
-                    onClick={() => navigate(`/admin/students/${s._id}`)}>
-                    <div style={{
-                      width: 36, height: 36, borderRadius: 10,
-                      background: getAvatarColor(s.name),
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      fontWeight: 700, color: "#fff", fontSize: 13, flexShrink: 0,
-                    }}>
-                      {getInitials(s.name)}
+              <tr><td colSpan={7} style={{ padding:"60px 0", textAlign:"center" }}>
+                <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:12 }}>
+                  <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid #6366F1", animation:"spin 0.8s linear infinite" }} />
+                  <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading students...</div>
+                </div>
+              </td></tr>
+            ) : filtered.length === 0 ? (
+              <tr><td colSpan={7} style={{ padding:"80px 0", textAlign:"center" }}>
+                <div style={{ fontSize:48, marginBottom:12 }}>🔍</div>
+                <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No students found</div>
+                <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Try adjusting your filters</div>
+              </td></tr>
+            ) : filtered.map((s, i) => {
+              const fee = FEE_BADGE[s.feeStatus] || FEE_BADGE.Pending;
+              const clsColor = getClassColor(s.class);
+              return (
+                <tr key={s._id} className="row-hover" style={{ borderBottom:"1px solid #F1F5F9", animation:`fadeSlideUp 0.3s ease ${i*0.04}s both` }}>
+                  <td style={{ padding:"14px 18px" }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+                      <Avatar name={s.name} photo={s.photo} size={40} />
+                      <div>
+                        <div style={{ fontSize:14, fontWeight:700, color:"#0F172A", cursor:"pointer" }}
+                          onClick={() => navigate(`/admin/student-profile/${s._id}`)}
+                          onMouseEnter={e=>e.target.style.color="#6366F1"} onMouseLeave={e=>e.target.style.color="#0F172A"}>
+                          {s.name}
+                        </div>
+                        <div style={{ fontSize:12, color:"#94A3B8", marginTop:1 }}>{s.email}</div>
+                      </div>
                     </div>
-                    <div>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: "#534AB7", textDecoration: "underline" }}>{s.name}</div>
-                      <div style={{ fontSize: 11, color: "#9CA3AF" }}>{s.email}</div>
-                    </div>
-                  </div>
-                </td>
-                <td style={{ padding: "14px 16px", fontSize: 13, color: "#374151", fontWeight: 500 }}>#{s.rollNumber}</td>
-                <td style={{ padding: "14px 16px" }}>
-                  <span style={{ background: "#EEF2FF", color: "#4338CA", padding: "4px 10px", borderRadius: 20, fontSize: 12, fontWeight: 600 }}>
-                    {s.class}-{s.section}
-                  </span>
-                </td>
-                <td style={{ padding: "14px 16px" }}>
-                  {s.parentName ? (
-                    <>
-                      <div style={{ fontSize: 13, color: "#374151" }}>{s.parentName}</div>
-                      {s.parentEmail && <div style={{ fontSize: 11, color: "#9CA3AF" }}>{s.parentEmail}</div>}
-                    </>
-                  ) : (
-                    <span style={{ fontSize: 12, color: "#EF4444", background: "#FEF2F2", padding: "2px 8px", borderRadius: 20 }}>
-                      Not linked
+                  </td>
+                  <td style={{ padding:"14px 18px" }}>
+                    <span style={{ fontSize:13, fontWeight:700, color:"#374151", background:"#F8FAFC", padding:"4px 10px", borderRadius:8, border:"1px solid #E2E8F0" }}>#{s.rollNumber}</span>
+                  </td>
+                  <td style={{ padding:"14px 18px" }}>
+                    <span style={{ fontSize:12, fontWeight:800, padding:"5px 12px", borderRadius:20, background:`${clsColor}15`, color:clsColor, border:`1px solid ${clsColor}30` }}>
+                      {s.class}-{s.section}
                     </span>
-                  )}
-                </td>
-                <td style={{ padding: "14px 16px", fontSize: 13, color: "#374151" }}>{s.phone}</td>
-                <td style={{ padding: "14px 16px" }}>
-                  <span style={{
-                    padding: "4px 10px", borderRadius: 20, fontSize: 12, fontWeight: 600,
-                    background: (feeBadge[s.feeStatus] || { bg: "#F3F4F6" }).bg,
-                    color: (feeBadge[s.feeStatus] || { color: "#6B7280" }).color,
-                  }}>
-                    {s.feeStatus || "Pending"}
-                  </span>
-                </td>
-                <td style={{ padding: "14px 16px" }}>
-                  <div style={{ display: "flex", gap: 6 }}>
-                    <button onClick={() => navigate(`/admin/students/${s._id}`)}
-                      style={{ padding: "6px 12px", borderRadius: 7, border: "1px solid #EEF2FF", background: "#EEF2FF", fontSize: 12, color: "#534AB7", cursor: "pointer", fontWeight: 500 }}>
-                      View
-                    </button>
-                    <button onClick={() => handleEdit(s)}
-                      style={{ padding: "6px 12px", borderRadius: 7, border: "1px solid #E5E7EB", background: "#fff", fontSize: 12, color: "#374151", cursor: "pointer", fontWeight: 500 }}>
-                      Edit
-                    </button>
-                    <button onClick={() => setDeleteId(s._id)}
-                      style={{ padding: "6px 12px", borderRadius: 7, border: "1px solid #FECACA", background: "#FEF2F2", fontSize: 12, color: "#DC2626", cursor: "pointer", fontWeight: 500 }}>
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  </td>
+                  <td style={{ padding:"14px 18px" }}>
+                    <div style={{ fontSize:13, fontWeight:600, color:"#374151" }}>{s.parentName || "—"}</div>
+                    <div style={{ fontSize:11, color:"#94A3B8", marginTop:1 }}>{s.parentEmail}</div>
+                  </td>
+                  <td style={{ padding:"14px 18px", fontSize:13, color:"#374151", fontWeight:600 }}>{s.phone}</td>
+                  <td style={{ padding:"14px 18px" }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:6, padding:"5px 12px", borderRadius:20, background:fee.bg, width:"fit-content" }}>
+                      <div style={{ width:6, height:6, borderRadius:"50%", background:fee.dot }} />
+                      <span style={{ fontSize:12, fontWeight:700, color:fee.color }}>{s.feeStatus || "Pending"}</span>
+                    </div>
+                  </td>
+                  <td style={{ padding:"14px 18px" }}>
+                    <div style={{ display:"flex", gap:6 }}>
+                      <button className="action-btn" onClick={() => navigate(`/admin/student-profile/${s._id}`)}
+                        style={{ padding:"6px 14px", borderRadius:8, border:"none", background:"#EEF2FF", color:"#6366F1", fontSize:12, fontWeight:700, cursor:"pointer" }}>View</button>
+                      <button className="action-btn" onClick={() => openEdit(s)}
+                        style={{ padding:"6px 14px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", color:"#374151", fontSize:12, fontWeight:700, cursor:"pointer" }}>Edit</button>
+                      <button className="action-btn" onClick={() => setDeleteId(s._id)}
+                        style={{ padding:"6px 12px", borderRadius:8, border:"none", background:"#FEF2F2", color:"#DC2626", fontSize:12, fontWeight:700, cursor:"pointer" }}>🗑️</button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
 
-      {/* Add/Edit Modal */}
-      {showModal && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
-          <div style={{ background: "#fff", borderRadius: 16, padding: 28, width: "100%", maxWidth: 640, maxHeight: "90vh", overflowY: "auto", boxShadow: "0 20px 60px rgba(0,0,0,0.15)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-              <h2 style={{ fontSize: 18, fontWeight: 700, color: "#111827", margin: 0 }}>
-                {editStudent ? "Edit Student" : "Add New Student"}
-              </h2>
-              <button onClick={() => setShowModal(false)}
-                style={{ background: "none", border: "none", fontSize: 22, cursor: "pointer", color: "#9CA3AF" }}>×</button>
-            </div>
+      <Modal show={showModal} onClose={() => setShowModal(false)} title={editStudent ? "Edit Student" : "Add New Student"}>
+        <StudentForm form={form} setForm={setForm} onSave={handleSave} loading={saving} onClose={() => setShowModal(false)} />
+      </Modal>
 
-            <SectionTitle>Personal Information</SectionTitle>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 20 }}>
-              <FormField label="Full Name" required>
-                <input type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} style={inputSt} />
-              </FormField>
-              <FormField label="Email Address" required>
-                <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} style={inputSt} />
-              </FormField>
-              <FormField label="Phone Number" required>
-                <input type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} style={inputSt} />
-              </FormField>
-              <FormField label="Date of Birth">
-                <input type="date" value={form.dateOfBirth} onChange={e => setForm(f => ({ ...f, dateOfBirth: e.target.value }))} style={inputSt} />
-              </FormField>
-            </div>
-
-            <SectionTitle>Academic Information</SectionTitle>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 20 }}>
-              <FormField label="Roll Number" required>
-                <input type="text" value={form.rollNumber} onChange={e => setForm(f => ({ ...f, rollNumber: e.target.value }))} style={inputSt} />
-              </FormField>
-              <FormField label="Class" required>
-                <select value={form.class} onChange={e => setForm(f => ({ ...f, class: e.target.value }))} style={inputSt}>
-                  <option value="">Select Class</option>
-                  {CLASSES.map(c => <option key={c} value={c}>Class {c}</option>)}
-                </select>
-              </FormField>
-              <FormField label="Section" required>
-                <select value={form.section} onChange={e => setForm(f => ({ ...f, section: e.target.value }))} style={inputSt}>
-                  <option value="">Select Section</option>
-                  {SECTIONS.map(s => <option key={s} value={s}>Section {s}</option>)}
-                </select>
-              </FormField>
-              <FormField label="Gender">
-                <select value={form.gender} onChange={e => setForm(f => ({ ...f, gender: e.target.value }))} style={inputSt}>
-                  <option value="">Select Gender</option>
-                  <option>Male</option>
-                  <option>Female</option>
-                  <option>Other</option>
-                </select>
-              </FormField>
-              <FormField label="Fee Status">
-                <select value={form.feeStatus} onChange={e => setForm(f => ({ ...f, feeStatus: e.target.value }))} style={inputSt}>
-                  <option>Pending</option>
-                  <option>Paid</option>
-                  <option>Partial</option>
-                </select>
-              </FormField>
-              <FormField label="Address">
-                <input type="text" value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} style={inputSt} />
-              </FormField>
-            </div>
-
-            <SectionTitle>Parent / Guardian</SectionTitle>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 20 }}>
-              <FormField label="Parent Name">
-                <input type="text" value={form.parentName} onChange={e => setForm(f => ({ ...f, parentName: e.target.value }))} style={inputSt} />
-              </FormField>
-              <FormField label="Parent Phone">
-                <input type="tel" value={form.parentPhone} onChange={e => setForm(f => ({ ...f, parentPhone: e.target.value }))} style={inputSt} />
-              </FormField>
-              <FormField label="Parent Email">
-                <input type="email" value={form.parentEmail} onChange={e => setForm(f => ({ ...f, parentEmail: e.target.value }))} style={inputSt} />
-              </FormField>
-            </div>
-
-            {!editStudent && (form.email || form.parentEmail) && (
-              <div style={{ background: "#FAFAFA", border: "1px solid #E5E7EB", borderRadius: 10, padding: "12px 16px", marginBottom: 20, fontSize: 12, color: "#6B7280" }}>
-                <div style={{ fontWeight: 600, color: "#374151", marginBottom: 4 }}>Login Credentials Preview</div>
-                {form.email && <div>Student: <strong>{form.email}</strong> / <strong>{form.phone || "phone number"}</strong></div>}
-                {form.parentEmail && <div style={{ marginTop: 2 }}>Parent: <strong>{form.parentEmail}</strong> / <strong>{form.parentPhone || form.phone || "phone number"}</strong></div>}
-              </div>
-            )}
-
-            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
-              <button onClick={() => setShowModal(false)}
-                style={{ padding: "10px 20px", borderRadius: 9, border: "1px solid #E5E7EB", background: "#F9FAFB", fontSize: 13, color: "#374151", cursor: "pointer" }}>
-                Cancel
-              </button>
-              <button onClick={handleSubmit} disabled={submitting}
-                style={{ padding: "10px 24px", borderRadius: 9, border: "none", background: submitting ? "#A5B4FC" : "#534AB7", fontSize: 13, color: "#fff", cursor: submitting ? "not-allowed" : "pointer", fontWeight: 600 }}>
-                {submitting ? "Saving..." : editStudent ? "Update Student" : "Add Student"}
-              </button>
-            </div>
+      <Modal show={!!deleteId} onClose={() => setDeleteId(null)} title="Delete Student">
+        <div style={{ textAlign:"center", padding:"8px 0 24px" }}>
+          <div style={{ fontSize:52, marginBottom:16 }}>🗑️</div>
+          <div style={{ fontSize:16, fontWeight:700, color:"#0F172A", marginBottom:8 }}>Are you sure?</div>
+          <div style={{ fontSize:13, color:"#94A3B8", marginBottom:24 }}>This action cannot be undone.</div>
+          <div style={{ display:"flex", gap:10, justifyContent:"center" }}>
+            <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
+            <button onClick={() => handleDelete(deleteId)} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#EF4444,#DC2626)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 14px rgba(239,68,68,0.4)" }}>Delete</button>
           </div>
         </div>
-      )}
-
-      {/* Delete Confirm */}
-      {deleteId && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
-          <div style={{ background: "#fff", borderRadius: 16, padding: 28, width: 380, boxShadow: "0 20px 60px rgba(0,0,0,0.15)", textAlign: "center" }}>
-            <div style={{ fontSize: 40, marginBottom: 12 }}>🗑️</div>
-            <h3 style={{ fontSize: 16, fontWeight: 700, color: "#111827", marginBottom: 8 }}>Remove Student?</h3>
-            <p style={{ fontSize: 13, color: "#6B7280", marginBottom: 24 }}>
-              This will permanently remove the student and deactivate linked parent account.
-            </p>
-            <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
-              <button onClick={() => setDeleteId(null)}
-                style={{ padding: "10px 22px", borderRadius: 9, border: "1px solid #E5E7EB", background: "#F9FAFB", fontSize: 13, cursor: "pointer" }}>
-                Cancel
-              </button>
-              <button onClick={handleDelete}
-                style={{ padding: "10px 22px", borderRadius: 9, border: "none", background: "#EF4444", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
-                Remove
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      </Modal>
     </div>
   );
 }
