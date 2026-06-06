@@ -45,46 +45,50 @@ const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 const NAV = [
-  { label: "Dashboard",        icon: LayoutDashboard,  path: "/admin" },
+  { label: "Dashboard",          icon: LayoutDashboard, path: "/admin" },
 
-  { section: "🎓 Students" },
-  { label: "All Students",     icon: Users,            path: "/admin/students" },
-  { label: "Attendance",       icon: CalendarCheck,    path: "/admin/attendance" },
-  { label: "Leave Requests",   icon: Notebook,         path: "/admin/leaves" },
-  { label: "Exam Results",     icon: FileBadge,        path: "/admin/results" },
-  { label: "Marks & Grades",   icon: Award,            path: "/admin/marks" },
+  { section: "ACADEMIC MANAGEMENT" },
+  { label: "All Students",       icon: Users,           path: "/admin/students" },
+  { label: "All Teachers",       icon: School,          path: "/admin/teachers" },
+  { label: "Timetable",          icon: Clock,           path: "/admin/timetable" },
+  { label: "Exam Schedule",      icon: BookOpen,        path: "/admin/exams" },
+  { label: "Results",            icon: FileBadge,       path: "/admin/results" },
+  { label: "Attendance Reports", icon: CalendarCheck,   path: "/admin/attendance-reports" },
 
-  { section: "👩‍🏫 Teachers" },
-  { label: "All Teachers",     icon: School,           path: "/admin/teachers" },
-  { label: "Timetable",        icon: Clock,            path: "/admin/timetable" },
-  { label: "Exams & Schedule", icon: BookOpen,         path: "/admin/exams" },
+  { section: "ADMISSIONS" },
+  { label: "Enquiries",          icon: FileText,        path: "/admin/admissions/enquiries" },
+  { label: "Applications",       icon: FileBadge,       path: "/admin/admissions/applications" },
+  { label: "Enrollment",         icon: Award,           path: "/admin/admissions/enrollment" },
 
-  { section: "👨‍👩‍👧 Parents & Staff" },
-  { label: "Parents",          icon: UserCircle,       path: "/admin/parents" },
-  { label: "User Management",  icon: Shield,           path: "/admin/user-management" },
+  { section: "FINANCE" },
+  { label: "Fee Structure",      icon: Layers,          path: "/admin/fee-structure" },
+  { label: "Fee Collection",     icon: BadgeDollarSign, path: "/admin/fees" },
+  { label: "Fee Reports",        icon: TrendingUp,      path: "/admin/fee-reports" },
 
-  { section: "💰 Finance" },
-  { label: "Fee Structure",    icon: Layers,           path: "/admin/fee-structure" },
-  { label: "Fee Collection",   icon: BadgeDollarSign,  path: "/admin/fees" },
-  { label: "Fee Reports",      icon: TrendingUp,       path: "/admin/fee-reports" },
+  { section: "HR & STAFF" },
+  { label: "Leave Management",   icon: Notebook,        path: "/admin/leaves" },
+  { label: "Salary Management",  icon: BadgeDollarSign, path: "/admin/hr-management" },
 
-  { section: "🚌 Transport" },
-  { label: "Bus Management",   icon: Bus,              path: "/admin/transport" },
+  { section: "PARENTS" },
+  { label: "All Parents",        icon: UserCircle,      path: "/admin/parents" },
 
-  { section: "📢 Communication" },
-  { label: "Notifications",    icon: Bell,             path: "/admin/notifications" },
-  { label: "Chat",             icon: MessageCircle,    path: "/admin/chat" },
-  { label: "Circulars",        icon: FileText,         path: "/admin/circulars" },
-  { label: "Notice Board",     icon: Bell,             path: "/admin/notice-board" },
-  { label: "Event Calendar",   icon: CalendarCheck,    path: "/admin/event-calendar" },
-  { label: "ID Card Generator", icon: CreditCard,       path: "/admin/id-card-generator" },
-  { label: "Bulk Operations",    icon: Layers,           path: "/admin/bulk-operations" },
-  { label: "HR Management",      icon: BadgeDollarSign,  path: "/admin/hr-management" },
+  { section: "COMMUNICATION" },
+  { label: "Notice Board",       icon: Bell,            path: "/admin/notice-board" },
+  { label: "Circulars",          icon: FileText,        path: "/admin/circulars" },
+  { label: "Notifications",      icon: Bell,            path: "/admin/notifications" },
+  { label: "Chat",               icon: MessageCircle,   path: "/admin/chat" },
+  { label: "Event Calendar",     icon: CalendarCheck,   path: "/admin/event-calendar" },
 
-  { section: "⚙️ System" },
-  { label: "Library",          icon: BookOpen,         path: "/admin/library" },
-  { label: "Reports",          icon: BarChart2,        path: "/admin/reports" },
-  { label: "Settings",         icon: SettingsIcon,     path: "/admin/settings" },
+  { section: "OPERATIONS" },
+  { label: "Library",            icon: BookOpen,        path: "/admin/library" },
+  { label: "Transport",          icon: Bus,             path: "/admin/transport" },
+  { label: "ID Card Generator",  icon: CreditCard,      path: "/admin/id-card-generator" },
+  { label: "Bulk Operations",    icon: Layers,          path: "/admin/bulk-operations" },
+
+  { section: "SYSTEM" },
+  { label: "User Management",    icon: Shield,          path: "/admin/user-management" },
+  { label: "Reports",            icon: BarChart2,       path: "/admin/reports" },
+  { label: "Settings",           icon: SettingsIcon,    path: "/admin/settings" },
 ];
 
 const MODULES = [
@@ -549,7 +553,7 @@ export default function AdminHome() {
           <Route path="teachers" element={<Teachers />} />
           <Route path="teachers/add" element={<AddTeacher />} />
           <Route path="teachers/:id" element={<TeacherProfile />} />
-          <Route path="attendance" element={<Attendance />} />
+          <Route path="attendance-reports" element={<AttendanceReport />} />
           <Route path="attendance/report" element={<AttendanceReport />} />
           <Route path="chat" element={<Chat />} />
           <Route path="exams" element={<ExamSchedule />} />
@@ -559,6 +563,9 @@ export default function AdminHome() {
           <Route path="leaves" element={<LeaveRequests />} />
           <Route path="library" element={<Library />} />
           <Route path="marks" element={<Marks />} />
+          <Route path="admissions/enquiries" element={<div style={{padding:40,textAlign:"center",color:"#94A3B8",fontSize:16,fontWeight:700}}>🏫 Admissions — Enquiries coming soon</div>} />
+          <Route path="admissions/applications" element={<div style={{padding:40,textAlign:"center",color:"#94A3B8",fontSize:16,fontWeight:700}}>📋 Applications coming soon</div>} />
+          <Route path="admissions/enrollment" element={<div style={{padding:40,textAlign:"center",color:"#94A3B8",fontSize:16,fontWeight:700}}>✅ Enrollment coming soon</div>} />
           <Route path="notifications" element={<Notifications />} />
           <Route path="reports" element={<Reports />} />
           <Route path="results" element={<Results />} />
