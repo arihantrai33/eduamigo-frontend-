@@ -169,7 +169,7 @@ function BuildingAnimation() {
           <div style={{ fontSize: 13, fontWeight: 700, color: "#A5B4FC", letterSpacing: "0.08em" }}>SCANNING...</div>
           <div style={{ display: "flex", gap: 5 }}>
             {[0,1,2,3,4].map(i => (
-              <div key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: "#6366F1", animation:  }} />
+              <div key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: "#6366F1", animation: `blink 1s ease-in-out ${i*0.15}s infinite` }} />
             ))}
           </div>
         </div>
