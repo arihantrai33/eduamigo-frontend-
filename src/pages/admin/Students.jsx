@@ -205,7 +205,7 @@ export default function Students() {
         .action-btn { transition: all 0.15s ease; }
       `}</style>
 
-      <div style={{ background:"linear-gradient(135deg,#6366F1,#8B5CF6,#A78BFA)", borderRadius:"0 0 24px 24px", padding:"28px 32px", margin:"-24px -24px 28px -24px", marginBottom:28, position:"relative", overflow:"hidden", animation:"fadeSlideUp 0.4s ease" }}>
+      <div style={{ background:"linear-gradient(135deg,#6366F1,#8B5CF6,#A78BFA)", borderRadius:20, padding:"28px 32px", marginBottom:28, position:"relative", overflow:"hidden", animation:"fadeSlideUp 0.4s ease" }}>
         <div style={{ position:"absolute", top:-40, right:-40, width:180, height:180, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
         <div style={{ position:"absolute", bottom:-30, left:100, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", position:"relative" }}>
