@@ -96,7 +96,7 @@ const MODULES = [
   { icon: "\u{1F469}\u200D🏫", name: "Teachers",   path: "/admin/teachers",   grad: "linear-gradient(135deg,#10B981,#059669)" },
   { icon: "👨‍👩‍👧", name: "Parents",    path: "/admin/parents",    grad: "linear-gradient(135deg,#F59E0B,#EF4444)" },
   { icon: "💳", name: "Fee Mgmt",   path: "/admin/fees",       grad: "linear-gradient(135deg,#06B6D4,#3B82F6)" },
-  { icon: "📋", name: "Attendance", path: "/admin/attendance",  grad: "linear-gradient(135deg,#EC4899,#F43F5E)" },
+  { icon: "📊", name: "Att. Reports", path: "/admin/attendance-reports", grad: "linear-gradient(135deg,#EC4899,#F43F5E)" },
   { icon: "📝", name: "Exams",      path: "/admin/exams",       grad: "linear-gradient(135deg,#F97316,#EF4444)" },
   { icon: "🕐", name: "Timetable",  path: "/admin/timetable",   grad: "linear-gradient(135deg,#3B82F6,#6366F1)" },
   { icon: "🏖️", name: "Leaves",     path: "/admin/leaves",      grad: "linear-gradient(135deg,#8B5CF6,#A855F7)" },
@@ -294,11 +294,11 @@ function DashboardContent({ isMobile, navigate, user }) {
 
       <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3,1fr)", gap: 16, marginBottom: "1.5rem" }}>
         <AnimatedItem delay={420}>
-          <div style={{ ...CARD }}>
+          <div style={{ ...CARD, cursor:"pointer" }} onClick={() => navigate("/admin/attendance-reports")}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: "#0F172A" }}>Today's Attendance</div>
-                <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>Present vs Absent</div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: "#0F172A" }}>Attendance Overview</div>
+                <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>School-wide report</div>
               </div>
               <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg,#EC4899,#F43F5E)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <CalendarCheck size={16} color="white" />
