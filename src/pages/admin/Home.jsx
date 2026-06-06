@@ -38,6 +38,8 @@ import Circulars from "./Circulars";
 import NoticeBoard from "./NoticeBoard";
 import EventCalendar from "./EventCalendar";
 import IDCardGenerator from "./IDCardGenerator";
+import BulkOperations from "./BulkOperations";
+import HRManagement from "./HRManagement";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -76,6 +78,8 @@ const NAV = [
   { label: "Notice Board",     icon: Bell,             path: "/admin/notice-board" },
   { label: "Event Calendar",   icon: CalendarCheck,    path: "/admin/event-calendar" },
   { label: "ID Card Generator", icon: CreditCard,       path: "/admin/id-card-generator" },
+  { label: "Bulk Operations",    icon: Layers,           path: "/admin/bulk-operations" },
+  { label: "HR Management",      icon: BadgeDollarSign,  path: "/admin/hr-management" },
 
   { section: "⚙️ System" },
   { label: "Library",          icon: BookOpen,         path: "/admin/library" },
@@ -567,6 +571,8 @@ export default function AdminHome() {
           <Route path="notice-board" element={<NoticeBoard />} />
           <Route path="event-calendar" element={<EventCalendar />} />
           <Route path="id-card-generator" element={<IDCardGenerator />} />
+          <Route path="bulk-operations" element={<BulkOperations />} />
+          <Route path="hr-management" element={<HRManagement />} />
           <Route path="noticeboard" element={<NoticeBoard />} />
         </Routes>
       </main>
