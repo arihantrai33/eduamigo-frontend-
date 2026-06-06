@@ -205,10 +205,13 @@ export default function Students() {
         .action-btn { transition: all 0.15s ease; }
       `}</style>
 
-      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:28, animation:"fadeSlideUp 0.4s ease" }}>
+      <div style={{ background:"linear-gradient(135deg,#6366F1,#8B5CF6,#A78BFA)", borderRadius:20, padding:"28px 32px", marginBottom:28, position:"relative", overflow:"hidden", animation:"fadeSlideUp 0.4s ease" }}>
+        <div style={{ position:"absolute", top:-40, right:-40, width:180, height:180, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
+        <div style={{ position:"absolute", bottom:-30, left:100, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", position:"relative" }}>
         <div>
-          <div style={{ fontSize:26, fontWeight:900, color:"#0F172A", letterSpacing:"-0.5px" }}>Students</div>
-          <div style={{ fontSize:13, color:"#94A3B8", marginTop:4 }}>Manage all enrolled students · {students.length} total</div>
+          <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>Students</div>
+          <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Manage all enrolled students · {students.length} total</div>
         </div>
         <button onClick={openAdd}
           style={{ display:"flex", alignItems:"center", gap:8, padding:"12px 24px", borderRadius:14, border:"none", background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"white", fontWeight:700, fontSize:14, cursor:"pointer", boxShadow:"0 4px 20px rgba(99,102,241,0.4)", transition:"all 0.2s" }}
@@ -216,6 +219,7 @@ export default function Students() {
           onMouseLeave={e=>e.currentTarget.style.transform="translateY(0)"}>
           <span style={{ fontSize:18 }}>+</span> Add Student
         </button>
+        </div>
       </div>
 
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:28 }}>
