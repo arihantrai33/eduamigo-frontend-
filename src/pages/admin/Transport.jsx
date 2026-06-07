@@ -48,7 +48,7 @@ function BusAnimation({ onDone }) {
           80%  { opacity:1; }
           100% { opacity:0; }
         }
-        .bus-wrap { animation: busRide 1.4s cubic-bezier(0.25,0.1,0.25,1) forwards, fadeOut 1.4s forwards; }
+        .bus-wrap { animation: busRide 2.8s cubic-bezier(0.15,0.1,0.25,1) forwards, fadeOut 2.8s forwards; }
         .wind-1 { position:absolute; height:3px; border-radius:4px; background:rgba(255,255,255,0.15); animation: windLine 1.4s 0s ease-in forwards; width:180px; top:44%; }
         .wind-2 { position:absolute; height:2px; border-radius:4px; background:rgba(255,255,255,0.1); animation: windLine 1.4s 0.1s ease-in forwards; width:120px; top:47%; }
         .wind-3 { position:absolute; height:2px; border-radius:4px; background:rgba(255,255,255,0.08); animation: windLine 1.4s 0.05s ease-in forwards; width:90px; top:42%; }
@@ -156,7 +156,7 @@ export default function Transport() {
   const [selectedStudents, setSelectedStudents] = useState([]);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowAnim(false), 1500);
+    const timer = setTimeout(() => setShowAnim(false), 3000);
     return () => clearTimeout(timer);
   }, []);
 
