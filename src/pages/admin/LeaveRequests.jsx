@@ -35,7 +35,7 @@ export default function LeaveRequests() {
   const handleAction = async (id, status) => {
     setActionLoading(id + status);
     try {
-      await axios.put(`${API}/leaves/${id}`, { status }, auth());
+      await axios.patch(`${API}/leaves/${id}/review`, { status }, auth());
       fetchLeaves();
     } catch(e) {}
     setActionLoading(null);
@@ -144,15 +144,16 @@ export default function LeaveRequests() {
                 <div style={{ padding:"18px 24px", display:"flex", alignItems:"center", gap:16, cursor:"pointer" }} onClick={() => setExpandedId(isExpanded ? null : l._id)}>
                   {/* Avatar */}
                   <div style={{ width:44, height:44, borderRadius:14, background:"linear-gradient(135deg,#F59E0B,#F97316)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, fontWeight:800, color:"white", flexShrink:0 }}>
-                    {l.teacher?.name?.[0]?.toUpperCase() || "T"}
+                    {l.name?.[0]?.toUpperCase() || "?"}
                   </div>
                   <div style={{ flex:1 }}>
                     <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:4 }}>
-                      <span style={{ fontSize:14, fontWeight:800, color:"#0F172A" }}>{l.teacher?.name || "Teacher"}</span>
-                      <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:"#EEF2FF", color:"#6366F1" }}>{l.leaveType || "Leave"}</span>
+                      <span style={{ fontSize:14, fontWeight:800, color:"#0F172A" }}>{l.name || "Unknown"}</span>
+                      <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background: l.role==="teacher" ? "#F0FDF4" : l.role==="student" ? "#EEF2FF" : "#FFF7ED", color: l.role==="teacher" ? "#15803D" : l.role==="student" ? "#4338CA" : "#C2410C" }}>{l.role?.charAt(0).toUpperCase() + l.role?.slice(1) || "User"}</span>
+                      <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:"#F1F5F9", color:"#64748B" }}>{l.leaveType || "Leave"}</span>
                     </div>
                     <div style={{ fontSize:12, color:"#94A3B8" }}>
-                      {fmtDate(l.fromDate)} → {fmtDate(l.toDate)} · {daysDiff(l.fromDate, l.toDate)}
+                      {fmtDate(l.fromDate)} → {fmtDate(l.toDate)} · {daysDiff(l.fromDate, l.toDate)}{l.class ? ` · Class ${l.class}` : ""}
                     </div>
                   </div>
                   <div style={{ display:"flex", alignItems:"center", gap:12 }}>
