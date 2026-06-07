@@ -1,328 +1,236 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+
 const API = import.meta.env.VITE_API_URL;
-const authHeader = () => ({
-  headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-});
-const inputStyle = {
-  padding: "8px 10px", borderRadius: 8, border: "1px solid #e5e7eb",
-  fontSize: 13, color: "#1a1a1a", outline: "none", background: "#f9fafb",
-  fontFamily: "Inter, sans-serif", width: "100%", boxSizing: "border-box",
-};
-const CURRENT_YEAR = "2025-26";
-const YEARS = ["2024-25", "2025-26", "2026-27"];
-const MONTHS = ["January","February","March","April","May","June",
-  "July","August","September","October","November","December"];
-const FEE_TYPES = ["Tuition","Transport","Library","Exam","Sports","Laboratory","Hostel","Miscellaneous"];
+const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+
+const FEE_TYPES = ["Tuition Fee","Admission Fee","Exam Fee","Library Fee","Sports Fee","Transport Fee","Hostel Fee","Miscellaneous"];
+const CLASS_COLORS = ["#6366F1","#8B5CF6","#EC4899","#F43F5E","#F97316","#EAB308","#22C55E","#14B8A6","#06B6D4","#3B82F6","#10B981","#F43F5E"];
+
+function Modal({ show, onClose, title, children }) {
+  if (!show) return null;
+  return (
+    <div style={{ position:"fixed", inset:0, background:"rgba(15,23,42,0.5)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:1000, backdropFilter:"blur(6px)" }}>
+      <div style={{ background:"white", borderRadius:24, padding:32, width:520, maxHeight:"90vh", overflowY:"auto", boxShadow:"0 32px 80px rgba(0,0,0,0.25)", animation:"slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1)" }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:24 }}>
+          <div style={{ fontSize:18, fontWeight:800, color:"#0F172A" }}>{title}</div>
+          <button onClick={onClose} style={{ width:32, height:32, borderRadius:"50%", border:"none", background:"#F1F5F9", cursor:"pointer", fontSize:16, color:"#64748B" }}>x</button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
 
 export default function FeeStructure() {
-  const [structures,   setStructures]   = useState([]);
-  const [loading,      setLoading]      = useState(true);
-  const [showModal,    setShowModal]    = useState(false);
-  const [editItem,     setEditItem]     = useState(null);
-  const [applyModal,   setApplyModal]   = useState(null);
-  const [toast,        setToast]        = useState(null);
-  const [selYear,      setSelYear]      = useState(CURRENT_YEAR);
-  const [applyForm,    setApplyForm]    = useState({ month: "", year: new Date().getFullYear() });
-  const [applying,     setApplying]     = useState(false);
-  const [classes,      setClasses]      = useState([]);
-  const [sections,     setSections]     = useState([]);
-  const [form, setForm] = useState({
-    academicYear: CURRENT_YEAR, class: "", section: "All",
-    feeType: "Tuition", amount: "", dueDate: "", description: "",
-  });
+  const [structures, setStructures] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [editItem, setEditItem] = useState(null);
+  const [deleteId, setDeleteId] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [filterClass, setFilterClass] = useState("");
+  const [form, setForm] = useState({ class:"", feeType:"Tuition Fee", amount:"", frequency:"Monthly", dueDate:"", description:"" });
 
-  useEffect(() => { fetchStructures(); }, [selYear]);
-
-  useEffect(() => {
-    axios.get(`${API}/students`, authHeader()).then(res => {
-      const students = res.data.data || [];
-      const uniqueClasses = [...new Set(students.map(s => String(s.class)))].sort((a, b) => Number(a) - Number(b));
-      setClasses(uniqueClasses);
-    }).catch(() => {});
-  }, []);
-
-  useEffect(() => {
-    if (!form.class) { setSections([]); return; }
-    axios.get(`${API}/students`, authHeader()).then(res => {
-      const students = res.data.data || [];
-      const uniqueSections = [...new Set(
-        students.filter(s => String(s.class) === String(form.class)).map(s => s.section)
-      )].sort();
-      setSections(uniqueSections);
-    }).catch(() => {});
-  }, [form.class]);
+  useEffect(() => { fetchStructures(); }, []);
 
   const fetchStructures = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${API}/fee-structures?academicYear=${selYear}`, authHeader());
-      if (res.data.success) setStructures(res.data.data || []);
-    } catch {
-      showToast("Failed to load fee structures", "error");
-    } finally {
-      setLoading(false);
-    }
+      const r = await axios.get(`${API}/fee-structures`, auth());
+      setStructures(r.data.data || []);
+    } catch(e) {}
+    setLoading(false);
   };
 
-  const showToast = (message, type = "success") => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 4000);
-  };
+  const openAdd = () => { setEditItem(null); setForm({ class:"", feeType:"Tuition Fee", amount:"", frequency:"Monthly", dueDate:"", description:"" }); setShowModal(true); };
+  const openEdit = (s) => { setEditItem(s); setForm({...s}); setShowModal(true); };
 
   const handleSave = async () => {
-    if (!form.class || !form.feeType || !form.amount || !form.dueDate || !form.academicYear) {
-      showToast("Please fill all required fields", "error"); return;
-    }
+    if (!form.class || !form.feeType || !form.amount) return alert("Class, fee type and amount required");
+    setSaving(true);
     try {
-      if (editItem) {
-        await axios.put(`${API}/fee-structures/${editItem._id}`,
-          { amount: Number(form.amount), dueDate: form.dueDate, description: form.description },
-          authHeader());
-        showToast("Fee structure updated successfully");
-      } else {
-        await axios.post(`${API}/fee-structures`,
-          { ...form, amount: Number(form.amount) },
-          authHeader());
-        showToast("Fee structure created successfully");
-      }
+      if (editItem) await axios.put(`${API}/fee-structures/${editItem._id}`, form, auth());
+      else await axios.post(`${API}/fee-structures`, form, auth());
       setShowModal(false);
-      setEditItem(null);
-      setForm({ academicYear: CURRENT_YEAR, class: "", section: "All", feeType: "Tuition", amount: "", dueDate: "", description: "" });
       fetchStructures();
-    } catch (err) {
-      showToast(err.response?.data?.message || "Failed to save", "error");
-    }
+    } catch(e) { alert(e.response?.data?.message || "Error"); }
+    setSaving(false);
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this fee structure?")) return;
-    try {
-      await axios.delete(`${API}/fee-structures/${id}`, authHeader());
-      showToast("Deleted successfully");
-      fetchStructures();
-    } catch {
-      showToast("Failed to delete", "error");
-    }
+    try { await axios.delete(`${API}/fee-structures/${id}`, auth()); fetchStructures(); }
+    catch(e) {}
+    setDeleteId(null);
   };
 
-  const handleApply = async () => {
-    if (!applyForm.month || !applyForm.year) {
-      showToast("Select month and year", "error"); return;
-    }
-    setApplying(true);
-    try {
-      const res = await axios.post(
-        `${API}/fee-structures/${applyModal._id}/apply`,
-        { month: applyForm.month, year: Number(applyForm.year) },
-        authHeader()
-      );
-      showToast(res.data.message);
-      setApplyModal(null);
-      setApplyForm({ month: "", year: new Date().getFullYear() });
-    } catch (err) {
-      showToast(err.response?.data?.message || "Failed to apply", "error");
-    } finally {
-      setApplying(false);
-    }
-  };
+  const f = (k, v) => setForm(p => ({ ...p, [k]: v }));
+  const classes = [...new Set(structures.map(s => s.class))].sort();
+  const filtered = structures.filter(s => !filterClass || s.class === filterClass);
+  const totalAmount = filtered.reduce((sum, s) => sum + Number(s.amount || 0), 0);
 
-  const openEdit = (s) => {
-    setEditItem(s);
-    setForm({
-      academicYear: s.academicYear, class: s.class, section: s.section,
-      feeType: s.feeType, amount: s.amount,
-      dueDate: s.dueDate ? s.dueDate.split("T")[0] : "",
-      description: s.description || "",
-    });
-    setShowModal(true);
-  };
-
-  const grouped = structures.reduce((acc, s) => {
-    const key = `Class ${s.class}`;
-    if (!acc[key]) acc[key] = [];
-    acc[key].push(s);
-    return acc;
-  }, {});
+  const inp = (label, key, type="text", placeholder="") => (
+    <div>
+      <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
+      <input type={type} value={form[key]||""} onChange={e => f(key, e.target.value)} placeholder={placeholder}
+        style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
+        onFocus={e => e.target.style.borderColor="#06B6D4"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
+    </div>
+  );
+  const sel = (label, key, options) => (
+    <div>
+      <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
+      <select value={form[key]||""} onChange={e => f(key, e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
+        <option value="">Select</option>
+        {options.map(o => <option key={o} value={o}>{o}</option>)}
+      </select>
+    </div>
+  );
 
   return (
-    <div style={{ fontFamily: "Inter, sans-serif" }}>
-      {toast && (
-        <div style={{ position: "fixed", top: 24, right: 24, zIndex: 9999, background: toast.type === "error" ? "#dc2626" : "#16a34a", color: "white", padding: "12px 20px", borderRadius: 10, fontSize: 13, fontWeight: 500, boxShadow: "0 4px 20px rgba(0,0,0,0.15)" }}>
-          {toast.message}
-        </div>
-      )}
+    <div style={{ fontFamily:"Inter,sans-serif" }}>
+      <style>{`
+        @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes slideUp { from { opacity:0; transform:translateY(24px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+        @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+        .fee-row:hover { background:#F0FDFF !important; transform:translateX(2px); }
+        .fee-row { transition: all 0.15s ease; }
+        .act-btn { transition: all 0.15s ease; }
+        .act-btn:hover { transform:translateY(-1px); }
+      `}</style>
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
-        <div>
-          <div style={{ fontSize: 20, fontWeight: 700, color: "#111827" }}>Fee Structure</div>
-          <div style={{ fontSize: 12, color: "#6b7280", marginTop: 3 }}>Design fee structure once — apply to entire class anytime</div>
-        </div>
-        <div style={{ display: "flex", gap: 10 }}>
-          <select value={selYear} onChange={e => setSelYear(e.target.value)} style={{ ...inputStyle, width: 130 }}>
-            {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-          </select>
-          <button onClick={() => { setEditItem(null); setForm({ academicYear: selYear, class: "", section: "All", feeType: "Tuition", amount: "", dueDate: "", description: "" }); setShowModal(true); }}
-            style={{ padding: "9px 18px", borderRadius: 8, border: "none", background: "#4f46e5", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}>
-            + New Structure
+      <div style={{ background:"linear-gradient(135deg,#06B6D4,#0EA5E9,#3B82F6)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
+        <div style={{ position:"absolute", top:-40, right:-40, width:180, height:180, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", position:"relative" }}>
+          <div>
+            <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>Fee Structure</div>
+            <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Define and manage fee categories for each class</div>
+          </div>
+          <button onClick={openAdd}
+            style={{ display:"flex", alignItems:"center", gap:8, padding:"12px 24px", borderRadius:14, border:"1px solid rgba(255,255,255,0.3)", background:"rgba(255,255,255,0.2)", color:"white", fontWeight:700, fontSize:14, cursor:"pointer", transition:"all 0.2s" }}
+            onMouseEnter={e => e.currentTarget.style.background="rgba(255,255,255,0.3)"}
+            onMouseLeave={e => e.currentTarget.style.background="rgba(255,255,255,0.2)"}>
+            + Add Fee
           </button>
         </div>
       </div>
 
-      <div style={{ background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 12, padding: "14px 18px", marginBottom: 24, display: "flex", gap: 12, alignItems: "flex-start" }}>
-        <div style={{ fontSize: 20 }}>💡</div>
-        <div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#1e40af" }}>How it works</div>
-          <div style={{ fontSize: 12, color: "#3b82f6", marginTop: 4, lineHeight: 1.7 }}>
-            1. Create a fee structure for each class (e.g. Class 10 — Tuition — ₹5000). <br />
-            2. Click <strong>Apply</strong> to instantly generate fee records for all students of that class. <br />
-            3. Students and parents will see the fee on their portal immediately. <br />
-            4. You can edit the structure anytime — changes apply on next Apply action.
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
+        {[
+          { label:"TOTAL STRUCTURES", value: structures.length,    icon:"📋", border:"#6366F1", bg:"#EEF2FF" },
+          { label:"CLASSES COVERED",  value: classes.length,       icon:"🏫", border:"#10B981", bg:"#F0FDF4" },
+          { label:"FEE TYPES",        value: [...new Set(structures.map(s=>s.feeType))].length, icon:"🏷️", border:"#F59E0B", bg:"#FFFBEB" },
+          { label:"TOTAL AMOUNT",     value: `₹${totalAmount.toLocaleString()}`, icon:"💰", border:"#06B6D4", bg:"#ECFEFF" },
+        ].map((card, i) => (
+          <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+              <div>
+                <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", letterSpacing:"0.08em", marginBottom:8 }}>{card.label}</div>
+                <div style={{ fontSize:24, fontWeight:900, color:"#0F172A" }}>{card.value}</div>
+              </div>
+              <div style={{ width:42, height:42, borderRadius:12, background:card.bg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>{card.icon}</div>
+            </div>
           </div>
-        </div>
+        ))}
       </div>
 
-      {loading ? (
-        <div style={{ textAlign: "center", padding: "48px 0", color: "#9ca3af" }}>Loading fee structures...</div>
-      ) : structures.length === 0 ? (
-        <div style={{ textAlign: "center", padding: "64px 0" }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>📋</div>
-          <div style={{ fontSize: 16, fontWeight: 700, color: "#374151" }}>No fee structures yet</div>
-          <div style={{ fontSize: 13, color: "#9ca3af", marginTop: 6 }}>Create your first fee structure to get started</div>
-        </div>
-      ) : (
-        Object.entries(grouped).sort().map(([classLabel, items]) => (
-          <div key={classLabel} style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#374151", marginBottom: 10, paddingLeft: 4 }}>{classLabel}</div>
-            <div style={{ background: "white", borderRadius: 14, border: "1px solid #f3f4f6", overflow: "hidden", boxShadow: "0 1px 6px rgba(0,0,0,0.05)" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr 180px", padding: "10px 20px", background: "#f9fafb", fontSize: 11, fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: 0.5 }}>
-                <span>Fee Type</span><span>Section</span><span>Amount</span><span>Due Date</span><span>Last Applied</span><span style={{ textAlign: "right" }}>Actions</span>
-              </div>
-              {items.map((s, i) => {
-                const lastApply = s.applyHistory?.[s.applyHistory.length - 1];
-                return (
-                  <div key={s._id} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr 180px", padding: "14px 20px", alignItems: "center", borderTop: i === 0 ? "none" : "1px solid #f3f4f6" }}
-                    onMouseEnter={e => e.currentTarget.style.background = "#fafafa"}
-                    onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: "#111827" }}>{s.feeType}</span>
-                    <span style={{ fontSize: 12, color: "#6b7280" }}>{s.section}</span>
-                    <span style={{ fontSize: 14, fontWeight: 800, color: "#4f46e5" }}>₹{s.amount.toLocaleString("en-IN")}</span>
-                    <span style={{ fontSize: 12, color: "#6b7280" }}>{s.dueDate ? new Date(s.dueDate).toLocaleDateString("en-IN") : "—"}</span>
-                    <div>
-                      {lastApply ? (
-                        <div>
-                          <div style={{ fontSize: 11, color: "#16a34a", fontWeight: 600 }}>{new Date(lastApply.appliedAt).toLocaleDateString("en-IN")}</div>
-                          <div style={{ fontSize: 10, color: "#9ca3af" }}>{lastApply.created} students</div>
-                        </div>
-                      ) : (
-                        <span style={{ fontSize: 11, color: "#9ca3af" }}>Never applied</span>
-                      )}
-                    </div>
-                    <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-                      <button onClick={() => setApplyModal(s)} style={{ padding: "6px 14px", borderRadius: 7, border: "none", background: "#dcfce7", color: "#16a34a", fontSize: 12, cursor: "pointer", fontWeight: 700 }}>Apply</button>
-                      <button onClick={() => openEdit(s)} style={{ padding: "6px 14px", borderRadius: 7, border: "none", background: "#ede9fe", color: "#4f46e5", fontSize: 12, cursor: "pointer", fontWeight: 700 }}>Edit</button>
-                      <button onClick={() => handleDelete(s._id)} style={{ padding: "6px 14px", borderRadius: 7, border: "none", background: "#fee2e2", color: "#dc2626", fontSize: 12, cursor: "pointer", fontWeight: 700 }}>Delete</button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        ))
-      )}
+      <div style={{ display:"flex", gap:12, marginBottom:20, alignItems:"center" }}>
+        <select value={filterClass} onChange={e => setFilterClass(e.target.value)}
+          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:160 }}>
+          <option value="">All Classes</option>
+          {classes.map(c => <option key={c} value={c}>Class {c}</option>)}
+        </select>
+        <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600 }}>{filtered.length} structures</div>
+      </div>
 
-      {/* Create / Edit Modal */}
-      {showModal && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, backdropFilter: "blur(4px)" }}>
-          <div style={{ background: "white", borderRadius: 16, padding: "28px 32px", width: 500, boxShadow: "0 20px 60px rgba(0,0,0,0.15)" }}>
-            <div style={{ fontSize: 17, fontWeight: 700, color: "#111827", marginBottom: 20 }}>
-              {editItem ? "Edit Fee Structure" : "New Fee Structure"}
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 20 }}>
-              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                <label style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>Academic Year *</label>
-                <select value={form.academicYear} onChange={e => setForm(f => ({ ...f, academicYear: e.target.value }))} style={inputStyle} disabled={!!editItem}>
-                  {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-                </select>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                <label style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>Fee Type *</label>
-                <select value={form.feeType} onChange={e => setForm(f => ({ ...f, feeType: e.target.value }))} style={inputStyle} disabled={!!editItem}>
-                  {FEE_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                </select>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                <label style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>Class *</label>
-                <select value={form.class} onChange={e => setForm(f => ({ ...f, class: e.target.value, section: "All" }))} style={inputStyle} disabled={!!editItem}>
-                  <option value="">Select class</option>
-                  {classes.map(c => <option key={c} value={c}>Class {c}</option>)}
-                </select>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                <label style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>Section</label>
-                <select value={form.section} onChange={e => setForm(f => ({ ...f, section: e.target.value }))} style={inputStyle} disabled={!!editItem}>
-                  <option value="All">All Sections</option>
-                  {sections.map(s => <option key={s} value={s}>Section {s}</option>)}
-                </select>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                <label style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>Amount (₹) *</label>
-                <input type="number" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} placeholder="e.g. 5000" style={inputStyle} />
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                <label style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>Due Date *</label>
-                <input type="date" value={form.dueDate} onChange={e => setForm(f => ({ ...f, dueDate: e.target.value }))} style={inputStyle} />
-              </div>
-              <div style={{ gridColumn: "1/-1", display: "flex", flexDirection: "column", gap: 6 }}>
-                <label style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>Description</label>
-                <input type="text" value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="Optional note" style={inputStyle} />
-              </div>
-            </div>
-            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
-              <button onClick={() => { setShowModal(false); setEditItem(null); }} style={{ padding: "10px 24px", borderRadius: 9, border: "1px solid #e5e7eb", background: "white", fontSize: 13, cursor: "pointer" }}>Cancel</button>
-              <button onClick={handleSave} style={{ padding: "10px 24px", borderRadius: 9, border: "none", background: "#4f46e5", color: "#fff", fontSize: 13, cursor: "pointer", fontWeight: 600 }}>
-                {editItem ? "Save Changes" : "Create Structure"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <div style={{ background:"white", borderRadius:20, boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid rgba(226,232,240,0.8)", overflow:"hidden" }}>
+        <table style={{ width:"100%", borderCollapse:"collapse" }}>
+          <thead>
+            <tr style={{ background:"linear-gradient(90deg,#F8FAFC,#F1F5F9)" }}>
+              {["Class","Fee Type","Amount","Frequency","Due Date","Description","Actions"].map(h => (
+                <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#64748B", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              <tr><td colSpan={7} style={{ padding:"60px 0", textAlign:"center" }}>
+                <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid #06B6D4", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
+                <div style={{ color:"#94A3B8", fontSize:13 }}>Loading...</div>
+              </td></tr>
+            ) : filtered.length === 0 ? (
+              <tr><td colSpan={7} style={{ padding:"80px 0", textAlign:"center" }}>
+                <div style={{ fontSize:48, marginBottom:12 }}>💰</div>
+                <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No fee structures found</div>
+                <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Click "Add Fee" to get started</div>
+              </td></tr>
+            ) : filtered.map((s, i) => {
+              const clsColor = CLASS_COLORS[parseInt(s.class) % CLASS_COLORS.length] || "#6366F1";
+              return (
+                <tr key={s._id} className="fee-row" style={{ borderBottom:"1px solid #F1F5F9" }}>
+                  <td style={{ padding:"14px 18px" }}>
+                    <span style={{ fontSize:12, fontWeight:800, padding:"5px 12px", borderRadius:20, background:`${clsColor}15`, color:clsColor, border:`1px solid ${clsColor}30` }}>Class {s.class}</span>
+                  </td>
+                  <td style={{ padding:"14px 18px", fontSize:13, fontWeight:700, color:"#0F172A" }}>{s.feeType}</td>
+                  <td style={{ padding:"14px 18px" }}>
+                    <span style={{ fontSize:15, fontWeight:800, color:"#059669" }}>Rs.{Number(s.amount||0).toLocaleString()}</span>
+                  </td>
+                  <td style={{ padding:"14px 18px" }}>
+                    <span style={{ fontSize:12, fontWeight:700, padding:"4px 10px", borderRadius:8, background:"#EEF2FF", color:"#6366F1" }}>{s.frequency || "Monthly"}</span>
+                  </td>
+                  <td style={{ padding:"14px 18px", fontSize:13, color:"#374151", fontWeight:600 }}>{s.dueDate || "Not set"}</td>
+                  <td style={{ padding:"14px 18px", fontSize:12, color:"#94A3B8", maxWidth:180 }}>{s.description || "No description"}</td>
+                  <td style={{ padding:"14px 18px" }}>
+                    <div style={{ display:"flex", gap:6 }}>
+                      <button className="act-btn" onClick={() => openEdit(s)}
+                        style={{ padding:"6px 14px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", color:"#374151", fontSize:12, fontWeight:700, cursor:"pointer" }}>Edit</button>
+                      <button className="act-btn" onClick={() => setDeleteId(s._id)}
+                        style={{ padding:"6px 12px", borderRadius:8, border:"none", background:"#FEF2F2", color:"#DC2626", fontSize:12, fontWeight:700, cursor:"pointer" }}>Del</button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
 
-      {/* Apply Modal */}
-      {applyModal && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, backdropFilter: "blur(4px)" }}>
-          <div style={{ background: "white", borderRadius: 16, padding: "28px 32px", width: 420, boxShadow: "0 20px 60px rgba(0,0,0,0.15)" }}>
-            <div style={{ fontSize: 17, fontWeight: 700, color: "#111827", marginBottom: 6 }}>Apply Fee Structure</div>
-            <div style={{ fontSize: 13, color: "#6b7280", marginBottom: 20 }}>
-              Class {applyModal.class} — {applyModal.feeType} — ₹{applyModal.amount.toLocaleString("en-IN")}
-            </div>
-            <div style={{ background: "#fffbeb", border: "1px solid #fde68a", borderRadius: 10, padding: "12px 14px", marginBottom: 20, fontSize: 12, color: "#92400e" }}>
-              This will create fee records for all students of Class {applyModal.class}
-              {applyModal.section !== "All" ? ` Section ${applyModal.section}` : ""}. Students already having this fee for selected month will be skipped.
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 20 }}>
-              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                <label style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>Month *</label>
-                <select value={applyForm.month} onChange={e => setApplyForm(f => ({ ...f, month: e.target.value }))} style={inputStyle}>
-                  <option value="">Select month</option>
-                  {MONTHS.map(m => <option key={m} value={m}>{m}</option>)}
-                </select>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                <label style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>Year *</label>
-                <input type="number" value={applyForm.year} onChange={e => setApplyForm(f => ({ ...f, year: e.target.value }))} style={inputStyle} />
-              </div>
-            </div>
-            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
-              <button onClick={() => setApplyModal(null)} style={{ padding: "10px 24px", borderRadius: 9, border: "1px solid #e5e7eb", background: "white", fontSize: 13, cursor: "pointer" }}>Cancel</button>
-              <button onClick={handleApply} disabled={applying}
-                style={{ padding: "10px 24px", borderRadius: 9, border: "none", background: applying ? "#c7d2fe" : "#16a34a", color: "#fff", fontSize: 13, cursor: "pointer", fontWeight: 600 }}>
-                {applying ? "Applying..." : "Apply to All Students"}
-              </button>
-            </div>
+      <Modal show={showModal} onClose={() => setShowModal(false)} title={editItem ? "Edit Fee Structure" : "Add Fee Structure"}>
+        <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+            {inp("CLASS","class","text","e.g. 10")}
+            {sel("FEE TYPE","feeType",FEE_TYPES)}
+          </div>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+            {inp("AMOUNT","amount","number","e.g. 5000")}
+            {sel("FREQUENCY","frequency",["Monthly","Quarterly","Half-Yearly","Annually","One-Time"])}
+          </div>
+          {inp("DUE DATE","dueDate","text","e.g. 10th of every month")}
+          <div>
+            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>DESCRIPTION</div>
+            <textarea value={form.description||""} onChange={e => f("description", e.target.value)} placeholder="Optional..."
+              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", resize:"vertical", minHeight:70 }} />
+          </div>
+          <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
+            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
+            <button onClick={handleSave} disabled={saving} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#06B6D4,#0EA5E9)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", opacity:saving?0.7:1 }}>
+              {saving ? "Saving..." : "Save"}
+            </button>
           </div>
         </div>
-      )}
+      </Modal>
+
+      <Modal show={!!deleteId} onClose={() => setDeleteId(null)} title="Delete Fee Structure">
+        <div style={{ textAlign:"center", padding:"8px 0 24px" }}>
+          <div style={{ fontSize:52, marginBottom:16 }}>🗑️</div>
+          <div style={{ fontSize:16, fontWeight:700, color:"#0F172A", marginBottom:8 }}>Are you sure?</div>
+          <div style={{ fontSize:13, color:"#94A3B8", marginBottom:24 }}>This fee structure will be permanently deleted.</div>
+          <div style={{ display:"flex", gap:10, justifyContent:"center" }}>
+            <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
+            <button onClick={() => handleDelete(deleteId)} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#EF4444,#DC2626)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer" }}>Delete</button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
