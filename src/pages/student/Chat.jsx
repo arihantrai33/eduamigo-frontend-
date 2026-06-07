@@ -49,7 +49,7 @@ export default function Chat() {
     if (activeChat) {
       fetchMessages(activeChat.roomId);
       clearInterval(pollRef.current);
-      pollRef.current = setInterval(() => fetchMessages(activeChat.roomId), 5000);
+      pollRef.current = setInterval(() => fetchMessages(activeChat.roomId), 3000);
     }
     return () => clearInterval(pollRef.current);
   }, [activeChat]);
