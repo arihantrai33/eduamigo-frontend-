@@ -61,7 +61,7 @@ export default function FeeReports() {
   }).filter(c => c.count > 0);
 
   const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-  const fmtAmt = (n) => `Rs.${Number(n).toLocaleString()}`;
+  const fmtAmt = (n) => `₹${Number(n).toLocaleString()}`;
 
   return (
     <div style={{ fontFamily:"Inter,sans-serif" }}>
