@@ -42,7 +42,7 @@ export default function Communications() {
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("announcement");
   const [editItem, setEditItem] = useState(null);
-  const [filterTarget, setFilterTarget] = useState("all");
+  const [filterTarget, setFilterTarget] = useState("");
   const [filterPriority, setFilterPriority] = useState("");
   const [search, setSearch] = useState("");
 
@@ -125,7 +125,7 @@ export default function Communications() {
   };
 
   const filteredAnn = announcements.filter(a =>
-    (filterTarget === "all" || a.targetRole === filterTarget) &&
+    (!filterTarget || a.targetRole === filterTarget || a.targetRole === "all") &&
     (!filterPriority || a.priority === filterPriority) &&
     (!search || a.title?.toLowerCase().includes(search.toLowerCase()) || a.message?.toLowerCase().includes(search.toLowerCase()))
   );
@@ -218,10 +218,10 @@ export default function Communications() {
                 style={{ width:"100%", padding:"11px 14px 11px 38px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
                 onFocus={e => e.target.style.borderColor="#6366F1"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
             </div>
-            {["all","student","teacher","parent","admin"].map(t => (
-              <button key={t} onClick={() => setFilterTarget(t)}
-                style={{ padding:"9px 16px", borderRadius:10, border:"none", cursor:"pointer", fontWeight:700, fontSize:12, background: filterTarget===t ? "#6366F1" : "#F1F5F9", color: filterTarget===t ? "white" : "#64748B" }}>
-                {t === "all" ? "Everyone" : t.charAt(0).toUpperCase() + t.slice(1)}
+            {[["","All"],["student","Students"],["teacher","Teachers"],["parent","Parents"],["admin","Admin"]].map(([val,lbl]) => (
+              <button key={val} onClick={() => setFilterTarget(filterTarget===val?"":val)}
+                style={{ padding:"9px 16px", borderRadius:10, border:"none", cursor:"pointer", fontWeight:700, fontSize:12, background: filterTarget===val ? "#6366F1" : "#F1F5F9", color: filterTarget===val ? "white" : "#64748B" }}>
+                {lbl}
               </button>
             ))}
             {["","normal","important","urgent"].map(p => p ? (
