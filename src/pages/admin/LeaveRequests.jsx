@@ -161,7 +161,7 @@ export default function LeaveRequests() {
                       <span style={{ fontSize:12, fontWeight:700, color:cfg.color }}>{status}</span>
                     </div>
                     {status === "Pending" && (
-                      <div style={{ display:"flex", gap:8" }}>
+                      <div style={{ display:"flex", gap:8 }}>
                         <button className="act-btn" onClick={e => { e.stopPropagation(); handleAction(l._id, "Approved"); }}
                           disabled={actionLoading === l._id + "Approved"}
                           style={{ padding:"8px 18px", borderRadius:10, border:"none", background:"linear-gradient(135deg,#10B981,#059669)", color:"white", fontSize:12, fontWeight:700, cursor:"pointer", boxShadow:"0 2px 8px rgba(16,185,129,0.3)", opacity: actionLoading === l._id + "Approved" ? 0.7 : 1 }}>
