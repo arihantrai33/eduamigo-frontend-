@@ -2,410 +2,277 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 const API = import.meta.env.VITE_API_URL;
-const authHeader = () => ({
-  headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-});
+const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
-const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const SUBJECTS = ["Mathematics", "Science", "English", "Hindi", "Social Science", "Computer", "Physics", "Chemistry", "Biology", "History", "Geography", "Art", "PE", "Break", "Free"];
+const DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const DAY_COLORS = { Monday:"#6366F1", Tuesday:"#10B981", Wednesday:"#F59E0B", Thursday:"#EC4899", Friday:"#3B82F6", Saturday:"#8B5CF6" };
+const PERIODS = [1,2,3,4,5,6,7,8];
 
-const DEFAULT_PERIODS = [
-  { no: 1, time: "09:00 - 09:45", subject: "", teacher: "" },
-  { no: 2, time: "09:45 - 10:30", subject: "", teacher: "" },
-  { no: 3, time: "10:30 - 10:45", subject: "Break", teacher: "" },
-  { no: 4, time: "10:45 - 11:30", subject: "", teacher: "" },
-  { no: 5, time: "11:30 - 12:15", subject: "", teacher: "" },
-  { no: 6, time: "12:15 - 01:00", subject: "", teacher: "" },
-  { no: 7, time: "01:00 - 01:45", subject: "", teacher: "" },
-  { no: 8, time: "01:45 - 02:30", subject: "", teacher: "" },
-];
+function Modal({ show, onClose, title, children }) {
+  if (!show) return null;
+  return (
+    <div style={{ position:"fixed", inset:0, background:"rgba(15,23,42,0.5)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:1000, backdropFilter:"blur(6px)" }}>
+      <div style={{ background:"white", borderRadius:24, padding:32, width:560, maxHeight:"90vh", overflowY:"auto", boxShadow:"0 32px 80px rgba(0,0,0,0.25)", animation:"slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1)" }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:24 }}>
+          <div style={{ fontSize:18, fontWeight:800, color:"#0F172A" }}>{title}</div>
+          <button onClick={onClose} style={{ width:32, height:32, borderRadius:"50%", border:"none", background:"#F1F5F9", cursor:"pointer", fontSize:16, color:"#64748B" }}>x</button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
 
 export default function Timetable() {
-  const [classes, setClasses] = useState([]);
-  const [sections, setSections] = useState([]);
+  const [timetables, setTimetables] = useState([]);
   const [teachers, setTeachers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSection, setSelectedSection] = useState("");
   const [selectedDay, setSelectedDay] = useState("Monday");
-  const [classTeacher, setClassTeacher] = useState("");
-  const [schedule, setSchedule] = useState({});
-  const [saving, setSaving] = useState(false);
-  const [toast, setToast] = useState(null);
-  const [existingTimetables, setExistingTimetables] = useState([]);
-  const [viewMode, setViewMode] = useState("edit"); // edit | view
+  const [showModal, setShowModal] = useState(false);
+  const [editPeriod, setEditPeriod] = useState(null);
+  const [periodForm, setPeriodForm] = useState({ no:1, subject:"", teacherId:"", startTime:"", endTime:"" });
 
-  // Fetch all unique classes from students
-  useEffect(() => {
-    axios.get(`${API}/students/classes`, authHeader())
-      .then(r => {
-        const cls = r.data?.data || [];
-        setClasses(cls.sort((a, b) => parseInt(a) - parseInt(b)));
-      })
-      .catch(() => {
-        // fallback hardcoded
-        setClasses(["1","2","3","4","5","6","7","8","9","10","11","12"]);
-      });
+  useEffect(() => { fetchAll(); }, []);
 
-    axios.get(`${API}/teachers`, authHeader())
-      .then(r => setTeachers(r.data?.data || r.data?.teachers || []))
-      .catch(() => {});
-  }, []);
-
-  // Fetch sections when class changes
-  useEffect(() => {
-    if (!selectedClass) return;
-    setSections([]);
-    setSelectedSection("");
-    setClassTeacher("");
-
-    axios.get(`${API}/students/sections?class=${selectedClass}`, authHeader())
-      .then(r => {
-        const secs = r.data?.data || ["A"];
-        setSections(secs);
-        setSelectedSection(secs[0] || "A");
-      })
-      .catch(() => setSections(["A", "B", "C"]));
-  }, [selectedClass]);
-
-  // Fetch existing timetable when class+section changes
-  useEffect(() => {
-    if (!selectedClass || !selectedSection) return;
-    setSchedule({});
-
-    axios.get(`${API}/timetable/class/${selectedClass}`, authHeader())
-      .then(r => {
-        const data = r.data?.data || [];
-        const filtered = data.filter(t => t.section === selectedSection);
-        setExistingTimetables(filtered);
-
-        // Build schedule map: { Monday: [...periods], Tuesday: [...] }
-        const map = {};
-        filtered.forEach(t => {
-          map[t.day] = t.periods?.map(p => ({
-            no: p.no || p.period,
-            time: p.time || "",
-            subject: p.subject || "",
-            teacher: p.teacher?._id || p.teacher || "",
-          })) || DEFAULT_PERIODS.map(d => ({ ...d }));
-        });
-        setSchedule(map);
-
-        // Set class teacher from first entry
-        if (filtered[0]?.classTeacher) setClassTeacher(filtered[0].classTeacher);
-      })
-      .catch(() => {});
-  }, [selectedClass, selectedSection]);
-
-  const currentPeriods = schedule[selectedDay] || DEFAULT_PERIODS.map(d => ({ ...d }));
-
-  const updatePeriod = (idx, field, value) => {
-    const updated = [...currentPeriods];
-    updated[idx] = { ...updated[idx], [field]: value };
-    setSchedule(prev => ({ ...prev, [selectedDay]: updated }));
+  const fetchAll = async () => {
+    setLoading(true);
+    try {
+      const [tRes, teachRes] = await Promise.allSettled([
+        axios.get(`${API}/timetable`, auth()),
+        axios.get(`${API}/teachers`, auth()),
+      ]);
+      setTimetables(tRes.status === "fulfilled" ? (tRes.value.data.data || []) : []);
+      setTeachers(teachRes.status === "fulfilled" ? (teachRes.value.data.data || []) : []);
+    } catch(e) {}
+    setLoading(false);
   };
 
-  const saveDay = async () => {
-    if (!selectedClass || !selectedSection) return showToast("Please select class and section", "error");
+  const classes = [...new Set(timetables.map(t => t.class))].sort();
+  const sections = [...new Set(timetables.filter(t => t.class === selectedClass).map(t => t.section))].sort();
+
+  const currentTimetable = timetables.find(t =>
+    t.class === selectedClass && t.section === selectedSection && t.day === selectedDay
+  );
+
+  const openAddPeriod = (periodNo) => {
+    setEditPeriod(null);
+    setPeriodForm({ no: periodNo, subject:"", teacherId:"", startTime:"", endTime:"" });
+    setShowModal(true);
+  };
+
+  const openEditPeriod = (period) => {
+    setEditPeriod(period);
+    setPeriodForm({
+      no: period.periodNo || period.no,
+      subject: period.subject || "",
+      teacherId: period.teacher?._id || period.teacher || "",
+      startTime: period.startTime || "",
+      endTime: period.endTime || "",
+    });
+    setShowModal(true);
+  };
+
+  const handleSavePeriod = async () => {
+    if (!selectedClass || !selectedSection) return alert("Select class and section first");
+    if (!periodForm.subject) return alert("Subject is required");
     setSaving(true);
     try {
-      const existing = existingTimetables.find(t => t.day === selectedDay);
-      const cleanPeriods = currentPeriods.map(p => ({ ...p, teacher: p.teacher || undefined }));
       const payload = {
         class: selectedClass,
         section: selectedSection,
         day: selectedDay,
-        periods: cleanPeriods,
-        classTeacher: classTeacher || undefined,
+        period: {
+          periodNo: periodForm.no,
+          no: periodForm.no,
+          subject: periodForm.subject,
+          teacher: periodForm.teacherId || undefined,
+          startTime: periodForm.startTime,
+          endTime: periodForm.endTime,
+        }
       };
-
-      if (existing) {
-        await axios.put(`${API}/timetable/${existing._id}`, payload, authHeader());
+      if (currentTimetable) {
+        await axios.put(`${API}/timetable/${currentTimetable._id}`, payload, auth());
       } else {
-        await axios.post(`${API}/timetable`, payload, authHeader());
+        await axios.post(`${API}/timetable`, payload, auth());
       }
-
-      // Refresh
-      const r = await axios.get(`${API}/timetable/class/${selectedClass}`, authHeader());
-      const filtered = (r.data?.data || []).filter(t => t.section === selectedSection);
-      setExistingTimetables(filtered);
-      showToast(`${selectedDay} timetable saved!`, "success");
-    } catch (e) {
-      showToast(e.response?.data?.message || "Save failed", "error");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const saveAllDays = async () => {
-    setSaving(true);
-    let errors = 0;
-    for (const day of DAYS) {
-      const periods = schedule[day];
-      if (!periods) continue;
-      try {
-        const existing = existingTimetables.find(t => t.day === day);
-        const cleanP = periods ? periods.map(p => ({ ...p, teacher: p.teacher || undefined })) : []; const payload = { class: selectedClass, section: selectedSection, day, periods: cleanP, classTeacher: classTeacher || undefined };
-        if (existing) await axios.put(`${API}/timetable/${existing._id}`, payload, authHeader());
-        else await axios.post(`${API}/timetable`, payload, authHeader());
-      } catch { errors++; }
-    }
+      setShowModal(false);
+      fetchAll();
+    } catch(e) { alert(e.response?.data?.message || "Error saving"); }
     setSaving(false);
-    if (errors) showToast(`Saved with ${errors} error(s)`, "error");
-    else showToast("Full week timetable saved!", "success");
   };
 
-  const showToast = (msg, type) => {
-    setToast({ msg, type });
-    setTimeout(() => setToast(null), 3000);
+  const getTeacherName = (teacher) => {
+    if (!teacher) return null;
+    if (typeof teacher === "object") return teacher.name;
+    const found = teachers.find(t => t._id === teacher);
+    return found?.name || null;
   };
 
-  const copyToAllDays = () => {
-    const copy = {};
-    DAYS.forEach(d => { copy[d] = currentPeriods.map(p => ({ ...p })); });
-    setSchedule(copy);
-    showToast("Copied to all days!", "success");
-  };
-
-  const daysWithData = DAYS.filter(d => schedule[d]);
+  const f = (k, v) => setPeriodForm(p => ({ ...p, [k]: v }));
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif", color: "#1a1a2e" }}>
-      {/* Toast */}
-      {toast && (
-        <div style={{
-          position: "fixed", top: 20, right: 20, zIndex: 9999,
-          background: toast.type === "success" ? "#10b981" : "#ef4444",
-          color: "white", padding: "10px 20px", borderRadius: 10,
-          fontSize: 13, fontWeight: 600, boxShadow: "0 4px 20px rgba(0,0,0,0.15)"
-        }}>{toast.msg}</div>
-      )}
+    <div style={{ fontFamily:"Inter,sans-serif" }}>
+      <style>{`
+        @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes slideUp { from { opacity:0; transform:translateY(24px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+        @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+        .period-cell:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important; }
+        .period-cell { transition: all 0.2s ease; }
+        .day-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+        .day-btn { transition: all 0.15s ease; }
+      `}</style>
 
       {/* Header */}
-      <div style={{ marginBottom: "1.5rem" }}>
-        <div style={{ fontSize: 20, fontWeight: 700, color: "#1a1a2e" }}>Timetable Manager</div>
-        <div style={{ fontSize: 12, color: "#999", marginTop: 2 }}>Create and manage weekly class schedules</div>
+      <div style={{ background:"linear-gradient(135deg,#3B82F6,#6366F1,#8B5CF6)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
+        <div style={{ position:"absolute", top:-40, right:-40, width:180, height:180, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
+        <div style={{ position:"absolute", bottom:-30, left:100, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
+        <div style={{ position:"relative" }}>
+          <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>Timetable</div>
+          <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Create and manage class schedules</div>
+        </div>
       </div>
 
-      {/* Selectors */}
-      <div style={{ background: "#fff", border: "1px solid #E8EAF0", borderRadius: 12, padding: "16px 20px", marginBottom: 20 }}>
-        <div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: "flex-end" }}>
-          {/* Class */}
-          <div style={{ flex: 1, minWidth: 120 }}>
-            <label style={{ fontSize: 11, fontWeight: 600, color: "#666", display: "block", marginBottom: 6, letterSpacing: 0.5 }}>CLASS</label>
-            <select
-              value={selectedClass}
-              onChange={e => setSelectedClass(e.target.value)}
-              style={{ width: "100%", padding: "8px 12px", border: "1.5px solid #E8EAF0", borderRadius: 8, fontSize: 14, color: "#1a1a2e", background: "#F8F9FF", cursor: "pointer" }}
-            >
+      {/* Controls */}
+      <div style={{ background:"white", borderRadius:16, padding:"20px 24px", marginBottom:24, boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0", animation:"fadeUp 0.4s ease 0.05s both" }}>
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:16, marginBottom:16 }}>
+          <div>
+            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>CLASS</div>
+            <select value={selectedClass} onChange={e => { setSelectedClass(e.target.value); setSelectedSection(""); }}
+              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white" }}>
               <option value="">Select Class</option>
               {classes.map(c => <option key={c} value={c}>Class {c}</option>)}
             </select>
           </div>
-
-          {/* Section */}
-          <div style={{ flex: 1, minWidth: 120 }}>
-            <label style={{ fontSize: 11, fontWeight: 600, color: "#666", display: "block", marginBottom: 6, letterSpacing: 0.5 }}>SECTION</label>
-            <select
-              value={selectedSection}
-              onChange={e => setSelectedSection(e.target.value)}
-              disabled={!selectedClass}
-              style={{ width: "100%", padding: "8px 12px", border: "1.5px solid #E8EAF0", borderRadius: 8, fontSize: 14, color: "#1a1a2e", background: selectedClass ? "#F8F9FF" : "#f5f5f5", cursor: selectedClass ? "pointer" : "not-allowed" }}
-            >
+          <div>
+            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>SECTION</div>
+            <select value={selectedSection} onChange={e => setSelectedSection(e.target.value)}
+              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white" }}>
               <option value="">Select Section</option>
               {sections.map(s => <option key={s} value={s}>Section {s}</option>)}
             </select>
           </div>
-
-          {/* Class Teacher */}
-          <div style={{ flex: 2, minWidth: 200 }}>
-            <label style={{ fontSize: 11, fontWeight: 600, color: "#666", display: "block", marginBottom: 6, letterSpacing: 0.5 }}>CLASS TEACHER</label>
-            <select
-              value={classTeacher}
-              onChange={e => setClassTeacher(e.target.value)}
-              disabled={!selectedClass}
-              style={{ width: "100%", padding: "8px 12px", border: "1.5px solid #E8EAF0", borderRadius: 8, fontSize: 14, color: "#1a1a2e", background: selectedClass ? "#F8F9FF" : "#f5f5f5", cursor: selectedClass ? "pointer" : "not-allowed" }}
-            >
-              <option value="">Assign Class Teacher</option>
-              {teachers.map(t => <option key={t._id} value={t._id}>{t.name} — {t.subjects?.[0] || t.subject || ""}</option>)}
-            </select>
+          <div style={{ display:"flex", alignItems:"flex-end" }}>
+            <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600 }}>
+              {timetables.length} timetable entries in database
+            </div>
           </div>
         </div>
 
-        {/* Status chips */}
-        {selectedClass && selectedSection && (
-          <div style={{ marginTop: 12, display: "flex", gap: 6, flexWrap: "wrap" }}>
-            {DAYS.map(d => (
-              <span key={d} style={{
-                padding: "3px 10px", borderRadius: 20, fontSize: 11, fontWeight: 600,
-                background: daysWithData.includes(d) ? "#e8f5e9" : "#fafafa",
-                color: daysWithData.includes(d) ? "#2e7d32" : "#999",
-                border: `1px solid ${daysWithData.includes(d) ? "#a5d6a7" : "#E8EAF0"}`
-              }}>{d.slice(0, 3)} {daysWithData.includes(d) ? "✓" : "—"}</span>
-            ))}
-          </div>
-        )}
+        {/* Day Selector */}
+        <div style={{ display:"flex", gap:8 }}>
+          {DAYS.map(day => (
+            <button key={day} className="day-btn" onClick={() => setSelectedDay(day)}
+              style={{ flex:1, padding:"10px 8px", borderRadius:12, border:"none", cursor:"pointer", fontWeight:700, fontSize:12,
+                background: selectedDay === day ? DAY_COLORS[day] : "#F8FAFC",
+                color: selectedDay === day ? "white" : "#64748B",
+                boxShadow: selectedDay === day ? `0 4px 14px ${DAY_COLORS[day]}44` : "none" }}>
+              {day.slice(0,3)}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Day tabs + actions */}
-      {selectedClass && selectedSection && (
-        <>
-          <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap", alignItems: "center" }}>
-            <div style={{ display: "flex", gap: 6, flex: 1, flexWrap: "wrap" }}>
-              {DAYS.map(d => (
-                <button key={d} onClick={() => setSelectedDay(d)} style={{
-                  padding: "7px 14px", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer",
-                  border: selectedDay === d ? "none" : "1.5px solid #E8EAF0",
-                  background: selectedDay === d ? "linear-gradient(135deg, #1a3a8f, #4f8ef7)" : "white",
-                  color: selectedDay === d ? "white" : "#666",
-                  position: "relative"
-                }}>
-                  {d.slice(0, 3)}
-                  {schedule[d] && <span style={{ position: "absolute", top: 2, right: 2, width: 6, height: 6, background: "#10b981", borderRadius: "50%" }} />}
-                </button>
-              ))}
+      {/* Timetable Grid */}
+      {!selectedClass || !selectedSection ? (
+        <div style={{ background:"white", borderRadius:20, padding:"80px 0", textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
+          <div style={{ fontSize:48, marginBottom:12 }}>🗓️</div>
+          <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>Select a class and section</div>
+          <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>to view or edit the timetable</div>
+        </div>
+      ) : (
+        <div style={{ animation:"fadeUp 0.4s ease" }}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
+            <div style={{ fontSize:16, fontWeight:800, color:"#0F172A" }}>
+              Class {selectedClass}-{selectedSection} · <span style={{ color: DAY_COLORS[selectedDay] }}>{selectedDay}</span>
             </div>
-            <div style={{ display: "flex", gap: 8 }}>
-              <button onClick={copyToAllDays} style={{ padding: "7px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer", border: "1.5px solid #E8EAF0", background: "white", color: "#666" }}>
-                📋 Copy to All Days
-              </button>
-              <button onClick={saveDay} disabled={saving} style={{ padding: "7px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer", border: "none", background: "linear-gradient(135deg, #1a3a8f, #4f8ef7)", color: "white", opacity: saving ? 0.7 : 1 }}>
-                {saving ? "Saving..." : `💾 Save ${selectedDay}`}
-              </button>
-              <button onClick={saveAllDays} disabled={saving} style={{ padding: "7px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer", border: "none", background: "linear-gradient(135deg, #10b981, #059669)", color: "white", opacity: saving ? 0.7 : 1 }}>
-                {saving ? "..." : "✅ Save All Days"}
-              </button>
+            <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600 }}>
+              {currentTimetable ? `${currentTimetable.periods?.length || 0} periods scheduled` : "No timetable yet — add periods below"}
             </div>
           </div>
 
-          {/* Periods Table */}
-          <div style={{ background: "#fff", border: "1px solid #E8EAF0", borderRadius: 12, overflow: "hidden" }}>
-            <div style={{ background: "#F8F9FF", padding: "12px 20px", borderBottom: "1px solid #E8EAF0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e" }}>{selectedDay} — Class {selectedClass}-{selectedSection}</div>
-              <div style={{ fontSize: 12, color: "#999" }}>{currentPeriods.length} periods</div>
-            </div>
-
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
-              <thead>
-                <tr style={{ background: "#F5F5F3" }}>
-                  {["Period", "Time", "Subject", "Teacher"].map(h => (
-                    <th key={h} style={{ padding: "10px 16px", fontSize: 11, fontWeight: 600, color: "#666", textAlign: "left", borderBottom: "1px solid #E8EAF0" }}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {currentPeriods.map((p, i) => {
-                  const isBreak = p.subject === "Break" || p.subject === "Free";
-                  return (
-                    <tr key={i} style={{ background: isBreak ? "#fafafa" : "white", borderBottom: "1px solid #f0f0f0" }}>
-                      <td style={{ padding: "10px 16px" }}>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a2e" }}>Period {p.no}</div>
-                      </td>
-                      <td style={{ padding: "10px 16px" }}>
-                        <input
-                          value={p.time}
-                          onChange={e => updatePeriod(i, "time", e.target.value)}
-                          placeholder="09:00 - 09:45"
-                          style={{ padding: "6px 10px", border: "1.5px solid #E8EAF0", borderRadius: 6, fontSize: 13, width: 130, color: "#1a1a2e", background: "#F8F9FF" }}
-                        />
-                      </td>
-                      <td style={{ padding: "10px 16px" }}>
-                        <select
-                          value={p.subject}
-                          onChange={e => updatePeriod(i, "subject", e.target.value)}
-                          style={{ padding: "6px 10px", border: "1.5px solid #E8EAF0", borderRadius: 6, fontSize: 13, color: "#1a1a2e", background: isBreak ? "#fafafa" : "#F8F9FF", minWidth: 150 }}
-                        >
-                          <option value="">Select Subject</option>
-                          {SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
-                        </select>
-                      </td>
-                      <td style={{ padding: "10px 16px" }}>
-                        {isBreak ? (
-                          <span style={{ fontSize: 12, color: "#999", fontStyle: "italic" }}>—</span>
-                        ) : (
-                          <select
-                            value={p.teacher}
-                            onChange={e => updatePeriod(i, "teacher", e.target.value)}
-                            style={{ padding: "6px 10px", border: "1.5px solid #E8EAF0", borderRadius: 6, fontSize: 13, color: "#1a1a2e", background: "#F8F9FF", minWidth: 180 }}
-                          >
-                            <option value="">Assign Teacher</option>
-                            {teachers.map(t => <option key={t._id} value={t._id}>{t.name}</option>)}
-                          </select>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-
-            {/* Add period button */}
-            <div style={{ padding: "12px 16px", borderTop: "1px solid #E8EAF0" }}>
-              <button
-                onClick={() => {
-                  const last = currentPeriods[currentPeriods.length - 1];
-                  const newPeriod = { no: last.no + 1, time: "", subject: "", teacher: "" };
-                  setSchedule(prev => ({ ...prev, [selectedDay]: [...currentPeriods, newPeriod] }));
-                }}
-                style={{ padding: "7px 16px", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer", border: "1.5px dashed #E8EAF0", background: "white", color: "#666" }}
-              >
-                + Add Period
-              </button>
-            </div>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:12 }}>
+            {PERIODS.map(pNo => {
+              const period = currentTimetable?.periods?.find(p => (p.periodNo || p.no) === pNo);
+              const color = DAY_COLORS[selectedDay];
+              return (
+                <div key={pNo} className="period-cell"
+                  style={{ background:"white", borderRadius:16, padding:"18px", boxShadow:"0 2px 12px rgba(15,23,42,0.06)", border: period ? `2px solid ${color}30` : "2px dashed #E2E8F0", cursor:"pointer", minHeight:120 }}
+                  onClick={() => period ? openEditPeriod(period) : openAddPeriod(pNo)}>
+                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
+                    <div style={{ width:28, height:28, borderRadius:8, background: period ? color : "#F1F5F9", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:800, color: period ? "white" : "#94A3B8" }}>
+                      {pNo}
+                    </div>
+                    {period && (
+                      <span style={{ fontSize:10, fontWeight:700, padding:"2px 8px", borderRadius:20, background:`${color}15`, color }}>Period {pNo}</span>
+                    )}
+                  </div>
+                  {period ? (
+                    <>
+                      <div style={{ fontSize:14, fontWeight:800, color:"#0F172A", marginBottom:4 }}>{period.subject}</div>
+                      {getTeacherName(period.teacher) && (
+                        <div style={{ fontSize:11, color:"#64748B", fontWeight:600 }}>👩‍🏫 {getTeacherName(period.teacher)}</div>
+                      )}
+                      {(period.startTime || period.endTime) && (
+                        <div style={{ fontSize:11, color:"#94A3B8", marginTop:4 }}>🕐 {period.startTime} - {period.endTime}</div>
+                      )}
+                      <div style={{ marginTop:8, fontSize:11, color, fontWeight:700 }}>Click to edit →</div>
+                    </>
+                  ) : (
+                    <div style={{ textAlign:"center", paddingTop:8 }}>
+                      <div style={{ fontSize:24, marginBottom:4 }}>+</div>
+                      <div style={{ fontSize:12, color:"#CBD5E1", fontWeight:600 }}>Add Period</div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
-
-          {/* Weekly overview */}
-          {daysWithData.length > 0 && (
-            <div style={{ marginTop: 20, background: "#fff", border: "1px solid #E8EAF0", borderRadius: 12, overflow: "hidden" }}>
-              <div style={{ background: "#F8F9FF", padding: "12px 20px", borderBottom: "1px solid #E8EAF0" }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e" }}>Weekly Overview — Class {selectedClass}-{selectedSection}</div>
-              </div>
-              <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                  <thead>
-                    <tr style={{ background: "#F5F5F3" }}>
-                      <th style={{ padding: "10px 16px", fontSize: 11, fontWeight: 600, color: "#666", textAlign: "left", borderBottom: "1px solid #E8EAF0", minWidth: 80 }}>Period</th>
-                      {daysWithData.map(d => (
-                        <th key={d} style={{ padding: "10px 12px", fontSize: 11, fontWeight: 600, color: "#666", textAlign: "center", borderBottom: "1px solid #E8EAF0", minWidth: 110 }}>{d.slice(0, 3)}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {DEFAULT_PERIODS.map((_, pi) => (
-                      <tr key={pi} style={{ borderBottom: "1px solid #f0f0f0" }}>
-                        <td style={{ padding: "8px 16px", fontSize: 12, fontWeight: 600, color: "#666" }}>P{pi + 1}</td>
-                        {daysWithData.map(d => {
-                          const p = schedule[d]?.[pi];
-                          const isBreak = p?.subject === "Break" || p?.subject === "Free";
-                          return (
-                            <td key={d} style={{ padding: "8px 12px", textAlign: "center" }}>
-                              <span style={{
-                                display: "inline-block", padding: "3px 10px", borderRadius: 6, fontSize: 11, fontWeight: 600,
-                                background: isBreak ? "#F5F5F3" : p?.subject ? "#EFF4FF" : "#fafafa",
-                                color: isBreak ? "#999" : p?.subject ? "#1a3a8f" : "#ccc"
-                              }}>
-                                {p?.subject || "—"}
-                              </span>
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-        </>
-      )}
-
-      {/* Empty state */}
-      {!selectedClass && (
-        <div style={{ textAlign: "center", padding: "60px 20px", color: "#999" }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>📅</div>
-          <div style={{ fontSize: 16, fontWeight: 600, color: "#666" }}>Select a Class to Start</div>
-          <div style={{ fontSize: 13, marginTop: 6 }}>Choose class and section to create or edit timetable</div>
         </div>
       )}
+
+      <Modal show={showModal} onClose={() => setShowModal(false)} title={editPeriod ? `Edit Period ${periodForm.no}` : `Add Period ${periodForm.no}`}>
+        <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+          <div style={{ background:"#F8FAFC", borderRadius:12, padding:"12px 16px", fontSize:13, color:"#64748B", fontWeight:600 }}>
+            Class {selectedClass}-{selectedSection} · {selectedDay} · Period {periodForm.no}
+          </div>
+          <div>
+            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>SUBJECT</div>
+            <input value={periodForm.subject} onChange={e => f("subject", e.target.value)} placeholder="e.g. Mathematics"
+              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
+              onFocus={e => e.target.style.borderColor="#6366F1"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
+          </div>
+          <div>
+            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TEACHER</div>
+            <select value={periodForm.teacherId} onChange={e => f("teacherId", e.target.value)}
+              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
+              <option value="">Select Teacher (optional)</option>
+              {teachers.map(t => <option key={t._id} value={t._id}>{t.name}{t.subjects ? ` — ${Array.isArray(t.subjects) ? t.subjects.join(", ") : t.subjects}` : ""}</option>)}
+            </select>
+          </div>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+            <div>
+              <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>START TIME</div>
+              <input type="time" value={periodForm.startTime} onChange={e => f("startTime", e.target.value)}
+                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box" }} />
+            </div>
+            <div>
+              <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>END TIME</div>
+              <input type="time" value={periodForm.endTime} onChange={e => f("endTime", e.target.value)}
+                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box" }} />
+            </div>
+          </div>
+          <div style={{ display:"flex", gap:10, justifyContent:"flex-end", marginTop:4 }}>
+            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
+            <button onClick={handleSavePeriod} disabled={saving}
+              style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#3B82F6,#6366F1)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 14px rgba(99,102,241,0.4)", opacity:saving?0.7:1 }}>
+              {saving ? "Saving..." : "Save Period"}
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
