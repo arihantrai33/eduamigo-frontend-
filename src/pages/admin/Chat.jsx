@@ -254,10 +254,10 @@ export default function Chat() {
         @keyframes spin    { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
         @keyframes pulse   { 0%,100%{opacity:1} 50%{opacity:0.3} }
         .c-row{transition:background 0.12s ease;cursor:pointer;}
-        .c-row:hover{background:rgba(255,255,255,0.07)!important;}
+        .c-row:hover{background:#F8FAFC!important;}
         textarea{outline:none!important;}
         ::-webkit-scrollbar{width:3px;}
-        ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:4px;}
+        ::-webkit-scrollbar-thumb{background:#E2E8F0;border-radius:4px;}
         .r-scroll::-webkit-scrollbar-thumb{background:#E2E8F0;}
         .file-btn:hover{background:rgba(255,255,255,0.12)!important;}
         .hdr-click{cursor:pointer;transition:opacity 0.15s ease;}
@@ -265,13 +265,13 @@ export default function Chat() {
       `}</style>
 
       {/* ══ DARK LEFT SIDEBAR ══ */}
-      <div style={{ width: 300, background: "linear-gradient(180deg,#0F172A 0%,#1E293B 100%)", display: "flex", flexDirection: "column", flexShrink: 0 }}>
+      <div style={{ width: 300, background: "white", display: "flex", flexDirection: "column", flexShrink: 0 }}>
 
         <div style={{ padding: "22px 18px 14px" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
             <div>
-              <div style={{ fontSize: 17, fontWeight: 800, color: "white", letterSpacing: "-0.3px" }}>Messages</div>
-              {totalUnread > 0 && <div style={{ fontSize: 11, color: "#818CF8", fontWeight: 700, marginTop: 2 }}>{totalUnread} unread</div>}
+              <div style={{ fontSize: 17, fontWeight: 800, color: "#0F172A", letterSpacing: "-0.3px" }}>Messages</div>
+              {totalUnread > 0 && <div style={{ fontSize: 11, color: "#6366F1", fontWeight: 700, marginTop: 2 }}>{totalUnread} unread</div>}
             </div>
             <button onClick={fetchContacts} style={{ width: 32, height: 32, borderRadius: 10, border: "none", background: "rgba(255,255,255,0.08)", cursor: "pointer", fontSize: 16, color: "#94A3B8", display: "flex", alignItems: "center", justifyContent: "center" }}>↺</button>
           </div>
@@ -279,10 +279,10 @@ export default function Chat() {
           <div style={{ position: "relative", marginBottom: 12 }}>
             <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", fontSize: 13, color: "#475569" }}>🔍</span>
             <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search contacts..."
-              style={{ width: "100%", padding: "9px 12px 9px 32px", borderRadius: 11, border: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.06)", fontSize: 12, color: "white", boxSizing: "border-box", fontFamily: "inherit" }} />
+              style={{ width: "100%", padding: "9px 12px 9px 32px", borderRadius: 11, border: "1px solid #E2E8F0", background: "#F8FAFC", fontSize: 12, color: "#0F172A", boxSizing: "border-box", fontFamily: "inherit" }} />
           </div>
 
-          <div style={{ display: "flex", gap: 4, background: "rgba(255,255,255,0.05)", borderRadius: 10, padding: 3 }}>
+          <div style={{ display: "flex", gap: 4, background: "#F1F5F9", borderRadius: 10, padding: 3 }}>
             {[["", "All"], ["student", "Students"], ["teacher", "Teachers"], ["parent", "Parents"]].map(([val, lbl]) => (
               <button key={val} onClick={() => setFilterRole(val)}
                 style={{ flex: 1, padding: "6px 2px", borderRadius: 8, border: "none", cursor: "pointer", fontWeight: 700, fontSize: 10,
@@ -313,21 +313,21 @@ export default function Chat() {
                 style={{ display: "flex", alignItems: "center", gap: 10, padding: "11px 16px",
                   background: isActive ? "rgba(99,102,241,0.18)" : "transparent",
                   borderLeft: isActive ? "3px solid #6366F1" : "3px solid transparent",
-                  borderBottom: "1px solid rgba(255,255,255,0.03)",
+                  borderBottom: "1px solid #F8FAFC",
                   animation: `fadeIn 0.25s ease ${i * 0.02}s both` }}>
                 <div style={{ position: "relative" }}>
                   <Avatar name={c.name} type={c.type} size={42} />
-                  <div style={{ position: "absolute", bottom: 0, right: 0, width: 10, height: 10, borderRadius: "50%", background: c.lastTime ? "#22C55E" : "#475569", border: "2px solid #1E293B" }} />
+                  <div style={{ position: "absolute", bottom: 0, right: 0, width: 10, height: 10, borderRadius: "50%", background: c.lastTime ? "#22C55E" : "#475569", border: "2px solid white" }} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                    <span style={{ fontSize: 13, fontWeight: c.unread > 0 ? 800 : 500, color: c.unread > 0 ? "white" : "#CBD5E1", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 120 }}>{c.name}</span>
-                    <span style={{ fontSize: 10, color: "#475569", flexShrink: 0 }}>{formatTime(c.lastTime)}</span>
+                    <span style={{ fontSize: 13, fontWeight: c.unread > 0 ? 800 : 500, color: c.unread > 0 ? "#0F172A" : "#475569", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 120 }}>{c.name}</span>
+                    <span style={{ fontSize: 10, color: "#94A3B8", flexShrink: 0 }}>{formatTime(c.lastTime)}</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 5, minWidth: 0 }}>
                       <span style={{ fontSize: 10, fontWeight: 700, padding: "1px 7px", borderRadius: 20, background: rcfg.badge.bg, color: rcfg.badge.color, flexShrink: 0 }}>{rcfg.label}</span>
-                      <span style={{ fontSize: 11, color: "#475569", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      <span style={{ fontSize: 11, color: "#94A3B8", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                         {c.lastMsg || c.sub}
                       </span>
                     </div>
@@ -343,10 +343,10 @@ export default function Chat() {
           })}
         </div>
 
-        <div style={{ padding: "12px 16px", borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: 10 }}>
+        <div style={{ padding: "12px 16px", borderTop: "1px solid #F1F5F9", display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{ width: 34, height: 34, borderRadius: 10, background: "linear-gradient(135deg,#6366F1,#8B5CF6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: "white" }}>A</div>
           <div>
-            <div style={{ fontSize: 12, fontWeight: 700, color: "white" }}>Admin</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "#0F172A" }}>Admin</div>
             <div style={{ fontSize: 10, color: "#22C55E", fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#22C55E", display: "inline-block" }} /> Online
             </div>
