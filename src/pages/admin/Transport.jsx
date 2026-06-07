@@ -12,7 +12,7 @@ const STATUS_CONFIG = {
 
 function BusAnimation({ onDone }) {
   return (
-    <div style={{ position:"fixed", inset:0, background:"linear-gradient(135deg,#0F172A,#1E3A5F)", zIndex:9999, display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
+    <div style={{ position:"fixed", inset:0, background:"linear-gradient(180deg,#E0F2FE 0%,#BAE6FD 40%,#7DD3FC 60%,#93C5FD 100%)", zIndex:9999, display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
       <style>{`
         @keyframes busRide {
           0%   { transform: translateX(-30vw); }
@@ -51,17 +51,36 @@ function BusAnimation({ onDone }) {
           100% { opacity:0; }
         }
         .bus-wrap { animation: busRide 3s ease-in-out forwards, fadeOut 3s forwards; }
-        .wind-1 { position:absolute; height:3px; border-radius:4px; background:rgba(255,255,255,0.15); animation: windLine 1.4s 0s ease-in forwards; width:180px; top:44%; }
-        .wind-2 { position:absolute; height:2px; border-radius:4px; background:rgba(255,255,255,0.1); animation: windLine 1.4s 0.1s ease-in forwards; width:120px; top:47%; }
-        .wind-3 { position:absolute; height:2px; border-radius:4px; background:rgba(255,255,255,0.08); animation: windLine 1.4s 0.05s ease-in forwards; width:90px; top:42%; }
+        .wind-1 { position:absolute; height:3px; border-radius:4px; background:rgba(30,64,175,0.12); animation: windLine 1.4s 0s ease-in forwards; width:180px; top:44%; }
+        .wind-2 { position:absolute; height:2px; border-radius:4px; background:rgba(30,64,175,0.08); animation: windLine 1.4s 0.1s ease-in forwards; width:120px; top:47%; }
+        .wind-3 { position:absolute; height:2px; border-radius:4px; background:rgba(30,64,175,0.06); animation: windLine 1.4s 0.05s ease-in forwards; width:90px; top:42%; }
       `}</style>
 
+      {/* Sky clouds */}
+      <div style={{ position:"absolute", top:"8%", left:"10%", width:120, height:40, borderRadius:40, background:"rgba(255,255,255,0.7)", boxShadow:"30px 10px 0 20px rgba(255,255,255,0.5), 60px 5px 0 10px rgba(255,255,255,0.4)" }} />
+      <div style={{ position:"absolute", top:"12%", right:"15%", width:90, height:30, borderRadius:30, background:"rgba(255,255,255,0.6)", boxShadow:"25px 8px 0 15px rgba(255,255,255,0.4)" }} />
+
+      {/* Trees left side */}
+      {[5,14,22,30].map((left,i) => (
+        <div key={i} style={{ position:"absolute", bottom:"37%", left:`${left}%` }}>
+          <div style={{ width:18, height: 44+i*6, background:"linear-gradient(180deg,#854d0e,#713f12)", margin:"0 auto", borderRadius:"2px 2px 0 0", width:10 }} />
+          <div style={{ width: 44+i*4, height: 44+i*4, borderRadius:"50% 50% 40% 40%", background:`linear-gradient(135deg,#16a34a,#15803d,#166534)`, marginTop:-30, marginLeft:-(16+i*2), boxShadow:"inset -4px -4px 8px rgba(0,0,0,0.15)" }} />
+        </div>
+      ))}
+      {/* Trees right side */}
+      {[72,80,88,95].map((left,i) => (
+        <div key={i} style={{ position:"absolute", bottom:"37%", left:`${left}%` }}>
+          <div style={{ width:10, height: 38+i*5, background:"linear-gradient(180deg,#854d0e,#713f12)", margin:"0 auto", borderRadius:"2px 2px 0 0" }} />
+          <div style={{ width: 40+i*4, height: 40+i*4, borderRadius:"50% 50% 40% 40%", background:`linear-gradient(135deg,#22c55e,#16a34a,#15803d)`, marginTop:-28, marginLeft:-(14+i*2), boxShadow:"inset -4px -4px 8px rgba(0,0,0,0.15)" }} />
+        </div>
+      ))}
+
       {/* Road */}
-      <div style={{ position:"absolute", bottom:0, left:0, right:0, height:"38%", background:"linear-gradient(180deg,#1a2744,#0d1b35)" }}>
+      <div style={{ position:"absolute", bottom:0, left:0, right:0, height:"38%", background:"linear-gradient(180deg,#6B7280,#4B5563)" }}>
         <div style={{ position:"absolute", top:"30%", left:0, right:0, height:4, overflow:"hidden" }}>
           <div style={{ display:"flex", gap:0, animation:"roadLine 0.3s linear infinite" }}>
             {Array(30).fill(0).map((_,i) => (
-              <div key={i} style={{ width:100, height:4, background: i%2===0 ? "rgba(255,255,255,0.5)" : "transparent", flexShrink:0 }} />
+              <div key={i} style={{ width:100, height:4, background: i%2===0 ? "rgba(255,255,255,0.9)" : "transparent", flexShrink:0 }} />
             ))}
           </div>
         </div>
@@ -120,7 +139,7 @@ function BusAnimation({ onDone }) {
         </svg>
       </div>
 
-      <div style={{ position:"absolute", bottom:"12%", fontSize:13, color:"rgba(255,255,255,0.4)", letterSpacing:"3px", fontWeight:600 }}>TRANSPORT</div>
+      <div style={{ position:"absolute", bottom:"12%", fontSize:13, color:"rgba(30,64,175,0.5)", letterSpacing:"3px", fontWeight:600 }}>TRANSPORT</div>
     </div>
   );
 }
