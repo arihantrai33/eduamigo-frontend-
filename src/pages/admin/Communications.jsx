@@ -162,10 +162,6 @@ export default function Communications() {
             <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Announcements, Circulars & Notifications — all in one place</div>
           </div>
           <div style={{ display:"flex", gap:10 }}>
-            <button onClick={openAddAnnouncement}
-              style={{ padding:"11px 20px", borderRadius:12, border:"1px solid rgba(255,255,255,0.3)", background:"rgba(255,255,255,0.15)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer" }}>
-              + Announcement
-            </button>
             <button onClick={openAddNotification}
               style={{ padding:"11px 20px", borderRadius:12, border:"1px solid rgba(255,255,255,0.3)", background:"rgba(255,255,255,0.2)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer" }}>
               🔔 Send Notification
@@ -210,7 +206,7 @@ export default function Communications() {
       {/* Announcements Tab */}
       {activeTab === "announcements" && (
         <div style={{ animation:"fadeUp 0.3s ease" }}>
-          {/* Filters */}
+          {/* Filters + Add Button */}
           <div style={{ display:"flex", gap:12, marginBottom:20, alignItems:"center" }}>
             <div style={{ flex:1, position:"relative" }}>
               <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}>🔍</span>
@@ -224,12 +220,18 @@ export default function Communications() {
                 {lbl}
               </button>
             ))}
-            {["","normal","important","urgent"].map(p => p ? (
-              <button key={p} onClick={() => setFilterPriority(filterPriority===p?"":p)}
-                style={{ padding:"9px 14px", borderRadius:10, border:"none", cursor:"pointer", fontWeight:700, fontSize:12, background: filterPriority===p ? PRIORITY_CONFIG[p].color : "#F1F5F9", color: filterPriority===p ? "white" : "#64748B" }}>
-                {p.charAt(0).toUpperCase()+p.slice(1)}
+            {[["","All"],["normal","Normal"],["important","Important"],["urgent","Urgent"]].map(([val,lbl]) => (
+              <button key={val} onClick={() => setFilterPriority(filterPriority===val?"":val)}
+                style={{ padding:"9px 14px", borderRadius:10, border:"none", cursor:"pointer", fontWeight:700, fontSize:12,
+                  background: filterPriority===val ? (val ? PRIORITY_CONFIG[val].color : "#6366F1") : "#F1F5F9",
+                  color: filterPriority===val ? "white" : "#64748B" }}>
+                {lbl}
               </button>
-            ) : null)}
+            ))}
+            <button onClick={openAddAnnouncement}
+              style={{ padding:"10px 20px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", whiteSpace:"nowrap", boxShadow:"0 4px 14px rgba(99,102,241,0.3)" }}>
+              + Add
+            </button>
           </div>
 
           {loading ? (
