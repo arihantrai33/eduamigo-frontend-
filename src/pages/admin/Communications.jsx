@@ -220,14 +220,26 @@ export default function Communications() {
                 {lbl}
               </button>
             ))}
-            {[["","All"],["normal","Normal"],["important","Important"],["urgent","Urgent"]].map(([val,lbl]) => (
-              <button key={val} onClick={() => setFilterPriority(filterPriority===val?"":val)}
-                style={{ padding:"9px 14px", borderRadius:10, border:"none", cursor:"pointer", fontWeight:700, fontSize:12,
-                  background: filterPriority===val ? (val ? PRIORITY_CONFIG[val].color : "#6366F1") : "#F1F5F9",
-                  color: filterPriority===val ? "white" : "#64748B" }}>
-                {lbl}
-              </button>
-            ))}
+            <div style={{ display:"flex", gap:6, background:"#F8FAFC", padding:"4px", borderRadius:12, border:"1px solid #E2E8F0" }}>
+              {[
+                { val:"", lbl:"All", icon:"▤", active:"#6366F1", dot:null },
+                { val:"normal", lbl:"Normal", icon:"●", active:"#15803D", dot:"#22C55E" },
+                { val:"important", lbl:"Important", icon:"●", active:"#D97706", dot:"#F59E0B" },
+                { val:"urgent", lbl:"Urgent", icon:"●", active:"#DC2626", dot:"#EF4444" },
+              ].map(({val,lbl,dot}) => {
+                const isActive = filterPriority===val;
+                return (
+                  <button key={val} onClick={() => setFilterPriority(filterPriority===val?"":val)}
+                    style={{ display:"flex", alignItems:"center", gap:5, padding:"7px 13px", borderRadius:9, border:"none", cursor:"pointer", fontWeight:700, fontSize:12, transition:"all 0.2s",
+                      background: isActive ? "white" : "transparent",
+                      color: isActive ? (dot ? PRIORITY_CONFIG[val]?.color : "#6366F1") : "#94A3B8",
+                      boxShadow: isActive ? "0 2px 8px rgba(0,0,0,0.1)" : "none" }}>
+                    {dot && <span style={{ width:7, height:7, borderRadius:"50%", background: isActive ? dot : "#CBD5E1", display:"inline-block", transition:"all 0.2s" }} />}
+                    {lbl}
+                  </button>
+                );
+              })}
+            </div>
             <button onClick={openAddAnnouncement}
               style={{ padding:"10px 20px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", whiteSpace:"nowrap", boxShadow:"0 4px 14px rgba(99,102,241,0.3)" }}>
               + Add
