@@ -103,7 +103,7 @@ export default function LeaveRequests() {
       <div style={{ display:"flex", gap:12, marginBottom:20, alignItems:"center", animation:"fadeUp 0.4s ease 0.1s both" }}>
         <div style={{ flex:1, position:"relative" }}>
           <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}>🔍</span>
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by teacher name or reason..."
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by name or reason..."
             style={{ width:"100%", padding:"11px 14px 11px 38px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
             onFocus={e => e.target.style.borderColor="#F59E0B"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
         </div>
