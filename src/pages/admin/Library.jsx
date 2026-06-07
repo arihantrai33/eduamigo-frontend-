@@ -1,222 +1,290 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { Search, Plus, RefreshCw, BookOpen, Trash2, X } from "lucide-react";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
-const CATEGORIES = ["Textbook", "Fiction", "Biography", "Reference", "Science", "History", "Other"];
-
-const CAT_META = {
-  Textbook:  { bg: "#EEF2FF", color: "#4F46E5" },
-  Fiction:   { bg: "#FDF4FF", color: "#9333EA" },
-  Biography: { bg: "#FFFBEB", color: "#D97706" },
-  Reference: { bg: "#F0FDF4", color: "#16A34A" },
-  Science:   { bg: "#F0F9FF", color: "#0284C7" },
-  History:   { bg: "#FFF7ED", color: "#EA580C" },
-  Other:     { bg: "#F8FAFC", color: "#64748B" },
+const CATEGORIES = ["Textbook","Fiction","Biography","Reference","Science","History","Other"];
+const CAT_CONFIG = {
+  Textbook:  { bg:"#EEF2FF", color:"#6366F1", icon:"📚" },
+  Fiction:   { bg:"#FDF4FF", color:"#9333EA", icon:"📖" },
+  Biography: { bg:"#FFF7ED", color:"#EA580C", icon:"��" },
+  Reference: { bg:"#F0FDF4", color:"#15803D", icon:"🔍" },
+  Science:   { bg:"#ECFEFF", color:"#0891B2", icon:"🔬" },
+  History:   { bg:"#FFFBEB", color:"#D97706", icon:"🏛️" },
+  Other:     { bg:"#F8FAFC", color:"#64748B", icon:"📄" },
 };
 
-const inp = {
-  padding: "9px 12px", borderRadius: 8, border: "1px solid #E2E8F0",
-  fontSize: 13, outline: "none", background: "#F8FAFC",
-  fontFamily: "Inter, sans-serif", width: "100%", boxSizing: "border-box",
-};
+function Modal({ show, onClose, title, children }) {
+  if (!show) return null;
+  return (
+    <div style={{ position:"fixed", inset:0, background:"rgba(15,23,42,0.55)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:1000, backdropFilter:"blur(6px)" }}>
+      <div style={{ background:"white", borderRadius:24, padding:32, width:520, maxHeight:"88vh", overflowY:"auto", boxShadow:"0 32px 80px rgba(0,0,0,0.25)", animation:"slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1)" }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:24 }}>
+          <div style={{ fontSize:18, fontWeight:800, color:"#0F172A" }}>{title}</div>
+          <button onClick={onClose} style={{ width:32, height:32, borderRadius:"50%", border:"none", background:"#F1F5F9", cursor:"pointer", fontSize:16, color:"#64748B" }}>×</button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
 
 export default function Library() {
-  const [books, setBooks]       = useState([]);
-  const [loading, setLoading]   = useState(true);
-  const [search, setSearch]     = useState("");
-  const [catFilter, setCatFilter] = useState("all");
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [filterCat, setFilterCat] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [saving, setSaving]     = useState(false);
-  const [form, setForm]         = useState({ title: "", author: "", isbn: "", category: "Textbook", totalCopies: "", publisher: "", year: "" });
+  const [editBook, setEditBook] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({ title:"", author:"", isbn:"", category:"Textbook", totalCopies:"1", publisher:"", year:"" });
 
-  const fetchBooks = useCallback(async () => {
+  useEffect(() => { fetchBooks(); }, []);
+
+  const fetchBooks = async () => {
     setLoading(true);
     try {
-      const params = {};
-      if (search) params.search = search;
-      if (catFilter !== "all") params.category = catFilter;
-      const res = await axios.get(`${API}/library`, { ...auth(), params });
+      const res = await axios.get(`${API}/library`, auth());
       setBooks(res.data.data || []);
-    } catch { setBooks([]); }
-    finally { setLoading(false); }
-  }, [search, catFilter]);
+    } catch(e) {}
+    setLoading(false);
+  };
 
-  useEffect(() => { fetchBooks(); }, [fetchBooks]);
+  const openAdd = () => {
+    setEditBook(null);
+    setForm({ title:"", author:"", isbn:"", category:"Textbook", totalCopies:"1", publisher:"", year:"" });
+    setShowModal(true);
+  };
 
-  const handleAdd = async () => {
-    if (!form.title || !form.totalCopies) return;
+  const openEdit = (b) => {
+    setEditBook(b);
+    setForm({ title:b.title, author:b.author||"", isbn:b.isbn||"", category:b.category||"Textbook", totalCopies:b.totalCopies, publisher:b.publisher||"", year:b.year||"" });
+    setShowModal(true);
+  };
+
+  const handleSave = async () => {
+    if (!form.title || !form.totalCopies) return alert("Title and copies required");
     setSaving(true);
     try {
-      await axios.post(`${API}/library`, form, auth());
+      if (editBook) await axios.patch(`${API}/library/${editBook._id}`, form, auth());
+      else await axios.post(`${API}/library`, form, auth());
       setShowModal(false);
-      setForm({ title: "", author: "", isbn: "", category: "Textbook", totalCopies: "", publisher: "", year: "" });
       fetchBooks();
-    } catch (e) { alert(e?.response?.data?.message || "Failed to add book"); }
+    } catch(e) { alert(e.response?.data?.message || "Error"); }
     setSaving(false);
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this book?")) return;
-    await axios.delete(`${API}/library/${id}`, auth());
-    fetchBooks();
+    if (!confirm("Delete this book?")) return;
+    try { await axios.delete(`${API}/library/${id}`, auth()); fetchBooks(); }
+    catch(e) {}
   };
 
-  const stats = {
-    total: books.length,
-    available: books.reduce((s, b) => s + (b.available || 0), 0),
-    issued: books.reduce((s, b) => s + (b.issued || 0), 0),
-  };
+  const f = (k,v) => setForm(p=>({...p,[k]:v}));
+
+  const filtered = books.filter(b =>
+    (!filterCat || b.category === filterCat) &&
+    (!search || b.title?.toLowerCase().includes(search.toLowerCase()) || b.author?.toLowerCase().includes(search.toLowerCase()) || b.isbn?.includes(search))
+  );
+
+  const totalBooks = books.reduce((a,b) => a+(b.totalCopies||0), 0);
+  const totalAvail = books.reduce((a,b) => a+(b.available||0), 0);
+  const totalIssued = books.reduce((a,b) => a+(b.issued||0), 0);
 
   return (
-    <div style={{ fontFamily: "Inter, sans-serif", maxWidth: 1000 }}>
+    <div style={{ fontFamily:"Inter,sans-serif" }}>
+      <style>{`
+        @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes slideUp { from { opacity:0; transform:translateY(24px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+        @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+        @keyframes shimmer { 0%,100% { opacity:0.7; } 50% { opacity:1; } }
+        .book-row:hover { background:#F0FDF4 !important; transform:translateX(3px); }
+        .book-row { transition: all 0.15s ease; }
+        .act-btn { transition: all 0.15s ease; }
+        .act-btn:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,0.1); }
+        .cat-chip:hover { transform:translateY(-1px); }
+        .cat-chip { transition: all 0.15s ease; cursor:pointer; }
+      `}</style>
+
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
-        <div>
-          <div style={{ fontSize: 22, fontWeight: 700, color: "#0F172A", letterSpacing: "-0.3px" }}>Library</div>
-          <div style={{ fontSize: 12, color: "#94A3B8", marginTop: 3 }}>Manage books and issue records</div>
-        </div>
-        <div style={{ display: "flex", gap: 8 }}>
-          <button onClick={fetchBooks} style={{ width: 36, height: 36, borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-            <RefreshCw size={14} color="#64748B" />
-          </button>
-          <button onClick={() => setShowModal(true)}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 18px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #4F46E5, #7C3AED)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
-            <Plus size={14} /> Add Book
+      <div style={{ background:"linear-gradient(135deg,#6366F1,#8B5CF6,#06B6D4)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
+        <div style={{ position:"absolute", top:-50, right:-50, width:220, height:220, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
+        <div style={{ position:"absolute", bottom:-30, left:60, width:160, height:160, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
+        {/* Floating book emojis */}
+        {["📚","📖","📕","📗"].map((e,i) => (
+          <div key={i} style={{ position:"absolute", fontSize:28, opacity:0.15, animation:`shimmer 2s ease ${i*0.5}s infinite`,
+            top: i<2 ? "15%" : "60%", right: `${8+i*8}%` }}>{e}</div>
+        ))}
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", position:"relative" }}>
+          <div>
+            <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>📚 Library</div>
+            <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Manage books, categories and issue records</div>
+          </div>
+          <button onClick={openAdd}
+            style={{ padding:"12px 24px", borderRadius:14, border:"1px solid rgba(255,255,255,0.3)", background:"rgba(255,255,255,0.2)", color:"white", fontWeight:700, fontSize:14, cursor:"pointer" }}>
+            + Add Book
           </button>
         </div>
       </div>
 
-      {/* Stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 20 }}>
+      {/* Stat Cards */}
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
         {[
-          { label: "Total Books", value: stats.total, color: "#4F46E5", bg: "#EEF2FF", icon: "📚" },
-          { label: "Available",   value: stats.available, color: "#16A34A", bg: "#F0FDF4", icon: "✅" },
-          { label: "Issued",      value: stats.issued, color: "#D97706", bg: "#FFFBEB", icon: "📤" },
-        ].map((s, i) => (
-          <div key={i} style={{ background: "#fff", border: `1px solid ${s.bg}`, borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 14 }}>
-            <div style={{ width: 40, height: 40, borderRadius: 10, background: s.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>{s.icon}</div>
-            <div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: s.color }}>{loading ? "—" : s.value}</div>
-              <div style={{ fontSize: 11, color: "#94A3B8", fontWeight: 500 }}>{s.label}</div>
+          { label:"TOTAL TITLES",  value: books.length,  icon:"📚", border:"#6366F1", bg:"#EEF2FF" },
+          { label:"TOTAL COPIES",  value: totalBooks,    icon:"📦", border:"#8B5CF6", bg:"#F5F3FF" },
+          { label:"AVAILABLE",     value: totalAvail,    icon:"✅", border:"#10B981", bg:"#F0FDF4" },
+          { label:"ISSUED",        value: totalIssued,   icon:"📤", border:"#F59E0B", bg:"#FFFBEB" },
+        ].map((card,i) => (
+          <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+              <div>
+                <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", letterSpacing:"0.08em", marginBottom:8 }}>{card.label}</div>
+                <div style={{ fontSize:26, fontWeight:900, color:"#0F172A" }}>{card.value}</div>
+              </div>
+              <div style={{ width:42, height:42, borderRadius:12, background:card.bg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>{card.icon}</div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Search + Category Filter */}
-      <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap", alignItems: "center" }}>
-        <div style={{ position: "relative", flex: 1, maxWidth: 300 }}>
-          <Search size={14} color="#94A3B8" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search books..."
-            style={{ ...inp, paddingLeft: 36 }} />
+      {/* Category Chips + Search + Add */}
+      <div style={{ display:"flex", gap:10, marginBottom:20, alignItems:"center", flexWrap:"wrap", animation:"fadeUp 0.4s ease 0.1s both" }}>
+        <div style={{ position:"relative", flex:1, minWidth:200 }}>
+          <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}>🔍</span>
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by title, author, ISBN..."
+            style={{ width:"100%", padding:"11px 14px 11px 38px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
+            onFocus={e=>e.target.style.borderColor="#6366F1"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
         </div>
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-          {["all", ...CATEGORIES].map(c => (
-            <button key={c} onClick={() => setCatFilter(c)}
-              style={{ padding: "6px 12px", borderRadius: 20, fontSize: 11, cursor: "pointer", border: `1px solid ${catFilter === c ? "#4F46E5" : "#E2E8F0"}`, background: catFilter === c ? "#EEF2FF" : "#fff", color: catFilter === c ? "#4F46E5" : "#64748B", fontWeight: catFilter === c ? 600 : 400 }}>
-              {c === "all" ? "All" : c}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Table */}
-      <div style={{ background: "#fff", border: "1px solid #E2E8F0", borderRadius: 16, overflow: "hidden" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "2.5fr 1.5fr 1fr 80px 80px 80px 50px", padding: "12px 20px", background: "#F8FAFC", borderBottom: "1px solid #E2E8F0" }}>
-          {["Title", "Author", "Category", "Total", "Available", "Issued", ""].map((h, i) => (
-            <span key={i} style={{ fontSize: 11, fontWeight: 600, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.05em" }}>{h}</span>
-          ))}
-        </div>
-
-        {loading ? (
-          <div style={{ textAlign: "center", padding: "40px 0", color: "#94A3B8", fontSize: 13 }}>Loading books...</div>
-        ) : books.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "50px 0" }}>
-            <div style={{ fontSize: 36, marginBottom: 8 }}>📚</div>
-            <div style={{ fontSize: 14, color: "#64748B", fontWeight: 600 }}>No books in library</div>
-            <div style={{ fontSize: 12, color: "#94A3B8", marginTop: 4 }}>Add your first book using the button above</div>
-          </div>
-        ) : books.map((b, i) => {
-          const cat = CAT_META[b.category] || CAT_META.Other;
+        <button className="cat-chip" onClick={() => setFilterCat("")}
+          style={{ padding:"9px 16px", borderRadius:10, border:"none", background: !filterCat ? "#6366F1" : "#F1F5F9", color: !filterCat ? "white" : "#64748B", fontWeight:700, fontSize:12 }}>
+          All
+        </button>
+        {CATEGORIES.map(cat => {
+          const cfg = CAT_CONFIG[cat];
+          const active = filterCat === cat;
           return (
-            <div key={b._id} style={{ display: "grid", gridTemplateColumns: "2.5fr 1.5fr 1fr 80px 80px 80px 50px", padding: "14px 20px", alignItems: "center", borderTop: i === 0 ? "none" : "1px solid #F1F5F9" }}
-              onMouseEnter={e => e.currentTarget.style.background = "#FAFAFA"}
-              onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <div style={{ width: 34, height: 34, borderRadius: 8, background: cat.bg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <BookOpen size={14} color={cat.color} />
-                </div>
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: "#0F172A" }}>{b.title}</div>
-                  {b.isbn && <div style={{ fontSize: 11, color: "#94A3B8" }}>ISBN: {b.isbn}</div>}
-                </div>
-              </div>
-              <span style={{ fontSize: 12, color: "#64748B" }}>{b.author || "—"}</span>
-              <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, fontWeight: 600, background: cat.bg, color: cat.color, width: "fit-content" }}>{b.category}</span>
-              <span style={{ fontSize: 13, fontWeight: 600, color: "#0F172A" }}>{b.totalCopies}</span>
-              <span style={{ fontSize: 13, fontWeight: 700, color: b.available > 0 ? "#16A34A" : "#EF4444" }}>{b.available}</span>
-              <span style={{ fontSize: 13, color: "#D97706", fontWeight: 600 }}>{b.issued}</span>
-              <button onClick={() => handleDelete(b._id)}
-                style={{ width: 30, height: 30, borderRadius: 8, border: "1px solid #FEE2E2", background: "#FFF5F5", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-                <Trash2 size={12} color="#EF4444" />
-              </button>
-            </div>
+            <button key={cat} className="cat-chip" onClick={() => setFilterCat(active ? "" : cat)}
+              style={{ padding:"9px 14px", borderRadius:10, border:`1.5px solid ${active ? cfg.color : "#E2E8F0"}`, background: active ? cfg.bg : "white", color: active ? cfg.color : "#64748B", fontWeight:700, fontSize:12, display:"flex", alignItems:"center", gap:5 }}>
+              {cfg.icon} {cat}
+            </button>
           );
         })}
       </div>
 
-      {/* Add Book Modal */}
-      {showModal && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, backdropFilter: "blur(4px)" }}>
-          <div style={{ background: "#fff", borderRadius: 16, padding: 28, width: 480, maxWidth: "90vw", boxShadow: "0 24px 60px rgba(0,0,0,0.2)", maxHeight: "90vh", overflowY: "auto" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-              <div style={{ fontSize: 17, fontWeight: 700, color: "#0F172A" }}>Add New Book</div>
-              <button onClick={() => setShowModal(false)} style={{ width: 28, height: 28, borderRadius: 8, border: "1px solid #E2E8F0", background: "#F8FAFC", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <X size={14} color="#64748B" />
-              </button>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              {[
-                { label: "Book Title", key: "title", placeholder: "e.g. Mathematics Class 10" },
-                { label: "Author", key: "author", placeholder: "e.g. R.D. Sharma" },
-                { label: "ISBN", key: "isbn", placeholder: "e.g. 978-3-16-148410-0" },
-                { label: "Publisher", key: "publisher", placeholder: "e.g. NCERT" },
-              ].map(({ label, key, placeholder }) => (
-                <div key={key}>
-                  <label style={{ fontSize: 11, color: "#64748B", fontWeight: 600, display: "block", marginBottom: 5 }}>{label.toUpperCase()}</label>
-                  <input value={form[key]} onChange={e => setForm({ ...form, [key]: e.target.value })} placeholder={placeholder} style={inp} />
-                </div>
+      {/* Books Table */}
+      <div style={{ background:"white", borderRadius:20, boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid rgba(226,232,240,0.8)", overflow:"hidden", animation:"fadeUp 0.5s ease 0.15s both" }}>
+        <table style={{ width:"100%", borderCollapse:"collapse" }}>
+          <thead>
+            <tr style={{ background:"linear-gradient(90deg,#F8FAFC,#F1F5F9)" }}>
+              {["Book","Author","ISBN","Category","Copies","Available","Issued","Action"].map(h => (
+                <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#64748B", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
               ))}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                <div>
-                  <label style={{ fontSize: 11, color: "#64748B", fontWeight: 600, display: "block", marginBottom: 5 }}>CATEGORY</label>
-                  <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} style={inp}>
-                    {CATEGORIES.map(c => <option key={c}>{c}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label style={{ fontSize: 11, color: "#64748B", fontWeight: 600, display: "block", marginBottom: 5 }}>TOTAL COPIES *</label>
-                  <input type="number" min="1" value={form.totalCopies} onChange={e => setForm({ ...form, totalCopies: e.target.value })} placeholder="e.g. 10" style={inp} />
-                </div>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              <tr><td colSpan={8} style={{ padding:"60px 0", textAlign:"center" }}>
+                <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid #6366F1", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
+                <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading books...</div>
+              </td></tr>
+            ) : filtered.length === 0 ? (
+              <tr><td colSpan={8} style={{ padding:"80px 0", textAlign:"center" }}>
+                <div style={{ fontSize:52, marginBottom:12 }}>��</div>
+                <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No books found</div>
+                <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Add your first book using the button above</div>
+              </td></tr>
+            ) : filtered.map((b,i) => {
+              const cfg = CAT_CONFIG[b.category] || CAT_CONFIG.Other;
+              const availPct = b.totalCopies > 0 ? (b.available/b.totalCopies)*100 : 0;
+              return (
+                <tr key={b._id} className="book-row" style={{ borderBottom:"1px solid #F1F5F9", animation:`fadeUp 0.3s ease ${i*0.03}s both` }}>
+                  <td style={{ padding:"14px 18px" }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                      <div style={{ width:38, height:38, borderRadius:10, background:cfg.bg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>{cfg.icon}</div>
+                      <div>
+                        <div style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>{b.title}</div>
+                        {b.publisher && <div style={{ fontSize:11, color:"#94A3B8" }}>{b.publisher}{b.year ? ` · ${b.year}` : ""}</div>}
+                      </div>
+                    </div>
+                  </td>
+                  <td style={{ padding:"14px 18px", fontSize:13, color:"#374151", fontWeight:500 }}>{b.author || "—"}</td>
+                  <td style={{ padding:"14px 18px", fontSize:12, color:"#94A3B8", fontFamily:"monospace" }}>{b.isbn || "—"}</td>
+                  <td style={{ padding:"14px 18px" }}>
+                    <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:cfg.bg, color:cfg.color }}>{b.category}</span>
+                  </td>
+                  <td style={{ padding:"14px 18px", fontSize:13, fontWeight:700, color:"#0F172A" }}>{b.totalCopies}</td>
+                  <td style={{ padding:"14px 18px" }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                      <div style={{ flex:1, height:6, borderRadius:4, background:"#E2E8F0", overflow:"hidden", minWidth:50 }}>
+                        <div style={{ width:`${availPct}%`, height:"100%", borderRadius:4, background: availPct>50?"#10B981":availPct>20?"#F59E0B":"#EF4444", transition:"width 0.3s ease" }} />
+                      </div>
+                      <span style={{ fontSize:12, fontWeight:700, color: availPct>50?"#10B981":availPct>20?"#D97706":"#DC2626", minWidth:20 }}>{b.available}</span>
+                    </div>
+                  </td>
+                  <td style={{ padding:"14px 18px" }}>
+                    <span style={{ fontSize:13, fontWeight:700, color: b.issued>0?"#D97706":"#94A3B8" }}>{b.issued}</span>
+                  </td>
+                  <td style={{ padding:"14px 18px" }}>
+                    <div style={{ display:"flex", gap:6 }}>
+                      <button className="act-btn" onClick={() => openEdit(b)}
+                        style={{ padding:"6px 14px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", color:"#374151", fontSize:11, fontWeight:700, cursor:"pointer" }}>
+                        Edit
+                      </button>
+                      <button className="act-btn" onClick={() => handleDelete(b._id)}
+                        style={{ width:30, height:30, borderRadius:8, border:"none", background:"#FEF2F2", cursor:"pointer", fontSize:13 }}>
+                        🗑️
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Add/Edit Modal */}
+      <Modal show={showModal} onClose={() => setShowModal(false)} title={editBook ? "Edit Book" : "Add New Book"}>
+        <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+          <div>
+            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TITLE *</div>
+            <input value={form.title} onChange={e=>f("title",e.target.value)} placeholder="Book title..."
+              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
+              onFocus={e=>e.target.style.borderColor="#6366F1"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
+          </div>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+            {[["AUTHOR","author"],["ISBN","isbn"],["PUBLISHER","publisher"],["YEAR","year"]].map(([label,key]) => (
+              <div key={key}>
+                <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
+                <input value={form[key]||""} onChange={e=>f(key,e.target.value)}
+                  style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
+                  onFocus={e=>e.target.style.borderColor="#6366F1"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
               </div>
-              <div>
-                <label style={{ fontSize: 11, color: "#64748B", fontWeight: 600, display: "block", marginBottom: 5 }}>PUBLICATION YEAR</label>
-                <input type="number" value={form.year} onChange={e => setForm({ ...form, year: e.target.value })} placeholder="e.g. 2024" style={inp} />
-              </div>
+            ))}
+          </div>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+            <div>
+              <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>CATEGORY</div>
+              <select value={form.category} onChange={e=>f("category",e.target.value)}
+                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white" }}>
+                {CATEGORIES.map(c => <option key={c} value={c}>{CAT_CONFIG[c].icon} {c}</option>)}
+              </select>
             </div>
-            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 20 }}>
-              <button onClick={() => setShowModal(false)} style={{ padding: "9px 20px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#F8FAFC", fontSize: 13, cursor: "pointer", color: "#64748B" }}>Cancel</button>
-              <button onClick={handleAdd} disabled={saving}
-                style={{ padding: "9px 24px", borderRadius: 8, border: "none", background: saving ? "#94A3B8" : "linear-gradient(135deg, #4F46E5, #7C3AED)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: saving ? "not-allowed" : "pointer" }}>
-                {saving ? "Adding..." : "Add Book"}
-              </button>
+            <div>
+              <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TOTAL COPIES *</div>
+              <input type="number" value={form.totalCopies} onChange={e=>f("totalCopies",e.target.value)} min="1"
+                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />
             </div>
           </div>
+          <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
+            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
+            <button onClick={handleSave} disabled={saving} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", opacity:saving?0.7:1 }}>
+              {saving ? "Saving..." : editBook ? "Update" : "Add Book"}
+            </button>
+          </div>
         </div>
-      )}
+      </Modal>
     </div>
   );
 }
