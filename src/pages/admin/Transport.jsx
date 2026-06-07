@@ -15,8 +15,10 @@ function BusAnimation({ onDone }) {
     <div style={{ position:"fixed", inset:0, background:"linear-gradient(135deg,#0F172A,#1E3A5F)", zIndex:9999, display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
       <style>{`
         @keyframes busRide {
-          0%   { transform: translateX(-120vw) scaleX(1); }
-          100% { transform: translateX(120vw) scaleX(1); }
+          0%   { transform: translateX(-30vw); }
+          30%  { transform: translateX(20vw); }
+          70%  { transform: translateX(20vw); }
+          100% { transform: translateX(130vw); }
         }
         @keyframes roadLine {
           0%   { transform: translateX(0); }
@@ -48,7 +50,7 @@ function BusAnimation({ onDone }) {
           80%  { opacity:1; }
           100% { opacity:0; }
         }
-        .bus-wrap { animation: busRide 2.8s cubic-bezier(0.15,0.1,0.25,1) forwards, fadeOut 2.8s forwards; }
+        .bus-wrap { animation: busRide 3s ease-in-out forwards, fadeOut 3s forwards; }
         .wind-1 { position:absolute; height:3px; border-radius:4px; background:rgba(255,255,255,0.15); animation: windLine 1.4s 0s ease-in forwards; width:180px; top:44%; }
         .wind-2 { position:absolute; height:2px; border-radius:4px; background:rgba(255,255,255,0.1); animation: windLine 1.4s 0.1s ease-in forwards; width:120px; top:47%; }
         .wind-3 { position:absolute; height:2px; border-radius:4px; background:rgba(255,255,255,0.08); animation: windLine 1.4s 0.05s ease-in forwards; width:90px; top:42%; }
@@ -156,7 +158,7 @@ export default function Transport() {
   const [selectedStudents, setSelectedStudents] = useState([]);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowAnim(false), 3000);
+    const timer = setTimeout(() => setShowAnim(false), 2800);
     return () => clearTimeout(timer);
   }, []);
 
