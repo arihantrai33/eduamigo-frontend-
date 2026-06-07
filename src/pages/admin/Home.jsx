@@ -24,7 +24,7 @@ import FeeStructure from "./FeeStructure";
 import LeaveRequests from "./LeaveRequests";
 import Library from "./Library";
 import Marks from "./Marks";
-import Notifications from "./Notifications";
+import Communications from "./Communications";
 import Reports from "./Reports";
 import Results from "./Results";
 import SalaryManagement from "./SalaryManagement";
@@ -35,8 +35,6 @@ import Timetable from "./Timetable";
 import Transport from "./Transport";
 import UserManagement from "./UserManagement";
 import ParentsList from "./ParentsList";
-import Circulars from "./Circulars";
-import NoticeBoard from "./NoticeBoard";
 import EventCalendar from "./EventCalendar";
 import IDCardGenerator from "./IDCardGenerator";
 import BulkOperations from "./BulkOperations";
@@ -74,9 +72,7 @@ const NAV = [
   { label: "All Parents",        icon: UserCircle,      path: "/admin/parents" },
 
   { section: "COMMUNICATION" },
-  { label: "Notice Board",       icon: Bell,            path: "/admin/notice-board" },
-  { label: "Circulars",          icon: FileText,        path: "/admin/circulars" },
-  { label: "Notifications",      icon: Bell,            path: "/admin/notifications" },
+  { label: "Communications",     icon: Bell,            path: "/admin/communications" },
   { label: "Chat",               icon: MessageCircle,   path: "/admin/chat" },
   { label: "Event Calendar",     icon: CalendarCheck,   path: "/admin/event-calendar" },
 
@@ -567,7 +563,7 @@ export default function AdminHome() {
           <Route path="admissions/enquiries" element={<div style={{padding:40,textAlign:"center",color:"#94A3B8",fontSize:16,fontWeight:700}}>🏫 Admissions — Enquiries coming soon</div>} />
           <Route path="admissions/applications" element={<div style={{padding:40,textAlign:"center",color:"#94A3B8",fontSize:16,fontWeight:700}}>📋 Applications coming soon</div>} />
           <Route path="admissions/enrollment" element={<div style={{padding:40,textAlign:"center",color:"#94A3B8",fontSize:16,fontWeight:700}}>✅ Enrollment coming soon</div>} />
-          <Route path="notifications" element={<Notifications />} />
+          <Route path="communications" element={<Communications />} />
           <Route path="reports" element={<Reports />} />
           <Route path="results" element={<Results />} />
           <Route path="hr-management" element={<SalaryManagement />} />
@@ -576,13 +572,10 @@ export default function AdminHome() {
           <Route path="transport" element={<Transport />} />
           <Route path="user-management" element={<UserManagement />} />
           <Route path="parents" element={<ParentsList />} />
-          <Route path="circulars" element={<Circulars />} />
-          <Route path="notice-board" element={<NoticeBoard />} />
           <Route path="event-calendar" element={<EventCalendar />} />
           <Route path="id-card-generator" element={<IDCardGenerator />} />
           <Route path="bulk-operations" element={<BulkOperations />} />
           <Route path="hr-management" element={<HRManagement />} />
-          <Route path="noticeboard" element={<NoticeBoard />} />
         </Routes>
       </main>
     </div>
