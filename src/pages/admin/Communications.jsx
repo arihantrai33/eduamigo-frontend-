@@ -288,6 +288,12 @@ export default function Communications() {
       {/* Circulars Tab */}
       {activeTab === "circulars" && (
         <div style={{ animation:"fadeUp 0.3s ease" }}>
+          <div style={{ display:"flex", justifyContent:"flex-end", marginBottom:16 }}>
+            <button onClick={() => { setEditItem(null); setAnnForm({ title:"", message:"", targetRole:"all", priority:"important", isPinned:false }); setModalType("announcement"); setShowModal(true); }}
+              style={{ padding:"11px 24px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#EC4899,#8B5CF6)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 14px rgba(236,72,153,0.3)" }}>
+              + Add Circular
+            </button>
+          </div>
           {circulars.length === 0 ? (
             <div style={{ background:"white", borderRadius:20, padding:"80px 0", textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
               <div style={{ fontSize:48, marginBottom:12 }}>📋</div>
