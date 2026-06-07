@@ -27,6 +27,7 @@ import Marks from "./Marks";
 import Notifications from "./Notifications";
 import Reports from "./Reports";
 import Results from "./Results";
+import SalaryManagement from "./SalaryManagement";
 import Settings from "./Settings";
 import StudentProfile from "./StudentProfile";
 import TeacherProfile from "./TeacherProfile";
@@ -569,6 +570,7 @@ export default function AdminHome() {
           <Route path="notifications" element={<Notifications />} />
           <Route path="reports" element={<Reports />} />
           <Route path="results" element={<Results />} />
+          <Route path="hr-management" element={<SalaryManagement />} />
           <Route path="settings" element={<Settings />} />
           <Route path="timetable" element={<Timetable />} />
           <Route path="transport" element={<Transport />} />
