@@ -254,7 +254,7 @@ export default function Chat() {
         @keyframes spin    { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
         @keyframes pulse   { 0%,100%{opacity:1} 50%{opacity:0.3} }
         .c-row{transition:background 0.12s ease;cursor:pointer;}
-        .c-row:hover{background:#F8FAFC!important;}
+        .c-row:hover{background:#EEF2FF!important;}
         textarea{outline:none!important;}
         ::-webkit-scrollbar{width:3px;}
         ::-webkit-scrollbar-thumb{background:#E2E8F0;border-radius:4px;}
@@ -265,7 +265,7 @@ export default function Chat() {
       `}</style>
 
       {/* ══ DARK LEFT SIDEBAR ══ */}
-      <div style={{ width: 300, background: "white", display: "flex", flexDirection: "column", flexShrink: 0 }}>
+      <div style={{ width: 300, background: "#F8FAFC", display: "flex", flexDirection: "column", flexShrink: 0 }}>
 
         <div style={{ padding: "22px 18px 14px" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
@@ -355,12 +355,12 @@ export default function Chat() {
       </div>
 
       {/* ══ CHAT AREA ══ */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "#F8FAFC" }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "white" }}>
         {selected ? (
           <>
             {/* Header — clickable for details */}
             <div className="hdr-click" onClick={() => setShowModal(true)}
-              style={{ padding: "0 24px", height: 70, background: "white", borderBottom: "1px solid #F1F5F9", display: "flex", alignItems: "center", gap: 14, boxShadow: "0 1px 6px rgba(15,23,42,0.05)" }}>
+              style={{ padding: "0 24px", height: 70, background: "white", borderBottom: `3px solid ${cfg?.badge?.color || "#6366F1"}`, display: "flex", alignItems: "center", gap: 14, boxShadow: "0 1px 6px rgba(15,23,42,0.05)" }}>
               <Avatar name={selected.name} type={selected.type} size={44} />
               <div style={{ flex: 1 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3 }}>
@@ -379,7 +379,7 @@ export default function Chat() {
             </div>
 
             {/* Messages */}
-            <div className="r-scroll" style={{ flex: 1, overflowY: "auto", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 4 }}>
+            <div className="r-scroll" style={{ flex: 1, overflowY: "auto", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 4, background: "white" }}>
               {msgLoading ? (
                 <div style={{ margin: "auto", textAlign: "center" }}>
                   <div style={{ width: 28, height: 28, borderRadius: "50%", border: "3px solid #E2E8F0", borderTop: "3px solid #6366F1", animation: "spin 0.8s linear infinite", margin: "0 auto 10px" }} />
@@ -404,10 +404,10 @@ export default function Chat() {
                     <div style={{ maxWidth: "62%" }}>
                       <div style={{ padding: item.fileUrl ? "8px 10px" : "10px 14px",
                         borderRadius: isMe ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
-                        background: isMe ? "#6366F1" : "white",
+                        background: isMe ? "#6366F1" : "#F1F5F9",
                         color: isMe ? "white" : "#0F172A",
                         fontSize: 13, lineHeight: 1.55,
-                        border: isMe ? "none" : "1px solid #E2E8F0",
+                        border: "none",
                         boxShadow: isMe ? "0 2px 12px rgba(99,102,241,0.25)" : "0 1px 4px rgba(15,23,42,0.06)" }}>
                         {item.fileUrl ? <FileMessage msg={item} isMe={isMe} /> : item.text}
                       </div>
@@ -429,11 +429,11 @@ export default function Chat() {
             <div style={{ padding: "14px 24px", background: "white", borderTop: "1px solid #F1F5F9" }}>
               <input ref={fileInputRef} type="file" style={{ display: "none" }} onChange={handleFileUpload}
                 accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" />
-              <div style={{ display: "flex", gap: 10, alignItems: "flex-end", background: "#F8FAFC", borderRadius: 14, padding: "8px 8px 8px 4px", border: "1.5px solid #E2E8F0", transition: "border-color 0.2s" }}
-                onFocusCapture={e => e.currentTarget.style.borderColor = "#6366F1"}
+              <div style={{ display: "flex", gap: 10, alignItems: "flex-end", background: "#F8FAFC", borderRadius: 14, padding: "8px 8px 8px 4px", border: "2.5px solid #E2E8F0", transition: "border-color 0.2s" }}
+                onFocusCapture={e => { e.currentTarget.style.borderColor = "#6366F1"; e.currentTarget.style.borderWidth = "2.5px"; }}
                 onBlurCapture={e => e.currentTarget.style.borderColor = "#E2E8F0"}>
                 <button className="file-btn" onClick={() => fileInputRef.current?.click()} disabled={uploading}
-                  style={{ width: 36, height: 36, borderRadius: 10, border: "none", background: "transparent", cursor: "pointer", fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "#64748B", transition: "background 0.15s ease" }}>
+                  style={{ width: 42, height: 42, borderRadius: 12, border: "none", background: "transparent", cursor: "pointer", fontSize: 24, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "#64748B", transition: "background 0.15s ease" }}>
                   {uploading ? <span style={{ width: 14, height: 14, border: "2px solid #E2E8F0", borderTop: "2px solid #6366F1", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} /> : "+"}
                 </button>
                 <textarea ref={inputRef} value={input} rows={1}
@@ -442,7 +442,7 @@ export default function Chat() {
                   placeholder={`Message ${selected.name}...`}
                   style={{ flex: 1, border: "none", background: "transparent", fontSize: 13, color: "#0F172A", resize: "none", fontFamily: "inherit", lineHeight: 1.5, maxHeight: 100, overflowY: "auto", paddingTop: 5, paddingBottom: 5 }} />
                 <button onClick={() => sendMessage()} disabled={!input.trim() || sending}
-                  style={{ width: 38, height: 38, borderRadius: 11, border: "none",
+                  style={{ width: 44, height: 44, borderRadius: 13, border: "none",
                     background: input.trim() ? "#6366F1" : "#E2E8F0", color: "white",
                     cursor: input.trim() ? "pointer" : "default", display: "flex", alignItems: "center", justifyContent: "center",
                     flexShrink: 0, fontSize: 16, transition: "all 0.15s ease",
