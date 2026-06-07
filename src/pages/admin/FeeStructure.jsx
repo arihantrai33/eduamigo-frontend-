@@ -178,7 +178,7 @@ export default function FeeStructure() {
                   <td style={{ padding:"14px 18px" }}>
                     <span style={{ fontSize:12, fontWeight:700, padding:"4px 10px", borderRadius:8, background:"#EEF2FF", color:"#6366F1" }}>{s.frequency || "Monthly"}</span>
                   </td>
-                  <td style={{ padding:"14px 18px", fontSize:13, color:"#374151", fontWeight:600 }}>{s.dueDate || "Not set"}</td>
+                  <td style={{ padding:"14px 18px", fontSize:13, color:"#374151", fontWeight:600 }}>{s.dueDate ? (isNaN(new Date(s.dueDate)) ? s.dueDate : new Date(s.dueDate).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})) : 'Not set'}</td>
                   <td style={{ padding:"14px 18px", fontSize:12, color:"#94A3B8", maxWidth:180 }}>{s.description || "No description"}</td>
                   <td style={{ padding:"14px 18px" }}>
                     <div style={{ display:"flex", gap:6 }}>
