@@ -5,9 +5,15 @@ const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 const ROLE_CONFIG = {
-  student: { bg: "#EEF2FF", color: "#6366F1", label: "Student" },
-  teacher: { bg: "#F0FDF4", color: "#16A34A", label: "Teacher" },
-  parent:  { bg: "#FFFBEB", color: "#D97706", label: "Parent"  },
+  student: { bg: "linear-gradient(135deg,#6366F1,#8B5CF6)", label: "Student",  dot: "#818CF8" },
+  teacher: { bg: "linear-gradient(135deg,#10B981,#059669)", label: "Teacher",  dot: "#34D399" },
+  parent:  { bg: "linear-gradient(135deg,#F59E0B,#D97706)", label: "Parent",   dot: "#FCD34D" },
+};
+
+const ROLE_BADGE = {
+  student: { bg: "#EEF2FF", color: "#6366F1" },
+  teacher: { bg: "#F0FDF4", color: "#16A34A" },
+  parent:  { bg: "#FFFBEB", color: "#D97706" },
 };
 
 function getInitials(name) {
@@ -22,10 +28,35 @@ function formatTime(dateStr) {
   const diff = now - d;
   if (diff < 60000) return "Just now";
   if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
-  if (d.toDateString() === now.toDateString()) return d.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
-  const yesterday = new Date(now); yesterday.setDate(now.getDate() - 1);
+  if (d.toDateString() === now.toDateString())
+    return d.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
   if (d.toDateString() === yesterday.toDateString()) return "Yesterday";
   return d.toLocaleDateString("en-IN", { day: "2-digit", month: "short" });
+}
+
+function Avatar({ name, type, size = 40, showStatus = false }) {
+  const cfg = ROLE_CONFIG[type] || ROLE_CONFIG.student;
+  return (
+    <div style={{ position: "relative", flexShrink: 0 }}>
+      <div style={{
+        width: size, height: size, borderRadius: size * 0.3,
+        background: cfg.bg, display: "flex", alignItems: "center",
+        justifyContent: "center", fontSize: size * 0.33, fontWeight: 800, color: "white",
+        letterSpacing: "-0.5px", boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
+      }}>
+        {getInitials(name)}
+      </div>
+      {showStatus && (
+        <div style={{
+          position: "absolute", bottom: -1, right: -1,
+          width: size * 0.28, height: size * 0.28, borderRadius: "50%",
+          background: cfg.dot, border: "2px solid #1E293B"
+        }} />
+      )}
+    </div>
+  );
 }
 
 export default function Chat() {
@@ -44,7 +75,6 @@ export default function Chat() {
   const pollRef        = useRef(null);
   const inputRef       = useRef(null);
 
-  // Get admin userId from token
   useEffect(() => {
     try {
       const token = localStorage.getItem("token");
@@ -58,15 +88,13 @@ export default function Chat() {
   const fetchContacts = useCallback(async () => {
     try {
       const res = await axios.get(`${API}/chat/admin-contacts`, auth());
-      const data = res.data.data || [];
-      setContacts(data);
+      setContacts(res.data.data || []);
     } catch {}
     setLoading(false);
   }, []);
 
   useEffect(() => { fetchContacts(); }, [fetchContacts]);
 
-  // Filter contacts
   useEffect(() => {
     let list = [...contacts];
     if (filterRole) list = list.filter(c => c.type === filterRole);
@@ -81,7 +109,6 @@ export default function Chat() {
     try {
       const res = await axios.get(`${API}/chat/messages/${roomId}`, auth());
       setMessages(res.data.data || []);
-      // Mark as read — refresh contacts unread count
       fetchContacts();
     } catch {}
   }, [fetchContacts]);
@@ -93,7 +120,6 @@ export default function Chat() {
     clearInterval(pollRef.current);
     await fetchMessages(contact.roomId);
     setMsgLoading(false);
-    // Poll every 3 seconds
     pollRef.current = setInterval(() => fetchMessages(contact.roomId), 3000);
     setTimeout(() => inputRef.current?.focus(), 100);
   };
@@ -109,15 +135,10 @@ export default function Chat() {
     const text = input.trim();
     setInput("");
     setSending(true);
-    // Optimistic update
     const optimistic = { _id: "opt_" + Date.now(), senderId: adminId, text, createdAt: new Date().toISOString(), read: false };
     setMessages(prev => [...prev, optimistic]);
     try {
-      await axios.post(`${API}/chat/messages`, {
-        receiverId: selected.userId,
-        roomId: selected.roomId,
-        text,
-      }, auth());
+      await axios.post(`${API}/chat/messages`, { receiverId: selected.userId, roomId: selected.roomId, text }, auth());
       await fetchMessages(selected.roomId);
     } catch {
       setMessages(prev => prev.filter(m => m._id !== optimistic._id));
@@ -128,51 +149,72 @@ export default function Chat() {
 
   const totalUnread = contacts.reduce((s, c) => s + (c.unread || 0), 0);
 
+  // Group messages by date
+  function groupByDate(msgs) {
+    const groups = [];
+    let lastDate = null;
+    msgs.forEach(m => {
+      const d = new Date(m.createdAt).toDateString();
+      if (d !== lastDate) { groups.push({ type: "date", label: d === new Date().toDateString() ? "Today" : d }); lastDate = d; }
+      groups.push({ type: "msg", ...m });
+    });
+    return groups;
+  }
+
   return (
-    <div style={{ fontFamily: "Inter, sans-serif", display: "flex", height: "calc(100vh - 80px)", gap: 0, background: "#F8FAFC", borderRadius: 20, overflow: "hidden", boxShadow: "0 4px 32px rgba(15,23,42,0.10)", border: "1px solid #E2E8F0" }}>
+    <div style={{ fontFamily: "Inter, sans-serif", display: "flex", height: "calc(100vh - 80px)", borderRadius: 20, overflow: "hidden", boxShadow: "0 8px 40px rgba(15,23,42,0.15)" }}>
       <style>{`
-        @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-        @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
-        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
-        .contact-row:hover { background: #F1F5F9 !important; }
-        .contact-row { transition: background 0.15s ease; cursor: pointer; }
-        .send-btn:hover { transform: scale(1.05); }
-        .send-btn { transition: transform 0.15s ease; }
-        ::-webkit-scrollbar { width: 4px; }
+        @keyframes fadeIn  { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes slideIn { from { opacity:0; transform:translateX(-8px); } to { opacity:1; transform:translateX(0); } }
+        @keyframes spin    { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+        @keyframes pulse   { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+        @keyframes blink   { 0%,80%,100% { opacity:0; } 40% { opacity:1; } }
+        .c-row:hover { background: rgba(255,255,255,0.07) !important; }
+        .c-row { transition: all 0.15s ease; cursor: pointer; }
+        .msg-bubble { transition: transform 0.1s ease; }
+        .msg-bubble:hover { transform: scale(1.01); }
+        ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+        .right-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; }
+        textarea:focus { outline: none !important; }
       `}</style>
 
-      {/* LEFT PANEL — Contacts */}
-      <div style={{ width: 320, background: "white", borderRight: "1px solid #E2E8F0", display: "flex", flexDirection: "column", flexShrink: 0 }}>
+      {/* ═══ LEFT SIDEBAR ═══ */}
+      <div style={{ width: 300, background: "linear-gradient(180deg,#0F172A 0%,#1E293B 100%)", display: "flex", flexDirection: "column", flexShrink: 0 }}>
 
-        {/* Header */}
-        <div style={{ padding: "20px 20px 16px", borderBottom: "1px solid #F1F5F9" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+        {/* Sidebar Header */}
+        <div style={{ padding: "24px 20px 16px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
             <div>
-              <div style={{ fontSize: 17, fontWeight: 800, color: "#0F172A" }}>Messages</div>
+              <div style={{ fontSize: 18, fontWeight: 900, color: "white", letterSpacing: "-0.3px" }}>Messages</div>
               {totalUnread > 0 && (
-                <div style={{ fontSize: 11, color: "#6366F1", fontWeight: 700, marginTop: 2 }}>{totalUnread} unread message{totalUnread > 1 ? "s" : ""}</div>
+                <div style={{ fontSize: 11, color: "#818CF8", fontWeight: 700, marginTop: 2 }}>
+                  {totalUnread} unread
+                </div>
               )}
             </div>
-            <button onClick={fetchContacts} style={{ width: 32, height: 32, borderRadius: "50%", border: "none", background: "#F1F5F9", cursor: "pointer", fontSize: 14 }}>🔄</button>
+            <button onClick={fetchContacts}
+              style={{ width: 34, height: 34, borderRadius: 10, border: "none", background: "rgba(255,255,255,0.08)", cursor: "pointer", fontSize: 14, color: "white", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              ��
+            </button>
           </div>
 
           {/* Search */}
-          <div style={{ position: "relative", marginBottom: 10 }}>
-            <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", fontSize: 13, color: "#94A3B8" }}>🔍</span>
-            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search contacts..."
-              style={{ width: "100%", padding: "9px 12px 9px 32px", borderRadius: 10, border: "1.5px solid #E2E8F0", fontSize: 12, outline: "none", boxSizing: "border-box", fontFamily: "inherit", background: "#F8FAFC" }}
-              onFocus={e => e.target.style.borderColor = "#6366F1"} onBlur={e => e.target.style.borderColor = "#E2E8F0"} />
+          <div style={{ position: "relative", marginBottom: 12, marginTop: 14 }}>
+            <span style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", fontSize: 13, color: "#64748B" }}>🔍</span>
+            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search..."
+              style={{ width: "100%", padding: "10px 12px 10px 34px", borderRadius: 12, border: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.06)", fontSize: 12, color: "white", boxSizing: "border-box", fontFamily: "inherit" }} />
           </div>
 
-          {/* Role Filter */}
-          <div style={{ display: "flex", gap: 6 }}>
+          {/* Role Filter Tabs */}
+          <div style={{ display: "flex", gap: 4, background: "rgba(255,255,255,0.05)", borderRadius: 10, padding: 3 }}>
             {[["", "All"], ["student", "Students"], ["teacher", "Teachers"], ["parent", "Parents"]].map(([val, lbl]) => (
               <button key={val} onClick={() => setFilterRole(val)}
-                style={{ flex: 1, padding: "6px 4px", borderRadius: 8, border: "none", cursor: "pointer", fontWeight: 700, fontSize: 10,
-                  background: filterRole === val ? "#6366F1" : "#F1F5F9",
-                  color: filterRole === val ? "white" : "#64748B" }}>
+                style={{ flex: 1, padding: "6px 2px", borderRadius: 8, border: "none", cursor: "pointer", fontWeight: 700, fontSize: 10,
+                  background: filterRole === val ? "rgba(99,102,241,0.9)" : "transparent",
+                  color: filterRole === val ? "white" : "#64748B",
+                  transition: "all 0.2s ease" }}>
                 {lbl}
               </button>
             ))}
@@ -183,77 +225,90 @@ export default function Chat() {
         <div style={{ flex: 1, overflowY: "auto" }}>
           {loading ? (
             <div style={{ padding: "40px 0", textAlign: "center" }}>
-              <div style={{ width: 28, height: 28, borderRadius: "50%", border: "3px solid #E2E8F0", borderTop: "3px solid #6366F1", animation: "spin 0.8s linear infinite", margin: "0 auto 8px" }} />
-              <div style={{ fontSize: 12, color: "#94A3B8" }}>Loading contacts...</div>
+              <div style={{ width: 24, height: 24, borderRadius: "50%", border: "2px solid rgba(255,255,255,0.1)", borderTop: "2px solid #6366F1", animation: "spin 0.8s linear infinite", margin: "0 auto 8px" }} />
+              <div style={{ fontSize: 11, color: "#475569" }}>Loading...</div>
             </div>
           ) : filtered.length === 0 ? (
             <div style={{ padding: "60px 20px", textAlign: "center" }}>
-              <div style={{ fontSize: 36, marginBottom: 8 }}>💬</div>
-              <div style={{ fontSize: 13, color: "#94A3B8", fontWeight: 600 }}>No contacts found</div>
+              <div style={{ fontSize: 32, marginBottom: 8, opacity: 0.4 }}>💬</div>
+              <div style={{ fontSize: 12, color: "#475569" }}>No contacts found</div>
             </div>
           ) : filtered.map((c, i) => {
-            const cfg = ROLE_CONFIG[c.type] || ROLE_CONFIG.student;
             const isActive = selected?.roomId === c.roomId;
+            const cfg = ROLE_CONFIG[c.type] || ROLE_CONFIG.student;
             return (
-              <div key={c.roomId} className="contact-row" onClick={() => selectContact(c)}
-                style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px",
-                  background: isActive ? "#EEF2FF" : "white",
+              <div key={c.roomId} className="c-row" onClick={() => selectContact(c)}
+                style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 16px",
+                  background: isActive ? "rgba(99,102,241,0.18)" : "transparent",
                   borderLeft: isActive ? "3px solid #6366F1" : "3px solid transparent",
-                  borderBottom: "1px solid #F8FAFC",
-                  animation: `fadeUp 0.3s ease ${i * 0.03}s both` }}>
+                  animation: `slideIn 0.3s ease ${i * 0.02}s both` }}>
 
-                {/* Avatar */}
-                <div style={{ width: 42, height: 42, borderRadius: 13, background: cfg.bg, color: cfg.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, flexShrink: 0, position: "relative" }}>
-                  {getInitials(c.name)}
-                  {c.unread > 0 && (
-                    <div style={{ position: "absolute", top: -4, right: -4, width: 18, height: 18, borderRadius: "50%", background: "#EF4444", color: "white", fontSize: 9, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", border: "2px solid white" }}>
-                      {c.unread > 9 ? "9+" : c.unread}
-                    </div>
-                  )}
-                </div>
+                <Avatar name={c.name} type={c.type} size={44} showStatus={true} />
 
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 3 }}>
-                    <span style={{ fontSize: 13, fontWeight: c.unread > 0 ? 800 : 600, color: "#0F172A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 130 }}>{c.name}</span>
-                    <span style={{ fontSize: 10, color: "#94A3B8", flexShrink: 0, marginLeft: 4 }}>{formatTime(c.lastTime)}</span>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+                    <span style={{ fontSize: 13, fontWeight: c.unread > 0 ? 800 : 600, color: c.unread > 0 ? "white" : "#CBD5E1", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 120 }}>{c.name}</span>
+                    <span style={{ fontSize: 10, color: "#475569", flexShrink: 0 }}>{formatTime(c.lastTime)}</span>
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <span style={{ fontSize: 10, fontWeight: 700, padding: "1px 7px", borderRadius: 20, background: cfg.bg, color: cfg.color }}>{cfg.label}</span>
-                    <span style={{ fontSize: 11, color: "#94A3B8", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.lastMsg || c.sub}</span>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: 11, color: "#64748B", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 140 }}>
+                      {c.lastMsg || c.sub}
+                    </span>
+                    {c.unread > 0 && (
+                      <div style={{ width: 18, height: 18, borderRadius: "50%", background: "#6366F1", color: "white", fontSize: 9, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, animation: "pulse 2s infinite" }}>
+                        {c.unread > 9 ? "9+" : c.unread}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             );
           })}
         </div>
+
+        {/* Sidebar Footer */}
+        <div style={{ padding: "14px 16px", borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 34, height: 34, borderRadius: 10, background: "linear-gradient(135deg,#6366F1,#8B5CF6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 800, color: "white" }}>A</div>
+          <div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "white" }}>Admin</div>
+            <div style={{ fontSize: 10, color: "#22C55E", fontWeight: 600 }}>● Online</div>
+          </div>
+        </div>
       </div>
 
-      {/* RIGHT PANEL — Messages */}
+      {/* ═══ MAIN CHAT AREA ═══ */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "#F8FAFC" }}>
         {selected ? (
           <>
             {/* Chat Header */}
-            <div style={{ padding: "16px 24px", background: "white", borderBottom: "1px solid #E2E8F0", display: "flex", alignItems: "center", gap: 14 }}>
-              <div style={{ width: 44, height: 44, borderRadius: 14, background: ROLE_CONFIG[selected.type]?.bg, color: ROLE_CONFIG[selected.type]?.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 800, flexShrink: 0 }}>
-                {getInitials(selected.name)}
-              </div>
+            <div style={{ padding: "0 28px", height: 70, background: "white", borderBottom: "1px solid #E2E8F0", display: "flex", alignItems: "center", gap: 16, boxShadow: "0 1px 8px rgba(15,23,42,0.06)" }}>
+              <Avatar name={selected.name} type={selected.type} size={44} />
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 15, fontWeight: 800, color: "#0F172A" }}>{selected.name}</div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 2 }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, padding: "1px 8px", borderRadius: 20, background: ROLE_CONFIG[selected.type]?.bg, color: ROLE_CONFIG[selected.type]?.color }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontSize: 15, fontWeight: 800, color: "#0F172A" }}>{selected.name}</span>
+                  <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 20, background: ROLE_BADGE[selected.type]?.bg, color: ROLE_BADGE[selected.type]?.color }}>
                     {ROLE_CONFIG[selected.type]?.label}
                   </span>
-                  <span style={{ fontSize: 11, color: "#94A3B8" }}>{selected.sub}</span>
                 </div>
+                <div style={{ fontSize: 12, color: "#94A3B8", marginTop: 2 }}>{selected.sub}</div>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#22C55E", animation: "pulse 2s infinite" }} />
-                <span style={{ fontSize: 11, color: "#22C55E", fontWeight: 700 }}>Live</span>
+
+              {/* Header Actions */}
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 12px", borderRadius: 20, background: "#F0FDF4", border: "1px solid #BBF7D0" }}>
+                  <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#22C55E", animation: "pulse 2s infinite" }} />
+                  <span style={{ fontSize: 11, color: "#16A34A", fontWeight: 700 }}>Live</span>
+                </div>
+                <button onClick={() => fetchMessages(selected.roomId)}
+                  style={{ width: 36, height: 36, borderRadius: 10, border: "1px solid #E2E8F0", background: "white", cursor: "pointer", fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  🔄
+                </button>
               </div>
             </div>
 
-            {/* Messages Area */}
-            <div style={{ flex: 1, overflowY: "auto", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 8 }}>
+            {/* Messages */}
+            <div className="right-scroll" style={{ flex: 1, overflowY: "auto", padding: "24px 28px", display: "flex", flexDirection: "column", gap: 4,
+              backgroundImage: "radial-gradient(circle at 20px 20px, rgba(99,102,241,0.03) 1px, transparent 0)", backgroundSize: "40px 40px" }}>
               {msgLoading ? (
                 <div style={{ margin: "auto", textAlign: "center" }}>
                   <div style={{ width: 28, height: 28, borderRadius: "50%", border: "3px solid #E2E8F0", borderTop: "3px solid #6366F1", animation: "spin 0.8s linear infinite", margin: "0 auto 8px" }} />
@@ -261,73 +316,94 @@ export default function Chat() {
                 </div>
               ) : messages.length === 0 ? (
                 <div style={{ margin: "auto", textAlign: "center" }}>
-                  <div style={{ fontSize: 48, marginBottom: 12 }}>💬</div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "#94A3B8" }}>No messages yet</div>
-                  <div style={{ fontSize: 12, color: "#CBD5E1", marginTop: 4 }}>Send the first message to {selected.name}</div>
+                  <div style={{ width: 72, height: 72, borderRadius: 22, background: "linear-gradient(135deg,#EEF2FF,#F5F3FF)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 32, margin: "0 auto 16px" }}>💬</div>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: "#0F172A", marginBottom: 6 }}>Start the conversation</div>
+                  <div style={{ fontSize: 13, color: "#94A3B8" }}>Send a message to {selected.name}</div>
                 </div>
-              ) : messages.map((m, i) => {
-                const isMe = m.senderId?.toString() === adminId?.toString() || m.senderId === adminId;
-                const showTime = i === 0 || (new Date(m.createdAt) - new Date(messages[i-1]?.createdAt)) > 300000;
-                return (
-                  <div key={m._id || i} style={{ animation: `fadeUp 0.2s ease` }}>
-                    {showTime && (
-                      <div style={{ textAlign: "center", fontSize: 10, color: "#CBD5E1", fontWeight: 600, margin: "8px 0" }}>
-                        {formatTime(m.createdAt)}
-                      </div>
-                    )}
-                    <div style={{ display: "flex", justifyContent: isMe ? "flex-end" : "flex-start" }}>
-                      {!isMe && (
-                        <div style={{ width: 28, height: 28, borderRadius: 9, background: ROLE_CONFIG[selected.type]?.bg, color: ROLE_CONFIG[selected.type]?.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, marginRight: 8, flexShrink: 0, alignSelf: "flex-end" }}>
-                          {getInitials(selected.name)}
-                        </div>
-                      )}
-                      <div style={{ maxWidth: "65%", padding: "10px 14px", borderRadius: isMe ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
-                        background: isMe ? "linear-gradient(135deg,#6366F1,#8B5CF6)" : "white",
-                        color: isMe ? "white" : "#0F172A",
-                        boxShadow: isMe ? "0 4px 12px rgba(99,102,241,0.3)" : "0 2px 8px rgba(15,23,42,0.08)",
-                        fontSize: 13, lineHeight: 1.5 }}>
-                        <div>{m.text}</div>
-                        <div style={{ fontSize: 10, opacity: 0.6, marginTop: 4, textAlign: isMe ? "right" : "left", display: "flex", alignItems: "center", justifyContent: isMe ? "flex-end" : "flex-start", gap: 4 }}>
-                          {formatTime(m.createdAt)}
-                          {isMe && <span>{m.read ? "✓✓" : "✓"}</span>}
-                        </div>
-                      </div>
+              ) : (
+                groupByDate(messages).map((item, i) => {
+                  if (item.type === "date") return (
+                    <div key={i} style={{ textAlign: "center", margin: "12px 0 8px" }}>
+                      <span style={{ fontSize: 11, color: "#94A3B8", fontWeight: 700, background: "rgba(148,163,184,0.12)", padding: "4px 14px", borderRadius: 20 }}>{item.label}</span>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                  const isMe = item.senderId?.toString() === adminId?.toString() || item.senderId === adminId;
+                  const prevItem = groupByDate(messages)[i - 1];
+                  const prevIsMe = prevItem?.type === "msg" && (prevItem.senderId?.toString() === adminId?.toString());
+                  const showAvatar = !isMe && prevIsMe !== false;
+                  return (
+                    <div key={item._id || i} style={{ display: "flex", justifyContent: isMe ? "flex-end" : "flex-start", alignItems: "flex-end", gap: 8, marginBottom: 2, animation: "fadeIn 0.2s ease" }}>
+                      {!isMe && <Avatar name={selected.name} type={selected.type} size={28} />}
+                      <div className="msg-bubble" style={{ maxWidth: "60%" }}>
+                        <div style={{
+                          padding: "10px 14px",
+                          borderRadius: isMe ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
+                          background: isMe ? "linear-gradient(135deg,#6366F1,#8B5CF6)" : "white",
+                          color: isMe ? "white" : "#0F172A",
+                          boxShadow: isMe ? "0 4px 16px rgba(99,102,241,0.35)" : "0 2px 10px rgba(15,23,42,0.08)",
+                          fontSize: 13, lineHeight: 1.55
+                        }}>
+                          {item.text}
+                        </div>
+                        <div style={{ fontSize: 10, color: "#94A3B8", marginTop: 4, textAlign: isMe ? "right" : "left", paddingLeft: isMe ? 0 : 4, paddingRight: isMe ? 4 : 0, display: "flex", alignItems: "center", justifyContent: isMe ? "flex-end" : "flex-start", gap: 4 }}>
+                          {formatTime(item.createdAt)}
+                          {isMe && <span style={{ color: item.read ? "#6366F1" : "#94A3B8", fontSize: 11 }}>{item.read ? "✓✓" : "✓"}</span>}
+                        </div>
+                      </div>
+                      {isMe && <div style={{ width: 28 }} />}
+                    </div>
+                  );
+                })
+              )}
               <div ref={messagesEndRef} />
             </div>
 
             {/* Input Area */}
-            <div style={{ padding: "16px 24px", background: "white", borderTop: "1px solid #E2E8F0" }}>
-              <div style={{ display: "flex", gap: 10, alignItems: "flex-end" }}>
-                <div style={{ flex: 1, position: "relative" }}>
-                  <textarea
-                    ref={inputRef}
-                    value={input}
-                    onChange={e => { setInput(e.target.value); e.target.style.height = "auto"; e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px"; }}
-                    onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
-                    placeholder={`Message ${selected.name}...`}
-                    rows={1}
-                    style={{ width: "100%", padding: "12px 16px", borderRadius: 14, border: "1.5px solid #E2E8F0", fontSize: 13, outline: "none", resize: "none", fontFamily: "inherit", lineHeight: 1.5, boxSizing: "border-box", background: "#F8FAFC", maxHeight: 120, overflowY: "auto" }}
-                    onFocus={e => e.target.style.borderColor = "#6366F1"}
-                    onBlur={e => e.target.style.borderColor = "#E2E8F0"}
-                  />
-                </div>
-                <button className="send-btn" onClick={sendMessage} disabled={!input.trim() || sending}
-                  style={{ width: 46, height: 46, borderRadius: 14, border: "none", background: input.trim() ? "linear-gradient(135deg,#6366F1,#8B5CF6)" : "#E2E8F0", color: "white", cursor: input.trim() ? "pointer" : "default", fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: input.trim() ? "0 4px 14px rgba(99,102,241,0.4)" : "none", transition: "all 0.2s ease" }}>
-                  {sending ? <span style={{ width: 16, height: 16, border: "2px solid rgba(255,255,255,0.4)", borderTop: "2px solid white", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} /> : "➤"}
+            <div style={{ padding: "16px 28px", background: "white", borderTop: "1px solid #E2E8F0" }}>
+              <div style={{ display: "flex", gap: 12, alignItems: "flex-end", background: "#F8FAFC", borderRadius: 16, padding: "8px 8px 8px 16px", border: "1.5px solid #E2E8F0", transition: "border-color 0.2s" }}
+                onFocusCapture={e => e.currentTarget.style.borderColor = "#6366F1"}
+                onBlurCapture={e => e.currentTarget.style.borderColor = "#E2E8F0"}>
+                <textarea
+                  ref={inputRef}
+                  value={input}
+                  onChange={e => { setInput(e.target.value); e.target.style.height = "auto"; e.target.style.height = Math.min(e.target.scrollHeight, 100) + "px"; }}
+                  onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
+                  placeholder={`Message ${selected.name}...`}
+                  rows={1}
+                  style={{ flex: 1, border: "none", background: "transparent", fontSize: 13, color: "#0F172A", resize: "none", fontFamily: "inherit", lineHeight: 1.5, maxHeight: 100, overflowY: "auto", paddingTop: 6, paddingBottom: 6 }}
+                />
+                <button onClick={sendMessage} disabled={!input.trim() || sending}
+                  style={{ width: 42, height: 42, borderRadius: 12, border: "none",
+                    background: input.trim() ? "linear-gradient(135deg,#6366F1,#8B5CF6)" : "#E2E8F0",
+                    color: "white", cursor: input.trim() ? "pointer" : "default", fontSize: 16,
+                    display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                    boxShadow: input.trim() ? "0 4px 14px rgba(99,102,241,0.4)" : "none",
+                    transition: "all 0.2s ease" }}>
+                  {sending
+                    ? <span style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.3)", borderTop: "2px solid white", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} />
+                    : "➤"}
                 </button>
               </div>
-              <div style={{ fontSize: 10, color: "#CBD5E1", marginTop: 6, textAlign: "center" }}>Press Enter to send · Shift+Enter for new line</div>
+              <div style={{ fontSize: 10, color: "#CBD5E1", marginTop: 8, textAlign: "center" }}>
+                Enter to send · Shift+Enter for new line
+              </div>
             </div>
           </>
         ) : (
-          <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 12 }}>
-            <div style={{ width: 80, height: 80, borderRadius: 24, background: "linear-gradient(135deg,#EEF2FF,#F5F3FF)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 36 }}>💬</div>
-            <div style={{ fontSize: 16, fontWeight: 800, color: "#0F172A" }}>Select a conversation</div>
-            <div style={{ fontSize: 13, color: "#94A3B8" }}>Choose a contact from the left to start messaging</div>
+          <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 16 }}>
+            <div style={{ width: 100, height: 100, borderRadius: 28, background: "linear-gradient(135deg,#EEF2FF,#F5F3FF)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 44, boxShadow: "0 8px 32px rgba(99,102,241,0.15)" }}>💬</div>
+            <div style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 20, fontWeight: 900, color: "#0F172A", marginBottom: 6 }}>Welcome to Messages</div>
+              <div style={{ fontSize: 13, color: "#94A3B8" }}>Select a contact from the sidebar to start a conversation</div>
+            </div>
+            <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
+              {[["🎓", "Students", "#6366F1", "#EEF2FF"], ["👨‍🏫", "Teachers", "#16A34A", "#F0FDF4"], ["👨‍👩‍👧", "Parents", "#D97706", "#FFFBEB"]].map(([icon, label, color, bg]) => (
+                <div key={label} style={{ padding: "12px 20px", borderRadius: 14, background: bg, border: `1px solid ${color}22`, textAlign: "center" }}>
+                  <div style={{ fontSize: 22, marginBottom: 4 }}>{icon}</div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color }}>{label}</div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
