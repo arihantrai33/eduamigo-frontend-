@@ -28,8 +28,9 @@ export default function TeacherUpload() {
 
   const [form, setForm] = useState({
     title: '', subject: '', type: 'Notes',
-    class: '', section: '', fileUrl: '', fileName: '', dueDate: '',
+    class: '', section: '', dueDate: '',
   });
+  const [file, setFile] = useState(null);
 
   const getUser = () => JSON.parse(localStorage.getItem('eduamigo_user'));
 
@@ -59,38 +60,38 @@ export default function TeacherUpload() {
 
   const handleSubmit = async () => {
     setFormError('');
-    const { title, subject, type, class: cls, fileUrl, fileName } = form;
+    const { title, subject, type, class: cls } = form;
     if (!title.trim())    return setFormError('Title is required.');
     if (!subject.trim())  return setFormError('Subject is required.');
     if (!cls.trim())      return setFormError('Class is required.');
-    if (!fileUrl.trim())  return setFormError('File URL is required.');
-    if (!fileName.trim()) return setFormError('File name is required.');
+    if (!file)            return setFormError('Please select a PDF file.');
     if (type === 'Assignment' && !form.dueDate)
       return setFormError('Due date is required for assignments.');
     try {
       setSubmitting(true);
       const user = getUser();
+
+      const formData = new FormData();
+      formData.append('title', form.title);
+      formData.append('subject', form.subject);
+      formData.append('type', form.type);
+      formData.append('class', form.class);
+      formData.append('section', form.section);
+      if (form.dueDate) formData.append('dueDate', form.dueDate);
+      formData.append('file', file);
+
       const res = await fetch(`${API}/notes/upload`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${user.token}`,
         },
-        body: JSON.stringify({
-          title:    form.title,
-          subject:  form.subject,
-          type:     form.type,
-          class:    form.class,
-          section:  form.section,
-          fileUrl:  form.fileUrl,
-          fileName: form.fileName,
-          dueDate:  form.dueDate || undefined,
-        }),
+        body: formData,
       });
       const data = await res.json();
       if (!data.success) throw new Error(data.message);
       setSuccessMsg('Upload successful!');
-      setForm({ title: '', subject: '', type: 'Notes', class: '', section: '', fileUrl: '', fileName: '', dueDate: '' });
+      setForm({ title: '', subject: '', type: 'Notes', class: '', section: '', dueDate: '' });
+      setFile(null);
       setTab('uploads');
       await fetchData();
       setTimeout(() => setSuccessMsg(''), 3000);
@@ -176,8 +177,9 @@ export default function TeacherUpload() {
                       <div style={styles.cardFooter}>
                         <span style={styles.timeText}>{formatDate(u.createdAt)}</span>
                         {u.fileUrl && (
-                          <a
-                            href={u.fileUrl}
+                          
+                            <a
+                              href={u.fileUrl}
                             target="_blank"
                             rel="noreferrer"
                             style={styles.viewLink}
@@ -250,24 +252,16 @@ export default function TeacherUpload() {
               onChange={e => setForm({ ...form, section: e.target.value })}
             />
 
-            <label style={styles.label}>File Name</label>
+            <label style={styles.label}>PDF File</label>
             <input
+              type="file"
+              accept="application/pdf"
               style={styles.input}
-              placeholder="e.g. Chapter5_Notes.pdf"
-              value={form.fileName}
-              onChange={e => setForm({ ...form, fileName: e.target.value })}
+              onChange={e => setFile(e.target.files[0] || null)}
             />
-
-            <label style={styles.label}>File URL</label>
-            <input
-              style={styles.input}
-              placeholder="Paste Google Drive / any file link"
-              value={form.fileUrl}
-              onChange={e => setForm({ ...form, fileUrl: e.target.value })}
-            />
-            <p style={styles.hintText}>
-              Upload your file to Google Drive, set sharing to "Anyone with link", then paste the link above.
-            </p>
+            {file && (
+              <p style={styles.hintText}>Selected: {file.name} ({Math.round(file.size / 1024)} KB)</p>
+            )}
 
             {form.type === 'Assignment' && (
               <>
