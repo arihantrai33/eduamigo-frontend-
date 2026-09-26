@@ -131,8 +131,12 @@ style={{ width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,2
 <div style={{ position: "absolute", top: -4, right: -4, minWidth: 18, height: 18, background: "#FF5252", borderRadius: "50%", border: "2px solid white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: "white", padding: "0 4px" }}>{notices.length}</div>
               )}
 </button>
-<div style={{ width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, color: "#fff", fontSize: 13 }}>
-{getInitials(profile?.name ?? user?.name)}
+<div style={{ width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, color: "#fff", fontSize: 13, overflow: "hidden" }}>
+{profile?.photo ? (
+<img src={profile.photo} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+) : (
+getInitials(profile?.name ?? user?.name)
+)}
 </div>
 </div>
 </div>
@@ -151,8 +155,12 @@ style={{ width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,2
 {profile?.email ?? "—"}
 </div>
 </div>
-<div style={{ width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, color: "#fff", fontSize: 16 }}>
-{getInitials(profile?.name ?? user?.name)}
+<div style={{ width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, color: "#fff", fontSize: 16, overflow: "hidden" }}>
+{profile?.photo ? (
+<img src={profile.photo} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+) : (
+getInitials(profile?.name ?? user?.name)
+)}
 </div>
 </div>
 {/* Stats Row */}

@@ -100,7 +100,10 @@ export default function Notes() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '48px 20px 12px', background: dm ? 'linear-gradient(135deg, #4f46e5, #7c3aed)' : '#fff', borderBottom: `1px solid ${dm ? '#334155' : '#F0F0F0'}` }}>
         <button style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: dm ? '#ffffff' : '#333', padding: '4px 8px' }} onClick={() => navigate('/student/home')}>←</button>
         <h1 style={{ fontSize: 18, fontWeight: 700, color: dm ? '#f1f5f9' : '#1A1A2E', margin: 0 }}>📚 Notes & Assignments</h1>
-        <button style={{ background: dm ? '#1e3a5f' : '#F0F4FF', border: 'none', borderRadius: 10, width: 36, height: 36, fontSize: 22, cursor: 'pointer', color: '#4361EE', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setShowModal(true)}>+</button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button style={{ background: dm ? '#1e3a5f' : '#F0F4FF', border: 'none', borderRadius: 10, padding: '0 12px', height: 36, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#4361EE', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, whiteSpace: 'nowrap' }} onClick={() => navigate('/student/revise')}>🤖 Revise</button>
+          <button style={{ background: dm ? '#1e3a5f' : '#F0F4FF', border: 'none', borderRadius: 10, width: 36, height: 36, fontSize: 22, cursor: 'pointer', color: '#4361EE', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setShowModal(true)}>+</button>
+        </div>
       </div>
       {/* Search */}
       <div style={{ display: 'flex', alignItems: 'center', background: dm ? '#0f172a' : '#F0F2F5', borderRadius: 12, margin: '12px 16px', padding: '10px 14px', gap: 8 }}>

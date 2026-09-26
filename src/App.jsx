@@ -11,6 +11,7 @@ import StudentFee from './pages/student/Fee'
 import StudentBus from './pages/student/Bus'
 import Timetable from './pages/student/Timetable'
 import Notes from './pages/student/Notes'
+import Revise from './pages/student/Revise'
 import StudentApplyLeave from './pages/student/ApplyLeave'
 import StudentNotifications from './pages/student/Notifications'
 import StudentChat from './pages/student/Chat'
@@ -95,6 +96,7 @@ function AppRoutes() {
         <Route path="/student/bus"           element={<Protected role="student"><StudentBus /></Protected>} />
         <Route path="/student/timetable"     element={<Protected role="student"><Timetable /></Protected>} />
         <Route path="/student/notes"         element={<Protected role="student"><Notes /></Protected>} />
+        <Route path="/student/revise"        element={<Protected role="student"><Revise /></Protected>} />
         <Route path="/student/apply-leave"   element={<Protected role="student"><StudentApplyLeave /></Protected>} />
         <Route path="/student/notifications" element={<Protected role="student"><StudentNotifications /></Protected>} />
         <Route path="/student/chat"          element={<Protected role="student"><StudentChat /></Protected>} />

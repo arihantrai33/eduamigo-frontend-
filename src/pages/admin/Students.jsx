@@ -98,8 +98,40 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
       </select>
     </div>
   );
+  const handlePhotoChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    f('photoFile', file);
+    f('photoPreview', URL.createObjectURL(file));
+  };
+
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+      <div style={{ display:"flex", alignItems:"center", gap:16 }}>
+        <div style={{
+          width: 64, height: 64, borderRadius: "50%", overflow: "hidden",
+          background: "#F1F5F9", border: "1.5px solid #E2E8F0",
+          display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+        }}>
+          {(form.photoPreview || form.photo) ? (
+            <img src={form.photoPreview || form.photo} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }} />
+          ) : (
+            <span style={{ fontSize: 22, color: "#94A3B8" }}>👤</span>
+          )}
+        </div>
+        <div>
+          <label style={{
+            display: "inline-block", padding: "8px 16px", borderRadius: 10,
+            border: "1.5px solid #E2E8F0", background: "white",
+            fontSize: 12, fontWeight: 700, color: "#6366F1", cursor: "pointer",
+          }}>
+            {form.photoFile ? "Change Photo" : "Upload Photo"}
+            <input type="file" accept="image/*" onChange={handlePhotoChange} style={{ display: "none" }} />
+          </label>
+          <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 6 }}>Optional. JPG or PNG, up to 5MB.</div>
+        </div>
+      </div>
+      <div style={{ height:1, background:"#F1F5F9", margin:"4px 0" }} />
       <div style={{ fontSize:12, fontWeight:700, color:"#6366F1", marginBottom:2, letterSpacing:"0.06em" }}>PERSONAL INFO</div>
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
         {inp("FULL NAME","name","text","e.g. Rahul Sharma")}
@@ -164,8 +196,28 @@ export default function Students() {
     if (!form.name || !form.class || !form.section || !form.rollNumber) return alert("Name, class, section, roll number required");
     setSaving(true);
     try {
-      if (editStudent) await axios.put(`${API}/students/${editStudent._id}`, form, auth());
-      else await axios.post(`${API}/students`, form, auth());
+      if (form.photoFile) {
+        const fd = new FormData();
+        Object.entries(form).forEach(([k, v]) => {
+          if (['photoFile', 'photoPreview', '_id', '__v', 'createdAt', 'updatedAt', 'school', 'bus', 'userId', 'parentUserId', 'isActive'].includes(k)) return;
+          if (v !== null && typeof v === 'object') return; // skip populated objects (school/bus/user refs)
+          fd.append(k, v ?? "");
+        });
+        fd.append("photo", form.photoFile);
+        if (editStudent) {
+          await axios.put(`${API}/students/${editStudent._id}`, fd, {
+            headers: { ...auth().headers, "Content-Type": "multipart/form-data" },
+          });
+        } else {
+          await axios.post(`${API}/students`, fd, {
+            headers: { ...auth().headers, "Content-Type": "multipart/form-data" },
+          });
+        }
+      } else if (editStudent) {
+        await axios.put(`${API}/students/${editStudent._id}`, form, auth());
+      } else {
+        await axios.post(`${API}/students`, form, auth());
+      }
       setShowModal(false);
       fetchStudents();
     } catch(e) { alert(e.response?.data?.message || "Error"); }

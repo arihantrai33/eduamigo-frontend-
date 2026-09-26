@@ -21,6 +21,15 @@ export default function AddStudent() {
   const [loading, setLoading]   = useState(false);
   const [toast, setToast]       = useState(null);
   const [credentials, setCredentials] = useState(null);
+  const [photoFile, setPhotoFile] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPhotoFile(file);
+    setPhotoPreview(URL.createObjectURL(file));
+  };
 
   const showToast = (msg, type = "success") => {
     setToast({ msg, type });
@@ -38,10 +47,21 @@ export default function AddStudent() {
     setLoading(true);
     setCredentials(null);
     try {
-      const res = await axios.post(`${API}/students`, form, authHeader());
+      const fd = new FormData();
+      Object.entries(form).forEach(([k, v]) => fd.append(k, v ?? ""));
+      if (photoFile) fd.append("photo", photoFile);
+
+      const res = await axios.post(`${API}/students`, fd, {
+        headers: {
+          ...authHeader().headers,
+          "Content-Type": "multipart/form-data",
+        },
+      });
       setCredentials(res.data.credentials);
       showToast("Student added successfully");
       setForm(emptyForm);
+      setPhotoFile(null);
+      setPhotoPreview(null);
     } catch (err) {
       showToast(err?.response?.data?.message || "Failed to add student", "error");
     } finally {
@@ -145,6 +165,34 @@ export default function AddStudent() {
         background: "#fff", border: "1px solid #E5E7EB",
         borderRadius: 14, padding: "24px", boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
       }}>
+
+        {/* Photo Upload */}
+        <SectionTitle>Student Photo</SectionTitle>
+        <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}>
+          <div style={{
+            width: 72, height: 72, borderRadius: "50%", overflow: "hidden",
+            background: "#F3F4F6", border: "1px solid #E5E7EB",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            flexShrink: 0,
+          }}>
+            {photoPreview ? (
+              <img src={photoPreview} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            ) : (
+              <span style={{ fontSize: 24, color: "#9CA3AF" }}>👤</span>
+            )}
+          </div>
+          <div>
+            <label style={{
+              display: "inline-block", padding: "8px 16px", borderRadius: 8,
+              border: "1px solid #E5E7EB", background: "#F9FAFB",
+              fontSize: 12, fontWeight: 600, color: "#374151", cursor: "pointer",
+            }}>
+              {photoFile ? "Change Photo" : "Upload Photo"}
+              <input type="file" accept="image/*" onChange={handlePhotoChange} style={{ display: "none" }} />
+            </label>
+            <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 6 }}>Optional. JPG or PNG, up to 5MB.</div>
+          </div>
+        </div>
 
         {/* Personal Info */}
         <SectionTitle>Personal Information</SectionTitle>
