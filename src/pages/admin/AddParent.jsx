@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { showCredentials } from "../../utils/toast";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -65,10 +66,7 @@ const AddParent = () => {
     setLoading(true);
     try {
       const res = await axios.post(`${API}/parents`, form, authHeader());
-      showToast(
-        `Parent added! Login: ${res.data.loginInfo.email} / ${res.data.loginInfo.defaultPassword}`,
-        "success"
-      );
+      showCredentials([{ label: "Parent", ...res.data.credentials }], "Parent added");
       setForm(emptyForm);
       setSearchQuery("");
     } catch (err) {
@@ -119,7 +117,7 @@ const AddParent = () => {
       <div style={{ marginBottom: "1.5rem" }}>
         <div style={{ fontSize: 20, fontWeight: 600, color: "#1a1a1a" }}>Add Parent</div>
         <div style={{ fontSize: 11, color: "#999", marginTop: 2 }}>
-          Parent login credentials: email + phone number as password
+          A temporary password is generated and shown once after saving
         </div>
       </div>
 
@@ -135,7 +133,7 @@ const AddParent = () => {
           {inp("Address", "address")}
         </div>
         <div style={{ background: "#FFF7ED", border: "1px solid #FED7AA", borderRadius: 8, padding: "10px 14px", fontSize: 12, color: "#92400E" }}>
-          ℹ️ Parent login: <strong>{form.email || "email"}</strong> / Password: <strong>{form.phone || "phone number"}</strong>
+          Parent login: <strong>{form.email || "email"}</strong>. A temporary password will be shown after saving.
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { toast, confirmAction } from "../../utils/toast";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -85,25 +86,25 @@ export default function Communications() {
   };
 
   const handleSaveAnnouncement = async () => {
-    if (!annForm.title || !annForm.message) return alert("Title and message required");
+    if (!annForm.title || !annForm.message) return toast.error("Title and message required");
     setSaving(true);
     try {
       if (editItem) await axios.put(`${API}/announcements/${editItem._id}`, annForm, auth());
       else await axios.post(`${API}/announcements`, annForm, auth());
       setShowModal(false);
       fetchAll();
-    } catch(e) { alert(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
     setSaving(false);
   };
 
   const handleSendNotification = async () => {
-    if (!notifForm.title || !notifForm.message) return alert("Title and message required");
+    if (!notifForm.title || !notifForm.message) return toast.error("Title and message required");
     setSaving(true);
     try {
       await axios.post(`${API}/notifications/send`, notifForm, auth());
       setShowModal(false);
       fetchAll();
-    } catch(e) { alert(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
     setSaving(false);
   };
 
@@ -113,13 +114,13 @@ export default function Communications() {
   };
 
   const handleDeleteAnn = async (id) => {
-    if (!confirm("Delete this announcement?")) return;
+    if (!(await confirmAction("Delete this announcement?"))) return;
     try { await axios.delete(`${API}/announcements/${id}`, auth()); fetchAll(); }
     catch(e) {}
   };
 
   const handleDeleteNotif = async (id) => {
-    if (!confirm("Delete this notification?")) return;
+    if (!(await confirmAction("Delete this notification?"))) return;
     try { await axios.delete(`${API}/notifications/${id}`, auth()); fetchAll(); }
     catch(e) {}
   };

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { toast, confirmAction } from "../../utils/toast";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -64,19 +65,19 @@ export default function Library() {
   };
 
   const handleSave = async () => {
-    if (!form.title || !form.totalCopies) return alert("Title and copies required");
+    if (!form.title || !form.totalCopies) return toast.error("Title and copies required");
     setSaving(true);
     try {
       if (editBook) await axios.patch(`${API}/library/${editBook._id}`, form, auth());
       else await axios.post(`${API}/library`, form, auth());
       setShowModal(false);
       fetchBooks();
-    } catch(e) { alert(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
     setSaving(false);
   };
 
   const handleDelete = async (id) => {
-    if (!confirm("Delete this book?")) return;
+    if (!(await confirmAction("Delete this book?"))) return;
     try { await axios.delete(`${API}/library/${id}`, auth()); fetchBooks(); }
     catch(e) {}
   };

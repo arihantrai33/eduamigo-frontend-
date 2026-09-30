@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { Search, Plus, RefreshCw, Shield, GraduationCap, Users, UserCheck, Bus, X } from "lucide-react";
+import { toast, showCredentials } from "../../utils/toast";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -43,18 +44,20 @@ export default function UserManagement() {
     try {
       await axios.patch(`${API}/users/${id}/toggle`, {}, auth());
       fetchUsers();
-    } catch (e) { alert("Failed to update status"); }
+    } catch (e) { toast.error("Failed to update status"); }
   };
 
   const handleAdd = async () => {
-    if (!form.name || !form.email || !form.password) return;
+    if (!form.name || !form.email) return toast.error("Name and email are required");
     setSaving(true);
     try {
-      await axios.post(`${API}/users/register`, form, auth());
+      const res = await axios.post(`${API}/users/register`, form, auth());
+      if (res.data.credentials) showCredentials([{ label: form.role, ...res.data.credentials }], "User created");
+      else toast.success("User created. They will be asked to change the password at first login.");
       setShowModal(false);
       setForm({ name: "", email: "", password: "", role: "student" });
       fetchUsers();
-    } catch (e) { alert(e?.response?.data?.message || "Failed to create user"); }
+    } catch (e) { toast.error(e?.response?.data?.message || "Failed to create user"); }
     setSaving(false);
   };
 

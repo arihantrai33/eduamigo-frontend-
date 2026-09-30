@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { toast, confirmAction } from "../../utils/toast";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -64,12 +65,12 @@ export default function HRManagement() {
   };
 
   const generateSalaries = async () => {
-    if (!window.confirm(`Generate salaries for ${MONTHS[filterMonth-1]} ${filterYear}?`)) return;
+    if (!(await confirmAction(`Generate salaries for ${MONTHS[filterMonth-1]} ${filterYear}?`))) return;
     setLoading(true);
     try {
       await axios.post(`${API}/hr/salaries/generate`, { month: filterMonth, year: filterYear }, auth());
       fetchSalaries();
-    } catch(e) { alert(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
     setLoading(false);
   };
 
@@ -93,12 +94,12 @@ export default function HRManagement() {
         fetchLeaves();
       }
       setShowModal(false);
-    } catch(e) { alert(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
     setLoading(false);
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete karna chahte ho?")) return;
+    if (!(await confirmAction("Delete this record?"))) return;
     try {
       if (tab === "salary") { await axios.delete(`${API}/hr/salaries/${id}`, auth()); fetchSalaries(); }
       else { await axios.delete(`${API}/hr/leaves/${id}`, auth()); fetchLeaves(); }

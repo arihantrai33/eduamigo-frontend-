@@ -44,34 +44,31 @@ export default function AttendanceReports() {
     try {
       const [sRes, aRes] = await Promise.allSettled([
         axios.get(`${API}/students`, auth()),
-        axios.get(`${API}/attendance?month=${filterMonth}&year=${filterYear}`, auth()),
+        axios.get(`${API}/attendance/report?month=${filterMonth}&year=${filterYear}`, auth()),
       ]);
       setStudents(sRes.status === "fulfilled" ? (sRes.value.data.data || []) : []);
       setAttendance(aRes.status === "fulfilled" ? (aRes.value.data.data || []) : []);
-    } catch(e) {}
+    } catch { /* handled by empty state */ }
     setLoading(false);
   };
 
-  const classes = [...new Set(students.map(s => s.class))].sort();
+  const classes = [...new Set(students.map(s => s.class))].sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true }));
 
-  // Build class-wise stats
+  // `attendance` holds one summary row per class-section from /attendance/report.
+  // Late counts as attended; holidays are excluded by the server.
   const classStats = classes.map(cls => {
-    const classStudents = students.filter(s => s.class === cls);
-    const classAttendance = attendance.filter(a => {
-      const studentIds = classStudents.map(s => s._id);
-      return studentIds.includes(a.student?._id || a.student);
-    });
-    const totalRecords = classAttendance.length;
-    const presentRecords = classAttendance.filter(a => a.status === "Present").length;
-    const pct = totalRecords > 0 ? Math.round((presentRecords / totalRecords) * 100) : 0;
-    return { cls, students: classStudents.length, total: totalRecords, present: presentRecords, absent: totalRecords - presentRecords, pct };
+    const rows = attendance.filter(r => r.class === cls);
+    const total = rows.reduce((s, r) => s + (r.total || 0), 0);
+    const present = rows.reduce((s, r) => s + (r.present || 0) + (r.late || 0), 0);
+    const pct = total > 0 ? Math.round((present / total) * 100) : 0;
+    return { cls, students: students.filter(s => s.class === cls).length, total, present, absent: total - present, pct };
   }).filter(c => !filterClass || c.cls === filterClass);
 
-  const totalPresent = attendance.filter(a => a.status === "Present").length;
-  const totalAbsent = attendance.filter(a => a.status === "Absent").length;
-  const totalLate = attendance.filter(a => a.status === "Late").length;
-  const totalRecords = attendance.length;
-  const overallPct = totalRecords > 0 ? Math.round((totalPresent / totalRecords) * 100) : 0;
+  const totalPresent = attendance.reduce((s, r) => s + (r.present || 0), 0);
+  const totalAbsent = attendance.reduce((s, r) => s + (r.absent || 0), 0);
+  const totalLate = attendance.reduce((s, r) => s + (r.late || 0), 0);
+  const totalRecords = attendance.reduce((s, r) => s + (r.total || 0), 0);
+  const overallPct = totalRecords > 0 ? Math.round(((totalPresent + totalLate) / totalRecords) * 100) : 0;
   const lowAttendance = classStats.filter(c => c.pct < 75 && c.total > 0);
 
   return (

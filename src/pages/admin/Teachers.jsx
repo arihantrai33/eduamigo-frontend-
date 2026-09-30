@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast, showCredentials } from "../../utils/toast";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -150,14 +151,17 @@ export default function Teachers() {
   const openEdit = (t) => { setEditTeacher(t); setForm({...t}); setShowModal(true); };
 
   const handleSave = async () => {
-    if (!form.name || !form.email || !form.employeeId) return alert("Name, email and employee ID required");
+    if (!form.name || !form.email || !form.employeeId) return toast.error("Name, email and employee ID required");
     setSaving(true);
     try {
       if (editTeacher) await axios.put(`${API}/teachers/${editTeacher._id}`, form, auth());
-      else await axios.post(`${API}/teachers`, form, auth());
+      else {
+        const res = await axios.post(`${API}/teachers`, form, auth());
+        showCredentials([{ label: "Teacher", ...res.data.credentials }], "Teacher added");
+      }
       setShowModal(false);
       fetchTeachers();
-    } catch(e) { alert(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
     setSaving(false);
   };
 

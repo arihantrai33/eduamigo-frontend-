@@ -16,7 +16,9 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(
+    new URLSearchParams(window.location.search).get("expired") ? "Your session has expired. Please log in again." : ""
+  );
   const navigate = useNavigate()
   const { darkMode, setDarkMode } = useTheme();
   const { login } = useAuth();
@@ -29,12 +31,13 @@ export default function Login() {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/users/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, role }),
+        body: JSON.stringify({ email: email.trim(), password }),
       });
       const data = await res.json();
       if (data.success) {
         login(data.user, data.token);
-        navigate(`/${role}/home`);
+        const home = data.user.role === "driver" ? "/driver" : `/${data.user.role}/home`;
+        navigate(data.user.mustChangePassword ? "/change-password" : home, { replace: true });
       } else {
         setError(data.message || "Invalid credentials. Please try again.");
       }

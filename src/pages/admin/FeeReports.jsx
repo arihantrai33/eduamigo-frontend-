@@ -37,8 +37,9 @@ export default function FeeReports() {
   const classes = [...new Set(students.map(s => s.class))].sort();
 
   const enriched = fees.map(f => {
-    const student = students.find(s => s._id === (f.student?._id || f.student));
-    return { ...f, studentClass: student?.class || f.class || "Unknown" };
+    const sid = f.studentId?._id || f.studentId;
+    const student = (f.studentId && typeof f.studentId === "object") ? f.studentId : students.find(s => s._id === sid);
+    return { ...f, studentClass: student?.class || "Unknown" };
   });
 
   const filtered = enriched.filter(f =>
@@ -47,15 +48,15 @@ export default function FeeReports() {
   );
 
   const totalAmount    = filtered.reduce((s, f) => s + Number(f.amount || 0), 0);
-  const collectedAmt   = filtered.filter(f => f.status === "Paid").reduce((s, f) => s + Number(f.paidAmount || f.amount || 0), 0);
-  const pendingAmt     = filtered.filter(f => f.status !== "Paid").reduce((s, f) => s + Number(f.amount || 0), 0);
+  const collectedAmt   = filtered.reduce((s, f) => s + Number(f.paidAmount || 0), 0);
+  const pendingAmt     = totalAmount - collectedAmt;
   const collectionPct  = totalAmount > 0 ? Math.round((collectedAmt / totalAmount) * 100) : 0;
 
   // Class-wise breakdown
   const classStats = classes.map(cls => {
     const clsFees = enriched.filter(f => f.studentClass === cls);
     const total   = clsFees.reduce((s, f) => s + Number(f.amount || 0), 0);
-    const paid    = clsFees.filter(f => f.status === "Paid").reduce((s, f) => s + Number(f.paidAmount || f.amount || 0), 0);
+    const paid    = clsFees.reduce((s, f) => s + Number(f.paidAmount || 0), 0);
     const pct     = total > 0 ? Math.round((paid / total) * 100) : 0;
     return { cls, total, paid, pending: total - paid, pct, count: clsFees.length };
   }).filter(c => c.count > 0);

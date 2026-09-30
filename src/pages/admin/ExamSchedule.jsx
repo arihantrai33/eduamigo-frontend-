@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "../../utils/toast";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -51,14 +52,14 @@ export default function ExamSchedule() {
   const openEdit = (e) => { setEditExam(e); setForm({...e, date: e.date ? new Date(e.date).toISOString().split("T")[0] : ""}); setShowModal(true); };
 
   const handleSave = async () => {
-    if (!form.title || !form.subject || !form.class || !form.date) return alert("Title, subject, class and date are required");
+    if (!form.title || !form.subject || !form.class || !form.date) return toast.error("Title, subject, class and date are required");
     setSaving(true);
     try {
       if (editExam) await axios.put(`${API}/exams/${editExam._id}`, form, auth());
       else await axios.post(`${API}/exams`, form, auth());
       setShowModal(false);
       fetchExams();
-    } catch(e) { alert(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
     setSaving(false);
   };
 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { toast, showCredentials } from "../../utils/toast";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -45,14 +46,15 @@ export default function ParentsList() {
   };
 
   const handleAddParent = async () => {
-    if (!form.name || !form.email || !form.phone) return alert("Name, email and phone required");
+    if (!form.name || !form.email || !form.phone) return toast.error("Name, email and phone required");
     setSaving(true);
     try {
-      await axios.post(`${API}/parents`, { ...form, children: form.childrenIds }, auth());
+      const res = await axios.post(`${API}/parents`, { ...form, children: form.childrenIds }, auth());
+      showCredentials([{ label: "Parent", ...res.data.credentials }], "Parent added");
       setShowAddModal(false);
       setForm({ name:"", email:"", phone:"", gender:"", occupation:"", address:"", childrenIds:[] });
       fetchAll();
-    } catch(e) { alert(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
     setSaving(false);
   };
 
@@ -254,7 +256,7 @@ export default function ParentsList() {
       <Modal show={showAddModal} onClose={() => setShowAddModal(false)} title="Add New Parent">
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
           <div style={{ background:"#FFFBEB", borderRadius:10, padding:"10px 14px", fontSize:12, color:"#D97706", fontWeight:600 }}>
-            Default password will be set to phone number
+            A temporary password will be generated and shown after saving
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             {[["FULL NAME","name","text"],["PHONE","phone","tel"],["EMAIL","email","email"],["OCCUPATION","occupation","text"]].map(([label,key,type]) => (

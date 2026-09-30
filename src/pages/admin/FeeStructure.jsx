@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { toast, confirmAction, errorMessage } from "../../utils/toast";
+import { currentAcademicYear } from "../../utils/academicYear";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -30,7 +32,9 @@ export default function FeeStructure() {
   const [deleteId, setDeleteId] = useState(null);
   const [saving, setSaving] = useState(false);
   const [filterClass, setFilterClass] = useState("");
-  const [form, setForm] = useState({ class:"", feeType:"Tuition Fee", amount:"", frequency:"Monthly", dueDate:"", description:"" });
+  const emptyForm = () => ({ class:"", section:"All", academicYear: currentAcademicYear(), feeType:"Tuition Fee", amount:"", dueDate:"", description:"" });
+  const [form, setForm] = useState(emptyForm);
+  const [applyingId, setApplyingId] = useState(null);
 
   useEffect(() => { fetchStructures(); }, []);
 
@@ -43,25 +47,44 @@ export default function FeeStructure() {
     setLoading(false);
   };
 
-  const openAdd = () => { setEditItem(null); setForm({ class:"", feeType:"Tuition Fee", amount:"", frequency:"Monthly", dueDate:"", description:"" }); setShowModal(true); };
-  const openEdit = (s) => { setEditItem(s); setForm({...s}); setShowModal(true); };
+  const openAdd = () => { setEditItem(null); setForm(emptyForm()); setShowModal(true); };
+  const openEdit = (s) => { setEditItem(s); setForm({ ...s, dueDate: s.dueDate ? new Date(s.dueDate).toISOString().slice(0, 10) : "" }); setShowModal(true); };
 
   const handleSave = async () => {
-    if (!form.class || !form.feeType || !form.amount) return alert("Class, fee type and amount required");
+    if (!form.class || !form.feeType || !form.amount || !form.dueDate || !form.academicYear) return toast.error("Class, fee type, amount, due date and academic year are required");
     setSaving(true);
     try {
-      if (editItem) await axios.put(`${API}/fee-structures/${editItem._id}`, form, auth());
-      else await axios.post(`${API}/fee-structures`, form, auth());
+      const payload = { class: form.class, section: form.section || "All", academicYear: form.academicYear, feeType: form.feeType, amount: Number(form.amount), dueDate: form.dueDate, description: form.description };
+      if (editItem) {
+        // Updating also updates every unpaid fee already billed from this structure.
+        await axios.put(`${API}/fee-structures/${editItem._id}/reapply`, payload, auth());
+        toast.success("Fee structure updated");
+      } else {
+        await axios.post(`${API}/fee-structures`, payload, auth());
+        toast.success("Fee structure created. Use Apply to bill the students.");
+      }
       setShowModal(false);
       fetchStructures();
-    } catch(e) { alert(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
     setSaving(false);
   };
 
   const handleDelete = async (id) => {
-    try { await axios.delete(`${API}/fee-structures/${id}`, auth()); fetchStructures(); }
-    catch(e) {}
+    try { await axios.delete(`${API}/fee-structures/${id}`, auth()); toast.success("Fee structure deleted"); fetchStructures(); }
+    catch (e) { toast.error(errorMessage(e)); }
     setDeleteId(null);
+  };
+
+  // Creates a fee record for every active student of the class (students already billed are skipped).
+  const handleApply = async (s) => {
+    if (!(await confirmAction(`Bill Rs.${Number(s.amount).toLocaleString()} (${s.feeType}) to every student of Class ${s.class}${s.section && s.section !== "All" ? `-${s.section}` : ""}?`, { confirmLabel: "Apply", danger: false }))) return;
+    setApplyingId(s._id);
+    try {
+      const r = await axios.post(`${API}/fee-structures/${s._id}/apply`, {}, auth());
+      toast.success(r.data.message);
+      fetchStructures();
+    } catch (e) { toast.error(errorMessage(e)); }
+    setApplyingId(null);
   };
 
   const f = (k, v) => setForm(p => ({ ...p, [k]: v }));
@@ -147,7 +170,7 @@ export default function FeeStructure() {
         <table style={{ width:"100%", borderCollapse:"collapse" }}>
           <thead>
             <tr style={{ background:"linear-gradient(90deg,#F8FAFC,#F1F5F9)" }}>
-              {["Class","Fee Type","Amount","Frequency","Due Date","Description","Actions"].map(h => (
+              {["Class","Fee Type","Amount","Academic Year","Due Date","Description","Actions"].map(h => (
                 <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#64748B", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
               ))}
             </tr>
@@ -169,19 +192,22 @@ export default function FeeStructure() {
               return (
                 <tr key={s._id} className="fee-row" style={{ borderBottom:"1px solid #F1F5F9" }}>
                   <td style={{ padding:"14px 18px" }}>
-                    <span style={{ fontSize:12, fontWeight:800, padding:"5px 12px", borderRadius:20, background:`${clsColor}15`, color:clsColor, border:`1px solid ${clsColor}30` }}>Class {s.class}</span>
+                    <span style={{ fontSize:12, fontWeight:800, padding:"5px 12px", borderRadius:20, background:`${clsColor}15`, color:clsColor, border:`1px solid ${clsColor}30` }}>Class {s.class}{s.section && s.section !== "All" ? `-${s.section}` : ""}</span>
                   </td>
                   <td style={{ padding:"14px 18px", fontSize:13, fontWeight:700, color:"#0F172A" }}>{s.feeType}</td>
                   <td style={{ padding:"14px 18px" }}>
                     <span style={{ fontSize:15, fontWeight:800, color:"#059669" }}>Rs.{Number(s.amount||0).toLocaleString()}</span>
                   </td>
                   <td style={{ padding:"14px 18px" }}>
-                    <span style={{ fontSize:12, fontWeight:700, padding:"4px 10px", borderRadius:8, background:"#EEF2FF", color:"#6366F1" }}>{s.frequency || "Monthly"}</span>
+                    <span style={{ fontSize:12, fontWeight:700, padding:"4px 10px", borderRadius:8, background:"#EEF2FF", color:"#6366F1" }}>{s.academicYear}</span>
+                    {s.applyHistory?.length > 0 && <div style={{ fontSize:11, color:"#64748B", marginTop:4 }}>Billed {s.applyHistory.reduce((n, h) => n + (h.created || 0), 0)} student(s)</div>}
                   </td>
                   <td style={{ padding:"14px 18px", fontSize:13, color:"#374151", fontWeight:600 }}>{s.dueDate ? (isNaN(new Date(s.dueDate)) ? s.dueDate : new Date(s.dueDate).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})) : 'Not set'}</td>
                   <td style={{ padding:"14px 18px", fontSize:12, color:"#94A3B8", maxWidth:180 }}>{s.description || "No description"}</td>
                   <td style={{ padding:"14px 18px" }}>
                     <div style={{ display:"flex", gap:6 }}>
+                      <button className="act-btn" onClick={() => handleApply(s)} disabled={applyingId === s._id}
+                        style={{ padding:"6px 12px", borderRadius:8, border:"none", background:"#ECFDF5", color:"#047857", fontSize:12, fontWeight:700, cursor:"pointer" }}>{applyingId === s._id ? "Applying..." : "Apply"}</button>
                       <button className="act-btn" onClick={() => openEdit(s)}
                         style={{ padding:"6px 14px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", color:"#374151", fontSize:12, fontWeight:700, cursor:"pointer" }}>Edit</button>
                       <button className="act-btn" onClick={() => setDeleteId(s._id)}
@@ -199,13 +225,17 @@ export default function FeeStructure() {
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             {inp("CLASS","class","text","e.g. 10")}
-            {sel("FEE TYPE","feeType",FEE_TYPES)}
+            {inp("SECTION","section","text","All, or e.g. A")}
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-            {inp("AMOUNT","amount","number","e.g. 5000")}
-            {sel("FREQUENCY","frequency",["Monthly","Quarterly","Half-Yearly","Annually","One-Time"])}
+            {sel("FEE TYPE","feeType",FEE_TYPES)}
+            {sel("ACADEMIC YEAR","academicYear",(() => { const y = Number(currentAcademicYear().slice(0, 4)); return [y - 1, y, y + 1].map(v => `${v}-${String((v + 1) % 100).padStart(2, "0")}`); })())}
           </div>
-          {inp("DUE DATE","dueDate","text","e.g. 10th of every month")}
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+            {inp("AMOUNT (Rs.)","amount","number","e.g. 5000")}
+            {inp("DUE DATE","dueDate","date","")}
+          </div>
+          <div style={{ fontSize:12, color:"#64748B" }}>For monthly or quarterly fees, add one structure per instalment (for example "Tuition Fee - April").</div>
           <div>
             <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>DESCRIPTION</div>
             <textarea value={form.description||""} onChange={e => f("description", e.target.value)} placeholder="Optional..."

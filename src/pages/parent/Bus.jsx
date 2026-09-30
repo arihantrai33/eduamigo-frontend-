@@ -6,6 +6,7 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from "react-
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { getChildBus } from "../../api/transport";
+import SosModal from "../../components/SosModal";
 
 const SCHOOL_FALLBACK = { id: "school", name: "School", lat: 28.4689, lng: 77.5030 };
 const COLOR = {
@@ -157,23 +158,6 @@ function MapAutoCenter({ position }) {
   return null;
 }
 
-function SOSModal({ onClose, studentName }) {
-  return (
-    <div style={styles.modalOverlay}>
-      <div style={styles.modalCard}>
-        <div style={{ fontSize:"52px", marginBottom:"12px" }}>🆘</div>
-        <p style={styles.modalTitle}>Send Emergency Alert?</p>
-        <p style={styles.modalSub}>
-          This will immediately notify the school administration and driver about an emergency regarding <strong>{studentName}</strong>.
-        </p>
-        <div style={styles.modalBtns}>
-          <button style={styles.cancelBtn} onClick={onClose}>Cancel</button>
-          <button style={styles.confirmSosBtn} onClick={() => { alert("Emergency alert sent successfully."); onClose(); }}>Send Alert</button>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function CallModal({ onClose, name, phone }) {
   const [copied, setCopied] = useState(false);
@@ -457,7 +441,7 @@ export default function ParentBus() {
           <span style={{ color:"white", fontSize:"13px", fontWeight:500 }}>{studentData?.name || "Your child"}</span>
           <span style={{ color:"rgba(255,255,255,0.6)", fontSize:"13px", marginLeft:"4px" }}>ETA {eta}</span>
         </div>
-        {showSOS           && <SOSModal                onClose={() => setShowSOS(false)}             studentName={studentData?.name || "Your child"} />}
+        {showSOS           && <SosModal onClose={() => setShowSOS(false)} studentName={studentData?.name} location={busLocation} driverPhone={driverData?.phone} />}
         {showCallDriver    && <CallModal               onClose={() => setShowCallDriver(false)}       name={driverData?.name || "Driver"}  phone={driverData?.phone || ""} />}
         {showCallSchool    && <CallModal               onClose={() => setShowCallSchool(false)}       name="School Office" phone="" />}
         {showNotifSettings && <NotificationSettingsModal onClose={() => setShowNotifSettings(false)} prefs={notifPrefs} onChange={key => setNotifPrefs(p => ({ ...p, [key]: !p[key] }))} />}
@@ -623,7 +607,7 @@ export default function ParentBus() {
           </div>
         </div>
 
-        {showSOS           && <SOSModal                onClose={() => setShowSOS(false)}             studentName={studentData?.name || "Your child"} />}
+        {showSOS           && <SosModal onClose={() => setShowSOS(false)} studentName={studentData?.name} location={busLocation} driverPhone={driverData?.phone} />}
         {showCallDriver    && <CallModal               onClose={() => setShowCallDriver(false)}       name={driverData?.name || "Driver"}  phone={driverData?.phone || ""} />}
         {showCallSchool    && <CallModal               onClose={() => setShowCallSchool(false)}       name="School Office" phone="" />}
         {showNotifSettings && <NotificationSettingsModal onClose={() => setShowNotifSettings(false)} prefs={notifPrefs} onChange={key => setNotifPrefs(p => ({ ...p, [key]: !p[key] }))} />}

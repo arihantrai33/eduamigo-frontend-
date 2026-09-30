@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { Send, Trash2, RefreshCw, Filter, Bell, Users, GraduationCap, UserCheck, Bus, Globe } from "lucide-react";
+import { toast, confirmAction } from "../../utils/toast";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -65,13 +66,13 @@ export default function Notifications() {
       setForm({ title: "", message: "", type: "General", targetRole: "all", targetClass: "", targetSection: "" });
       fetchNotifs();
     } catch (e) {
-      alert(e?.response?.data?.message || "Failed to send");
+      toast.error(e?.response?.data?.message || "Failed to send");
     }
     setSending(false);
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this notification?")) return;
+    if (!(await confirmAction("Delete this notification?"))) return;
     await axios.delete(`${API}/notifications/${id}`, auth());
     fetchNotifs();
   };

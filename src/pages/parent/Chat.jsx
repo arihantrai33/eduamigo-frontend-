@@ -211,7 +211,7 @@ export default function ParentChat() {
             <div style={S.emptyBox}>
               <div style={{ fontSize: 36, marginBottom: 8 }}>📚</div>
               <div>No teachers assigned yet</div>
-              <div style={{ fontSize: 11, marginTop: 4, color: '#bbb' }}>Timetable mein teacher assign hone ke baad yahan dikhenge</div>
+              <div style={{ fontSize: 11, marginTop: 4, color: '#bbb' }}>Teachers will appear here once they are assigned in the timetable.</div>
             </div>
           ) : data.teachers.map((t) => (
             <div key={t._id} style={S.chatRow} onClick={() => setActiveChat({

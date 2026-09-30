@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
+import { currentAcademicYear } from "../../utils/academicYear";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -147,7 +148,7 @@ export default function TeacherProfile() {
                 ["Employee ID", teacher?.employeeId || "—"],
                 ["Email",       teacher?.email || "—"],
                 ["Classes",     teacher?.assignedClasses?.join(", ") || "—"],
-                ["Session",     "2025-26"],
+                ["Session",     currentAcademicYear()],
               ].map(([l, v]) => (
                 <div key={l} style={{ background: "var(--bg)", borderRadius: "10px", padding: "10px" }}>
                   <div style={{ fontSize: "10px", color: "var(--subtext)", fontWeight: "700", textTransform: "uppercase" }}>{l}</div>

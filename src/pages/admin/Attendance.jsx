@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "../../utils/toast";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -79,9 +80,12 @@ export default function Attendance() {
       filtered.forEach(s => init[s._id] = "Present");
       // Try to load existing attendance
       try {
-        const r = await axios.get(`${API}/attendance?class=${selectedClass}&section=${selectedSection}&date=${date}`, auth());
+        const r = await axios.get(`${API}/attendance/class/${encodeURIComponent(selectedClass)}?section=${encodeURIComponent(selectedSection)}&date=${date}`, auth());
         const existing = r.data.data || [];
-        existing.forEach(a => { if (init[a.student]) init[a.student] = a.status; });
+        existing.forEach(a => {
+          const sid = a.studentId?._id || a.studentId;
+          if (init[sid]) init[sid] = a.status;
+        });
       } catch(e) {}
       setAttendance(init);
     } catch(e) {}
@@ -104,11 +108,12 @@ export default function Attendance() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const records = students.map(s => ({ student: s._id, date, status: attendance[s._id] || "Present", class: selectedClass, section: selectedSection }));
-      await axios.post(`${API}/attendance/bulk`, { records }, auth());
+      const records = students.map(s => ({ studentId: s._id, status: attendance[s._id] || "Present" }));
+      await axios.post(`${API}/attendance/bulk`, { date, class: selectedClass, section: selectedSection, records }, auth());
+      toast.success("Attendance saved");
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
-    } catch(e) { alert(e.response?.data?.message || "Error saving attendance"); }
+    } catch(e) { toast.error(e.response?.data?.message || "Error saving attendance"); }
     setSaving(false);
   };
 

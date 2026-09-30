@@ -41,7 +41,7 @@ export default function TeacherHome() {
       setLoading(true)
       setError(null)
 
-      // Logged-in teacher ka profile — JWT se directly
+      // Logged-in teacher's profile (resolved from the JWT)
       const tRes = await fetch(`${API}/teachers/me`, {
         headers: { Authorization: `Bearer ${user.token}` }
       })

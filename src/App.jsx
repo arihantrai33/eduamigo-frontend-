@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import Toast from './components/Toast'
 import Splash from './pages/Splash'
 import Login from './pages/Login'
+import ChangePassword from './pages/ChangePassword'
 import StudentHome from './pages/student/Home'
 import StudentAttendance from './pages/student/Attendance'
 import StudentResult from './pages/student/Result'
@@ -76,6 +77,14 @@ function Protected({ children, role }) {
   if (loading) return <LoadingScreen />
   if (!user) return <Navigate to="/login" replace />
   if (role && user.role !== role) return <Navigate to="/login" replace />
+  if (user.mustChangePassword) return <Navigate to="/change-password" replace />
+  return children
+}
+
+function RequireLogin({ children }) {
+  const { user, loading } = useAuth()
+  if (loading) return <LoadingScreen />
+  if (!user) return <Navigate to="/login" replace />
   return children
 }
 
@@ -87,6 +96,7 @@ function AppRoutes() {
       <Routes>
         <Route path="/" element={<Splash />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/change-password" element={<RequireLogin><ChangePassword /></RequireLogin>} />
 
         {/* Student */}
         <Route path="/student/home"          element={<Protected role="student"><StudentHome /></Protected>} />

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "../../utils/toast";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -68,7 +69,7 @@ export default function SalaryManagement() {
   };
 
   const handleSave = async () => {
-    if (!form.teacherId || !form.basicSalary) return alert("Teacher and basic salary required");
+    if (!form.teacherId || !form.basicSalary) return toast.error("Teacher and basic salary required");
     setSaving(true);
     try {
       const payload = { teacher: form.teacherId, month: form.month, year: form.year, basicSalary: Number(form.basicSalary), allowances: Number(form.allowances||0), deductions: Number(form.deductions||0), remarks: form.remarks };
@@ -76,7 +77,7 @@ export default function SalaryManagement() {
       else await axios.post(`${API}/hr/salaries`, payload, auth());
       setShowModal(false);
       fetchAll();
-    } catch(e) { alert(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
     setSaving(false);
   };
 
@@ -93,8 +94,8 @@ export default function SalaryManagement() {
       const r = await axios.post(`${API}/hr/salaries/generate`, genForm, auth());
       setShowGenerateModal(false);
       fetchAll();
-      alert(`Generated salary for ${r.data.data} teachers!`);
-    } catch(e) { alert(e.response?.data?.message || "Error"); }
+      toast.success(`Generated salary for ${r.data.data} teacher(s)`);
+    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
     setGenerating(false);
   };
 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "../../utils/toast";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -29,6 +30,7 @@ export default function Timetable() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [selectedClass, setSelectedClass] = useState("");
+  const [studentClasses, setStudentClasses] = useState([]);
   const [selectedSection, setSelectedSection] = useState("");
   const [selectedDay, setSelectedDay] = useState("Monday");
   const [showModal, setShowModal] = useState(false);
@@ -40,18 +42,22 @@ export default function Timetable() {
   const fetchAll = async () => {
     setLoading(true);
     try {
-      const [tRes, teachRes] = await Promise.allSettled([
+      const [tRes, teachRes, sRes] = await Promise.allSettled([
         axios.get(`${API}/timetable`, auth()),
         axios.get(`${API}/teachers`, auth()),
+        axios.get(`${API}/students`, auth()),
       ]);
       setTimetables(tRes.status === "fulfilled" ? (tRes.value.data.data || []) : []);
       setTeachers(teachRes.status === "fulfilled" ? (teachRes.value.data.data || []) : []);
+      setStudentClasses(sRes.status === "fulfilled" ? (sRes.value.data.data || []).map(s => ({ class: s.class, section: s.section })) : []);
     } catch(e) {}
     setLoading(false);
   };
 
-  const classes = [...new Set(timetables.map(t => t.class))].sort();
-  const sections = [...new Set(timetables.filter(t => t.class === selectedClass).map(t => t.section))].sort();
+  // Classes come from enrolled students as well as existing timetables, so a new school can start from scratch.
+  const classSections = [...timetables, ...studentClasses];
+  const classes = [...new Set(classSections.map(t => t.class))].filter(Boolean).sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true }));
+  const sections = [...new Set(classSections.filter(t => t.class === selectedClass).map(t => t.section))].filter(Boolean).sort();
 
   const currentTimetable = timetables.find(t =>
     t.class === selectedClass && t.section === selectedSection && t.day === selectedDay
@@ -76,8 +82,8 @@ export default function Timetable() {
   };
 
   const handleSavePeriod = async () => {
-    if (!selectedClass || !selectedSection) return alert("Select class and section first");
-    if (!periodForm.subject) return alert("Subject is required");
+    if (!selectedClass || !selectedSection) return toast.error("Select class and section first");
+    if (!periodForm.subject) return toast.error("Subject is required");
     setSaving(true);
     try {
       const payload = {
@@ -100,7 +106,7 @@ export default function Timetable() {
       }
       setShowModal(false);
       fetchAll();
-    } catch(e) { alert(e.response?.data?.message || "Error saving"); }
+    } catch(e) { toast.error(e.response?.data?.message || "Error saving"); }
     setSaving(false);
   };
 

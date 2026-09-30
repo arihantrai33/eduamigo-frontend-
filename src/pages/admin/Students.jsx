@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast, showCredentials } from "../../utils/toast";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -192,8 +193,16 @@ export default function Students() {
   const openAdd = () => { setEditStudent(null); setForm({}); setShowModal(true); };
   const openEdit = (s) => { setEditStudent(s); setForm({...s}); setShowModal(true); };
 
+  const showStudentCredentials = (data) => {
+    const c = data?.credentials || {};
+    showCredentials([
+      c.student && { label: "Student", ...c.student },
+      c.parent && { label: "Parent", ...c.parent },
+    ], data?.linkedExistingParent ? "Student added (linked to existing parent account)" : "Student added");
+  };
+
   const handleSave = async () => {
-    if (!form.name || !form.class || !form.section || !form.rollNumber) return alert("Name, class, section, roll number required");
+    if (!form.name || !form.class || !form.section || !form.rollNumber) return toast.error("Name, class, section, roll number required");
     setSaving(true);
     try {
       if (form.photoFile) {
@@ -209,18 +218,20 @@ export default function Students() {
             headers: { ...auth().headers, "Content-Type": "multipart/form-data" },
           });
         } else {
-          await axios.post(`${API}/students`, fd, {
+          const res = await axios.post(`${API}/students`, fd, {
             headers: { ...auth().headers, "Content-Type": "multipart/form-data" },
           });
+          showStudentCredentials(res.data);
         }
       } else if (editStudent) {
         await axios.put(`${API}/students/${editStudent._id}`, form, auth());
       } else {
-        await axios.post(`${API}/students`, form, auth());
+        const res = await axios.post(`${API}/students`, form, auth());
+        showStudentCredentials(res.data);
       }
       setShowModal(false);
       fetchStudents();
-    } catch(e) { alert(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
     setSaving(false);
   };
 

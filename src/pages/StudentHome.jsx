@@ -1,1 +1,0 @@
-import StudentHome from './pages/student/Home'  // ← Home.jsx

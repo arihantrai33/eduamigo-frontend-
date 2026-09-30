@@ -12,6 +12,15 @@ const TYPE_STYLES = {
   'Question Paper':{ bg: '#FCE4EC', color: '#C2185B', icon: '📋' },
 };
 
+// Status of the note in the AI revision pipeline (see backend docs/AI_REVISION.md).
+const AI_STATUS = {
+  pending:    { label: 'Queued', color: '#6B7280' },
+  processing: { label: 'Processing', color: '#2563EB' },
+  ready:      { label: 'Ready for students', color: '#059669' },
+  failed:     { label: 'Failed, will retry', color: '#DC2626' },
+  skipped:    { label: 'No readable text (scanned PDF)', color: '#B45309' },
+};
+
 const formatDate = (d) =>
   new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
 
@@ -173,6 +182,11 @@ export default function TeacherUpload() {
                       </p>
                       {u.dueDate && (
                         <p style={styles.dueDateText}>📅 Due: {formatDate(u.dueDate)}</p>
+                      )}
+                      {u.type === 'Notes' && u.processing?.status && (
+                        <p style={{ ...styles.cardMeta, color: AI_STATUS[u.processing.status]?.color || '#6B7280' }}>
+                          AI revision: {AI_STATUS[u.processing.status]?.label || u.processing.status}
+                        </p>
                       )}
                       <div style={styles.cardFooter}>
                         <span style={styles.timeText}>{formatDate(u.createdAt)}</span>

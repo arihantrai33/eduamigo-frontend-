@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown'
-import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 
 const API = import.meta.env.VITE_API_URL;
@@ -11,20 +10,21 @@ const TYPING_TICK_MS = 22;
 
 export default function Revise() {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const { darkMode: dm } = useTheme();
   const [messages, setMessages] = useState([
-    { id: 'welcome', role: 'ai', text: "Hi! I'm your revision assistant. Ask me anything from your uploaded notes and I'll help you revise. 📚" },
+    { id: 'welcome', role: 'ai', text: "Hi! I'm your revision assistant. Ask me about any topic from your class notes, or switch to **Quiz me** to test yourself." },
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [streaming, setStreaming] = useState(false);
   const [loadingLabel, setLoadingLabel] = useState('Thinking');
+  const [mode, setMode] = useState('explain');
 
   const scrollRef = useRef(null);
   const textareaRef = useRef(null);
   const typingIntervalRef = useRef(null);
   const loadingLabelTimeoutRef = useRef(null);
+  const abortRef = useRef(null);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -34,6 +34,7 @@ export default function Revise() {
     return () => {
       if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
       if (loadingLabelTimeoutRef.current) clearTimeout(loadingLabelTimeoutRef.current);
+      abortRef.current?.abort();
     };
   }, []);
 
@@ -75,10 +76,11 @@ export default function Revise() {
     const question = input.trim();
     if (!question || loading || streaming) return;
 
-    const history = messages.map(m => ({
-      role: m.role === 'user' ? 'user' : 'model',
-      text: m.text,
-    }));
+    // The welcome message and error notices are UI only; they are not sent as conversation history.
+    const history = messages
+      .filter(m => m.id !== 'welcome' && !m.isError)
+      .slice(-8)
+      .map(m => ({ role: m.role === 'user' ? 'user' : 'model', text: m.text }));
 
     setMessages(prev => [...prev, { id: Date.now() + '-user', role: 'user', text: question }]);
     setInput('');
@@ -95,18 +97,24 @@ export default function Revise() {
     const fullTextRef = { current: '' };
     const doneRef = { current: false };
 
+    const controller = new AbortController();
+    abortRef.current = controller;
+
     try {
       const response = await fetch(`${API}/revision/ask`, {
+        signal: controller.signal,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
-        body: JSON.stringify({ question, history }),
+        body: JSON.stringify({ question, history, mode }),
       });
 
       if (!response.ok || !response.body) {
-        throw new Error('Request failed');
+        let message = 'Sorry, something went wrong. Please try again.';
+        try { message = (await response.json()).message || message; } catch { /* non-JSON error body */ }
+        throw new Error(message);
       }
 
       const reader = response.body.getReader();
@@ -156,16 +164,16 @@ export default function Revise() {
       if (!aiMessageStarted) {
         clearTimeout(loadingLabelTimeoutRef.current);
         setLoading(false);
-        setMessages(prev => [...prev, { id: Date.now() + '-ai-empty', role: 'ai', text: "Sorry, I couldn't generate a response. Please try again.", sources: [] }]);
+        setMessages(prev => [...prev, { id: Date.now() + '-ai-empty', role: 'ai', isError: true, text: "Sorry, I couldn't generate a response. Please try again.", sources: [] }]);
         focusInput();
       }
     } catch (err) {
-      console.error(err);
+      if (err.name === 'AbortError') return;
       clearTimeout(loadingLabelTimeoutRef.current);
       doneRef.current = true;
       setLoading(false);
       if (!aiMessageStarted) {
-        setMessages(prev => [...prev, { id: Date.now() + '-ai-error', role: 'ai', text: "Sorry, something went wrong. Please try again.", sources: [] }]);
+        setMessages(prev => [...prev, { id: Date.now() + '-ai-error', role: 'ai', isError: true, text: err.message || "Sorry, something went wrong. Please try again.", sources: [] }]);
       }
       setStreaming(false);
       focusInput();
@@ -211,6 +219,21 @@ export default function Revise() {
         <div style={{ width: 32 }} />
       </div>
 
+      <div role="tablist" aria-label="Revision mode" style={{ display: 'flex', gap: 8, padding: '12px 16px 0', justifyContent: 'center' }}>
+        {[{ id: 'explain', label: 'Explain' }, { id: 'quiz', label: 'Quiz me' }].map(m => (
+          <button
+            key={m.id}
+            role="tab"
+            aria-selected={mode === m.id}
+            disabled={isBusy}
+            onClick={() => setMode(m.id)}
+            style={{ padding: '7px 16px', borderRadius: 999, fontSize: 13, fontWeight: 700, cursor: isBusy ? 'default' : 'pointer', border: mode === m.id ? 'none' : `1px solid ${dm ? '#293449' : '#E2E4EE'}`, background: mode === m.id ? 'linear-gradient(135deg, #4338CA, #7C3AED)' : (dm ? '#141b2e' : '#fff'), color: mode === m.id ? '#fff' : (dm ? '#cbd5e1' : '#4B5563') }}
+          >
+            {m.label}
+          </button>
+        ))}
+      </div>
+
       <div style={{ flex: 1, padding: '16px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 100 }}>
         {messages.map((m) => (
           <div key={m.id} style={{ display: 'flex', flexDirection: 'column', alignItems: m.role === 'user' ? 'flex-end' : 'flex-start' }}>
@@ -222,7 +245,7 @@ export default function Revise() {
               borderRadius: m.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
               fontSize: 14,
               lineHeight: 1.6,
-              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
               border: m.role === 'ai' ? `1px solid ${dm ? '#1f2a44' : '#EEF0F7'}` : 'none',
               boxShadow: m.role === 'ai' ? '0 2px 10px rgba(20, 20, 43, 0.06)' : '0 2px 10px rgba(67, 56, 202, 0.18)',
             }}>
@@ -258,7 +281,7 @@ export default function Revise() {
           className="revise-textarea"
           rows={1}
           style={{ flex: 1, resize: 'none', border: `1.5px solid ${dm ? '#293449' : '#E8E8F0'}`, borderRadius: 20, padding: '10px 16px', fontSize: 14, fontFamily: 'inherit', background: dm ? '#0f172a' : '#F8F8FF', color: dm ? '#f1f5f9' : '#1A1A2E', outline: 'none', maxHeight: 100 }}
-          placeholder="Ask about your notes..."
+          placeholder={mode === 'quiz' ? 'Name a topic, or type your answer...' : 'Ask about your notes...'}
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={handleKeyDown}

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
+import { toast, errorMessage } from "../../utils/toast";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -193,9 +194,10 @@ export default function Chat() {
     try {
       await axios.post(`${API}/chat/messages`, { receiverId: selected.userId, roomId: selected.roomId, text, ...(fileData || {}) }, auth());
       await fetchMessages(selected.roomId);
-    } catch {
+    } catch (err) {
       setMessages(prev => prev.filter(m => m._id !== opt._id));
       if (!fileData) setInput(text);
+      toast.error(errorMessage(err, "Message could not be sent"));
     }
     setSending(false);
   };
@@ -207,20 +209,12 @@ export default function Chat() {
     try {
       const formData = new FormData();
       formData.append("file", file);
-      const res = await axios.post(`${API}/upload`, formData, {
+      const res = await axios.post(`${API}/chat/upload`, formData, {
         headers: { ...auth().headers, "Content-Type": "multipart/form-data" }
       });
-      const fileUrl = res.data.url || res.data.fileUrl;
-      await sendMessage({ fileUrl, fileName: file.name, fileType: file.type, text: "" });
-    } catch {
-      // fallback: use base64 for images only
-      if (file.type.startsWith("image/")) {
-        const reader = new FileReader();
-        reader.onload = async (ev) => {
-          await sendMessage({ fileUrl: ev.target.result, fileName: file.name, fileType: file.type, text: "" });
-        };
-        reader.readAsDataURL(file);
-      }
+      await sendMessage({ fileUrl: res.data.url, fileName: res.data.fileName || file.name, fileType: res.data.fileType || file.type, text: "" });
+    } catch (err) {
+      toast.error(errorMessage(err, "Could not upload the file"));
     }
     setUploading(false);
     e.target.value = "";

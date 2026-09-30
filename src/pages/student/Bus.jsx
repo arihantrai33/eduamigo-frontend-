@@ -8,6 +8,7 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import SosModal from "../../components/SosModal";
 
 // ── Utils ──────────────────────────────────────────────────────
 const getTrafficStatus = (speed) => {
@@ -142,21 +143,6 @@ function MapAutoCenter({ position }) {
   return null;
 }
 
-function SOSModal({ onClose }) {
-  return (
-    <div style={styles.modalOverlay}>
-      <div style={styles.modalCard}>
-        <div style={{ fontSize: "52px", marginBottom: "12px" }}>🆘</div>
-        <p style={styles.modalTitle}>Send SOS Alert?</p>
-        <p style={styles.modalSub}>This will immediately notify the school admin, driver, and emergency contacts with your live bus location.</p>
-        <div style={styles.modalBtns}>
-          <button style={styles.cancelBtn} onClick={onClose}>Cancel</button>
-          <button style={styles.confirmSosBtn} onClick={() => { alert("🆘 SOS Sent! Admin and emergency contacts notified."); onClose(); }}>🆘 Send SOS</button>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function CallModal({ onClose, driverName, driverPhone }) {
   return (
@@ -243,7 +229,7 @@ export default function ParentBus() {
   useEffect(() => {
     if (!busInfo?.firebasePath) return;
 
-    // Status listener — trip active/inactive decide karta hai
+    // Status listener: decides whether a trip is active
     const statusRef = ref(db, `transport/${busInfo.firebasePath}/busStatus`);
     const unsubscribeStatus = onValue(statusRef, (snap) => {
       const status = snap.val();
@@ -256,7 +242,7 @@ export default function ParentBus() {
         setCompletedRoute([]);
       }
     });
-    // currentStopIndex driver se sync
+    // currentStopIndex synced from the driver
     const stopIndexRef = ref(db, `transport/${busInfo.firebasePath}/currentStopIndex`);
     const unsubscribeStopIndex = onValue(stopIndexRef, (snap) => {
       const idx = snap.val();
@@ -461,7 +447,7 @@ export default function ParentBus() {
           <span style={{ color: "white", fontSize: "13px", fontWeight: 500 }}>{busLabel}</span>
           <span style={{ color: "rgba(255,255,255,0.6)", fontSize: "13px", marginLeft: "4px" }}>ETA {eta}</span>
         </div>
-        {showSOS  && <SOSModal  onClose={() => setShowSOS(false)} />}
+        {showSOS  && <SosModal onClose={() => setShowSOS(false)} location={busLocation} driverPhone={busInfo?.driverPhone} />}
         {showCall && <CallModal onClose={() => setShowCall(false)} driverName={busInfo.driverName} driverPhone={busInfo.driverPhone} />}
       </div>
     );
@@ -653,7 +639,7 @@ export default function ParentBus() {
           </div>
         </div>
 
-        {showSOS  && <SOSModal  onClose={() => setShowSOS(false)} />}
+        {showSOS  && <SosModal onClose={() => setShowSOS(false)} location={busLocation} driverPhone={busInfo?.driverPhone} />}
         {showCall && <CallModal onClose={() => setShowCall(false)} driverName={busInfo.driverName} driverPhone={busInfo.driverPhone} />}
       </div>
     </div>

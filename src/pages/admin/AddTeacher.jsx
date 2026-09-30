@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useAuth } from "../../context/AuthContext"
+import { showCredentials } from "../../utils/toast";
 
 const API = import.meta.env.VITE_API_URL
 
@@ -57,7 +58,8 @@ const AddTeacher = () => {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.message || "Failed to add teacher")
-      setSuccess(`Teacher added! Login: ${data.credentials?.email} / ${data.credentials?.password}`)
+      setSuccess("Teacher added successfully")
+      showCredentials([{ label: "Teacher", ...data.credentials }], "Teacher added")
       setForm({ name: "", email: "", phone: "", employeeId: "", subjects: [], qualification: "", experience: "", gender: "", dateOfBirth: "", address: "", salary: "" })
     } catch (err) {
       setError(err.message)

@@ -29,7 +29,7 @@ export default function DriverHome() {
       const res = await getDriverBus(t);
       if (res.success) {
         setBusData(res.data);
-        firebaseKeyRef.current = res.data.busId || res.data.driverToken;
+        firebaseKeyRef.current = res.data.trackingId;
         setTracking(false);
         setStatus("idle");
         setCurrentStopIndex(0);
@@ -82,7 +82,7 @@ export default function DriverHome() {
         });
       },
       (err) => {
-        // Timeout error — retry karo
+        // Timeout: retry
         if (err.code === 3 && trackingRef.current) {
           setTimeout(() => {
             if (!trackingRef.current) return;
@@ -102,7 +102,7 @@ export default function DriverHome() {
     return id;
   };
 
-  // ✅ FIX: Sirf tab restart karo GPS jab tracking chal rahi ho
+  // Restart GPS only while tracking is active
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible" && trackingRef.current) {
@@ -125,13 +125,13 @@ export default function DriverHome() {
       return;
     }
 
-    // ✅ FIX: UI turant update karo, API ko wait mat karo
+    // Update the UI immediately; do not wait for the API
     trackingRef.current = true;
     setTracking(true);
     setStatus("idle");
     setCurrentStopIndex(0);
 
-    // Firebase pehle update karo — fast
+    // Update Firebase first (fast path)
     const firebasePath = `transport/${firebaseKeyRef.current}`;
     update(ref(db, firebasePath), {
       tripStartedAt: Date.now(),
@@ -141,24 +141,24 @@ export default function DriverHome() {
       updatedAt: Date.now(),
     });
 
-    // GPS shuru karo
+    // Start GPS
     await requestWakeLock();
     const id = startGPSWatch();
     watchIdRef.current = id;
 
-    // ✅ FIX: API ko background mein call karo — await mat karo
+    // Call the API in the background (not awaited)
     apiStartTrip(token).catch(() => {});
   };
 
   const stopTrip = async () => {
-    // ✅ FIX: UI turant update karo
+    // Update the UI immediately
     trackingRef.current = false;
     setTracking(false);
     setCoords(null);
     setStatus("idle");
     setCurrentStopIndex(0);
 
-    // GPS band karo
+    // Stop GPS
     if (watchIdRef.current) {
       navigator.geolocation.clearWatch(watchIdRef.current);
       watchIdRef.current = null;
@@ -166,7 +166,7 @@ export default function DriverHome() {
 
     releaseWakeLock();
 
-    // Firebase update karo
+    // Update Firebase
     if (firebaseKeyRef.current) {
       const firebasePath = `transport/${firebaseKeyRef.current}`;
       await set(ref(db, `${firebasePath}/location`), null);
@@ -177,7 +177,7 @@ export default function DriverHome() {
       });
     }
 
-    // ✅ FIX: API background mein
+    // API call in the background
     apiEndTrip(token).catch(() => {});
   };
 

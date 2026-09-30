@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { db } from "../../firebase";
 import { ref, push, serverTimestamp, onValue } from "firebase/database";
+import { toast } from "../../utils/toast";
 
 const LEAVE_TYPES = [
   "Medical / Sick Leave",
@@ -44,7 +45,7 @@ export default function ApplyLeave() {
 
   const handleSubmit = async () => {
     if (!fromDate || !toDate || !reason) {
-      alert("Please fill all fields.");
+      toast.error("Please fill all fields.");
       return;
     }
     setLoading(true);
@@ -62,7 +63,7 @@ export default function ApplyLeave() {
       });
       setSuccess(true);
     } catch (e) {
-      alert("Error: " + e.message);
+      toast.error("Error: " + e.message);
     }
     setLoading(false);
   };

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "../../utils/toast";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -8,6 +9,7 @@ const STATUS_CONFIG = {
   Paid:    { bg:"#F0FDF4", color:"#15803D", dot:"#22C55E", border:"#BBF7D0" },
   Pending: { bg:"#FFFBEB", color:"#D97706", dot:"#F59E0B", border:"#FDE68A" },
   Overdue: { bg:"#FEF2F2", color:"#DC2626", dot:"#EF4444", border:"#FECACA" },
+  Partial: { bg:"#EFF6FF", color:"#2563EB", dot:"#3B82F6", border:"#BFDBFE" },
 };
 
 function Modal({ show, onClose, title, children }) {
@@ -53,37 +55,42 @@ export default function FeeCollection() {
     setLoading(false);
   };
 
-  const openCollect = (fee) => { setSelectedFee(fee); setPayAmount(fee.amount || ""); setPayMethod("Cash"); setShowModal(true); };
+  const openCollect = (fee) => { setSelectedFee(fee); setPayAmount(String(fee.balance ?? fee.amount ?? "")); setPayMethod("Cash"); setShowModal(true); };
 
   const handleCollect = async () => {
-    if (!payAmount) return alert("Enter amount");
+    if (!(Number(payAmount) > 0)) return toast.error("Enter a valid amount");
     setSaving(true);
     try {
-      await axios.put(`${API}/fees/${selectedFee._id}`, { status:"Paid", paidAmount: payAmount, paymentMethod: payMethod, paidDate: new Date() }, auth());
+      const res = await axios.patch(`${API}/fees/${selectedFee._id}/pay`, { amount: Number(payAmount), mode: payMethod }, auth());
+      toast.success(`Payment recorded. Receipt ${res.data.payment?.receiptNo || ""}`);
       setShowModal(false);
       fetchAll();
-    } catch(e) { alert(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
     setSaving(false);
   };
 
   const classes = [...new Set(students.map(s => s.class))].sort();
 
   const enriched = fees.map(f => {
-    const student = students.find(s => s._id === (f.student?._id || f.student));
-    return { ...f, studentName: student?.name || f.studentName || "Unknown", studentClass: student?.class || f.class || "—", studentSection: student?.section || f.section || "" };
+    const sid = f.studentId?._id || f.studentId;
+    const student = (f.studentId && typeof f.studentId === "object") ? f.studentId : students.find(s => s._id === sid);
+    const balance = Math.max(0, Number(f.amount || 0) - Number(f.paidAmount || 0));
+    const overdue = f.status !== "Paid" && f.dueDate && new Date(f.dueDate) < new Date(new Date().toDateString());
+    const displayStatus = f.status === "Paid" ? "Paid" : overdue ? "Overdue" : f.status === "Partial" ? "Partial" : "Pending";
+    return { ...f, balance, displayStatus, studentName: student?.name || "Unknown", studentClass: student?.class || "—", studentSection: student?.section || "" };
   });
 
   const filtered = enriched.filter(f =>
     (!search || f.studentName?.toLowerCase().includes(search.toLowerCase()) || f.feeType?.toLowerCase().includes(search.toLowerCase())) &&
-    (!filterStatus || f.status === filterStatus) &&
+    (!filterStatus || f.displayStatus === filterStatus) &&
     (!filterClass || f.studentClass === filterClass)
   );
 
-  const totalCollected = enriched.filter(f => f.status === "Paid").reduce((s, f) => s + Number(f.paidAmount || f.amount || 0), 0);
-  const totalPending = enriched.filter(f => f.status !== "Paid").reduce((s, f) => s + Number(f.amount || 0), 0);
-  const paidCount = enriched.filter(f => f.status === "Paid").length;
-  const pendingCount = enriched.filter(f => f.status === "Pending").length;
-  const overdueCount = enriched.filter(f => f.status === "Overdue").length;
+  const totalCollected = enriched.reduce((s, f) => s + Number(f.paidAmount || 0), 0);
+  const totalPending = enriched.reduce((s, f) => s + f.balance, 0);
+  const paidCount = enriched.filter(f => f.displayStatus === "Paid").length;
+  const pendingCount = enriched.filter(f => f.displayStatus === "Pending" || f.displayStatus === "Partial").length;
+  const overdueCount = enriched.filter(f => f.displayStatus === "Overdue").length;
 
   const fmtDate = (d) => d ? new Date(d).toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" }) : "—";
 
@@ -141,7 +148,7 @@ export default function FeeCollection() {
         <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
           style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:140 }}>
           <option value="">All Status</option>
-          {["Paid","Pending","Overdue"].map(s => <option key={s} value={s}>{s}</option>)}
+          {["Paid","Partial","Pending","Overdue"].map(s => <option key={s} value={s}>{s}</option>)}
         </select>
         <select value={filterClass} onChange={e => setFilterClass(e.target.value)}
           style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:140 }}>
@@ -174,7 +181,7 @@ export default function FeeCollection() {
                 <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Fee records will appear here once generated</div>
               </td></tr>
             ) : filtered.map((f, i) => {
-              const status = f.status || "Pending";
+              const status = f.displayStatus;
               const cfg = STATUS_CONFIG[status] || STATUS_CONFIG.Pending;
               return (
                 <tr key={f._id} className="fee-row" style={{ borderBottom:"1px solid #F1F5F9", animation:`fadeUp 0.3s ease ${i*0.03}s both` }}>
@@ -189,6 +196,7 @@ export default function FeeCollection() {
                   <td style={{ padding:"14px 18px", fontSize:13, color:"#374151", fontWeight:600 }}>{f.feeType || "—"}</td>
                   <td style={{ padding:"14px 18px" }}>
                     <span style={{ fontSize:14, fontWeight:800, color:"#059669" }}>₹{Number(f.amount||0).toLocaleString()}</span>
+                    {f.status === "Partial" && <div style={{ fontSize:11, color:"#2563EB", fontWeight:600, marginTop:2 }}>Balance ₹{f.balance.toLocaleString()}</div>}
                   </td>
                   <td style={{ padding:"14px 18px", fontSize:13, color:"#374151" }}>{fmtDate(f.dueDate)}</td>
                   <td style={{ padding:"14px 18px", fontSize:13, color:"#374151" }}>{fmtDate(f.paidDate)}</td>
@@ -232,7 +240,7 @@ export default function FeeCollection() {
             <div>
               <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>PAYMENT METHOD</div>
               <div style={{ display:"flex", gap:8 }}>
-                {["Cash","Online","Cheque","DD"].map(m => (
+                {["Cash","UPI","Online","Cheque"].map(m => (
                   <button key={m} onClick={() => setPayMethod(m)}
                     style={{ flex:1, padding:"10px", borderRadius:10, border:`2px solid ${payMethod===m?"#10B981":"#E2E8F0"}`, background:payMethod===m?"#F0FDF4":"white", color:payMethod===m?"#059669":"#64748B", fontWeight:700, fontSize:13, cursor:"pointer", transition:"all 0.15s" }}>
                     {m}

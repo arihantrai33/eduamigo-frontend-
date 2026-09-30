@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { currentAcademicYear } from '../../utils/academicYear'
 
 const API = import.meta.env.VITE_API_URL
 
@@ -20,7 +21,7 @@ export default function TeacherMarks() {
   const [examType, setExamType]               = useState('Unit Test')
   const [maxMarks, setMaxMarks]               = useState(100)
   const [weightage, setWeightage]             = useState(0)
-  const [academicYear, setAcademicYear]       = useState('2025-26')
+  const [academicYear, setAcademicYear]       = useState(currentAcademicYear())
 
   const [marks, setMarks]                   = useState({})
   const [isPublished, setIsPublished]       = useState(false)
@@ -272,7 +273,7 @@ export default function TeacherMarks() {
                 value={academicYear}
                 onChange={e => setAcademicYear(e.target.value)}
               >
-                {['2025-26', '2024-25', '2026-27'].map(y => <option key={y}>{y}</option>)}
+                {(() => { const start = Number(currentAcademicYear().slice(0, 4)); return [start - 1, start, start + 1].map(y => `${y}-${String((y + 1) % 100).padStart(2, '0')}`); })().map(y => <option key={y}>{y}</option>)}
               </select>
             </div>
           </div>

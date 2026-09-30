@@ -166,28 +166,34 @@ function DashboardContent({ isMobile, navigate, user }) {
 
   const fetchAll = async () => {
     try {
-      const [studentsRes, teachersRes, busesRes, leavesRes, attendanceRes] = await Promise.allSettled([
+      const [studentsRes, teachersRes, busesRes, leavesRes, attendanceRes, feesRes, parentsRes] = await Promise.allSettled([
         axios.get(`${API}/students`, authHeader()),
         axios.get(`${API}/teachers`, authHeader()),
         axios.get(`${API}/transport`, authHeader()),
         axios.get(`${API}/leaves/pending`, authHeader()),
         axios.get(`${API}/attendance/today`, authHeader()),
+        axios.get(`${API}/fees`, authHeader()),
+        axios.get(`${API}/parents`, authHeader()),
       ]);
       const students = studentsRes.status === "fulfilled" ? (studentsRes.value.data.data || []) : [];
       const teachers = teachersRes.status === "fulfilled" ? (teachersRes.value.data.data || []) : [];
       const busData  = busesRes.status === "fulfilled"   ? (busesRes.value.data.data   || []) : [];
       const leaves   = leavesRes.status === "fulfilled"  ? (leavesRes.value.data.data  || []) : [];
-      const att      = attendanceRes.status === "fulfilled" ? (attendanceRes.value.data.data || []) : [];
+      const att      = attendanceRes.status === "fulfilled" ? (attendanceRes.value.data.data || {}) : {};
+      const fees     = feesRes.status === "fulfilled" ? (feesRes.value.data.data || []) : [];
+      const parents  = parentsRes.status === "fulfilled" ? (parentsRes.value.data.data || []) : [];
 
-      setStats({ students: students.length, teachers: teachers.length, buses: busData.length, parents: students.filter(s => s.parentId).length });
+      setStats({ students: students.length, teachers: teachers.length, buses: busData.length, parents: parents.length });
       setRecentStudents(students.slice(-5).reverse());
       setPendingLeaves(leaves.length);
 
-      const paidCount = students.filter(s => s.feeStatus === "Paid").length;
-      setFeeStats({ paid: paidCount, pending: students.length - paidCount, total: students.length });
+      // A student counts as "pending" if any fee has an outstanding balance.
+      const withDues = new Set(fees.filter(f => f.status !== "Paid").map(f => String(f.studentId?._id || f.studentId)));
+      const billed = new Set(fees.map(f => String(f.studentId?._id || f.studentId)));
+      setFeeStats({ paid: billed.size - withDues.size, pending: withDues.size, total: billed.size });
 
-      const presentCount = att.filter(a => a.status === "Present").length;
-      setAttendanceStats({ present: presentCount, absent: att.length - presentCount, total: att.length });
+      const present = (att.present || 0) + (att.late || 0);
+      setAttendanceStats({ present, absent: att.absent || 0, total: att.total || 0 });
 
       setRecentActivity(students.slice(-6).reverse().map(s => ({
         ic: "🎒", text: `${s.name} added to class ${s.class}-${s.section}`,

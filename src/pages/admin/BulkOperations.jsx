@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { toast, confirmAction } from "../../utils/toast";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -67,7 +68,7 @@ export default function BulkOperations() {
   const countStudents = (cls, sec) => students.filter(s => (!cls || s.class === cls) && (!sec || s.section === sec)).length;
 
   const handleAttendance = async () => {
-    if (!attClass || !attDate) return alert("Class aur date select karo");
+    if (!attClass || !attDate) return toast.error("Please select a class and date");
     setLoading(true);
     try {
       const r = await axios.post(`${API}/bulk/attendance`, { className: attClass, section: attSection, date: attDate, status: attStatus }, auth());
@@ -77,8 +78,8 @@ export default function BulkOperations() {
   };
 
   const handlePromote = async () => {
-    if (!fromClass || !fromSection || !toClass || !toSection) return alert("Sab fields fill karo");
-    if (!window.confirm(`${countStudents(fromClass, fromSection)} students ko ${fromClass}-${fromSection} se ${toClass}-${toSection} promote karein?`)) return;
+    if (!fromClass || !fromSection || !toClass || !toSection) return toast.error("Please fill in all fields");
+    if (!(await confirmAction(`${countStudents(fromClass, fromSection)} student(s) will be moved from ${fromClass}-${fromSection} to ${toClass}-${toSection}. Continue?`, { confirmLabel: 'Promote', danger: false }))) return;
     setLoading(true);
     try {
       const r = await axios.post(`${API}/bulk/promote`, { fromClass, fromSection, toClass, toSection }, auth());
@@ -118,8 +119,26 @@ export default function BulkOperations() {
     reader.readAsText(file);
   };
 
+  // New accounts get temporary passwords; they are downloaded once as a CSV for the admin to distribute.
+  const downloadCredentials = (list, kind) => {
+    const rows = [["Role", "Email", "Temporary password"]];
+    list.forEach((c) => {
+      if (c?.student) rows.push(["Student", c.student.email, c.student.password]);
+      if (c?.parent) rows.push(["Parent", c.parent.email, c.parent.password]);
+      if (c?.email) rows.push(["Teacher", c.email, c.password]);
+    });
+    const csv = rows.map((r) => r.map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${kind}-login-details-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.info("Login details downloaded. Share them securely and delete the file afterwards.");
+  };
+
   const handleCSVSubmit = async () => {
-    if (!csvData?.length) return alert("CSV file select karo pehle");
+    if (!csvData?.length) return toast.error("Please select a CSV file first");
     setLoading(true);
     try {
       const endpoint = csvTab === "students" ? "upload/students" : "upload/teachers";
@@ -127,6 +146,7 @@ export default function BulkOperations() {
       const r = await axios.post(`${API}/bulk/${endpoint}`, { [key]: csvData }, auth());
       const d = r.data.data;
       setResult({ success: true, message: `${d.success} records uploaded, ${d.failed} failed`, errors: d.errors });
+      if (d.credentials?.length) downloadCredentials(d.credentials, key);
     } catch(e) { setResult({ success: false, message: e.response?.data?.message || "Error" }); }
     setLoading(false);
   };

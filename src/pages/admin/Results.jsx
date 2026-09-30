@@ -39,7 +39,7 @@ export default function Results() {
     setLoading(true);
     try {
       const [rRes, sRes] = await Promise.allSettled([
-        axios.get(`${API}/results`, auth()),
+        axios.get(`${API}/exams/results`, auth()),
         axios.get(`${API}/students`, auth()),
       ]);
       setResults(rRes.status === "fulfilled" ? (rRes.value.data.data || []) : []);

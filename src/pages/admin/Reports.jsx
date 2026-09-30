@@ -70,7 +70,7 @@ export default function Reports() {
         axios.get(`${API}/attendance/report`, auth()),
         axios.get(`${API}/leaves`, auth()),
         axios.get(`${API}/hr/salaries`, auth()),
-        axios.get(`${API}/marks`, auth()),
+        axios.get(`${API}/exams/results`, auth()),
         axios.get(`${API}/library`, auth()),
       ]);
 
@@ -84,19 +84,21 @@ export default function Reports() {
 
       const feeList = feeRes.value?.data?.data || [];
       const paidFees = feeList.filter(f => f.status === "Paid");
-      const pendFees = feeList.filter(f => f.status !== "Paid");
+      const totalBilled = feeList.reduce((s,f) => s+(f.amount||0), 0);
+      const totalPaid   = feeList.reduce((s,f) => s+(f.paidAmount||0), 0);
       setFees({
-        total:     feeList.reduce((s,f) => s+(f.amount||0), 0),
-        paid:      paidFees.reduce((s,f) => s+(f.amount||0), 0),
-        pending:   pendFees.reduce((s,f) => s+(f.amount||0), 0),
+        total:     totalBilled,
+        paid:      totalPaid,
+        pending:   totalBilled - totalPaid,
         count:     feeList.length,
         paidCount: paidFees.length,
       });
 
-      const attData = attRes.value?.data?.data || [];
-      const present = attData.filter(a => a.status === "Present").length;
-      const absent  = attData.filter(a => a.status === "Absent").length;
-      setAtt({ present, absent, total: attData.length });
+      // Class-wise rows: { present, late, absent, total, ... }
+      const attRows = attRes.value?.data?.data || [];
+      const present = attRows.reduce((s, r) => s + (r.present || 0) + (r.late || 0), 0);
+      const absent  = attRows.reduce((s, r) => s + (r.absent || 0), 0);
+      setAtt({ present, absent, total: attRows.reduce((s, r) => s + (r.total || 0), 0) });
 
       const leaveList = leaveRes.value?.data?.data || [];
       setLeaves({

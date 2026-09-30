@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import axios from "axios";
+import { currentAcademicYear } from "../../utils/academicYear";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -173,7 +174,7 @@ export default function Profile() {
                 ["Student ID",  profile?._id?.slice(-8).toUpperCase() || "—"],
                 ["Email",       profile?.email    || "—"],
                 ["Blood Group", profile?.bloodGroup || "—"],
-                ["Session",     "2025-26"],
+                ["Session",     currentAcademicYear()],
               ].map(([l, v]) => (
                 <div key={l} style={{ background: darkMode ? "#1a1a2e" : "#f5f6fa", borderRadius: "10px", padding: "10px" }}>
                   <div style={{ fontSize: "10px", color: darkMode ? "#aaa" : "#888", fontWeight: "700", textTransform: "uppercase" }}>{l}</div>
