@@ -111,7 +111,7 @@ export default function AttendanceReports() {
           <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>YEAR</div>
           <select value={filterYear} onChange={e => setFilterYear(Number(e.target.value))}
             style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white" }}>
-            {[2023,2024,2025,2026].map(y => <option key={y} value={y}>{y}</option>)}
+            {[0, 1, 2, 3].map(i => new Date().getFullYear() - 3 + i).map(y => <option key={y} value={y}>{y}</option>)}
           </select>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, confirmAction } from "../../utils/toast";
+import { todayLocal } from "../../utils/dates";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -39,7 +40,7 @@ export default function BulkOperations() {
   // Attendance state
   const [attClass, setAttClass] = useState("");
   const [attSection, setAttSection] = useState("");
-  const [attDate, setAttDate] = useState(new Date().toISOString().split("T")[0]);
+  const [attDate, setAttDate] = useState(todayLocal());
   const [attStatus, setAttStatus] = useState("Present");
 
   // Promote state
@@ -131,7 +132,7 @@ export default function BulkOperations() {
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${kind}-login-details-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `${kind}-login-details-${todayLocal()}.csv`;
     a.click();
     URL.revokeObjectURL(url);
     toast.info("Login details downloaded. Share them securely and delete the file afterwards.");

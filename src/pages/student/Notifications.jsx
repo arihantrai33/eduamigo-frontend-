@@ -3,7 +3,6 @@ import { useTheme } from "../../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
-import { connectSocket, getSocket, disconnectSocket } from "../../utils/socket";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -23,15 +22,9 @@ export default function Notifications() {
 
   useEffect(() => {
     fetchNotifications();
-    connectSocket("student");
-    const socket = getSocket();
-    socket.on("new_notification", (notif) => {
-      setNotifications((prev) => [notif, ...prev]);
-    });
-    return () => {
-      socket.off("new_notification");
-      disconnectSocket();
-    };
+    // Refresh every 60 seconds while the page is open and visible.
+    const timer = setInterval(() => { if (!document.hidden) fetchNotifications(); }, 60000);
+    return () => clearInterval(timer);
   }, []);
 
   const fetchNotifications = async () => {

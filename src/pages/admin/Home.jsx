@@ -24,7 +24,6 @@ import FeeReports from "./FeeReports";
 import FeeStructure from "./FeeStructure";
 import LeaveRequests from "./LeaveRequests";
 import Library from "./Library";
-import Marks from "./Marks";
 import Communications from "./Communications";
 import Reports from "./Reports";
 import Results from "./Results";
@@ -594,7 +593,7 @@ export default function AdminHome() {
           <Route path="fee-structure" element={<Gate user={user} perm="fees.structure"><FeeStructure /></Gate>} />
           <Route path="leaves" element={<Gate user={user} perm="leaves.all"><LeaveRequests /></Gate>} />
           <Route path="library" element={<Gate user={user} perm="library.manage"><Library /></Gate>} />
-          <Route path="marks" element={<Gate user={user} perm="results.read"><Marks /></Gate>} />
+          <Route path="marks" element={<Navigate to="/admin/results" replace />} />
           <Route path="admissions/enquiries" element={<div style={{padding:40,textAlign:"center",color:"#94A3B8",fontSize:16,fontWeight:700}}>🏫 Admissions — Enquiries coming soon</div>} />
           <Route path="admissions/applications" element={<div style={{padding:40,textAlign:"center",color:"#94A3B8",fontSize:16,fontWeight:700}}>📋 Applications coming soon</div>} />
           <Route path="admissions/enrollment" element={<div style={{padding:40,textAlign:"center",color:"#94A3B8",fontSize:16,fontWeight:700}}>✅ Enrollment coming soon</div>} />

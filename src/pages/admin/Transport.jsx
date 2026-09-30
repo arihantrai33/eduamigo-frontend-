@@ -161,7 +161,10 @@ function Modal({ show, onClose, title, children }) {
 }
 
 export default function Transport() {
-  const [showAnim, setShowAnim] = useState(true);
+  // The intro animation plays once per browser session, not on every visit.
+  const [showAnim, setShowAnim] = useState(() => {
+    try { return !sessionStorage.getItem("transportIntroSeen"); } catch { return false; }
+  });
   const [buses, setBuses] = useState([]);
   const [allStudents, setAllStudents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -182,7 +185,11 @@ export default function Transport() {
     return () => clearTimeout(timer);
   }, []);
 
-  useEffect(() => { if (!showAnim) fetchAll(); }, [showAnim]);
+  useEffect(() => { fetchAll(); }, []);
+  useEffect(() => {
+    if (!showAnim) return;
+    try { sessionStorage.setItem("transportIntroSeen", "1"); } catch { /* storage unavailable */ }
+  }, [showAnim]);
 
   const fetchAll = async () => {
     setLoading(true);

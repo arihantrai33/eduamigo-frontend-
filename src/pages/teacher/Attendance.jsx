@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { todayLocal } from "../../utils/dates";
 
 const API = import.meta.env.VITE_API_URL
 
@@ -19,7 +20,7 @@ export default function TeacherAttendance() {
   const [sections,   setSections]   = useState([])
   const [students,   setStudents]   = useState([])
   const [attendance, setAttendance] = useState({})
-  const [filters,    setFilters]    = useState({ class: "", section: "", date: new Date().toISOString().split("T")[0] })
+  const [filters,    setFilters]    = useState({ class: "", section: "", date: todayLocal() })
   const [loading,    setLoading]    = useState(false)
   const [saving,     setSaving]     = useState(false)
   const [toast,      setToast]      = useState(null)

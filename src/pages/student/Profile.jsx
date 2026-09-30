@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import axios from "axios";
 import { currentAcademicYear } from "../../utils/academicYear";
+import SupportContent from "../../components/SupportContent";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -26,8 +27,6 @@ export default function Profile() {
   const [showHelp,     setShowHelp]     = useState(false);
   const [showIdCard,   setShowIdCard]   = useState(false);
 
-  const [notifications, setNotifications] = useState(true);
-  const [language,      setLanguage]      = useState("English");
 
   useEffect(() => { fetchAll(); }, []);
 
@@ -111,7 +110,6 @@ export default function Profile() {
       <div style={{ flex: 1, overflowY: "auto", padding: "16px" }}>
         <div style={{ background: darkMode ? "#16213e" : "white", borderRadius: "16px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}>
           {[
-            { label: "Push Notifications", sub: "Get alerts for fees, results and notices", value: notifications, setter: setNotifications },
             { label: "Dark Mode",           sub: "Switch to dark theme",                     value: darkMode,       setter: setDarkMode       },
           ].map((s, i, arr) => (
             <div key={s.label} style={{ padding: "16px", borderBottom: i < arr.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -124,19 +122,11 @@ export default function Profile() {
               </div>
             </div>
           ))}
-          <div style={{ padding: "16px" }}>
-            <div style={{ fontWeight: "600", fontSize: "14px", marginBottom: "8px", color: darkMode ? "#f1f5f9" : "#111" }}>Language</div>
-            <select value={language} onChange={e => setLanguage(e.target.value)}
-              style={{ width: "100%", padding: "10px", borderRadius: "10px", border: darkMode ? "1.5px solid #334155" : "1.5px solid #e5e7eb", fontSize: "14px", outline: "none", fontFamily: "Inter, sans-serif", background: darkMode ? "#0f172a" : "white", color: darkMode ? "#f1f5f9" : "#111" }}>
-              <option>English</option>
-              <option>Hindi</option>
-            </select>
-          </div>
         </div>
         <div style={{ background: darkMode ? "#16213e" : "white", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginTop: "12px" }}>
           <div style={{ fontWeight: "700", fontSize: "13px", color: darkMode ? "#aaa" : "#888", marginBottom: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>Account</div>
-          {["Change Password", "Privacy Policy", "Terms of Service"].map((item, i, arr) => (
-            <div key={item} style={{ padding: "14px 0", borderBottom: i < arr.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
+          {["Change Password"].map((item, i, arr) => (
+            <div key={item} onClick={() => navigate("/change-password")} style={{ padding: "14px 0", borderBottom: i < arr.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
               <span style={{ fontSize: "14px", fontWeight: "600", color: darkMode ? "#f1f5f9" : "#111" }}>{item}</span>
               <span style={{ color: "#ccc" }}>›</span>
             </div>
@@ -159,7 +149,7 @@ export default function Profile() {
             <div style={{ fontSize: "13px", fontWeight: "700", letterSpacing: "2px", opacity: .8 }}>
               {profile?.school || "SCHOOL"}
             </div>
-            <div style={{ fontSize: "11px", opacity: .7 }}>Student Identity Card 2025-26</div>
+            <div style={{ fontSize: "11px", opacity: .7 }}>Student Identity Card {currentAcademicYear()}</div>
           </div>
           <div style={{ padding: "20px", textAlign: "center" }}>
             <div style={{ width: "72px", height: "72px", borderRadius: "50%", background: "linear-gradient(135deg,#4f46e5,#7c3aed)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px", fontSize: "28px", fontWeight: "700", color: "white", border: "3px solid #e5e7eb" }}>
@@ -199,26 +189,7 @@ export default function Profile() {
         <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Help & Support</h2>
       </div>
       <div style={{ flex: 1, overflowY: "auto", padding: "16px" }}>
-        {[
-          { q: "How do I pay my fees online?",       a: "Go to Fee Status, tap Pay Now and choose your preferred payment method." },
-          { q: "How do I apply for leave?",           a: "Go to Apply Leave, fill in the form and submit. Your parent will be notified." },
-          { q: "How do I download notes?",            a: "Go to Notes, tap any note and then tap the download button." },
-          { q: "Bus tracker is not working?",         a: "Ensure location permissions are enabled. Try refreshing the page." },
-          { q: "How do I change my password?",        a: "Go to Profile, then Settings, then Change Password." },
-          { q: "How do I contact my teacher?",        a: "Go to Chat and select your subject teacher to send a message." },
-        ].map((faq, i) => (
-          <div key={i} style={{ background: darkMode ? "#16213e" : "white", borderRadius: "14px", padding: "16px", marginBottom: "10px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-            <div style={{ fontWeight: "700", fontSize: "14px", color: darkMode ? "#f1f1f1" : "#111", marginBottom: "6px" }}>❓ {faq.q}</div>
-            <div style={{ fontSize: "13px", color: darkMode ? "#bbb" : "#666", lineHeight: 1.6 }}>💡 {faq.a}</div>
-          </div>
-        ))}
-        <div style={{ background: darkMode ? "#16213e" : "white", borderRadius: "14px", padding: "16px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)", textAlign: "center" }}>
-          <div style={{ fontSize: "16px", fontWeight: "700", marginBottom: "8px" }}>Still need help?</div>
-          <div style={{ fontSize: "13px", color: darkMode ? "#aaa" : "#888", marginBottom: "12px" }}>Contact school administration</div>
-          <button style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", color: "white", border: "none", borderRadius: "12px", padding: "12px 24px", fontWeight: "700", cursor: "pointer", fontSize: "14px" }}>
-            📞 Call School
-          </button>
-        </div>
+        <SupportContent role="student" dark={darkMode} />
       </div>
     </div>
   );

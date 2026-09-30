@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { currentAcademicYear } from "../../utils/academicYear";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -97,7 +98,7 @@ export default function ParentFee() {
         {/* Summary Card */}
         <div style={styles.summaryCard}>
           <div style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", marginBottom: 4 }}>
-            Academic Year 2025–26
+            Academic Year {currentAcademicYear()}
           </div>
           <div style={{ fontSize: 34, fontWeight: 900, color: "white", letterSpacing: -1 }}>
             ₹{summary.total.toLocaleString("en-IN")}

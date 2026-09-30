@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 import { currentAcademicYear } from "../../utils/academicYear";
+import SupportContent from "../../components/SupportContent";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -18,9 +19,7 @@ export default function TeacherProfile() {
   const [showSettings, setShowSettings] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [showIdCard, setShowIdCard] = useState(false);
-  const [notifications, setNotifications] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
-  const [language, setLanguage] = useState("English");
 
   useEffect(() => { fetchProfile(); }, []);
 
@@ -91,7 +90,6 @@ export default function TeacherProfile() {
       <div style={{ flex: 1, overflowY: "auto", padding: "16px" }}>
         <div style={{ background: "var(--card)", borderRadius: "16px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}>
           {[
-            { label: "Push Notifications", sub: "Get alerts for attendance, results and notices", value: notifications, setter: setNotifications },
             { label: "Dark Mode",           sub: "Switch to dark theme",                          value: darkMode,       setter: setDarkMode },
           ].map((s, i, arr) => (
             <div key={s.label} style={{ padding: "16px", borderBottom: i < arr.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -104,18 +102,11 @@ export default function TeacherProfile() {
               </div>
             </div>
           ))}
-          <div style={{ padding: "16px" }}>
-            <div style={{ fontWeight: "600", fontSize: "14px", marginBottom: "8px" }}>Language</div>
-            <select value={language} onChange={e => setLanguage(e.target.value)} style={{ width: "100%", padding: "10px", borderRadius: "10px", border: "1.5px solid var(--border)", fontSize: "14px", outline: "none", fontFamily: "Inter, sans-serif" }}>
-              <option>English</option>
-              <option>Hindi</option>
-            </select>
-          </div>
         </div>
         <div style={{ background: "var(--card)", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginTop: "12px" }}>
           <div style={{ fontWeight: "700", fontSize: "13px", color: "var(--subtext)", marginBottom: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>Account</div>
-          {["Change Password", "Privacy Policy", "Terms of Service"].map((item, i, arr) => (
-            <div key={item} style={{ padding: "14px 0", borderBottom: i < arr.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
+          {["Change Password"].map((item, i, arr) => (
+            <div key={item} onClick={() => navigate("/change-password")} style={{ padding: "14px 0", borderBottom: i < arr.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
               <span style={{ fontSize: "14px", fontWeight: "600" }}>{item}</span>
               <span style={{ color: "#ccc" }}>›</span>
             </div>
@@ -135,7 +126,7 @@ export default function TeacherProfile() {
         <div style={{ width: "100%", maxWidth: "320px", background: "var(--card)", borderRadius: "20px", overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.15)" }}>
           <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "20px", color: "white", textAlign: "center" }}>
             <div style={{ fontSize: "13px", fontWeight: "700", letterSpacing: "2px", opacity: .8 }}>EDUAMIGO SCHOOL</div>
-            <div style={{ fontSize: "11px", opacity: .7 }}>Faculty Identity Card 2025-26</div>
+            <div style={{ fontSize: "11px", opacity: .7 }}>Faculty Identity Card {currentAcademicYear()}</div>
           </div>
           <div style={{ padding: "20px", textAlign: "center" }}>
             <div style={{ width: "72px", height: "72px", borderRadius: "50%", background: "linear-gradient(135deg,#4f46e5,#7c3aed)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px", fontSize: "28px", fontWeight: "700", color: "white", border: "3px solid #e5e7eb" }}>
@@ -172,26 +163,7 @@ export default function TeacherProfile() {
         <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Help & Support</h2>
       </div>
       <div style={{ flex: 1, overflowY: "auto", padding: "16px" }}>
-        {[
-          { q: "How do I mark attendance?",   a: "Go to Attendance, select the class and date, then mark each student present or absent." },
-          { q: "How do I upload marks?",       a: "Go to Upload, select the exam and subject, then enter marks for each student." },
-          { q: "How do I apply for leave?",    a: "Go to Leave, fill in the leave request form and submit for admin approval." },
-          { q: "How do I message a student?",  a: "Go to Messages and select the student or parent to start a conversation." },
-          { q: "How do I view my timetable?",  a: "Go to Home and your daily schedule is shown on the timetable section." },
-          { q: "How do I change my password?", a: "Go to Profile, then Settings, then Change Password." },
-        ].map((faq, i) => (
-          <div key={i} style={{ background: "var(--card)", borderRadius: "14px", padding: "16px", marginBottom: "10px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-            <div style={{ fontWeight: "700", fontSize: "14px", color: "var(--text)", marginBottom: "6px" }}>❓ {faq.q}</div>
-            <div style={{ fontSize: "13px", color: "var(--subtext2)", lineHeight: 1.6 }}>💡 {faq.a}</div>
-          </div>
-        ))}
-        <div style={{ background: "var(--card)", borderRadius: "14px", padding: "16px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)", textAlign: "center" }}>
-          <div style={{ fontSize: "16px", fontWeight: "700", marginBottom: "8px" }}>Still need help?</div>
-          <div style={{ fontSize: "13px", color: "var(--subtext)", marginBottom: "12px" }}>Contact school administration</div>
-          <button style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", color: "white", border: "none", borderRadius: "12px", padding: "12px 24px", fontWeight: "700", cursor: "pointer", fontSize: "14px" }}>
-            📞 Call School
-          </button>
-        </div>
+        <SupportContent role="teacher" dark={darkMode} />
       </div>
     </div>
   );

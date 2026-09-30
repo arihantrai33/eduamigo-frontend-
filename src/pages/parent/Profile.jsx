@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
+import SupportContent from "../../components/SupportContent";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -42,9 +43,8 @@ export default function ParentProfile() {
   const navigate         = useNavigate();
   const { user, logout } = useAuth();
   const [parentData, setParentData] = useState(null);
-  const [toast,      setToast]      = useState("");
+  const [showHelp,   setShowHelp]   = useState(false);
 
-  const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(""), 3000); };
 
   useEffect(() => {
     const fetchParent = async () => {
@@ -62,7 +62,6 @@ export default function ParentProfile() {
     ? user.name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase()
     : "P";
 
-  const children = parentData ? [] : [];
 
   const handleLogout = async () => {
     await logout();
@@ -71,20 +70,27 @@ export default function ParentProfile() {
 
   const menu = [
     { icon: "🔔", label: "Notifications",   bg: "#E8F5E9", action: () => navigate("/parent/notifications") },
-    { icon: "🔒", label: "Change Password", bg: "#FFF9C4", action: () => showToast("Change password feature coming soon") },
-    { icon: "❓", label: "Help & Support",  bg: "#E3F2FD", action: () => showToast("Help & support coming soon")          },
+    { icon: "🔒", label: "Change Password", bg: "#FFF9C4", action: () => navigate("/change-password") },
+    { icon: "❓", label: "Help & Support",  bg: "#E3F2FD", action: () => setShowHelp(true) },
     { icon: "🚪", label: "Logout",          bg: "#FFEBEE", action: handleLogout, danger: true                             },
   ];
+
+  if (showHelp) return (
+    <div style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "Inter, sans-serif" }}>
+      <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px" }}>
+        <button onClick={() => setShowHelp(false)} aria-label="Back" style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
+        <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Help & Support</h2>
+      </div>
+      <div style={{ padding: "16px" }}>
+        <SupportContent role="parent" />
+      </div>
+    </div>
+  );
 
   return (
     <div style={s.wrap}>
 
       {/* Toast */}
-      {toast && (
-        <div style={{ position: "fixed", bottom: 80, left: "50%", transform: "translateX(-50%)", background: "#1C2033", color: "#fff", padding: "10px 20px", borderRadius: 30, fontSize: 13, fontWeight: 600, zIndex: 9999 }}>
-          {toast}
-        </div>
-      )}
 
       {/* Top Bar */}
       <div style={s.topBar}>

@@ -8,7 +8,7 @@ import L from "leaflet";
 import { getChildBus } from "../../api/transport";
 import SosModal from "../../components/SosModal";
 
-const SCHOOL_FALLBACK = { id: "school", name: "School", lat: 28.4689, lng: 77.5030 };
+const API = import.meta.env.VITE_API_URL;
 const COLOR = {
   primary: "#0EA5E9", primaryDark: "#0284C7", primaryLight: "#E0F2FE",
   success: "#10B981", successLight: "#D1FAE5",
@@ -246,8 +246,17 @@ export default function ParentBus() {
   const prevStopIdx   = useRef(null);
   const prevTrip      = useRef(false);
 
+  const [schoolLocation,      setSchoolLocation]      = useState(null);
   const traffic = getTrafficStatus(busSpeed);
-  const SCHOOL  = stops[stops.length - 1] || SCHOOL_FALLBACK;
+  // Destination for the ETA: the route's last stop, otherwise the school location set in Settings.
+  const SCHOOL  = stops[stops.length - 1] || schoolLocation;
+
+  useEffect(() => {
+    fetch(`${API}/schools/me`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } })
+      .then((r) => r.json())
+      .then((d) => { if (d?.data?.location) setSchoolLocation({ id: "school", name: d.data.name, ...d.data.location }); })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (!headerRef.current) return;
@@ -347,8 +356,10 @@ export default function ParentBus() {
         const splitIdx = getNearestPointIndex(fullRoute, data.lat, data.lng);
         setCompletedRoute(fullRoute.slice(0, splitIdx + 1));
       }
-      const etaResult = await fetchETA(data.lat, data.lng, SCHOOL.lat, SCHOOL.lng);
-      if (etaResult) setEta(etaResult);
+      if (SCHOOL) {
+        const etaResult = await fetchETA(data.lat, data.lng, SCHOOL.lat, SCHOOL.lng);
+        if (etaResult) setEta(etaResult);
+      }
     });
     return unsubscribe;
   }, [driverToken, fullRoute, stops, notifPrefs, studentData]);
