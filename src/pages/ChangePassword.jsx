@@ -33,7 +33,7 @@ export default function ChangePassword() {
       if (!res.ok || !data.success) throw new Error(data.message || "Could not update password");
       updateUser({ mustChangePassword: false }, data.token);
       toast.success("Password updated");
-      navigate(user.role === "admin" ? "/admin/home" : user.role === "driver" ? "/driver" : `/${user.role}/home`, { replace: true });
+      navigate(["admin", "accountant"].includes(user.role) ? "/admin/home" : user.role === "driver" ? "/driver" : `/${user.role}/home`, { replace: true });
     } catch (err) {
       setError(errorMessage(err));
     } finally {

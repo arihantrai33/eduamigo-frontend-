@@ -36,7 +36,7 @@ export default function Login() {
       const data = await res.json();
       if (data.success) {
         login(data.user, data.token);
-        const home = data.user.role === "driver" ? "/driver" : `/${data.user.role}/home`;
+        const home = data.user.role === "driver" ? "/driver" : data.user.role === "accountant" ? "/admin/home" : `/${data.user.role}/home`;
         navigate(data.user.mustChangePassword ? "/change-password" : home, { replace: true });
       } else {
         setError(data.message || "Invalid credentials. Please try again.");

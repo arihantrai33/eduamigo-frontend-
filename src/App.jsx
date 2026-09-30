@@ -76,7 +76,9 @@ function Protected({ children, role }) {
   const { user, loading } = useAuth()
   if (loading) return <LoadingScreen />
   if (!user) return <Navigate to="/login" replace />
-  if (role && user.role !== role) return <Navigate to="/login" replace />
+  // The admin portal is shared by all school staff roles; menus inside it are permission-filtered.
+  const allowed = role === 'admin' ? ['admin', 'accountant'] : [role]
+  if (role && !allowed.includes(user.role)) return <Navigate to="/login" replace />
   if (user.mustChangePassword) return <Navigate to="/change-password" replace />
   return children
 }

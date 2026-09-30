@@ -1,14 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
-import { useNavigate, Routes, Route, useLocation } from "react-router-dom";
+import { useNavigate, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import axios from "axios";
 import {
   LayoutDashboard, Users, School, UserCircle, Bus,
   CalendarCheck, CreditCard, FileBadge, Clock, Notebook, BadgeDollarSign, Layers,
   Bell, MessageCircle, BarChart2, Settings as SettingsIcon, Menu, X,
   AlertCircle, CheckCircle, BookOpen, LogOut, TrendingUp, Zap,
-  Award, Shield, FileText
+  Shield, FileText
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
+import { can, ROLE_LABELS } from "../../utils/permissions";
 import Students from "./Students";
 import AddStudent from "./AddStudent";
 import AddParent from "./AddParent";
@@ -43,61 +44,75 @@ import HRManagement from "./HRManagement";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
+// Shown when a staff member opens a screen their role does not include.
+function Gate({ user, perm, children }) {
+  if (can(user, perm)) return children;
+  return (
+    <div style={{ padding: 48, textAlign: "center", fontFamily: "Inter, sans-serif" }}>
+      <div style={{ fontSize: 18, fontWeight: 800, color: "#0F172A" }}>No access</div>
+      <div style={{ fontSize: 13, color: "#64748B", marginTop: 6 }}>Your role does not include this section. Ask your school administrator if you need it.</div>
+    </div>
+  );
+}
+
+// First menu entry the user is allowed to open (used as the landing page for limited roles).
+function firstAllowedPath(user) {
+  if (can(user, "fees.collect")) return "/admin/fees";
+  const item = NAV.find((n) => n.path && can(user, n.perm));
+  return item ? item.path : "/admin/fees";
+}
+
 const NAV = [
-  { label: "Dashboard",          icon: LayoutDashboard, path: "/admin" },
+  { label: "Dashboard",          icon: LayoutDashboard, path: "/admin", perm: "attendance.reports" },
 
   { section: "ACADEMIC MANAGEMENT" },
-  { label: "All Students",       icon: Users,           path: "/admin/students" },
-  { label: "All Teachers",       icon: School,          path: "/admin/teachers" },
-  { label: "Timetable",          icon: Clock,           path: "/admin/timetable" },
-  { label: "Exam Schedule",      icon: BookOpen,        path: "/admin/exams" },
-  { label: "Results",            icon: FileBadge,       path: "/admin/results" },
-  { label: "Attendance Reports", icon: CalendarCheck,   path: "/admin/attendance-reports" },
+  { label: "All Students",       icon: Users,           path: "/admin/students", perm: "students.read" },
+  { label: "All Teachers",       icon: School,          path: "/admin/teachers", perm: "teachers.manage" },
+  { label: "Timetable",          icon: Clock,           path: "/admin/timetable", perm: "timetable.manage" },
+  { label: "Exam Schedule",      icon: BookOpen,        path: "/admin/exams", perm: "exams.manage" },
+  { label: "Results",            icon: FileBadge,       path: "/admin/results", perm: "results.read" },
+  { label: "Attendance Reports", icon: CalendarCheck,   path: "/admin/attendance-reports", perm: "attendance.reports" },
 
-  { section: "ADMISSIONS" },
-  { label: "Enquiries",          icon: FileText,        path: "/admin/admissions/enquiries" },
-  { label: "Applications",       icon: FileBadge,       path: "/admin/admissions/applications" },
-  { label: "Enrollment",         icon: Award,           path: "/admin/admissions/enrollment" },
 
   { section: "FINANCE" },
-  { label: "Fee Structure",      icon: Layers,          path: "/admin/fee-structure" },
-  { label: "Fee Collection",     icon: BadgeDollarSign, path: "/admin/fees" },
-  { label: "Fee Reports",        icon: TrendingUp,      path: "/admin/fee-reports" },
+  { label: "Fee Structure",      icon: Layers,          path: "/admin/fee-structure", perm: "fees.structure" },
+  { label: "Fee Collection",     icon: BadgeDollarSign, path: "/admin/fees", perm: "fees.collect" },
+  { label: "Fee Reports",        icon: TrendingUp,      path: "/admin/fee-reports", perm: "fees.read" },
 
   { section: "HR & STAFF" },
-  { label: "Leave Management",   icon: Notebook,        path: "/admin/leaves" },
-  { label: "Salary Management",  icon: BadgeDollarSign, path: "/admin/hr-management" },
+  { label: "Leave Management",   icon: Notebook,        path: "/admin/leaves", perm: "leaves.all" },
+  { label: "HR & Payroll",       icon: BadgeDollarSign, path: "/admin/hr-management", perm: "hr.manage" },
 
   { section: "PARENTS" },
-  { label: "All Parents",        icon: UserCircle,      path: "/admin/parents" },
+  { label: "All Parents",        icon: UserCircle,      path: "/admin/parents", perm: "parents.read" },
 
   { section: "COMMUNICATION" },
-  { label: "Communications",     icon: Bell,            path: "/admin/communications" },
-  { label: "Chat",               icon: MessageCircle,   path: "/admin/chat" },
-  { label: "Event Calendar",     icon: CalendarCheck,   path: "/admin/event-calendar" },
+  { label: "Communications",     icon: Bell,            path: "/admin/communications", perm: "communication.manage" },
+  { label: "Chat",               icon: MessageCircle,   path: "/admin/chat", perm: "chat.directory" },
+  { label: "Event Calendar",     icon: CalendarCheck,   path: "/admin/event-calendar", perm: "communication.manage" },
 
   { section: "OPERATIONS" },
-  { label: "Library",            icon: BookOpen,        path: "/admin/library" },
-  { label: "Transport",          icon: Bus,             path: "/admin/transport" },
-  { label: "ID Card Generator",  icon: CreditCard,      path: "/admin/id-card-generator" },
-  { label: "Bulk Operations",    icon: Layers,          path: "/admin/bulk-operations" },
+  { label: "Library",            icon: BookOpen,        path: "/admin/library", perm: "library.manage" },
+  { label: "Transport",          icon: Bus,             path: "/admin/transport", perm: "transport.manage" },
+  { label: "ID Card Generator",  icon: CreditCard,      path: "/admin/id-card-generator", perm: "students.manage" },
+  { label: "Bulk Operations",    icon: Layers,          path: "/admin/bulk-operations", perm: "bulk.manage" },
 
   { section: "SYSTEM" },
-  { label: "User Management",    icon: Shield,          path: "/admin/user-management" },
-  { label: "Reports",            icon: BarChart2,       path: "/admin/reports" },
-  { label: "Settings",           icon: SettingsIcon,    path: "/admin/settings" },
+  { label: "User Management",    icon: Shield,          path: "/admin/user-management", perm: "users.manage" },
+  { label: "Reports",            icon: BarChart2,       path: "/admin/reports", perm: "attendance.reports" },
+  { label: "Settings",           icon: SettingsIcon,    path: "/admin/settings", perm: "settings.manage" },
 ];
 
 const MODULES = [
-  { icon: "🎒", name: "Students",   path: "/admin/students",   grad: "linear-gradient(135deg,#6366F1,#8B5CF6)" },
-  { icon: "\u{1F469}\u200D🏫", name: "Teachers",   path: "/admin/teachers",   grad: "linear-gradient(135deg,#10B981,#059669)" },
-  { icon: "👨‍👩‍👧", name: "Parents",    path: "/admin/parents",    grad: "linear-gradient(135deg,#F59E0B,#EF4444)" },
-  { icon: "💳", name: "Fee Mgmt",   path: "/admin/fees",       grad: "linear-gradient(135deg,#06B6D4,#3B82F6)" },
-  { icon: "📊", name: "Att. Reports", path: "/admin/attendance-reports", grad: "linear-gradient(135deg,#EC4899,#F43F5E)" },
-  { icon: "📝", name: "Exams",      path: "/admin/exams",       grad: "linear-gradient(135deg,#F97316,#EF4444)" },
-  { icon: "🕐", name: "Timetable",  path: "/admin/timetable",   grad: "linear-gradient(135deg,#3B82F6,#6366F1)" },
-  { icon: "🏖️", name: "Leaves",     path: "/admin/leaves",      grad: "linear-gradient(135deg,#8B5CF6,#A855F7)" },
-  { icon: "🚌", name: "Transport",  path: "/admin/transport",   grad: "linear-gradient(135deg,#0EA5E9,#06B6D4)" },
+  { icon: "🎒", name: "Students",   path: "/admin/students", perm: "students.read",   grad: "linear-gradient(135deg,#6366F1,#8B5CF6)" },
+  { icon: "\u{1F469}\u200D🏫", name: "Teachers",   path: "/admin/teachers", perm: "teachers.manage",   grad: "linear-gradient(135deg,#10B981,#059669)" },
+  { icon: "👨‍👩‍👧", name: "Parents",    path: "/admin/parents", perm: "parents.read",    grad: "linear-gradient(135deg,#F59E0B,#EF4444)" },
+  { icon: "💳", name: "Fee Mgmt",   path: "/admin/fees", perm: "fees.collect",       grad: "linear-gradient(135deg,#06B6D4,#3B82F6)" },
+  { icon: "📊", name: "Att. Reports", path: "/admin/attendance-reports", perm: "attendance.reports", grad: "linear-gradient(135deg,#EC4899,#F43F5E)" },
+  { icon: "📝", name: "Exams",      path: "/admin/exams", perm: "exams.manage",       grad: "linear-gradient(135deg,#F97316,#EF4444)" },
+  { icon: "🕐", name: "Timetable",  path: "/admin/timetable", perm: "timetable.manage",   grad: "linear-gradient(135deg,#3B82F6,#6366F1)" },
+  { icon: "🏖️", name: "Leaves",     path: "/admin/leaves", perm: "leaves.all",      grad: "linear-gradient(135deg,#8B5CF6,#A855F7)" },
+  { icon: "🚌", name: "Transport",  path: "/admin/transport", perm: "transport.manage",   grad: "linear-gradient(135deg,#0EA5E9,#06B6D4)" },
 ];
 
 function useCounter(target, duration = 400) {
@@ -282,7 +297,7 @@ function DashboardContent({ isMobile, navigate, user }) {
             </div>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(3,1fr)" : "repeat(9,1fr)", gap: 10 }}>
-            {MODULES.map((m, i) => (
+            {MODULES.filter(m => can(user, m.perm)).map((m, i) => (
               <div key={i} onClick={() => navigate(m.path)}
                 style={{ background: m.grad, borderRadius: 14, padding: "14px 8px", cursor: "pointer", textAlign: "center", transition: "all 0.2s cubic-bezier(0.34,1.56,0.64,1)", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
                 onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-6px) scale(1.08)"; e.currentTarget.style.boxShadow = "0 14px 30px rgba(0,0,0,0.2)"; }}
@@ -454,8 +469,22 @@ function DashboardContent({ isMobile, navigate, user }) {
 export default function AdminHome() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const [activeNav, setActiveNav] = useState("/admin");
+
+  // Refresh role permissions from the server (sessions created before permissions existed have none stored).
+  useEffect(() => {
+    axios.get(`${API}/users/profile`, authHeader())
+      .then((r) => { if (r.data?.data?.permissions) updateUser({ permissions: r.data.data.permissions }); })
+      .catch(() => {});
+  }, [updateUser]);
+
+  // Menu filtered by permission; section headings without any visible entries are dropped.
+  const visibleNav = NAV.filter((item, i) => {
+    if (!item.section) return can(user, item.perm);
+    for (let j = i + 1; j < NAV.length && !NAV[j].section; j += 1) if (can(user, NAV[j].perm)) return true;
+    return false;
+  });
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
 
@@ -487,7 +516,7 @@ export default function AdminHome() {
         </div>
       </div>
       <nav style={{ overflowY: "auto", flex: 1, padding: "8px 0 16px" }}>
-        {NAV.map((item, i) => {
+        {visibleNav.map((item, i) => {
           if (item.section) return <div key={i} style={{ fontSize: 9, color: "rgba(255,255,255,0.28)", padding: "14px 20px 5px", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 700 }}>{item.section}</div>;
           const Icon = item.icon;
           const isActive = activeNav === item.path || (item.path !== "/admin" && location.pathname.startsWith(item.path));
@@ -510,7 +539,7 @@ export default function AdminHome() {
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 12, fontWeight: 700, color: "white", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{user?.name || "Admin"}</div>
-            <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)" }}>Administrator</div>
+            <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)" }}>{ROLE_LABELS[user?.role] || "Staff"}</div>
           </div>
         </div>
         <div onClick={() => { logout(); navigate("/login"); }}
@@ -548,40 +577,40 @@ export default function AdminHome() {
           </div>
         )}
         <Routes>
-          <Route path="" element={<DashboardContent isMobile={isMobile} navigate={navigate} user={user} />} />
-          <Route path="students" element={<Students />} />
-          <Route path="students/add" element={<AddStudent />} />
-          <Route path="students/:id" element={<StudentProfile />} />
-          <Route path="parents/add" element={<AddParent />} />
-          <Route path="teachers" element={<Teachers />} />
-          <Route path="teachers/add" element={<AddTeacher />} />
-          <Route path="teachers/:id" element={<TeacherProfile />} />
-          <Route path="attendance-reports" element={<AttendanceReport />} />
-          <Route path="attendance/report" element={<AttendanceReport />} />
-          <Route path="chat" element={<Chat />} />
-          <Route path="exams" element={<ExamSchedule />} />
-          <Route path="fees" element={<FeeCollection />} />
-          <Route path="fee-reports" element={<FeeReports />} />
-          <Route path="fee-structure" element={<FeeStructure />} />
-          <Route path="leaves" element={<LeaveRequests />} />
-          <Route path="library" element={<Library />} />
-          <Route path="marks" element={<Marks />} />
+          <Route path="" element={can(user, "attendance.reports") ? <DashboardContent isMobile={isMobile} navigate={navigate} user={user} /> : <Navigate to={firstAllowedPath(user)} replace />} />
+          <Route path="students" element={<Gate user={user} perm="students.read"><Students /></Gate>} />
+          <Route path="students/add" element={<Gate user={user} perm="students.manage"><AddStudent /></Gate>} />
+          <Route path="students/:id" element={<Gate user={user} perm="students.read"><StudentProfile /></Gate>} />
+          <Route path="parents/add" element={<Gate user={user} perm="parents.manage"><AddParent /></Gate>} />
+          <Route path="teachers" element={<Gate user={user} perm="teachers.manage"><Teachers /></Gate>} />
+          <Route path="teachers/add" element={<Gate user={user} perm="teachers.manage"><AddTeacher /></Gate>} />
+          <Route path="teachers/:id" element={<Gate user={user} perm="teachers.manage"><TeacherProfile /></Gate>} />
+          <Route path="attendance-reports" element={<Gate user={user} perm="attendance.reports"><AttendanceReport /></Gate>} />
+          <Route path="attendance/report" element={<Gate user={user} perm="attendance.reports"><AttendanceReport /></Gate>} />
+          <Route path="chat" element={<Gate user={user} perm="chat.directory"><Chat /></Gate>} />
+          <Route path="exams" element={<Gate user={user} perm="exams.manage"><ExamSchedule /></Gate>} />
+          <Route path="fees" element={<Gate user={user} perm="fees.collect"><FeeCollection /></Gate>} />
+          <Route path="fee-reports" element={<Gate user={user} perm="fees.read"><FeeReports /></Gate>} />
+          <Route path="fee-structure" element={<Gate user={user} perm="fees.structure"><FeeStructure /></Gate>} />
+          <Route path="leaves" element={<Gate user={user} perm="leaves.all"><LeaveRequests /></Gate>} />
+          <Route path="library" element={<Gate user={user} perm="library.manage"><Library /></Gate>} />
+          <Route path="marks" element={<Gate user={user} perm="results.read"><Marks /></Gate>} />
           <Route path="admissions/enquiries" element={<div style={{padding:40,textAlign:"center",color:"#94A3B8",fontSize:16,fontWeight:700}}>🏫 Admissions — Enquiries coming soon</div>} />
           <Route path="admissions/applications" element={<div style={{padding:40,textAlign:"center",color:"#94A3B8",fontSize:16,fontWeight:700}}>📋 Applications coming soon</div>} />
           <Route path="admissions/enrollment" element={<div style={{padding:40,textAlign:"center",color:"#94A3B8",fontSize:16,fontWeight:700}}>✅ Enrollment coming soon</div>} />
-          <Route path="communications" element={<Communications />} />
-          <Route path="reports" element={<Reports />} />
-          <Route path="results" element={<Results />} />
-          <Route path="hr-management" element={<SalaryManagement />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="timetable" element={<Timetable />} />
-          <Route path="transport" element={<Transport />} />
-          <Route path="user-management" element={<UserManagement />} />
-          <Route path="parents" element={<ParentsList />} />
-          <Route path="event-calendar" element={<EventCalendar />} />
-          <Route path="id-card-generator" element={<IDCardGenerator />} />
-          <Route path="bulk-operations" element={<BulkOperations />} />
-          <Route path="hr-management" element={<HRManagement />} />
+          <Route path="communications" element={<Gate user={user} perm="communication.manage"><Communications /></Gate>} />
+          <Route path="reports" element={<Gate user={user} perm="attendance.reports"><Reports /></Gate>} />
+          <Route path="results" element={<Gate user={user} perm="results.read"><Results /></Gate>} />
+          <Route path="salaries" element={<Gate user={user} perm="hr.manage"><SalaryManagement /></Gate>} />
+          <Route path="settings" element={<Gate user={user} perm="settings.manage"><Settings /></Gate>} />
+          <Route path="timetable" element={<Gate user={user} perm="timetable.manage"><Timetable /></Gate>} />
+          <Route path="transport" element={<Gate user={user} perm="transport.manage"><Transport /></Gate>} />
+          <Route path="user-management" element={<Gate user={user} perm="users.manage"><UserManagement /></Gate>} />
+          <Route path="parents" element={<Gate user={user} perm="parents.read"><ParentsList /></Gate>} />
+          <Route path="event-calendar" element={<Gate user={user} perm="communication.manage"><EventCalendar /></Gate>} />
+          <Route path="id-card-generator" element={<Gate user={user} perm="students.manage"><IDCardGenerator /></Gate>} />
+          <Route path="bulk-operations" element={<Gate user={user} perm="bulk.manage"><BulkOperations /></Gate>} />
+          <Route path="hr-management" element={<Gate user={user} perm="hr.manage"><HRManagement /></Gate>} />
         </Routes>
       </main>
     </div>

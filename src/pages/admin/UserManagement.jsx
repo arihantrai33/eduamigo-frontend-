@@ -1,17 +1,21 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { Search, Plus, RefreshCw, Shield, GraduationCap, Users, UserCheck, Bus, X } from "lucide-react";
+import { Search, Plus, RefreshCw, Shield, GraduationCap, Users, UserCheck, Calculator, X } from "lucide-react";
 import { toast, showCredentials } from "../../utils/toast";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+
+// Staff logins created here. Students, parents and teachers are added from their own screens so
+// their school records (class, children, subjects) are created together with the login.
+const STAFF_ROLES = ["accountant", "admin"];
 
 const ROLE_META = {
   admin:   { color: "#DC2626", bg: "#FEF2F2", border: "#FECACA", icon: Shield },
   teacher: { color: "#D97706", bg: "#FFFBEB", border: "#FDE68A", icon: UserCheck },
   student: { color: "#4F46E5", bg: "#EEF2FF", border: "#C7D2FE", icon: GraduationCap },
   parent:  { color: "#0284C7", bg: "#F0F9FF", border: "#BAE6FD", icon: Users },
-  driver:  { color: "#9333EA", bg: "#FDF4FF", border: "#E9D5FF", icon: Bus },
+  accountant: { color: "#059669", bg: "#ECFDF5", border: "#A7F3D0", icon: Calculator },
 };
 
 const inp = {
@@ -27,7 +31,7 @@ export default function UserManagement() {
   const [search, setSearch]     = useState("");
   const [showModal, setShowModal] = useState(false);
   const [saving, setSaving]     = useState(false);
-  const [form, setForm]         = useState({ name: "", email: "", password: "", role: "student" });
+  const [form, setForm]         = useState({ name: "", email: "", password: "", role: "accountant" });
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -55,7 +59,7 @@ export default function UserManagement() {
       if (res.data.credentials) showCredentials([{ label: form.role, ...res.data.credentials }], "User created");
       else toast.success("User created. They will be asked to change the password at first login.");
       setShowModal(false);
-      setForm({ name: "", email: "", password: "", role: "student" });
+      setForm({ name: "", email: "", password: "", role: "accountant" });
       fetchUsers();
     } catch (e) { toast.error(e?.response?.data?.message || "Failed to create user"); }
     setSaving(false);
@@ -67,7 +71,7 @@ export default function UserManagement() {
     return matchRole && matchSearch;
   });
 
-  const counts = ["admin","teacher","student","parent","driver"].reduce((acc, r) => {
+  const counts = Object.keys(ROLE_META).reduce((acc, r) => {
     acc[r] = users.filter(u => u.role === r).length;
     return acc;
   }, {});
@@ -182,7 +186,7 @@ export default function UserManagement() {
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               {[{ label: "Full Name", key: "name", type: "text", placeholder: "e.g. John Smith" },
                 { label: "Email Address", key: "email", type: "email", placeholder: "e.g. john@school.com" },
-                { label: "Password", key: "password", type: "password", placeholder: "Min. 6 characters" }
+                { label: "Password (optional)", key: "password", type: "password", placeholder: "Leave blank to generate a temporary password" }
               ].map(({ label, key, type, placeholder }) => (
                 <div key={key}>
                   <label style={{ fontSize: 11, color: "#64748B", fontWeight: 600, display: "block", marginBottom: 5 }}>{label.toUpperCase()}</label>
@@ -192,7 +196,7 @@ export default function UserManagement() {
               <div>
                 <label style={{ fontSize: 11, color: "#64748B", fontWeight: 600, display: "block", marginBottom: 5 }}>ROLE</label>
                 <select value={form.role} onChange={e => setForm({ ...form, role: e.target.value })} style={inp}>
-                  {Object.keys(ROLE_META).map(r => <option key={r} value={r} style={{ textTransform: "capitalize" }}>{r.charAt(0).toUpperCase() + r.slice(1)}</option>)}
+                  {STAFF_ROLES.map(r => <option key={r} value={r}>{r.charAt(0).toUpperCase() + r.slice(1)}</option>)}
                 </select>
               </div>
             </div>
