@@ -252,7 +252,7 @@ export default function FeeCollection() {
               <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
               <button onClick={handleCollect} disabled={saving}
                 style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#10B981,#059669)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 14px rgba(16,185,129,0.4)", opacity:saving?0.7:1 }}>
-                {saving ? "Processing..." : "Mark as Paid"}
+                {saving ? "Processing..." : "Record payment"}
               </button>
             </div>
           </div>

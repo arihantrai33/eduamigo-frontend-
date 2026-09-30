@@ -286,7 +286,7 @@ export default function Students() {
       </div>
 
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:28 }}>
-        <StatCard label="TOTAL STUDENTS" value={stats.total} icon="��" gradient="linear-gradient(135deg,#6366F1,#8B5CF6)" delay={0} border="#6366F1" />
+        <StatCard label="TOTAL STUDENTS" value={stats.total} icon="🎒" gradient="linear-gradient(135deg,#6366F1,#8B5CF6)" delay={0} border="#6366F1" />
         <StatCard label="FEE PAID" value={stats.paid} icon="✅" gradient="linear-gradient(135deg,#10B981,#059669)" delay={0.08} border="#10B981" />
         <StatCard label="FEE PENDING" value={stats.pending} icon="⏳" gradient="linear-gradient(135deg,#F59E0B,#D97706)" delay={0.16} border="#F59E0B" />
         <StatCard label="PARTIAL" value={stats.partial} icon="⚡" gradient="linear-gradient(135deg,#F97316,#EA580C)" delay={0.24} border="#F97316" />
