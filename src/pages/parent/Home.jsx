@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
+import { pickChild, childQuery } from "../../utils/selectedChild";
+import ChildSwitcher from "../../components/ChildSwitcher";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -29,6 +31,7 @@ export default function ParentHome() {
   const [notices,    setNotices]    = useState([]);
   const [busInfo,    setBusInfo]    = useState(null);
   const [loading,    setLoading]    = useState(true);
+  const [children,   setChildren]   = useState([]);
 
   useEffect(() => { fetchAll(); }, []);
 
@@ -40,14 +43,16 @@ export default function ParentHome() {
       ]);
 
       if (childRes.status === "fulfilled" && childRes.value.data.success) {
-        const s = childRes.value.data.data.children?.[0];
+        const kids = childRes.value.data.data.children || [];
+        const s = pickChild(kids);
+        setChildren(kids);
         setChild(s);
 
         if (s?._id) {
           const [attRes, resRes, busRes] = await Promise.allSettled([
             axios.get(`${API}/attendance/student/${s._id}/summary`, authHeader()),
             axios.get(`${API}/exams/student/${s._id}/results`,      authHeader()),
-            axios.get(`${API}/transport/my-child-bus`,              authHeader()),
+            axios.get(`${API}/transport/my-child-bus${childQuery()}`, authHeader()),
           ]);
           if (attRes.status === "fulfilled" && attRes.value.data.success)
             setAttendance(attRes.value.data.data);
@@ -100,6 +105,8 @@ export default function ParentHome() {
             )}
           </button>
         </div>
+
+        <ChildSwitcher children={children} current={child} onChange={() => { setLoading(true); fetchAll(); }} />
 
         {/* Child Card */}
         <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: 16, padding: 16, marginTop: 16, backdropFilter: "blur(10px)" }}>

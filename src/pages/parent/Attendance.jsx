@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { pickChild, childQuery } from "../../utils/selectedChild";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -21,13 +22,13 @@ export default function ParentAttendance() {
     try {
       const parentRes = await axios.get(`${API}/parents/my-child`, authHeader());
       if (!parentRes.data.success) { setError("Could not load child info"); setLoading(false); return; }
-      const childData = parentRes.data.data.children?.[0];
+      const childData = pickChild(parentRes.data.data.children);
       if (!childData) { setError("No child linked to this account"); setLoading(false); return; }
       setChild(childData);
 
       const [sumRes, recRes] = await Promise.allSettled([
-        axios.get(`${API}/attendance/child-summary`, authHeader()),
-        axios.get(`${API}/attendance/child-records`, authHeader()),
+        axios.get(`${API}/attendance/child-summary${childQuery()}`, authHeader()),
+        axios.get(`${API}/attendance/child-records${childQuery()}`, authHeader()),
       ]);
       if (sumRes.status === "fulfilled" && sumRes.value.data.success)
         setSummary(sumRes.value.data.data);

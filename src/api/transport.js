@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { childQuery } from '../utils/selectedChild';
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -8,7 +9,7 @@ const authHeader = () => ({
 
 // PARENT
 export const getChildBus = async () => {
-  const res = await axios.get(`${API}/transport/my-child-bus`, authHeader());
+  const res = await axios.get(`${API}/transport/my-child-bus${childQuery()}`, authHeader());
   return res.data;
 };
 

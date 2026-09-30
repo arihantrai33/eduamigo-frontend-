@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { pickChild } from "../../utils/selectedChild";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -24,7 +25,7 @@ export default function ParentResult() {
     try {
       const parentRes = await axios.get(`${API}/parents/my-child`, authHeader());
       if (!parentRes.data.success) { setError("Could not load child info"); setLoading(false); return; }
-      const childData = parentRes.data.data.children?.[0];
+      const childData = pickChild(parentRes.data.data.children);
       if (!childData) { setError("No child linked to this account"); setLoading(false); return; }
       setChild(childData);
       const resRes = await axios.get(`${API}/exams/student/${childData._id}/results`, authHeader());

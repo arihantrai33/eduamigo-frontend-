@@ -50,10 +50,19 @@ export default function ApplyLeave() {
     if (new Date(toDate) < new Date(fromDate)) { setFormError("End date cannot be before start date."); return; }
     setLoading(true);
     try {
+      let attachment = {};
+      if (attachedFile) {
+        const fd = new FormData();
+        fd.append("file", attachedFile);
+        const up = await fetch(`${API}/chat/upload`, { method: "POST", headers, body: fd });
+        const upData = await up.json();
+        if (!up.ok) { setFormError(upData.message || "Could not upload the document."); return; }
+        attachment = { attachmentUrl: upData.url, attachmentName: upData.fileName };
+      }
       const res = await fetch(`${API}/leaves/apply`, {
         method: "POST",
         headers: { ...headers, "Content-Type": "application/json" },
-        body: JSON.stringify({ leaveType, fromDate, toDate, reason }),
+        body: JSON.stringify({ leaveType, fromDate, toDate, reason, ...attachment }),
       });
       const data = await res.json();
       if (!data.success) setFormError(data.message || "Submission failed. Please try again.");

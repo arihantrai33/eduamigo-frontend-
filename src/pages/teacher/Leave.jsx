@@ -59,6 +59,39 @@ export default function TeacherLeave() {
 
   useEffect(() => { fetchData(); }, []);
 
+  // Leave requests from students of this teacher's classes.
+  const [studentLeaves, setStudentLeaves] = useState([]);
+  const [reviewing, setReviewing] = useState('');
+  const fetchStudentLeaves = async () => {
+    try {
+      const res = await fetch(`${API}/leaves/pending`, { headers: { Authorization: `Bearer ${getUser().token}` } });
+      const data = await res.json();
+      if (data.success) setStudentLeaves(data.data || []);
+    } catch { /* shown as empty list */ }
+  };
+  useEffect(() => { fetchStudentLeaves(); }, []);
+
+  const review = async (id, status) => {
+    setReviewing(id + status);
+    try {
+      const res = await fetch(`${API}/leaves/${id}/review`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${getUser().token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message);
+      setSuccessMsg(`Leave ${status.toLowerCase()}. The student and parent have been notified.`);
+      setTimeout(() => setSuccessMsg(''), 3000);
+      fetchStudentLeaves();
+    } catch (err) {
+      setError(err.message || 'Could not update the request');
+    } finally {
+      setReviewing('');
+    }
+  };
+  const fmtDay = (d) => new Date(d).toLocaleDateString('en-IN', { timeZone: 'UTC', day: 'numeric', month: 'short' });
+
   const handleSubmit = async () => {
     setFormError('');
     const { leaveType, fromDate, toDate, reason } = form;
@@ -154,7 +187,30 @@ export default function TeacherLeave() {
           >
             + Apply Leave
           </button>
+          <button
+            style={{ ...styles.tab, ...(tab === 'students' ? styles.tabActive : {}) }}
+            onClick={() => setTab('students')}
+          >
+            Students{studentLeaves.length ? ` (${studentLeaves.length})` : ''}
+          </button>
         </div>
+
+        {tab === 'students' && (
+          studentLeaves.length === 0 ? (
+            <p style={{ textAlign: 'center', color: '#6B7280', fontSize: 14, padding: '32px 0' }}>No pending leave requests from your students.</p>
+          ) : studentLeaves.map((l) => (
+            <div key={l._id} style={styles.leaveCard}>
+              <div style={{ fontWeight: 700, fontSize: 15, color: '#1F2937' }}>{l.name} <span style={{ fontWeight: 500, color: '#6B7280', fontSize: 13 }}>· Class {l.class}-{l.section}</span></div>
+              <div style={{ fontSize: 13, color: '#6B7280', margin: '4px 0 8px' }}>{l.leaveType} · {fmtDay(l.fromDate)} to {fmtDay(l.toDate)} · {l.days} day{l.days > 1 ? 's' : ''}</div>
+              <p style={styles.leaveReason}>{l.reason}</p>
+              {l.attachmentUrl && <a href={l.attachmentUrl} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: '#4F46E5', fontWeight: 600 }}>View attachment</a>}
+              <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                <button disabled={!!reviewing} onClick={() => review(l._id, 'Approved')} style={{ flex: 1, padding: 10, borderRadius: 10, border: 'none', background: '#10B981', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>{reviewing === l._id + 'Approved' ? 'Saving...' : 'Approve'}</button>
+                <button disabled={!!reviewing} onClick={() => review(l._id, 'Rejected')} style={{ flex: 1, padding: 10, borderRadius: 10, border: 'none', background: '#EF4444', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>{reviewing === l._id + 'Rejected' ? 'Saving...' : 'Reject'}</button>
+              </div>
+            </div>
+          ))
+        )}
 
         {/* History Tab */}
         {tab === 'history' && (

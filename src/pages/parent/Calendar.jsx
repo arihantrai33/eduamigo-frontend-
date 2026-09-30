@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { errorMessage } from "../../utils/toast";
+import { childQuery } from "../../utils/selectedChild";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -33,8 +34,8 @@ export default function ParentCalendar() {
       try {
         const [ev, ex, fees] = await Promise.allSettled([
           axios.get(`${API}/events`, auth()),
-          axios.get(`${API}/exams`, auth()),
-          axios.get(`${API}/fees/my`, auth()),
+          axios.get(`${API}/exams${childQuery()}`, auth()),
+          axios.get(`${API}/fees/my${childQuery()}`, auth()),
         ]);
         if (ev.status === "rejected" && ex.status === "rejected") throw ev.reason;
         const from = today();

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { currentAcademicYear } from "../../utils/academicYear";
+import { pickChild, childQuery } from "../../utils/selectedChild";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -30,10 +31,10 @@ export default function ParentFee() {
     try {
       const [parentRes, feeRes] = await Promise.all([
         axios.get(`${API}/parents/my-child`, authHeader()),
-        axios.get(`${API}/fees/my`, authHeader()),
+        axios.get(`${API}/fees/my${childQuery()}`, authHeader()),
       ]);
       if (parentRes.data.success) {
-        setChild(parentRes.data.data.children?.[0] ?? null);
+        setChild(pickChild(parentRes.data.data.children));
       }
       if (feeRes.data.success) {
         setFees(feeRes.data.data || []);

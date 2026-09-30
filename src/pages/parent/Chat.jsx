@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { childQuery } from "../../utils/selectedChild";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -69,7 +70,7 @@ export default function ParentChat() {
         const payload = JSON.parse(atob(token.split('.')[1]));
         setCurrentUserId(payload.id || payload._id);
       }
-      const res  = await fetch(`${API}/chat/parent-teachers`, authHeader());
+      const res  = await fetch(`${API}/chat/parent-teachers${childQuery()}`, authHeader());
       const json = await res.json();
       if (json.success) setData(json.data);
     } catch (err) {

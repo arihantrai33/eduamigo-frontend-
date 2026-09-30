@@ -44,7 +44,7 @@ export default function LeaveRequests() {
   const filtered = leaves.filter(l =>
     (!filterStatus || l.status === filterStatus) &&
     (!filterType || l.leaveType === filterType) &&
-    (!search || l.teacher?.name?.toLowerCase().includes(search.toLowerCase()) || l.reason?.toLowerCase().includes(search.toLowerCase()))
+    (!search || l.name?.toLowerCase().includes(search.toLowerCase()) || l.reason?.toLowerCase().includes(search.toLowerCase()))
   );
 
   const pending  = leaves.filter(l => l.status === "Pending").length;
@@ -153,7 +153,7 @@ export default function LeaveRequests() {
                       <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:"#F1F5F9", color:"#64748B" }}>{l.leaveType || "Leave"}</span>
                     </div>
                     <div style={{ fontSize:12, color:"#94A3B8" }}>
-                      {fmtDate(l.fromDate)} → {fmtDate(l.toDate)} · {daysDiff(l.fromDate, l.toDate)}{l.class ? ` · Class ${l.class}` : ""}
+                      {fmtDate(l.fromDate)} → {fmtDate(l.toDate)} · {daysDiff(l.fromDate, l.toDate)}{l.class ? ` · Class ${l.class}${l.section ? `-${l.section}` : ""}` : ""}
                     </div>
                   </div>
                   <div style={{ display:"flex", alignItems:"center", gap:12 }}>
@@ -184,10 +184,15 @@ export default function LeaveRequests() {
                       <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>REASON</div>
                       <div style={{ fontSize:13, color:"#374151", lineHeight:1.6 }}>{l.reason || "No reason provided"}</div>
                     </div>
-                    {l.adminNote && (
+                    {l.attachmentUrl && (
+                      <a href={l.attachmentUrl} target="_blank" rel="noreferrer" style={{ display:"inline-block", marginTop:10, fontSize:13, fontWeight:600, color:"#4F46E5" }}>
+                        View attachment: {l.attachmentName || "document"}
+                      </a>
+                    )}
+                    {l.reviewNote && (
                       <div style={{ marginTop:10, background:"#F0FDF4", borderRadius:12, padding:"14px 18px", border:"1px solid #BBF7D0" }}>
-                        <div style={{ fontSize:11, fontWeight:700, color:"#15803D", marginBottom:6 }}>ADMIN NOTE</div>
-                        <div style={{ fontSize:13, color:"#374151" }}>{l.adminNote}</div>
+                        <div style={{ fontSize:11, fontWeight:700, color:"#15803D", marginBottom:6 }}>REVIEW NOTE</div>
+                        <div style={{ fontSize:13, color:"#374151" }}>{l.reviewNote}</div>
                       </div>
                     )}
                   </div>

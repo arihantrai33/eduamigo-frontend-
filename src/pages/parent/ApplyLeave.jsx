@@ -1,69 +1,73 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import { db } from "../../firebase";
-import { ref, push, serverTimestamp, onValue } from "firebase/database";
-import { toast } from "../../utils/toast";
+import axios from "axios";
+import { toast, errorMessage } from "../../utils/toast";
+import { getSelectedChildId } from "../../utils/selectedChild";
 
+const API = import.meta.env.VITE_API_URL;
+const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+
+// Labels shown to parents, mapped to the leave types the school records.
 const LEAVE_TYPES = [
-  "Medical / Sick Leave",
-  "Family Emergency",
-  "Personal Leave",
-  "Vacation",
-  "Other",
+  { label: "Medical / Sick Leave", value: "Sick" },
+  { label: "Family Emergency", value: "Family" },
+  { label: "Personal Leave", value: "Personal" },
+  { label: "Other", value: "Other" },
 ];
 
 export default function ApplyLeave() {
-  const { user } = useAuth();
   const navigate = useNavigate();
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [reason, setReason] = useState("");
-  const [leaveType, setLeaveType] = useState(LEAVE_TYPES[0]);
+  const [leaveType, setLeaveType] = useState(LEAVE_TYPES[0].value);
   const [attachedFile, setAttachedFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [leaveHistory, setLeaveHistory] = useState([]);
+  const [quota, setQuota] = useState({ total: 0, used: 0, available: 0 });
 
-  useEffect(() => {
-    const leavesRef = ref(db, "leaves");
-    const unsub = onValue(leavesRef, (snap) => {
-      const data = snap.val();
-      if (!data) return;
-      const myLeaves = Object.values(data)
-        .filter((l) => l.userId === user.id)
-        .sort((a, b) => b.timestamp - a.timestamp);
-      setLeaveHistory(myLeaves);
-    });
-    return () => unsub();
+  const load = useCallback(async () => {
+    const [my, q] = await Promise.allSettled([
+      axios.get(`${API}/leaves/my`, authHeader()),
+      axios.get(`${API}/leaves/quota`, authHeader()),
+    ]);
+    if (my.status === "fulfilled") setLeaveHistory(my.value.data.data || []);
+    if (q.status === "fulfilled") setQuota(q.value.data.data);
   }, []);
 
-  const total = 12;
-  const used = leaveHistory.filter((l) => l.status === "approved").length;
-  const available = total - used;
+  useEffect(() => { load(); }, [load]);
+
+  const { total, used, available } = quota;
 
   const handleSubmit = async () => {
-    if (!fromDate || !toDate || !reason) {
-      toast.error("Please fill all fields.");
+    if (!fromDate || !toDate || !reason.trim()) {
+      toast.error("Please fill in the dates and the reason.");
+      return;
+    }
+    if (toDate < fromDate) {
+      toast.error("End date cannot be before start date.");
       return;
     }
     setLoading(true);
     try {
-      await push(ref(db, "leaves"), {
-        userId: user.id,
-        appliedBy: "parent",
-        leaveType,
-        fromDate,
-        toDate,
-        reason,
-        attachedFileName: attachedFile ? attachedFile.name : null,
-        status: "pending",
-        timestamp: serverTimestamp(),
-      });
+      let attachment = {};
+      if (attachedFile) {
+        const fd = new FormData();
+        fd.append("file", attachedFile);
+        const up = await axios.post(`${API}/chat/upload`, fd, { headers: { ...authHeader().headers, "Content-Type": "multipart/form-data" } });
+        attachment = { attachmentUrl: up.data.url, attachmentName: up.data.fileName };
+      }
+      await axios.post(`${API}/leaves/apply`, {
+        leaveType, fromDate, toDate, reason: reason.trim(),
+        studentId: getSelectedChildId() || undefined,
+        ...attachment,
+      }, authHeader());
       setSuccess(true);
+      load();
     } catch (e) {
-      toast.error("Error: " + e.message);
+      toast.error(errorMessage(e, "Could not submit the leave request"));
     }
     setLoading(false);
   };
@@ -179,7 +183,7 @@ export default function ApplyLeave() {
               }}
             >
               {LEAVE_TYPES.map((t) => (
-                <option key={t} value={t}>{t}</option>
+                <option key={t.value} value={t.value}>{t.label}</option>
               ))}
             </select>
           </div>
@@ -309,43 +313,40 @@ export default function ApplyLeave() {
             </div>
             {leaveHistory.map((leave, i) => {
               const statusColor =
-                leave.status === "approved" ? "#22c55e" :
-                leave.status === "rejected" ? "#ef4444" : "#f59e0b";
-              const days = leave.fromDate && leave.toDate
-                ? Math.max(1, Math.round(
-                    (new Date(leave.toDate) - new Date(leave.fromDate)) / (1000 * 60 * 60 * 24) + 1
-                  ))
-                : 1;
+                leave.status === "Approved" ? "#22c55e" :
+                leave.status === "Rejected" ? "#ef4444" : "#f59e0b";
+              const days = leave.days || 1;
+              const fmtDay = (d) => new Date(d).toLocaleDateString("en-IN", { timeZone: "UTC", day: "numeric", month: "short", year: "numeric" });
               return (
                 <div key={i} style={{
                   padding: "14px", borderRadius: "12px",
-                  background: leave.status === "rejected" ? "#fff5f5" : "#f9fafb",
+                  background: leave.status === "Rejected" ? "#fff5f5" : "#f9fafb",
                   marginBottom: "10px",
-                  border: `1px solid ${leave.status === "rejected" ? "#fee2e2" : "#f0f0f0"}`,
+                  border: `1px solid ${leave.status === "Rejected" ? "#fee2e2" : "#f0f0f0"}`,
                 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div style={{ fontWeight: "700", fontSize: "14px", color: "var(--text)" }}>
                       {leave.leaveType}
                     </div>
                     <span style={{ fontSize: "11px", fontWeight: "700", color: statusColor }}>
-                      {leave.status === "pending" ? "⏳ Pending" :
-                       leave.status === "approved" ? "Approved" : "Rejected"}
+                      {leave.status === "Pending" ? "⏳ Pending" :
+                       leave.status === "Approved" ? "Approved" : "Rejected"}
                     </span>
                   </div>
                   <div style={{ fontSize: "12px", color: "var(--subtext)", marginTop: "4px" }}>
-                    {leave.fromDate} — {leave.toDate} • {days} day{days > 1 ? "s" : ""}
+                    {fmtDay(leave.fromDate)} — {fmtDay(leave.toDate)} • {days} day{days > 1 ? "s" : ""}
                   </div>
                   {leave.reason && (
                     <div style={{ fontSize: "12px", color: "#aaa", marginTop: "4px" }}>
                       {leave.reason}
                     </div>
                   )}
-                  {leave.attachedFileName && (
+                  {leave.attachmentName && (
                     <div style={{
                       marginTop: "8px", fontSize: "11px", color: "#1a73e8",
                       display: "flex", alignItems: "center", gap: "4px",
                     }}>
-                      📎 {leave.attachedFileName}
+                      📎 {leave.attachmentName}
                     </div>
                   )}
                 </div>
