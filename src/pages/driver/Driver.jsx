@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { db } from "../../firebase";
-import { ref, set, update } from "firebase/database";
-import { getDriverBus, startTrip as apiStartTrip, endTrip as apiEndTrip } from "../../api/transport";
+import { getDriverBus, startTrip as apiStartTrip, endTrip as apiEndTrip, markStopDone, updateDriverLocation } from "../../api/transport";
 
 export default function DriverHome() {
   const [token, setToken] = useState(localStorage.getItem("driverToken") || "");
@@ -17,6 +15,7 @@ export default function DriverHome() {
   const trackingRef = useRef(false);
   const watchIdRef = useRef(null);
   const firebaseKeyRef = useRef(null);
+  const lastSentRef = useRef(0);
 
   useEffect(() => {
     if (token) fetchBus(token);
@@ -69,16 +68,17 @@ export default function DriverHome() {
 
   const startGPSWatch = () => {
     if (!navigator.geolocation || !firebaseKeyRef.current) return null;
-    const firebasePath = `transport/${firebaseKeyRef.current}`;
     const id = navigator.geolocation.watchPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
         setCoords({ lat: latitude, lng: longitude });
         setStatus("active");
-        update(ref(db, `${firebasePath}/location`), {
-          lat: latitude,
-          lng: longitude,
-          updatedAt: Date.now(),
+        // Send at most one update every 5 seconds; the server publishes it to parents.
+        const now = Date.now();
+        if (now - lastSentRef.current < 5000) return;
+        lastSentRef.current = now;
+        updateDriverLocation(token, latitude, longitude).catch((e) => {
+          if (e?.response?.status === 409) setStatus("error");
         });
       },
       (err) => {
@@ -119,7 +119,7 @@ export default function DriverHome() {
   const startTrip = async () => {
     if (!firebaseKeyRef.current) return;
 
-    // ✅ FIX: Pehle location permission lo
+    // Location access is required to run a trip
     if (!navigator.geolocation) {
       setStatus("error");
       return;
@@ -131,23 +131,20 @@ export default function DriverHome() {
     setStatus("idle");
     setCurrentStopIndex(0);
 
-    // Update Firebase first (fast path)
-    const firebasePath = `transport/${firebaseKeyRef.current}`;
-    update(ref(db, firebasePath), {
-      tripStartedAt: Date.now(),
-      tripEndedAt: null,
-      busStatus: "On Route",
-      currentStopIndex: 0,
-      updatedAt: Date.now(),
-    });
+    // The server marks the trip as started and notifies parents' tracking screens.
+    try {
+      await apiStartTrip(token);
+    } catch {
+      trackingRef.current = false;
+      setTracking(false);
+      setStatus("error");
+      return;
+    }
 
     // Start GPS
     await requestWakeLock();
     const id = startGPSWatch();
     watchIdRef.current = id;
-
-    // Call the API in the background (not awaited)
-    apiStartTrip(token).catch(() => {});
   };
 
   const stopTrip = async () => {
@@ -166,18 +163,7 @@ export default function DriverHome() {
 
     releaseWakeLock();
 
-    // Update Firebase
-    if (firebaseKeyRef.current) {
-      const firebasePath = `transport/${firebaseKeyRef.current}`;
-      await set(ref(db, `${firebasePath}/location`), null);
-      update(ref(db, firebasePath), {
-        tripEndedAt: Date.now(),
-        busStatus: "Completed",
-        updatedAt: Date.now(),
-      });
-    }
-
-    // API call in the background
+    // The server ends the trip and clears the live location for parents.
     apiEndTrip(token).catch(() => {});
   };
 
@@ -186,12 +172,7 @@ export default function DriverHome() {
     const stops = busData?.stops || [];
     if (nextIndex >= stops.length) return;
     setCurrentStopIndex(nextIndex);
-    if (firebaseKeyRef.current) {
-      update(ref(db, `transport/${firebaseKeyRef.current}`), {
-        currentStopIndex: nextIndex,
-        updatedAt: Date.now(),
-      });
-    }
+    markStopDone(token).catch(() => setCurrentStopIndex(nextIndex - 1));
   };
 
   useEffect(() => {
