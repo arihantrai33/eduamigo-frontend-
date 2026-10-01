@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, showCredentials } from "../../utils/toast";
+import { useAuth } from "../../context/AuthContext";
+import { can } from "../../utils/permissions";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -21,6 +23,7 @@ function Modal({ show, onClose, title, children }) {
 }
 
 export default function ParentsList() {
+  const { user } = useAuth();
   const [parents, setParents] = useState([]);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -96,10 +99,12 @@ export default function ParentsList() {
             <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>Parents</div>
             <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>All registered parent accounts linked to students</div>
           </div>
+{can(user, "parents.manage") && (
           <button onClick={() => setShowAddModal(true)}
             style={{ padding:"12px 24px", borderRadius:14, border:"1px solid rgba(255,255,255,0.3)", background:"rgba(255,255,255,0.2)", color:"white", fontWeight:700, fontSize:14, cursor:"pointer" }}>
             + Add Parent
           </button>
+          )}
         </div>
       </div>
 

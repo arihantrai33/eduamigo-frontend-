@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast, showCredentials } from "../../utils/toast";
+import { useAuth } from "../../context/AuthContext";
+import { can } from "../../utils/permissions";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -168,6 +170,7 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
 
 export default function Students() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -191,6 +194,8 @@ export default function Students() {
   };
 
   const openAdd = () => { setEditStudent(null); setForm({}); setShowModal(true); };
+  // Accountants can view students but not add, edit or remove them.
+  const canManage = can(user, "students.manage");
   const openEdit = (s) => { setEditStudent(s); setForm({...s}); setShowModal(true); };
 
   const showStudentCredentials = (data) => {
@@ -276,12 +281,12 @@ export default function Students() {
           <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>Students</div>
           <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Manage all enrolled students · {students.length} total</div>
         </div>
-        <button onClick={openAdd}
+        {canManage && <button onClick={openAdd}
           style={{ display:"flex", alignItems:"center", gap:8, padding:"12px 24px", borderRadius:14, border:"none", background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"white", fontWeight:700, fontSize:14, cursor:"pointer", boxShadow:"0 4px 20px rgba(99,102,241,0.4)", transition:"all 0.2s" }}
           onMouseEnter={e=>e.currentTarget.style.transform="translateY(-2px)"}
           onMouseLeave={e=>e.currentTarget.style.transform="translateY(0)"}>
           <span style={{ fontSize:18 }}>+</span> Add Student
-        </button>
+        </button>}
         </div>
       </div>
 
@@ -376,10 +381,12 @@ export default function Students() {
                     <div style={{ display:"flex", gap:6 }}>
                       <button className="action-btn" onClick={() => navigate(`/admin/student-profile/${s._id}`)}
                         style={{ padding:"6px 14px", borderRadius:8, border:"none", background:"#EEF2FF", color:"#6366F1", fontSize:12, fontWeight:700, cursor:"pointer" }}>View</button>
+                      {canManage && <>
                       <button className="action-btn" onClick={() => openEdit(s)}
                         style={{ padding:"6px 14px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", color:"#374151", fontSize:12, fontWeight:700, cursor:"pointer" }}>Edit</button>
                       <button className="action-btn" onClick={() => setDeleteId(s._id)}
                         style={{ padding:"6px 12px", borderRadius:8, border:"none", background:"#FEF2F2", color:"#DC2626", fontSize:12, fontWeight:700, cursor:"pointer" }}>🗑️</button>
+                      </>}
                     </div>
                   </td>
                 </tr>

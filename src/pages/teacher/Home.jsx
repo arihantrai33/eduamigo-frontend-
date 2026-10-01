@@ -116,7 +116,7 @@ export default function TeacherHome() {
     { icon: '📤', label: 'Upload Notes',    sub: 'Share with class',                                path: '/teacher/upload' },
     { icon: '📊', label: 'Enter Marks',     sub: 'Publish results',                                 path: '/teacher/marks' },
     { icon: '💬', label: 'Parent Messages', sub: unreadCount > 0 ? `${unreadCount} unread` : 'No new messages', path: '/teacher/chat' },
-    { icon: '📅', label: 'My Timetable',    sub: `Today: ${todayPeriods.length} periods`,           path: '/teacher/timetable' },
+    { icon: '📅', label: 'My Timetable',    sub: `Today: ${todayPeriods.length} ${todayPeriods.length === 1 ? 'period' : 'periods'}`,           path: '/teacher/timetable' },
     { icon: '🗓️', label: 'Leave Request',  sub: 'Apply for leave',                                 path: '/teacher/leave' },
   ] : []
 
@@ -160,7 +160,7 @@ export default function TeacherHome() {
           </div>
           <div style={styles.heroGreeting}>{getGreeting()} 👋</div>
           <div style={styles.heroDate}>
-            {formatDate()} • {todayPeriods.length} periods today
+            {formatDate()} • {todayPeriods.length} {todayPeriods.length === 1 ? 'period' : 'periods'} today
           </div>
           <div style={styles.statsRow}>
             {[

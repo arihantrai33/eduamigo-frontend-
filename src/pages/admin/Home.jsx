@@ -201,13 +201,13 @@ function DashboardContent({ isMobile, navigate, user }) {
       setRecentStudents(students.slice(-5).reverse());
       setPendingLeaves(leaves.length);
 
-      // A student counts as "pending" if any fee has an outstanding balance.
-      const withDues = new Set(fees.filter(f => f.status !== "Paid").map(f => String(f.studentId?._id || f.studentId)));
-      const billed = new Set(fees.map(f => String(f.studentId?._id || f.studentId)));
-      setFeeStats({ paid: billed.size - withDues.size, pending: withDues.size, total: billed.size });
+      // Collection rate is by amount: money received against money billed.
+      const billedAmount = fees.reduce((sum, f) => sum + (f.amount || 0), 0);
+      const collected = fees.reduce((sum, f) => sum + (f.paidAmount || 0), 0);
+      setFeeStats({ paid: collected, pending: Math.max(0, billedAmount - collected), total: billedAmount });
 
       const present = (att.present || 0) + (att.late || 0);
-      setAttendanceStats({ present, absent: att.absent || 0, total: att.total || 0 });
+      setAttendanceStats({ present, absent: att.absent || 0, total: att.total || 0, marked: att.marked || 0, totalStudents: att.totalStudents || 0 });
 
       setRecentActivity(students.slice(-6).reverse().map(s => ({
         ic: "🎒", text: `${s.name} added to class ${s.class}-${s.section}`,
@@ -314,16 +314,18 @@ function DashboardContent({ isMobile, navigate, user }) {
           <div style={{ ...CARD, cursor:"pointer" }} onClick={() => navigate("/admin/attendance-reports")}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: "#0F172A" }}>Attendance Overview</div>
-                <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>School-wide report</div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: "#0F172A" }}>Today's Attendance</div>
+                <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>
+                  {attendanceStats.marked ? `${attendanceStats.marked} of ${attendanceStats.totalStudents} students marked` : "Not marked yet today"}
+                </div>
               </div>
               <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg,#EC4899,#F43F5E)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <CalendarCheck size={16} color="white" />
               </div>
             </div>
             <div style={{ display: "flex", alignItems: "flex-end", gap: 4, marginBottom: 12 }}>
-              <div style={{ fontSize: 36, fontWeight: 800, color: "#0F172A", lineHeight: 1 }}>{attPct}</div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: "#94A3B8", marginBottom: 4 }}>%</div>
+              <div style={{ fontSize: 36, fontWeight: 800, color: attendanceStats.total ? "#0F172A" : "#CBD5E1", lineHeight: 1 }}>{attendanceStats.total ? attPct : "—"}</div>
+              {attendanceStats.total > 0 && <div style={{ fontSize: 18, fontWeight: 700, color: "#94A3B8", marginBottom: 4 }}>%</div>}
             </div>
             <div style={{ height: 8, background: "#F1F5F9", borderRadius: 4, overflow: "hidden", marginBottom: 12 }}>
               <div style={{ width: `${attPct}%`, height: "100%", background: "linear-gradient(90deg,#EC4899,#F43F5E)", borderRadius: 4, transition: "width 1s ease" }} />
@@ -340,7 +342,7 @@ function DashboardContent({ isMobile, navigate, user }) {
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 800, color: "#0F172A" }}>Fee Collection</div>
-                <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>Paid vs Pending</div>
+                <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>Collected against billed</div>
               </div>
               <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg,#06B6D4,#3B82F6)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <BadgeDollarSign size={16} color="white" />
@@ -354,8 +356,8 @@ function DashboardContent({ isMobile, navigate, user }) {
               <div style={{ width: `${feePct}%`, height: "100%", background: "linear-gradient(90deg,#06B6D4,#3B82F6)", borderRadius: 4, transition: "width 1s ease" }} />
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ fontSize: 11, color: "#10B981", fontWeight: 700 }}>&#10003; {feeStats.paid} Paid</span>
-              <span style={{ fontSize: 11, color: "#F59E0B", fontWeight: 700 }}>&#8987; {feeStats.pending} Pending</span>
+              <span style={{ fontSize: 11, color: "#10B981", fontWeight: 700 }}>&#10003; ₹{feeStats.paid.toLocaleString("en-IN")} collected</span>
+              <span style={{ fontSize: 11, color: "#F59E0B", fontWeight: 700 }}>&#8987; ₹{feeStats.pending.toLocaleString("en-IN")} due</span>
             </div>
           </div>
         </AnimatedItem>

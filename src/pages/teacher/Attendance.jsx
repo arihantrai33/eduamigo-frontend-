@@ -160,11 +160,12 @@ export default function TeacherAttendance() {
           {/* Class Chips — only teacher's assigned classes */}
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
             {teacher?.assignedClasses?.length > 0 ? teacher.assignedClasses.map(cls => (
-              <button key={cls} onClick={() => setFilters(f => ({ ...f, class: cls, section: "" }))}
+              // Assigned classes are stored as "7-A", so one tap selects both class and section.
+              <button key={cls} onClick={() => { const [c, sec = ""] = cls.split("-"); setFilters(f => ({ ...f, class: c, section: sec })); }}
                 style={{
                   padding: "6px 16px", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer", border: "none",
-                  background: filters.class === cls ? "#5C6BC0" : "#EEF2FF",
-                  color: filters.class === cls ? "#fff" : "#5C6BC0",
+                  background: `${filters.class}-${filters.section}` === cls ? "#5C6BC0" : "#EEF2FF",
+                  color: `${filters.class}-${filters.section}` === cls ? "#fff" : "#5C6BC0",
                 }}>Class {cls}</button>
             )) : (
               <div style={{ fontSize: 13, color: "#9CA3AF" }}>No classes assigned. Contact admin.</div>
@@ -172,7 +173,7 @@ export default function TeacherAttendance() {
           </div>
 
           {/* Section */}
-          {sections.length > 0 && (
+          {sections.length > 0 && !filters.section && (
             <>
               <div style={{ fontSize: 13, fontWeight: 700, color: "#1C2033", marginBottom: 8 }}>Section</div>
               <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>

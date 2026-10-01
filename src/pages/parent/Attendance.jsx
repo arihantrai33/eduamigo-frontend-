@@ -15,8 +15,21 @@ export default function ParentAttendance() {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error,   setError]   = useState("");
+  // The month being viewed (month is 0-11). Attendance is shown one month at a time.
+  const [view, setView] = useState(() => { const n = new Date(); return { year: n.getFullYear(), month: n.getMonth() }; });
 
-  useEffect(() => { fetchData(); const interval = setInterval(fetchData, 30000); return () => clearInterval(interval); }, []);
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(fetchData, 60000);
+    return () => clearInterval(interval);
+  }, [view.year, view.month]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const shiftMonth = (delta) => setView((v) => {
+    const d = new Date(v.year, v.month + delta, 1);
+    return { year: d.getFullYear(), month: d.getMonth() };
+  });
+  const now = new Date();
+  const isCurrentMonth = view.year === now.getFullYear() && view.month === now.getMonth();
 
   const fetchData = async () => {
     try {
@@ -26,15 +39,17 @@ export default function ParentAttendance() {
       if (!childData) { setError("No child linked to this account"); setLoading(false); return; }
       setChild(childData);
 
+      const q = childQuery();
+      const period = `${q ? "&" : "?"}month=${view.month + 1}&year=${view.year}`;
       const [sumRes, recRes] = await Promise.allSettled([
-        axios.get(`${API}/attendance/child-summary${childQuery()}`, authHeader()),
-        axios.get(`${API}/attendance/child-records${childQuery()}`, authHeader()),
+        axios.get(`${API}/attendance/child-summary${q}${period}`, authHeader()),
+        axios.get(`${API}/attendance/child-records${q}${period}`, authHeader()),
       ]);
       if (sumRes.status === "fulfilled" && sumRes.value.data.success)
         setSummary(sumRes.value.data.data);
       if (recRes.status === "fulfilled" && recRes.value.data.success)
         setRecords(recRes.value.data.data || []);
-    } catch (err) {
+    } catch {
       setError("Failed to load attendance data");
     } finally {
       setLoading(false);
@@ -42,15 +57,15 @@ export default function ParentAttendance() {
   };
 
   const buildCalendar = () => {
-    const now         = new Date();
-    const year        = now.getFullYear();
-    const month       = now.getMonth();
+    const year        = view.year;
+    const month       = view.month;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const firstDay    = new Date(year, month, 1).getDay();
     const recordMap   = {};
     records.forEach((r) => {
+      // Attendance dates are stored as midnight UTC of the school day.
       const d   = new Date(r.date);
-      const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+      const key = `${d.getUTCFullYear()}-${d.getUTCMonth()}-${d.getUTCDate()}`;
       recordMap[key] = r.status;
     });
     const cells = [];
@@ -58,9 +73,9 @@ export default function ParentAttendance() {
     for (let d = 1; d <= daysInMonth; d++) {
       const key    = `${year}-${month}-${d}`;
       const status = recordMap[key];
-      cells.push({ d, status, today: d === now.getDate() && !status });
+      cells.push({ d, status, today: isCurrentMonth && d === now.getDate() && !status });
     }
-    return { cells, monthLabel: now.toLocaleString("en-IN", { month: "long", year: "numeric" }) };
+    return { cells, monthLabel: new Date(year, month, 1).toLocaleString("en-IN", { month: "long", year: "numeric" }) };
   };
 
   const { cells, monthLabel } = buildCalendar();
@@ -92,7 +107,8 @@ export default function ParentAttendance() {
         </div>
         <div style={{ textAlign: "center" }}>
           <div style={{ fontSize: 12, opacity: 0.8 }}>{monthLabel} — {child?.name || ""}</div>
-          <div style={{ fontSize: 64, fontWeight: 900, lineHeight: 1.1 }}>{summary?.percentage ?? "—"}%</div>
+          <div style={{ fontSize: 64, fontWeight: 900, lineHeight: 1.1 }}>{summary?.total ? `${summary.percentage}%` : "—"}</div>
+          {!summary?.total && <div style={{ fontSize: 13, opacity: 0.85, marginBottom: 4 }}>No attendance marked this month</div>}
           <div style={{ fontSize: 13, opacity: 0.85 }}>
             {summary?.present ?? 0} Present &nbsp;•&nbsp; {summary?.absent ?? 0} Absent &nbsp;•&nbsp; {summary?.late ?? 0} Late
           </div>
@@ -103,7 +119,13 @@ export default function ParentAttendance() {
 
         {/* Calendar */}
         <div style={{ background: "var(--card)", borderRadius: 16, padding: 16, boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: 16 }}>
-          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 12 }}>{monthLabel} Calendar</div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+            <button onClick={() => shiftMonth(-1)} aria-label="Previous month"
+              style={{ border: "none", background: "var(--bg)", borderRadius: 8, width: 32, height: 32, cursor: "pointer", fontSize: 16, color: "var(--text)" }}>‹</button>
+            <div style={{ fontWeight: 700, fontSize: 14 }}>{monthLabel}</div>
+            <button onClick={() => shiftMonth(1)} disabled={isCurrentMonth} aria-label="Next month"
+              style={{ border: "none", background: "var(--bg)", borderRadius: 8, width: 32, height: 32, cursor: isCurrentMonth ? "default" : "pointer", fontSize: 16, color: "var(--text)", opacity: isCurrentMonth ? 0.35 : 1 }}>›</button>
+          </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 4, textAlign: "center" }}>
             {["S","M","T","W","T","F","S"].map((d, i) => (
               <div key={i} style={{ fontSize: 11, fontWeight: 700, color: "var(--subtext)", padding: "4px 0" }}>{d}</div>

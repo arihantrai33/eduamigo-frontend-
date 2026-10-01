@@ -72,13 +72,16 @@ function LoadingScreen() {
   )
 }
 
+// Where each role starts. Opening another role's URL sends the user back to their own portal.
+const HOME_FOR_ROLE = { student: '/student/home', teacher: '/teacher/home', parent: '/parent/home', admin: '/admin', accountant: '/admin' }
+
 function Protected({ children, role }) {
   const { user, loading } = useAuth()
   if (loading) return <LoadingScreen />
   if (!user) return <Navigate to="/login" replace />
   // The admin portal is shared by all school staff roles; menus inside it are permission-filtered.
   const allowed = role === 'admin' ? ['admin', 'accountant'] : [role]
-  if (role && !allowed.includes(user.role)) return <Navigate to="/login" replace />
+  if (role && !allowed.includes(user.role)) return <Navigate to={HOME_FOR_ROLE[user.role] || '/login'} replace />
   if (user.mustChangePassword) return <Navigate to="/change-password" replace />
   return children
 }

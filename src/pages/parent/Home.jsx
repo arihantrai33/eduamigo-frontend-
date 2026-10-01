@@ -54,8 +54,11 @@ export default function ParentHome() {
             axios.get(`${API}/exams/student/${s._id}/results`,      authHeader()),
             axios.get(`${API}/transport/my-child-bus${childQuery()}`, authHeader()),
           ]);
-          if (attRes.status === "fulfilled" && attRes.value.data.success)
-            setAttendance(attRes.value.data.data);
+          if (attRes.status === "fulfilled" && attRes.value.data.success) {
+            const summary = attRes.value.data.summary || {};
+            // Percentage is only meaningful once at least one school day has been marked.
+            setAttendance(summary.total ? { ...summary, percentage: parseFloat(summary.percentage) } : null);
+          }
           if (resRes.status === "fulfilled" && resRes.value.data.success)
             setResults(resRes.value.data.data?.[0] ?? null);
           if (busRes.status === "fulfilled" && busRes.value.data.success)
@@ -78,7 +81,7 @@ export default function ParentHome() {
     { icon: "💳", label: "Fee Status",    sub: child?.feeStatus ?? "Check status",                                          path: "/parent/fee"           },
     { icon: "📊", label: "Results",       sub: results ? `${results.examName} • ${results.percentage ?? "—"}%` : "View results", path: "/parent/result"   },
     { icon: "🚌", label: "Track Bus",     sub: busInfo ? `${busInfo.busNumber} • ${busInfo.status ?? "Active"}` : "Not assigned", path: "/parent/bus"     },
-    { icon: "✅", label: "Attendance",    sub: attendance?.percentage ? `${attendance.percentage}% present` : "View attendance", path: "/parent/attendance" },
+    { icon: "✅", label: "Attendance",    sub: attendance ? `${attendance.percentage}% present` : "View attendance", path: "/parent/attendance" },
     { icon: "📅", label: "School Calendar", sub: "Upcoming events",                                                         path: "/parent/calendar"      },
   ];
 
@@ -131,7 +134,7 @@ export default function ParentHome() {
               {/* Clickable Stats */}
               <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
                 {[
-                  { val: attendance?.percentage ? `${attendance.percentage}%` : "—", label: "Attendance", path: "/parent/attendance" },
+                  { val: attendance ? `${attendance.percentage}%` : "—", label: "Attendance", path: "/parent/attendance" },
                   { val: results?.percentage    ? `${results.percentage}%`    : "—", label: "Marks",      path: "/parent/result"     },
                   { val: results?.grade         ?? "—",                               label: "Grade",      path: "/parent/result"     },
                   { val: child.feeStatus        ?? "—",                               label: "Fee",        path: "/parent/fee"        },

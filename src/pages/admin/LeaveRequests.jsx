@@ -75,7 +75,7 @@ export default function LeaveRequests() {
         <div style={{ position:"absolute", bottom:-30, left:100, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
         <div style={{ position:"relative" }}>
           <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>Leave Management</div>
-          <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Review and manage staff leave requests</div>
+          <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Leave requests from students, parents and teachers</div>
         </div>
       </div>
 
@@ -130,7 +130,7 @@ export default function LeaveRequests() {
         <div style={{ background:"white", borderRadius:20, padding:"80px 0", textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
           <div style={{ fontSize:48, marginBottom:12 }}>🌴</div>
           <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No leave requests found</div>
-          <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Leave requests from teachers will appear here</div>
+          <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Leave requests from students, parents and teachers will appear here</div>
         </div>
       ) : (
         <div style={{ display:"flex", flexDirection:"column", gap:12 }}>

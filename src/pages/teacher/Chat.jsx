@@ -273,7 +273,7 @@ export default function TeacherChat() {
                   <>
                     <p style={styles.sectionLabel}>STUDENTS ({students.length})</p>
                     {students.map(c => (
-                      <ContactCard key={c._id} contact={c} onOpen={openChat} />
+                      <ContactCard key={`${c.type}-${c.userId}`} contact={c} onOpen={openChat} />
                     ))}
                   </>
                 )}
@@ -281,7 +281,7 @@ export default function TeacherChat() {
                   <>
                     <p style={styles.sectionLabel}>PARENTS ({parents.length})</p>
                     {parents.map(c => (
-                      <ContactCard key={c._id} contact={c} onOpen={openChat} />
+                      <ContactCard key={`${c.type}-${c.userId}`} contact={c} onOpen={openChat} />
                     ))}
                   </>
                 )}

@@ -6,7 +6,7 @@ const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
 headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 });
-const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const FULL_DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 function getGreeting() {
 const h = new Date().getHours();
 if (h < 12) return "Good Morning ☀️";
@@ -48,11 +48,13 @@ if (noticesRes.status === "fulfilled" && noticesRes.value.data.success) {
 setNotices(noticesRes.value.data.data?.slice(0, 3) || []);
       }
 const jsDay = new Date().getDay();
-      const today = jsDay === 0 ? "Mon" : days[jsDay - 1] ?? "Mon";
-try {
-const ttRes = await axios.get(`${API}/timetable/my?day=${today}`, authHeader());
-if (ttRes.data.success) setTimetable(ttRes.data.data || []);
-      } catch (_) {}
+      // Sunday has no classes; other days use the same full day names as the timetable.
+      if (jsDay !== 0) {
+        try {
+          const ttRes = await axios.get(`${API}/timetable/my?day=${FULL_DAYS[jsDay - 1]}`, authHeader());
+          if (ttRes.data.success) setTimetable(ttRes.data.data || []);
+        } catch { /* the section shows its empty state */ }
+      }
 try {
 const resRes = await axios.get(`${API}/exams/my-results`, authHeader());
 if (resRes.data.success) {

@@ -30,7 +30,9 @@ export default function StudentFee() {
     }
   };
 
-  const pendingFees = fees.filter(f => f.status === "Unpaid");
+  // Anything with a balance is outstanding, including part-paid fees.
+  const balanceOf = (f) => Math.max(0, (f.amount || 0) - (f.paidAmount || 0));
+  const pendingFees = fees.filter(f => f.status !== "Paid" && balanceOf(f) > 0);
   const paidFees    = fees.filter(f => f.status === "Paid");
 
   const nearestDue = pendingFees.reduce((nearest, f) => {
@@ -118,8 +120,9 @@ export default function StudentFee() {
                         <div style={{ fontSize: 12, color: "#ef4444", marginTop: 2 }}>Due: {formatDate(f.dueDate)}</div>
                       </div>
                       <div style={{ textAlign: "right" }}>
-                        <div style={{ fontSize: 17, fontWeight: 800, color: "var(--text)" }}>{formatAmount(f.amount)}</div>
-                        <div style={{ fontSize: 11, fontWeight: 700, color: "#f59e0b", background: "#fef3c7", padding: "3px 10px", borderRadius: 20, marginTop: 4 }}>UNPAID</div>
+                        <div style={{ fontSize: 17, fontWeight: 800, color: "var(--text)" }}>{formatAmount(balanceOf(f))}</div>
+                        {f.paidAmount > 0 && <div style={{ fontSize: 11, color: "var(--subtext)", marginTop: 2 }}>of {formatAmount(f.amount)}</div>}
+                        <div style={{ fontSize: 11, fontWeight: 700, color: "#f59e0b", background: "#fef3c7", padding: "3px 10px", borderRadius: 20, marginTop: 4 }}>{f.paidAmount > 0 ? "PART PAID" : "UNPAID"}</div>
                       </div>
                     </div>
                   </div>

@@ -68,7 +68,9 @@ export default function HRManagement() {
     if (!(await confirmAction(`Generate salaries for ${MONTHS[filterMonth-1]} ${filterYear}?`))) return;
     setLoading(true);
     try {
-      await axios.post(`${API}/hr/salaries/generate`, { month: filterMonth, year: filterYear }, auth());
+      const res = await axios.post(`${API}/hr/salaries/generate`, { month: filterMonth, year: filterYear }, auth());
+      if (res.data.skipped?.length) toast.error(res.data.message);
+      else toast.success(res.data.message);
       fetchSalaries();
     } catch(e) { toast.error(e.response?.data?.message || "Error"); }
     setLoading(false);
