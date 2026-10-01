@@ -13,7 +13,6 @@ const emptyForm = {
   name: "", email: "", phone: "", rollNumber: "",
   class: "", section: "", gender: "", dateOfBirth: "",
   address: "", parentName: "", parentPhone: "", parentEmail: "",
-  feeStatus: "Pending",
 };
 
 export default function AddStudent() {
@@ -214,8 +213,6 @@ export default function AddStudent() {
             options={CLASSES.map(c => ({ value: c, label: `Class ${c}` }))} />
           <Select label="Section" name="section" required
             options={SECTIONS.map(s => ({ value: s, label: `Section ${s}` }))} />
-          <Select label="Fee Status" name="feeStatus"
-            options={["Paid","Pending","Partial"]} />
         </div>
 
         {/* Parent Info */}

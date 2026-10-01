@@ -344,7 +344,7 @@ export default function Transport() {
                       </span>
                     </div>
                     <div style={{ display:"flex", gap:16, fontSize:12, color:"#64748B", fontWeight:500 }}>
-                      <span>�� {bus.driverName}</span>
+                      <span>👤 {bus.driverName}</span>
                       <span>📞 {bus.driverPhone}</span>
                       <span>🗺️ {bus.routeName}</span>
                       <span>📍 {bus.stops?.length||0} stops</span>

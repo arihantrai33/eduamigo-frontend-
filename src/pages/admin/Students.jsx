@@ -17,6 +17,7 @@ const FEE_BADGE = {
   Paid:    { bg:"#F0FDF4", color:"#15803D", dot:"#22C55E" },
   Pending: { bg:"#FEF9C3", color:"#854D0E", dot:"#EAB308" },
   Partial: { bg:"#FFF7ED", color:"#C2410C", dot:"#F97316" },
+  "Not billed": { bg:"#F1F5F9", color:"#64748B", dot:"#94A3B8" },
 };
 
 function StatCard({ label, value, icon, gradient, delay, border }) {
@@ -154,7 +155,6 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
         {inp("PARENT NAME","parentName","text","e.g. Rajesh Sharma")}
         {inp("PARENT PHONE","parentPhone","tel","10-digit number")}
         {inp("PARENT EMAIL","parentEmail","email","parent@email.com")}
-        {sel("FEE STATUS","feeStatus",["Paid","Pending","Partial"])}
       </div>
       <div style={{ display:"flex", gap:10, marginTop:8, justifyContent:"flex-end" }}>
         <button onClick={onClose} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
@@ -307,7 +307,7 @@ export default function Students() {
         <select value={filterFee} onChange={e=>setFilterFee(e.target.value)}
           style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:140 }}>
           <option value="">All Fee Status</option>
-          {["Paid","Pending","Partial"].map(f => <option key={f} value={f}>{f}</option>)}
+          {["Paid","Partial","Pending","Not billed"].map(f => <option key={f} value={f}>{f}</option>)}
         </select>
         <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600, whiteSpace:"nowrap" }}>{filtered.length} of {students.length}</div>
       </div>
@@ -336,7 +336,7 @@ export default function Students() {
                 <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Try adjusting your filters</div>
               </td></tr>
             ) : filtered.map((s, i) => {
-              const fee = FEE_BADGE[s.feeStatus] || FEE_BADGE.Pending;
+              const fee = FEE_BADGE[s.feeStatus] || FEE_BADGE["Not billed"];
               const clsColor = getClassColor(s.class);
               return (
                 <tr key={s._id} className="row-hover" style={{ borderBottom:"1px solid #F1F5F9", animation:`fadeSlideUp 0.3s ease ${i*0.04}s both` }}>
@@ -369,7 +369,7 @@ export default function Students() {
                   <td style={{ padding:"14px 18px" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:6, padding:"5px 12px", borderRadius:20, background:fee.bg, width:"fit-content" }}>
                       <div style={{ width:6, height:6, borderRadius:"50%", background:fee.dot }} />
-                      <span style={{ fontSize:12, fontWeight:700, color:fee.color }}>{s.feeStatus || "Pending"}</span>
+                      <span style={{ fontSize:12, fontWeight:700, color:fee.color }}>{s.feeStatus || "Not billed"}</span>
                     </div>
                   </td>
                   <td style={{ padding:"14px 18px" }}>

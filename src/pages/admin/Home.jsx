@@ -431,7 +431,7 @@ function DashboardContent({ isMobile, navigate, user }) {
                     <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 1 }}>Class {s.class}-{s.section} &middot; Roll {s.rollNumber}</div>
                   </div>
                   <span style={{ fontSize: 10, padding: "4px 10px", borderRadius: 20, fontWeight: 700, background: s.feeStatus === "Paid" ? "#F0FDF4" : "#FFF7ED", color: s.feeStatus === "Paid" ? "#16A34A" : "#EA580C", border: `1px solid ${s.feeStatus === "Paid" ? "#BBF7D0" : "#FED7AA"}` }}>
-                    {s.feeStatus || "Pending"}
+                    {s.feeStatus || "Not billed"}
                   </span>
                 </div>
               ))}

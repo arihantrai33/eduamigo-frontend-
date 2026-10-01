@@ -9,7 +9,7 @@ const CATEGORIES = ["Textbook","Fiction","Biography","Reference","Science","Hist
 const CAT_CONFIG = {
   Textbook:  { bg:"#EEF2FF", color:"#6366F1", icon:"📚" },
   Fiction:   { bg:"#FDF4FF", color:"#9333EA", icon:"📖" },
-  Biography: { bg:"#FFF7ED", color:"#EA580C", icon:"��" },
+  Biography: { bg:"#FFF7ED", color:"#EA580C", icon:"👤" },
   Reference: { bg:"#F0FDF4", color:"#15803D", icon:"🔍" },
   Science:   { bg:"#ECFEFF", color:"#0891B2", icon:"🔬" },
   History:   { bg:"#FFFBEB", color:"#D97706", icon:"🏛️" },
@@ -191,7 +191,7 @@ export default function Library() {
               </td></tr>
             ) : filtered.length === 0 ? (
               <tr><td colSpan={8} style={{ padding:"80px 0", textAlign:"center" }}>
-                <div style={{ fontSize:52, marginBottom:12 }}>��</div>
+                <div style={{ fontSize:52, marginBottom:12 }}>📚</div>
                 <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No books found</div>
                 <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Add your first book using the button above</div>
               </td></tr>

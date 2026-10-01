@@ -297,7 +297,7 @@ export default function Reports() {
             { label:"Bus Capacity Used", value: `${pct(overview.students, overview.buses*40)}%`, icon:"🚌" },
             { label:"Fee Collection",   value: `${collectionPct}%`, icon:"💰" },
             { label:"Attendance Rate",  value: `${pct(attendance.present, attendance.total)}%`, icon:"✅" },
-            { label:"Pass Rate",        value: `${pct(marks.passed, marks.total)}%`, icon:"��" },
+            { label:"Pass Rate",        value: `${pct(marks.passed, marks.total)}%`, icon:"🎯" },
             { label:"Leave Approval",   value: `${pct(leaves.approved, leaves.total)}%`, icon:"📅" },
           ].map((s,i) => (
             <div key={i} style={{ textAlign:"center", padding:"14px 10px", background:"#F8FAFC", borderRadius:12 }}>
