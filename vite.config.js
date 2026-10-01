@@ -40,6 +40,12 @@ export default defineConfig({
     allowedHosts: [
       'shrine-switch-pushover.ngrok-free.dev',
       'localhost'
-    ]
+    ],
+    // Local development: the app calls /api on its own origin and Vite forwards it to the
+    // backend, so the browser never makes a cross-origin request. Production builds use
+    // VITE_API_URL from the hosting provider and are not affected.
+    proxy: {
+      '/api': { target: process.env.VITE_DEV_API_TARGET || 'http://localhost:8000', changeOrigin: true }
+    }
   }
 })

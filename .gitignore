@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local environment files (set VITE_API_URL in the hosting provider for production)
+.env
+.env.*
+!.env.example
