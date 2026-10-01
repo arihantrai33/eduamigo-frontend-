@@ -120,9 +120,9 @@ export default function FeeCollection() {
       <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:16, marginBottom:24 }}>
         {[
           { label:"COLLECTED",    value:`₹${totalCollected.toLocaleString()}`, icon:"✅", border:"#10B981", bg:"#F0FDF4" },
-          { label:"PENDING",      value:`₹${totalPending.toLocaleString()}`,   icon:"⏳", border:"#F59E0B", bg:"#FFFBEB" },
-          { label:"PAID",         value: paidCount,    icon:"💚", border:"#22C55E", bg:"#F0FDF4" },
-          { label:"PENDING",      value: pendingCount, icon:"🟡", border:"#F59E0B", bg:"#FFFBEB" },
+          { label:"AMOUNT DUE",   value:`₹${totalPending.toLocaleString()}`,   icon:"⏳", border:"#F59E0B", bg:"#FFFBEB" },
+          { label:"FULLY PAID",   value: paidCount,    icon:"💚", border:"#22C55E", bg:"#F0FDF4" },
+          { label:"UNPAID FEES",  value: pendingCount, icon:"🟡", border:"#F59E0B", bg:"#FFFBEB" },
           { label:"OVERDUE",      value: overdueCount, icon:"🔴", border:"#EF4444", bg:"#FEF2F2" },
         ].map((card, i) => (
           <div key={i} style={{ background:"white", borderRadius:16, padding:"16px 20px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.07}s both` }}>

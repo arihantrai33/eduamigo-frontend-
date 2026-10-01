@@ -58,18 +58,24 @@ export default function AttendanceReports() {
   // Late counts as attended; holidays are excluded by the server.
   const classStats = classes.map(cls => {
     const rows = attendance.filter(r => r.class === cls);
-    const total = rows.reduce((s, r) => s + (r.total || 0), 0);
-    const present = rows.reduce((s, r) => s + (r.present || 0) + (r.late || 0), 0);
-    const pct = total > 0 ? Math.round((present / total) * 100) : 0;
-    return { cls, students: students.filter(s => s.class === cls).length, total, present, absent: total - present, pct };
+    const sum = (key) => rows.reduce((s, r) => s + (r[key] || 0), 0);
+    const total = sum("total");
+    const present = sum("present");
+    const late = sum("late");
+    const absent = sum("absent");
+    const pct = total > 0 ? Math.round(((present + late) / total) * 100) : null;
+    return { cls, students: students.filter(s => s.class === cls).length, total, present, late, absent, pct };
   }).filter(c => !filterClass || c.cls === filterClass);
 
-  const totalPresent = attendance.reduce((s, r) => s + (r.present || 0), 0);
-  const totalAbsent = attendance.reduce((s, r) => s + (r.absent || 0), 0);
-  const totalLate = attendance.reduce((s, r) => s + (r.late || 0), 0);
-  const totalRecords = attendance.reduce((s, r) => s + (r.total || 0), 0);
-  const overallPct = totalRecords > 0 ? Math.round(((totalPresent + totalLate) / totalRecords) * 100) : 0;
-  const lowAttendance = classStats.filter(c => c.pct < 75 && c.total > 0);
+  // Summary cards follow the class filter, so they always match the table below.
+  const totalPresent = classStats.reduce((s, c) => s + c.present, 0);
+  const totalAbsent = classStats.reduce((s, c) => s + c.absent, 0);
+  const totalLate = classStats.reduce((s, c) => s + c.late, 0);
+  const totalRecords = classStats.reduce((s, c) => s + c.total, 0);
+  const hasData = totalRecords > 0;
+  const overallPct = hasData ? Math.round(((totalPresent + totalLate) / totalRecords) * 100) : null;
+  const lowAttendance = classStats.filter(c => c.pct !== null && c.pct < 75);
+  const pctText = (v) => (v === null ? "—" : `${v}%`);
 
   return (
     <div style={{ fontFamily:"Inter,sans-serif" }}>
@@ -118,7 +124,7 @@ export default function AttendanceReports() {
 
       {/* Stat Cards */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
-        <StatCard label="OVERALL RATE" value={`${overallPct}%`} icon="📊" color="#EEF2FF" border="#6366F1" delay={0} />
+        <StatCard label="OVERALL RATE" value={pctText(overallPct)} icon="📊" color="#EEF2FF" border="#6366F1" delay={0} />
         <StatCard label="TOTAL PRESENT" value={totalPresent} icon="✅" color="#F0FDF4" border="#10B981" delay={0.08} />
         <StatCard label="TOTAL ABSENT" value={totalAbsent} icon="❌" color="#FEF2F2" border="#EF4444" delay={0.16} />
         <StatCard label="LATE" value={totalLate} icon="⏰" color="#FFFBEB" border="#F59E0B" delay={0.24} />
@@ -128,9 +134,9 @@ export default function AttendanceReports() {
       <div style={{ background:"white", borderRadius:16, padding:"20px 24px", marginBottom:24, boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0", animation:"fadeUp 0.4s ease 0.3s both" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
           <div style={{ fontSize:14, fontWeight:800, color:"#0F172A" }}>Overall Attendance Rate — {MONTHS[filterMonth-1]} {filterYear}</div>
-          <div style={{ fontSize:24, fontWeight:900, color: overallPct >= 75 ? "#10B981" : "#EF4444" }}>{overallPct}%</div>
+          <div style={{ fontSize:24, fontWeight:900, color: !hasData ? "#94A3B8" : overallPct >= 75 ? "#10B981" : "#EF4444" }}>{pctText(overallPct)}</div>
         </div>
-        <ProgressBar value={overallPct} color={overallPct >= 75 ? "linear-gradient(90deg,#10B981,#059669)" : "linear-gradient(90deg,#EF4444,#DC2626)"} />
+        <ProgressBar value={overallPct || 0} color={overallPct >= 75 ? "linear-gradient(90deg,#10B981,#059669)" : "linear-gradient(90deg,#EF4444,#DC2626)"} />
         <div style={{ display:"flex", gap:16, marginTop:10 }}>
           <span style={{ fontSize:12, color:"#10B981", fontWeight:700 }}>✓ {totalPresent} Present</span>
           <span style={{ fontSize:12, color:"#EF4444", fontWeight:700 }}>✗ {totalAbsent} Absent</span>
@@ -181,7 +187,8 @@ export default function AttendanceReports() {
             </thead>
             <tbody>
               {classStats.map((c, i) => {
-                const good = c.pct >= 75;
+                const noData = c.pct === null;
+                const good = !noData && c.pct >= 75;
                 return (
                   <tr key={i} className="cls-row" style={{ borderBottom:"1px solid #F1F5F9" }}>
                     <td style={{ padding:"14px 18px" }}>
@@ -195,19 +202,19 @@ export default function AttendanceReports() {
                       <span style={{ fontSize:13, fontWeight:700, color:"#EF4444" }}>{c.absent}</span>
                     </td>
                     <td style={{ padding:"14px 18px" }}>
-                      <span style={{ fontSize:13, fontWeight:700, color:"#F59E0B" }}>{c.total - c.present - c.absent < 0 ? 0 : c.total - c.present - c.absent}</span>
+                      <span style={{ fontSize:13, fontWeight:700, color:"#F59E0B" }}>{c.late}</span>
                     </td>
                     <td style={{ padding:"14px 18px", width:200 }}>
                       <div style={{ display:"flex", alignItems:"center", gap:10 }}>
                         <div style={{ flex:1 }}>
-                          <ProgressBar value={c.pct} color={good ? "linear-gradient(90deg,#10B981,#059669)" : "linear-gradient(90deg,#EF4444,#DC2626)"} />
+                          <ProgressBar value={c.pct || 0} color={good ? "linear-gradient(90deg,#10B981,#059669)" : "linear-gradient(90deg,#EF4444,#DC2626)"} />
                         </div>
-                        <span style={{ fontSize:13, fontWeight:800, color: good ? "#10B981" : "#EF4444", minWidth:40 }}>{c.pct}%</span>
+                        <span style={{ fontSize:13, fontWeight:800, color: noData ? "#94A3B8" : good ? "#10B981" : "#EF4444", minWidth:40 }}>{pctText(c.pct)}</span>
                       </div>
                     </td>
                     <td style={{ padding:"14px 18px" }}>
-                      <span style={{ fontSize:11, fontWeight:700, padding:"4px 12px", borderRadius:20, background: good ? "#F0FDF4" : "#FEF2F2", color: good ? "#15803D" : "#DC2626", border:`1px solid ${good ? "#BBF7D0" : "#FECACA"}` }}>
-                        {good ? "✓ Good" : "⚠ Low"}
+                      <span style={{ fontSize:11, fontWeight:700, padding:"4px 12px", borderRadius:20, background: noData ? "#F8FAFC" : good ? "#F0FDF4" : "#FEF2F2", color: noData ? "#64748B" : good ? "#15803D" : "#DC2626", border:`1px solid ${noData ? "#E2E8F0" : good ? "#BBF7D0" : "#FECACA"}` }}>
+                        {noData ? "Not marked" : good ? "✓ Good" : "⚠ Low"}
                       </span>
                     </td>
                   </tr>
