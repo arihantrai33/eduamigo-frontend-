@@ -110,7 +110,11 @@ export default function StudentResult() {
             ←
           </button>
           <span style={{ fontSize: 17, fontWeight: 800, color: '#fff' }}>Academic Results</span>
-          <div style={{ width: 38 }} />
+          <button onClick={() => navigate('/report-card?studentId=me')} aria-label="Report card"
+            style={{ height: 38, padding: '0 12px', borderRadius: 12, border: 'none',
+              background: 'rgba(255,255,255,.18)', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+            Report Card
+          </button>
         </div>
 
         <div style={{ display: 'flex', background: 'rgba(255,255,255,.12)', borderRadius: 12,

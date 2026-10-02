@@ -65,10 +65,16 @@ export default function ParentResult() {
             style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "8px 12px", color: "white", cursor: "pointer", fontSize: 16 }}>
             ←
           </button>
-          <div>
+          <div style={{ flex: 1 }}>
             <div style={{ fontWeight: 800, fontSize: 18 }}>📊 Results</div>
             <div style={{ fontSize: 12, opacity: 0.8 }}>{child?.name ?? "—"}</div>
           </div>
+          {child?._id && (
+            <button onClick={() => navigate(`/report-card?studentId=${child._id}`)}
+              style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "8px 12px", color: "white", cursor: "pointer", fontSize: 12, fontWeight: 700 }}>
+              Report Card
+            </button>
+          )}
         </div>
         <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: 20, padding: 20, backdropFilter: "blur(10px)", textAlign: "center" }}>
           <div style={{ fontSize: 48, fontWeight: 900 }}>{pct}%</div>

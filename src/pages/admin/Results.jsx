@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { gradeFor, GRADE_STYLE, PASS_PERCENT } from "../../utils/grades";
+import { useNavigate } from "react-router-dom";
 import { toast, confirmAction, errorMessage } from "../../utils/toast";
 
 const API = import.meta.env.VITE_API_URL;
@@ -9,6 +10,7 @@ const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("
 const GRADE_CONFIG = GRADE_STYLE;
 
 export default function Results() {
+  const navigate = useNavigate();
   const [results, setResults] = useState([]);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -135,6 +137,12 @@ export default function Results() {
           <option value="">All Terms</option>
           {termNames.map(t => <option key={t} value={t}>{t}</option>)}
         </select>
+        <button onClick={() => (filterClass && filterSection)
+            ? navigate(`/report-card?class=${filterClass}&section=${filterSection}&term=${encodeURIComponent(filterTerm || "Term 1")}`)
+            : toast.error("Choose a class and section to print report cards")}
+          style={{ padding:"11px 16px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"white", fontSize:13, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>
+          Report Cards
+        </button>
         <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600, whiteSpace:"nowrap" }}>{filtered.length} records</div>
       </div>
 

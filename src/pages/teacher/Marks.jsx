@@ -210,6 +210,10 @@ export default function TeacherMarks() {
             }}>Class {c}</button>
           ))}
         </div>
+        <button onClick={() => navigate(`/report-card?class=${cls}&section=${section}`)}
+          style={{ marginTop: 12, width: '100%', padding: '10px', borderRadius: 10, border: '1.5px solid #C7D2FE', background: '#EEF2FF', color: '#3949AB', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>
+          Report cards for Class {classKey}
+        </button>
       </div>
 
       <div style={styles.label}>Scheduled exams</div>

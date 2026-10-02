@@ -67,6 +67,7 @@ export default function StudentProfile() {
     <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "1.5rem" }}>
       <button onClick={() => navigate("/admin/students")} style={{ padding: "6px 12px", borderRadius: 8, border: "0.5px solid #E8E8E5", background: "#fff", fontSize: 12, cursor: "pointer", color: "#666" }}>← Back</button>
       <div style={{ fontSize: 20, fontWeight: 600, color: "#1a1a1a" }}>Student Profile</div>
+      <button onClick={() => navigate(`/report-card?studentId=${id}`)} style={{ marginLeft: "auto", padding: "8px 14px", borderRadius: 8, border: "none", background: "#534AB7", color: "#fff", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Report Card</button>
     </div>
   );
 
