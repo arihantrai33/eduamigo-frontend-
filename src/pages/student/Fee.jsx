@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { getPaymentConfig } from "../../utils/payments";
+import { PayFeeButton, ReceiptLinks, PaymentInfo } from "../../components/FeePayment";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -14,7 +16,8 @@ export default function StudentFee() {
   const [loading,   setLoading]   = useState(true);
   const [activeTab, setActiveTab] = useState("pending");
 
-  useEffect(() => { fetchFees(); }, []);
+  const [onlineEnabled, setOnlineEnabled] = useState(false);
+  useEffect(() => { fetchFees(); getPaymentConfig().then(c => setOnlineEnabled(!!c.enabled)); }, []);
 
   const fetchFees = async () => {
     try {
@@ -33,7 +36,8 @@ export default function StudentFee() {
   // Anything with a balance is outstanding, including part-paid fees.
   const balanceOf = (f) => Math.max(0, (f.amount || 0) - (f.paidAmount || 0));
   const pendingFees = fees.filter(f => f.status !== "Paid" && balanceOf(f) > 0);
-  const paidFees    = fees.filter(f => f.status === "Paid");
+  // Every fee with at least one payment, so part-payments and their receipts are listed too.
+  const paidFees    = fees.filter(f => (f.payments?.length || 0) > 0);
 
   const nearestDue = pendingFees.reduce((nearest, f) => {
     if (!nearest) return f;
@@ -87,7 +91,7 @@ export default function StudentFee() {
       <div style={{ display: "flex", margin: "16px 16px 0", background: "var(--card)", borderRadius: 12, padding: 4, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         {[
           { key: "pending", label: `Outstanding (${pendingFees.length})` },
-          { key: "paid",    label: `Paid (${paidFees.length})` },
+          { key: "paid",    label: `Payments (${paidFees.length})` },
         ].map(tab => (
           <button key={tab.key} onClick={() => setActiveTab(tab.key)}
             style={{ flex: 1, padding: "10px 0", border: "none", borderRadius: 10, cursor: "pointer", fontWeight: 700, fontSize: 13,
@@ -123,6 +127,7 @@ export default function StudentFee() {
                         <div style={{ fontSize: 17, fontWeight: 800, color: "var(--text)" }}>{formatAmount(balanceOf(f))}</div>
                         {f.paidAmount > 0 && <div style={{ fontSize: 11, color: "var(--subtext)", marginTop: 2 }}>of {formatAmount(f.amount)}</div>}
                         <div style={{ fontSize: 11, fontWeight: 700, color: "#f59e0b", background: "#fef3c7", padding: "3px 10px", borderRadius: 20, marginTop: 4 }}>{f.paidAmount > 0 ? "PART PAID" : "UNPAID"}</div>
+                        <PayFeeButton fee={f} enabled={onlineEnabled} onPaid={fetchFees} />
                       </div>
                     </div>
                   </div>
@@ -133,13 +138,7 @@ export default function StudentFee() {
                   <div style={{ fontSize: 20, fontWeight: 900, color: "#ef4444" }}>{formatAmount(summary.totalDue)}</div>
                 </div>
 
-                <div style={{ background: "#eff6ff", borderRadius: 14, padding: "18px 20px", textAlign: "center", border: "1px solid #bfdbfe" }}>
-                  <div style={{ fontSize: 24, marginBottom: 8 }}>💳</div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "#1e40af" }}>Online Payment Coming Soon</div>
-                  <div style={{ fontSize: 12, color: "#3b82f6", marginTop: 6, lineHeight: 1.6 }}>
-                    Please visit the school office to clear your dues.
-                  </div>
-                </div>
+                <PaymentInfo enabled={onlineEnabled} />
               </>
             )}
           </>
@@ -159,11 +158,13 @@ export default function StudentFee() {
                     <div>
                       <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text)" }}>{f.feeType}</div>
                       <div style={{ fontSize: 12, color: "var(--subtext)", marginTop: 3 }}>{f.month} {f.year}</div>
-                      {f.paidDate && <div style={{ fontSize: 12, color: "#22c55e", marginTop: 2 }}>Paid on {formatDate(f.paidDate)}</div>}
+                      {f.paidDate && <div style={{ fontSize: 12, color: "#22c55e", marginTop: 2 }}>Last paid on {formatDate(f.paidDate)}</div>}
+                      <ReceiptLinks fee={f} />
                     </div>
                     <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: 17, fontWeight: 800, color: "var(--text)" }}>{formatAmount(f.amount)}</div>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: "#22c55e", background: "#dcfce7", padding: "3px 10px", borderRadius: 20, marginTop: 4 }}>PAID</div>
+                      <div style={{ fontSize: 17, fontWeight: 800, color: "var(--text)" }}>{formatAmount(f.paidAmount)}</div>
+                      {f.status !== "Paid" && <div style={{ fontSize: 11, color: "var(--subtext)" }}>of {formatAmount(f.amount)}</div>}
+                      <div style={{ fontSize: 11, fontWeight: 700, color: "#22c55e", background: "#dcfce7", padding: "3px 10px", borderRadius: 20, marginTop: 4 }}>{f.status === "Paid" ? "PAID" : "PART PAID"}</div>
                     </div>
                   </div>
                 </div>

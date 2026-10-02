@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { currentAcademicYear } from "../../utils/academicYear";
 import { pickChild, childQuery } from "../../utils/selectedChild";
+import { getPaymentConfig } from "../../utils/payments";
+import { PayFeeButton, ReceiptLinks, PaymentInfo, balanceOf } from "../../components/FeePayment";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -24,8 +26,9 @@ export default function ParentFee() {
   const [error,         setError]         = useState("");
   const [showBreakdown, setShowBreakdown] = useState(false);
   const [activeTab,     setActiveTab]     = useState("all");
+  const [onlineEnabled, setOnlineEnabled] = useState(false);
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => { fetchData(); getPaymentConfig().then(c => setOnlineEnabled(!!c.enabled)); }, []);
 
   const fetchData = async () => {
     try {
@@ -218,6 +221,9 @@ export default function ParentFee() {
                     <div style={{ fontWeight: 800, fontSize: 15, color: cfg.color }}>
                       ₹{(f.amount ?? 0).toLocaleString("en-IN")}
                     </div>
+                    {f.status === "Partial" && (
+                      <div style={{ fontSize: 11, color: "#6b7280", marginTop: 2 }}>Balance ₹{balanceOf(f).toLocaleString("en-IN")}</div>
+                    )}
                     <div style={{
                       fontSize: 10, fontWeight: 700, color: cfg.color,
                       background: cfg.bg, borderRadius: 6,
@@ -225,6 +231,8 @@ export default function ParentFee() {
                     }}>
                       {f.status?.toUpperCase()}
                     </div>
+                    <div><PayFeeButton fee={f} enabled={onlineEnabled} onPaid={fetchData} /></div>
+                    <ReceiptLinks fee={f} />
                   </div>
                 </div>
               );
@@ -282,16 +290,7 @@ export default function ParentFee() {
           </div>
         )}
 
-        {/* Payment Coming Soon */}
-        <div style={styles.paymentCard}>
-          <div style={{ fontSize: 28, marginBottom: 8 }}>💳</div>
-          <div style={{ fontWeight: 700, fontSize: 15, color: "#1e1b4b" }}>Online Payment</div>
-          <div style={{ fontSize: 12, color: "#6b7280", marginTop: 4, textAlign: "center", lineHeight: 1.6 }}>
-            Online fee payment will be available soon.{"\n"}
-            For now, please pay at the school office.
-          </div>
-          <div style={styles.comingSoonBadge}>Coming Soon</div>
-        </div>
+        <PaymentInfo enabled={onlineEnabled} />
 
       </div>
     </div>
@@ -427,18 +426,5 @@ const styles = {
     alignItems: "center", marginTop: 12,
     paddingTop: 12,
     borderTop: "2px solid #f3f4f6",
-  },
-  paymentCard: {
-    background: "var(--card)", borderRadius: 16,
-    padding: "24px 20px", marginBottom: 14,
-    boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
-    display: "flex", flexDirection: "column",
-    alignItems: "center",
-  },
-  comingSoonBadge: {
-    marginTop: 14, padding: "6px 18px",
-    background: "#f3f4f6", borderRadius: 99,
-    fontSize: 12, fontWeight: 700,
-    color: "#6b7280", letterSpacing: 0.5,
   },
 };

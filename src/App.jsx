@@ -6,6 +6,7 @@ import Splash from './pages/Splash'
 import Login from './pages/Login'
 import ChangePassword from './pages/ChangePassword'
 import ReportCard from './pages/ReportCard'
+import Receipt from './pages/Receipt'
 import StudentHome from './pages/student/Home'
 import StudentAttendance from './pages/student/Attendance'
 import StudentResult from './pages/student/Result'
@@ -105,6 +106,7 @@ function AppRoutes() {
         <Route path="/change-password" element={<RequireLogin><ChangePassword /></RequireLogin>} />
         {/* Shared by every role; the API decides which report cards a user may see. */}
         <Route path="/report-card" element={<Protected><ReportCard /></Protected>} />
+        <Route path="/receipt/:feeId/:receiptNo" element={<Protected><Receipt /></Protected>} />
 
         {/* Student */}
         <Route path="/student/home"          element={<Protected role="student"><StudentHome /></Protected>} />

@@ -23,6 +23,75 @@ function Field({ text, children }) {
   );
 }
 
+// Webhook address Razorpay should call; works whether VITE_API_URL is absolute or "/api".
+function webhookUrl(path) {
+  const base = API.startsWith("http") ? API.replace(/\/api\/?$/, "") : window.location.origin;
+  return `${base}${path}`;
+}
+
+function OnlinePayments() {
+  const [cfg, setCfg] = useState(null);
+  const [form, setForm] = useState({ keyId: "", keySecret: "", webhookSecret: "" });
+  const [saving, setSaving] = useState(false);
+
+  const load = async () => {
+    try {
+      const res = await axios.get(`${API}/payments/settings`, auth());
+      setCfg(res.data.data);
+      setForm({ keyId: res.data.data.keyId || "", keySecret: "", webhookSecret: "" });
+    } catch (err) {
+      setCfg({ error: errorMessage(err, "Could not load payment settings") });
+    }
+  };
+  useEffect(() => { load(); }, []);
+
+  const save = async (enabled) => {
+    setSaving(true);
+    try {
+      const body = { keyId: form.keyId.trim(), enabled };
+      if (form.keySecret) body.keySecret = form.keySecret;
+      if (form.webhookSecret) body.webhookSecret = form.webhookSecret;
+      await axios.put(`${API}/payments/settings`, body, auth());
+      toast.success(enabled ? "Online payments are on" : "Payment settings saved");
+      load();
+    } catch (err) {
+      toast.error(errorMessage(err));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (!cfg) return <div style={card}><div style={title}>Online Fee Payments</div><div style={{ fontSize: 13, color: "#94A3B8" }}>Loading...</div></div>;
+  if (cfg.error) return <div style={card}><div style={title}>Online Fee Payments</div><div style={{ fontSize: 13, color: "#B91C1C" }}>{cfg.error}</div></div>;
+  const url = webhookUrl(cfg.webhookPath);
+  return (
+    <div style={card}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={title}>Online Fee Payments (Razorpay)</div>
+        <span style={{ fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 20, background: cfg.enabled ? "#DCFCE7" : "#F1F5F9", color: cfg.enabled ? "#15803D" : "#64748B" }}>{cfg.enabled ? "On" : "Off"}</span>
+      </div>
+      <div style={{ fontSize: 12, color: "#64748B", marginBottom: 12, lineHeight: 1.6 }}>
+        Parents and students pay fees from the app with UPI, cards or net banking. Money goes straight to your school's Razorpay account and receipts are issued automatically.
+        Get the keys from Razorpay Dashboard → Account &amp; Settings → API Keys. Use Test Mode keys (rzp_test_…) first.
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
+        <Field text="Key ID"><input style={inputStyle} value={form.keyId} onChange={e => setForm({ ...form, keyId: e.target.value })} placeholder="rzp_test_..." autoComplete="off" /></Field>
+        <Field text="Key Secret"><input style={inputStyle} type="password" value={form.keySecret} onChange={e => setForm({ ...form, keySecret: e.target.value })} placeholder={cfg.hasKeySecret ? "Saved. Type to replace" : "Paste the key secret"} autoComplete="new-password" /></Field>
+        <Field text="Webhook Secret"><input style={inputStyle} type="password" value={form.webhookSecret} onChange={e => setForm({ ...form, webhookSecret: e.target.value })} placeholder={cfg.hasWebhookSecret ? "Saved. Type to replace" : "Secret you set on the webhook"} autoComplete="new-password" /></Field>
+      </div>
+      <div style={{ marginTop: 12, fontSize: 12, color: "#475569", background: "#F8FAFC", border: "1px solid #E2E8F0", borderRadius: 8, padding: "10px 12px", lineHeight: 1.6 }}>
+        In Razorpay Dashboard → Webhooks, add this URL with the events <b>payment.captured</b>, <b>order.paid</b> and <b>payment.failed</b>, and use the same webhook secret as above:
+        <div style={{ fontFamily: "monospace", fontSize: 12, marginTop: 4, wordBreak: "break-all", color: "#0F172A" }}>{url}</div>
+      </div>
+      <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 14 }}>
+        {cfg.enabled && <button onClick={() => save(false)} disabled={saving} style={{ padding: "9px 18px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", color: "#B91C1C", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Turn off</button>}
+        <button onClick={() => save(cfg.enabled)} disabled={saving} style={{ padding: "9px 18px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", color: "#334155", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Save keys</button>
+        {!cfg.enabled && <button onClick={() => save(true)} disabled={saving} style={{ padding: "9px 18px", borderRadius: 8, border: "none", background: "#534AB7", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Save and turn on</button>}
+      </div>
+    </div>
+  );
+}
+
 export default function Settings() {
   const [school, setSchool] = useState(null);
   const [subjects, setSubjects] = useState([]);
@@ -146,6 +215,8 @@ export default function Settings() {
           {saving ? "Saving..." : "Save Changes"}
         </button>
       </div>
+
+      <OnlinePayments />
 
       <div style={card}>
         <div style={title}>Subjects</div>

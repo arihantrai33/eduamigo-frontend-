@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { toast } from "../../utils/toast";
+import { useNavigate } from "react-router-dom";
+import { toast, confirmAction, errorMessage } from "../../utils/toast";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -28,6 +29,8 @@ function Modal({ show, onClose, title, children }) {
 }
 
 export default function FeeCollection() {
+  const navigate = useNavigate();
+  const [reviewOrders, setReviewOrders] = useState([]);
   const [fees, setFees] = useState([]);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -45,10 +48,12 @@ export default function FeeCollection() {
   const fetchAll = async () => {
     setLoading(true);
     try {
-      const [fRes, sRes] = await Promise.allSettled([
+      const [fRes, sRes, oRes] = await Promise.allSettled([
         axios.get(`${API}/fees`, auth()),
         axios.get(`${API}/students`, auth()),
+        axios.get(`${API}/payments/orders?status=needs_review`, auth()),
       ]);
+      setReviewOrders(oRes.status === "fulfilled" ? (oRes.value.data.data || []) : []);
       setFees(fRes.status === "fulfilled" ? (fRes.value.data.data || []) : []);
       setStudents(sRes.status === "fulfilled" ? (sRes.value.data.data || []) : []);
     } catch(e) {}
@@ -62,10 +67,13 @@ export default function FeeCollection() {
     setSaving(true);
     try {
       const res = await axios.patch(`${API}/fees/${selectedFee._id}/pay`, { amount: Number(payAmount), mode: payMethod }, auth());
-      toast.success(`Payment recorded. Receipt ${res.data.payment?.receiptNo || ""}`);
+      const receiptNo = res.data.payment?.receiptNo;
       setShowModal(false);
       fetchAll();
-    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
+      if (receiptNo && await confirmAction(`Payment recorded. Receipt ${receiptNo}. Print the receipt now?`, { confirmLabel: "Print receipt", danger: false })) {
+        navigate(`/receipt/${selectedFee._id}/${receiptNo}`);
+      }
+    } catch (e) { toast.error(errorMessage(e)); }
     setSaving(false);
   };
 
@@ -115,6 +123,18 @@ export default function FeeCollection() {
           <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Track and collect student fee payments</div>
         </div>
       </div>
+
+      {reviewOrders.length > 0 && (
+        <div role="alert" style={{ background:"#FFFBEB", border:"1.5px solid #FDE68A", borderRadius:16, padding:"14px 20px", marginBottom:20 }}>
+          <div style={{ fontSize:14, fontWeight:800, color:"#92400E" }}>{reviewOrders.length} online payment(s) need review</div>
+          <div style={{ fontSize:12, color:"#92400E", marginTop:4 }}>Money was received online but could not be applied automatically (for example, the fee was already paid in cash). Reconcile each with the parent or refund it from the Razorpay dashboard.</div>
+          <ul style={{ margin:"8px 0 0", paddingLeft:18, fontSize:12, color:"#78350F" }}>
+            {reviewOrders.slice(0, 5).map(o => (
+              <li key={o._id}>{o.student?.name || "Student"} · ₹{o.amount} · {o.fee?.feeType || "Fee"} · {o.providerPaymentId} · {o.note}</li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* Stat Cards */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:16, marginBottom:24 }}>
@@ -214,6 +234,12 @@ export default function FeeCollection() {
                       </button>
                     ) : (
                       <span style={{ fontSize:12, color:"#94A3B8", fontWeight:600 }}>✓ Done</span>
+                    )}
+                    {f.payments?.length > 0 && (
+                      <button onClick={() => navigate(`/receipt/${f._id}/${f.payments[f.payments.length - 1].receiptNo}`)} title="Latest receipt"
+                        style={{ display:"block", marginTop:6, border:"none", background:"none", color:"#6366F1", fontSize:12, fontWeight:700, cursor:"pointer", padding:0 }}>
+                        Receipt{f.payments.length > 1 ? ` (${f.payments.length})` : ""}
+                      </button>
                     )}
                   </td>
                 </tr>
