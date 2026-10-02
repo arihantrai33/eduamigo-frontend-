@@ -123,7 +123,7 @@ export default function ParentResult() {
                   </div>
                   <div style={{ textAlign: "right" }}>
                     <div style={{ fontWeight: 800, fontSize: 16, color: "#1C2033" }}>
-                      {r.marksObtained}<span style={{ fontSize: 11, color: "var(--subtext)" }}>/{r.totalMarks}</span>
+                      {r.absent ? "Absent" : <>{r.marksObtained}<span style={{ fontSize: 11, color: "var(--subtext)" }}>/{r.totalMarks}</span></>}
                     </div>
                     <div style={{ fontSize: 11, color: "#7B8099" }}>{pct}%</div>
                   </div>

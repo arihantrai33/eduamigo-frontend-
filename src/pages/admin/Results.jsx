@@ -1,28 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { gradeFor, GRADE_STYLE, PASS_PERCENT } from "../../utils/grades";
+import { toast, confirmAction, errorMessage } from "../../utils/toast";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
-const GRADE_CONFIG = {
-  "A+": { bg:"#F0FDF4", color:"#15803D", border:"#BBF7D0" },
-  "A":  { bg:"#F0FDF4", color:"#16A34A", border:"#BBF7D0" },
-  "B+": { bg:"#EEF2FF", color:"#4338CA", border:"#C7D2FE" },
-  "B":  { bg:"#EEF2FF", color:"#6366F1", border:"#C7D2FE" },
-  "C":  { bg:"#FFFBEB", color:"#D97706", border:"#FDE68A" },
-  "D":  { bg:"#FFF7ED", color:"#EA580C", border:"#FED7AA" },
-  "F":  { bg:"#FEF2F2", color:"#DC2626", border:"#FECACA" },
-};
-
-function getGrade(pct) {
-  if (pct >= 90) return "A+";
-  if (pct >= 80) return "A";
-  if (pct >= 70) return "B+";
-  if (pct >= 60) return "B";
-  if (pct >= 50) return "C";
-  if (pct >= 40) return "D";
-  return "F";
-}
+const GRADE_CONFIG = GRADE_STYLE;
 
 export default function Results() {
   const [results, setResults] = useState([]);
@@ -32,6 +16,7 @@ export default function Results() {
   const [filterClass, setFilterClass] = useState("");
   const [filterSection, setFilterSection] = useState("");
   const [filterExam, setFilterExam] = useState("");
+  const [filterTerm, setFilterTerm] = useState("");
 
   useEffect(() => { fetchAll(); }, []);
 
@@ -44,30 +29,43 @@ export default function Results() {
       ]);
       setResults(rRes.status === "fulfilled" ? (rRes.value.data.data || []) : []);
       setStudents(sRes.status === "fulfilled" ? (sRes.value.data.data || []) : []);
-    } catch(e) {}
+    } catch (e) { toast.error(errorMessage(e, "Could not load results")); }
     setLoading(false);
+  };
+
+  // Reopens one exam for one section so the teacher can correct marks; its results are hidden until republished.
+  const reopen = async (r) => {
+    if (!r.exam) return toast.error("This older result is not linked to a scheduled exam and cannot be reopened");
+    if (!(await confirmAction(`Reopen ${r.subject} (${r.examName}) for Class ${r.studentClass}-${r.studentSection}? All results of this exam for the section are hidden until the teacher publishes again.`, { confirmLabel: "Reopen" }))) return;
+    try {
+      const res = await axios.patch(`${API}/marks/unpublish`, { examId: r.exam, section: r.section }, auth());
+      toast.success(`${res.data.count} mark(s) reopened for correction`);
+      fetchAll();
+    } catch (e) { toast.error(errorMessage(e)); }
   };
 
   const enriched = results.map(r => {
     const student = students.find(s => s._id === (r.student?._id || r.student));
     const pct = r.totalMarks > 0 ? Math.round((r.marksObtained / r.totalMarks) * 100) : 0;
-    return { ...r, studentName: student?.name || r.studentName || "Unknown", studentClass: student?.class || r.class || "—", studentSection: student?.section || r.section || "", pct, grade: r.grade || getGrade(pct) };
+    return { ...r, studentName: student?.name || r.studentName || "Unknown", studentClass: student?.class || r.class || "—", studentSection: student?.section || r.section || "", pct, grade: r.absent ? "AB" : (r.grade || gradeFor(pct)) };
   });
 
   const classes   = [...new Set(enriched.map(r => r.studentClass))].filter(Boolean).sort();
   const sections  = [...new Set(enriched.filter(r => r.studentClass === filterClass).map(r => r.studentSection))].filter(Boolean).sort();
-  const examNames = [...new Set(enriched.map(r => r.examName || r.exam))].filter(Boolean).sort();
+  const examNames = [...new Set(enriched.map(r => r.examName))].filter(Boolean).sort();
+  const termNames = [...new Set(enriched.map(r => r.term))].filter(Boolean).sort();
 
   const filtered = enriched.filter(r =>
     (!search || r.studentName?.toLowerCase().includes(search.toLowerCase())) &&
     (!filterClass || r.studentClass === filterClass) &&
     (!filterSection || r.studentSection === filterSection) &&
-    (!filterExam || (r.examName || r.exam) === filterExam)
+    (!filterExam || r.examName === filterExam) &&
+    (!filterTerm || r.term === filterTerm)
   );
 
   const avgScore = filtered.length > 0 ? Math.round(filtered.reduce((s, r) => s + r.pct, 0) / filtered.length) : 0;
-  const passed   = filtered.filter(r => r.pct >= 40).length;
-  const failed   = filtered.filter(r => r.pct < 40).length;
+  const passed   = filtered.filter(r => !r.absent && r.pct >= PASS_PERCENT).length;
+  const failed   = filtered.filter(r => r.absent || r.pct < PASS_PERCENT).length;
   const toppers  = filtered.filter(r => r.pct >= 90).length;
 
   return (
@@ -132,6 +130,11 @@ export default function Results() {
           <option value="">All Exams</option>
           {examNames.map(e => <option key={e} value={e}>{e}</option>)}
         </select>
+        <select value={filterTerm} onChange={e => setFilterTerm(e.target.value)}
+          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:120 }}>
+          <option value="">All Terms</option>
+          {termNames.map(t => <option key={t} value={t}>{t}</option>)}
+        </select>
         <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600, whiteSpace:"nowrap" }}>{filtered.length} records</div>
       </div>
 
@@ -140,26 +143,26 @@ export default function Results() {
         <table style={{ width:"100%", borderCollapse:"collapse" }}>
           <thead>
             <tr style={{ background:"linear-gradient(90deg,#F8FAFC,#F1F5F9)" }}>
-              {["Student","Class","Exam","Subject","Marks","Percentage","Grade","Status"].map(h => (
+              {["Student","Class","Exam","Subject","Marks","Percentage","Grade","Status",""].map(h => (
                 <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#64748B", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={8} style={{ padding:"60px 0", textAlign:"center" }}>
+              <tr><td colSpan={9} style={{ padding:"60px 0", textAlign:"center" }}>
                 <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid #6366F1", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
                 <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading results...</div>
               </td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={8} style={{ padding:"80px 0", textAlign:"center" }}>
+              <tr><td colSpan={9} style={{ padding:"80px 0", textAlign:"center" }}>
                 <div style={{ fontSize:48, marginBottom:12 }}>🏆</div>
                 <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No results found</div>
                 <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Results will appear once teachers publish marks</div>
               </td></tr>
             ) : filtered.map((r, i) => {
               const gcfg = GRADE_CONFIG[r.grade] || GRADE_CONFIG["C"];
-              const passed = r.pct >= 40;
+              const passed = !r.absent && r.pct >= PASS_PERCENT;
               return (
                 <tr key={r._id} className="res-row" style={{ borderBottom:"1px solid #F1F5F9", animation:`fadeUp 0.3s ease ${i*0.03}s both` }}>
                   <td style={{ padding:"14px 18px" }}>
@@ -175,11 +178,14 @@ export default function Results() {
                       {r.studentClass}{r.studentSection ? `-${r.studentSection}` : ""}
                     </span>
                   </td>
-                  <td style={{ padding:"14px 18px", fontSize:13, color:"#374151", fontWeight:600 }}>{r.examName || r.exam || "—"}</td>
+                  <td style={{ padding:"14px 18px", fontSize:13, color:"#374151", fontWeight:600 }}>
+                    {r.examName || "—"}
+                    {r.term && <div style={{ fontSize:11, color:"#94A3B8", fontWeight:500 }}>{r.term}</div>}
+                  </td>
                   <td style={{ padding:"14px 18px", fontSize:13, color:"#374151", fontWeight:600 }}>{r.subject || "—"}</td>
                   <td style={{ padding:"14px 18px" }}>
-                    <span style={{ fontSize:13, fontWeight:800, color:"#0F172A" }}>{r.marksObtained ?? "—"}</span>
-                    <span style={{ fontSize:12, color:"#94A3B8" }}>/{r.totalMarks || "—"}</span>
+                    <span style={{ fontSize:13, fontWeight:800, color:"#0F172A" }}>{r.absent ? "Absent" : (r.marksObtained ?? "—")}</span>
+                    {!r.absent && <span style={{ fontSize:12, color:"#94A3B8" }}>/{r.totalMarks || "—"}</span>}
                   </td>
                   <td style={{ padding:"14px 18px" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:8 }}>
@@ -194,8 +200,12 @@ export default function Results() {
                   </td>
                   <td style={{ padding:"14px 18px" }}>
                     <span style={{ fontSize:11, fontWeight:700, padding:"4px 12px", borderRadius:20, background: passed ? "#F0FDF4" : "#FEF2F2", color: passed ? "#15803D" : "#DC2626", border:`1px solid ${passed ? "#BBF7D0" : "#FECACA"}` }}>
-                      {passed ? "✓ Pass" : "✗ Fail"}
+                      {r.absent ? "Absent" : passed ? "✓ Pass" : "✗ Fail"}
                     </span>
+                  </td>
+                  <td style={{ padding:"14px 18px" }}>
+                    {r.exam && <button onClick={() => reopen(r)} title="Reopen this exam's marks for correction"
+                      style={{ padding:"6px 12px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", color:"#64748B", fontSize:12, fontWeight:700, cursor:"pointer" }}>Reopen</button>}
                   </td>
                 </tr>
               );

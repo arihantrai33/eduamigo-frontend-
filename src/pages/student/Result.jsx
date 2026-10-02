@@ -181,7 +181,7 @@ export default function StudentResult() {
                         {r.grade}
                       </span>
                       <span style={{ fontSize: 13, fontWeight: 800, color: '#5C6BC0' }}>
-                        {r.marksObtained}/{r.totalMarks}
+                        {r.absent ? 'Absent' : `${r.marksObtained}/${r.totalMarks}`}
                       </span>
                     </div>
                   </div>

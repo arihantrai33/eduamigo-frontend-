@@ -1,15 +1,18 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { toast } from "../../utils/toast";
+import { toast, errorMessage } from "../../utils/toast";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
-const EXAM_TYPES = ["Unit Test","Mid Term","Final Exam","Pre-Board","Board Exam","Quiz","Assignment"];
+// Fallback only; the real list comes from GET /exams/options so it always matches the server.
+const DEFAULT_EXAM_TYPES = ["Unit Test","Mid Term","Half Yearly","Pre-Board","Final Exam","Board Exam","Practical","Quiz","Assignment","Custom"];
 const TYPE_COLORS = {
   "Unit Test":"#6366F1","Mid Term":"#F59E0B","Final Exam":"#EF4444",
-  "Pre-Board":"#EC4899","Board Exam":"#DC2626","Quiz":"#10B981","Assignment":"#3B82F6"
+  "Pre-Board":"#EC4899","Board Exam":"#DC2626","Quiz":"#10B981","Assignment":"#3B82F6",
+  "Half Yearly":"#F97316","Practical":"#14B8A6","Custom":"#64748B"
 };
+const EMPTY_FORM = { title:"", examType:"Unit Test", term:"", subject:"", class:"", section:"", date:"", startTime:"", endTime:"", totalMarks:"", venue:"", instructions:"" };
 
 function Modal({ show, onClose, title, children }) {
   if (!show) return null;
@@ -35,37 +38,56 @@ export default function ExamSchedule() {
   const [deleteId, setDeleteId] = useState(null);
   const [filterType, setFilterType] = useState("");
   const [filterClass, setFilterClass] = useState("");
-  const [form, setForm] = useState({ title:"", examType:"Unit Test", subject:"", class:"", section:"", date:"", startTime:"", endTime:"", totalMarks:"", venue:"", instructions:"" });
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [examTypes, setExamTypes] = useState(DEFAULT_EXAM_TYPES);
+  const [terms, setTerms] = useState(["Term 1", "Term 2"]);
+  const [subjectList, setSubjectList] = useState([]);
 
-  useEffect(() => { fetchExams(); }, []);
+  useEffect(() => {
+    fetchExams();
+    (async () => {
+      const [opt, teachers, extra] = await Promise.allSettled([
+        axios.get(`${API}/exams/options`, auth()),
+        axios.get(`${API}/teachers`, auth()),
+        axios.get(`${API}/schools/subjects`, auth()),
+      ]);
+      if (opt.status === "fulfilled") { setExamTypes(opt.value.data.data.examTypes); setTerms(opt.value.data.data.terms); }
+      // Suggest the subjects teachers actually teach, so teachers can find the exam when entering marks.
+      const fromTeachers = teachers.status === "fulfilled" ? (teachers.value.data.data || []).flatMap(t => t.subjects || []) : [];
+      const fromSchool = extra.status === "fulfilled" ? (extra.value.data.data || []) : [];
+      setSubjectList([...new Set([...fromTeachers, ...fromSchool])].sort());
+    })();
+  }, []);
 
   const fetchExams = async () => {
     setLoading(true);
     try {
       const r = await axios.get(`${API}/exams`, auth());
       setExams(r.data.data || []);
-    } catch(e) {}
+    } catch (e) { toast.error(errorMessage(e, "Could not load exams")); }
     setLoading(false);
   };
 
-  const openAdd = () => { setEditExam(null); setForm({ title:"", examType:"Unit Test", subject:"", class:"", section:"", date:"", startTime:"", endTime:"", totalMarks:"", venue:"", instructions:"" }); setShowModal(true); };
+  const openAdd = () => { setEditExam(null); setForm(EMPTY_FORM); setShowModal(true); };
   const openEdit = (e) => { setEditExam(e); setForm({...e, date: e.date ? new Date(e.date).toISOString().split("T")[0] : ""}); setShowModal(true); };
 
   const handleSave = async () => {
     if (!form.title || !form.subject || !form.class || !form.date) return toast.error("Title, subject, class and date are required");
+    if (!(Number(form.totalMarks) > 0)) return toast.error("Total marks are required so that teachers can enter marks");
     setSaving(true);
     try {
       if (editExam) await axios.put(`${API}/exams/${editExam._id}`, form, auth());
       else await axios.post(`${API}/exams`, form, auth());
       setShowModal(false);
+      toast.success(editExam ? "Exam updated" : "Exam scheduled");
       fetchExams();
-    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
+    } catch (e) { toast.error(errorMessage(e)); }
     setSaving(false);
   };
 
   const handleDelete = async (id) => {
-    try { await axios.delete(`${API}/exams/${id}`, auth()); fetchExams(); }
-    catch(e) {}
+    try { await axios.delete(`${API}/exams/${id}`, auth()); toast.success("Exam deleted"); fetchExams(); }
+    catch (e) { toast.error(errorMessage(e)); }
     setDeleteId(null);
   };
 
@@ -155,7 +177,7 @@ export default function ExamSchedule() {
         <select value={filterType} onChange={e => setFilterType(e.target.value)}
           style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:160 }}>
           <option value="">All Exam Types</option>
-          {EXAM_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+          {examTypes.map(t => <option key={t} value={t}>{t}</option>)}
         </select>
         <select value={filterClass} onChange={e => setFilterClass(e.target.value)}
           style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:140 }}>
@@ -195,7 +217,8 @@ export default function ExamSchedule() {
                   {exam.class && <div style={{ fontSize:12, color:"#64748B" }}>🏫 Class {exam.class}{exam.section ? `-${exam.section}` : ""}</div>}
                   <div style={{ fontSize:12, color:"#64748B" }}>📅 {fmtDate(exam.date)}</div>
                   {(exam.startTime || exam.endTime) && <div style={{ fontSize:12, color:"#64748B" }}>🕐 {exam.startTime} - {exam.endTime}</div>}
-                  {exam.totalMarks && <div style={{ fontSize:12, color:"#64748B" }}>📊 Total Marks: {exam.totalMarks}</div>}
+                  {exam.totalMarks ? <div style={{ fontSize:12, color:"#64748B" }}>📊 Total Marks: {exam.totalMarks}</div> : <div style={{ fontSize:12, color:"#B45309", fontWeight:600 }}>Total marks not set: teachers cannot enter marks yet</div>}
+                  {exam.term && <div style={{ fontSize:12, color:"#64748B" }}>🗂️ {exam.term} · {exam.academicYear}</div>}
                   {exam.venue && <div style={{ fontSize:12, color:"#64748B" }}>📍 {exam.venue}</div>}
                 </div>
                 <div style={{ display:"flex", gap:8, borderTop:"1px solid #F1F5F9", paddingTop:12 }}>
@@ -214,8 +237,13 @@ export default function ExamSchedule() {
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
           {inp("EXAM TITLE","title","text","e.g. Mathematics Mid Term")}
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-            {sel("EXAM TYPE","examType",EXAM_TYPES)}
-            {inp("SUBJECT","subject","text","e.g. Mathematics")}
+            {sel("EXAM TYPE","examType",examTypes)}
+            <div>
+              <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>SUBJECT</div>
+              <input list="exam-subjects" value={form.subject||""} onChange={e => f("subject", e.target.value)} placeholder="e.g. Mathematics"
+                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />
+              <datalist id="exam-subjects">{subjectList.map(sub => <option key={sub} value={sub} />)}</datalist>
+            </div>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             {inp("CLASS","class","text","e.g. 10")}
@@ -229,6 +257,14 @@ export default function ExamSchedule() {
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             {inp("TOTAL MARKS","totalMarks","number","e.g. 100")}
             {inp("VENUE","venue","text","e.g. Room 101")}
+          </div>
+          <div>
+            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TERM</div>
+            <select value={form.term||""} onChange={e => f("term", e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
+              <option value="">Set from the exam date (Apr–Sep: Term 1, Oct–Mar: Term 2)</option>
+              {terms.map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
+            <div style={{ fontSize:11, color:"#94A3B8", marginTop:6 }}>Leave section empty to schedule the exam for every section of the class. Report cards group results by term.</div>
           </div>
           <div>
             <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>INSTRUCTIONS</div>
@@ -248,7 +284,7 @@ export default function ExamSchedule() {
         <div style={{ textAlign:"center", padding:"8px 0 24px" }}>
           <div style={{ fontSize:52, marginBottom:16 }}>🗑️</div>
           <div style={{ fontSize:16, fontWeight:700, color:"#0F172A", marginBottom:8 }}>Delete this exam?</div>
-          <div style={{ fontSize:13, color:"#94A3B8", marginBottom:24 }}>This exam will be permanently removed.</div>
+          <div style={{ fontSize:13, color:"#94A3B8", marginBottom:24 }}>This exam will be permanently removed. Exams that already have marks cannot be deleted.</div>
           <div style={{ display:"flex", gap:10, justifyContent:"center" }}>
             <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
             <button onClick={() => handleDelete(deleteId)} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#EF4444,#DC2626)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer" }}>Delete</button>
