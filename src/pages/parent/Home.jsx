@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 import { pickChild, childQuery } from "../../utils/selectedChild";
 import ChildSwitcher from "../../components/ChildSwitcher";
+import UpcomingExams from "../../components/UpcomingExams";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -175,6 +176,9 @@ export default function ParentHome() {
             </button>
           ))}
         </div>
+
+        {/* Upcoming Exams for the selected child */}
+        {child && <UpcomingExams query={childQuery()} reloadKey={child._id} />}
 
         {/* Notices */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>

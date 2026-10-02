@@ -12,6 +12,15 @@ const TYPE_COLORS = {
   "Pre-Board":"#EC4899","Board Exam":"#DC2626","Quiz":"#10B981","Assignment":"#3B82F6",
   "Half Yearly":"#F97316","Practical":"#14B8A6","Custom":"#64748B"
 };
+// Native selects look different in every browser (Safari draws a small grey pill); this matches the text inputs.
+const CHEVRON = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E\")";
+const SELECT_STYLE = {
+  width:"100%", padding:"0 36px 0 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none",
+  fontFamily:"inherit", color:"#0F172A", boxSizing:"border-box", appearance:"none", WebkitAppearance:"none", MozAppearance:"none",
+  background:`white ${CHEVRON} no-repeat right 14px center`, cursor:"pointer", height:42,
+};
+const FILTER_STYLE = { ...SELECT_STYLE, width:"auto", height:44, padding:"0 38px 0 16px", borderRadius:12, fontWeight:600 };
+
 const EMPTY_FORM = { title:"", examType:"Unit Test", term:"", subject:"", class:"", section:"", date:"", startTime:"", endTime:"", totalMarks:"", venue:"", instructions:"" };
 
 function Modal({ show, onClose, title, children }) {
@@ -43,8 +52,17 @@ export default function ExamSchedule() {
   const [terms, setTerms] = useState(["Term 1", "Term 2"]);
   const [subjectList, setSubjectList] = useState([]);
 
+  const fetchExams = async () => {
+    try {
+      setLoading(true);
+      const r = await axios.get(`${API}/exams`, auth());
+      setExams(r.data.data || []);
+    } catch (e) { toast.error(errorMessage(e, "Could not load exams")); }
+    setLoading(false);
+  };
+
   useEffect(() => {
-    fetchExams();
+    Promise.resolve().then(fetchExams);
     (async () => {
       const [opt, teachers, extra] = await Promise.allSettled([
         axios.get(`${API}/exams/options`, auth()),
@@ -59,21 +77,14 @@ export default function ExamSchedule() {
     })();
   }, []);
 
-  const fetchExams = async () => {
-    setLoading(true);
-    try {
-      const r = await axios.get(`${API}/exams`, auth());
-      setExams(r.data.data || []);
-    } catch (e) { toast.error(errorMessage(e, "Could not load exams")); }
-    setLoading(false);
-  };
-
   const openAdd = () => { setEditExam(null); setForm(EMPTY_FORM); setShowModal(true); };
   const openEdit = (e) => { setEditExam(e); setForm({...e, date: e.date ? new Date(e.date).toISOString().split("T")[0] : ""}); setShowModal(true); };
 
   const handleSave = async () => {
     if (!form.title || !form.subject || !form.class || !form.date) return toast.error("Title, subject, class and date are required");
     if (!(Number(form.totalMarks) > 0)) return toast.error("Total marks are required so that teachers can enter marks");
+    if (!form.startTime || !form.endTime) return toast.error("Choose the start and end time of the exam");
+    if (form.endTime <= form.startTime) return toast.error("End time must be after the start time");
     setSaving(true);
     try {
       if (editExam) await axios.put(`${API}/exams/${editExam._id}`, form, auth());
@@ -108,14 +119,14 @@ export default function ExamSchedule() {
     <div>
       <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
       <input type={type} value={form[key]||""} onChange={e => f(key, e.target.value)} placeholder={placeholder}
-        style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
+        style={{ width:"100%", height:42, padding:"0 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white", color:"#0F172A" }}
         onFocus={e => e.target.style.borderColor="#F97316"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
     </div>
   );
   const sel = (label, key, options) => (
     <div>
       <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
-      <select value={form[key]||""} onChange={e => f(key, e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
+      <select value={form[key]||""} onChange={e => f(key, e.target.value)} style={SELECT_STYLE}>
         <option value="">Select</option>
         {options.map(o => <option key={o} value={o}>{o}</option>)}
       </select>
@@ -174,13 +185,13 @@ export default function ExamSchedule() {
 
       {/* Filters */}
       <div style={{ display:"flex", gap:12, marginBottom:20, alignItems:"center", animation:"fadeUp 0.4s ease 0.1s both" }}>
-        <select value={filterType} onChange={e => setFilterType(e.target.value)}
-          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:160 }}>
+        <select value={filterType} onChange={e => setFilterType(e.target.value)} aria-label="Filter by exam type"
+          style={{ ...FILTER_STYLE, minWidth:170 }}>
           <option value="">All Exam Types</option>
           {examTypes.map(t => <option key={t} value={t}>{t}</option>)}
         </select>
-        <select value={filterClass} onChange={e => setFilterClass(e.target.value)}
-          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:140 }}>
+        <select value={filterClass} onChange={e => setFilterClass(e.target.value)} aria-label="Filter by class"
+          style={{ ...FILTER_STYLE, minWidth:150 }}>
           <option value="">All Classes</option>
           {classes.map(c => <option key={c} value={c}>Class {c}</option>)}
         </select>
@@ -216,7 +227,7 @@ export default function ExamSchedule() {
                 <div style={{ display:"flex", flexDirection:"column", gap:6, marginBottom:16 }}>
                   {exam.class && <div style={{ fontSize:12, color:"#64748B" }}>🏫 Class {exam.class}{exam.section ? `-${exam.section}` : ""}</div>}
                   <div style={{ fontSize:12, color:"#64748B" }}>📅 {fmtDate(exam.date)}</div>
-                  {(exam.startTime || exam.endTime) && <div style={{ fontSize:12, color:"#64748B" }}>🕐 {exam.startTime} - {exam.endTime}</div>}
+                  {exam.startTime && <div style={{ fontSize:12, color:"#64748B" }}>🕐 {exam.startTime}{exam.endTime ? ` – ${exam.endTime}` : ""}</div>}
                   {exam.totalMarks ? <div style={{ fontSize:12, color:"#64748B" }}>📊 Total Marks: {exam.totalMarks}</div> : <div style={{ fontSize:12, color:"#B45309", fontWeight:600 }}>Total marks not set: teachers cannot enter marks yet</div>}
                   {exam.term && <div style={{ fontSize:12, color:"#64748B" }}>🗂️ {exam.term} · {exam.academicYear}</div>}
                   {exam.venue && <div style={{ fontSize:12, color:"#64748B" }}>📍 {exam.venue}</div>}
@@ -241,13 +252,14 @@ export default function ExamSchedule() {
             <div>
               <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>SUBJECT</div>
               <input list="exam-subjects" value={form.subject||""} onChange={e => f("subject", e.target.value)} placeholder="e.g. Mathematics"
-                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />
+                style={{ width:"100%", height:42, padding:"0 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white", color:"#0F172A" }} />
               <datalist id="exam-subjects">{subjectList.map(sub => <option key={sub} value={sub} />)}</datalist>
             </div>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             {inp("CLASS","class","text","e.g. 10")}
             {inp("SECTION","section","text","e.g. A")}
+            <div style={{ gridColumn:"1 / -1", fontSize:11, color:"#94A3B8", marginTop:-4 }}>Leave section empty to schedule the exam for every section of the class.</div>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:12 }}>
             {inp("DATE","date","date","")}
@@ -260,11 +272,11 @@ export default function ExamSchedule() {
           </div>
           <div>
             <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TERM</div>
-            <select value={form.term||""} onChange={e => f("term", e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
+            <select value={form.term||""} onChange={e => f("term", e.target.value)} style={SELECT_STYLE}>
               <option value="">Set from the exam date (Apr–Sep: Term 1, Oct–Mar: Term 2)</option>
               {terms.map(t => <option key={t} value={t}>{t}</option>)}
             </select>
-            <div style={{ fontSize:11, color:"#94A3B8", marginTop:6 }}>Leave section empty to schedule the exam for every section of the class. Report cards group results by term.</div>
+            <div style={{ fontSize:11, color:"#94A3B8", marginTop:6 }}>Report cards group results by term.</div>
           </div>
           <div>
             <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>INSTRUCTIONS</div>

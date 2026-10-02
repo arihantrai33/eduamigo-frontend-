@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import UpcomingExams from "../../components/UpcomingExams";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
@@ -222,6 +223,8 @@ timetable.slice(0, 4).map((c, i) => (
             ))
           )}
 </div>
+{/* Upcoming Exams */}
+<UpcomingExams />
 {/* Notices */}
 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
 <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--text)", margin: 0 }}>Notices</h3>
