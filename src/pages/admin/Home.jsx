@@ -39,6 +39,7 @@ import EventCalendar from "./EventCalendar";
 import IDCardGenerator from "./IDCardGenerator";
 import BulkOperations from "./BulkOperations";
 import HRManagement from "./HRManagement";
+import Admissions from "./Admissions";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -65,6 +66,7 @@ const NAV = [
   { label: "Dashboard",          icon: LayoutDashboard, path: "/admin", perm: "attendance.reports" },
 
   { section: "ACADEMIC MANAGEMENT" },
+  { label: "Admissions",         icon: FileText,        path: "/admin/admissions", perm: "admissions.manage" },
   { label: "All Students",       icon: Users,           path: "/admin/students", perm: "students.read" },
   { label: "All Teachers",       icon: School,          path: "/admin/teachers", perm: "teachers.manage" },
   { label: "Timetable",          icon: Clock,           path: "/admin/timetable", perm: "timetable.manage" },
@@ -596,9 +598,8 @@ export default function AdminHome() {
           <Route path="leaves" element={<Gate user={user} perm="leaves.all"><LeaveRequests /></Gate>} />
           <Route path="library" element={<Gate user={user} perm="library.manage"><Library /></Gate>} />
           <Route path="marks" element={<Navigate to="/admin/results" replace />} />
-          <Route path="admissions/enquiries" element={<div style={{padding:40,textAlign:"center",color:"#94A3B8",fontSize:16,fontWeight:700}}>🏫 Admissions — Enquiries coming soon</div>} />
-          <Route path="admissions/applications" element={<div style={{padding:40,textAlign:"center",color:"#94A3B8",fontSize:16,fontWeight:700}}>📋 Applications coming soon</div>} />
-          <Route path="admissions/enrollment" element={<div style={{padding:40,textAlign:"center",color:"#94A3B8",fontSize:16,fontWeight:700}}>✅ Enrollment coming soon</div>} />
+          <Route path="admissions" element={<Gate user={user} perm="admissions.manage"><Admissions /></Gate>} />
+          <Route path="admissions/*" element={<Navigate to="/admin/admissions" replace />} />
           <Route path="communications" element={<Gate user={user} perm="communication.manage"><Communications /></Gate>} />
           <Route path="reports" element={<Gate user={user} perm="attendance.reports"><Reports /></Gate>} />
           <Route path="results" element={<Gate user={user} perm="results.read"><Results /></Gate>} />
