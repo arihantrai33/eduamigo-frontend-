@@ -51,8 +51,8 @@ export default function TeacherMarks() {
 
   const loadExams = useCallback(async () => {
     if (!cls || !section) return
-    setLoadingExams(true)
     try {
+      setLoadingExams(true)
       const res = await axios.get(`${API}/marks/exams?class=${cls}&section=${section}`, auth())
       setExams(res.data.data || [])
     } catch (err) {
@@ -63,7 +63,7 @@ export default function TeacherMarks() {
     }
   }, [cls, section])
 
-  useEffect(() => { setExam(null); setSheet(null); loadExams() }, [loadExams])
+  useEffect(() => { Promise.resolve().then(loadExams) }, [loadExams])
 
   const openExam = async (e) => {
     setExam(e)
@@ -204,7 +204,7 @@ export default function TeacherMarks() {
         <div style={styles.label}>Class</div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
           {classes.map(c => (
-            <button key={c} onClick={() => setClassKey(c)} style={{
+            <button key={c} onClick={() => { if (c !== classKey) { setExam(null); setSheet(null); setExams([]) } setClassKey(c) }} style={{
               padding: '6px 16px', borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: 'none',
               background: classKey === c ? '#5C6BC0' : '#EEF2FF', color: classKey === c ? '#fff' : '#5C6BC0',
             }}>Class {c}</button>

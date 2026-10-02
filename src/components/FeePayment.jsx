@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { payFee } from "../utils/payments";
+import { payFee, balanceOf } from "../utils/payments";
 import { toast, errorMessage } from "../utils/toast";
 
 const rupees = (n) => `₹${Number(n || 0).toLocaleString("en-IN")}`;
-export const balanceOf = (fee) => Math.max(0, Math.round(((fee.amount || 0) - (fee.paidAmount || 0)) * 100) / 100);
 
 // "Pay online" for one fee. Shown only when the school has online payments enabled and a balance is due.
 export function PayFeeButton({ fee, enabled, onPaid }) {

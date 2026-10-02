@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { currentAcademicYear } from "../../utils/academicYear";
 import { pickChild, childQuery } from "../../utils/selectedChild";
-import { getPaymentConfig } from "../../utils/payments";
-import { PayFeeButton, ReceiptLinks, PaymentInfo, balanceOf } from "../../components/FeePayment";
+import { getPaymentConfig, balanceOf } from "../../utils/payments";
+import { PayFeeButton, ReceiptLinks, PaymentInfo } from "../../components/FeePayment";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -28,8 +28,6 @@ export default function ParentFee() {
   const [activeTab,     setActiveTab]     = useState("all");
   const [onlineEnabled, setOnlineEnabled] = useState(false);
 
-  useEffect(() => { fetchData(); getPaymentConfig().then(c => setOnlineEnabled(!!c.enabled)); }, []);
-
   const fetchData = async () => {
     try {
       const [parentRes, feeRes] = await Promise.all([
@@ -49,6 +47,8 @@ export default function ParentFee() {
       setLoading(false);
     }
   };
+
+  useEffect(() => { Promise.resolve().then(fetchData); getPaymentConfig().then(c => setOnlineEnabled(!!c.enabled)); }, []);
 
   const paidPct = summary.total > 0
     ? Math.round((summary.totalPaid / summary.total) * 100)

@@ -30,9 +30,9 @@ export default function ReportCard() {
   const [error, setError] = useState("");
 
   const load = useCallback(async () => {
-    setLoading(true);
-    setError("");
     try {
+      setLoading(true);
+      setError("");
       const q = `term=${encodeURIComponent(term)}&academicYear=${academicYear}`;
       const url = studentId
         ? `${API}/report-cards/student/${studentId}?${q}`
@@ -46,7 +46,7 @@ export default function ReportCard() {
     }
   }, [studentId, cls, section, term, academicYear]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { Promise.resolve().then(load); }, [load]);
 
   const setParam = (k, v) => { const next = new URLSearchParams(params); next.set(k, v); setParams(next, { replace: true }); };
   const startYear = Number(currentAcademicYear().slice(0, 4));

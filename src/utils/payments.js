@@ -59,3 +59,6 @@ export async function payFee({ feeId, amount }) {
     rzp.open();
   });
 }
+
+// Outstanding amount on a fee, rounded to paise.
+export const balanceOf = (fee) => Math.max(0, Math.round(((fee.amount || 0) - (fee.paidAmount || 0)) * 100) / 100);

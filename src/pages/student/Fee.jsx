@@ -17,7 +17,6 @@ export default function StudentFee() {
   const [activeTab, setActiveTab] = useState("pending");
 
   const [onlineEnabled, setOnlineEnabled] = useState(false);
-  useEffect(() => { fetchFees(); getPaymentConfig().then(c => setOnlineEnabled(!!c.enabled)); }, []);
 
   const fetchFees = async () => {
     try {
@@ -32,6 +31,9 @@ export default function StudentFee() {
       setLoading(false);
     }
   };
+
+  useEffect(() => { Promise.resolve().then(fetchFees); getPaymentConfig().then(c => setOnlineEnabled(!!c.enabled)); }, []);
+
 
   // Anything with a balance is outstanding, including part-paid fees.
   const balanceOf = (f) => Math.max(0, (f.amount || 0) - (f.paidAmount || 0));
