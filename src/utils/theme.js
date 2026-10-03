@@ -41,13 +41,15 @@ export function schoolTheme(school) {
   const isLight = school?.heroStyle === "light";
   // Light-style schools use a softer version of their colour for tabs, chips, badges and buttons;
   // the dark shades (headings, text on tints) still come from the full colour so they stay readable.
-  const primary = isLight ? shade(base, 0.15) : base;
+  const primary = isLight ? shade(base, 0.22) : base;
   return {
     isLight,
     // Main buttons: soft and bright on light screens, deeper on bold ones.
     button: isLight
-      ? `linear-gradient(135deg, ${shade(base, 0.3)} 0%, ${shade(base, 0.1)} 100%)`
+      ? `linear-gradient(135deg, ${shade(base, 0.38)} 0%, ${shade(base, 0.2)} 100%)`
       : `linear-gradient(135deg, ${primary} 0%, ${shade(primary, -0.3)} 100%)`,
+    // Keeps white text crisp on the softer light-style buttons.
+    buttonTextShadow: isLight ? `0 1px 2px ${alpha(shade(base, -0.4), 0.35)}` : "none",
     mist: shade(primary, 0.96),    // near-white tint
     primary,
     accent,
