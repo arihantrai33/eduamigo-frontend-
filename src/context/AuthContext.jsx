@@ -48,6 +48,7 @@ export function AuthProvider({ children }) {
         updateUser({
           permissions: p.permissions, features: p.features, plan: p.plan, subscription: p.subscription,
           branding: p.branding, schoolCode: p.schoolCode, school: p.school, mustChangePassword: p.mustChangePassword,
+          supportSession: !!p.supportSession,
         });
       })
       .catch(() => {});
