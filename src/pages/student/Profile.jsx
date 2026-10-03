@@ -5,6 +5,7 @@ import { useTheme } from "../../context/ThemeContext";
 import axios from "axios";
 import { currentAcademicYear } from "../../utils/academicYear";
 import SupportContent from "../../components/SupportContent";
+import { signOutEverywhere } from "../../utils/account";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -260,6 +261,12 @@ export default function Profile() {
         </div>
 
         {/* Logout */}
+        <div onClick={() => signOutEverywhere(logout, navigate)} style={{ background: darkMode ? "#16213e" : "white", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", display: "flex", alignItems: "center", gap: "14px", cursor: "pointer", marginBottom: "12px" }}>
+          <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: "#FFF7ED", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>📵</div>
+          <div style={{ flex: 1, fontWeight: "600", fontSize: "14px", color: "#C2410C" }}>Sign out on all devices</div>
+          <div style={{ color: "#C2410C", fontSize: "18px" }}>›</div>
+        </div>
+
         <div onClick={handleLogout} style={{ background: darkMode ? "#16213e" : "white", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", display: "flex", alignItems: "center", gap: "14px", cursor: "pointer" }}>
           <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: darkMode ? "#2d1515" : "#fff5f5", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>🚪</div>
           <div style={{ flex: 1, fontWeight: "600", fontSize: "14px", color: "#ef4444" }}>Logout</div>

@@ -6,7 +6,7 @@ import {
   CalendarCheck, CreditCard, FileBadge, Clock, Notebook, BadgeDollarSign, Layers,
   Bell, MessageCircle, BarChart2, Settings as SettingsIcon, Menu, X,
   AlertCircle, CheckCircle, BookOpen, LogOut, TrendingUp, Zap,
-  Shield, FileText
+  Shield, FileText, GraduationCap
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { can, ROLE_LABELS } from "../../utils/permissions";
@@ -31,6 +31,7 @@ import Reports from "./Reports";
 import Results from "./Results";
 import SalaryManagement from "./SalaryManagement";
 import Settings from "./Settings";
+import AcademicSetup from "./AcademicSetup";
 import StudentProfile from "./StudentProfile";
 import TeacherProfile from "./TeacherProfile";
 import Timetable from "./Timetable";
@@ -68,6 +69,7 @@ const NAV = [
   { label: "Dashboard",          icon: LayoutDashboard, path: "/admin", perm: "attendance.reports" },
 
   { section: "ACADEMIC MANAGEMENT" },
+  { label: "School Setup",       icon: GraduationCap,   path: "/admin/academic", perm: "academics.manage" },
   { label: "Admissions",         icon: FileText,        path: "/admin/admissions", perm: "admissions.manage" },
   { label: "All Students",       icon: Users,           path: "/admin/students", perm: "students.read" },
   { label: "All Teachers",       icon: School,          path: "/admin/teachers", perm: "teachers.manage" },
@@ -182,6 +184,13 @@ function DashboardContent({ isMobile, navigate, user }) {
 
   useEffect(() => { fetchAll(); }, []);
 
+  // Until the school is fully set up, the dashboard points the admin to the setup checklist.
+  const [setup, setSetup] = useState(null);
+  useEffect(() => {
+    if (!can(user, "academics.manage")) return;
+    axios.get(`${API}/academic/setup-status`, authHeader()).then((r) => setSetup(r.data.data)).catch(() => {});
+  }, [user]);
+
   const fetchAll = async () => {
     try {
       const [studentsRes, teachersRes, busesRes, leavesRes, attendanceRes, feesRes, parentsRes] = await Promise.allSettled([
@@ -245,6 +254,16 @@ function DashboardContent({ isMobile, navigate, user }) {
 
   return (
     <PageWrapper>
+      {setup && !setup.complete && (
+        <div onClick={() => navigate("/admin/academic")} style={{ display: "flex", alignItems: "center", gap: 12, background: "white", border: "1px solid #C7D2FE", borderRadius: 14, padding: "12px 16px", marginBottom: "1rem", cursor: "pointer", boxShadow: "0 2px 8px rgba(99,102,241,0.08)" }}>
+          <GraduationCap size={20} color="#534AB7" />
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#0F172A" }}>Finish setting up your school</div>
+            <div style={{ fontSize: 12, color: "#64748B" }}>{setup.done} of {setup.total} steps done. Next: {setup.steps.find((x) => !x.done)?.label}</div>
+          </div>
+          <span style={{ fontSize: 12, fontWeight: 700, color: "#534AB7" }}>Continue ›</span>
+        </div>
+      )}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.5rem" }}>
         <div>
           <div style={{ fontSize: isMobile ? 18 : 26, fontWeight: 800, color: "#0F172A", letterSpacing: "-0.5px" }}>Dashboard</div>
@@ -602,6 +621,7 @@ export default function AdminHome() {
           <Route path="results" element={<Gate user={user} perm="results.read"><Results /></Gate>} />
           <Route path="salaries" element={<Gate user={user} perm="hr.manage"><SalaryManagement /></Gate>} />
           <Route path="settings" element={<Gate user={user} perm="settings.manage"><Settings /></Gate>} />
+          <Route path="academic" element={<Gate user={user} perm="academics.manage"><AcademicSetup /></Gate>} />
           <Route path="timetable" element={<Gate user={user} perm="timetable.manage"><Timetable /></Gate>} />
           <Route path="transport" element={<Gate user={user} perm="transport.manage"><Transport /></Gate>} />
           <Route path="user-management" element={<Gate user={user} perm="users.manage"><UserManagement /></Gate>} />

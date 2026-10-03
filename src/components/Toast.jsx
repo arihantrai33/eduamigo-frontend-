@@ -39,7 +39,7 @@ export default function Toast() {
   };
 
   const copyCreds = async () => {
-    const text = creds.entries.map((c) => `${c.label ? `${c.label}: ` : ""}${c.email} / ${c.password}`).join("\n");
+    const text = creds.entries.map((c) => `${c.label ? `${c.label}: ` : ""}${c.schoolCode ? `school ${c.schoolCode}, ` : ""}login ${c.loginId || c.email} / ${c.password}`).join("\n");
     try { await navigator.clipboard.writeText(text); setCopied(true); } catch { setCopied(false); }
   };
 
@@ -78,7 +78,8 @@ export default function Toast() {
               {creds.entries.map((c, i) => (
                 <div key={i} style={{ background: "#F8FAFC", border: "1px solid #E2E8F0", borderRadius: 10, padding: "10px 12px", fontSize: 13 }}>
                   {c.label && <div style={{ fontSize: 11, fontWeight: 700, color: "#6366F1", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4 }}>{c.label}</div>}
-                  <div style={{ color: "#0F172A" }}>{c.email}</div>
+                  {c.schoolCode && <div style={{ color: "#64748B", fontSize: 12 }}>School code: <strong style={{ color: "#0F172A" }}>{c.schoolCode}</strong></div>}
+                  <div style={{ color: "#0F172A" }}>Login ID: <strong>{c.loginId || c.email}</strong></div>
                   <div style={{ fontFamily: "ui-monospace, Menlo, monospace", color: "#0F172A", fontWeight: 700, marginTop: 2 }}>{c.password}</div>
                 </div>
               ))}

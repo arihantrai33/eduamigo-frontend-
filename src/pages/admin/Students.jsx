@@ -207,7 +207,7 @@ export default function Students() {
   };
 
   const handleSave = async () => {
-    if (!form.name || !form.class || !form.section || !form.rollNumber) return toast.error("Name, class, section, roll number required");
+    if (!form.name || !form.class || !form.section) return toast.error("Name, class and section are required");
     setSaving(true);
     try {
       if (form.photoFile) {

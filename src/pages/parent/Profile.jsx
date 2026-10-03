@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 import SupportContent from "../../components/SupportContent";
+import { signOutEverywhere, resetStudentPassword } from "../../utils/account";
+import { showCredentials, toast } from "../../utils/toast";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -44,6 +46,8 @@ export default function ParentProfile() {
   const { user, logout } = useAuth();
   const [parentData, setParentData] = useState(null);
   const [showHelp,   setShowHelp]   = useState(false);
+  const [children,   setChildren]   = useState([]);
+  const [showReset,  setShowReset]  = useState(false);
 
 
   useEffect(() => {
@@ -56,7 +60,18 @@ export default function ParentProfile() {
       }
     };
     fetchParent();
+    axios.get(`${API}/students/my-child`, authHeader())
+      .then((r) => setChildren(r.data.children || []))
+      .catch(() => {});
   }, []);
+
+  // Students usually have no email, so the parent gives them a new temporary password here.
+  const resetChild = async (child) => {
+    const credentials = await resetStudentPassword(child);
+    if (!credentials) return;
+    showCredentials([{ label: child.name, ...credentials }], "New password for your child");
+    toast.success(`${child.name} must set a new password after logging in`);
+  };
 
   const initials = user?.name
     ? user.name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase()
@@ -71,7 +86,9 @@ export default function ParentProfile() {
   const menu = [
     { icon: "🔔", label: "Notifications",   bg: "#E8F5E9", action: () => navigate("/parent/notifications") },
     { icon: "🔒", label: "Change Password", bg: "#FFF9C4", action: () => navigate("/change-password") },
+    ...(children.length ? [{ icon: "🔑", label: "Reset child's password", bg: "#EDE7F6", action: () => setShowReset((v) => !v) }] : []),
     { icon: "❓", label: "Help & Support",  bg: "#E3F2FD", action: () => setShowHelp(true) },
+    { icon: "📵", label: "Sign out on all devices", bg: "#FFF7ED", action: () => signOutEverywhere(logout, navigate) },
     { icon: "🚪", label: "Logout",          bg: "#FFEBEE", action: handleLogout, danger: true                             },
   ];
 
@@ -119,6 +136,23 @@ export default function ParentProfile() {
           <InfoRow label="Occupation" value={parentData?.occupation || "—"               } />
           <InfoRow label="Address"    value={parentData?.address    || "—"               } last />
         </div>
+
+        {showReset && (
+          <div style={{ ...s.infoCard, padding: "12px 16px" }}>
+            <div style={{ fontSize: 12, color: "#7B8099", marginBottom: 8, lineHeight: 1.5 }}>
+              Your child logs in with the school code and their admission number. Choose a child to give them a new temporary password.
+            </div>
+            {children.map((c) => (
+              <div key={c._id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0" }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text, #1C2033)" }}>{c.name}</div>
+                  <div style={{ fontSize: 12, color: "#7B8099" }}>Class {c.class}-{c.section}{c.admissionNo ? ` · Admission No ${c.admissionNo}` : ""}</div>
+                </div>
+                <button onClick={() => resetChild(c)} style={{ padding: "8px 12px", borderRadius: 10, border: "none", background: "#4f46e5", color: "white", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Reset password</button>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Menu */}
         <div style={s.menuCard}>

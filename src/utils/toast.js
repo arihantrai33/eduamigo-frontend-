@@ -29,9 +29,10 @@ export function errorMessage(err, fallback = 'Something went wrong. Please try a
 }
 
 // Shows newly issued login details in a dialog that stays open until the admin closes it.
-// entries: [{ label: 'Student', email, password }]
+// entries: [{ label: 'Student', schoolCode?, loginId?, email?, password }]
+// loginId is what the person types (admission number, mobile or email); older answers only have email.
 export function showCredentials(entries, title = 'Login details') {
-  const list = (entries || []).filter((e) => e && e.email && e.password);
+  const list = (entries || []).filter((e) => e && (e.loginId || e.email) && e.password);
   if (!list.length) return;
   window.dispatchEvent(new CustomEvent(CREDENTIALS_EVENT, { detail: { title, entries: list } }));
 }

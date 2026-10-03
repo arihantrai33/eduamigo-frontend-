@@ -122,11 +122,12 @@ export default function BulkOperations() {
 
   // New accounts get temporary passwords; they are downloaded once as a CSV for the admin to distribute.
   const downloadCredentials = (list, kind) => {
-    const rows = [["Role", "Email", "Temporary password"]];
+    const rows = [["Role", "School code", "Login ID", "Email", "Temporary password"]];
+    const row = (role, c) => [role, c.schoolCode || "", c.loginId || c.email || "", c.email || "", c.password];
     list.forEach((c) => {
-      if (c?.student) rows.push(["Student", c.student.email, c.student.password]);
-      if (c?.parent) rows.push(["Parent", c.parent.email, c.parent.password]);
-      if (c?.email) rows.push(["Teacher", c.email, c.password]);
+      if (c?.student) rows.push(row("Student", c.student));
+      if (c?.parent) rows.push(row("Parent", c.parent));
+      if (c?.email && c?.password) rows.push(row("Teacher", c));
     });
     const csv = rows.map((r) => r.map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));

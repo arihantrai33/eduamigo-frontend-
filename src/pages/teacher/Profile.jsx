@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 import { currentAcademicYear } from "../../utils/academicYear";
 import SupportContent from "../../components/SupportContent";
+import { signOutEverywhere } from "../../utils/account";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -223,6 +224,12 @@ export default function TeacherProfile() {
               <div style={{ color: "#ccc", fontSize: "18px" }}>›</div>
             </div>
           ))}
+        </div>
+
+        <div onClick={() => signOutEverywhere(logout, navigate)} style={{ background: "var(--card)", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", display: "flex", alignItems: "center", gap: "14px", cursor: "pointer", marginBottom: "12px" }}>
+          <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: "#FFF7ED", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>📵</div>
+          <div style={{ flex: 1, fontWeight: "600", fontSize: "14px", color: "#C2410C" }}>Sign out on all devices</div>
+          <div style={{ color: "#C2410C", fontSize: "18px" }}>›</div>
         </div>
 
         <div onClick={handleLogout} style={{ background: "var(--card)", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", display: "flex", alignItems: "center", gap: "14px", cursor: "pointer" }}>
