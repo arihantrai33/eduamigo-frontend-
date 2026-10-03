@@ -8,10 +8,11 @@ import { homeFor } from "../utils/home";
 
 // What each kind of user types as their login ID.
 const ROLES = [
-  { id: "student", label: "Student", icon: "🎒", idLabel: "Admission number", placeholder: "e.g. 1024", type: "text", mode: "text" },
+  { id: "student", label: "Student", icon: "🎒", idLabel: "Admission number or email", placeholder: "e.g. 1024", type: "text", mode: "text" },
   { id: "parent", label: "Parent", icon: "👨‍👩‍👧", idLabel: "Mobile number", placeholder: "10-digit mobile number", type: "tel", mode: "tel" },
   { id: "teacher", label: "Teacher", icon: "📚", idLabel: "Email address", placeholder: "yourname@school.edu", type: "email", mode: "email" },
-  { id: "admin", label: "Staff", icon: "🛡️", idLabel: "Email address", placeholder: "yourname@school.edu", type: "email", mode: "email" },
+  // Admins and accountants both sign in here.
+  { id: "admin", label: "Admin", icon: "🛡️", idLabel: "Email address", placeholder: "yourname@school.edu", type: "email", mode: "email" },
 ];
 
 export default function Login() {
