@@ -41,9 +41,9 @@ export function schoolTheme(school) {
   const isLight = school?.heroStyle === "light";
   return {
     isLight,
-    // Main buttons: bright on light screens, deeper on bold ones.
+    // Main buttons: soft and bright on light screens, deeper on bold ones.
     button: isLight
-      ? `linear-gradient(135deg, ${shade(primary, 0.18)} 0%, ${primary} 100%)`
+      ? `linear-gradient(135deg, ${shade(primary, 0.3)} 0%, ${shade(primary, 0.1)} 100%)`
       : `linear-gradient(135deg, ${primary} 0%, ${shade(primary, -0.3)} 100%)`,
     mist: shade(primary, 0.96),    // near-white tint
     primary,
