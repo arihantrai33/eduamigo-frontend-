@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { can, ROLE_LABELS } from "../../utils/permissions";
+import SubscriptionBanner from "../../components/SubscriptionBanner";
+import { hasFeature } from "../../utils/features";
 import Students from "./Students";
 import AddStudent from "./AddStudent";
 import AddParent from "./AddParent";
@@ -235,8 +237,8 @@ function DashboardContent({ isMobile, navigate, user }) {
     { icon: "🎒", value: stats.students, label: "Total Students",  sub: "Enrolled this year",   grad: "linear-gradient(135deg,#6366F1,#8B5CF6)", delay: 0 },
     { icon: "\u{1F469}\u200D🏫", value: stats.teachers, label: "Total Teachers",  sub: "Active staff members", grad: "linear-gradient(135deg,#10B981,#059669)", delay: 80 },
     { icon: "👨‍👩‍👧", value: stats.parents,  label: "Linked Parents",  sub: "Connected families",   grad: "linear-gradient(135deg,#F59E0B,#EF4444)", delay: 160 },
-    { icon: "🚌", value: stats.buses,    label: "Total Buses",     sub: "Active fleet",          grad: "linear-gradient(135deg,#0EA5E9,#3B82F6)", delay: 240 },
-  ];
+    { icon: "🚌", value: stats.buses,    label: "Total Buses",     sub: "Active fleet",          grad: "linear-gradient(135deg,#0EA5E9,#3B82F6)", delay: 240, feature: "transport" },
+  ].filter((c) => hasFeature(user, c.feature));
 
   const attPct = attendanceStats.total > 0 ? Math.round((attendanceStats.present / attendanceStats.total) * 100) : 0;
   const feePct = feeStats.total > 0 ? Math.round((feeStats.paid / feeStats.total) * 100) : 0;
@@ -472,15 +474,9 @@ function DashboardContent({ isMobile, navigate, user }) {
 export default function AdminHome() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, logout, updateUser } = useAuth();
+  const { user, logout } = useAuth();
   const [activeNav, setActiveNav] = useState("/admin");
-
-  // Refresh role permissions from the server (sessions created before permissions existed have none stored).
-  useEffect(() => {
-    axios.get(`${API}/users/profile`, authHeader())
-      .then((r) => { if (r.data?.data?.permissions) updateUser({ permissions: r.data.data.permissions }); })
-      .catch(() => {});
-  }, [updateUser]);
+  // Permissions, plan and billing state are refreshed from the server by AuthContext on app start.
 
   // Menu filtered by permission; section headings without any visible entries are dropped.
   const visibleNav = NAV.filter((item, i) => {
@@ -579,6 +575,7 @@ export default function AdminHome() {
             <div style={{ fontSize: 16, fontWeight: 800, color: "#0F172A" }}>{user?.school || "EduAmigo"}</div>
           </div>
         )}
+        <SubscriptionBanner user={user} />
         <Routes>
           <Route path="" element={can(user, "attendance.reports") ? <DashboardContent isMobile={isMobile} navigate={navigate} user={user} /> : <Navigate to={firstAllowedPath(user)} replace />} />
           <Route path="students" element={<Gate user={user} perm="students.read"><Students /></Gate>} />

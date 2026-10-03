@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import UpcomingExams from "../../components/UpcomingExams";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { visibleFor } from "../../utils/features";
 import axios from "axios";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -170,10 +171,10 @@ getInitials(profile?.name ?? user?.name)
 <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
 {[
               { val: attendancePct,    label: "Attendance", path: "/student/attendance" },
-              { val: grade,            label: "Grade",      path: null },
-              { val: marks,            label: "Marks",      path: null },
+              { val: grade,            label: "Grade",      path: null, feature: "exams" },
+              { val: marks,            label: "Marks",      path: null, feature: "exams" },
               { val: feeStatus ?? "—", label: "Fee",        path: "/student/fee" },
-            ].map((stat) => (
+            ].filter(visibleFor(user)).map((stat) => (
 <div key={stat.label}
 onClick={() => stat.path && navigate(stat.path)}
 style={{ flex: 1, background: "rgba(255,255,255,0.15)", borderRadius: 10, padding: "8px 4px", textAlign: "center", cursor: stat.path ? "pointer" : "default" }}>
@@ -188,7 +189,7 @@ style={{ flex: 1, background: "rgba(255,255,255,0.15)", borderRadius: 10, paddin
 <div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 80px" }}>
 {/* Quick Tiles */}
 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
-{quickTiles.map((tile) => (
+{quickTiles.filter(visibleFor(user)).map((tile) => (
 <button key={tile.label} onClick={() => navigate(tile.path)}
 style={{ background: "var(--card)", borderRadius: 14, padding: 14, border: "none", cursor: "pointer", textAlign: "left", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
 <div style={{ fontSize: 24, marginBottom: 6 }}>{tile.icon}</div>
@@ -260,7 +261,7 @@ notices.map((n, i) => (
           { icon: "📚", label: "Learn", path: "/student/notes" },
           { icon: "💬", label: "Chat",  path: "/student/chat" },
           { icon: "👤", label: "Me",    path: "/student/profile" },
-        ].map((tab) => (
+        ].filter(visibleFor(user)).map((tab) => (
 <button key={tab.label} onClick={() => navigate(tab.path)}
 style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, color: tab.active ? "#1a73e8" : "#999" }}>
 <span style={{ fontSize: 22 }}>{tab.icon}</span>

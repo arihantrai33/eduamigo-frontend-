@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { visibleFor } from "../../utils/features";
 import axios from "axios";
 import { pickChild, childQuery } from "../../utils/selectedChild";
 import ChildSwitcher from "../../components/ChildSwitcher";
@@ -139,7 +140,7 @@ export default function ParentHome() {
                   { val: results?.percentage    ? `${results.percentage}%`    : "—", label: "Marks",      path: "/parent/result"     },
                   { val: results?.grade         ?? "—",                               label: "Grade",      path: "/parent/result"     },
                   { val: child.feeStatus        ?? "—",                               label: "Fee",        path: "/parent/fee"        },
-                ].map((s) => (
+                ].filter(visibleFor(user)).map((s) => (
                   <div
                     key={s.label}
                     onClick={() => navigate(s.path)}
@@ -167,7 +168,7 @@ export default function ParentHome() {
 
         {/* Quick Tiles */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
-          {tiles.map((t) => (
+          {tiles.filter(visibleFor(user)).map((t) => (
             <button key={t.label} onClick={() => navigate(t.path)}
               style={{ background: "var(--card)", borderRadius: 14, padding: 14, border: "none", cursor: "pointer", textAlign: "left", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
               <div style={{ fontSize: 24, marginBottom: 6 }}>{t.icon}</div>
@@ -216,7 +217,7 @@ export default function ParentHome() {
           { icon: "💳", label: "Fees",     path: "/parent/fee"                         },
           { icon: "🔔", label: "Alerts",   path: "/parent/notifications"               },
           { icon: "👤", label: "Me",       path: "/parent/profile"                     },
-        ].map((tab) => (
+        ].filter(visibleFor(user)).map((tab) => (
           <button key={tab.label} onClick={() => navigate(tab.path)}
             style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, color: location.pathname === tab.path ? "#4f46e5" : "#999" }}>
             <span style={{ fontSize: 22 }}>{tab.icon}</span>

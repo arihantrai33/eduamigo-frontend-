@@ -4,6 +4,8 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import Toast from './components/Toast'
 import Splash from './pages/Splash'
 import Login from './pages/Login'
+import SelectSchool, { SchoolLink } from './pages/SelectSchool'
+import ForgotPassword from './pages/ForgotPassword'
 import ChangePassword from './pages/ChangePassword'
 import ReportCard from './pages/ReportCard'
 import Receipt from './pages/Receipt'
@@ -40,6 +42,21 @@ import ParentResult from './pages/parent/Result'
 import ParentBus from './pages/parent/Bus'
 import ParentProfile from './pages/parent/Profile'
 import DriverHome from './pages/driver/Driver'
+import { hasFeature, FEATURE_OF_PATH } from './utils/features'
+
+// Shown when a screen belongs to a module the school's plan does not include.
+function FeatureUnavailable({ home }) {
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 32, textAlign: 'center', fontFamily: "'Inter','Segoe UI',sans-serif", background: 'var(--bg, #F4F6FB)' }}>
+      <div style={{ fontSize: 44, marginBottom: 12 }}>🔒</div>
+      <h2 style={{ fontSize: 18, color: 'var(--text, #111)', margin: '0 0 8px' }}>Not available for your school</h2>
+      <p style={{ fontSize: 13, color: 'var(--subtext, #666)', lineHeight: 1.5, margin: '0 0 20px' }}>
+        This feature is not part of your school's EduAmigo plan. Please contact the school office if you need it.
+      </p>
+      <a href={home} style={{ padding: '11px 22px', borderRadius: 12, background: '#4f8ef7', color: 'white', fontWeight: 700, fontSize: 14, textDecoration: 'none' }}>Back to home</a>
+    </div>
+  )
+}
 
 function LoadingScreen() {
   return (
@@ -79,12 +96,14 @@ const HOME_FOR_ROLE = { student: '/student/home', teacher: '/teacher/home', pare
 
 function Protected({ children, role }) {
   const { user, loading } = useAuth()
+  const { pathname } = useLocation()
   if (loading) return <LoadingScreen />
   if (!user) return <Navigate to="/login" replace />
   // The admin portal is shared by all school staff roles; menus inside it are permission-filtered.
   const allowed = role === 'admin' ? ['admin', 'accountant'] : [role]
   if (role && !allowed.includes(user.role)) return <Navigate to={HOME_FOR_ROLE[user.role] || '/login'} replace />
   if (user.mustChangePassword) return <Navigate to="/change-password" replace />
+  if (!hasFeature(user, FEATURE_OF_PATH[pathname])) return <FeatureUnavailable home={HOME_FOR_ROLE[user.role] || '/'} />
   return children
 }
 
@@ -102,7 +121,10 @@ function AppRoutes() {
     <div style={{ position: 'relative', width: '100%', ...(isAdmin ? { minHeight: '100vh' } : { height: '100%' }) }}>
       <Routes>
         <Route path="/" element={<Splash />} />
+        <Route path="/select-school" element={<SelectSchool />} />
+        <Route path="/s/:code" element={<SchoolLink />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/change-password" element={<RequireLogin><ChangePassword /></RequireLogin>} />
         {/* Shared by every role; the API decides which report cards a user may see. */}
         <Route path="/report-card" element={<Protected><ReportCard /></Protected>} />

@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getSavedSchool } from "../utils/school";
+import { homeFor } from "../utils/home";
 
 export default function Splash() {
   const navigate = useNavigate();
   const [done, setDone] = useState(false);
+  const school = getSavedSchool();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -16,12 +19,12 @@ export default function Splash() {
     if (!done) return;
     const stored = localStorage.getItem("eduamigo_user");
     const token = localStorage.getItem("token");
-    if (stored && token) {
-      const user = JSON.parse(stored);
-      navigate(`/${user.role}/home`, { replace: true });
-    } else {
-      navigate("/login", { replace: true });
-    }
+    // Signed in -> home. School chosen on this device -> its sign-in page. Otherwise -> find your school.
+    const user = (() => {
+      try { return stored && token ? JSON.parse(stored) : null; } catch { return null; }
+    })();
+    if (user?.role) navigate(homeFor(user.role), { replace: true });
+    else navigate(getSavedSchool() ? "/login" : "/select-school", { replace: true });
   }, [done, navigate]);
 
   return (
@@ -109,7 +112,7 @@ export default function Splash() {
         margin: "0 0 20px 0", fontWeight: "400",
         animation: "floatUp 0.6s ease-out 0.25s both",
       }}>
-        YOUR SCHOOL COMPANION
+        {school ? (school.appName || school.name).toUpperCase() : "YOUR SCHOOL COMPANION"}
       </p>
 
       {/* Divider */}

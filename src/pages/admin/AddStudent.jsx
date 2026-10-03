@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 const API = import.meta.env.VITE_API_URL;
@@ -6,11 +6,12 @@ const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 });
 
-const CLASSES  = ["1","2","3","4","5","6","7","8","9","10","11","12"];
-const SECTIONS = ["A","B","C","D","E"];
+// Used until the school sets up its class list (Settings > Classes & Sections).
+const DEFAULT_CLASSES  = ["1","2","3","4","5","6","7","8","9","10","11","12"];
+const DEFAULT_SECTIONS = ["A","B","C","D","E"];
 
 const emptyForm = {
-  name: "", email: "", phone: "", rollNumber: "",
+  name: "", admissionNo: "", email: "", phone: "", rollNumber: "",
   class: "", section: "", gender: "", dateOfBirth: "",
   address: "", parentName: "", parentPhone: "", parentEmail: "",
 };
@@ -22,6 +23,19 @@ export default function AddStudent() {
   const [credentials, setCredentials] = useState(null);
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
+  const [classList, setClassList] = useState([]); // school's class master: [{ name, sections: [{ name }] }]
+
+  useEffect(() => {
+    axios.get(`${API}/academic/classes`, authHeader())
+      .then((r) => setClassList(r.data?.data || []))
+      .catch(() => setClassList([]));
+  }, []);
+  const classOptions = classList.length
+    ? classList.map((c) => ({ value: c.name, label: c.displayName || `Class ${c.name}` }))
+    : DEFAULT_CLASSES.map((c) => ({ value: c, label: `Class ${c}` }));
+  const chosenClass = classList.find((c) => c.name === form.class);
+  const sectionOptions = (classList.length ? (chosenClass?.sections || []).map((x) => x.name) : DEFAULT_SECTIONS)
+    .map((x) => ({ value: x, label: `Section ${x}` }));
 
   const handlePhotoChange = (e) => {
     const file = e.target.files?.[0];
@@ -36,12 +50,13 @@ export default function AddStudent() {
   };
 
   const handleChange = (e) =>
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value, ...(e.target.name === "class" ? { section: "" } : {}) }));
 
   const handleSubmit = async () => {
-    const required = ["name","email","phone","rollNumber","class","section"];
+    const required = ["name","class","section"];
     const missing  = required.find((k) => !form[k]?.trim());
     if (missing) { showToast("Please fill all required fields", "error"); return; }
+    if (!form.phone.trim() && !form.parentPhone.trim()) { showToast("Enter the student's phone or the parent's mobile number", "error"); return; }
 
     setLoading(true);
     setCredentials(null);
@@ -68,7 +83,9 @@ export default function AddStudent() {
     }
   };
 
-  const Field = ({ label, name, type = "text", required = false, children }) => (
+  // Plain render helpers, called as functions: defining components inside render would remount
+  // the inputs on every keystroke and lose focus.
+  const Field = ({ label, name, type = "text", required = false, hint, children }) => (
     <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
       <label style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.05em" }}>
         {label} {required && <span style={{ color: "#EF4444" }}>*</span>}
@@ -87,11 +104,12 @@ export default function AddStudent() {
           onBlur={e  => e.target.style.borderColor = "#E5E7EB"}
         />
       )}
+      {hint && <span style={{ fontSize: 11, color: "#9CA3AF" }}>{hint}</span>}
     </div>
   );
 
-  const Select = ({ label, name, options, required = false }) => (
-    <Field label={label} name={name} required={required}>
+  const Select = ({ label, name, options, required = false, hint }) => Field({
+    label, name, required, hint, children: (
       <select
         name={name} value={form[name]} onChange={handleChange}
         style={{
@@ -107,8 +125,8 @@ export default function AddStudent() {
           </option>
         ))}
       </select>
-    </Field>
-  );
+    ),
+  });
 
   return (
     <div style={{ fontFamily: "Inter, sans-serif", maxWidth: 760, margin: "0 auto" }}>
@@ -146,15 +164,21 @@ export default function AddStudent() {
           <div style={{ fontSize: 13, fontWeight: 700, color: "#15803D", marginBottom: 10 }}>
             ✅ Accounts Created
           </div>
-          <div style={{ display: "grid", gap: 6 }}>
-            <div style={{ fontSize: 12, color: "#166534" }}>
-              <strong>Student Login:</strong> {credentials.student?.email} &nbsp;/&nbsp; {credentials.student?.password}
+          <div style={{ display: "grid", gap: 6, fontSize: 12, color: "#166534" }}>
+            <div>School code: <strong>{credentials.student?.schoolCode || "—"}</strong></div>
+            <div>
+              <strong>Student</strong> · Admission No: <strong>{credentials.student?.loginId}</strong>
+              &nbsp;·&nbsp; Password: <strong>{credentials.student?.password}</strong>
             </div>
             {credentials.parent && (
-              <div style={{ fontSize: 12, color: "#166534" }}>
-                <strong>Parent Login:</strong> {credentials.parent?.email} &nbsp;/&nbsp; {credentials.parent?.password}
+              <div>
+                <strong>Parent</strong> · Login ID: <strong>{credentials.parent?.loginId}</strong>
+                &nbsp;·&nbsp; Password: <strong>{credentials.parent?.password}</strong>
               </div>
             )}
+            <div style={{ color: "#4B5563", marginTop: 4 }}>
+              Share these once. Passwords are temporary: everyone sets their own at first login.
+            </div>
           </div>
         </div>
       )}
@@ -196,51 +220,40 @@ export default function AddStudent() {
         {/* Personal Info */}
         <SectionTitle>Personal Information</SectionTitle>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 24 }}>
-          <Field label="Full Name"     name="name"        required />
-          <Field label="Email Address" name="email"  type="email" required />
-          <Field label="Phone Number"  name="phone"  type="tel"   required />
-          <Field label="Date of Birth" name="dateOfBirth" type="date" />
-          <Select label="Gender" name="gender"
-            options={["Male","Female","Other"]} />
-          <Field label="Address" name="address" />
+          {Field({ label: "Full Name", name: "name", required: true })}
+          {Field({ label: "Phone Number", name: "phone", type: "tel", hint: "Leave empty to use the parent's mobile" })}
+          {Field({ label: "Email Address", name: "email", type: "email", hint: "Optional. Students log in with their admission number" })}
+          {Field({ label: "Date of Birth", name: "dateOfBirth", type: "date" })}
+          {Select({ label: "Gender", name: "gender", options: ["Male","Female","Other"] })}
+          {Field({ label: "Address", name: "address" })}
         </div>
 
         {/* Academic Info */}
         <SectionTitle>Academic Information</SectionTitle>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 24 }}>
-          <Field label="Roll Number" name="rollNumber" required />
-          <Select label="Class" name="class" required
-            options={CLASSES.map(c => ({ value: c, label: `Class ${c}` }))} />
-          <Select label="Section" name="section" required
-            options={SECTIONS.map(s => ({ value: s, label: `Section ${s}` }))} />
+          {Field({ label: "Admission Number", name: "admissionNo", hint: "Leave empty to assign the next number" })}
+          {Field({ label: "Roll Number", name: "rollNumber", hint: "Leave empty for the next roll number" })}
+          {Select({ label: "Class", name: "class", required: true, options: classOptions })}
+          {Select({ label: "Section", name: "section", required: true, options: sectionOptions,
+            hint: classList.length && form.class && !sectionOptions.length ? "This class has no sections yet" : undefined })}
         </div>
 
         {/* Parent Info */}
         <SectionTitle>Parent / Guardian Information</SectionTitle>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 24 }}>
-          <Field label="Parent Name"  name="parentName" />
-          <Field label="Parent Phone" name="parentPhone" type="tel" />
-          <Field label="Parent Email" name="parentEmail" type="email" />
+          {Field({ label: "Parent Name", name: "parentName" })}
+          {Field({ label: "Parent Mobile", name: "parentPhone", type: "tel", hint: "Parents log in with this number" })}
+          {Field({ label: "Parent Email", name: "parentEmail", type: "email", hint: "Optional. Needed for password reset by email" })}
         </div>
 
-        {/* Login Preview */}
-        {(form.email || form.parentEmail) && (
-          <div style={{
-            background: "#FAFAFA", border: "1px solid #E5E7EB",
-            borderRadius: 10, padding: "12px 16px", marginBottom: 24,
-            fontSize: 12, color: "#6B7280", display: "grid", gap: 4,
-          }}>
-            <div style={{ fontWeight: 600, color: "#374151", marginBottom: 4 }}>
-              Login Credentials Preview
-            </div>
-            {form.email && (
-              <div>Student: <strong>{form.email}</strong> / <strong>{form.phone || "phone number"}</strong></div>
-            )}
-            {form.parentEmail && (
-              <div>Parent: <strong>{form.parentEmail}</strong> / <strong>{form.parentPhone || form.phone || "phone number"}</strong></div>
-            )}
-          </div>
-        )}
+        <div style={{
+          background: "#FAFAFA", border: "1px solid #E5E7EB", borderRadius: 10,
+          padding: "12px 16px", marginBottom: 24, fontSize: 12, color: "#6B7280", lineHeight: 1.6,
+        }}>
+          <strong style={{ color: "#374151" }}>How they will log in:</strong> the student with the school code and
+          admission number, the parent with the school code and mobile number. Temporary passwords are shown
+          after saving.
+        </div>
 
         {/* Actions */}
         <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback } from "react";
+import { createContext, useContext, useState, useCallback, useEffect } from "react";
 
 const AuthContext = createContext();
 
@@ -33,6 +33,25 @@ export function AuthProvider({ children }) {
       return next;
     });
   }, []);
+
+  // Plan, features, permissions, billing state and branding can change after sign-in (the school
+  // buys an add-on, renews, changes its logo), so they are refreshed from the server on every app start.
+  const hasSession = !!user?.token;
+  useEffect(() => {
+    if (!hasSession) return;
+    const API = import.meta.env.VITE_API_URL;
+    fetch(`${API}/users/profile`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        const p = data?.data;
+        if (!p) return;
+        updateUser({
+          permissions: p.permissions, features: p.features, plan: p.plan, subscription: p.subscription,
+          branding: p.branding, schoolCode: p.schoolCode, school: p.school, mustChangePassword: p.mustChangePassword,
+        });
+      })
+      .catch(() => {});
+  }, [hasSession, updateUser]);
 
   const logout = useCallback(() => {
     const role = (JSON.parse(localStorage.getItem("eduamigo_user") || "{}"))?.role;
