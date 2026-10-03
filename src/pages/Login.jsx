@@ -9,11 +9,11 @@ import SchoolHero from "../components/SchoolHero";
 
 // What each kind of user types as their login ID.
 const ROLES = [
-  { id: "student", label: "Student", icon: "🎒", idLabel: "Admission number or email", idIcon: "🪪", placeholder: "e.g. 1024", type: "text", mode: "text" },
-  { id: "parent", label: "Parent", icon: "👨‍👩‍👧", idLabel: "Mobile number", idIcon: "📱", placeholder: "10-digit mobile number", type: "tel", mode: "tel" },
-  { id: "teacher", label: "Teacher", icon: "📚", idLabel: "Email address", idIcon: "✉️", placeholder: "yourname@school.edu", type: "email", mode: "email" },
+  { id: "student", label: "Student", icon: "🎒", idLabel: "Admission number or email", idIcon: "🪪", placeholder: "Admission No or Email", type: "text", mode: "text" },
+  { id: "parent", label: "Parent", icon: "👨‍👩‍👧", idLabel: "Email or Mobile No", idIcon: "📱", placeholder: "Email or Mobile No", type: "text", mode: "text" },
+  { id: "teacher", label: "Teacher", icon: "📚", idLabel: "Email address", idIcon: "✉️", placeholder: "Enter your ID", type: "email", mode: "email" },
   // Admins and accountants both sign in here.
-  { id: "admin", label: "Admin", icon: "🛡️", idLabel: "Email address", idIcon: "✉️", placeholder: "yourname@school.edu", type: "email", mode: "email" },
+  { id: "admin", label: "Admin", icon: "🛡️", idLabel: "Email address", idIcon: "✉️", placeholder: "Enter your ID", type: "email", mode: "email" },
 ];
 
 export default function Login() {

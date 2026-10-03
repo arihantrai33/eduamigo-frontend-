@@ -87,7 +87,7 @@ export default function SelectSchool() {
         <input
           autoFocus value={query} onChange={(e) => { setQuery(e.target.value); setError(""); }}
           onKeyDown={(e) => e.key === "Enter" && lookupCode()}
-          placeholder="e.g. GVPS or Green Valley" style={s.input}
+          placeholder="School code or name" style={s.input}
           autoCapitalize="characters" autoComplete="off"
         />
         {error && <div style={s.err}>⚠️ {error}</div>}
@@ -157,8 +157,9 @@ export function SchoolLogo({ school, size = 48 }) {
 
 const s = {
   page: { minHeight: "100vh", height: "100vh", display: "flex", flexDirection: "column", background: "linear-gradient(160deg, #0f1b4c 0%, #1a3a8f 50%, #0f1b4c 100%)", fontFamily: "'Inter','Segoe UI',sans-serif", overflowY: "auto" },
-  top: { display: "flex", flexDirection: "column", alignItems: "center", padding: "28px 24px 18px" },
-  logoBox: { width: 64, height: 64, borderRadius: 18, background: "rgba(255,255,255,0.12)", border: "1.5px solid rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, marginBottom: 12 },
+  // Taller brand area so the logo sits in the middle of it and the card starts about a third down.
+  top: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "64px 24px 44px", minHeight: "28vh", boxSizing: "border-box" },
+  logoBox: { width: 72, height: 72, borderRadius: 20, background: "rgba(255,255,255,0.12)", border: "1.5px solid rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, marginBottom: 12 },
   brand: { color: "white", fontSize: 24, fontWeight: 700, margin: "0 0 4px", letterSpacing: 0.5 },
   tagline: { color: "rgba(255,255,255,0.6)", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", margin: 0 },
   step: { color: "rgba(255,255,255,0.8)", fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "20px 0 0" },
