@@ -67,6 +67,10 @@ export default function Login() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ schoolCode: school.code, identifier: identifier.trim(), password }),
       });
+      if (res.status >= 502) {
+        setError("EduAmigo is not responding right now. Please try again in a minute.");
+        return;
+      }
       const data = await res.json();
       if (data.success) {
         localStorage.setItem("lastRole", role);
@@ -76,7 +80,7 @@ export default function Login() {
         setError(data.message || "Invalid login details. Please try again.");
       }
     } catch {
-      setError("Network error. Please check your connection.");
+      setError("Can't reach EduAmigo. Please check your internet connection and try again.");
     } finally {
       setLoading(false);
     }

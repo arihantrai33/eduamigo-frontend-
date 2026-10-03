@@ -21,11 +21,21 @@ export function clearSavedSchool() {
   localStorage.removeItem(KEY);
 }
 
+const OFFLINE = "Can't reach EduAmigo. Please check your internet connection and try again.";
+const SERVER_DOWN = "EduAmigo is not responding right now. Please try again in a minute.";
+
 async function getJson(path) {
-  const res = await fetch(`${API}${path}`);
+  let res;
+  try {
+    res = await fetch(`${API}${path}`);
+  } catch {
+    throw Object.assign(new Error(OFFLINE), { status: 0 });
+  }
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    const err = new Error(data.message || "Something went wrong. Please try again.");
+    // 502-504 come from the proxy or host when the API itself is down, without a JSON message.
+    const fallback = res.status >= 502 ? SERVER_DOWN : "Something went wrong. Please try again.";
+    const err = new Error(data.message || fallback);
     err.status = res.status;
     throw err;
   }

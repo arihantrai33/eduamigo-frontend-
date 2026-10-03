@@ -633,6 +633,8 @@ export default function AdminHome() {
           <Route path="leaves" element={<Gate user={user} perm="leaves.all"><LeaveRequests /></Gate>} />
           <Route path="library" element={<Gate user={user} perm="library.manage"><Library /></Gate>} />
           <Route path="marks" element={<Navigate to="/admin/results" replace />} />
+          {/* Announcements live under Communications; old links to the notice board land there. */}
+          <Route path="notice-board" element={<Navigate to="/admin/communications" replace />} />
           <Route path="admissions" element={<Gate user={user} perm="admissions.manage"><Admissions /></Gate>} />
           <Route path="admissions/*" element={<Navigate to="/admin/admissions" replace />} />
           <Route path="communications" element={<Gate user={user} perm="communication.manage"><Communications /></Gate>} />

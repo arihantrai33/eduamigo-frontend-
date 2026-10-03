@@ -126,6 +126,7 @@ export default function TeacherHome() {
     { icon: '💬', label: 'Parent Messages', sub: unreadCount > 0 ? `${unreadCount} unread` : 'No new messages', path: '/teacher/chat' },
     { icon: '📅', label: 'My Timetable',    sub: `Today: ${todayPeriods.length} ${todayPeriods.length === 1 ? 'period' : 'periods'}`,           path: '/teacher/timetable' },
     { icon: '🗓️', label: 'Leave Request',  sub: 'Apply for leave',                                 path: '/teacher/leave' },
+    { icon: '🧑‍🎓', label: 'My Students',     sub: 'Login IDs and password reset',                    path: '/teacher/students' },
   ] : []
 
   if (loading) return (

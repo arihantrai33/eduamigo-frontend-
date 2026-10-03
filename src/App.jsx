@@ -30,6 +30,7 @@ import TeacherLeave from './pages/teacher/Leave'
 import TeacherNotifications from './pages/teacher/Notifications'
 import TeacherProfile from './pages/teacher/Profile'
 import TeacherChat from './pages/teacher/Chat'
+import TeacherStudents from './pages/teacher/Students'
 import AdminHome from './pages/admin/Home'
 import ParentHome from './pages/parent/Home'
 import ParentChat from './pages/parent/Chat'
@@ -147,6 +148,7 @@ function AppRoutes() {
 
         {/* Teacher */}
         <Route path="/teacher/home"          element={<Protected role="teacher"><TeacherHome /></Protected>} />
+        <Route path="/teacher/students"      element={<Protected role="teacher"><TeacherStudents /></Protected>} />
         <Route path="/teacher/attendance"    element={<Protected role="teacher"><TeacherAttendance /></Protected>} />
         <Route path="/teacher/marks"         element={<Protected role="teacher"><TeacherMarks /></Protected>} />
         <Route path="/teacher/upload"        element={<Protected role="teacher"><TeacherUpload /></Protected>} />
