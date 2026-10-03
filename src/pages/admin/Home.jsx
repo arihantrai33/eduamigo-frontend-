@@ -6,7 +6,7 @@ import {
   CalendarCheck, CreditCard, FileBadge, Clock, Notebook, BadgeDollarSign, Layers,
   Bell, MessageCircle, BarChart2, Settings as SettingsIcon, Menu, X,
   AlertCircle, CheckCircle, BookOpen, LogOut, TrendingUp, Zap,
-  Shield, FileText, GraduationCap
+  Shield, FileText, GraduationCap, History
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { can, ROLE_LABELS } from "../../utils/permissions";
@@ -44,6 +44,7 @@ import Results from "./Results";
 import SalaryManagement from "./SalaryManagement";
 import Settings from "./Settings";
 import AcademicSetup from "./AcademicSetup";
+import ActivityLog from "./ActivityLog";
 import StudentProfile from "./StudentProfile";
 import TeacherProfile from "./TeacherProfile";
 import Timetable from "./Timetable";
@@ -117,6 +118,7 @@ const NAV = [
   { section: "SYSTEM" },
   { label: "User Management",    icon: Shield,          path: "/admin/user-management", perm: "users.manage" },
   { label: "Reports",            icon: BarChart2,       path: "/admin/reports", perm: "attendance.reports" },
+  { label: "Activity Log",       icon: History,         path: "/admin/activity", perm: "audit.read" },
   { label: "Settings",           icon: SettingsIcon,    path: "/admin/settings", perm: "settings.manage" },
 ];
 
@@ -643,6 +645,7 @@ export default function AdminHome() {
           <Route path="salaries" element={<Gate user={user} perm="hr.manage"><SalaryManagement /></Gate>} />
           <Route path="settings" element={<Gate user={user} perm="settings.manage"><Settings /></Gate>} />
           <Route path="academic" element={<Gate user={user} perm="academics.manage"><AcademicSetup /></Gate>} />
+          <Route path="activity" element={<Gate user={user} perm="audit.read"><ActivityLog /></Gate>} />
           <Route path="timetable" element={<Gate user={user} perm="timetable.manage"><Timetable /></Gate>} />
           <Route path="transport" element={<Gate user={user} perm="transport.manage"><Transport /></Gate>} />
           <Route path="user-management" element={<Gate user={user} perm="users.manage"><UserManagement /></Gate>} />
