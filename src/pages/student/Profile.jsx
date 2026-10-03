@@ -66,13 +66,13 @@ export default function Profile() {
   // ── View Profile ──
   if (showProfile) return (
     <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
-      <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
+      <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
         <button onClick={() => setShowProfile(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
         <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>My Information</h2>
       </div>
       <div style={{ flex: 1, overflowY: "auto", padding: "20px 16px" }}>
         <div style={{ textAlign: "center", marginBottom: "24px" }}>
-          <div style={{ width: "84px", height: "84px", borderRadius: "50%", background: "linear-gradient(135deg,#4f46e5,#7c3aed)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto", fontSize: "32px", fontWeight: "700", color: "white", border: "3px solid #e5e7eb" }}>
+          <div style={{ width: "84px", height: "84px", borderRadius: "50%", background: "var(--brand-gradient)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto", fontSize: "32px", fontWeight: "700", color: "white", border: "3px solid #e5e7eb" }}>
             {getInitial()}
           </div>
           <div style={{ fontSize: "12px", color: darkMode ? "#aaa" : "#888", marginTop: "8px" }}>Profile photo is managed by school admin</div>
@@ -104,7 +104,7 @@ export default function Profile() {
   // ── Settings ──
   if (showSettings) return (
     <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
-      <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
+      <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
         <button onClick={() => setShowSettings(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
         <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Settings</h2>
       </div>
@@ -118,7 +118,7 @@ export default function Profile() {
                 <div style={{ fontWeight: "600", fontSize: "14px", color: darkMode ? "#f1f5f9" : "#111" }}>{s.label}</div>
                 <div style={{ fontSize: "12px", color: darkMode ? "#aaa" : "#888", marginTop: "2px" }}>{s.sub}</div>
               </div>
-              <div onClick={() => s.setter(!s.value)} style={{ width: "46px", height: "26px", borderRadius: "13px", background: s.value ? "#4f46e5" : "#e5e7eb", cursor: "pointer", position: "relative", transition: "background .2s", flexShrink: 0 }}>
+              <div onClick={() => s.setter(!s.value)} style={{ width: "46px", height: "26px", borderRadius: "13px", background: s.value ? "var(--brand)" : "#e5e7eb", cursor: "pointer", position: "relative", transition: "background .2s", flexShrink: 0 }}>
                 <div style={{ position: "absolute", top: "3px", left: s.value ? "23px" : "3px", width: "20px", height: "20px", borderRadius: "50%", background: darkMode ? "#16213e" : "white", transition: "left .2s", boxShadow: "0 1px 4px rgba(0,0,0,0.2)" }} />
               </div>
             </div>
@@ -140,20 +140,20 @@ export default function Profile() {
   // ── ID Card ──
   if (showIdCard) return (
     <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
-      <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
+      <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
         <button onClick={() => setShowIdCard(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
         <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Student ID Card</h2>
       </div>
       <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "24px" }}>
         <div style={{ width: "100%", maxWidth: "320px", background: darkMode ? "#16213e" : "white", borderRadius: "20px", overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.15)" }}>
-          <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "20px", color: "white", textAlign: "center" }}>
+          <div style={{ background: "var(--brand-gradient)", padding: "20px", color: "white", textAlign: "center" }}>
             <div style={{ fontSize: "13px", fontWeight: "700", letterSpacing: "2px", opacity: .8 }}>
               {profile?.school || "SCHOOL"}
             </div>
             <div style={{ fontSize: "11px", opacity: .7 }}>Student Identity Card {currentAcademicYear()}</div>
           </div>
           <div style={{ padding: "20px", textAlign: "center" }}>
-            <div style={{ width: "72px", height: "72px", borderRadius: "50%", background: "linear-gradient(135deg,#4f46e5,#7c3aed)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px", fontSize: "28px", fontWeight: "700", color: "white", border: "3px solid #e5e7eb" }}>
+            <div style={{ width: "72px", height: "72px", borderRadius: "50%", background: "var(--brand-gradient)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px", fontSize: "28px", fontWeight: "700", color: "white", border: "3px solid #e5e7eb" }}>
               {getInitial()}
             </div>
             <div style={{ fontWeight: "800", fontSize: "18px", color: darkMode ? "#f1f1f1" : "#111" }}>{profile?.name || "—"}</div>
@@ -185,7 +185,7 @@ export default function Profile() {
   // ── Help ──
   if (showHelp) return (
     <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
-      <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
+      <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
         <button onClick={() => setShowHelp(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
         <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Help & Support</h2>
       </div>
@@ -207,7 +207,7 @@ export default function Profile() {
   return (
     <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "Inter, sans-serif", overflowY: "auto", paddingBottom: "80px" }}>
       {/* Header */}
-      <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 40px", color: "white", textAlign: "center" }}>
+      <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white", textAlign: "center" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
           <button onClick={() => navigate(-1)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
           <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>My Profile</h2>
@@ -236,7 +236,7 @@ export default function Profile() {
               { label: "ROLL",       value: profile?.rollNumber || "—" },
             ].map(s => (
               <div key={s.label}>
-                <div style={{ fontWeight: "700", fontSize: "18px", color: "#4f46e5" }}>{s.value}</div>
+                <div style={{ fontWeight: "700", fontSize: "18px", color: "var(--brand)" }}>{s.value}</div>
                 <div style={{ fontSize: "9px", color: darkMode ? "#aaa" : "#888", marginTop: "2px" }}>{s.label}</div>
               </div>
             ))}

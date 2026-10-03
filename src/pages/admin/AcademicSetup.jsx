@@ -23,10 +23,10 @@ const ui = {
   hint: { fontSize: 12, color: "#64748B", margin: "0 0 14px", lineHeight: 1.5 },
   label: { fontSize: 11, color: "#64748B", fontWeight: 600, display: "flex", flexDirection: "column", gap: 4 },
   input: { padding: "8px 10px", borderRadius: 8, border: "1px solid #E2E8F0", fontSize: 13, color: "#0F172A", outline: "none", background: "#F8FAFC", fontFamily: "Inter, sans-serif", boxSizing: "border-box" },
-  btn: { padding: "8px 14px", borderRadius: 8, border: "none", background: "#534AB7", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer" },
+  btn: { padding: "8px 14px", borderRadius: 8, border: "none", background: "var(--brand)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer" },
   ghost: { padding: "7px 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", color: "#334155", fontSize: 12, fontWeight: 600, cursor: "pointer" },
   danger: { padding: "7px 12px", borderRadius: 8, border: "1px solid #FECACA", background: "#FEF2F2", color: "#B91C1C", fontSize: 12, fontWeight: 600, cursor: "pointer" },
-  chip: { display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 10px", borderRadius: 999, background: "#EEF2FF", color: "#3730A3", fontSize: 12, fontWeight: 600 },
+  chip: { display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 10px", borderRadius: 999, background: "var(--brand-soft)", color: "#3730A3", fontSize: 12, fontWeight: 600 },
   row: { display: "flex", gap: 10, flexWrap: "wrap", alignItems: "flex-end" },
 };
 
@@ -53,8 +53,8 @@ function Checklist({ status, onJump }) {
         <h3 style={ui.title}>{status.complete ? "Your school is set up ✅" : "Set up your school"}</h3>
         <span style={{ fontSize: 12, color: "#64748B", fontWeight: 600 }}>{status.done} of {status.total} done</span>
       </div>
-      <div style={{ height: 6, background: "#EEF2FF", borderRadius: 999, margin: "10px 0 14px", overflow: "hidden" }}>
-        <div style={{ width: `${pct}%`, height: "100%", background: "#534AB7", transition: "width .3s" }} />
+      <div style={{ height: 6, background: "var(--brand-soft)", borderRadius: 999, margin: "10px 0 14px", overflow: "hidden" }}>
+        <div style={{ width: `${pct}%`, height: "100%", background: "var(--brand)", transition: "width .3s" }} />
       </div>
       <div style={{ display: "grid", gap: 6 }}>
         {status.steps.map((step, i) => {
@@ -207,7 +207,7 @@ function ClassEditor({ initial, teachers, onSave, onCancel, busy }) {
   });
 
   return (
-    <div style={{ border: "1px solid #C7D2FE", background: "#F8FAFF", borderRadius: 10, padding: 14, marginBottom: 12 }}>
+    <div style={{ border: "1px solid var(--brand-border)", background: "#F8FAFF", borderRadius: 10, padding: 14, marginBottom: 12 }}>
       <div style={ui.row}>
         <label style={ui.label}>Class
           <input style={{ ...ui.input, width: 120 }} value={form.name} disabled={hasStudents} placeholder="10, LKG, 11 Science"
@@ -347,7 +347,7 @@ function Classes({ onChanged }) {
               {cls.sections.map((s) => (
                 <span key={s.name} style={ui.chip} title={s.classTeacherName ? `Class teacher: ${s.classTeacherName}` : "No class teacher"}>
                   {s.name}
-                  <span style={{ fontWeight: 500, color: s.classTeacherName ? "#4338CA" : "#B45309" }}>· {s.classTeacherName || "no class teacher"}</span>
+                  <span style={{ fontWeight: 500, color: s.classTeacherName ? "var(--brand-dark)" : "#B45309" }}>· {s.classTeacherName || "no class teacher"}</span>
                   <span style={{ fontWeight: 500, color: "#64748B" }}>· {s.students}</span>
                 </span>
               ))}

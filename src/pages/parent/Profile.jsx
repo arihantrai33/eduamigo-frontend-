@@ -23,7 +23,7 @@ function BottomNav({ active }) {
         { icon: "👤", label: "Me",       path: "/parent/profile"       },
       ].map(tab => (
         <button key={tab.label} onClick={() => navigate(tab.path)}
-          style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, color: active === tab.label.toLowerCase() ? "#4f46e5" : "#999" }}>
+          style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, color: active === tab.label.toLowerCase() ? "var(--brand)" : "#999" }}>
           <span style={{ fontSize: 22 }}>{tab.icon}</span>
           <span style={{ fontSize: 10, fontWeight: active === tab.label.toLowerCase() ? "700" : "500" }}>{tab.label}</span>
         </button>
@@ -94,7 +94,7 @@ export default function ParentProfile() {
 
   if (showHelp) return (
     <div style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "Inter, sans-serif" }}>
-      <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px" }}>
+      <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px" }}>
         <button onClick={() => setShowHelp(false)} aria-label="Back" style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
         <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Help & Support</h2>
       </div>
@@ -148,7 +148,7 @@ export default function ParentProfile() {
                   <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text, #1C2033)" }}>{c.name}</div>
                   <div style={{ fontSize: 12, color: "#7B8099" }}>Class {c.class}-{c.section}{c.admissionNo ? ` · Admission No ${c.admissionNo}` : ""}</div>
                 </div>
-                <button onClick={() => resetChild(c)} style={{ padding: "8px 12px", borderRadius: 10, border: "none", background: "#4f46e5", color: "white", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Reset password</button>
+                <button onClick={() => resetChild(c)} style={{ padding: "8px 12px", borderRadius: 10, border: "none", background: "var(--brand)", color: "white", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Reset password</button>
               </div>
             ))}
           </div>
@@ -181,13 +181,13 @@ const s = {
   backBtn:  { background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#1C2033", fontWeight: 700 },
   title:    { fontSize: 17, fontWeight: 700, color: "#1C2033" },
   scroll:   { flex: 1, overflowY: "auto", padding: "16px 16px 80px", display: "flex", flexDirection: "column", gap: 14 },
-  hero:     { background: "var(--card)", borderRadius: 20, padding: "24px 16px", display: "flex", flexDirection: "column", alignItems: "center", gap: 6, boxShadow: "0 2px 12px rgba(92,107,192,0.08)" },
-  avatar:   { width: 72, height: 72, borderRadius: 24, background: "linear-gradient(135deg,#7E57C2,#5C6BC0)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, fontWeight: 800, marginBottom: 4 },
+  hero:     { background: "var(--card)", borderRadius: 20, padding: "24px 16px", display: "flex", flexDirection: "column", alignItems: "center", gap: 6, boxShadow: "0 2px 12px color-mix(in srgb, var(--brand) 8%, transparent)" },
+  avatar:   { width: 72, height: 72, borderRadius: 24, background: "var(--brand-gradient)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, fontWeight: 800, marginBottom: 4 },
   name:     { fontSize: 20, fontWeight: 800, color: "#1C2033" },
   sub:      { fontSize: 13, color: "#7B8099" },
   badge:    { fontSize: 12, fontWeight: 700, background: "#E3F2FD", color: "#1565C0", padding: "4px 12px", borderRadius: 20, marginTop: 4 },
-  infoCard: { background: "var(--card)", borderRadius: 16, padding: "14px 16px", boxShadow: "0 2px 12px rgba(92,107,192,0.08)" },
-  menuCard: { background: "var(--card)", borderRadius: 16, overflow: "hidden", boxShadow: "0 2px 12px rgba(92,107,192,0.08)" },
+  infoCard: { background: "var(--card)", borderRadius: 16, padding: "14px 16px", boxShadow: "0 2px 12px color-mix(in srgb, var(--brand) 8%, transparent)" },
+  menuCard: { background: "var(--card)", borderRadius: 16, overflow: "hidden", boxShadow: "0 2px 12px color-mix(in srgb, var(--brand) 8%, transparent)" },
   menuRow:  { width: "100%", background: "none", border: "none", borderBottom: "1px solid #F0F2F8", padding: "14px 16px", display: "flex", alignItems: "center", gap: 12, cursor: "pointer", textAlign: "left" },
   menuIcon: { width: 36, height: 36, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 },
   version:  { textAlign: "center", fontSize: 11, color: "#B0B8CC", paddingBottom: 8 },

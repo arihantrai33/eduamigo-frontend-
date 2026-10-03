@@ -85,13 +85,13 @@ body.admin-body #root {
 
 /* Selection color */
 ::selection {
-  background: rgba(99,102,241,0.2);
-  color: #4338CA;
+  background: color-mix(in srgb, var(--brand) 20%, transparent);
+  color: var(--brand-dark);
 }
 
 /* Focus ring */
 :focus-visible {
-  outline: 2px solid #6366F1;
+  outline: 2px solid var(--brand);
   outline-offset: 2px;
 }
 
@@ -106,8 +106,18 @@ body.admin-body #root {
   --border: #e5e7eb;
   --nav: #ffffff;
   --input: #ffffff;
-  --primary: #6366F1;
-  --primary-light: #EEF2FF;
+  --primary: var(--brand);
+  --primary-light: var(--brand-soft);
+  /* School brand colours. These are the EduAmigo defaults; after sign-in <BrandTheme /> sets the
+     school's own colours (utils/theme.js brandCssVars). */
+  --brand: #6366F1;
+  --brand-dark: #4338CA;
+  --brand-deep: #1E1B4B;
+  --brand-light: #A5B4FC;
+  --brand-soft: #EEF2FF;
+  --brand-border: #C7D2FE;
+  --brand-accent: #F5B301;
+  --brand-gradient: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
 }
 
 /* Dark mode */

@@ -82,7 +82,7 @@ function ContactDetailModal({ contact, onClose }) {
             <InfoRow label="Subject" value={contact.sub || "—"} />
           </>}
         </div>
-        <button onClick={onClose} style={{ marginTop: 24, width: "100%", padding: "10px", borderRadius: 12, border: "none", background: "#6366F1", color: "white", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>Close</button>
+        <button onClick={onClose} style={{ marginTop: 24, width: "100%", padding: "10px", borderRadius: 12, border: "none", background: "var(--brand)", color: "white", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>Close</button>
       </div>
     </div>
   );
@@ -248,7 +248,7 @@ export default function Chat() {
         @keyframes spin    { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
         @keyframes pulse   { 0%,100%{opacity:1} 50%{opacity:0.3} }
         .c-row{transition:background 0.12s ease;cursor:pointer;}
-        .c-row:hover{background:#EEF2FF!important;}
+        .c-row:hover{background:var(--brand-soft)!important;}
         textarea{outline:none!important;}
         ::-webkit-scrollbar{width:3px;}
         ::-webkit-scrollbar-thumb{background:#E2E8F0;border-radius:4px;}
@@ -265,7 +265,7 @@ export default function Chat() {
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
             <div>
               <div style={{ fontSize: 17, fontWeight: 800, color: "#0F172A", letterSpacing: "-0.3px" }}>Messages</div>
-              {totalUnread > 0 && <div style={{ fontSize: 11, color: "#6366F1", fontWeight: 700, marginTop: 2 }}>{totalUnread} unread</div>}
+              {totalUnread > 0 && <div style={{ fontSize: 11, color: "var(--brand)", fontWeight: 700, marginTop: 2 }}>{totalUnread} unread</div>}
             </div>
             <button onClick={fetchContacts} style={{ width: 32, height: 32, borderRadius: 10, border: "none", background: "rgba(255,255,255,0.08)", cursor: "pointer", fontSize: 16, color: "#94A3B8", display: "flex", alignItems: "center", justifyContent: "center" }}>↺</button>
           </div>
@@ -280,7 +280,7 @@ export default function Chat() {
             {[["", "All"], ["student", "Students"], ["teacher", "Teachers"], ["parent", "Parents"]].map(([val, lbl]) => (
               <button key={val} onClick={() => setFilterRole(val)}
                 style={{ flex: 1, padding: "6px 2px", borderRadius: 8, border: "none", cursor: "pointer", fontWeight: 700, fontSize: 10,
-                  background: filterRole === val ? "rgba(99,102,241,0.85)" : "transparent",
+                  background: filterRole === val ? "color-mix(in srgb, var(--brand) 85%, transparent)" : "transparent",
                   color: filterRole === val ? "white" : "#64748B", transition: "all 0.15s ease" }}>
                 {lbl}
               </button>
@@ -291,7 +291,7 @@ export default function Chat() {
         <div style={{ flex: 1, overflowY: "auto" }}>
           {loading ? (
             <div style={{ padding: "48px 0", textAlign: "center" }}>
-              <div style={{ width: 24, height: 24, borderRadius: "50%", border: "2px solid rgba(255,255,255,0.1)", borderTop: "2px solid #6366F1", animation: "spin 0.8s linear infinite", margin: "0 auto 8px" }} />
+              <div style={{ width: 24, height: 24, borderRadius: "50%", border: "2px solid rgba(255,255,255,0.1)", borderTop: "2px solid var(--brand)", animation: "spin 0.8s linear infinite", margin: "0 auto 8px" }} />
               <div style={{ fontSize: 11, color: "#475569" }}>Loading...</div>
             </div>
           ) : filtered.length === 0 ? (
@@ -305,8 +305,8 @@ export default function Chat() {
             return (
               <div key={c.roomId} className="c-row" onClick={() => selectContact(c)}
                 style={{ display: "flex", alignItems: "center", gap: 10, padding: "11px 16px",
-                  background: isActive ? "rgba(99,102,241,0.18)" : "transparent",
-                  borderLeft: isActive ? "3px solid #6366F1" : "3px solid transparent",
+                  background: isActive ? "color-mix(in srgb, var(--brand) 18%, transparent)" : "transparent",
+                  borderLeft: isActive ? "3px solid var(--brand)" : "3px solid transparent",
                   borderBottom: "1px solid #F8FAFC",
                   animation: `fadeIn 0.25s ease ${i * 0.02}s both` }}>
                 <div style={{ position: "relative" }}>
@@ -326,7 +326,7 @@ export default function Chat() {
                       </span>
                     </div>
                     {c.unread > 0 && (
-                      <div style={{ width: 18, height: 18, borderRadius: "50%", background: "#6366F1", color: "white", fontSize: 9, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginLeft: 4 }}>
+                      <div style={{ width: 18, height: 18, borderRadius: "50%", background: "var(--brand)", color: "white", fontSize: 9, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginLeft: 4 }}>
                         {c.unread > 9 ? "9+" : c.unread}
                       </div>
                     )}
@@ -338,7 +338,7 @@ export default function Chat() {
         </div>
 
         <div style={{ padding: "12px 16px", borderTop: "1px solid #F1F5F9", display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 34, height: 34, borderRadius: 10, background: "linear-gradient(135deg,#6366F1,#8B5CF6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: "white" }}>A</div>
+          <div style={{ width: 34, height: 34, borderRadius: 10, background: "var(--brand-gradient)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: "white" }}>A</div>
           <div>
             <div style={{ fontSize: 12, fontWeight: 700, color: "#0F172A" }}>Admin</div>
             <div style={{ fontSize: 10, color: "#22C55E", fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
@@ -354,7 +354,7 @@ export default function Chat() {
           <>
             {/* Header — clickable for details */}
             <div className="hdr-click" onClick={() => setShowModal(true)}
-              style={{ padding: "0 24px", height: 70, background: "white", borderBottom: `3px solid ${cfg?.badge?.color || "#6366F1"}`, display: "flex", alignItems: "center", gap: 14, boxShadow: "0 1px 6px rgba(15,23,42,0.05)" }}>
+              style={{ padding: "0 24px", height: 70, background: "white", borderBottom: `3px solid ${cfg?.badge?.color || "var(--brand)"}`, display: "flex", alignItems: "center", gap: 14, boxShadow: "0 1px 6px rgba(15,23,42,0.05)" }}>
               <Avatar name={selected.name} type={selected.type} size={44} />
               <div style={{ flex: 1 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3 }}>
@@ -376,7 +376,7 @@ export default function Chat() {
             <div className="r-scroll" style={{ flex: 1, overflowY: "auto", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 4, background: "white" }}>
               {msgLoading ? (
                 <div style={{ margin: "auto", textAlign: "center" }}>
-                  <div style={{ width: 28, height: 28, borderRadius: "50%", border: "3px solid #E2E8F0", borderTop: "3px solid #6366F1", animation: "spin 0.8s linear infinite", margin: "0 auto 10px" }} />
+                  <div style={{ width: 28, height: 28, borderRadius: "50%", border: "3px solid #E2E8F0", borderTop: "3px solid var(--brand)", animation: "spin 0.8s linear infinite", margin: "0 auto 10px" }} />
                   <div style={{ fontSize: 12, color: "#94A3B8" }}>Loading messages...</div>
                 </div>
               ) : messages.length === 0 ? (
@@ -398,18 +398,18 @@ export default function Chat() {
                     <div style={{ maxWidth: "62%" }}>
                       <div style={{ padding: item.fileUrl ? "8px 10px" : "10px 14px",
                         borderRadius: isMe ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
-                        background: isMe ? "#6366F1" : "#F1F5F9",
+                        background: isMe ? "var(--brand)" : "#F1F5F9",
                         color: isMe ? "white" : "#0F172A",
                         fontSize: 13, lineHeight: 1.55,
                         border: "none",
-                        boxShadow: isMe ? "0 2px 12px rgba(99,102,241,0.25)" : "0 1px 4px rgba(15,23,42,0.06)" }}>
+                        boxShadow: isMe ? "0 2px 12px color-mix(in srgb, var(--brand) 25%, transparent)" : "0 1px 4px rgba(15,23,42,0.06)" }}>
                         {item.fileUrl ? <FileMessage msg={item} isMe={isMe} /> : item.text}
                       </div>
                       <div style={{ fontSize: 10, color: "#94A3B8", marginTop: 4, textAlign: isMe ? "right" : "left",
                         paddingRight: isMe ? 4 : 0, paddingLeft: isMe ? 0 : 4,
                         display: "flex", alignItems: "center", gap: 4, justifyContent: isMe ? "flex-end" : "flex-start" }}>
                         {formatTime(item.createdAt)}
-                        {isMe && <span style={{ color: item.read ? "#6366F1" : "#94A3B8" }}>{item.read ? "✓✓" : "✓"}</span>}
+                        {isMe && <span style={{ color: item.read ? "var(--brand)" : "#94A3B8" }}>{item.read ? "✓✓" : "✓"}</span>}
                       </div>
                     </div>
                     {isMe && <div style={{ width: 26 }} />}
@@ -424,11 +424,11 @@ export default function Chat() {
               <input ref={fileInputRef} type="file" style={{ display: "none" }} onChange={handleFileUpload}
                 accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" />
               <div style={{ display: "flex", gap: 10, alignItems: "flex-end", background: "#F8FAFC", borderRadius: 14, padding: "8px 8px 8px 4px", border: "2.5px solid #E2E8F0", transition: "border-color 0.2s" }}
-                onFocusCapture={e => { e.currentTarget.style.borderColor = "#6366F1"; e.currentTarget.style.borderWidth = "2.5px"; }}
+                onFocusCapture={e => { e.currentTarget.style.borderColor = "var(--brand)"; e.currentTarget.style.borderWidth = "2.5px"; }}
                 onBlurCapture={e => e.currentTarget.style.borderColor = "#E2E8F0"}>
                 <button className="file-btn" onClick={() => fileInputRef.current?.click()} disabled={uploading}
                   style={{ width: 42, height: 42, borderRadius: 12, border: "none", background: "transparent", cursor: "pointer", fontSize: 24, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "#64748B", transition: "background 0.15s ease" }}>
-                  {uploading ? <span style={{ width: 14, height: 14, border: "2px solid #E2E8F0", borderTop: "2px solid #6366F1", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} /> : "+"}
+                  {uploading ? <span style={{ width: 14, height: 14, border: "2px solid #E2E8F0", borderTop: "2px solid var(--brand)", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} /> : "+"}
                 </button>
                 <textarea ref={inputRef} value={input} rows={1}
                   onChange={e => { setInput(e.target.value); e.target.style.height = "auto"; e.target.style.height = Math.min(e.target.scrollHeight, 100) + "px"; }}
@@ -437,10 +437,10 @@ export default function Chat() {
                   style={{ flex: 1, border: "none", background: "transparent", fontSize: 13, color: "#0F172A", resize: "none", fontFamily: "inherit", lineHeight: 1.5, maxHeight: 100, overflowY: "auto", paddingTop: 5, paddingBottom: 5 }} />
                 <button onClick={() => sendMessage()} disabled={!input.trim() || sending}
                   style={{ width: 44, height: 44, borderRadius: 13, border: "none",
-                    background: input.trim() ? "#6366F1" : "#E2E8F0", color: "white",
+                    background: input.trim() ? "var(--brand)" : "#E2E8F0", color: "white",
                     cursor: input.trim() ? "pointer" : "default", display: "flex", alignItems: "center", justifyContent: "center",
                     flexShrink: 0, fontSize: 16, transition: "all 0.15s ease",
-                    boxShadow: input.trim() ? "0 2px 10px rgba(99,102,241,0.35)" : "none" }}>
+                    boxShadow: input.trim() ? "0 2px 10px color-mix(in srgb, var(--brand) 35%, transparent)" : "none" }}>
                   {sending ? <span style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.3)", borderTop: "2px solid white", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} /> : "➤"}
                 </button>
               </div>
@@ -456,7 +456,7 @@ export default function Chat() {
             </div>
             <div style={{ display: "flex", gap: 12, marginTop: 4 }}>
               {[["🎓","Students","#6366F1","#EEF2FF"],["👨‍🏫","Teachers","#16A34A","#F0FDF4"],["👨‍👩‍👧","Parents","#D97706","#FFFBEB"]].map(([icon,label,color,bg]) => (
-                <div key={label} style={{ padding: "12px 18px", borderRadius: 14, background: bg, border: `1px solid ${color}22`, textAlign: "center" }}>
+                <div key={label} style={{ padding: "12px 18px", borderRadius: 14, background: bg, border: `1px solid color-mix(in srgb, ${color} 13%, transparent)`, textAlign: "center" }}>
                   <div style={{ fontSize: 22, marginBottom: 4 }}>{icon}</div>
                   <div style={{ fontSize: 11, fontWeight: 600, color }}>{label}</div>
                 </div>

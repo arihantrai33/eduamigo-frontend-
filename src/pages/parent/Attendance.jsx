@@ -97,7 +97,7 @@ export default function ParentAttendance() {
     <div style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "Inter, sans-serif", paddingBottom: 30 }}>
 
       {/* Header */}
-      <div style={{ background: "linear-gradient(135deg,#4f46e5,#7c3aed)", padding: "48px 16px 40px", color: "white" }}>
+      <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
           <button onClick={() => navigate(-1)}
             style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "8px 12px", color: "white", cursor: "pointer", fontSize: 16 }}>
@@ -142,7 +142,7 @@ export default function ParentAttendance() {
                   : c.status === "Leave"
                   ? "#fef9c3"
                   : c.today
-                  ? "#4f46e5"
+                  ? "var(--brand)"
                   : "transparent",
                 color: !c
                   ? "transparent"
@@ -167,7 +167,7 @@ export default function ParentAttendance() {
               { color: "#e8f5e9", label: "Present" },
               { color: "#ffebee", label: "Absent"  },
               { color: "#fef9c3", label: "Leave"   },
-              { color: "#4f46e5", label: "Today"   },
+              { color: "var(--brand)", label: "Today"   },
             ].map((l) => (
               <div key={l.label} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11 }}>
                 <div style={{ width: 12, height: 12, borderRadius: 3, background: l.color }} />

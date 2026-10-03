@@ -251,7 +251,7 @@ export default function ParentFee() {
                 FEE BREAKDOWN
               </span>
               <span style={{
-                color: "#4f46e5", fontSize: 16,
+                color: "var(--brand)", fontSize: 16,
                 transform: showBreakdown ? "rotate(180deg)" : "rotate(0deg)",
                 transition: "transform 0.3s", display: "inline-block"
               }}>⌄</span>
@@ -281,7 +281,7 @@ export default function ParentFee() {
                 ))}
                 <div style={styles.breakdownTotal}>
                   <span style={{ fontWeight: 700, fontSize: 14 }}>Total</span>
-                  <span style={{ fontWeight: 900, fontSize: 15, color: "#4f46e5" }}>
+                  <span style={{ fontWeight: 900, fontSize: 15, color: "var(--brand)" }}>
                     ₹{summary.total.toLocaleString("en-IN")}
                   </span>
                 </div>
@@ -316,18 +316,18 @@ const styles = {
   spinner: {
     width: 32, height: 32,
     border: "3px solid #e5e7eb",
-    borderTop: "3px solid #4f46e5",
+    borderTop: "3px solid var(--brand)",
     borderRadius: "50%",
     animation: "spin 0.8s linear infinite",
   },
   retryBtn: {
     marginTop: 16, padding: "10px 24px",
-    background: "#4f46e5", color: "white",
+    background: "var(--brand)", color: "white",
     border: "none", borderRadius: 10,
     fontWeight: 600, fontSize: 13, cursor: "pointer",
   },
   header: {
-    background: "linear-gradient(135deg, #4338ca, #7c3aed)",
+    background: "var(--brand-gradient)",
     padding: "48px 20px 28px",
   },
   headerTop: {
@@ -392,9 +392,9 @@ const styles = {
     color: "#6b7280", cursor: "pointer",
   },
   tabActive: {
-    background: "#4f46e5",
+    background: "var(--brand)",
     color: "white",
-    border: "1px solid #4f46e5",
+    border: "1px solid var(--brand)",
   },
   card: {
     background: "var(--card)", borderRadius: 16,

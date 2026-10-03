@@ -72,7 +72,7 @@ export default function TeacherTimetable() {
 
   const statusStyle = {
     done:     { bg: '#F3F4F6', color: '#9CA3AF', label: 'Done',     dot: '#D1D5DB' },
-    now:      { bg: '#EEF2FF', color: '#4338CA', label: 'Now',      dot: '#5C6BC0' },
+    now:      { bg: 'var(--brand-soft)', color: 'var(--brand-dark)', label: 'Now',      dot: 'var(--brand)' },
     upcoming: { bg: '#F0FDF4', color: '#15803D', label: 'Upcoming', dot: '#22C55E' },
     other:    { bg: '#F9FAFB', color: '#6B7280', label: '',         dot: '#9CA3AF' },
   }
@@ -82,7 +82,7 @@ export default function TeacherTimetable() {
 
   if (loading) return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#F4F6FB', gap: 12 }}>
-      <div style={{ width: 36, height: 36, borderRadius: '50%', border: '3px solid #E8EAF6', borderTop: '3px solid #5C6BC0', animation: 'spin 0.8s linear infinite' }} />
+      <div style={{ width: 36, height: 36, borderRadius: '50%', border: '3px solid var(--brand-soft)', borderTop: '3px solid var(--brand)', animation: 'spin 0.8s linear infinite' }} />
       <p style={{ color: '#7B8099', fontSize: 13 }}>Loading timetable...</p>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
@@ -92,7 +92,7 @@ export default function TeacherTimetable() {
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#F4F6FB', gap: 12, padding: 24 }}>
       <div style={{ fontSize: 40 }}>⚠️</div>
       <p style={{ color: '#EF5350', fontWeight: 600, textAlign: 'center' }}>{error}</p>
-      <button onClick={fetchData} style={{ padding: '10px 24px', background: '#5C6BC0', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>Retry</button>
+      <button onClick={fetchData} style={{ padding: '10px 24px', background: 'var(--brand)', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>Retry</button>
     </div>
   )
 
@@ -100,7 +100,7 @@ export default function TeacherTimetable() {
     <div style={{ maxWidth: 420, margin: '0 auto', minHeight: '100vh', background: '#F4F6FB', fontFamily: "'Poppins', sans-serif", paddingBottom: 90 }}>
 
       {/* Header */}
-      <div style={{ background: 'linear-gradient(160deg,#3949AB,#5C6BC0)', padding: '48px 18px 20px', display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div style={{ background: 'var(--brand-gradient)', padding: '48px 18px 20px', display: 'flex', alignItems: 'center', gap: 12 }}>
         <button onClick={() => navigate('/teacher/home')} style={{ background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: 10, width: 36, height: 36, fontSize: 18, cursor: 'pointer', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>←</button>
         <div>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', fontWeight: 700, letterSpacing: 1 }}>TEACHER PORTAL</div>
@@ -111,7 +111,7 @@ export default function TeacherTimetable() {
       <div style={{ padding: 16 }}>
 
         {/* Summary Card */}
-        <div style={{ background: 'linear-gradient(135deg,#3949AB,#5C6BC0)', borderRadius: 20, padding: 18, marginBottom: 16, color: '#fff' }}>
+        <div style={{ background: 'var(--brand-gradient)', borderRadius: 20, padding: 18, marginBottom: 16, color: '#fff' }}>
           <div style={{ fontSize: 12, opacity: 0.75, marginBottom: 4 }}>{teacher?.subjects?.join(', ') || 'No subjects'}</div>
           <div style={{ fontSize: 18, fontWeight: 800, fontFamily: "'Baloo 2', cursive", marginBottom: 12 }}>{teacher?.name || '—'}</div>
           <div style={{ display: 'flex', gap: 10 }}>
@@ -137,16 +137,16 @@ export default function TeacherTimetable() {
             return (
               <button key={day} onClick={() => setSelectedDay(day)} style={{
                 flexShrink: 0, padding: '8px 14px', borderRadius: 14, border: 'none', cursor: 'pointer',
-                background: isActive ? '#5C6BC0' : '#fff',
-                color: isActive ? '#fff' : isToday ? '#5C6BC0' : '#7B8099',
+                background: isActive ? 'var(--brand)' : '#fff',
+                color: isActive ? '#fff' : isToday ? 'var(--brand)' : '#7B8099',
                 fontWeight: isActive || isToday ? 700 : 500,
                 fontSize: 12, fontFamily: "'Poppins', sans-serif",
-                boxShadow: isActive ? '0 4px 12px rgba(92,107,192,0.3)' : '0 2px 8px rgba(0,0,0,0.06)',
-                outline: isToday && !isActive ? '2px solid #5C6BC0' : 'none',
+                boxShadow: isActive ? '0 4px 12px color-mix(in srgb, var(--brand) 30%, transparent)' : '0 2px 8px rgba(0,0,0,0.06)',
+                outline: isToday && !isActive ? '2px solid var(--brand)' : 'none',
               }}>
                 {day.slice(0, 3)}
                 {count > 0 && (
-                  <span style={{ marginLeft: 5, background: isActive ? 'rgba(255,255,255,0.25)' : '#EEF2FF', color: isActive ? '#fff' : '#5C6BC0', borderRadius: 10, padding: '1px 6px', fontSize: 10, fontWeight: 700 }}>
+                  <span style={{ marginLeft: 5, background: isActive ? 'rgba(255,255,255,0.25)' : 'var(--brand-soft)', color: isActive ? '#fff' : 'var(--brand)', borderRadius: 10, padding: '1px 6px', fontSize: 10, fontWeight: 700 }}>
                     {count}
                   </span>
                 )}
@@ -157,11 +157,11 @@ export default function TeacherTimetable() {
 
         {/* Periods */}
         <div style={{ fontSize: 14, fontWeight: 700, color: '#1C2033', marginBottom: 12, fontFamily: "'Baloo 2', cursive" }}>
-          {selectedDay} {selectedDay === today && <span style={{ fontSize: 11, color: '#5C6BC0', fontWeight: 600 }}>• Today</span>}
+          {selectedDay} {selectedDay === today && <span style={{ fontSize: 11, color: 'var(--brand)', fontWeight: 600 }}>• Today</span>}
         </div>
 
         {selectedPeriods.length === 0 ? (
-          <div style={{ background: '#fff', borderRadius: 20, padding: '40px 20px', textAlign: 'center', boxShadow: '0 2px 16px rgba(92,107,192,0.08)' }}>
+          <div style={{ background: '#fff', borderRadius: 20, padding: '40px 20px', textAlign: 'center', boxShadow: '0 2px 16px color-mix(in srgb, var(--brand) 8%, transparent)' }}>
             <div style={{ fontSize: 36, marginBottom: 10 }}>📭</div>
             <div style={{ fontSize: 14, color: '#7B8099', fontWeight: 500 }}>No classes scheduled for {selectedDay}</div>
           </div>
@@ -172,16 +172,16 @@ export default function TeacherTimetable() {
             return (
               <div key={i} style={{
                 background: '#fff', borderRadius: 20, padding: '16px', marginBottom: 10,
-                boxShadow: '0 2px 16px rgba(92,107,192,0.08)',
-                border: status === 'now' ? '2px solid #5C6BC0' : '2px solid transparent',
+                boxShadow: '0 2px 16px color-mix(in srgb, var(--brand) 8%, transparent)',
+                border: status === 'now' ? '2px solid var(--brand)' : '2px solid transparent',
                 opacity: status === 'done' ? 0.6 : 1,
               }}>
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
                   {/* Time column */}
-                  <div style={{ background: '#EEF2FF', borderRadius: 12, padding: '10px 12px', textAlign: 'center', flexShrink: 0, minWidth: 64 }}>
-                    <div style={{ fontSize: 12, fontWeight: 800, color: '#3949AB' }}>{period.startTime || '—'}</div>
-                    <div style={{ width: 1, height: 8, background: '#C7D2FE', margin: '3px auto' }} />
-                    <div style={{ fontSize: 12, fontWeight: 800, color: '#5C6BC0' }}>{period.endTime || '—'}</div>
+                  <div style={{ background: 'var(--brand-soft)', borderRadius: 12, padding: '10px 12px', textAlign: 'center', flexShrink: 0, minWidth: 64 }}>
+                    <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--brand-dark)' }}>{period.startTime || '—'}</div>
+                    <div style={{ width: 1, height: 8, background: 'var(--brand-border)', margin: '3px auto' }} />
+                    <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--brand)' }}>{period.endTime || '—'}</div>
                   </div>
 
                   {/* Info */}
@@ -214,7 +214,7 @@ export default function TeacherTimetable() {
       </div>
 
       {/* Bottom Nav */}
-      <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 420, background: '#fff', display: 'flex', borderTop: '1px solid #E8EAF0', boxShadow: '0 -4px 24px rgba(92,107,192,.08)', zIndex: 200, height: 66 }}>
+      <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 420, background: '#fff', display: 'flex', borderTop: '1px solid #E8EAF0', boxShadow: '0 -4px 24px color-mix(in srgb, var(--brand) 8%, transparent)', zIndex: 200, height: 66 }}>
         {[
           { icon: '🏠', label: 'Home',       path: '/teacher/home' },
           { icon: '✅', label: 'Attendance', path: '/teacher/attendance' },
@@ -228,8 +228,8 @@ export default function TeacherTimetable() {
               flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
               gap: 3, cursor: 'pointer', fontSize: '9.5px', fontWeight: 700,
               letterSpacing: '.3px', textTransform: 'uppercase', border: 'none', background: 'none',
-              color: active ? '#5C6BC0' : '#7B8099',
-              borderTop: active ? '3px solid #5C6BC0' : '3px solid transparent',
+              color: active ? 'var(--brand)' : '#7B8099',
+              borderTop: active ? '3px solid var(--brand)' : '3px solid transparent',
             }}>
               <span style={{ fontSize: 20 }}>{t.icon}</span>
               <span>{t.label}</span>

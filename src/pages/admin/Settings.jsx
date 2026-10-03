@@ -11,7 +11,7 @@ const inputStyle = {
   fontFamily: "Inter, sans-serif", width: "100%", boxSizing: "border-box",
 };
 const card = { background: "#fff", border: "1px solid #E8E8E5", borderRadius: 12, padding: "1.5rem", marginBottom: 16 };
-const title = { fontSize: 13, fontWeight: 600, color: "#534AB7", marginBottom: 12 };
+const title = { fontSize: 13, fontWeight: 600, color: "var(--brand)", marginBottom: 12 };
 const label = { fontSize: 11, color: "#64748B", fontWeight: 600 };
 
 function Field({ text, children }) {
@@ -86,7 +86,7 @@ function OnlinePayments() {
       <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 14 }}>
         {cfg.enabled && <button onClick={() => save(false)} disabled={saving} style={{ padding: "9px 18px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", color: "#B91C1C", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Turn off</button>}
         <button onClick={() => save(cfg.enabled)} disabled={saving} style={{ padding: "9px 18px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", color: "#334155", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Save keys</button>
-        {!cfg.enabled && <button onClick={() => save(true)} disabled={saving} style={{ padding: "9px 18px", borderRadius: 8, border: "none", background: "#534AB7", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Save and turn on</button>}
+        {!cfg.enabled && <button onClick={() => save(true)} disabled={saving} style={{ padding: "9px 18px", borderRadius: 8, border: "none", background: "var(--brand)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Save and turn on</button>}
       </div>
     </div>
   );
@@ -211,7 +211,7 @@ export default function Settings() {
       </div>
 
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 24 }}>
-        <button onClick={save} disabled={saving} style={{ padding: "9px 24px", borderRadius: 8, border: "none", background: "#534AB7", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", opacity: saving ? 0.7 : 1 }}>
+        <button onClick={save} disabled={saving} style={{ padding: "9px 24px", borderRadius: 8, border: "none", background: "var(--brand)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", opacity: saving ? 0.7 : 1 }}>
           {saving ? "Saving..." : "Save Changes"}
         </button>
       </div>
@@ -223,7 +223,7 @@ export default function Settings() {
         <div style={{ fontSize: 12, color: "#64748B", marginBottom: 10 }}>Extra subjects your school teaches, shown in teacher and timetable forms.</div>
         <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
           <input style={inputStyle} value={newSubject} onChange={(e) => setNewSubject(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addSubject()} placeholder="e.g. Sanskrit" />
-          <button onClick={addSubject} style={{ padding: "0 18px", borderRadius: 8, border: "none", background: "#EEF2FF", color: "#4338CA", fontWeight: 600, cursor: "pointer" }}>Add</button>
+          <button onClick={addSubject} style={{ padding: "0 18px", borderRadius: 8, border: "none", background: "var(--brand-soft)", color: "var(--brand-dark)", fontWeight: 600, cursor: "pointer" }}>Add</button>
         </div>
         {subjects.length === 0 ? (
           <div style={{ fontSize: 12, color: "#94A3B8" }}>No custom subjects yet.</div>

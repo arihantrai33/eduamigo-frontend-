@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { visibleFor } from "../../utils/features";
+import { userTheme, brandLook } from "../../utils/theme";
+import SchoolStrip from "../../components/SchoolStrip";
 import axios from "axios";
 import { pickChild, childQuery } from "../../utils/selectedChild";
 import ChildSwitcher from "../../components/ChildSwitcher";
@@ -26,6 +28,9 @@ function getGreeting() {
 export default function ParentHome() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  // School branding, in the same style (light or bold) as the school's sign-in page.
+  const theme = userTheme(user);
+  const look = brandLook(theme);
   const location = useLocation();
   const [child,      setChild]      = useState(null);
   const [attendance, setAttendance] = useState(null);
@@ -91,19 +96,20 @@ export default function ParentHome() {
     <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "Inter, sans-serif" }}>
 
       {/* Header */}
-      <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 20px 20px", flexShrink: 0 }}>
+      <div style={{ background: look.header, padding: "20px 20px 20px", flexShrink: 0 }}>
+        <SchoolStrip user={user} theme={theme} look={look} />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
-            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", fontWeight: 700 }}>
+            <div style={{ fontSize: 11, color: look.muted, fontWeight: 700 }}>
               {getGreeting().toUpperCase()} — PARENT PORTAL
             </div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: "#fff" }}>
+            <div style={{ fontSize: 20, fontWeight: 800, color: look.text }}>
               {user?.name ?? "Parent"} 👩‍👧
             </div>
           </div>
           <button
             onClick={() => navigate("/parent/notifications")}
-            style={{ width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.15)", border: "none", cursor: "pointer", fontSize: 16, position: "relative" }}>
+            style={{ width: 38, height: 38, borderRadius: "50%", background: look.glass, border: look.border, cursor: "pointer", fontSize: 16, position: "relative" }}>
             🔔
             {notices.length > 0 && (
               <div style={{ position: "absolute", top: -4, right: -4, minWidth: 18, height: 18, background: "#FF5252", borderRadius: "50%", border: "2px solid white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: "white", padding: "0 4px" }}>{notices.length}</div>
@@ -111,24 +117,24 @@ export default function ParentHome() {
           </button>
         </div>
 
-        <ChildSwitcher children={children} current={child} onChange={() => { setLoading(true); fetchAll(); }} />
+        <ChildSwitcher children={children} current={child} theme={theme} onChange={() => { setLoading(true); fetchAll(); }} />
 
         {/* Child Card */}
-        <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: 16, padding: 16, marginTop: 16, backdropFilter: "blur(10px)" }}>
-          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.75)", marginBottom: 4 }}>Monitoring</div>
+        <div style={{ background: look.glass, border: look.border, borderRadius: 16, padding: 16, marginTop: 16, backdropFilter: "blur(10px)" }}>
+          <div style={{ fontSize: 11, color: look.muted, marginBottom: 4 }}>Monitoring</div>
 
           {loading ? (
-            <div style={{ fontSize: 16, color: "rgba(255,255,255,0.8)" }}>Loading...</div>
+            <div style={{ fontSize: 16, color: look.muted }}>Loading...</div>
           ) : child ? (
             <>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
-                  <div style={{ fontSize: 22, fontWeight: 900, color: "#fff" }}>{child.name}</div>
-                  <div style={{ fontSize: 12, color: "rgba(255,255,255,0.85)", marginTop: 2 }}>
+                  <div style={{ fontSize: 22, fontWeight: 900, color: look.text }}>{child.name}</div>
+                  <div style={{ fontSize: 12, color: look.muted, marginTop: 2 }}>
                     Class {child.class}-{child.section} • Roll #{child.rollNumber}
                   </div>
                 </div>
-                <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, color: "#fff", fontSize: 15 }}>
+                <div style={{ width: 44, height: 44, borderRadius: 12, background: look.avatar, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, color: "#fff", fontSize: 15 }}>
                   {getInitials(child.name)}
                 </div>
               </div>
@@ -145,18 +151,18 @@ export default function ParentHome() {
                     key={s.label}
                     onClick={() => navigate(s.path)}
                     style={{
-                      flex: 1, background: "rgba(255,255,255,0.15)", borderRadius: 12,
+                      flex: 1, background: look.tile, border: look.border, borderRadius: 12,
                       padding: "10px 6px", textAlign: "center", cursor: "pointer",
                     }}
                   >
-                    <div style={{ fontSize: 15, fontWeight: 900, color: "#fff" }}>{s.val}</div>
-                    <div style={{ fontSize: 9, color: "rgba(255,255,255,0.8)", marginTop: 2 }}>{s.label}</div>
+                    <div style={{ fontSize: 15, fontWeight: 900, color: look.value }}>{s.val}</div>
+                    <div style={{ fontSize: 9, color: look.muted, marginTop: 2 }}>{s.label}</div>
                   </div>
                 ))}
               </div>
             </>
           ) : (
-            <div style={{ fontSize: 14, color: "rgba(255,255,255,0.8)" }}>
+            <div style={{ fontSize: 14, color: look.muted }}>
               No child linked to this account
             </div>
           )}
@@ -185,7 +191,7 @@ export default function ParentHome() {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
           <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--text)", margin: 0 }}>🔔 Notices</h3>
           <span onClick={() => navigate("/parent/notifications")}
-            style={{ fontSize: 13, color: "#4f46e5", cursor: "pointer" }}>View all →</span>
+            style={{ fontSize: 13, color: theme.primary, fontWeight: 700, cursor: "pointer" }}>View all →</span>
         </div>
 
         <div style={{ background: "var(--card)", borderRadius: 14, padding: "4px 12px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
@@ -196,7 +202,7 @@ export default function ParentHome() {
           ) : (
             notices.map((n, i) => (
               <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "12px 0", borderBottom: i < notices.length - 1 ? "1px solid #f0f0f0" : "none" }}>
-                <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#7c3aed", marginTop: 5, flexShrink: 0 }} />
+                <div style={{ width: 8, height: 8, borderRadius: "50%", background: theme.primary, marginTop: 5, flexShrink: 0 }} />
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text)" }}>{n.title}</div>
                   <div style={{ fontSize: 11, color: "var(--subtext)", marginTop: 2 }}>
@@ -219,7 +225,7 @@ export default function ParentHome() {
           { icon: "👤", label: "Me",       path: "/parent/profile"                     },
         ].filter(visibleFor(user)).map((tab) => (
           <button key={tab.label} onClick={() => navigate(tab.path)}
-            style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, color: location.pathname === tab.path ? "#4f46e5" : "#999" }}>
+            style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, color: location.pathname === tab.path ? theme.primary : "#999" }}>
             <span style={{ fontSize: 22 }}>{tab.icon}</span>
             <span style={{ fontSize: 10, fontWeight: location.pathname === tab.path ? 700 : 500 }}>{tab.label}</span>
           </button>

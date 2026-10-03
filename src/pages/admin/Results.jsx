@@ -80,7 +80,7 @@ export default function Results() {
       `}</style>
 
       {/* Header */}
-      <div style={{ background:"linear-gradient(135deg,#7C3AED,#6366F1,#3B82F6)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
+      <div style={{ background:"var(--brand-gradient)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
         <div style={{ position:"absolute", top:-40, right:-40, width:180, height:180, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
         <div style={{ position:"absolute", bottom:-30, left:100, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
         <div style={{ position:"relative" }}>
@@ -92,7 +92,7 @@ export default function Results() {
       {/* Stat Cards */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
         {[
-          { label:"TOTAL RECORDS", value: filtered.length, icon:"📋", border:"#6366F1", bg:"#EEF2FF" },
+          { label:"TOTAL RECORDS", value: filtered.length, icon:"📋", border:"var(--brand)", bg:"var(--brand-soft)" },
           { label:"AVG SCORE",     value: `${avgScore}%`,  icon:"📊", border:"#3B82F6", bg:"#EFF6FF" },
           { label:"PASSED",        value: passed,          icon:"✅", border:"#10B981", bg:"#F0FDF4" },
           { label:"TOPPERS (90%+)",value: toppers,         icon:"🏆", border:"#F59E0B", bg:"#FFFBEB" },
@@ -115,7 +115,7 @@ export default function Results() {
           <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}>🔍</span>
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search student name..."
             style={{ width:"100%", padding:"11px 14px 11px 38px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
-            onFocus={e => e.target.style.borderColor="#6366F1"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
+            onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
         </div>
         <select value={filterClass} onChange={e => { setFilterClass(e.target.value); setFilterSection(""); }}
           style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:130 }}>
@@ -140,7 +140,7 @@ export default function Results() {
         <button onClick={() => (filterClass && filterSection)
             ? navigate(`/report-card?class=${filterClass}&section=${filterSection}&term=${encodeURIComponent(filterTerm || "Term 1")}`)
             : toast.error("Choose a class and section to print report cards")}
-          style={{ padding:"11px 16px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"white", fontSize:13, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>
+          style={{ padding:"11px 16px", borderRadius:12, border:"none", background:"var(--brand-gradient)", color:"white", fontSize:13, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>
           Report Cards
         </button>
         <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600, whiteSpace:"nowrap" }}>{filtered.length} records</div>
@@ -159,7 +159,7 @@ export default function Results() {
           <tbody>
             {loading ? (
               <tr><td colSpan={9} style={{ padding:"60px 0", textAlign:"center" }}>
-                <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid #6366F1", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
+                <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid var(--brand)", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
                 <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading results...</div>
               </td></tr>
             ) : filtered.length === 0 ? (
@@ -175,14 +175,14 @@ export default function Results() {
                 <tr key={r._id} className="res-row" style={{ borderBottom:"1px solid #F1F5F9", animation:`fadeUp 0.3s ease ${i*0.03}s both` }}>
                   <td style={{ padding:"14px 18px" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                      <div style={{ width:36, height:36, borderRadius:10, background:"linear-gradient(135deg,#6366F1,#8B5CF6)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, fontWeight:800, color:"white", flexShrink:0 }}>
+                      <div style={{ width:36, height:36, borderRadius:10, background:"var(--brand-gradient)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, fontWeight:800, color:"white", flexShrink:0 }}>
                         {r.studentName?.[0]?.toUpperCase()}
                       </div>
                       <div style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>{r.studentName}</div>
                     </div>
                   </td>
                   <td style={{ padding:"14px 18px" }}>
-                    <span style={{ fontSize:12, fontWeight:700, padding:"3px 10px", borderRadius:8, background:"#EEF2FF", color:"#6366F1" }}>
+                    <span style={{ fontSize:12, fontWeight:700, padding:"3px 10px", borderRadius:8, background:"var(--brand-soft)", color:"var(--brand)" }}>
                       {r.studentClass}{r.studentSection ? `-${r.studentSection}` : ""}
                     </span>
                   </td>

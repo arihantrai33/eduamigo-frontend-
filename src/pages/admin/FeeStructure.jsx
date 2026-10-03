@@ -140,7 +140,7 @@ export default function FeeStructure() {
 
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
         {[
-          { label:"TOTAL STRUCTURES", value: structures.length,    icon:"📋", border:"#6366F1", bg:"#EEF2FF" },
+          { label:"TOTAL STRUCTURES", value: structures.length,    icon:"📋", border:"var(--brand)", bg:"var(--brand-soft)" },
           { label:"CLASSES COVERED",  value: classes.length,       icon:"🏫", border:"#10B981", bg:"#F0FDF4" },
           { label:"FEE TYPES",        value: [...new Set(structures.map(s=>s.feeType))].length, icon:"🏷️", border:"#F59E0B", bg:"#FFFBEB" },
           { label:"TOTAL AMOUNT",     value: `₹${totalAmount.toLocaleString()}`, icon:"💰", border:"#06B6D4", bg:"#ECFEFF" },
@@ -188,18 +188,18 @@ export default function FeeStructure() {
                 <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Click "Add Fee" to get started</div>
               </td></tr>
             ) : filtered.map((s, i) => {
-              const clsColor = CLASS_COLORS[parseInt(s.class) % CLASS_COLORS.length] || "#6366F1";
+              const clsColor = CLASS_COLORS[parseInt(s.class) % CLASS_COLORS.length] || "var(--brand)";
               return (
                 <tr key={s._id} className="fee-row" style={{ borderBottom:"1px solid #F1F5F9" }}>
                   <td style={{ padding:"14px 18px" }}>
-                    <span style={{ fontSize:12, fontWeight:800, padding:"5px 12px", borderRadius:20, background:`${clsColor}15`, color:clsColor, border:`1px solid ${clsColor}30` }}>Class {s.class}{s.section && s.section !== "All" ? `-${s.section}` : ""}</span>
+                    <span style={{ fontSize:12, fontWeight:800, padding:"5px 12px", borderRadius:20, background:`color-mix(in srgb, ${clsColor} 8%, transparent)`, color:clsColor, border:`1px solid color-mix(in srgb, ${clsColor} 19%, transparent)` }}>Class {s.class}{s.section && s.section !== "All" ? `-${s.section}` : ""}</span>
                   </td>
                   <td style={{ padding:"14px 18px", fontSize:13, fontWeight:700, color:"#0F172A" }}>{s.feeType}</td>
                   <td style={{ padding:"14px 18px" }}>
                     <span style={{ fontSize:15, fontWeight:800, color:"#059669" }}>Rs.{Number(s.amount||0).toLocaleString()}</span>
                   </td>
                   <td style={{ padding:"14px 18px" }}>
-                    <span style={{ fontSize:12, fontWeight:700, padding:"4px 10px", borderRadius:8, background:"#EEF2FF", color:"#6366F1" }}>{s.academicYear}</span>
+                    <span style={{ fontSize:12, fontWeight:700, padding:"4px 10px", borderRadius:8, background:"var(--brand-soft)", color:"var(--brand)" }}>{s.academicYear}</span>
                     {s.applyHistory?.length > 0 && <div style={{ fontSize:11, color:"#64748B", marginTop:4 }}>Billed {s.applyHistory.reduce((n, h) => n + (h.created || 0), 0)} student(s)</div>}
                   </td>
                   <td style={{ padding:"14px 18px", fontSize:13, color:"#374151", fontWeight:600 }}>{s.dueDate ? (isNaN(new Date(s.dueDate)) ? s.dueDate : new Date(s.dueDate).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})) : 'Not set'}</td>

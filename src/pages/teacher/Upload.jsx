@@ -317,7 +317,7 @@ function NavItem({ icon, label, onClick, active }) {
   return (
     <button onClick={onClick} style={styles.navItem}>
       <span style={{ fontSize: 22 }}>{icon}</span>
-      <span style={{ ...styles.navLabel, color: active ? '#5C6BC0' : '#9E9E9E' }}>{label}</span>
+      <span style={{ ...styles.navLabel, color: active ? 'var(--brand)' : '#9E9E9E' }}>{label}</span>
     </button>
   );
 }
@@ -332,7 +332,7 @@ const styles = {
     position: 'relative',
   },
   header: {
-    background: 'linear-gradient(135deg, #5C6BC0, #3949AB)',
+    background: 'var(--brand-gradient)',
     padding: '20px 16px 24px',
     display: 'flex',
     alignItems: 'center',
@@ -403,7 +403,7 @@ const styles = {
     cursor: 'pointer',
     fontFamily: "'Poppins', sans-serif",
   },
-  tabActive: { background: '#5C6BC0', color: '#fff' },
+  tabActive: { background: 'var(--brand)', color: '#fff' },
   card: {
     background: '#fff',
     borderRadius: 14,
@@ -448,11 +448,11 @@ const styles = {
     whiteSpace: 'nowrap',
     flexShrink: 0,
   },
-  cardMeta: { fontSize: 12, color: '#5C6BC0', fontWeight: 500, margin: '0 0 4px' },
+  cardMeta: { fontSize: 12, color: 'var(--brand)', fontWeight: 500, margin: '0 0 4px' },
   dueDateText: { fontSize: 12, color: '#F9A825', fontWeight: 600, margin: '0 0 6px' },
   cardFooter: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   timeText: { fontSize: 11, color: '#BDBDBD', fontWeight: 500 },
-  viewLink: { fontSize: 12, color: '#5C6BC0', fontWeight: 700, textDecoration: 'none' },
+  viewLink: { fontSize: 12, color: 'var(--brand)', fontWeight: 700, textDecoration: 'none' },
   formCard: {
     background: '#fff',
     borderRadius: 16,
@@ -463,7 +463,7 @@ const styles = {
   label: {
     fontSize: 12,
     fontWeight: 600,
-    color: '#5C6BC0',
+    color: 'var(--brand)',
     textTransform: 'uppercase',
     letterSpacing: 0.8,
     display: 'block',
@@ -498,7 +498,7 @@ const styles = {
   submitBtn: {
     width: '100%',
     padding: '14px',
-    background: 'linear-gradient(135deg, #5C6BC0, #3949AB)',
+    background: 'var(--brand-gradient)',
     color: '#fff',
     border: 'none',
     borderRadius: 12,
@@ -512,11 +512,11 @@ const styles = {
     width: 32,
     height: 32,
     border: '3px solid #EEF0FF',
-    borderTop: '3px solid #5C6BC0',
+    borderTop: '3px solid var(--brand)',
     borderRadius: '50%',
     animation: 'spin 0.8s linear infinite',
   },
-  loadingText: { color: '#5C6BC0', fontSize: 13, marginTop: 10 },
+  loadingText: { color: 'var(--brand)', fontSize: 13, marginTop: 10 },
   errorBox: {
     background: '#FFEBEE',
     color: '#C62828',

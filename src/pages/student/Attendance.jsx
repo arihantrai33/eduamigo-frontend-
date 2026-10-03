@@ -43,7 +43,7 @@ export default function StudentAttendance() {
       background: "var(--bg)", fontFamily: "Inter, sans-serif" }}>
 
       {/* Header */}
-      <div style={{ background: "linear-gradient(135deg, #1a73e8 0%, #6c63ff 100%)",
+      <div style={{ background: "var(--brand-gradient)",
         padding: "48px 20px 24px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
           <button onClick={() => navigate(-1)}
@@ -81,7 +81,7 @@ export default function StudentAttendance() {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr",
           gap: 10, marginBottom: 20 }}>
           {[
-            { label: "Total Days", val: total,   bg: "#f0f4ff", color: "#1a73e8" },
+            { label: "Total Days", val: total,   bg: "#f0f4ff", color: "var(--brand)" },
             { label: "Present",    val: present, bg: "#f0fdf4", color: "#22c55e" },
             { label: "Absent",     val: absent,  bg: "#fff5f5", color: "#ef4444" },
           ].map((s) => (

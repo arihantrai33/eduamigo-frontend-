@@ -84,14 +84,14 @@ export default function ApplyLeave() {
       <div style={{ fontSize: "64px" }}>✅</div>
       <div style={{ fontWeight: "800", fontSize: "20px", marginTop: "16px", color: dm ? "#f1f5f9" : "#111" }}>Leave Applied Successfully!</div>
       <div style={{ color: dm ? "#94a3b8" : "#888", fontSize: "13px", marginTop: "8px" }}>Your request has been submitted for approval.</div>
-      <button onClick={() => navigate(-1)} style={{ marginTop: "32px", padding: "14px 32px", borderRadius: "12px", background: "linear-gradient(135deg, #1a73e8, #6c63ff)", color: "white", border: "none", fontWeight: "700", fontSize: "15px", cursor: "pointer" }}>
+      <button onClick={() => navigate(-1)} style={{ marginTop: "32px", padding: "14px 32px", borderRadius: "12px", background: "var(--brand-gradient)", color: "white", border: "none", fontWeight: "700", fontSize: "15px", cursor: "pointer" }}>
         Go Back
       </button>
     </div>
   );
   return (
     <div style={{ minHeight: "100vh", background: dm ? "#0f172a" : "#f5f6fa", fontFamily: "'Poppins', sans-serif", paddingBottom: "32px" }}>
-      <div style={{ background: "linear-gradient(135deg, #1a73e8, #6c63ff)", padding: "48px 20px 24px" }}>
+      <div style={{ background: "var(--brand-gradient)", padding: "48px 20px 24px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <button onClick={() => navigate(-1)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "50%", width: "36px", height: "36px", color: "white", fontSize: "18px", cursor: "pointer" }}>←</button>
           <div>
@@ -104,7 +104,7 @@ export default function ApplyLeave() {
             <div style={{ gridColumn: "1/-1", textAlign: "center", color: "rgba(255,255,255,0.7)", fontSize: "13px" }}>Loading balance...</div>
           ) : (
             [
-              { label: "TOTAL", value: quota.total, color: "#1a73e8" },
+              { label: "TOTAL", value: quota.total, color: "var(--brand)" },
               { label: "AVAILABLE", value: quota.available, color: "#22c55e" },
               { label: "USED", value: quota.used, color: "#ef4444" },
             ].map((stat) => (
@@ -136,7 +136,7 @@ export default function ApplyLeave() {
             </div>
           </div>
           {days > 0 && (
-            <div style={{ marginBottom: "16px", padding: "8px 12px", background: dm ? "#1e3a5f" : "#f0f4ff", borderRadius: "8px", fontSize: "12px", color: "#1a73e8", fontWeight: "600" }}>
+            <div style={{ marginBottom: "16px", padding: "8px 12px", background: dm ? "#1e3a5f" : "#f0f4ff", borderRadius: "8px", fontSize: "12px", color: "var(--brand)", fontWeight: "600" }}>
               Duration: {days} day{days > 1 ? "s" : ""}
             </div>
           )}
@@ -159,7 +159,7 @@ export default function ApplyLeave() {
           {formError && (
             <div style={{ marginBottom: "12px", padding: "10px 14px", background: dm ? "#2a0f0f" : "#fff5f5", borderRadius: "8px", border: "1px solid #fee2e2", fontSize: "13px", color: "#ef4444", fontWeight: "600" }}>{formError}</div>
           )}
-          <button onClick={handleSubmit} disabled={loading} style={{ width: "100%", padding: "16px", borderRadius: "12px", border: "none", background: loading ? "#aaa" : "linear-gradient(135deg, #1a73e8, #6c63ff)", color: "white", fontSize: "15px", fontWeight: "700", cursor: loading ? "not-allowed" : "pointer", fontFamily: "'Poppins', sans-serif" }}>
+          <button onClick={handleSubmit} disabled={loading} style={{ width: "100%", padding: "16px", borderRadius: "12px", border: "none", background: loading ? "#aaa" : "var(--brand-gradient)", color: "white", fontSize: "15px", fontWeight: "700", cursor: loading ? "not-allowed" : "pointer", fontFamily: "'Poppins', sans-serif" }}>
             {loading ? "Submitting..." : "Submit Leave Request"}
           </button>
         </div>
@@ -176,7 +176,7 @@ export default function ApplyLeave() {
               <div key={leave._id || i} style={{ padding: "14px", borderRadius: "12px", background: dm ? "#0f172a" : (leave.status === "Rejected" ? "#fff5f5" : "#f9fafb"), marginBottom: "10px", border: `1px solid ${leave.status === "Rejected" ? "#fee2e2" : dm ? "#334155" : "#f0f0f0"}` }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div style={{ fontWeight: "700", fontSize: "14px", color: dm ? "#f1f5f9" : "#111" }}>{leave.leaveType}</div>
-                  <span style={{ fontSize: "11px", fontWeight: "700", color: statusColor, background: `${statusColor}18`, padding: "3px 10px", borderRadius: "20px" }}>{leave.status}</span>
+                  <span style={{ fontSize: "11px", fontWeight: "700", color: statusColor, background: `color-mix(in srgb, ${statusColor} 9%, transparent)`, padding: "3px 10px", borderRadius: "20px" }}>{leave.status}</span>
                 </div>
                 <div style={{ fontSize: "12px", color: dm ? "#94a3b8" : "#888", marginTop: "4px" }}>
                   {new Date(leave.fromDate).toLocaleDateString("en-GB")} — {new Date(leave.toDate).toLocaleDateString("en-GB")} • {leaveDays} day{leaveDays > 1 ? "s" : ""}

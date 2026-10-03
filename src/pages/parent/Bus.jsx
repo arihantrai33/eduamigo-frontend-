@@ -492,7 +492,7 @@ export default function ParentBus() {
               <p style={styles.childClass}>{studentData?.class || "—"}</p>
             </div>
             <div style={{ textAlign:"right" }}>
-              <div style={{ ...styles.statusBadge, background:childStatus.color+"22", border:`1px solid ${childStatus.color}55` }}>
+              <div style={{ ...styles.statusBadge, background:`color-mix(in srgb, ${childStatus.color} 13%, transparent)`, border:`1px solid color-mix(in srgb, ${childStatus.color} 33%, transparent)` }}>
                 <span>{childStatus.emoji}</span>
                 <span style={{ color:childStatus.color, fontSize:"11px", fontWeight:700 }}>{childStatus.label}</span>
               </div>

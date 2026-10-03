@@ -73,7 +73,7 @@ export default function Receipt() {
 const CSS = `
 .rcpt-root { min-height: 100vh; background: #EEF0F4; font-family: Inter, 'Segoe UI', sans-serif; color: #111827; padding-bottom: 40px; }
 .rcpt-bar { position: sticky; top: 0; display: flex; justify-content: space-between; gap: 10px; padding: 12px 16px; background: #fff; border-bottom: 1px solid #E5E7EB; }
-.rcpt-btn { padding: 9px 16px; border-radius: 8px; border: none; background: #4338CA; color: #fff; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.rcpt-btn { padding: 9px 16px; border-radius: 8px; border: none; background: var(--brand-dark); color: #fff; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
 .rcpt-btn.ghost { background: #F3F4F6; color: #374151; }
 .rcpt-btn:disabled { opacity: .5; }
 .rcpt-msg { max-width: 560px; margin: 24px auto; padding: 24px; background: #fff; border-radius: 12px; text-align: center; color: #6B7280; }
@@ -82,7 +82,7 @@ const CSS = `
 .rcpt header { text-align: center; border-bottom: 2px solid #111827; padding-bottom: 10px; margin-bottom: 14px; }
 .rcpt-school { font-size: 19px; font-weight: 800; }
 .rcpt-sub { font-size: 12px; color: #4B5563; margin-top: 2px; }
-.rcpt-title { margin-top: 8px; font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #4338CA; }
+.rcpt-title { margin-top: 8px; font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--brand-dark); }
 .rcpt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; font-size: 13px; margin-bottom: 14px; }
 .rcpt-grid span { display: block; font-size: 10px; letter-spacing: .6px; text-transform: uppercase; color: #6B7280; }
 .rcpt table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 14px; }

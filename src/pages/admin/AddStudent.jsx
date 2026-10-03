@@ -100,7 +100,7 @@ export default function AddStudent() {
             fontFamily: "Inter, sans-serif", width: "100%", boxSizing: "border-box",
             transition: "border 0.2s",
           }}
-          onFocus={e => e.target.style.borderColor = "#534AB7"}
+          onFocus={e => e.target.style.borderColor = "var(--brand)"}
           onBlur={e  => e.target.style.borderColor = "#E5E7EB"}
         />
       )}
@@ -270,7 +270,7 @@ export default function AddStudent() {
             onClick={handleSubmit} disabled={loading}
             style={{
               padding: "10px 24px", borderRadius: 8, border: "none",
-              background: loading ? "#A5B4FC" : "#534AB7",
+              background: loading ? "#A5B4FC" : "var(--brand)",
               fontSize: 13, color: "#fff", cursor: loading ? "not-allowed" : "pointer",
               fontWeight: 600, letterSpacing: "0.02em",
             }}>
@@ -287,10 +287,10 @@ export default function AddStudent() {
 function SectionTitle({ children }) {
   return (
     <div style={{
-      fontSize: 11, fontWeight: 700, color: "#534AB7",
+      fontSize: 11, fontWeight: 700, color: "var(--brand)",
       textTransform: "uppercase", letterSpacing: "0.08em",
       marginBottom: 14, paddingBottom: 8,
-      borderBottom: "1px solid #EEF2FF",
+      borderBottom: "1px solid var(--brand-soft)",
     }}>
       {children}
     </div>

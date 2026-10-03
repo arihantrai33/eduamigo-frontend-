@@ -12,7 +12,7 @@ const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 });
 
-const InfoField = ({ icon: Icon, label, value, accent = "#4F46E5" }) => (
+const InfoField = ({ icon: Icon, label, value, accent = "var(--brand)" }) => (
   <div style={{
     display: "flex", alignItems: "flex-start", gap: 12,
     padding: "14px 16px", background: "#F8FAFC",
@@ -20,7 +20,7 @@ const InfoField = ({ icon: Icon, label, value, accent = "#4F46E5" }) => (
   }}>
     <div style={{
       width: 34, height: 34, borderRadius: 10, flexShrink: 0,
-      background: `${accent}12`, display: "flex",
+      background: `color-mix(in srgb, ${accent} 7%, transparent)`, display: "flex",
       alignItems: "center", justifyContent: "center",
     }}>
       <Icon size={15} color={accent} />
@@ -95,7 +95,7 @@ export default function TeacherProfile() {
   };
 
   const avatarColors = [
-    { bg: "#EEF2FF", text: "#4F46E5" },
+    { bg: "var(--brand-soft)", text: "var(--brand)" },
     { bg: "#F0FDF4", text: "#16A34A" },
     { bg: "#FFF7ED", text: "#EA580C" },
     { bg: "#F0F9FF", text: "#0284C7" },
@@ -148,12 +148,12 @@ export default function TeacherProfile() {
               style={{
                 display: "flex", alignItems: "center", gap: 6,
                 padding: "8px 16px", borderRadius: 10,
-                border: "none", background: "#4F46E5",
+                border: "none", background: "var(--brand)",
                 fontSize: 13, cursor: "pointer", color: "#fff",
                 fontWeight: 600, transition: "all 0.15s",
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = "#4338CA"; }}
-              onMouseLeave={e => { e.currentTarget.style.background = "#4F46E5"; }}
+              onMouseEnter={e => { e.currentTarget.style.background = "var(--brand-dark)"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "var(--brand)"; }}
             >
               <Edit size={13} />
               Edit Profile
@@ -219,7 +219,7 @@ export default function TeacherProfile() {
                   background: avatarColor.bg,
                   display: "flex", alignItems: "center", justifyContent: "center",
                   fontSize: 24, fontWeight: 700, color: avatarColor.text,
-                  border: `2px solid ${avatarColor.text}22`,
+                  border: `2px solid color-mix(in srgb, ${avatarColor.text} 13%, transparent)`,
                 }}>
                   {getInitials(teacher.name)}
                 </div>
@@ -274,7 +274,7 @@ export default function TeacherProfile() {
                       {
                         icon: Users, label: "Classes Assigned",
                         value: teacher.assignedClasses?.length || 0,
-                        color: "#4F46E5", bg: "#EEF2FF",
+                        color: "var(--brand)", bg: "var(--brand-soft)",
                       },
                       {
                         icon: BookOpen, label: "Subjects",
@@ -295,7 +295,7 @@ export default function TeacherProfile() {
                       }}>
                         <div style={{
                           width: 30, height: 30, borderRadius: 8,
-                          background: `${stat.color}18`, display: "flex",
+                          background: `color-mix(in srgb, ${stat.color} 9%, transparent)`, display: "flex",
                           alignItems: "center", justifyContent: "center",
                         }}>
                           <stat.icon size={14} color={stat.color} />
@@ -324,7 +324,7 @@ export default function TeacherProfile() {
               }}>
                 <SectionHeader title="Personal Information" subtitle="Contact and personal details" />
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  <InfoField icon={Mail}    label="Email Address"  value={teacher.email}              accent="#4F46E5" />
+                  <InfoField icon={Mail}    label="Email Address"  value={teacher.email}              accent="var(--brand)" />
                   <InfoField icon={Phone}   label="Phone Number"   value={teacher.phone}              accent="#16A34A" />
                   <InfoField icon={Users}   label="Gender"         value={teacher.gender}             accent="#0284C7" />
                   <InfoField icon={MapPin}  label="Address"        value={teacher.address}            accent="#EA580C" />
@@ -358,8 +358,8 @@ export default function TeacherProfile() {
                     {teacher.assignedClasses.map((cls, i) => (
                       <span key={i} style={{
                         padding: "6px 14px", borderRadius: 20, fontSize: 12,
-                        fontWeight: 600, background: "#EEF2FF", color: "#4F46E5",
-                        border: "1px solid #C7D2FE",
+                        fontWeight: 600, background: "var(--brand-soft)", color: "var(--brand)",
+                        border: "1px solid var(--brand-border)",
                       }}>
                         {cls}
                       </span>

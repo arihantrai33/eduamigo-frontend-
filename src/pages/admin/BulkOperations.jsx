@@ -10,7 +10,7 @@ const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov
 
 function Tab({ label, icon, active, onClick }) {
   return (
-    <button onClick={onClick} style={{ display:"flex", alignItems:"center", gap:8, padding:"10px 20px", borderRadius:12, border:"none", cursor:"pointer", fontWeight:700, fontSize:13, transition:"all 0.2s", background: active ? "linear-gradient(135deg,#6366F1,#8B5CF6)" : "white", color: active ? "white" : "#94A3B8", boxShadow: active ? "0 4px 12px rgba(99,102,241,0.3)" : "none" }}>
+    <button onClick={onClick} style={{ display:"flex", alignItems:"center", gap:8, padding:"10px 20px", borderRadius:12, border:"none", cursor:"pointer", fontWeight:700, fontSize:13, transition:"all 0.2s", background: active ? "var(--brand-gradient)" : "white", color: active ? "white" : "#94A3B8", boxShadow: active ? "0 4px 12px color-mix(in srgb, var(--brand) 30%, transparent)" : "none" }}>
       <span>{icon}</span>{label}
     </button>
   );
@@ -168,8 +168,8 @@ export default function BulkOperations() {
     </select>
   );
 
-  const btn = (text, onClick, color="#6366F1") => (
-    <button onClick={onClick} disabled={loading} style={{ padding:"11px 28px", borderRadius:12, border:"none", background:`linear-gradient(135deg,${color},${color}DD)`, color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:`0 4px 16px ${color}44`, opacity: loading ? 0.7 : 1 }}>
+  const btn = (text, onClick, color="var(--brand)") => (
+    <button onClick={onClick} disabled={loading} style={{ padding:"11px 28px", borderRadius:12, border:"none", background:`linear-gradient(135deg,${color},color-mix(in srgb, ${color} 87%, transparent))`, color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:`0 4px 16px color-mix(in srgb, ${color} 27%, transparent)`, opacity: loading ? 0.7 : 1 }}>
       {loading ? "Processing..." : text}
     </button>
   );
@@ -202,8 +202,8 @@ export default function BulkOperations() {
             <div>{label("STATUS")}{select(attStatus, setAttStatus, ["Present","Absent","Late"], "Status")}</div>
           </div>
           {attClass && (
-            <div style={{ padding:"12px 16px", borderRadius:12, background:"#EEF2FF", border:"1px solid #C7D2FE" }}>
-              <span style={{ fontSize:13, fontWeight:700, color:"#6366F1" }}>
+            <div style={{ padding:"12px 16px", borderRadius:12, background:"var(--brand-soft)", border:"1px solid var(--brand-border)" }}>
+              <span style={{ fontSize:13, fontWeight:700, color:"var(--brand)" }}>
                 {countStudents(attClass, attSection)} students will be marked <b>{attStatus}</b>
                 {attSection ? ` in Class ${attClass}-${attSection}` : ` in all sections of Class ${attClass}`} on {attDate}
               </span>
@@ -266,7 +266,7 @@ export default function BulkOperations() {
           <div style={{ display:"flex", gap:6, background:"#F8FAFC", borderRadius:10, padding:4, width:"fit-content" }}>
             {["students","teachers"].map(t => (
               <button key={t} onClick={() => { setCsvTab(t); setCsvData(null); setCsvPreview([]); setCsvFileName(""); }}
-                style={{ padding:"7px 20px", borderRadius:8, border:"none", fontSize:12, fontWeight:700, cursor:"pointer", background: csvTab===t ? "white" : "transparent", color: csvTab===t ? "#6366F1" : "#94A3B8", boxShadow: csvTab===t ? "0 2px 8px rgba(0,0,0,0.06)" : "none" }}>
+                style={{ padding:"7px 20px", borderRadius:8, border:"none", fontSize:12, fontWeight:700, cursor:"pointer", background: csvTab===t ? "white" : "transparent", color: csvTab===t ? "var(--brand)" : "#94A3B8", boxShadow: csvTab===t ? "0 2px 8px rgba(0,0,0,0.06)" : "none" }}>
                 {t === "students" ? "🎒 Students" : "👩‍🏫 Teachers"}
               </button>
             ))}
@@ -281,9 +281,9 @@ export default function BulkOperations() {
             </div>
           </div>
 
-          <label style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:10, padding:"32px 20px", borderRadius:14, border:"2px dashed #C7D2FE", background:"#EEF2FF", cursor:"pointer" }}>
+          <label style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:10, padding:"32px 20px", borderRadius:14, border:"2px dashed var(--brand-border)", background:"var(--brand-soft)", cursor:"pointer" }}>
             <span style={{ fontSize:32 }}>📁</span>
-            <span style={{ fontSize:13, fontWeight:700, color:"#6366F1" }}>{csvFileName || "Click to select CSV file"}</span>
+            <span style={{ fontSize:13, fontWeight:700, color:"var(--brand)" }}>{csvFileName || "Click to select CSV file"}</span>
             <span style={{ fontSize:11, color:"#94A3B8" }}>Only .csv files supported</span>
             <input type="file" accept=".csv" onChange={handleCSVUpload} style={{ display:"none" }} />
           </label>

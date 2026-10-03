@@ -17,7 +17,7 @@ function Avatar({ name, size = 38 }) {
   const color = colors[(name?.charCodeAt(0) || 0) % colors.length];
   const initials = name ? name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase() : "?";
   return (
-    <div style={{ width: size, height: size, borderRadius: "50%", background: `linear-gradient(135deg,${color},${color}BB)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: size * 0.32, fontWeight: 800, color: "white", flexShrink: 0, boxShadow: `0 2px 8px ${color}44` }}>
+    <div style={{ width: size, height: size, borderRadius: "50%", background: `linear-gradient(135deg,${color},color-mix(in srgb, ${color} 73%, transparent))`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: size * 0.32, fontWeight: 800, color: "white", flexShrink: 0, boxShadow: `0 2px 8px color-mix(in srgb, ${color} 27%, transparent)` }}>
       {initials}
     </div>
   );
@@ -138,7 +138,7 @@ export default function Attendance() {
       `}</style>
 
       {/* Header */}
-      <div style={{ background: "linear-gradient(135deg,#0EA5E9,#6366F1,#8B5CF6)", borderRadius: 20, padding: "28px 32px", marginBottom: 24, position: "relative", overflow: "hidden", animation: "fadeUp 0.4s ease" }}>
+      <div style={{ background: "var(--brand-gradient)", borderRadius: 20, padding: "28px 32px", marginBottom: 24, position: "relative", overflow: "hidden", animation: "fadeUp 0.4s ease" }}>
         <div style={{ position: "absolute", top: -40, right: -40, width: 180, height: 180, borderRadius: "50%", background: "rgba(255,255,255,0.07)" }} />
         <div style={{ position: "absolute", bottom: -30, left: 120, width: 120, height: 120, borderRadius: "50%", background: "rgba(255,255,255,0.05)" }} />
         <div style={{ position: "relative" }}>
@@ -187,7 +187,7 @@ export default function Attendance() {
       {/* Stats */}
       {students.length > 0 && (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 24 }}>
-          <StatCard label="TOTAL STUDENTS" value={stats.total} icon="👥" color="#6366F1" bg="#EEF2FF" delay={0} />
+          <StatCard label="TOTAL STUDENTS" value={stats.total} icon="👥" color="var(--brand)" bg="var(--brand-soft)" delay={0} />
           <StatCard label="PRESENT" value={stats.present} icon="✅" color="#10B981" bg="#F0FDF4" delay={0.05} />
           <StatCard label="ABSENT" value={stats.absent} icon="❌" color="#EF4444" bg="#FEF2F2" delay={0.1} />
           <StatCard label="LATE" value={stats.late} icon="⏰" color="#F59E0B" bg="#FFFBEB" delay={0.15} />
@@ -216,7 +216,7 @@ export default function Attendance() {
         </div>
       ) : loading ? (
         <div style={{ background: "white", borderRadius: 20, padding: "80px 40px", textAlign: "center", boxShadow: "0 4px 20px rgba(15,23,42,0.07)", border: "1px solid #E2E8F0" }}>
-          <div style={{ width: 40, height: 40, borderRadius: "50%", border: "3px solid #E2E8F0", borderTop: "3px solid #6366F1", animation: "spin 0.8s linear infinite", margin: "0 auto 16px" }} />
+          <div style={{ width: 40, height: 40, borderRadius: "50%", border: "3px solid #E2E8F0", borderTop: "3px solid var(--brand)", animation: "spin 0.8s linear infinite", margin: "0 auto 16px" }} />
           <div style={{ color: "#94A3B8", fontSize: 13, fontWeight: 600 }}>Loading students...</div>
         </div>
       ) : students.length === 0 ? (
@@ -264,7 +264,7 @@ export default function Attendance() {
             <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
               {saved && <div style={{ fontSize: 13, fontWeight: 700, color: "#10B981" }}>✅ Attendance saved successfully!</div>}
               <button onClick={handleSave} disabled={saving}
-                style={{ padding: "12px 32px", borderRadius: 14, border: "none", background: "linear-gradient(135deg,#6366F1,#8B5CF6)", color: "white", fontWeight: 700, fontSize: 14, cursor: "pointer", boxShadow: "0 4px 16px rgba(99,102,241,0.4)", opacity: saving ? 0.7 : 1, transition: "all 0.2s" }}
+                style={{ padding: "12px 32px", borderRadius: 14, border: "none", background: "var(--brand-gradient)", color: "white", fontWeight: 700, fontSize: 14, cursor: "pointer", boxShadow: "0 4px 16px color-mix(in srgb, var(--brand) 40%, transparent)", opacity: saving ? 0.7 : 1, transition: "all 0.2s" }}
                 onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
                 onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}>
                 {saving ? "Saving..." : "Save Attendance"}

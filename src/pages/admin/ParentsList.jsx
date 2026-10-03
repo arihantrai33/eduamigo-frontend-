@@ -113,7 +113,7 @@ export default function ParentsList() {
         {[
           { label:"TOTAL PARENTS",   value: parents.length,  icon:"👨‍👩‍👧", border:"#F59E0B", bg:"#FFFBEB" },
           { label:"WITH STUDENTS",   value: withChildren,    icon:"🔗", border:"#10B981", bg:"#F0FDF4" },
-          { label:"ACTIVE",          value: parents.filter(p=>p.isActive).length, icon:"✅", border:"#6366F1", bg:"#EEF2FF" },
+          { label:"ACTIVE",          value: parents.filter(p=>p.isActive).length, icon:"✅", border:"var(--brand)", bg:"var(--brand-soft)" },
         ].map((card, i) => (
           <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
@@ -178,7 +178,7 @@ export default function ParentsList() {
                   {p.children?.length > 0 ? (
                     <div style={{ display:"flex", flexWrap:"wrap", gap:4 }}>
                       {p.children.map(child => (
-                        <span key={child._id} style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:"#EEF2FF", color:"#6366F1", border:"1px solid #C7D2FE" }}>
+                        <span key={child._id} style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:"var(--brand-soft)", color:"var(--brand)", border:"1px solid var(--brand-border)" }}>
                           {child.name} · {child.class}{child.section ? `-${child.section}` : ""}
                         </span>
                       ))}
@@ -234,13 +234,13 @@ export default function ParentsList() {
               {selectedParent.children?.length > 0 ? (
                 <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
                   {selectedParent.children.map(child => (
-                    <div key={child._id} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 16px", background:"#EEF2FF", borderRadius:12, border:"1px solid #C7D2FE" }}>
-                      <div style={{ width:36, height:36, borderRadius:10, background:"linear-gradient(135deg,#6366F1,#8B5CF6)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, fontWeight:800, color:"white" }}>
+                    <div key={child._id} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 16px", background:"var(--brand-soft)", borderRadius:12, border:"1px solid var(--brand-border)" }}>
+                      <div style={{ width:36, height:36, borderRadius:10, background:"var(--brand-gradient)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, fontWeight:800, color:"white" }}>
                         {child.name?.[0]?.toUpperCase()}
                       </div>
                       <div>
                         <div style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>{child.name}</div>
-                        <div style={{ fontSize:11, color:"#6366F1", fontWeight:600 }}>
+                        <div style={{ fontSize:11, color:"var(--brand)", fontWeight:600 }}>
                           Class {child.class}{child.section ? `-${child.section}` : ""} · Roll {child.rollNumber || "N/A"}
                         </div>
                       </div>
@@ -290,10 +290,10 @@ export default function ParentsList() {
             <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:8, letterSpacing:"0.06em" }}>LINK STUDENTS</div>
             <div style={{ maxHeight:160, overflowY:"auto", display:"flex", flexDirection:"column", gap:6 }}>
               {students.map(s => (
-                <label key={s._id} style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 12px", borderRadius:10, background: form.childrenIds.includes(s._id) ? "#EEF2FF" : "#F8FAFC", cursor:"pointer", border:`1px solid ${form.childrenIds.includes(s._id) ? "#C7D2FE" : "#E2E8F0"}` }}>
-                  <input type="checkbox" checked={form.childrenIds.includes(s._id)} onChange={() => toggleChild(s._id)} style={{ accentColor:"#6366F1" }} />
+                <label key={s._id} style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 12px", borderRadius:10, background: form.childrenIds.includes(s._id) ? "var(--brand-soft)" : "#F8FAFC", cursor:"pointer", border:`1px solid ${form.childrenIds.includes(s._id) ? "var(--brand-border)" : "#E2E8F0"}` }}>
+                  <input type="checkbox" checked={form.childrenIds.includes(s._id)} onChange={() => toggleChild(s._id)} style={{ accentColor:"var(--brand)" }} />
                   <span style={{ fontSize:13, fontWeight:600, color:"#374151" }}>{s.name}</span>
-                  <span style={{ fontSize:11, color:"#6366F1", fontWeight:700 }}>Class {s.class}{s.section ? `-${s.section}` : ""}</span>
+                  <span style={{ fontSize:11, color:"var(--brand)", fontWeight:700 }}>Class {s.class}{s.section ? `-${s.section}` : ""}</span>
                 </label>
               ))}
             </div>

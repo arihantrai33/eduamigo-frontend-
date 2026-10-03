@@ -160,7 +160,7 @@ export default function TeacherLeave() {
           <div style={styles.quotaCard}>
             <p style={styles.quotaTitle}>Annual Leave Balance</p>
             <div style={styles.quotaRow}>
-              <QuotaBox label="Total" value={quota.total} color="#5C6BC0" />
+              <QuotaBox label="Total" value={quota.total} color="var(--brand)" />
               <QuotaBox label="Used" value={quota.used} color="#E53935" />
               <QuotaBox label="Available" value={quota.available} color="#2E7D32" />
             </div>
@@ -203,7 +203,7 @@ export default function TeacherLeave() {
               <div style={{ fontWeight: 700, fontSize: 15, color: '#1F2937' }}>{l.name} <span style={{ fontWeight: 500, color: '#6B7280', fontSize: 13 }}>· Class {l.class}-{l.section}</span></div>
               <div style={{ fontSize: 13, color: '#6B7280', margin: '4px 0 8px' }}>{l.leaveType} · {fmtDay(l.fromDate)} to {fmtDay(l.toDate)} · {l.days} day{l.days > 1 ? 's' : ''}</div>
               <p style={styles.leaveReason}>{l.reason}</p>
-              {l.attachmentUrl && <a href={l.attachmentUrl} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: '#4F46E5', fontWeight: 600 }}>View attachment</a>}
+              {l.attachmentUrl && <a href={l.attachmentUrl} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: 'var(--brand)', fontWeight: 600 }}>View attachment</a>}
               <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
                 <button disabled={!!reviewing} onClick={() => review(l._id, 'Approved')} style={{ flex: 1, padding: 10, borderRadius: 10, border: 'none', background: '#10B981', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>{reviewing === l._id + 'Approved' ? 'Saving...' : 'Approve'}</button>
                 <button disabled={!!reviewing} onClick={() => review(l._id, 'Rejected')} style={{ flex: 1, padding: 10, borderRadius: 10, border: 'none', background: '#EF4444', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>{reviewing === l._id + 'Rejected' ? 'Saving...' : 'Reject'}</button>
@@ -345,7 +345,7 @@ function NavItem({ icon, label, onClick, active }) {
   return (
     <button onClick={onClick} style={styles.navItem}>
       <span style={{ fontSize: 22 }}>{icon}</span>
-      <span style={{ ...styles.navLabel, color: active ? '#5C6BC0' : '#9E9E9E' }}>{label}</span>
+      <span style={{ ...styles.navLabel, color: active ? 'var(--brand)' : '#9E9E9E' }}>{label}</span>
     </button>
   );
 }
@@ -360,7 +360,7 @@ const styles = {
     position: 'relative',
   },
   header: {
-    background: 'linear-gradient(135deg, #5C6BC0, #3949AB)',
+    background: 'var(--brand-gradient)',
     padding: '20px 16px 24px',
     display: 'flex',
     alignItems: 'center',
@@ -406,7 +406,7 @@ const styles = {
     marginBottom: 16,
   },
   quotaCard: {
-    background: 'linear-gradient(135deg, #5C6BC0, #3949AB)',
+    background: 'var(--brand-gradient)',
     borderRadius: 16,
     padding: '16px',
     marginBottom: 16,
@@ -475,7 +475,7 @@ const styles = {
     fontFamily: "'Poppins', sans-serif",
   },
   tabActive: {
-    background: '#5C6BC0',
+    background: 'var(--brand)',
     color: '#fff',
   },
   leaveCard: {
@@ -499,7 +499,7 @@ const styles = {
   },
   leaveDates: {
     fontSize: 12,
-    color: '#5C6BC0',
+    color: 'var(--brand)',
     fontWeight: 500,
     margin: 0,
   },
@@ -522,7 +522,7 @@ const styles = {
   },
   reviewNote: {
     fontSize: 12,
-    color: '#3949AB',
+    color: 'var(--brand-dark)',
     background: '#EEF0FF',
     padding: '6px 10px',
     borderRadius: 8,
@@ -548,7 +548,7 @@ const styles = {
   label: {
     fontSize: 12,
     fontWeight: 600,
-    color: '#5C6BC0',
+    color: 'var(--brand)',
     textTransform: 'uppercase',
     letterSpacing: 0.8,
     display: 'block',
@@ -594,7 +594,7 @@ const styles = {
   },
   durationPreview: {
     background: '#EEF0FF',
-    color: '#3949AB',
+    color: 'var(--brand-dark)',
     fontSize: 13,
     fontWeight: 600,
     padding: '10px 14px',
@@ -604,7 +604,7 @@ const styles = {
   submitBtn: {
     width: '100%',
     padding: '14px',
-    background: 'linear-gradient(135deg, #5C6BC0, #3949AB)',
+    background: 'var(--brand-gradient)',
     color: '#fff',
     border: 'none',
     borderRadius: 12,
@@ -623,11 +623,11 @@ const styles = {
     width: 32,
     height: 32,
     border: '3px solid #EEF0FF',
-    borderTop: '3px solid #5C6BC0',
+    borderTop: '3px solid var(--brand)',
     borderRadius: '50%',
     animation: 'spin 0.8s linear infinite',
   },
-  loadingText: { color: '#5C6BC0', fontSize: 13, marginTop: 10 },
+  loadingText: { color: 'var(--brand)', fontSize: 13, marginTop: 10 },
   errorBox: {
     background: '#FFEBEE',
     color: '#C62828',

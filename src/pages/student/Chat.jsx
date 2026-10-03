@@ -103,12 +103,12 @@ export default function Chat() {
   };
   const S = {
     screen: { maxWidth: 420, margin: '0 auto', minHeight: '100vh', background: dm ? '#0f172a' : '#f5f6fa', fontFamily: 'Inter, sans-serif', display: 'flex', flexDirection: 'column' },
-    header: { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', padding: '48px 20px 16px', display: 'flex', alignItems: 'center', gap: 12 },
+    header: { background: 'var(--brand-gradient)', padding: '48px 20px 16px', display: 'flex', alignItems: 'center', gap: 12 },
     headerBack: { background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: '8px 12px', color: 'white', cursor: 'pointer', fontSize: 18 },
     headerTitle: { color: 'white', fontSize: 20, fontWeight: 800, margin: 0 },
     tabRow: { display: 'flex', background: dm ? '#1e293b' : 'white', borderBottom: dm ? '1px solid #334155' : '1px solid #f0f0f0', padding: '0 16px' },
     tabBtn: { flex: 1, padding: '12px 0', border: 'none', background: 'none', fontSize: 13, fontWeight: 600, color: dm ? '#94a3b8' : '#888', cursor: 'pointer' },
-    tabActive: { color: '#4f46e5', borderBottom: '2px solid #4f46e5' },
+    tabActive: { color: 'var(--brand)', borderBottom: '2px solid var(--brand)' },
     list: { flex: 1, overflowY: 'auto', padding: '12px 16px 80px' },
     sectionLabel: { fontSize: 11, fontWeight: 700, color: dm ? '#94a3b8' : '#999', letterSpacing: 1, marginBottom: 8, marginTop: 4 },
     chatRow: { background: dm ? '#1e293b' : 'white', borderRadius: 14, padding: '14px', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10, boxShadow: dm ? '0 1px 6px rgba(0,0,0,0.3)' : '0 1px 6px rgba(0,0,0,0.06)', cursor: 'pointer' },
@@ -121,7 +121,7 @@ export default function Chat() {
     broadcastCard: { background: dm ? '#1e293b' : 'white', borderRadius: 14, padding: 16, marginBottom: 10, boxShadow: dm ? '0 1px 6px rgba(0,0,0,0.3)' : '0 1px 6px rgba(0,0,0,0.06)' },
     broadcastTop: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 },
     broadcastText: { fontSize: 14, color: dm ? '#cbd5e1' : '#333', lineHeight: 1.5 },
-    chatHeader: { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', padding: '48px 16px 16px', display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 },
+    chatHeader: { background: 'var(--brand-gradient)', padding: '48px 16px 16px', display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 },
     backBtn: { background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: '8px 12px', color: 'white', cursor: 'pointer', fontSize: 18 },
     chatName: { color: 'white', fontSize: 16, fontWeight: 700 },
     chatSub: { color: 'rgba(255,255,255,0.7)', fontSize: 11, marginTop: 2 },
@@ -130,13 +130,13 @@ export default function Chat() {
     dateDivider: { textAlign: 'center', fontSize: 11, color: dm ? '#94a3b8' : '#aaa', background: dm ? '#334155' : '#eee', borderRadius: 20, padding: '3px 12px', margin: '10px auto', width: 'fit-content' },
     miniAvatar: { width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 12, marginRight: 8, flexShrink: 0, alignSelf: 'flex-end' },
     bubble: { maxWidth: '75%', padding: '10px 14px', borderRadius: 18, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' },
-    bubbleMe: { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', borderBottomRightRadius: 4 },
+    bubbleMe: { background: 'var(--brand-gradient)', color: 'white', borderBottomRightRadius: 4 },
     bubbleThem: { background: dm ? '#1e293b' : 'white', color: dm ? '#f1f5f9' : '#111', borderBottomLeftRadius: 4 },
     timeRow: { display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4, marginTop: 4 },
     timeText: { fontSize: 10, opacity: 0.7 },
     inputRow: { padding: '12px 16px', background: dm ? '#1e293b' : 'white', display: 'flex', gap: 10, alignItems: 'center', boxShadow: '0 -2px 8px rgba(0,0,0,0.06)', flexShrink: 0 },
     input: { flex: 1, border: dm ? '1.5px solid #334155' : '1.5px solid #e5e7eb', borderRadius: 24, padding: '10px 16px', fontSize: 14, outline: 'none', fontFamily: 'Inter, sans-serif', background: dm ? '#0f172a' : 'white', color: dm ? '#f1f5f9' : '#111' },
-    sendBtn: { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', border: 'none', borderRadius: '50%', width: 44, height: 44, fontSize: 18, cursor: 'pointer', flexShrink: 0 },
+    sendBtn: { background: 'var(--brand-gradient)', color: 'white', border: 'none', borderRadius: '50%', width: 44, height: 44, fontSize: 18, cursor: 'pointer', flexShrink: 0 },
   };
   if (activeChat) return (
     <div style={S.screen}>
@@ -167,7 +167,7 @@ export default function Chat() {
                   <div style={{ fontSize: 14 }}>{m.text}</div>
                   <div style={S.timeRow}>
                     <span style={S.timeText}>{formatTime(m.createdAt)}</span>
-                    {isMe && <span style={{ fontSize: 11, color: m.read ? '#7c3aed' : 'rgba(255,255,255,0.5)' }}>{m.read ? '✓✓' : '✓'}</span>}
+                    {isMe && <span style={{ fontSize: 11, color: m.read ? 'var(--brand)' : 'rgba(255,255,255,0.5)' }}>{m.read ? '✓✓' : '✓'}</span>}
                   </div>
                 </div>
               </div>
@@ -196,7 +196,7 @@ export default function Chat() {
         ))}
       </div>
       {loading ? (
-        <div style={S.center}><div style={{ color: '#4f46e5', fontWeight: 600 }}>Loading...</div></div>
+        <div style={S.center}><div style={{ color: 'var(--brand)', fontWeight: 600 }}>Loading...</div></div>
       ) : tab === 'chats' ? (
         <div style={S.list}>
           <div style={S.sectionLabel}>🏫 SCHOOL ADMINISTRATION</div>

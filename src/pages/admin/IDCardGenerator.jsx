@@ -36,7 +36,7 @@ function Avatar({ name, photo, size = 56 }) {
   const initials = name ? name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase() : "?";
   if (photo) return <img src={photo} alt={name} style={{ width: size, height: size, borderRadius: "50%", objectFit: "cover", border: "3px solid white", boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }} />;
   return (
-    <div style={{ width: size, height: size, borderRadius: "50%", background: "linear-gradient(135deg,#6366F1,#8B5CF6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: size * 0.3, fontWeight: 800, color: "white", border: "3px solid white", boxShadow: "0 4px 12px rgba(99,102,241,0.3)" }}>
+    <div style={{ width: size, height: size, borderRadius: "50%", background: "var(--brand-gradient)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: size * 0.3, fontWeight: 800, color: "white", border: "3px solid white", boxShadow: "0 4px 12px color-mix(in srgb, var(--brand) 30%, transparent)" }}>
       {initials}
     </div>
   );
@@ -49,8 +49,8 @@ function BuildingAnimation({ tab }) {
         @keyframes scanDown { 0% { top: 0%; opacity: 0.9; } 100% { top: 88%; opacity: 0; } }
         @keyframes dotPulse { 0%,100% { opacity: 0.2; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
       `}</style>
-      <div style={{ width: 340, height: 210, borderRadius: 20, background: "white", boxShadow: "0 8px 32px rgba(99,102,241,0.1)", border: "1.5px solid #E0E7FF", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 70, background: tab === "teacher" ? "linear-gradient(135deg,#0F172A,#1E3A5F)" : "linear-gradient(135deg,#6366F1,#8B5CF6)" }} />
+      <div style={{ width: 340, height: 210, borderRadius: 20, background: "white", boxShadow: "0 8px 32px color-mix(in srgb, var(--brand) 10%, transparent)", border: "1.5px solid var(--brand-soft)", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 70, background: tab === "teacher" ? "linear-gradient(135deg,#0F172A,#1E3A5F)" : "var(--brand-gradient)" }} />
         <div style={{ position: "absolute", top: 42, left: 18, width: 52, height: 52, borderRadius: "50%", background: "rgba(255,255,255,0.25)", border: "2px solid rgba(255,255,255,0.4)" }} />
         <div style={{ position: "absolute", top: 50, left: 80, display: "flex", flexDirection: "column", gap: 5 }}>
           <div style={{ height: 8, width: 100, borderRadius: 6, background: "rgba(255,255,255,0.5)" }} />
@@ -66,12 +66,12 @@ function BuildingAnimation({ tab }) {
           </div>
           <div style={{ width: 80, height: 24, borderRadius: 4, background: "#F1F5F9" }} />
         </div>
-        <div style={{ position: "absolute", left: 0, right: 0, height: 2, background: "linear-gradient(90deg, transparent, #6366F1, #8B5CF6, transparent)", boxShadow: "0 0 6px rgba(99,102,241,0.3)", animation: "scanDown 1.6s ease-in-out infinite", top: 0 }} />
+        <div style={{ position: "absolute", left: 0, right: 0, height: 2, background: "linear-gradient(90deg, transparent, var(--brand), var(--brand), transparent)", boxShadow: "0 0 6px color-mix(in srgb, var(--brand) 30%, transparent)", animation: "scanDown 1.6s ease-in-out infinite", top: 0 }} />
       </div>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-        <div style={{ fontSize: 12, fontWeight: 600, color: "#6366F1", letterSpacing: "0.06em" }}>Generating ID Card</div>
+        <div style={{ fontSize: 12, fontWeight: 600, color: "var(--brand)", letterSpacing: "0.06em" }}>Generating ID Card</div>
         <div style={{ display: "flex", gap: 5 }}>
-          {[0,1,2].map(i => <div key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: "#6366F1", animation: `dotPulse 1s ease-in-out ${i*0.2}s infinite` }} />)}
+          {[0,1,2].map(i => <div key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--brand)", animation: `dotPulse 1s ease-in-out ${i*0.2}s infinite` }} />)}
         </div>
       </div>
     </div>
@@ -82,7 +82,7 @@ function BuildingAnimation({ tab }) {
 function StudentCard({ student, animPhase }) {
   return (
     <div style={{ width: 340, borderRadius: 20, overflow: "hidden", boxShadow: "0 24px 64px rgba(0,0,0,0.18)", fontFamily: "'Inter',sans-serif", position: "relative", background: "white", transition: "all 0.5s cubic-bezier(0.34,1.56,0.64,1)", transform: animPhase === 2 ? "scale(1) translateY(0)" : "scale(0.85) translateY(30px)", opacity: animPhase === 2 ? 1 : 0 }}>
-      <div style={{ background: "linear-gradient(135deg,#6366F1,#8B5CF6,#EC4899)", height: 80, position: "relative", overflow: "hidden" }}>
+      <div style={{ background: "var(--brand-gradient)", height: 80, position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: -30, right: -30, width: 120, height: 120, borderRadius: "50%", background: "rgba(255,255,255,0.1)" }} />
         <div style={{ position: "absolute", top: -40, left: 80, width: 100, height: 100, borderRadius: "50%", background: "rgba(255,255,255,0.07)" }} />
         <div style={{ padding: "12px 18px" }}>
@@ -96,7 +96,7 @@ function StudentCard({ student, animPhase }) {
         </div>
         <div style={{ paddingLeft: 76, paddingTop: 6 }}>
           <div style={{ fontSize: 15, fontWeight: 800, color: "#0F172A", letterSpacing: "-0.3px" }}>{student.name}</div>
-          <div style={{ fontSize: 10, color: "#6366F1", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 2 }}>Student</div>
+          <div style={{ fontSize: 10, color: "var(--brand)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 2 }}>Student</div>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 12 }}>
           {[{ label: "ROLL NO", value: student.rollNumber }, { label: "CLASS", value: `${student.class}-${student.section}` }, { label: "GENDER", value: student.gender || "—" }].map((item, i) => (
@@ -115,7 +115,7 @@ function StudentCard({ student, animPhase }) {
           <BarcodeStrip value={student.rollNumber + student._id} />
         </div>
       </div>
-      <div style={{ height: 4, background: "linear-gradient(90deg,#6366F1,#8B5CF6,#EC4899)" }} />
+      <div style={{ height: 4, background: "var(--brand-gradient)" }} />
     </div>
   );
 }
@@ -255,7 +255,7 @@ export default function IDCardGenerator() {
       <div style={{ display: "flex", gap: 4, background: "white", borderRadius: 14, padding: 5, border: "1px solid #E2E8F0", width: "fit-content", marginBottom: "1.25rem", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
         {["student","teacher"].map(t => (
           <button key={t} onClick={() => setTab(t)}
-            style={{ padding: "9px 28px", borderRadius: 10, border: "none", fontSize: 13, fontWeight: 700, cursor: "pointer", transition: "all 0.2s", background: tab === t ? "linear-gradient(135deg,#6366F1,#8B5CF6)" : "transparent", color: tab === t ? "white" : "#94A3B8", boxShadow: tab === t ? "0 4px 12px rgba(99,102,241,0.3)" : "none" }}>
+            style={{ padding: "9px 28px", borderRadius: 10, border: "none", fontSize: 13, fontWeight: 700, cursor: "pointer", transition: "all 0.2s", background: tab === t ? "var(--brand-gradient)" : "transparent", color: tab === t ? "white" : "#94A3B8", boxShadow: tab === t ? "0 4px 12px color-mix(in srgb, var(--brand) 30%, transparent)" : "none" }}>
             {t === "student" ? "🎒 Students" : "👩‍🏫 Faculty"}
           </button>
         ))}
@@ -264,7 +264,7 @@ export default function IDCardGenerator() {
       <div style={{ display: "flex", gap: 8, marginBottom: "1.25rem" }}>
         {steps.map((step, i) => (
           <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 14px", borderRadius: 20, background: step.done ? "linear-gradient(135deg,#6366F1,#8B5CF6)" : "white", border: step.done ? "none" : "1.5px solid #E2E8F0", boxShadow: step.done ? "0 4px 12px rgba(99,102,241,0.25)" : "none", transition: "all 0.3s" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 14px", borderRadius: 20, background: step.done ? "var(--brand-gradient)" : "white", border: step.done ? "none" : "1.5px solid #E2E8F0", boxShadow: step.done ? "0 4px 12px color-mix(in srgb, var(--brand) 25%, transparent)" : "none", transition: "all 0.3s" }}>
               <div style={{ width: 20, height: 20, borderRadius: "50%", background: step.done ? "rgba(255,255,255,0.25)" : "#F1F5F9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: step.done ? "white" : "#94A3B8" }}>{step.done ? "✓" : step.num}</div>
               <span style={{ fontSize: 11, fontWeight: 700, color: step.done ? "white" : "#94A3B8" }}>{step.label}</span>
             </div>
@@ -292,7 +292,7 @@ export default function IDCardGenerator() {
           <input value={search} onChange={e => setSearch(e.target.value)}
             placeholder={`Search ${tab === "student" ? "students" : "faculty"}...`}
             style={{ padding: "10px 14px", borderRadius: 12, border: "1.5px solid #E2E8F0", fontSize: 13, outline: "none", fontFamily: "inherit", transition: "border 0.2s" }}
-            onFocus={e => e.target.style.borderColor = "#6366F1"} onBlur={e => e.target.style.borderColor = "#E2E8F0"} />
+            onFocus={e => e.target.style.borderColor = "var(--brand)"} onBlur={e => e.target.style.borderColor = "#E2E8F0"} />
           <div style={{ fontSize: 11, color: "#94A3B8", fontWeight: 600 }}>{filtered.length} {tab === "student" ? "students" : "faculty members"}</div>
           <div style={{ overflowY: "auto", flex: 1 }}>
             {loading ? <div style={{ textAlign: "center", padding: "30px 0", color: "#94A3B8" }}>Loading...</div>
@@ -301,7 +301,7 @@ export default function IDCardGenerator() {
                 const isActive = selectedId === person._id;
                 return (
                   <div key={i} onClick={() => handleSelect(person)}
-                    style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", borderRadius: 12, cursor: "pointer", marginBottom: 4, transition: "all 0.15s", background: isActive ? "linear-gradient(135deg,#EEF2FF,#E0E7FF)" : "transparent", border: isActive ? "1.5px solid #C7D2FE" : "1.5px solid transparent" }}
+                    style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", borderRadius: 12, cursor: "pointer", marginBottom: 4, transition: "all 0.15s", background: isActive ? "linear-gradient(135deg,var(--brand-soft),var(--brand-soft))" : "transparent", border: isActive ? "1.5px solid var(--brand-border)" : "1.5px solid transparent" }}
                     onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "#F8FAFC"; }}
                     onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = "transparent"; }}>
                     <Avatar name={person.name} photo={person.photo} size={36} />
@@ -311,7 +311,7 @@ export default function IDCardGenerator() {
                         {tab === "student" ? `Class ${person.class}-${person.section} · Roll ${person.rollNumber}` : `${person.employeeId} · ${person.subjects?.[0] || "Faculty"}`}
                       </div>
                     </div>
-                    {isActive && <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#6366F1", flexShrink: 0 }} />}
+                    {isActive && <div style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--brand)", flexShrink: 0 }} />}
                   </div>
                 );
               })}
@@ -332,7 +332,7 @@ export default function IDCardGenerator() {
               </div>
               <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 24 }}>
                 {(tab === "student" ? ["Filter by Class →", "Select Section →", "Click Student →", "Print Card ✓"] : ["Click Faculty →", "Preview Card →", "Print Card ✓"]).map((s, i) => (
-                  <div key={i} style={{ fontSize: 11, fontWeight: 700, color: "#6366F1", background: "#EEF2FF", padding: "6px 12px", borderRadius: 8 }}>{s}</div>
+                  <div key={i} style={{ fontSize: 11, fontWeight: 700, color: "var(--brand)", background: "var(--brand-soft)", padding: "6px 12px", borderRadius: 8 }}>{s}</div>
                 ))}
               </div>
             </div>
@@ -375,7 +375,7 @@ export default function IDCardGenerator() {
               </div>
               <div style={{ display: "flex", gap: 12 }}>
                 <button onClick={handlePrint}
-                  style={{ display: "flex", alignItems: "center", gap: 8, background: "linear-gradient(135deg,#6366F1,#8B5CF6)", color: "white", border: "none", borderRadius: 14, padding: "12px 28px", fontSize: 13, fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 16px rgba(99,102,241,0.4)", transition: "all 0.2s" }}
+                  style={{ display: "flex", alignItems: "center", gap: 8, background: "var(--brand-gradient)", color: "white", border: "none", borderRadius: 14, padding: "12px 28px", fontSize: 13, fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 16px color-mix(in srgb, var(--brand) 40%, transparent)", transition: "all 0.2s" }}
                   onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
                   onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}>
                   🖨️ Print Card

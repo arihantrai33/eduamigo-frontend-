@@ -149,8 +149,8 @@ export default function TeacherMarks() {
                 <Badge status={sheet.status} />
               </div>
               <div style={{ marginTop: 12, fontSize: 12, color: '#64748B' }}>{filled} of {total} students entered</div>
-              <div style={{ height: 6, background: '#EEF2FF', borderRadius: 3, marginTop: 6 }}>
-                <div style={{ height: 6, width: `${total ? (filled / total) * 100 : 0}%`, background: '#5C6BC0', borderRadius: 3 }} />
+              <div style={{ height: 6, background: 'var(--brand-soft)', borderRadius: 3, marginTop: 6 }}>
+                <div style={{ height: 6, width: `${total ? (filled / total) * 100 : 0}%`, background: 'var(--brand)', borderRadius: 3 }} />
               </div>
               {locked && <div style={{ marginTop: 10, fontSize: 12, color: '#15803D' }}>These marks are published and locked. Ask the admin to reopen them if a correction is needed.</div>}
             </div>
@@ -187,8 +187,8 @@ export default function TeacherMarks() {
 
             {!locked && total > 0 && (
               <div style={{ display: 'flex', gap: 10, marginBottom: 90 }}>
-                <button onClick={() => save()} disabled={busy} style={{ ...styles.btn, background: '#EEF2FF', color: '#3949AB' }}>{busy ? 'Saving...' : 'Save Draft'}</button>
-                <button onClick={publish} disabled={busy || invalid} style={{ ...styles.btn, background: 'linear-gradient(135deg,#3949AB,#5C6BC0)', color: '#fff' }}>Publish</button>
+                <button onClick={() => save()} disabled={busy} style={{ ...styles.btn, background: 'var(--brand-soft)', color: 'var(--brand-dark)' }}>{busy ? 'Saving...' : 'Save Draft'}</button>
+                <button onClick={publish} disabled={busy || invalid} style={{ ...styles.btn, background: 'var(--brand-gradient)', color: '#fff' }}>Publish</button>
               </div>
             )}
           </>
@@ -206,12 +206,12 @@ export default function TeacherMarks() {
           {classes.map(c => (
             <button key={c} onClick={() => { if (c !== classKey) { setExam(null); setSheet(null); setExams([]) } setClassKey(c) }} style={{
               padding: '6px 16px', borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: 'none',
-              background: classKey === c ? '#5C6BC0' : '#EEF2FF', color: classKey === c ? '#fff' : '#5C6BC0',
+              background: classKey === c ? 'var(--brand)' : 'var(--brand-soft)', color: classKey === c ? '#fff' : 'var(--brand)',
             }}>Class {c}</button>
           ))}
         </div>
         <button onClick={() => navigate(`/report-card?class=${cls}&section=${section}`)}
-          style={{ marginTop: 12, width: '100%', padding: '10px', borderRadius: 10, border: '1.5px solid #C7D2FE', background: '#EEF2FF', color: '#3949AB', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>
+          style={{ marginTop: 12, width: '100%', padding: '10px', borderRadius: 10, border: '1.5px solid var(--brand-border)', background: 'var(--brand-soft)', color: 'var(--brand-dark)', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>
           Report cards for Class {classKey}
         </button>
       </div>
@@ -234,7 +234,7 @@ export default function TeacherMarks() {
               </div>
               <Badge status={e.status} />
             </div>
-            <div style={{ fontSize: 12, marginTop: 8, color: disabledReason ? '#B45309' : '#5C6BC0', fontWeight: 600 }}>
+            <div style={{ fontSize: 12, marginTop: 8, color: disabledReason ? '#B45309' : 'var(--brand)', fontWeight: 600 }}>
               {disabledReason || (e.status === 'Published' ? 'View marks' : e.entered ? `Continue · ${e.entered} entered` : 'Enter marks')}
             </div>
           </button>
@@ -272,8 +272,8 @@ function Shell({ children, navigate, location, title = 'Enter Marks', onBack }) 
             <button key={t.path} onClick={() => navigate(t.path)} style={{
               flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3,
               cursor: 'pointer', fontSize: '9.5px', fontWeight: 700, letterSpacing: '.3px', textTransform: 'uppercase',
-              border: 'none', background: 'none', color: active ? '#5C6BC0' : '#7B8099',
-              borderTop: active ? '3px solid #5C6BC0' : '3px solid transparent',
+              border: 'none', background: 'none', color: active ? 'var(--brand)' : '#7B8099',
+              borderTop: active ? '3px solid var(--brand)' : '3px solid transparent',
             }}>
               <span style={{ fontSize: 20 }}>{t.icon}</span>
               <span>{t.label}</span>
@@ -297,5 +297,5 @@ const styles = {
   markInput: { width: 72, padding: '9px 10px', borderRadius: 10, border: '1.5px solid #E2E8F0', fontSize: 15, fontWeight: 600, textAlign: 'center', outline: 'none', fontFamily: 'inherit' },
   absentBtn: { border: 'none', borderRadius: 10, padding: '9px 10px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' },
   btn: { flex: 1, padding: '14px', borderRadius: 14, border: 'none', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' },
-  nav: { position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 420, background: 'var(--card, #fff)', display: 'flex', borderTop: '1px solid #E8EAF0', boxShadow: '0 -4px 24px rgba(92,107,192,.08)', zIndex: 200, height: 66 },
+  nav: { position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 420, background: 'var(--card, #fff)', display: 'flex', borderTop: '1px solid #E8EAF0', boxShadow: '0 -4px 24px color-mix(in srgb, var(--brand) 8%, transparent)', zIndex: 200, height: 66 },
 }

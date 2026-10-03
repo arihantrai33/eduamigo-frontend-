@@ -63,7 +63,7 @@ export default function ChangePassword() {
 
         {error && <div role="alert" style={{ marginTop: 12, fontSize: 13, color: "#B91C1C" }}>{error}</div>}
 
-        <button type="submit" disabled={saving} style={{ marginTop: 18, width: "100%", padding: 13, borderRadius: 10, border: "none", background: "linear-gradient(135deg,#4F46E5,#7C3AED)", color: "#fff", fontWeight: 700, fontSize: 15, cursor: saving ? "default" : "pointer", opacity: saving ? 0.7 : 1 }}>
+        <button type="submit" disabled={saving} style={{ marginTop: 18, width: "100%", padding: 13, borderRadius: 10, border: "none", background: "var(--brand-gradient)", color: "#fff", fontWeight: 700, fontSize: 15, cursor: saving ? "default" : "pointer", opacity: saving ? 0.7 : 1 }}>
           {saving ? "Saving..." : "Update password"}
         </button>
         <button type="button" onClick={() => { logout(); navigate("/login", { replace: true }); }} style={{ marginTop: 10, width: "100%", padding: 10, border: "none", background: "none", color: "#64748B", fontSize: 13, cursor: "pointer" }}>

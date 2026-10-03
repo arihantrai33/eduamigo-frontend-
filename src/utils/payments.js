@@ -44,7 +44,8 @@ export async function payFee({ feeId, amount }) {
       name: order.name,
       description: order.description,
       prefill: order.prefill,
-      theme: { color: "#4f46e5" },
+      // Checkout in the school's colour (CSS variables do not work inside the payment window).
+      theme: { color: getComputedStyle(document.documentElement).getPropertyValue("--brand").trim() || "#4f46e5" },
       handler: async (result) => {
         try {
           const res = await axios.post(`${API}/payments/verify`, result, auth());

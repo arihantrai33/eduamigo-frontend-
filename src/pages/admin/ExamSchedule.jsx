@@ -166,7 +166,7 @@ export default function ExamSchedule() {
       {/* Stat Cards */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
         {[
-          { label:"TOTAL EXAMS",   value: exams.length, icon:"📝", border:"#6366F1", bg:"#EEF2FF" },
+          { label:"TOTAL EXAMS",   value: exams.length, icon:"📝", border:"var(--brand)", bg:"var(--brand-soft)" },
           { label:"UPCOMING",      value: upcoming,     icon:"📅", border:"#F97316", bg:"#FFF7ED" },
           { label:"TODAY",         value: today,        icon:"🔔", border:"#EF4444", bg:"#FEF2F2" },
           { label:"EXAM TYPES",    value: [...new Set(exams.map(e=>e.examType))].length, icon:"🗂️", border:"#10B981", bg:"#F0FDF4" },
@@ -213,17 +213,17 @@ export default function ExamSchedule() {
       ) : (
         <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }}>
           {filtered.map((exam, i) => {
-            const color = TYPE_COLORS[exam.examType] || "#6366F1";
+            const color = TYPE_COLORS[exam.examType] || "var(--brand)";
             const isUpcoming = exam.date && new Date(exam.date) >= new Date();
             return (
               <div key={exam._id} className="exam-card"
                 style={{ background:"white", borderRadius:20, padding:"22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`1px solid #E2E8F0`, borderTop:`4px solid ${color}`, animation:`fadeUp 0.3s ease ${i*0.05}s both` }}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:12 }}>
-                  <span style={{ fontSize:11, fontWeight:700, padding:"4px 12px", borderRadius:20, background:`${color}15`, color, border:`1px solid ${color}30` }}>{exam.examType}</span>
+                  <span style={{ fontSize:11, fontWeight:700, padding:"4px 12px", borderRadius:20, background:`color-mix(in srgb, ${color} 8%, transparent)`, color, border:`1px solid color-mix(in srgb, ${color} 19%, transparent)` }}>{exam.examType}</span>
                   {isUpcoming && <span style={{ fontSize:10, fontWeight:700, padding:"3px 10px", borderRadius:20, background:"#F0FDF4", color:"#15803D", border:"1px solid #BBF7D0" }}>Upcoming</span>}
                 </div>
                 <div style={{ fontSize:16, fontWeight:800, color:"#0F172A", marginBottom:4 }}>{exam.title}</div>
-                <div style={{ fontSize:13, color:"#6366F1", fontWeight:700, marginBottom:12 }}>{exam.subject}</div>
+                <div style={{ fontSize:13, color:"var(--brand)", fontWeight:700, marginBottom:12 }}>{exam.subject}</div>
                 <div style={{ display:"flex", flexDirection:"column", gap:6, marginBottom:16 }}>
                   {exam.class && <div style={{ fontSize:12, color:"#64748B" }}>🏫 Class {exam.class}{exam.section ? `-${exam.section}` : ""}</div>}
                   <div style={{ fontSize:12, color:"#64748B" }}>📅 {fmtDate(exam.date)}</div>

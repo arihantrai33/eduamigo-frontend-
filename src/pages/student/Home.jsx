@@ -3,6 +3,8 @@ import UpcomingExams from "../../components/UpcomingExams";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { visibleFor } from "../../utils/features";
+import { userTheme, brandLook } from "../../utils/theme";
+import SchoolStrip from "../../components/SchoolStrip";
 import axios from "axios";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -21,6 +23,9 @@ return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
 export default function StudentHome() {
 const navigate = useNavigate();
 const { user } = useAuth();
+// School branding, in the same style (light or bold) as the school's sign-in page.
+const theme = userTheme(user);
+const look = brandLook(theme);
 const [profile,      setProfile]      = useState(null);
 const [attendance,   setAttendance]   = useState(null);
 const [results,      setResults]      = useState(null);
@@ -116,26 +121,27 @@ return (
 return (
 <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "Inter, sans-serif" }}>
 {/* ── Header ── */}
-<div style={{ background: "linear-gradient(135deg, #1a73e8 0%, #6c63ff 100%)", padding: "48px 20px 20px", flexShrink: 0 }}>
+<div style={{ background: look.header, padding: "20px 20px 20px", flexShrink: 0 }}>
+<SchoolStrip user={user} theme={theme} look={look} />
 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
 <div>
-<div style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", fontWeight: 700, marginBottom: 2 }}>
+<div style={{ fontSize: 11, color: look.muted, fontWeight: 700, marginBottom: 2 }}>
 {getGreeting().toUpperCase()}
 </div>
-<div style={{ fontSize: 20, fontWeight: 800, color: "#fff" }}>
+<div style={{ fontSize: 20, fontWeight: 800, color: look.text }}>
 {profile?.name ?? user?.name ?? "Student"}
 </div>
 </div>
 <div style={{ display: "flex", gap: 8 }}>
 <button
 onClick={() => navigate("/student/notifications")}
-style={{ width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.15)", border: "none", cursor: "pointer", fontSize: 16, position: "relative" }}>
+style={{ width: 38, height: 38, borderRadius: "50%", background: look.glass, border: look.border, cursor: "pointer", fontSize: 16, position: "relative" }}>
               🔔
 {notices.length > 0 && (
 <div style={{ position: "absolute", top: -4, right: -4, minWidth: 18, height: 18, background: "#FF5252", borderRadius: "50%", border: "2px solid white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: "white", padding: "0 4px" }}>{notices.length}</div>
               )}
 </button>
-<div style={{ width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, color: "#fff", fontSize: 13, overflow: "hidden" }}>
+<div style={{ width: 38, height: 38, borderRadius: "50%", background: look.avatar, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, color: "#fff", fontSize: 13, overflow: "hidden" }}>
 {profile?.photo ? (
 <img src={profile.photo} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
 ) : (
@@ -145,21 +151,21 @@ getInitials(profile?.name ?? user?.name)
 </div>
 </div>
 {/* Student ID Card */}
-<div style={{ background: "rgba(255,255,255,0.15)", borderRadius: 16, padding: 16, backdropFilter: "blur(10px)" }}>
+<div style={{ background: look.glass, border: look.border, borderRadius: 16, padding: 16, backdropFilter: "blur(10px)" }}>
 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
 <div>
-<div style={{ fontSize: 10, color: "rgba(255,255,255,0.7)", fontWeight: 700 }}>STUDENT ID</div>
-<div style={{ fontSize: 18, fontWeight: 800, color: "#fff", margin: "2px 0" }}>
+<div style={{ fontSize: 10, color: look.muted, fontWeight: 700 }}>STUDENT ID</div>
+<div style={{ fontSize: 18, fontWeight: 800, color: look.text, margin: "2px 0" }}>
 {profile?.name ?? "—"}
 </div>
-<div style={{ fontSize: 12, color: "rgba(255,255,255,0.8)" }}>
+<div style={{ fontSize: 12, color: look.muted }}>
                 Class {profile?.class ?? "—"}-{profile?.section ?? "—"} • Roll #{profile?.rollNumber ?? "—"}
 </div>
-<div style={{ fontSize: 12, color: "rgba(255,255,255,0.8)" }}>
-{profile?.email ?? "—"}
+<div style={{ fontSize: 12, color: look.muted }}>
+{profile?.admissionNo ? `Admission No ${profile.admissionNo}` : (profile?.email ?? "")}
 </div>
 </div>
-<div style={{ width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, color: "#fff", fontSize: 16, overflow: "hidden" }}>
+<div style={{ width: 48, height: 48, borderRadius: 14, background: look.avatar, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, color: "#fff", fontSize: 16, overflow: "hidden" }}>
 {profile?.photo ? (
 <img src={profile.photo} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
 ) : (
@@ -177,9 +183,9 @@ getInitials(profile?.name ?? user?.name)
             ].filter(visibleFor(user)).map((stat) => (
 <div key={stat.label}
 onClick={() => stat.path && navigate(stat.path)}
-style={{ flex: 1, background: "rgba(255,255,255,0.15)", borderRadius: 10, padding: "8px 4px", textAlign: "center", cursor: stat.path ? "pointer" : "default" }}>
-<div style={{ fontSize: 14, fontWeight: 800, color: "#fff" }}>{stat.val}</div>
-<div style={{ fontSize: 9, color: "rgba(255,255,255,0.7)", fontWeight: 700, textTransform: "uppercase" }}>{stat.label}</div>
+style={{ flex: 1, background: look.tile, border: look.border, borderRadius: 10, padding: "8px 4px", textAlign: "center", cursor: stat.path ? "pointer" : "default" }}>
+<div style={{ fontSize: 14, fontWeight: 800, color: look.value }}>{stat.val}</div>
+<div style={{ fontSize: 9, color: look.muted, fontWeight: 700, textTransform: "uppercase" }}>{stat.label}</div>
 </div>
             ))}
 </div>
@@ -201,7 +207,7 @@ style={{ background: "var(--card)", borderRadius: 14, padding: 14, border: "none
 {/* Today's Classes */}
 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
 <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--text)", margin: 0 }}>Today's Classes</h3>
-<span style={{ fontSize: 13, color: "#1a73e8", cursor: "pointer" }} onClick={() => navigate("/student/timetable")}>
+<span style={{ fontSize: 13, color: theme.primary, fontWeight: 700, cursor: "pointer" }} onClick={() => navigate("/student/timetable")}>
             View all →
 </span>
 </div>
@@ -229,7 +235,7 @@ timetable.slice(0, 4).map((c, i) => (
 {/* Notices */}
 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
 <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--text)", margin: 0 }}>Notices</h3>
-<span style={{ fontSize: 13, color: "#1a73e8", cursor: "pointer" }} onClick={() => navigate("/student/notifications")}>
+<span style={{ fontSize: 13, color: theme.primary, fontWeight: 700, cursor: "pointer" }} onClick={() => navigate("/student/notifications")}>
             View all →
 </span>
 </div>
@@ -241,7 +247,7 @@ timetable.slice(0, 4).map((c, i) => (
           ) : (
 notices.map((n, i) => (
 <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "12px 0", borderBottom: i < notices.length - 1 ? "1px solid #f0f0f0" : "none" }}>
-<div style={{ width: 8, height: 8, borderRadius: "50%", background: "#5C6BC0", marginTop: 5, flexShrink: 0 }} />
+<div style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--brand)", marginTop: 5, flexShrink: 0 }} />
 <div>
 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text)" }}>{n.title}</div>
 <div style={{ fontSize: 11, color: "var(--subtext)", marginTop: 2 }}>
@@ -263,7 +269,7 @@ notices.map((n, i) => (
           { icon: "👤", label: "Me",    path: "/student/profile" },
         ].filter(visibleFor(user)).map((tab) => (
 <button key={tab.label} onClick={() => navigate(tab.path)}
-style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, color: tab.active ? "#1a73e8" : "#999" }}>
+style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, color: tab.active ? theme.primary : "#999" }}>
 <span style={{ fontSize: 22 }}>{tab.icon}</span>
 <span style={{ fontSize: 10, fontWeight: tab.active ? 700 : 500 }}>{tab.label}</span>
 </button>

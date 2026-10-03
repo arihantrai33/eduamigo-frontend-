@@ -82,7 +82,7 @@ function getNearestStopIndex(stops, lat, lng) {
 // ── Icons ──────────────────────────────────────────────────────
 const busIcon = L.divIcon({
   className: "",
-  html: `<div style="width:52px;height:52px;background:linear-gradient(135deg,#4F46E5,#6366F1);border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(79,70,229,0.6);border:3px solid white;">
+  html: `<div style="width:52px;height:52px;background:var(--brand-gradient);border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px color-mix(in srgb, var(--brand) 60%, transparent);border:3px solid white;">
     <span style="transform:rotate(45deg);font-size:24px;line-height:1;">🚌</span></div>`,
   iconSize: [52, 52], iconAnchor: [26, 52], popupAnchor: [0, -56],
 });
@@ -90,7 +90,7 @@ const busIcon = L.divIcon({
 function makeStopIcon(type) {
   const configs = {
     completed: { bg: "#10B981", text: "✓",  size: 22 },
-    current:   { bg: "#4F46E5", text: "●",  size: 26 },
+    current:   { bg: "var(--brand)", text: "●",  size: 26 },
     school:    { bg: "#F59E0B", text: "🏫", size: 24 },
     upcoming:  { bg: "#E5E7EB", text: "●",  size: 18 },
   };
@@ -348,7 +348,7 @@ export default function ParentBus() {
       <div style={{ ...styles.pageShell, alignItems: "center", justifyContent: "center" }}>
         <div style={{ textAlign: "center" }}>
           <div style={{ fontSize: "48px", marginBottom: "12px" }}>🚌</div>
-          <p style={{ color: "#4F46E5", fontWeight: 600 }}>Loading bus info...</p>
+          <p style={{ color: "var(--brand)", fontWeight: 600 }}>Loading bus info...</p>
         </div>
       </div>
     );
@@ -365,7 +365,7 @@ export default function ParentBus() {
           </p>
           <button
             onClick={() => navigate("/student/home")}
-            style={{ padding: "10px 24px", borderRadius: "12px", background: "#4F46E5", color: "white", border: "none", cursor: "pointer", fontWeight: 600 }}
+            style={{ padding: "10px 24px", borderRadius: "12px", background: "var(--brand)", color: "white", border: "none", cursor: "pointer", fontWeight: 600 }}
           >
             ← Go Back
           </button>
@@ -586,9 +586,9 @@ export default function ParentBus() {
               const isCompleted = type === "completed";
               const isCurrent   = type === "current";
               const isSchool    = isLast && !isCurrent;
-              const circleBg     = isCurrent ? "#4F46E5" : isCompleted ? "#D1FAE5" : isSchool ? "#FFF7ED" : "#F3F4F6";
-              const circleBorder = isCurrent ? "2px solid #4F46E5" : isCompleted ? "2px solid #6EE7B7" : isSchool ? "2px solid #FCD34D" : "2px solid #E5E7EB";
-              const circleShadow = isCurrent ? "0 0 0 4px #EEF2FF" : "none";
+              const circleBg     = isCurrent ? "var(--brand)" : isCompleted ? "#D1FAE5" : isSchool ? "#FFF7ED" : "#F3F4F6";
+              const circleBorder = isCurrent ? "2px solid var(--brand)" : isCompleted ? "2px solid #6EE7B7" : isSchool ? "2px solid #FCD34D" : "2px solid #E5E7EB";
+              const circleShadow = isCurrent ? "0 0 0 4px var(--brand-soft)" : "none";
               return (
                 <div key={stop.id || i} style={styles.stopRow}>
                   <div style={styles.timeline}>
@@ -604,7 +604,7 @@ export default function ParentBus() {
                         background: isCompleted
                           ? "linear-gradient(to bottom, #6EE7B7, #D1FAE5)"
                           : isCurrent
-                          ? "linear-gradient(to bottom, #4F46E5, #E5E7EB)"
+                          ? "linear-gradient(to bottom, var(--brand), #E5E7EB)"
                           : "#E5E7EB",
                       }} />
                     )}
@@ -614,7 +614,7 @@ export default function ParentBus() {
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{
                           ...styles.stopName,
-                          color: isCompleted ? "#9CA3AF" : isCurrent ? "#4F46E5" : isSchool ? "#D97706" : "#111827",
+                          color: isCompleted ? "#9CA3AF" : isCurrent ? "var(--brand)" : isSchool ? "#D97706" : "#111827",
                           textDecoration: isCompleted ? "line-through" : "none",
                           fontWeight: isCurrent || isSchool ? 600 : 400,
                         }}>{stop.name}</p>
@@ -627,7 +627,7 @@ export default function ParentBus() {
                       </div>
                       <div style={{ flexShrink: 0 }}>
                         {isCompleted && <span style={{ ...styles.badge, background: "#F0FDF4", color: "#16A34A", border: "0.5px solid #BBF7D0" }}>Done</span>}
-                        {isCurrent   && <span style={{ ...styles.badge, background: "#EEF2FF", color: "#4F46E5", border: "0.5px solid #C7D2FE" }}>Live</span>}
+                        {isCurrent   && <span style={{ ...styles.badge, background: "var(--brand-soft)", color: "var(--brand)", border: "0.5px solid var(--brand-border)" }}>Live</span>}
                         {isSchool    && <span style={{ ...styles.badge, background: "#FFF7ED", color: "#C2410C", border: "0.5px solid #FED7AA" }}>{eta}</span>}
                         {type === "upcoming" && <span style={{ fontSize: "10px", color: "#D1D5DB" }}>—</span>}
                       </div>
@@ -656,10 +656,10 @@ const styles = {
   fullscreenRoot: { position: "fixed", inset: 0, zIndex: 9999, background: "black" },
   exitFsBtn: { position: "fixed", top: "max(20px, env(safe-area-inset-top, 20px))", right: "16px", zIndex: 10000, display: "flex", alignItems: "center", gap: "6px", padding: "8px 14px", borderRadius: "20px", background: "rgba(0,0,0,0.55)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.2)", color: "white", cursor: "pointer" },
   fsActionRow: { position: "fixed", top: "max(20px, env(safe-area-inset-top, 20px))", left: "16px", zIndex: 10000, display: "flex", gap: "10px" },
-  fsCallBtn: { display: "flex", alignItems: "center", gap: "6px", padding: "8px 14px", borderRadius: "20px", fontSize: "12px", fontWeight: 600, background: "rgba(79,70,229,0.85)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.2)", color: "white", cursor: "pointer" },
+  fsCallBtn: { display: "flex", alignItems: "center", gap: "6px", padding: "8px 14px", borderRadius: "20px", fontSize: "12px", fontWeight: 600, background: "color-mix(in srgb, var(--brand) 85%, transparent)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.2)", color: "white", cursor: "pointer" },
   fsSosBtn:  { display: "flex", alignItems: "center", gap: "6px", padding: "8px 14px", borderRadius: "20px", fontSize: "12px", fontWeight: 600, background: "rgba(220,38,38,0.85)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.2)", color: "white", cursor: "pointer" },
   fsMiniPill: { position: "fixed", bottom: "max(24px, env(safe-area-inset-bottom, 24px))", left: "50%", transform: "translateX(-50%)", zIndex: 10000, display: "flex", alignItems: "center", gap: "8px", padding: "10px 20px", borderRadius: "30px", background: "rgba(0,0,0,0.55)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.15)", whiteSpace: "nowrap" },
-  header: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 100, background: "linear-gradient(135deg, #4F46E5 0%, #6366F1 100%)", paddingTop: "env(safe-area-inset-top, 44px)", paddingLeft: "16px", paddingRight: "16px", paddingBottom: "14px", borderRadius: "0 0 24px 24px", boxShadow: "0 4px 24px rgba(79,70,229,0.25)" },
+  header: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 100, background: "var(--brand-gradient)", paddingTop: "env(safe-area-inset-top, 44px)", paddingLeft: "16px", paddingRight: "16px", paddingBottom: "14px", borderRadius: "0 0 24px 24px", boxShadow: "0 4px 24px color-mix(in srgb, var(--brand) 25%, transparent)" },
   navRow: { display: "flex", alignItems: "center", gap: "12px", marginBottom: "10px", marginTop: "10px" },
   backBtn: { width: "36px", height: "36px", borderRadius: "12px", background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 },
   navTitle: { color: "white", fontSize: "17px", fontWeight: 600, letterSpacing: "-0.3px" },
@@ -680,7 +680,7 @@ const styles = {
   trafficStrip: { display: "flex", alignItems: "center", gap: "8px", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "12px", padding: "8px 14px" },
   trafficLabel: { color: "rgba(255,255,255,0.85)", fontSize: "12px", flex: 1, fontWeight: 500 },
   trafficRight: { color: "rgba(255,255,255,0.45)", fontSize: "11px" },
-  fsBtn: { position: "absolute", right: "14px", zIndex: 200, width: "40px", height: "40px", borderRadius: "12px", background: "rgba(79,70,229,0.85)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 2px 12px rgba(79,70,229,0.35)", transition: "bottom 0.35s cubic-bezier(0.4,0,0.2,1)" },
+  fsBtn: { position: "absolute", right: "14px", zIndex: 200, width: "40px", height: "40px", borderRadius: "12px", background: "color-mix(in srgb, var(--brand) 85%, transparent)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 2px 12px color-mix(in srgb, var(--brand) 35%, transparent)", transition: "bottom 0.35s cubic-bezier(0.4,0,0.2,1)" },
   stopsPanel: { position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 100, background: "var(--card)", borderRadius: "24px 24px 0 0", boxShadow: "0 -4px 30px rgba(0,0,0,0.10)", overflowY: "auto", transition: "max-height 0.35s cubic-bezier(0.4,0,0.2,1)", paddingBottom: "env(safe-area-inset-bottom, 0px)", WebkitOverflowScrolling: "touch" },
   stopsHeader: { position: "sticky", top: 0, background: "var(--card)", borderBottom: "1px solid var(--border)", paddingBottom: "10px", zIndex: 10, cursor: "pointer", userSelect: "none" },
   dragHandle: { width: "36px", height: "4px", borderRadius: "2px", background: "#E2E8F0", margin: "10px auto 8px" },
@@ -688,13 +688,13 @@ const styles = {
   stopsTitle: { fontSize: "14px", fontWeight: 700, color: "var(--text)" },
   stopsBadge: { fontSize: "11px", color: "#64748B", background: "var(--card2)", border: "1px solid var(--border)", padding: "3px 10px", borderRadius: "20px", fontWeight: 500 },
   progressPill: { position: "relative", width: "68px", height: "18px", background: "var(--card2)", borderRadius: "10px", overflow: "hidden", display: "flex", alignItems: "center" },
-  progressFill: { position: "absolute", left: 0, top: 0, bottom: 0, background: "linear-gradient(90deg, #6366F1, #4F46E5)", borderRadius: "10px", transition: "width 0.5s ease" },
+  progressFill: { position: "absolute", left: 0, top: 0, bottom: 0, background: "var(--brand-gradient)", borderRadius: "10px", transition: "width 0.5s ease" },
   progressText: { position: "relative", zIndex: 1, fontSize: "9px", fontWeight: 700, color: "#1E3A5F", width: "100%", textAlign: "center" },
   chevron: { fontSize: "10px", color: "#94A3B8", transition: "transform 0.3s ease", display: "inline-block" },
   routeBar:     { height: "3px", background: "#F1F5F9" },
-  routeBarFill: { height: "100%", background: "linear-gradient(90deg, #6366F1, #4F46E5)", transition: "width 0.5s ease" },
+  routeBarFill: { height: "100%", background: "var(--brand-gradient)", transition: "width 0.5s ease" },
   panelActionRow: { display: "flex", gap: "10px", padding: "10px 20px 2px" },
-  panelCallBtn: { flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", padding: "9px 12px", borderRadius: "12px", fontSize: "12px", fontWeight: 600, background: "var(--card2)", color: "#4F46E5", border: "1px solid #C7D2FE", cursor: "pointer" },
+  panelCallBtn: { flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", padding: "9px 12px", borderRadius: "12px", fontSize: "12px", fontWeight: 600, background: "var(--card2)", color: "var(--brand)", border: "1px solid var(--brand-border)", cursor: "pointer" },
   panelSosBtn:  { display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", padding: "9px 16px", borderRadius: "12px", fontSize: "12px", fontWeight: 700, background: "var(--card2)", color: "#DC2626", border: "1px solid #FECACA", cursor: "pointer" },
   stopsList: { padding: "10px 20px 20px" },
   stopRow:   { display: "flex", alignItems: "flex-start", gap: "14px" },
@@ -712,5 +712,5 @@ const styles = {
   modalBtns:  { display: "flex", gap: "10px" },
   cancelBtn: { flex: 1, padding: "12px", borderRadius: "14px", fontSize: "14px", fontWeight: 600, background: "var(--card2)", color: "var(--subtext)", border: "none", cursor: "pointer" },
   confirmSosBtn: { flex: 1, padding: "12px", borderRadius: "14px", fontSize: "14px", fontWeight: 700, background: "linear-gradient(135deg,#DC2626,#EF4444)", color: "white", border: "none", cursor: "pointer" },
-  callConfirmBtn: { flex: 1, padding: "12px", borderRadius: "14px", fontSize: "14px", fontWeight: 700, background: "linear-gradient(135deg,#4F46E5,#6366F1)", color: "white", border: "none", cursor: "pointer", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center" },
+  callConfirmBtn: { flex: 1, padding: "12px", borderRadius: "14px", fontSize: "14px", fontWeight: 700, background: "var(--brand-gradient)", color: "white", border: "none", cursor: "pointer", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center" },
 };

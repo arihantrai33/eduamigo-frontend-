@@ -57,3 +57,49 @@ export function schoolTheme(school) {
     glow: alpha(primary, 0.35),    // button shadow
   };
 }
+
+// Theme for screens after sign-in: the school's branding comes with the user (login and profile).
+export const userTheme = (user) => schoolTheme(user?.branding || {});
+
+// Colours for the branded header area of signed-in home screens. Follows the school's sign-in style:
+// light schools get a soft tint with dark text, bold schools a brand gradient with white text.
+export function brandLook(theme) {
+  if (theme.isLight) {
+    return {
+      header: `linear-gradient(170deg, ${theme.soft} 0%, ${theme.mist} 100%)`,
+      text: theme.deep,
+      muted: alpha(theme.deep, 0.65),
+      glass: "rgba(255,255,255,0.75)",        // cards and round buttons on the header
+      border: `1px solid ${alpha(theme.primary, 0.15)}`,
+      tile: "#fff",                            // small stat tiles
+      value: theme.primary,                    // numbers on the header
+      avatar: theme.primary,
+    };
+  }
+  return {
+    header: `linear-gradient(135deg, ${theme.dark} 0%, ${theme.primary} 100%)`,
+    text: "#fff",
+    muted: "rgba(255,255,255,0.75)",
+    glass: "rgba(255,255,255,0.15)",
+    border: "none",
+    tile: "rgba(255,255,255,0.15)",
+    value: "#fff",
+    avatar: "rgba(255,255,255,0.2)",
+  };
+}
+
+// CSS variables used by every signed-in screen (set on <html> by <BrandTheme /> in App.jsx).
+// index.css holds the EduAmigo defaults, used before sign-in and for schools without branding.
+export function brandCssVars(theme) {
+  return {
+    "--brand": theme.primary,
+    "--brand-dark": theme.dark,
+    "--brand-deep": theme.deep,
+    "--brand-light": theme.light,
+    "--brand-soft": theme.soft,
+    "--brand-border": shade(theme.primary, 0.72),
+    "--brand-accent": theme.accent,
+    // Headers and main buttons: deep brand gradient for bold schools, brighter for light ones.
+    "--brand-gradient": theme.isLight ? theme.button : `linear-gradient(135deg, ${theme.dark} 0%, ${theme.primary} 100%)`,
+  };
+}

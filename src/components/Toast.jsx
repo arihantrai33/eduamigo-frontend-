@@ -63,7 +63,7 @@ export default function Toast() {
             <p style={{ margin: "0 0 18px", fontSize: 15, color: "#0F172A", lineHeight: 1.5 }}>{confirm.message}</p>
             <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
               <button onClick={() => answer(false)} style={{ padding: "9px 16px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", color: "#334155", fontWeight: 600, cursor: "pointer" }}>Cancel</button>
-              <button autoFocus onClick={() => answer(true)} style={{ padding: "9px 16px", borderRadius: 8, border: "none", background: confirm.danger ? "#DC2626" : "#4F46E5", color: "#fff", fontWeight: 600, cursor: "pointer" }}>{confirm.confirmLabel}</button>
+              <button autoFocus onClick={() => answer(true)} style={{ padding: "9px 16px", borderRadius: 8, border: "none", background: confirm.danger ? "#DC2626" : "var(--brand)", color: "#fff", fontWeight: 600, cursor: "pointer" }}>{confirm.confirmLabel}</button>
             </div>
           </div>
         </div>
@@ -77,7 +77,7 @@ export default function Toast() {
             <div style={{ display: "flex", flexDirection: "column", gap: 8, maxHeight: 280, overflowY: "auto" }}>
               {creds.entries.map((c, i) => (
                 <div key={i} style={{ background: "#F8FAFC", border: "1px solid #E2E8F0", borderRadius: 10, padding: "10px 12px", fontSize: 13 }}>
-                  {c.label && <div style={{ fontSize: 11, fontWeight: 700, color: "#6366F1", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4 }}>{c.label}</div>}
+                  {c.label && <div style={{ fontSize: 11, fontWeight: 700, color: "var(--brand)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4 }}>{c.label}</div>}
                   {c.schoolCode && <div style={{ color: "#64748B", fontSize: 12 }}>School code: <strong style={{ color: "#0F172A" }}>{c.schoolCode}</strong></div>}
                   <div style={{ color: "#0F172A" }}>Login ID: <strong>{c.loginId || c.email}</strong></div>
                   <div style={{ fontFamily: "ui-monospace, Menlo, monospace", color: "#0F172A", fontWeight: 700, marginTop: 2 }}>{c.password}</div>
@@ -86,7 +86,7 @@ export default function Toast() {
             </div>
             <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 16 }}>
               <button onClick={copyCreds} style={{ padding: "9px 16px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", color: "#334155", fontWeight: 600, cursor: "pointer" }}>{copied ? "Copied" : "Copy all"}</button>
-              <button onClick={() => setCreds(null)} style={{ padding: "9px 16px", borderRadius: 8, border: "none", background: "#4F46E5", color: "#fff", fontWeight: 600, cursor: "pointer" }}>Done</button>
+              <button onClick={() => setCreds(null)} style={{ padding: "9px 16px", borderRadius: 8, border: "none", background: "var(--brand)", color: "#fff", fontWeight: 600, cursor: "pointer" }}>Done</button>
             </div>
           </div>
         </div>

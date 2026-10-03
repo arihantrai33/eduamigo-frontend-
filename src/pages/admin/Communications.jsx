@@ -154,7 +154,7 @@ export default function Communications() {
       `}</style>
 
       {/* Header */}
-      <div style={{ background:"linear-gradient(135deg,#6366F1,#8B5CF6,#EC4899)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
+      <div style={{ background:"var(--brand-gradient)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
         <div style={{ position:"absolute", top:-40, right:-40, width:180, height:180, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
         <div style={{ position:"absolute", bottom:-30, left:100, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", position:"relative" }}>
@@ -174,7 +174,7 @@ export default function Communications() {
       {/* Stat Cards */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
         {[
-          { label:"ANNOUNCEMENTS", value: announcements.length,                                    icon:"📢", border:"#6366F1", bg:"#EEF2FF" },
+          { label:"ANNOUNCEMENTS", value: announcements.length,                                    icon:"📢", border:"var(--brand)", bg:"var(--brand-soft)" },
           { label:"PINNED",        value: announcements.filter(a=>a.isPinned).length,              icon:"📌", border:"#F59E0B", bg:"#FFFBEB" },
           { label:"CIRCULARS",     value: circulars.length,                                        icon:"📋", border:"#EC4899", bg:"#FDF4FF" },
           { label:"NOTIFICATIONS", value: notifications.length,                                    icon:"🔔", border:"#10B981", bg:"#F0FDF4" },
@@ -196,9 +196,9 @@ export default function Communications() {
         {TABS.map(tab => (
           <button key={tab.id} onClick={() => setActiveTab(tab.id)}
             style={{ padding:"10px 20px", borderRadius:10, border:"none", cursor:"pointer", fontWeight:700, fontSize:13, transition:"all 0.2s",
-              background: activeTab === tab.id ? "linear-gradient(135deg,#6366F1,#8B5CF6)" : "transparent",
+              background: activeTab === tab.id ? "var(--brand-gradient)" : "transparent",
               color: activeTab === tab.id ? "white" : "#64748B",
-              boxShadow: activeTab === tab.id ? "0 4px 12px rgba(99,102,241,0.3)" : "none" }}>
+              boxShadow: activeTab === tab.id ? "0 4px 12px color-mix(in srgb, var(--brand) 30%, transparent)" : "none" }}>
             {tab.label} <span style={{ fontSize:11, opacity:0.8 }}>({tab.count})</span>
           </button>
         ))}
@@ -213,17 +213,17 @@ export default function Communications() {
               <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}>🔍</span>
               <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search announcements..."
                 style={{ width:"100%", padding:"11px 14px 11px 38px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
-                onFocus={e => e.target.style.borderColor="#6366F1"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
+                onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
             </div>
             {[["","All"],["student","Students"],["teacher","Teachers"],["parent","Parents"],["admin","Admin"]].map(([val,lbl]) => (
               <button key={val} onClick={() => setFilterTarget(filterTarget===val?"":val)}
-                style={{ padding:"9px 16px", borderRadius:10, border:"none", cursor:"pointer", fontWeight:700, fontSize:12, background: filterTarget===val ? "#6366F1" : "#F1F5F9", color: filterTarget===val ? "white" : "#64748B" }}>
+                style={{ padding:"9px 16px", borderRadius:10, border:"none", cursor:"pointer", fontWeight:700, fontSize:12, background: filterTarget===val ? "var(--brand)" : "#F1F5F9", color: filterTarget===val ? "white" : "#64748B" }}>
                 {lbl}
               </button>
             ))}
             <div style={{ display:"flex", gap:6, background:"#F8FAFC", padding:"4px", borderRadius:12, border:"1px solid #E2E8F0" }}>
               {[
-                { val:"", lbl:"All", icon:"▤", active:"#6366F1", dot:null },
+                { val:"", lbl:"All", icon:"▤", active:"var(--brand)", dot:null },
                 { val:"normal", lbl:"Normal", icon:"●", active:"#15803D", dot:"#22C55E" },
                 { val:"important", lbl:"Important", icon:"●", active:"#D97706", dot:"#F59E0B" },
                 { val:"urgent", lbl:"Urgent", icon:"●", active:"#DC2626", dot:"#EF4444" },
@@ -233,7 +233,7 @@ export default function Communications() {
                   <button key={val} onClick={() => setFilterPriority(filterPriority===val?"":val)}
                     style={{ display:"flex", alignItems:"center", gap:5, padding:"7px 13px", borderRadius:9, border:"none", cursor:"pointer", fontWeight:700, fontSize:12, transition:"all 0.2s",
                       background: isActive ? "white" : "transparent",
-                      color: isActive ? (dot ? PRIORITY_CONFIG[val]?.color : "#6366F1") : "#94A3B8",
+                      color: isActive ? (dot ? PRIORITY_CONFIG[val]?.color : "var(--brand)") : "#94A3B8",
                       boxShadow: isActive ? "0 2px 8px rgba(0,0,0,0.1)" : "none" }}>
                     {dot && <span style={{ width:7, height:7, borderRadius:"50%", background: isActive ? dot : "#CBD5E1", display:"inline-block", transition:"all 0.2s" }} />}
                     {lbl}
@@ -242,14 +242,14 @@ export default function Communications() {
               })}
             </div>
             <button onClick={openAddAnnouncement}
-              style={{ padding:"10px 20px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", whiteSpace:"nowrap", boxShadow:"0 4px 14px rgba(99,102,241,0.3)" }}>
+              style={{ padding:"10px 20px", borderRadius:12, border:"none", background:"var(--brand-gradient)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", whiteSpace:"nowrap", boxShadow:"0 4px 14px color-mix(in srgb, var(--brand) 30%, transparent)" }}>
               + Add
             </button>
           </div>
 
           {loading ? (
             <div style={{ padding:"60px 0", textAlign:"center" }}>
-              <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid #6366F1", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
+              <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid var(--brand)", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
             </div>
           ) : filteredAnn.length === 0 ? (
             <div style={{ background:"white", borderRadius:20, padding:"80px 0", textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
@@ -305,7 +305,7 @@ export default function Communications() {
         <div style={{ animation:"fadeUp 0.3s ease" }}>
           <div style={{ display:"flex", justifyContent:"flex-end", marginBottom:16 }}>
             <button onClick={() => { setEditItem(null); setAnnForm({ title:"", message:"", targetRole:"all", priority:"important", isPinned:false }); setModalType("announcement"); setShowModal(true); }}
-              style={{ padding:"11px 24px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#EC4899,#8B5CF6)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 14px rgba(236,72,153,0.3)" }}>
+              style={{ padding:"11px 24px", borderRadius:12, border:"none", background:"var(--brand-gradient)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 14px rgba(236,72,153,0.3)" }}>
               + Add Circular
             </button>
           </div>
@@ -352,7 +352,7 @@ export default function Communications() {
         <div style={{ animation:"fadeUp 0.3s ease" }}>
           <div style={{ display:"flex", justifyContent:"flex-end", marginBottom:16 }}>
             <button onClick={openAddNotification}
-              style={{ padding:"11px 24px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 14px rgba(99,102,241,0.3)" }}>
+              style={{ padding:"11px 24px", borderRadius:12, border:"none", background:"var(--brand-gradient)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 14px color-mix(in srgb, var(--brand) 30%, transparent)" }}>
               🔔 Send New Notification
             </button>
           </div>
@@ -369,7 +369,7 @@ export default function Communications() {
                   <div key={n._id} className="comm-card"
                     style={{ background:"white", borderRadius:14, padding:"16px 20px", boxShadow:"0 2px 12px rgba(15,23,42,0.06)", border:"1px solid #E2E8F0", display:"flex", justifyContent:"space-between", alignItems:"center", animation:`fadeUp 0.3s ease ${i*0.03}s both` }}>
                     <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-                      <div style={{ width:40, height:40, borderRadius:12, background:"linear-gradient(135deg,#6366F1,#8B5CF6)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}>🔔</div>
+                      <div style={{ width:40, height:40, borderRadius:12, background:"var(--brand-gradient)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}>🔔</div>
                       <div>
                         <div style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>{n.title}</div>
                         <div style={{ fontSize:12, color:"#64748B", marginTop:2 }}>{n.message}</div>
@@ -398,7 +398,7 @@ export default function Communications() {
             <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TITLE</div>
             <input value={annForm.title} onChange={e => setAnnForm(p=>({...p,title:e.target.value}))} placeholder="Announcement title..."
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
-              onFocus={e => e.target.style.borderColor="#6366F1"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
+              onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
           </div>
           <div>
             <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>MESSAGE</div>
@@ -422,12 +422,12 @@ export default function Communications() {
             </div>
           </div>
           <label style={{ display:"flex", alignItems:"center", gap:8, cursor:"pointer" }}>
-            <input type="checkbox" checked={annForm.isPinned} onChange={e => setAnnForm(p=>({...p,isPinned:e.target.checked}))} style={{ accentColor:"#6366F1", width:16, height:16 }} />
+            <input type="checkbox" checked={annForm.isPinned} onChange={e => setAnnForm(p=>({...p,isPinned:e.target.checked}))} style={{ accentColor:"var(--brand)", width:16, height:16 }} />
             <span style={{ fontSize:13, fontWeight:600, color:"#374151" }}>📌 Pin this announcement</span>
           </label>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
             <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
-            <button onClick={handleSaveAnnouncement} disabled={saving} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", opacity:saving?0.7:1 }}>
+            <button onClick={handleSaveAnnouncement} disabled={saving} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"var(--brand-gradient)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", opacity:saving?0.7:1 }}>
               {saving ? "Saving..." : editItem ? "Update" : "Post"}
             </button>
           </div>
@@ -437,7 +437,7 @@ export default function Communications() {
       {/* Notification Modal */}
       <Modal show={showModal && modalType === "notification"} onClose={() => setShowModal(false)} title="Send Notification">
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
-          <div style={{ background:"#EEF2FF", borderRadius:10, padding:"10px 14px", fontSize:12, color:"#6366F1", fontWeight:600 }}>
+          <div style={{ background:"var(--brand-soft)", borderRadius:10, padding:"10px 14px", fontSize:12, color:"var(--brand)", fontWeight:600 }}>
             This will send a push notification to all selected users
           </div>
           <div>
@@ -455,7 +455,7 @@ export default function Communications() {
             <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
               {[["all","Everyone"],["student","Students"],["teacher","Teachers"],["parent","Parents"]].map(([v,l]) => (
                 <button key={v} onClick={() => setNotifForm(p=>({...p,targetRole:v}))}
-                  style={{ padding:"8px 16px", borderRadius:10, border:`2px solid ${notifForm.targetRole===v?"#6366F1":"#E2E8F0"}`, background: notifForm.targetRole===v?"#EEF2FF":"white", color: notifForm.targetRole===v?"#6366F1":"#64748B", fontWeight:700, fontSize:13, cursor:"pointer" }}>
+                  style={{ padding:"8px 16px", borderRadius:10, border:`2px solid ${notifForm.targetRole===v?"var(--brand)":"#E2E8F0"}`, background: notifForm.targetRole===v?"var(--brand-soft)":"white", color: notifForm.targetRole===v?"var(--brand)":"#64748B", fontWeight:700, fontSize:13, cursor:"pointer" }}>
                   {l}
                 </button>
               ))}
@@ -463,7 +463,7 @@ export default function Communications() {
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
             <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
-            <button onClick={handleSendNotification} disabled={saving} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", opacity:saving?0.7:1 }}>
+            <button onClick={handleSendNotification} disabled={saving} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"var(--brand-gradient)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", opacity:saving?0.7:1 }}>
               {saving ? "Sending..." : "🔔 Send Now"}
             </button>
           </div>

@@ -6,7 +6,7 @@ const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 const DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-const DAY_COLORS = { Monday:"#6366F1", Tuesday:"#10B981", Wednesday:"#F59E0B", Thursday:"#EC4899", Friday:"#3B82F6", Saturday:"#8B5CF6" };
+const DAY_COLORS = { Monday:"var(--brand)", Tuesday:"#10B981", Wednesday:"#F59E0B", Thursday:"#EC4899", Friday:"#3B82F6", Saturday:"var(--brand)" };
 const PERIODS = [1,2,3,4,5,6,7,8];
 
 function Modal({ show, onClose, title, children }) {
@@ -132,7 +132,7 @@ export default function Timetable() {
       `}</style>
 
       {/* Header */}
-      <div style={{ background:"linear-gradient(135deg,#3B82F6,#6366F1,#8B5CF6)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
+      <div style={{ background:"var(--brand-gradient)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
         <div style={{ position:"absolute", top:-40, right:-40, width:180, height:180, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
         <div style={{ position:"absolute", bottom:-30, left:100, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
         <div style={{ position:"relative" }}>
@@ -174,7 +174,7 @@ export default function Timetable() {
               style={{ flex:1, padding:"10px 8px", borderRadius:12, border:"none", cursor:"pointer", fontWeight:700, fontSize:12,
                 background: selectedDay === day ? DAY_COLORS[day] : "#F8FAFC",
                 color: selectedDay === day ? "white" : "#64748B",
-                boxShadow: selectedDay === day ? `0 4px 14px ${DAY_COLORS[day]}44` : "none" }}>
+                boxShadow: selectedDay === day ? `0 4px 14px color-mix(in srgb, ${DAY_COLORS[day]} 27%, transparent)` : "none" }}>
               {day.slice(0,3)}
             </button>
           ))}
@@ -205,14 +205,14 @@ export default function Timetable() {
               const color = DAY_COLORS[selectedDay];
               return (
                 <div key={pNo} className="period-cell"
-                  style={{ background:"white", borderRadius:16, padding:"18px", boxShadow:"0 2px 12px rgba(15,23,42,0.06)", border: period ? `2px solid ${color}30` : "2px dashed #E2E8F0", cursor:"pointer", minHeight:120 }}
+                  style={{ background:"white", borderRadius:16, padding:"18px", boxShadow:"0 2px 12px rgba(15,23,42,0.06)", border: period ? `2px solid color-mix(in srgb, ${color} 19%, transparent)` : "2px dashed #E2E8F0", cursor:"pointer", minHeight:120 }}
                   onClick={() => period ? openEditPeriod(period) : openAddPeriod(pNo)}>
                   <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
                     <div style={{ width:28, height:28, borderRadius:8, background: period ? color : "#F1F5F9", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:800, color: period ? "white" : "#94A3B8" }}>
                       {pNo}
                     </div>
                     {period && (
-                      <span style={{ fontSize:10, fontWeight:700, padding:"2px 8px", borderRadius:20, background:`${color}15`, color }}>Period {pNo}</span>
+                      <span style={{ fontSize:10, fontWeight:700, padding:"2px 8px", borderRadius:20, background:`color-mix(in srgb, ${color} 8%, transparent)`, color }}>Period {pNo}</span>
                     )}
                   </div>
                   {period ? (
@@ -248,7 +248,7 @@ export default function Timetable() {
             <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>SUBJECT</div>
             <input value={periodForm.subject} onChange={e => f("subject", e.target.value)} placeholder="e.g. Mathematics"
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
-              onFocus={e => e.target.style.borderColor="#6366F1"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
+              onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
           </div>
           <div>
             <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TEACHER</div>
@@ -273,7 +273,7 @@ export default function Timetable() {
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end", marginTop:4 }}>
             <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
             <button onClick={handleSavePeriod} disabled={saving}
-              style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#3B82F6,#6366F1)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 14px rgba(99,102,241,0.4)", opacity:saving?0.7:1 }}>
+              style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"var(--brand-gradient)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 14px color-mix(in srgb, var(--brand) 40%, transparent)", opacity:saving?0.7:1 }}>
               {saving ? "Saving..." : "Save Period"}
             </button>
           </div>

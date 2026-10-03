@@ -109,7 +109,7 @@ export default function Library() {
       `}</style>
 
       {/* Header */}
-      <div style={{ background:"linear-gradient(135deg,#6366F1,#8B5CF6,#06B6D4)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
+      <div style={{ background:"var(--brand-gradient)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
         <div style={{ position:"absolute", top:-50, right:-50, width:220, height:220, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
         <div style={{ position:"absolute", bottom:-30, left:60, width:160, height:160, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
         {/* Floating book emojis */}
@@ -132,8 +132,8 @@ export default function Library() {
       {/* Stat Cards */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
         {[
-          { label:"TOTAL TITLES",  value: books.length,  icon:"📚", border:"#6366F1", bg:"#EEF2FF" },
-          { label:"TOTAL COPIES",  value: totalBooks,    icon:"📦", border:"#8B5CF6", bg:"#F5F3FF" },
+          { label:"TOTAL TITLES",  value: books.length,  icon:"📚", border:"var(--brand)", bg:"var(--brand-soft)" },
+          { label:"TOTAL COPIES",  value: totalBooks,    icon:"📦", border:"var(--brand)", bg:"var(--brand-soft)" },
           { label:"AVAILABLE",     value: totalAvail,    icon:"✅", border:"#10B981", bg:"#F0FDF4" },
           { label:"ISSUED",        value: totalIssued,   icon:"📤", border:"#F59E0B", bg:"#FFFBEB" },
         ].map((card,i) => (
@@ -155,10 +155,10 @@ export default function Library() {
           <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}>🔍</span>
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by title, author, ISBN..."
             style={{ width:"100%", padding:"11px 14px 11px 38px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
-            onFocus={e=>e.target.style.borderColor="#6366F1"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
+            onFocus={e=>e.target.style.borderColor="var(--brand)"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
         </div>
         <button className="cat-chip" onClick={() => setFilterCat("")}
-          style={{ padding:"9px 16px", borderRadius:10, border:"none", background: !filterCat ? "#6366F1" : "#F1F5F9", color: !filterCat ? "white" : "#64748B", fontWeight:700, fontSize:12 }}>
+          style={{ padding:"9px 16px", borderRadius:10, border:"none", background: !filterCat ? "var(--brand)" : "#F1F5F9", color: !filterCat ? "white" : "#64748B", fontWeight:700, fontSize:12 }}>
           All
         </button>
         {CATEGORIES.map(cat => {
@@ -186,7 +186,7 @@ export default function Library() {
           <tbody>
             {loading ? (
               <tr><td colSpan={8} style={{ padding:"60px 0", textAlign:"center" }}>
-                <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid #6366F1", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
+                <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid var(--brand)", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
                 <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading books...</div>
               </td></tr>
             ) : filtered.length === 0 ? (
@@ -252,7 +252,7 @@ export default function Library() {
             <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TITLE *</div>
             <input value={form.title} onChange={e=>f("title",e.target.value)} placeholder="Book title..."
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
-              onFocus={e=>e.target.style.borderColor="#6366F1"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
+              onFocus={e=>e.target.style.borderColor="var(--brand)"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             {[["AUTHOR","author"],["ISBN","isbn"],["PUBLISHER","publisher"],["YEAR","year"]].map(([label,key]) => (
@@ -260,7 +260,7 @@ export default function Library() {
                 <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
                 <input value={form[key]||""} onChange={e=>f(key,e.target.value)}
                   style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
-                  onFocus={e=>e.target.style.borderColor="#6366F1"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
+                  onFocus={e=>e.target.style.borderColor="var(--brand)"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
               </div>
             ))}
           </div>
@@ -280,7 +280,7 @@ export default function Library() {
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
             <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
-            <button onClick={handleSave} disabled={saving} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", opacity:saving?0.7:1 }}>
+            <button onClick={handleSave} disabled={saving} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"var(--brand-gradient)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", opacity:saving?0.7:1 }}>
               {saving ? "Saving..." : editBook ? "Update" : "Add Book"}
             </button>
           </div>

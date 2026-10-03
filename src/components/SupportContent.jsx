@@ -39,7 +39,7 @@ export default function SupportContent({ role = "student", dark = false }) {
   }, []);
 
   const card = { background: dark ? "#16213e" : "white", borderRadius: "14px", padding: "16px", marginBottom: "10px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" };
-  const btn = { flex: 1, textAlign: "center", textDecoration: "none", background: "linear-gradient(135deg, #4f46e5, #7c3aed)", color: "white", borderRadius: "12px", padding: "12px", fontWeight: "700", fontSize: "14px" };
+  const btn = { flex: 1, textAlign: "center", textDecoration: "none", background: "var(--brand-gradient)", color: "white", borderRadius: "12px", padding: "12px", fontWeight: "700", fontSize: "14px" };
 
   return (
     <>
@@ -57,7 +57,7 @@ export default function SupportContent({ role = "student", dark = false }) {
         </div>
         <div style={{ display: "flex", gap: 8 }}>
           {school?.phone && <a href={`tel:${school.phone}`} style={btn}>Call school</a>}
-          {school?.email && <a href={`mailto:${school.email}`} style={{ ...btn, background: "#EEF2FF", color: "#4338CA" }}>Email</a>}
+          {school?.email && <a href={`mailto:${school.email}`} style={{ ...btn, background: "var(--brand-soft)", color: "var(--brand-dark)" }}>Email</a>}
         </div>
         {school && !school.phone && !school.email && (
           <div style={{ fontSize: 12, color: dark ? "#aaa" : "#888" }}>Your school has not added contact details yet.</div>

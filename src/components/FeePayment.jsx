@@ -34,7 +34,7 @@ export function PayFeeButton({ fee, enabled, onPaid }) {
 
   return (
     <button onClick={pay} disabled={busy}
-      style={{ marginTop: 8, padding: "8px 14px", borderRadius: 10, border: "none", background: "linear-gradient(135deg,#4f46e5,#7c3aed)", color: "#fff", fontWeight: 700, fontSize: 12, cursor: busy ? "default" : "pointer", opacity: busy ? 0.7 : 1, fontFamily: "inherit" }}>
+      style={{ marginTop: 8, padding: "8px 14px", borderRadius: 10, border: "none", background: "var(--brand-gradient)", color: "#fff", fontWeight: 700, fontSize: 12, cursor: busy ? "default" : "pointer", opacity: busy ? 0.7 : 1, fontFamily: "inherit" }}>
       {busy ? "Opening..." : `Pay ${rupees(balance)} online`}
     </button>
   );
@@ -48,7 +48,7 @@ export function ReceiptLinks({ fee }) {
     <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
       {fee.payments.map((p) => (
         <button key={p.receiptNo} onClick={() => navigate(`/receipt/${fee._id}/${p.receiptNo}`)}
-          style={{ border: "1px solid #e0e7ff", background: "#eef2ff", color: "#4338ca", borderRadius: 8, padding: "3px 8px", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+          style={{ border: "1px solid var(--brand-soft)", background: "var(--brand-soft)", color: "var(--brand-dark)", borderRadius: 8, padding: "3px 8px", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
           Receipt {rupees(p.amount)}
         </button>
       ))}
@@ -62,7 +62,7 @@ export function PaymentInfo({ enabled }) {
     <div style={{ background: "var(--card, #fff)", borderRadius: 16, padding: 16, marginBottom: 16, boxShadow: "0 2px 12px rgba(0,0,0,0.06)", display: "flex", gap: 12, alignItems: "flex-start" }}>
       <div style={{ fontSize: 24 }} aria-hidden="true">💳</div>
       <div>
-        <div style={{ fontWeight: 700, fontSize: 14, color: "var(--text, #1e1b4b)" }}>{enabled ? "Pay online" : "Paying fees"}</div>
+        <div style={{ fontWeight: 700, fontSize: 14, color: "var(--text, var(--brand-deep))" }}>{enabled ? "Pay online" : "Paying fees"}</div>
         <div style={{ fontSize: 12, color: "#6b7280", marginTop: 4, lineHeight: 1.6 }}>
           {enabled
             ? "Pay securely with UPI, debit or credit card, or net banking. A receipt is issued immediately."

@@ -107,7 +107,7 @@ export default function Timetable() {
             <button key={day} onClick={() => setSelectedDay(day)}
               style={{
                 padding: "8px 16px", borderRadius: "20px", border: "none",
-                background: selectedDay === day ? "#6366f1" : "#f0f0f0",
+                background: selectedDay === day ? "var(--brand)" : "#f0f0f0",
                 color: selectedDay === day ? "white" : "#666",
                 fontWeight: "700", fontSize: "13px", cursor: "pointer", flexShrink: 0,
               }}>
@@ -118,14 +118,14 @@ export default function Timetable() {
         {/* Week navigation */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingBottom: "12px", paddingTop: "4px" }}>
           <button onClick={() => { setWeekOffset(w => w - 1); setSelectedDay("Mon"); }}
-            style={{ background: "none", border: "none", fontSize: "13px", color: "#6366f1", fontWeight: "700", cursor: "pointer", padding: "4px 8px" }}>
+            style={{ background: "none", border: "none", fontSize: "13px", color: "var(--brand)", fontWeight: "700", cursor: "pointer", padding: "4px 8px" }}>
             ← Prev Week
           </button>
           <span style={{ fontSize: "12px", color: "var(--subtext)", fontWeight: "600" }}>
             {weekOffset === 0 ? "This Week" : weekOffset === 1 ? "Next Week" : weekOffset === -1 ? "Last Week" : weekOffset > 0 ? `+${weekOffset} Weeks` : `${weekOffset} Weeks`}
           </span>
           <button onClick={() => { setWeekOffset(w => w + 1); setSelectedDay("Mon"); }}
-            style={{ background: "none", border: "none", fontSize: "13px", color: "#6366f1", fontWeight: "700", cursor: "pointer", padding: "4px 8px" }}>
+            style={{ background: "none", border: "none", fontSize: "13px", color: "var(--brand)", fontWeight: "700", cursor: "pointer", padding: "4px 8px" }}>
             Next Week →
           </button>
         </div>
@@ -164,9 +164,9 @@ export default function Timetable() {
                   </div>
                   {/* Time */}
                   <div style={{
-                    minWidth: "80px", background: timeHighlight ? "#6366f1" : "#EEF2FF",
+                    minWidth: "80px", background: timeHighlight ? "var(--brand)" : "var(--brand-soft)",
                     borderRadius: "10px", padding: "6px 6px", textAlign: "center",
-                    color: timeHighlight ? "white" : "#6366f1",
+                    color: timeHighlight ? "white" : "var(--brand)",
                     fontWeight: "800", fontSize: "11px",
                   }}>
                     {cls.time || "—"}

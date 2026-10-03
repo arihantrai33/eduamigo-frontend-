@@ -209,7 +209,7 @@ export default function Revise() {
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '48px 20px 16px',
-        background: 'linear-gradient(135deg, #2E1065, #4338CA 55%, #6D28D9)',
+        background: 'linear-gradient(135deg, var(--brand-deep), var(--brand-dark) 55%, var(--brand))',
         boxShadow: '0 4px 14px rgba(46, 16, 101, 0.25)',
       }}>
         <button style={{ background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: '50%', width: 32, height: 32, fontSize: 16, cursor: 'pointer', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => navigate('/student/notes')}>←</button>
@@ -227,7 +227,7 @@ export default function Revise() {
             aria-selected={mode === m.id}
             disabled={isBusy}
             onClick={() => setMode(m.id)}
-            style={{ padding: '7px 16px', borderRadius: 999, fontSize: 13, fontWeight: 700, cursor: isBusy ? 'default' : 'pointer', border: mode === m.id ? 'none' : `1px solid ${dm ? '#293449' : '#E2E4EE'}`, background: mode === m.id ? 'linear-gradient(135deg, #4338CA, #7C3AED)' : (dm ? '#141b2e' : '#fff'), color: mode === m.id ? '#fff' : (dm ? '#cbd5e1' : '#4B5563') }}
+            style={{ padding: '7px 16px', borderRadius: 999, fontSize: 13, fontWeight: 700, cursor: isBusy ? 'default' : 'pointer', border: mode === m.id ? 'none' : `1px solid ${dm ? '#293449' : '#E2E4EE'}`, background: mode === m.id ? 'var(--brand-gradient)' : (dm ? '#141b2e' : '#fff'), color: mode === m.id ? '#fff' : (dm ? '#cbd5e1' : '#4B5563') }}
           >
             {m.label}
           </button>
@@ -239,7 +239,7 @@ export default function Revise() {
           <div key={m.id} style={{ display: 'flex', flexDirection: 'column', alignItems: m.role === 'user' ? 'flex-end' : 'flex-start' }}>
             <div style={{
               maxWidth: '85%',
-              background: m.role === 'user' ? 'linear-gradient(135deg, #4338CA, #7C3AED)' : (dm ? '#141b2e' : '#fff'),
+              background: m.role === 'user' ? 'var(--brand-gradient)' : (dm ? '#141b2e' : '#fff'),
               color: m.role === 'user' ? '#fff' : (dm ? '#e2e8f0' : '#1A1A2E'),
               padding: '12px 16px',
               borderRadius: m.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
@@ -247,14 +247,14 @@ export default function Revise() {
               lineHeight: 1.6,
               wordBreak: 'break-word',
               border: m.role === 'ai' ? `1px solid ${dm ? '#1f2a44' : '#EEF0F7'}` : 'none',
-              boxShadow: m.role === 'ai' ? '0 2px 10px rgba(20, 20, 43, 0.06)' : '0 2px 10px rgba(67, 56, 202, 0.18)',
+              boxShadow: m.role === 'ai' ? '0 2px 10px rgba(20, 20, 43, 0.06)' : '0 2px 10px color-mix(in srgb, var(--brand) 18%, transparent)',
             }}>
               <div className="markdown-body"><ReactMarkdown>{m.text}</ReactMarkdown></div>
             </div>
             {m.role === 'ai' && m.sources && m.sources.length > 0 && (
               <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 6 }}>
                 {m.sources.map((s, j) => (
-                  <span key={j} style={{ fontSize: 11, fontWeight: 600, color: '#4338CA', background: dm ? '#1e2a4a' : '#EEF0FF', padding: '4px 10px', borderRadius: 12 }}>
+                  <span key={j} style={{ fontSize: 11, fontWeight: 600, color: 'var(--brand-dark)', background: dm ? '#1e2a4a' : '#EEF0FF', padding: '4px 10px', borderRadius: 12 }}>
                     📄 {s}
                   </span>
                 ))}
@@ -288,7 +288,7 @@ export default function Revise() {
         />
         <button
           className="revise-send-btn"
-          style={{ background: 'linear-gradient(135deg, #4338CA, #7C3AED)', border: 'none', borderRadius: '50%', width: 44, height: 44, fontSize: 18, color: '#fff', cursor: 'pointer', flexShrink: 0, opacity: isBusy || !input.trim() ? 0.5 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'transform 0.1s ease' }}
+          style={{ background: 'var(--brand-gradient)', border: 'none', borderRadius: '50%', width: 44, height: 44, fontSize: 18, color: '#fff', cursor: 'pointer', flexShrink: 0, opacity: isBusy || !input.trim() ? 0.5 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'transform 0.1s ease' }}
           onClick={handleSend}
           disabled={isBusy || !input.trim()}
         >

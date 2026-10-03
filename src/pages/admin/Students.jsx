@@ -13,7 +13,7 @@ const CLASS_COLORS = {
   "6":"#06B6D4","7":"#3B82F6","8":"#6366F1","9":"#8B5CF6","10":"#EC4899",
   "11":"#F43F5E","12":"#0EA5E9"
 };
-const getClassColor = (cls) => CLASS_COLORS[String(cls)] || "#6366F1";
+const getClassColor = (cls) => CLASS_COLORS[String(cls)] || "var(--brand)";
 
 const FEE_BADGE = {
   Paid:    { bg:"#F0FDF4", color:"#15803D", dot:"#22C55E" },
@@ -62,7 +62,7 @@ function Avatar({ name, photo, size=38 }) {
   const initials = name ? name.split(" ").map(n=>n[0]).join("").slice(0,2).toUpperCase() : "?";
   if (photo) return <img src={photo} alt={name} style={{ width:size, height:size, borderRadius:"50%", objectFit:"cover", border:"2px solid white", boxShadow:"0 2px 8px rgba(0,0,0,0.1)" }} />;
   return (
-    <div style={{ width:size, height:size, borderRadius:"50%", background:`linear-gradient(135deg,${color},${color}BB)`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:size*0.32, fontWeight:800, color:"white", border:"2px solid white", boxShadow:`0 2px 8px ${color}44`, flexShrink:0 }}>
+    <div style={{ width:size, height:size, borderRadius:"50%", background:`linear-gradient(135deg,${color},color-mix(in srgb, ${color} 73%, transparent))`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:size*0.32, fontWeight:800, color:"white", border:"2px solid white", boxShadow:`0 2px 8px color-mix(in srgb, ${color} 27%, transparent)`, flexShrink:0 }}>
       {initials}
     </div>
   );
@@ -90,7 +90,7 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
       <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
       <input type={type} value={form[key]||""} onChange={e=>f(key,e.target.value)} placeholder={placeholder}
         style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", transition:"border 0.2s" }}
-        onFocus={e=>e.target.style.borderColor="#6366F1"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
+        onFocus={e=>e.target.style.borderColor="var(--brand)"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
     </div>
   );
   const sel = (label, key, options) => (
@@ -127,7 +127,7 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
           <label style={{
             display: "inline-block", padding: "8px 16px", borderRadius: 10,
             border: "1.5px solid #E2E8F0", background: "white",
-            fontSize: 12, fontWeight: 700, color: "#6366F1", cursor: "pointer",
+            fontSize: 12, fontWeight: 700, color: "var(--brand)", cursor: "pointer",
           }}>
             {form.photoFile ? "Change Photo" : "Upload Photo"}
             <input type="file" accept="image/*" onChange={handlePhotoChange} style={{ display: "none" }} />
@@ -136,7 +136,7 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
         </div>
       </div>
       <div style={{ height:1, background:"#F1F5F9", margin:"4px 0" }} />
-      <div style={{ fontSize:12, fontWeight:700, color:"#6366F1", marginBottom:2, letterSpacing:"0.06em" }}>PERSONAL INFO</div>
+      <div style={{ fontSize:12, fontWeight:700, color:"var(--brand)", marginBottom:2, letterSpacing:"0.06em" }}>PERSONAL INFO</div>
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
         {inp("FULL NAME","name","text","e.g. Rahul Sharma")}
         {inp("EMAIL","email","email","student@school.com")}
@@ -145,14 +145,14 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
       </div>
       {sel("GENDER","gender",["Male","Female","Other"])}
       <div style={{ height:1, background:"#F1F5F9", margin:"4px 0" }} />
-      <div style={{ fontSize:12, fontWeight:700, color:"#6366F1", marginBottom:2, letterSpacing:"0.06em" }}>ACADEMIC INFO</div>
+      <div style={{ fontSize:12, fontWeight:700, color:"var(--brand)", marginBottom:2, letterSpacing:"0.06em" }}>ACADEMIC INFO</div>
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:12 }}>
         {inp("CLASS","class","text","e.g. 10")}
         {inp("SECTION","section","text","e.g. A")}
         {inp("ROLL NUMBER","rollNumber","text","e.g. 23")}
       </div>
       <div style={{ height:1, background:"#F1F5F9", margin:"4px 0" }} />
-      <div style={{ fontSize:12, fontWeight:700, color:"#6366F1", marginBottom:2, letterSpacing:"0.06em" }}>PARENT INFO</div>
+      <div style={{ fontSize:12, fontWeight:700, color:"var(--brand)", marginBottom:2, letterSpacing:"0.06em" }}>PARENT INFO</div>
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
         {inp("PARENT NAME","parentName","text","e.g. Rajesh Sharma")}
         {inp("PARENT PHONE","parentPhone","tel","10-digit number")}
@@ -160,7 +160,7 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
       </div>
       <div style={{ display:"flex", gap:10, marginTop:8, justifyContent:"flex-end" }}>
         <button onClick={onClose} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
-        <button onClick={onSave} disabled={loading} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 14px rgba(99,102,241,0.4)", opacity:loading?0.7:1 }}>
+        <button onClick={onSave} disabled={loading} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"var(--brand-gradient)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 14px color-mix(in srgb, var(--brand) 40%, transparent)", opacity:loading?0.7:1 }}>
           {loading ? "Saving..." : "Save Student"}
         </button>
       </div>
@@ -267,13 +267,13 @@ export default function Students() {
         @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
         @keyframes slideUp { from { opacity:0; transform:translateY(24px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
         @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
-        .row-hover:hover { background: linear-gradient(90deg,#F8FAFF,#F5F3FF) !important; transform: translateX(2px); }
+        .row-hover:hover { background: linear-gradient(90deg,#F8FAFF,var(--brand-soft)) !important; transform: translateX(2px); }
         .row-hover { transition: all 0.15s ease; }
         .action-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .action-btn { transition: all 0.15s ease; }
       `}</style>
 
-      <div style={{ background:"linear-gradient(135deg,#6366F1,#8B5CF6,#A78BFA)", borderRadius:20, padding:"28px 32px", marginBottom:28, position:"relative", overflow:"hidden", animation:"fadeSlideUp 0.4s ease" }}>
+      <div style={{ background:"var(--brand-gradient)", borderRadius:20, padding:"28px 32px", marginBottom:28, position:"relative", overflow:"hidden", animation:"fadeSlideUp 0.4s ease" }}>
         <div style={{ position:"absolute", top:-40, right:-40, width:180, height:180, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
         <div style={{ position:"absolute", bottom:-30, left:100, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", position:"relative" }}>
@@ -282,7 +282,7 @@ export default function Students() {
           <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Manage all enrolled students · {students.length} total</div>
         </div>
         {canManage && <button onClick={openAdd}
-          style={{ display:"flex", alignItems:"center", gap:8, padding:"12px 24px", borderRadius:14, border:"none", background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"white", fontWeight:700, fontSize:14, cursor:"pointer", boxShadow:"0 4px 20px rgba(99,102,241,0.4)", transition:"all 0.2s" }}
+          style={{ display:"flex", alignItems:"center", gap:8, padding:"12px 24px", borderRadius:14, border:"none", background:"var(--brand-gradient)", color:"white", fontWeight:700, fontSize:14, cursor:"pointer", boxShadow:"0 4px 20px color-mix(in srgb, var(--brand) 40%, transparent)", transition:"all 0.2s" }}
           onMouseEnter={e=>e.currentTarget.style.transform="translateY(-2px)"}
           onMouseLeave={e=>e.currentTarget.style.transform="translateY(0)"}>
           <span style={{ fontSize:18 }}>+</span> Add Student
@@ -291,7 +291,7 @@ export default function Students() {
       </div>
 
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:28 }}>
-        <StatCard label="TOTAL STUDENTS" value={stats.total} icon="🎒" gradient="linear-gradient(135deg,#6366F1,#8B5CF6)" delay={0} border="#6366F1" />
+        <StatCard label="TOTAL STUDENTS" value={stats.total} icon="🎒" gradient="var(--brand-gradient)" delay={0} border="var(--brand)" />
         <StatCard label="FEE PAID" value={stats.paid} icon="✅" gradient="linear-gradient(135deg,#10B981,#059669)" delay={0.08} border="#10B981" />
         <StatCard label="FEE PENDING" value={stats.pending} icon="⏳" gradient="linear-gradient(135deg,#F59E0B,#D97706)" delay={0.16} border="#F59E0B" />
         <StatCard label="PARTIAL" value={stats.partial} icon="⚡" gradient="linear-gradient(135deg,#F97316,#EA580C)" delay={0.24} border="#F97316" />
@@ -302,7 +302,7 @@ export default function Students() {
           <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:16, color:"#94A3B8" }}>🔍</span>
           <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search by name, email or roll number..."
             style={{ width:"100%", padding:"11px 14px 11px 40px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", transition:"border 0.2s", background:"white" }}
-            onFocus={e=>e.target.style.borderColor="#6366F1"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
+            onFocus={e=>e.target.style.borderColor="var(--brand)"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
         </div>
         <select value={filterClass} onChange={e=>setFilterClass(e.target.value)}
           style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:140 }}>
@@ -330,7 +330,7 @@ export default function Students() {
             {loading ? (
               <tr><td colSpan={7} style={{ padding:"60px 0", textAlign:"center" }}>
                 <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:12 }}>
-                  <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid #6366F1", animation:"spin 0.8s linear infinite" }} />
+                  <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid var(--brand)", animation:"spin 0.8s linear infinite" }} />
                   <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading students...</div>
                 </div>
               </td></tr>
@@ -351,7 +351,7 @@ export default function Students() {
                       <div>
                         <div style={{ fontSize:14, fontWeight:700, color:"#0F172A", cursor:"pointer" }}
                           onClick={() => navigate(`/admin/student-profile/${s._id}`)}
-                          onMouseEnter={e=>e.target.style.color="#6366F1"} onMouseLeave={e=>e.target.style.color="#0F172A"}>
+                          onMouseEnter={e=>e.target.style.color="var(--brand)"} onMouseLeave={e=>e.target.style.color="#0F172A"}>
                           {s.name}
                         </div>
                         <div style={{ fontSize:12, color:"#94A3B8", marginTop:1 }}>{s.email}</div>
@@ -362,7 +362,7 @@ export default function Students() {
                     <span style={{ fontSize:13, fontWeight:700, color:"#374151", background:"#F8FAFC", padding:"4px 10px", borderRadius:8, border:"1px solid #E2E8F0" }}>#{s.rollNumber}</span>
                   </td>
                   <td style={{ padding:"14px 18px" }}>
-                    <span style={{ fontSize:12, fontWeight:800, padding:"5px 12px", borderRadius:20, background:`${clsColor}15`, color:clsColor, border:`1px solid ${clsColor}30` }}>
+                    <span style={{ fontSize:12, fontWeight:800, padding:"5px 12px", borderRadius:20, background:`color-mix(in srgb, ${clsColor} 8%, transparent)`, color:clsColor, border:`1px solid color-mix(in srgb, ${clsColor} 19%, transparent)` }}>
                       {s.class}-{s.section}
                     </span>
                   </td>
@@ -380,7 +380,7 @@ export default function Students() {
                   <td style={{ padding:"14px 18px" }}>
                     <div style={{ display:"flex", gap:6 }}>
                       <button className="action-btn" onClick={() => navigate(`/admin/student-profile/${s._id}`)}
-                        style={{ padding:"6px 14px", borderRadius:8, border:"none", background:"#EEF2FF", color:"#6366F1", fontSize:12, fontWeight:700, cursor:"pointer" }}>View</button>
+                        style={{ padding:"6px 14px", borderRadius:8, border:"none", background:"var(--brand-soft)", color:"var(--brand)", fontSize:12, fontWeight:700, cursor:"pointer" }}>View</button>
                       {canManage && <>
                       <button className="action-btn" onClick={() => openEdit(s)}
                         style={{ padding:"6px 14px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", color:"#374151", fontSize:12, fontWeight:700, cursor:"pointer" }}>Edit</button>

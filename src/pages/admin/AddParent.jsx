@@ -123,7 +123,7 @@ const AddParent = () => {
 
       {/* Parent Info */}
       <div style={{ background: "#fff", border: "0.5px solid #E8E8E5", borderRadius: 12, padding: "1.5rem", marginBottom: 16 }}>
-        <div style={{ fontSize: 12, fontWeight: 500, color: "#534AB7", marginBottom: 12 }}>Parent Info</div>
+        <div style={{ fontSize: 12, fontWeight: 500, color: "var(--brand)", marginBottom: 12 }}>Parent Info</div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
           {inp("Full Name", "name", "text", null, true)}
           {inp("Email", "email", "email", null, true)}
@@ -139,7 +139,7 @@ const AddParent = () => {
 
       {/* Link Children */}
       <div style={{ background: "#fff", border: "0.5px solid #E8E8E5", borderRadius: 12, padding: "1.5rem", marginBottom: 16 }}>
-        <div style={{ fontSize: 12, fontWeight: 500, color: "#534AB7", marginBottom: 12 }}>
+        <div style={{ fontSize: 12, fontWeight: 500, color: "var(--brand)", marginBottom: 12 }}>
           Link Children ({form.children.length} selected)
         </div>
 
@@ -216,7 +216,7 @@ const AddParent = () => {
           disabled={loading}
           style={{
             padding: "8px 20px", borderRadius: 8, border: "none",
-            background: loading ? "#9CA3AF" : "#534AB7",
+            background: loading ? "#9CA3AF" : "var(--brand)",
             fontSize: 12, color: "#fff",
             cursor: loading ? "not-allowed" : "pointer", fontWeight: 500,
           }}>

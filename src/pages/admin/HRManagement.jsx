@@ -135,7 +135,7 @@ export default function HRManagement() {
 
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
         {[
-          { label:"Total Teachers", value: teachers.length, icon:"👩‍🏫", color:"#6366F1" },
+          { label:"Total Teachers", value: teachers.length, icon:"👩‍🏫", color:"var(--brand)" },
           { label:"Salary Paid", value: `₹${totalPaid.toLocaleString()}`, icon:"✅", color:"#10B981" },
           { label:"Salary Pending", value: `₹${totalPending.toLocaleString()}`, icon:"⏳", color:"#F59E0B" },
           { label:"Leave Requests", value: pendingLeaves, icon:"📋", color:"#EF4444" },

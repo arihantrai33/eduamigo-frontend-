@@ -55,7 +55,7 @@ export default function StudentResult() {
 
   if (loading) return (
     <div style={{ height: '100vh', display: 'flex', alignItems: 'center',
-      justifyContent: 'center', fontFamily: 'Inter, sans-serif', color: '#5C6BC0',
+      justifyContent: 'center', fontFamily: 'Inter, sans-serif', color: 'var(--brand)',
       background: dm ? '#0f172a' : '#F4F6FB' }}>
       Loading results...
     </div>
@@ -69,7 +69,7 @@ export default function StudentResult() {
       <div style={{ fontSize: 18, fontWeight: 700, color: dm ? '#f1f5f9' : '#1C2033' }}>Something went wrong</div>
       <div style={{ fontSize: 14, color: dm ? '#94a3b8' : '#7B8099', textAlign: 'center' }}>{error}</div>
       <button onClick={fetchResults}
-        style={{ marginTop: 12, padding: '12px 24px', background: '#5C6BC0',
+        style={{ marginTop: 12, padding: '12px 24px', background: 'var(--brand)',
           color: '#fff', border: 'none', borderRadius: 12, fontSize: 14,
           fontWeight: 700, cursor: 'pointer' }}>
         Retry
@@ -87,7 +87,7 @@ export default function StudentResult() {
         No results have been published yet. Check back later.
       </div>
       <button onClick={() => navigate('/student/home')}
-        style={{ marginTop: 12, padding: '12px 24px', background: '#5C6BC0',
+        style={{ marginTop: 12, padding: '12px 24px', background: 'var(--brand)',
           color: '#fff', border: 'none', borderRadius: 12, fontSize: 14,
           fontWeight: 700, cursor: 'pointer' }}>
         Back to Home
@@ -100,7 +100,7 @@ export default function StudentResult() {
       background: dm ? '#0f172a' : '#F4F6FB', fontFamily: 'Inter, sans-serif',
       display: 'flex', flexDirection: 'column' }}>
 
-      <div style={{ background: 'linear-gradient(145deg,#1C2033,#3949AB,#5C6BC0)',
+      <div style={{ background: 'linear-gradient(145deg,#1C2033,var(--brand-dark),var(--brand))',
         paddingBottom: 16, flexShrink: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: '48px 18px 10px' }}>
@@ -158,7 +158,7 @@ export default function StudentResult() {
 
       <div style={{ flex: 1, overflowY: 'auto', padding: '14px 16px 80px' }}>
         <div style={{ background: dm ? '#1e293b' : '#fff', borderRadius: 20, padding: 18,
-          marginBottom: 14, boxShadow: dm ? '0 2px 16px rgba(0,0,0,.3)' : '0 2px 16px rgba(92,107,192,.10)' }}>
+          marginBottom: 14, boxShadow: dm ? '0 2px 16px rgba(0,0,0,.3)' : '0 2px 16px color-mix(in srgb, var(--brand) 10%, transparent)' }}>
           <div style={{ fontSize: 11, fontWeight: 700,
             color: dm ? '#94a3b8' : '#7B8099',
             textTransform: 'uppercase', letterSpacing: .6, marginBottom: 14 }}>
@@ -179,19 +179,19 @@ export default function StudentResult() {
                       📚 {r.subject}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span style={{ background: dm ? '#1e3a5f' : '#E8EAF6',
+                      <span style={{ background: dm ? '#1e3a5f' : 'var(--brand-soft)',
                         color: gradeColor(r.grade),
                         borderRadius: 10, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>
                         {r.grade}
                       </span>
-                      <span style={{ fontSize: 13, fontWeight: 800, color: '#5C6BC0' }}>
+                      <span style={{ fontSize: 13, fontWeight: 800, color: 'var(--brand)' }}>
                         {r.absent ? 'Absent' : `${r.marksObtained}/${r.totalMarks}`}
                       </span>
                     </div>
                   </div>
                   <div style={{ background: dm ? '#334155' : '#E8EAF0', borderRadius: 20, height: 10, overflow: 'hidden' }}>
                     <div style={{ borderRadius: 20, height: 10,
-                      width: `${pct}%`, background: 'linear-gradient(90deg,#5C6BC0,#7986CB)',
+                      width: `${pct}%`, background: 'var(--brand-gradient)',
                       transition: 'width .8s ease' }} />
                   </div>
                   <div style={{ fontSize: 11, color: dm ? '#94a3b8' : '#7B8099', marginTop: 4 }}>
@@ -225,7 +225,7 @@ export default function StudentResult() {
         width: '100%', maxWidth: 430, height: 66,
         background: dm ? '#1e293b' : '#fff',
         display: 'flex', borderTop: dm ? '1px solid #334155' : '1px solid #E8EAF0',
-        boxShadow: '0 -4px 24px rgba(92,107,192,.08)', zIndex: 200 }}>
+        boxShadow: '0 -4px 24px color-mix(in srgb, var(--brand) 8%, transparent)', zIndex: 200 }}>
         {[
           ['🏠', 'Home',   '/student/home'],
           ['🚌', 'Bus',    '/student/bus'],
@@ -236,7 +236,7 @@ export default function StudentResult() {
           <button key={lbl} onClick={() => navigate(path)}
             style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
               justifyContent: 'center', gap: 3, cursor: 'pointer', fontSize: 9.5, fontWeight: 700,
-              color: path === '/student/result' ? '#5C6BC0' : (dm ? '#94a3b8' : '#7B8099'),
+              color: path === '/student/result' ? 'var(--brand)' : (dm ? '#94a3b8' : '#7B8099'),
               border: 'none', background: 'none', textTransform: 'uppercase' }}>
             <span style={{ fontSize: 22 }}>{ico}</span>
             <span>{lbl}</span>

@@ -313,7 +313,7 @@ function ContactCard({ contact, onOpen }) {
       }}>
         <span style={{
           fontSize: 18,
-          color: contact.type === 'parent' ? '#F9A825' : '#3949AB',
+          color: contact.type === 'parent' ? '#F9A825' : 'var(--brand-dark)',
         }}>
           {contact.type === 'parent' ? '👨‍👩‍👧' : '🎓'}
         </span>
@@ -336,7 +336,7 @@ function NavItem({ icon, label, onClick, active }) {
   return (
     <button onClick={onClick} style={styles.navItem}>
       <span style={{ fontSize: 22 }}>{icon}</span>
-      <span style={{ ...styles.navLabel, color: active ? '#5C6BC0' : '#9E9E9E' }}>{label}</span>
+      <span style={{ ...styles.navLabel, color: active ? 'var(--brand)' : '#9E9E9E' }}>{label}</span>
     </button>
   );
 }
@@ -353,14 +353,14 @@ const styles = {
     flexDirection: 'column',
   },
   header: {
-    background: 'linear-gradient(135deg, #5C6BC0, #3949AB)',
+    background: 'var(--brand-gradient)',
     padding: '20px 16px 24px',
     display: 'flex',
     alignItems: 'center',
     gap: 12,
   },
   chatHeader: {
-    background: 'linear-gradient(135deg, #5C6BC0, #3949AB)',
+    background: 'var(--brand-gradient)',
     padding: '16px',
     display: 'flex',
     alignItems: 'center',
@@ -501,7 +501,7 @@ const styles = {
     borderRadius: 16,
   },
   bubbleMine: {
-    background: '#5C6BC0',
+    background: 'var(--brand)',
     borderBottomRightRadius: 4,
   },
   bubbleTheirs: {
@@ -553,7 +553,7 @@ const styles = {
   sendBtn: {
     width: 44,
     height: 44,
-    background: 'linear-gradient(135deg, #5C6BC0, #3949AB)',
+    background: 'var(--brand-gradient)',
     border: 'none',
     borderRadius: 12,
     color: '#fff',
@@ -577,11 +577,11 @@ const styles = {
     width: 32,
     height: 32,
     border: '3px solid #EEF0FF',
-    borderTop: '3px solid #5C6BC0',
+    borderTop: '3px solid var(--brand)',
     borderRadius: '50%',
     animation: 'spin 0.8s linear infinite',
   },
-  loadingText: { color: '#5C6BC0', fontSize: 13, marginTop: 10 },
+  loadingText: { color: 'var(--brand)', fontSize: 13, marginTop: 10 },
   errorBox: {
     background: '#FFEBEE',
     color: '#C62828',

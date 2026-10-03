@@ -90,7 +90,7 @@ export default function ApplyLeave() {
           onClick={() => navigate(-1)}
           style={{
             marginTop: "32px", padding: "14px 32px", borderRadius: "12px",
-            background: "linear-gradient(135deg, #1a73e8, #6c63ff)",
+            background: "var(--brand-gradient)",
             color: "white", border: "none", fontWeight: "700",
             fontSize: "15px", cursor: "pointer",
           }}
@@ -109,7 +109,7 @@ export default function ApplyLeave() {
 
       {/* Header */}
       <div style={{
-        background: "linear-gradient(135deg, #1a73e8, #6c63ff)",
+        background: "var(--brand-gradient)",
         padding: "48px 20px 24px",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -137,7 +137,7 @@ export default function ApplyLeave() {
           gap: "12px", marginTop: "20px",
         }}>
           {[
-            { label: "TOTAL", value: total, color: "#1a73e8" },
+            { label: "TOTAL", value: total, color: "var(--brand)" },
             { label: "AVAILABLE", value: available, color: "#22c55e" },
             { label: "USED", value: used, color: "#ef4444" },
           ].map((stat) => (
@@ -292,7 +292,7 @@ export default function ApplyLeave() {
             style={{
               width: "100%", padding: "16px",
               borderRadius: "12px", border: "none",
-              background: loading ? "#aaa" : "linear-gradient(135deg, #1a73e8, #6c63ff)",
+              background: loading ? "#aaa" : "var(--brand-gradient)",
               color: "white", fontSize: "15px", fontWeight: "700",
               cursor: loading ? "not-allowed" : "pointer",
               fontFamily: "'Poppins', sans-serif",
@@ -343,7 +343,7 @@ export default function ApplyLeave() {
                   )}
                   {leave.attachmentName && (
                     <div style={{
-                      marginTop: "8px", fontSize: "11px", color: "#1a73e8",
+                      marginTop: "8px", fontSize: "11px", color: "var(--brand)",
                       display: "flex", alignItems: "center", gap: "4px",
                     }}>
                       📎 {leave.attachmentName}

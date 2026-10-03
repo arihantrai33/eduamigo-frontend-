@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { userTheme, brandLook } from '../../utils/theme'
+import SchoolStrip from '../../components/SchoolStrip'
 
 const API = import.meta.env.VITE_API_URL
 
@@ -22,6 +24,12 @@ function formatDate() {
 export default function TeacherHome() {
   const navigate = useNavigate()
   const { user, logout } = useAuth()
+  // School branding, in the same style (light or bold) as the school's sign-in page.
+  const theme = userTheme(user)
+  const look = brandLook(theme)
+  const heroCard = theme.isLight
+    ? { background: `linear-gradient(135deg, ${theme.soft} 0%, #fff 100%)`, border: look.border, color: theme.deep }
+    : { background: `linear-gradient(135deg, ${theme.dark} 0%, ${theme.primary} 100%)`, color: '#fff' }
 
   const [teacher, setTeacher]           = useState(null)
   const [todayPeriods, setTodayPeriods] = useState([])
@@ -92,12 +100,12 @@ export default function TeacherHome() {
     return 'upcoming'
   }
 
-  const statusColor = { done: '#ccc', now: '#5C6BC0', next: '#00BFA5', upcoming: '#7B8099' }
+  const statusColor = { done: '#ccc', now: theme.primary, next: '#00BFA5', upcoming: '#7B8099' }
 
   const statusBadge = (status) => {
     const map = {
-      done:     { bg: '#E8EAF6', color: '#5C6BC0', label: 'Done' },
-      now:      { bg: '#5C6BC0', color: '#fff',    label: 'Now' },
+      done:     { bg: theme.soft, color: theme.primary, label: 'Done' },
+      now:      { bg: theme.primary, color: '#fff',    label: 'Now' },
       next:     { bg: '#FFF9C4', color: '#F57F17', label: 'Next' },
       upcoming: { bg: '#F4F6FB', color: '#7B8099', label: 'Upcoming' },
     }
@@ -140,21 +148,24 @@ export default function TeacherHome() {
     <div style={styles.screen}>
 
       {/* Header */}
-      <div style={styles.header}>
+      <div style={{ ...styles.header, background: look.header, flexDirection: 'column', alignItems: 'stretch', paddingTop: 20 }}>
+        <SchoolStrip user={user} theme={theme} look={look} />
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <div style={styles.headerSub}>TEACHER PORTAL</div>
-          <div style={styles.headerName}>{teacher?.name || '—'}</div>
+          <div style={{ ...styles.headerSub, color: look.muted }}>TEACHER PORTAL</div>
+          <div style={{ ...styles.headerName, color: look.text }}>{teacher?.name || '—'}</div>
         </div>
-        <button onClick={() => navigate('/teacher/notifications')} style={styles.bellBtn}>
+        <button onClick={() => navigate('/teacher/notifications')} style={{ ...styles.bellBtn, background: look.glass, border: look.border }}>
           🔔
           {unreadCount > 0 && <div style={{ position: 'absolute', top: -4, right: -4, minWidth: 18, height: 18, background: '#EF5350', borderRadius: '50%', border: '2px solid white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: 'white', padding: '0 4px' }}>{unreadCount}</div>}
         </button>
+        </div>
       </div>
 
       <div style={styles.scroll}>
 
         {/* Hero Card */}
-        <div style={styles.heroCard}>
+        <div style={{ ...styles.heroCard, ...heroCard }}>
           <div style={styles.heroSub}>
             {teacher?.subjects?.join(', ') || 'No subjects assigned'}
           </div>
@@ -168,8 +179,8 @@ export default function TeacherHome() {
               { val: teacher?.subjects?.length || 0,        lbl: 'Subjects' },
               { val: teacher?.experience || 0,              lbl: 'Yrs Exp' },
             ].map(s => (
-              <div key={s.lbl} style={styles.statBox}>
-                <div style={styles.statVal}>{s.val}</div>
+              <div key={s.lbl} style={{ ...styles.statBox, background: look.tile, border: look.border }}>
+                <div style={{ ...styles.statVal, color: look.value }}>{s.val}</div>
                 <div style={styles.statLbl}>{s.lbl}</div>
               </div>
             ))}
@@ -190,7 +201,7 @@ export default function TeacherHome() {
         {/* Today's Schedule */}
         <div style={styles.sectionHeader}>
           <span style={styles.sectionTitle}>Today's Schedule</span>
-          <span style={styles.sectionDay}>{today}</span>
+          <span style={{ ...styles.sectionDay, color: theme.primary }}>{today}</span>
         </div>
 
         {todayPeriods.length === 0 ? (
@@ -201,7 +212,7 @@ export default function TeacherHome() {
             return (
               <div key={i} onClick={() => navigate('/teacher/attendance')} style={{
                 ...styles.periodCard,
-                border: status === 'now' ? '2px solid #5C6BC0' : '2px solid transparent',
+                border: status === 'now' ? `2px solid ${theme.primary}` : '2px solid transparent',
                 opacity: status === 'done' ? 0.55 : 1,
               }}>
                 <div style={{ ...styles.periodDot, background: statusColor[status] }} />
@@ -236,8 +247,8 @@ export default function TeacherHome() {
           return (
             <button key={t.path} onClick={() => navigate(t.path)} style={{
               ...styles.navBtn,
-              color:     active ? '#5C6BC0' : '#7B8099',
-              borderTop: active ? '3px solid #5C6BC0' : '3px solid transparent',
+              color:     active ? theme.primary : '#7B8099',
+              borderTop: active ? `3px solid ${theme.primary}` : '3px solid transparent',
             }}>
               <span style={{ fontSize: 20 }}>{t.icon}</span>
               <span>{t.label}</span>
@@ -256,7 +267,7 @@ const styles = {
     display: 'flex', flexDirection: 'column', position: 'relative',
   },
   header: {
-    background: 'linear-gradient(160deg,#3949AB,#5C6BC0)',
+    background: 'var(--brand-gradient)',
     padding: '48px 18px 16px',
     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
     flexShrink: 0,
@@ -274,7 +285,7 @@ const styles = {
   },
   scroll: { flex: 1, overflowY: 'auto', padding: '16px 16px 0' },
   heroCard: {
-    background: 'linear-gradient(135deg,#3949AB,#5C6BC0)',
+    background: 'var(--brand-gradient)',
     borderRadius: 20, padding: '20px', marginBottom: 16, color: '#fff',
   },
   heroSub:      { fontSize: 11, opacity: .75, marginBottom: 4 },
@@ -294,7 +305,7 @@ const styles = {
   tile: {
     background: '#fff', borderRadius: 20, padding: '16px 14px',
     cursor: 'pointer', border: 'none', textAlign: 'left',
-    boxShadow: '0 2px 16px rgba(92,107,192,.10)',
+    boxShadow: '0 2px 16px color-mix(in srgb, var(--brand) 10%, transparent)',
   },
   tileIcon:  { fontSize: 28, marginBottom: 10 },
   tileLabel: { fontSize: 13, fontWeight: 700, color: '#1C2033' },
@@ -304,11 +315,11 @@ const styles = {
     alignItems: 'center', marginBottom: 12,
   },
   sectionTitle: { fontSize: 16, fontWeight: 800, color: '#1C2033', fontFamily: "'Baloo 2', cursive" },
-  sectionDay:   { fontSize: 12, color: '#5C6BC0', fontWeight: 700 },
+  sectionDay:   { fontSize: 12, color: 'var(--brand)', fontWeight: 700 },
   periodCard: {
     background: '#fff', borderRadius: 20, padding: '13px 15px',
     display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer',
-    boxShadow: '0 2px 16px rgba(92,107,192,.10)', marginBottom: 8,
+    boxShadow: '0 2px 16px color-mix(in srgb, var(--brand) 10%, transparent)', marginBottom: 8,
   },
   periodDot:     { width: 10, height: 10, borderRadius: '50%', flexShrink: 0 },
   periodInfo:    { flex: 1 },
@@ -322,7 +333,7 @@ const styles = {
     position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
     width: '100%', maxWidth: 420, background: '#fff',
     display: 'flex', borderTop: '1px solid #E8EAF0',
-    boxShadow: '0 -4px 24px rgba(92,107,192,.08)', zIndex: 200, height: 66,
+    boxShadow: '0 -4px 24px color-mix(in srgb, var(--brand) 8%, transparent)', zIndex: 200, height: 66,
   },
   navBtn: {
     flex: 1, display: 'flex', flexDirection: 'column',
@@ -338,11 +349,11 @@ const styles = {
   },
   spinner: {
     width: 36, height: 36, borderRadius: '50%',
-    border: '3px solid #E8EAF6', borderTop: '3px solid #5C6BC0',
+    border: '3px solid var(--brand-soft)', borderTop: '3px solid var(--brand)',
     animation: 'spin 0.8s linear infinite',
   },
   retryBtn: {
-    padding: '10px 24px', background: '#5C6BC0', color: '#fff',
+    padding: '10px 24px', background: 'var(--brand)', color: '#fff',
     border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: 'pointer',
   },
 }

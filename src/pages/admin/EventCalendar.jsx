@@ -132,7 +132,7 @@ export default function EventCalendar() {
       {/* Legend */}
       <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:"1.25rem" }}>
         {Object.entries(EVENT_TYPES).map(([key,val]) => (
-          <span key={key} style={{ fontSize:11, fontWeight:700, color:val.color, background:val.light, padding:"4px 10px", borderRadius:20, border:`1px solid ${val.color}30`, display:"flex", alignItems:"center", gap:4 }}>
+          <span key={key} style={{ fontSize:11, fontWeight:700, color:val.color, background:val.light, padding:"4px 10px", borderRadius:20, border:`1px solid color-mix(in srgb, ${val.color} 19%, transparent)`, display:"flex", alignItems:"center", gap:4 }}>
             {val.icon} {val.label}
           </span>
         ))}
@@ -201,7 +201,7 @@ export default function EventCalendar() {
                         {hasEvs && (
                           <div style={{ display:"flex", gap:2, marginTop:2 }}>
                             {dayEvs.slice(0,3).map((ev,ei) => (
-                              <div key={ei} style={{ width:4, height:4, borderRadius:"50%", background: isToday ? "rgba(255,255,255,0.8)" : EVENT_TYPES[ev.type]?.color || "#6366F1" }} />
+                              <div key={ei} style={{ width:4, height:4, borderRadius:"50%", background: isToday ? "rgba(255,255,255,0.8)" : EVENT_TYPES[ev.type]?.color || "var(--brand)" }} />
                             ))}
                           </div>
                         )}
@@ -249,11 +249,11 @@ export default function EventCalendar() {
             const isEventToday = d.getDate()===today.getDate() && d.getMonth()===today.getMonth() && d.getFullYear()===today.getFullYear();
             return (
               <div key={i}
-                style={{ display:"flex", alignItems:"center", gap:16, padding:"14px 16px", borderRadius:16, background: isEventToday ? tc.light : "#F8FAFC", border:`1.5px solid ${isEventToday ? tc.color+"40" : "#F1F5F9"}`, marginBottom:10, transition:"all 0.2s", cursor:"pointer" }}
-                onMouseEnter={e => { e.currentTarget.style.background=tc.light; e.currentTarget.style.borderColor=tc.color+"40"; e.currentTarget.style.transform="translateX(4px)"; }}
-                onMouseLeave={e => { e.currentTarget.style.background= isEventToday ? tc.light : "#F8FAFC"; e.currentTarget.style.borderColor= isEventToday ? tc.color+"40" : "#F1F5F9"; e.currentTarget.style.transform="translateX(0)"; }}>
+                style={{ display:"flex", alignItems:"center", gap:16, padding:"14px 16px", borderRadius:16, background: isEventToday ? tc.light : "#F8FAFC", border:`1.5px solid ${isEventToday ? `color-mix(in srgb, ${tc.color} 25%, transparent)` : "#F1F5F9"}`, marginBottom:10, transition:"all 0.2s", cursor:"pointer" }}
+                onMouseEnter={e => { e.currentTarget.style.background=tc.light; e.currentTarget.style.borderColor=`color-mix(in srgb, ${tc.color} 25%, transparent)`; e.currentTarget.style.transform="translateX(4px)"; }}
+                onMouseLeave={e => { e.currentTarget.style.background= isEventToday ? tc.light : "#F8FAFC"; e.currentTarget.style.borderColor= isEventToday ? `color-mix(in srgb, ${tc.color} 25%, transparent)` : "#F1F5F9"; e.currentTarget.style.transform="translateX(0)"; }}>
                 {/* Date Badge */}
-                <div style={{ width:52, height:52, borderRadius:16, background:tc.grad, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", flexShrink:0, boxShadow:`0 4px 12px ${tc.color}40` }}>
+                <div style={{ width:52, height:52, borderRadius:16, background:tc.grad, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", flexShrink:0, boxShadow:`0 4px 12px color-mix(in srgb, ${tc.color} 25%, transparent)` }}>
                   <div style={{ fontSize:18, fontWeight:800, color:"white", lineHeight:1 }}>{d.getDate()}</div>
                   <div style={{ fontSize:9, color:"rgba(255,255,255,0.85)", fontWeight:700, letterSpacing:"0.05em" }}>{MONTHS[d.getMonth()].slice(0,3).toUpperCase()}</div>
                 </div>
@@ -300,7 +300,7 @@ export default function EventCalendar() {
             ) : selectedDayEvents.map((ev,i) => {
               const tc = EVENT_TYPES[ev.type] || EVENT_TYPES.event;
               return (
-                <div key={i} style={{ display:"flex", alignItems:"flex-start", gap:12, padding:"14px", borderRadius:14, background:tc.light, marginBottom:10, border:`1.5px solid ${tc.color}25` }}>
+                <div key={i} style={{ display:"flex", alignItems:"flex-start", gap:12, padding:"14px", borderRadius:14, background:tc.light, marginBottom:10, border:`1.5px solid color-mix(in srgb, ${tc.color} 15%, transparent)` }}>
                   <div style={{ fontSize:24 }}>{tc.icon}</div>
                   <div style={{ flex:1 }}>
                     <div style={{ fontSize:14, fontWeight:700, color:"#0F172A" }}>{ev.title}</div>

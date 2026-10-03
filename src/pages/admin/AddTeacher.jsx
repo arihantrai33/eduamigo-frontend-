@@ -94,7 +94,7 @@ const AddTeacher = () => {
 
       <div style={{ background: "#fff", border: "0.5px solid #E8E8E5", borderRadius: 12, padding: "1.5rem" }}>
 
-        <div style={{ fontSize: 12, fontWeight: 500, color: "#534AB7", marginBottom: 12 }}>Personal Info</div>
+        <div style={{ fontSize: 12, fontWeight: 500, color: "var(--brand)", marginBottom: 12 }}>Personal Info</div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
           {inp("Full Name *", "name")}
           {inp("Email *", "email", "email")}
@@ -105,20 +105,20 @@ const AddTeacher = () => {
           {inp("Address", "address")}
         </div>
 
-        <div style={{ fontSize: 12, fontWeight: 500, color: "#534AB7", marginBottom: 12 }}>Professional Info</div>
+        <div style={{ fontSize: 12, fontWeight: 500, color: "var(--brand)", marginBottom: 12 }}>Professional Info</div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
           {inp("Qualification", "qualification")}
           {inp("Experience (years)", "experience", "number")}
           {inp("Salary", "salary", "number")}
         </div>
 
-        <div style={{ fontSize: 12, fontWeight: 500, color: "#534AB7", marginBottom: 8 }}>Subjects *</div>
+        <div style={{ fontSize: 12, fontWeight: 500, color: "var(--brand)", marginBottom: 8 }}>Subjects *</div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 24 }}>
           {SUBJECTS.map(s => (
             <button key={s} onClick={() => toggleSubject(s)} style={{
               padding: "5px 12px", borderRadius: 20, fontSize: 11, cursor: "pointer", fontWeight: 500,
               border: form.subjects.includes(s) ? "none" : "0.5px solid #E8E8E5",
-              background: form.subjects.includes(s) ? "#534AB7" : "#F5F5F3",
+              background: form.subjects.includes(s) ? "var(--brand)" : "#F5F5F3",
               color: form.subjects.includes(s) ? "#fff" : "#666",
             }}>{s}</button>
           ))}
@@ -130,7 +130,7 @@ const AddTeacher = () => {
             style={{ padding: "8px 20px", borderRadius: 8, border: "0.5px solid #E8E8E5", background: "#F5F5F3", fontSize: 12, color: "#666", cursor: "pointer" }}>
             Cancel
           </button>
-          <button onClick={handleSubmit} disabled={loading} style={{ padding: "8px 20px", borderRadius: 8, border: "none", background: loading ? "#9CA3AF" : "#534AB7", fontSize: 12, color: "#fff", cursor: loading ? "not-allowed" : "pointer", fontWeight: 500 }}>
+          <button onClick={handleSubmit} disabled={loading} style={{ padding: "8px 20px", borderRadius: 8, border: "none", background: loading ? "#9CA3AF" : "var(--brand)", fontSize: 12, color: "#fff", cursor: loading ? "not-allowed" : "pointer", fontWeight: 500 }}>
             {loading ? "Adding..." : "Add Teacher"}
           </button>
         </div>

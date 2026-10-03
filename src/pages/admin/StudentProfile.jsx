@@ -13,7 +13,7 @@ const feeColors = {
 };
 
 const card = { background: "#fff", border: "0.5px solid #E8E8E5", borderRadius: 12, padding: "1.5rem", marginBottom: 12 };
-const sectionTitle = { fontSize: 12, fontWeight: 600, color: "#534AB7", marginBottom: 10 };
+const sectionTitle = { fontSize: 12, fontWeight: 600, color: "var(--brand)", marginBottom: 10 };
 const fmtDate = (d) => (d ? new Date(d).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : "—");
 const money = (n) => `₹${Number(n || 0).toLocaleString("en-IN")}`;
 
@@ -67,7 +67,7 @@ export default function StudentProfile() {
     <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "1.5rem" }}>
       <button onClick={() => navigate("/admin/students")} style={{ padding: "6px 12px", borderRadius: 8, border: "0.5px solid #E8E8E5", background: "#fff", fontSize: 12, cursor: "pointer", color: "#666" }}>← Back</button>
       <div style={{ fontSize: 20, fontWeight: 600, color: "#1a1a1a" }}>Student Profile</div>
-      <button onClick={() => navigate(`/report-card?studentId=${id}`)} style={{ marginLeft: "auto", padding: "8px 14px", borderRadius: 8, border: "none", background: "#534AB7", color: "#fff", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Report Card</button>
+      <button onClick={() => navigate(`/report-card?studentId=${id}`)} style={{ marginLeft: "auto", padding: "8px 14px", borderRadius: 8, border: "none", background: "var(--brand)", color: "#fff", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Report Card</button>
     </div>
   );
 
@@ -93,7 +93,7 @@ export default function StudentProfile() {
         <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20 }}>
           {s.photo
             ? <img src={s.photo} alt={s.name} style={{ width: 60, height: 60, borderRadius: "50%", objectFit: "cover" }} />
-            : <div style={{ width: 60, height: 60, borderRadius: "50%", background: "#EEEDFE", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 500, color: "#534AB7" }}>{s.name?.[0]?.toUpperCase()}</div>}
+            : <div style={{ width: 60, height: 60, borderRadius: "50%", background: "var(--brand-soft)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 500, color: "var(--brand)" }}>{s.name?.[0]?.toUpperCase()}</div>}
           <div>
             <div style={{ fontSize: 18, fontWeight: 600, color: "#1a1a1a" }}>{s.name}</div>
             <div style={{ fontSize: 12, color: "#999", marginTop: 2 }}>Class {s.class} · Section {s.section} · Roll {s.rollNumber}</div>

@@ -61,7 +61,7 @@ export default function ParentCalendar() {
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "sans-serif", paddingBottom: "30px" }}>
-      <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 40px", color: "white" }}>
+      <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <button onClick={() => navigate(-1)} aria-label="Back" style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
           <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>School Calendar</h2>

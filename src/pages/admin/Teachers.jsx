@@ -27,7 +27,7 @@ function Avatar({ name, photo, size = 40 }) {
   const initials = name ? name.split(" ").map(n => n[0]).join("").slice(0,2).toUpperCase() : "?";
   if (photo) return <img src={photo} alt={name} style={{ width:size, height:size, borderRadius:"50%", objectFit:"cover", border:"2px solid white", boxShadow:"0 2px 8px rgba(0,0,0,0.1)" }} />;
   return (
-    <div style={{ width:size, height:size, borderRadius:"50%", background:`linear-gradient(135deg,${color},${color}BB)`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:size*0.32, fontWeight:800, color:"white", border:"2px solid white", boxShadow:`0 2px 8px ${color}44`, flexShrink:0 }}>
+    <div style={{ width:size, height:size, borderRadius:"50%", background:`linear-gradient(135deg,${color},color-mix(in srgb, ${color} 73%, transparent))`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:size*0.32, fontWeight:800, color:"white", border:"2px solid white", boxShadow:`0 2px 8px color-mix(in srgb, ${color} 27%, transparent)`, flexShrink:0 }}>
       {initials}
     </div>
   );
@@ -219,7 +219,7 @@ export default function Teachers() {
 
       {/* Stat Cards */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
-        <StatCard label="TOTAL TEACHERS" value={stats.total}    icon="👩‍🏫" color="#EEF2FF" border="#6366F1" delay={0} />
+        <StatCard label="TOTAL TEACHERS" value={stats.total}    icon="👩‍🏫" color="var(--brand-soft)" border="var(--brand)" delay={0} />
         <StatCard label="ACTIVE"         value={stats.active}   icon="✅"   color="#F0FDF4" border="#10B981" delay={0.08} />
         <StatCard label="ON LEAVE"       value={stats.onLeave}  icon="🌴"   color="#FFFBEB" border="#F59E0B" delay={0.16} />
         <StatCard label="INACTIVE"       value={stats.inactive} icon="⛔"   color="#FEF2F2" border="#EF4444" delay={0.24} />
@@ -295,7 +295,7 @@ export default function Teachers() {
                   <td style={{ padding:"14px 18px" }}>
                     <div style={{ display:"flex", gap:4, flexWrap:"wrap" }}>
                       {subjects.slice(0,3).map((s,j) => (
-                        <span key={j} style={{ fontSize:11, fontWeight:700, padding:"3px 8px", borderRadius:6, background:`${getSubjectColor(s)}18`, color:getSubjectColor(s), border:`1px solid ${getSubjectColor(s)}30` }}>{s}</span>
+                        <span key={j} style={{ fontSize:11, fontWeight:700, padding:"3px 8px", borderRadius:6, background:`color-mix(in srgb, ${getSubjectColor(s)} 9%, transparent)`, color:getSubjectColor(s), border:`1px solid color-mix(in srgb, ${getSubjectColor(s)} 19%, transparent)` }}>{s}</span>
                       ))}
                       {subjects.length > 3 && <span style={{ fontSize:11, color:"#94A3B8", fontWeight:600 }}>+{subjects.length-3}</span>}
                     </div>

@@ -209,7 +209,7 @@ export default function FeeCollection() {
                     <div style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>{f.studentName}</div>
                   </td>
                   <td style={{ padding:"14px 18px" }}>
-                    <span style={{ fontSize:12, fontWeight:700, padding:"3px 10px", borderRadius:8, background:"#EEF2FF", color:"#6366F1" }}>
+                    <span style={{ fontSize:12, fontWeight:700, padding:"3px 10px", borderRadius:8, background:"var(--brand-soft)", color:"var(--brand)" }}>
                       {f.studentClass}{f.studentSection ? `-${f.studentSection}` : ""}
                     </span>
                   </td>
@@ -237,7 +237,7 @@ export default function FeeCollection() {
                     )}
                     {f.payments?.length > 0 && (
                       <button onClick={() => navigate(`/receipt/${f._id}/${f.payments[f.payments.length - 1].receiptNo}`)} title="Latest receipt"
-                        style={{ display:"block", marginTop:6, border:"none", background:"none", color:"#6366F1", fontSize:12, fontWeight:700, cursor:"pointer", padding:0 }}>
+                        style={{ display:"block", marginTop:6, border:"none", background:"none", color:"var(--brand)", fontSize:12, fontWeight:700, cursor:"pointer", padding:0 }}>
                         Receipt{f.payments.length > 1 ? ` (${f.payments.length})` : ""}
                       </button>
                     )}

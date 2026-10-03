@@ -98,7 +98,7 @@ export default function NoticeBoardPage() {
           <div style={{ fontSize: 12, color: "#94A3B8", marginTop: 3 }}>{announcements.length} announcements total</div>
         </div>
         <button onClick={() => { setShowForm(true); setEditItem(null); setForm({ title: "", message: "", targetRole: "all", priority: "normal", isPinned: false }); }}
-          style={{ display: "flex", alignItems: "center", gap: 8, background: "linear-gradient(135deg,#6366F1,#8B5CF6)", color: "white", border: "none", borderRadius: 12, padding: "10px 20px", fontSize: 13, fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 12px rgba(99,102,241,0.35)" }}>
+          style={{ display: "flex", alignItems: "center", gap: 8, background: "var(--brand-gradient)", color: "white", border: "none", borderRadius: 12, padding: "10px 20px", fontSize: 13, fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 12px color-mix(in srgb, var(--brand) 35%, transparent)" }}>
           <Plus size={16} /> New Announcement
         </button>
       </div>
@@ -109,7 +109,7 @@ export default function NoticeBoardPage() {
           {["all_filter", "all", "student", "teacher", "parent", "admin"].map(t => (
             <button key={t} onClick={() => setFilterTarget(t)}
               style={{ padding: "5px 12px", borderRadius: 8, border: "none", fontSize: 11, fontWeight: 600, cursor: "pointer",
-                background: filterTarget === t ? "linear-gradient(135deg,#6366F1,#8B5CF6)" : "transparent",
+                background: filterTarget === t ? "var(--brand-gradient)" : "transparent",
                 color: filterTarget === t ? "white" : "#64748B" }}>
               {t === "all_filter" ? "All Targets" : TARGET_CONFIG[t]?.label}
             </button>
@@ -119,7 +119,7 @@ export default function NoticeBoardPage() {
           {["all_filter", "normal", "important", "urgent"].map(p => (
             <button key={p} onClick={() => setFilterPriority(p)}
               style={{ padding: "5px 12px", borderRadius: 8, border: "none", fontSize: 11, fontWeight: 600, cursor: "pointer",
-                background: filterPriority === p ? "linear-gradient(135deg,#6366F1,#8B5CF6)" : "transparent",
+                background: filterPriority === p ? "var(--brand-gradient)" : "transparent",
                 color: filterPriority === p ? "white" : "#64748B" }}>
               {p === "all_filter" ? "All Priority" : PRIORITY_CONFIG[p]?.label}
             </button>
@@ -130,7 +130,7 @@ export default function NoticeBoardPage() {
       {/* Stats Row */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12, marginBottom: "1.5rem" }}>
         {[
-          { label: "Total", value: announcements.length, color: "#6366F1", bg: "linear-gradient(135deg,#6366F1,#8B5CF6)" },
+          { label: "Total", value: announcements.length, color: "var(--brand)", bg: "var(--brand-gradient)" },
           { label: "Pinned", value: announcements.filter(a=>a.isPinned).length, color: "#F59E0B", bg: "linear-gradient(135deg,#F59E0B,#EF4444)" },
           { label: "Urgent", value: announcements.filter(a=>a.priority==="urgent").length, color: "#EF4444", bg: "linear-gradient(135deg,#EF4444,#EC4899)" },
           { label: "Important", value: announcements.filter(a=>a.priority==="important").length, color: "#10B981", bg: "linear-gradient(135deg,#10B981,#059669)" },
@@ -217,7 +217,7 @@ export default function NoticeBoardPage() {
             </div>
 
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24, padding: "12px 14px", background: "#F8FAFC", borderRadius: 10, cursor: "pointer" }} onClick={() => setForm({...form, isPinned: !form.isPinned})}>
-              <div style={{ width: 20, height: 20, borderRadius: 6, border: `2px solid ${form.isPinned ? "#6366F1" : "#CBD5E1"}`, background: form.isPinned ? "#6366F1" : "white", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}>
+              <div style={{ width: 20, height: 20, borderRadius: 6, border: `2px solid ${form.isPinned ? "var(--brand)" : "#CBD5E1"}`, background: form.isPinned ? "var(--brand)" : "white", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}>
                 {form.isPinned && <span style={{ color: "white", fontSize: 12 }}>✓</span>}
               </div>
               <span style={{ fontSize: 13, fontWeight: 600, color: "#374151" }}>Pin this announcement to top</span>
@@ -229,7 +229,7 @@ export default function NoticeBoardPage() {
                 Cancel
               </button>
               <button onClick={handleSubmit} disabled={saving}
-                style={{ flex: 2, padding: "11px", borderRadius: 10, border: "none", background: "linear-gradient(135deg,#6366F1,#8B5CF6)", color: "white", fontSize: 13, fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 12px rgba(99,102,241,0.35)" }}>
+                style={{ flex: 2, padding: "11px", borderRadius: 10, border: "none", background: "var(--brand-gradient)", color: "white", fontSize: 13, fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 12px color-mix(in srgb, var(--brand) 35%, transparent)" }}>
                 {saving ? "Saving..." : editItem ? "Update Announcement" : "Post Announcement"}
               </button>
             </div>
@@ -261,7 +261,7 @@ function AnnouncementCard({ ann, onPin, onDelete, onEdit }) {
   const PIcon = pc.icon;
 
   return (
-    <div style={{ background: "white", borderRadius: 16, padding: "20px 24px", boxShadow: "0 2px 12px rgba(15,23,42,0.06)", border: `1px solid ${ann.isPinned ? "#C7D2FE" : "rgba(226,232,240,0.8)"}`, marginBottom: 10, borderLeft: `4px solid ${pc.color}`, transition: "all 0.2s" }}
+    <div style={{ background: "white", borderRadius: 16, padding: "20px 24px", boxShadow: "0 2px 12px rgba(15,23,42,0.06)", border: `1px solid ${ann.isPinned ? "var(--brand-border)" : "rgba(226,232,240,0.8)"}`, marginBottom: 10, borderLeft: `4px solid ${pc.color}`, transition: "all 0.2s" }}
       onMouseEnter={e => e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.1)"}
       onMouseLeave={e => e.currentTarget.style.boxShadow = "0 2px 12px rgba(15,23,42,0.06)"}>
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
@@ -288,7 +288,7 @@ function AnnouncementCard({ ann, onPin, onDelete, onEdit }) {
             {ann.isPinned ? <PinOff size={14} /> : <Pin size={14} />}
           </button>
           <button onClick={() => onEdit(ann)} title="Edit"
-            style={{ width: 32, height: 32, borderRadius: 8, border: "1px solid #E2E8F0", background: "white", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#6366F1", fontSize: 13, fontWeight: 700 }}>
+            style={{ width: 32, height: 32, borderRadius: 8, border: "1px solid #E2E8F0", background: "white", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--brand)", fontSize: 13, fontWeight: 700 }}>
             ✏️
           </button>
           <button onClick={() => onDelete(ann._id)} title="Delete"

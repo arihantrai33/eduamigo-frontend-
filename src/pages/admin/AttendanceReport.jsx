@@ -124,7 +124,7 @@ export default function AttendanceReports() {
 
       {/* Stat Cards */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
-        <StatCard label="OVERALL RATE" value={pctText(overallPct)} icon="📊" color="#EEF2FF" border="#6366F1" delay={0} />
+        <StatCard label="OVERALL RATE" value={pctText(overallPct)} icon="📊" color="var(--brand-soft)" border="var(--brand)" delay={0} />
         <StatCard label="TOTAL PRESENT" value={totalPresent} icon="✅" color="#F0FDF4" border="#10B981" delay={0.08} />
         <StatCard label="TOTAL ABSENT" value={totalAbsent} icon="❌" color="#FEF2F2" border="#EF4444" delay={0.16} />
         <StatCard label="LATE" value={totalLate} icon="⏰" color="#FFFBEB" border="#F59E0B" delay={0.24} />

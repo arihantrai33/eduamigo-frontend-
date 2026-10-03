@@ -97,7 +97,7 @@ export default function Notes() {
   return (
     <div style={{ maxWidth: 420, margin: '0 auto', minHeight: '100vh', background: dm ? '#0f172a' : '#F8F9FB', fontFamily: 'Inter, sans-serif', display: 'flex', flexDirection: 'column', position: 'relative', paddingBottom: 80 }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '48px 20px 12px', background: dm ? 'linear-gradient(135deg, #4f46e5, #7c3aed)' : '#fff', borderBottom: `1px solid ${dm ? '#334155' : '#F0F0F0'}` }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '48px 20px 12px', background: dm ? 'var(--brand-gradient)' : '#fff', borderBottom: `1px solid ${dm ? '#334155' : '#F0F0F0'}` }}>
         <button style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: dm ? '#ffffff' : '#333', padding: '4px 8px' }} onClick={() => navigate('/student/home')}>←</button>
         <h1 style={{ fontSize: 18, fontWeight: 700, color: dm ? '#f1f5f9' : '#1A1A2E', margin: 0 }}>📚 Notes & Assignments</h1>
         <div style={{ display: 'flex', gap: 8 }}>

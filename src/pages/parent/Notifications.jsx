@@ -46,7 +46,7 @@ export default function ParentNotifications() {
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "Inter, sans-serif", paddingBottom: 80 }}>
-      <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 40px", color: "white" }}>
+      <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <button onClick={() => navigate(-1)}
             style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "8px 12px", color: "white", cursor: "pointer", fontSize: 16 }}>
@@ -81,7 +81,7 @@ export default function ParentNotifications() {
                 background:  isRead ? "white" : "#eff6ff",
                 borderRadius: 12, padding: 14, marginBottom: 10,
                 boxShadow:   "0 1px 4px rgba(0,0,0,0.08)",
-                borderLeft:  isRead ? "3px solid transparent" : "3px solid #4f46e5",
+                borderLeft:  isRead ? "3px solid transparent" : "3px solid var(--brand)",
                 cursor:      isRead ? "default" : "pointer",
               }}>
               <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
@@ -98,7 +98,7 @@ export default function ParentNotifications() {
                   </div>
                 </div>
                 {!isRead && (
-                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#4f46e5", marginTop: 4, flexShrink: 0 }} />
+                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--brand)", marginTop: 4, flexShrink: 0 }} />
                 )}
               </div>
             </div>

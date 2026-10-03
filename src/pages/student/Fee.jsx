@@ -59,7 +59,7 @@ export default function StudentFee() {
     <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "Inter, sans-serif" }}>
 
       {/* Header */}
-      <div style={{ background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)", padding: "48px 20px 24px", flexShrink: 0 }}>
+      <div style={{ background: "var(--brand-gradient)", padding: "48px 20px 24px", flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
           <button onClick={() => navigate(-1)} style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(255,255,255,0.2)", border: "none", color: "white", fontSize: 18, cursor: "pointer" }}>←</button>
           <div style={{ fontSize: 18, fontWeight: 800, color: "white" }}>Fee Statement</div>
@@ -97,7 +97,7 @@ export default function StudentFee() {
         ].map(tab => (
           <button key={tab.key} onClick={() => setActiveTab(tab.key)}
             style={{ flex: 1, padding: "10px 0", border: "none", borderRadius: 10, cursor: "pointer", fontWeight: 700, fontSize: 13,
-              background: activeTab === tab.key ? "linear-gradient(135deg, #4f46e5, #7c3aed)" : "transparent",
+              background: activeTab === tab.key ? "var(--brand-gradient)" : "transparent",
               color: activeTab === tab.key ? "white" : "#888" }}>
             {tab.label}
           </button>

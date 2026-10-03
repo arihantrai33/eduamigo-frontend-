@@ -143,7 +143,7 @@ export default function TeacherAttendance() {
       )}
 
       {/* Header */}
-      <div style={{ background: "linear-gradient(160deg,#3949AB,#5C6BC0)", padding: "48px 18px 20px", display: "flex", alignItems: "center", gap: 12 }}>
+      <div style={{ background: "var(--brand-gradient)", padding: "48px 18px 20px", display: "flex", alignItems: "center", gap: 12 }}>
         <button onClick={() => navigate('/teacher/home')} style={{ background: "rgba(255,255,255,0.15)", border: "none", borderRadius: 10, width: 36, height: 36, fontSize: 18, cursor: "pointer", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>←</button>
         <div>
           <div style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", fontWeight: 700, letterSpacing: 1 }}>TEACHER PORTAL</div>
@@ -154,7 +154,7 @@ export default function TeacherAttendance() {
       <div style={{ padding: 16 }}>
 
         {/* Filters */}
-        <div style={{ background: "var(--card)", borderRadius: 20, padding: 16, marginBottom: 16, boxShadow: "0 2px 16px rgba(92,107,192,0.08)" }}>
+        <div style={{ background: "var(--card)", borderRadius: 20, padding: 16, marginBottom: 16, boxShadow: "0 2px 16px color-mix(in srgb, var(--brand) 8%, transparent)" }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: "#1C2033", marginBottom: 12 }}>Select Class</div>
 
           {/* Class Chips — only teacher's assigned classes */}
@@ -164,8 +164,8 @@ export default function TeacherAttendance() {
               <button key={cls} onClick={() => { const [c, sec = ""] = cls.split("-"); setFilters(f => ({ ...f, class: c, section: sec })); }}
                 style={{
                   padding: "6px 16px", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer", border: "none",
-                  background: `${filters.class}-${filters.section}` === cls ? "#5C6BC0" : "#EEF2FF",
-                  color: `${filters.class}-${filters.section}` === cls ? "#fff" : "#5C6BC0",
+                  background: `${filters.class}-${filters.section}` === cls ? "var(--brand)" : "var(--brand-soft)",
+                  color: `${filters.class}-${filters.section}` === cls ? "#fff" : "var(--brand)",
                 }}>Class {cls}</button>
             )) : (
               <div style={{ fontSize: 13, color: "#9CA3AF" }}>No classes assigned. Contact admin.</div>
@@ -181,8 +181,8 @@ export default function TeacherAttendance() {
                   <button key={sec} onClick={() => setFilters(f => ({ ...f, section: sec }))}
                     style={{
                       padding: "6px 16px", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer", border: "none",
-                      background: filters.section === sec ? "#5C6BC0" : "#EEF2FF",
-                      color: filters.section === sec ? "#fff" : "#5C6BC0",
+                      background: filters.section === sec ? "var(--brand)" : "var(--brand-soft)",
+                      color: filters.section === sec ? "#fff" : "var(--brand)",
                     }}>Section {sec}</button>
                 ))}
               </div>
@@ -213,7 +213,7 @@ export default function TeacherAttendance() {
 
         {/* Mark All */}
         {students.length > 0 && (
-          <div style={{ background: "var(--card)", borderRadius: 20, padding: "12px 16px", marginBottom: 12, boxShadow: "0 2px 16px rgba(92,107,192,0.08)", display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+          <div style={{ background: "var(--card)", borderRadius: 20, padding: "12px 16px", marginBottom: 12, boxShadow: "0 2px 16px color-mix(in srgb, var(--brand) 8%, transparent)", display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
             <span style={{ fontSize: 12, fontWeight: 700, color: "#7B8099" }}>Mark All:</span>
             {["Present", "Absent", "Late", "Holiday"].map(st => (
               <button key={st} onClick={() => setAll(st)} style={{
@@ -238,14 +238,14 @@ export default function TeacherAttendance() {
             {students.map((s, i) => (
               <div key={s._id} style={{
                 background: "var(--card)", borderRadius: 20, padding: "14px 16px", marginBottom: 10,
-                boxShadow: "0 2px 16px rgba(92,107,192,0.08)",
+                boxShadow: "0 2px 16px color-mix(in srgb, var(--brand) 8%, transparent)",
                 border: attendance[s._id]?.status === "Absent" ? "2px solid #FECACA" : "2px solid transparent",
               }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
                   <div style={{
-                    width: 36, height: 36, borderRadius: 12, background: "#EEF2FF",
+                    width: 36, height: 36, borderRadius: 12, background: "var(--brand-soft)",
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: 14, fontWeight: 700, color: "#5C6BC0", flexShrink: 0,
+                    fontSize: 14, fontWeight: 700, color: "var(--brand)", flexShrink: 0,
                   }}>{s.name?.[0]?.toUpperCase()}</div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 13.5, fontWeight: 700, color: "#1C2033" }}>{s.name}</div>
@@ -286,9 +286,9 @@ export default function TeacherAttendance() {
             {/* Save Button */}
             <button onClick={handleSave} disabled={saving} style={{
               width: "100%", padding: "14px", borderRadius: 16, border: "none",
-              background: saving ? "#A5B4FC" : "linear-gradient(135deg,#3949AB,#5C6BC0)",
+              background: saving ? "#A5B4FC" : "var(--brand-gradient)",
               color: "#fff", fontSize: 15, fontWeight: 800, cursor: saving ? "not-allowed" : "pointer",
-              marginTop: 8, boxShadow: "0 4px 16px rgba(92,107,192,0.3)",
+              marginTop: 8, boxShadow: "0 4px 16px color-mix(in srgb, var(--brand) 30%, transparent)",
             }}>
               {saving ? "Saving..." : existing ? "Update Attendance" : "Save Attendance"}
             </button>
@@ -305,7 +305,7 @@ export default function TeacherAttendance() {
       </div>
 
       {/* Bottom Nav */}
-      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 420, background: "var(--card)", display: "flex", borderTop: "1px solid #E8EAF0", overflowY: "auto", boxShadow: "0 -4px 24px rgba(92,107,192,.08)", zIndex: 200, height: 66 }}>
+      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 420, background: "var(--card)", display: "flex", borderTop: "1px solid #E8EAF0", overflowY: "auto", boxShadow: "0 -4px 24px color-mix(in srgb, var(--brand) 8%, transparent)", zIndex: 200, height: 66 }}>
         {[
           { icon: "🏠", label: "Home",       path: "/teacher/home" },
           { icon: "✅", label: "Attendance", path: "/teacher/attendance" },
@@ -319,8 +319,8 @@ export default function TeacherAttendance() {
               flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
               gap: 3, cursor: "pointer", fontSize: "9.5px", fontWeight: 700,
               letterSpacing: ".3px", textTransform: "uppercase", border: "none", background: "none",
-              color: active ? "#5C6BC0" : "#7B8099",
-              borderTop: active ? "3px solid #5C6BC0" : "3px solid transparent",
+              color: active ? "var(--brand)" : "#7B8099",
+              borderTop: active ? "3px solid var(--brand)" : "3px solid transparent",
             }}>
               <span style={{ fontSize: 20 }}>{t.icon}</span>
               <span>{t.label}</span>

@@ -62,7 +62,7 @@ const input = { padding: "9px 11px", border: "1px solid #E2E8F0", borderRadius: 
 const btn = (variant = "primary") => ({
   padding: "9px 16px", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
   border: variant === "ghost" ? "1px solid #E2E8F0" : "none",
-  background: variant === "primary" ? "#4F46E5" : variant === "danger" ? "#DC2626" : variant === "success" ? "#059669" : "#fff",
+  background: variant === "primary" ? "var(--brand)" : variant === "danger" ? "#DC2626" : variant === "success" ? "#059669" : "#fff",
   color: variant === "ghost" ? "#334155" : "#fff",
 });
 

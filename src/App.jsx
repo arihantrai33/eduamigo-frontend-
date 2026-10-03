@@ -38,6 +38,7 @@ import ParentNotifications from './pages/parent/Notifications'
 import ParentAttendance from './pages/parent/Attendance'
 import ParentCalendar from './pages/parent/Calendar'
 import ParentFee from './pages/parent/Fee'
+import BrandTheme from './components/BrandTheme'
 import ParentResult from './pages/parent/Result'
 import ParentBus from './pages/parent/Bus'
 import ParentProfile from './pages/parent/Profile'
@@ -53,7 +54,7 @@ function FeatureUnavailable({ home }) {
       <p style={{ fontSize: 13, color: 'var(--subtext, #666)', lineHeight: 1.5, margin: '0 0 20px' }}>
         This feature is not part of your school's EduAmigo plan. Please contact the school office if you need it.
       </p>
-      <a href={home} style={{ padding: '11px 22px', borderRadius: 12, background: '#4f8ef7', color: 'white', fontWeight: 700, fontSize: 14, textDecoration: 'none' }}>Back to home</a>
+      <a href={home} style={{ padding: '11px 22px', borderRadius: 12, background: 'var(--brand)', color: 'white', fontWeight: 700, fontSize: 14, textDecoration: 'none' }}>Back to home</a>
     </div>
   )
 }
@@ -76,7 +77,7 @@ function LoadingScreen() {
       <div style={{ width: "88px", height: "88px", borderRadius: "22px", background: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "42px", marginBottom: "28px", boxShadow: "0 0 0 8px rgba(79,142,247,0.1), 0 0 0 16px rgba(79,142,247,0.05)" }}>🎓</div>
       <h1 style={{ color: "white", fontSize: "34px", fontWeight: "700", margin: "0 0 8px 0", letterSpacing: "2px" }}>EduAmigo</h1>
       <p style={{ color: "#8BA4D4", fontSize: "11px", letterSpacing: "4px", margin: "0 0 20px 0", fontWeight: "400" }}>YOUR SCHOOL COMPANION</p>
-      <div style={{ width: "60px", height: "0.5px", background: "linear-gradient(90deg, transparent, #4F8EF7, transparent)", marginBottom: "28px" }} />
+      <div style={{ width: "60px", height: "0.5px", background: "linear-gradient(90deg, transparent, var(--brand), transparent)", marginBottom: "28px" }} />
       <div style={{ display: "flex", gap: "8px" }}>
         {["rgba(79,142,247,0.9)", "rgba(255,255,255,0.3)", "rgba(123,92,240,0.7)"].map((color, i) => (
           <div key={i} style={{ width: "6px", height: "6px", borderRadius: "50%", background: color, animation: `pulse 1.4s ease-in-out ${i * 0.2}s infinite` }} />
@@ -177,6 +178,7 @@ function AppRoutes() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Toast />
+      <BrandTheme />
     </div>
   )
 }

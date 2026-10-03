@@ -12,6 +12,18 @@ import { useAuth } from "../../context/AuthContext";
 import { can, ROLE_LABELS } from "../../utils/permissions";
 import SubscriptionBanner from "../../components/SubscriptionBanner";
 import { hasFeature } from "../../utils/features";
+import { userTheme, alpha } from "../../utils/theme";
+
+// Sidebar colours from the school theme: white with a brand-colour active item for light schools,
+// a deep brand-colour sidebar for bold ones.
+function sidebarLook(theme) {
+  if (theme.isLight) {
+    return { bg: "#FFFFFF", edge: "1px solid #EEF0F4", text: "#0F172A", muted: "#64748B", faint: "#94A3B8", divider: "#F1F5F9",
+      hoverBg: theme.soft, hoverText: theme.deep, activeBg: theme.button, activeText: "#fff", activeShadow: `0 4px 12px ${theme.glow}`, card: theme.mist };
+  }
+  return { bg: `linear-gradient(180deg, ${theme.deep} 0%, ${theme.dark} 100%)`, edge: "none", text: "#fff", muted: "rgba(255,255,255,0.55)", faint: "rgba(255,255,255,0.32)", divider: "rgba(255,255,255,0.08)",
+    hoverBg: "rgba(255,255,255,0.08)", hoverText: "rgba(255,255,255,0.9)", activeBg: "rgba(255,255,255,0.16)", activeText: "#fff", activeShadow: `inset 3px 0 0 ${theme.accent}`, card: "rgba(255,255,255,0.06)" };
+}
 import Students from "./Students";
 import AddStudent from "./AddStudent";
 import AddParent from "./AddParent";
@@ -173,6 +185,7 @@ function PageWrapper({ children }) {
 const CARD = { background: "white", borderRadius: 20, padding: "22px 26px", boxShadow: "0 2px 16px rgba(15,23,42,0.06)", border: "1px solid rgba(226,232,240,0.8)" };
 
 function DashboardContent({ isMobile, navigate, user }) {
+  const theme = userTheme(user);
   const [stats, setStats] = useState({ students: 0, teachers: 0, buses: 0, parents: 0 });
   const [recentStudents, setRecentStudents] = useState([]);
   const [recentActivity, setRecentActivity] = useState([]);
@@ -255,13 +268,13 @@ function DashboardContent({ isMobile, navigate, user }) {
   return (
     <PageWrapper>
       {setup && !setup.complete && (
-        <div onClick={() => navigate("/admin/academic")} style={{ display: "flex", alignItems: "center", gap: 12, background: "white", border: "1px solid #C7D2FE", borderRadius: 14, padding: "12px 16px", marginBottom: "1rem", cursor: "pointer", boxShadow: "0 2px 8px rgba(99,102,241,0.08)" }}>
-          <GraduationCap size={20} color="#534AB7" />
+        <div onClick={() => navigate("/admin/academic")} style={{ display: "flex", alignItems: "center", gap: 12, background: "white", border: "1px solid var(--brand-border)", borderRadius: 14, padding: "12px 16px", marginBottom: "1rem", cursor: "pointer", boxShadow: "0 2px 8px color-mix(in srgb, var(--brand) 8%, transparent)" }}>
+          <GraduationCap size={20} style={{ color: "var(--brand)" }} />
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: "#0F172A" }}>Finish setting up your school</div>
             <div style={{ fontSize: 12, color: "#64748B" }}>{setup.done} of {setup.total} steps done. Next: {setup.steps.find((x) => !x.done)?.label}</div>
           </div>
-          <span style={{ fontSize: 12, fontWeight: 700, color: "#534AB7" }}>Continue ›</span>
+          <span style={{ fontSize: 12, fontWeight: 700, color: "var(--brand)" }}>Continue ›</span>
         </div>
       )}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.5rem" }}>
@@ -276,7 +289,7 @@ function DashboardContent({ isMobile, navigate, user }) {
             </div>
           )}
           <div style={{ display: "flex", alignItems: "center", gap: 8, background: "white", border: "1px solid #E2E8F0", borderRadius: 24, padding: "5px 14px 5px 5px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-            <div style={{ width: 32, height: 32, borderRadius: "50%", background: "linear-gradient(135deg,#6366F1,#8B5CF6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, color: "white", boxShadow: "0 2px 8px rgba(99,102,241,0.4)" }}>
+            <div style={{ width: 32, height: 32, borderRadius: "50%", background: theme.button, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, color: "white", boxShadow: `0 2px 8px ${theme.glow}` }}>
               {user?.name?.[0]?.toUpperCase() || "A"}
             </div>
             <span style={{ fontSize: 13, fontWeight: 700, color: "#0F172A" }}>{user?.name || "Admin"}</span>
@@ -285,20 +298,20 @@ function DashboardContent({ isMobile, navigate, user }) {
       </div>
 
       <AnimatedItem delay={0}>
-        <div style={{ background: "linear-gradient(135deg,#1E1B4B 0%,#312E81 40%,#4338CA 70%,#6366F1 100%)", borderRadius: 24, padding: isMobile ? "22px 20px" : "28px 36px", marginBottom: "1.5rem", position: "relative", overflow: "hidden", boxShadow: "0 12px 40px rgba(99,102,241,0.3)" }}>
+        <div style={{ background: theme.isLight ? `linear-gradient(135deg, ${theme.soft} 0%, ${theme.mist} 100%)` : `linear-gradient(135deg, ${theme.deep} 0%, ${theme.dark} 45%, ${theme.primary} 100%)`, border: theme.isLight ? `1px solid ${theme.ring}` : "none", borderRadius: 24, padding: isMobile ? "22px 20px" : "28px 36px", marginBottom: "1.5rem", position: "relative", overflow: "hidden", boxShadow: `0 12px 40px ${alpha(theme.primary, theme.isLight ? 0.12 : 0.3)}` }}>
           <div style={{ position: "absolute", top: -40, right: -40, width: 200, height: 200, borderRadius: "50%", background: "rgba(255,255,255,0.05)" }} />
           <div style={{ position: "absolute", bottom: -60, right: 80, width: 160, height: 160, borderRadius: "50%", background: "rgba(255,255,255,0.04)" }} />
           <div style={{ position: "absolute", top: 20, right: 140, width: 8, height: 8, borderRadius: "50%", background: "rgba(255,255,255,0.4)" }} />
           <div style={{ position: "relative", zIndex: 1 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-              <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: 8, padding: "3px 10px", fontSize: 11, color: "rgba(255,255,255,0.9)", fontWeight: 600, backdropFilter: "blur(8px)" }}>
+              <div style={{ background: theme.isLight ? "#fff" : "rgba(255,255,255,0.15)", border: theme.isLight ? `1px solid ${theme.ring}` : "none", borderRadius: 8, padding: "3px 10px", fontSize: 11, color: theme.isLight ? theme.primary : "rgba(255,255,255,0.9)", fontWeight: 600, backdropFilter: "blur(8px)" }}>
                 🏫 {user?.school || "EduAmigo School"}
               </div>
             </div>
-            <div style={{ fontSize: isMobile ? 20 : 26, fontWeight: 800, color: "white", marginBottom: 8, letterSpacing: "-0.3px" }}>
+            <div style={{ fontSize: isMobile ? 20 : 26, fontWeight: 800, color: theme.isLight ? theme.deep : "white", marginBottom: 8, letterSpacing: "-0.3px" }}>
               {greeting}, {user?.name || "Admin"} {greetEmoji}
             </div>
-            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", lineHeight: 1.6 }}>
+            <div style={{ fontSize: 13, color: theme.isLight ? alpha(theme.deep, 0.65) : "rgba(255,255,255,0.7)", lineHeight: 1.6 }}>
               You have <span style={{ color: "#A5B4FC", fontWeight: 700 }}>{stats.students} students</span> and <span style={{ color: "#6EE7B7", fontWeight: 700 }}>{stats.teachers} teachers</span> enrolled.
               {pendingLeaves > 0 && <span style={{ color: "#FCD34D", fontWeight: 700 }}> &middot; {pendingLeaves} leave{pendingLeaves > 1 ? "s" : ""} awaiting approval.</span>}
             </div>
@@ -394,7 +407,7 @@ function DashboardContent({ isMobile, navigate, user }) {
                 <div style={{ fontSize: 13, fontWeight: 800, color: "#0F172A" }}>Leave Requests</div>
                 <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>Needs your approval</div>
               </div>
-              <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg,#8B5CF6,#A855F7)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: "var(--brand-gradient)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <Notebook size={16} color="white" />
               </div>
             </div>
@@ -414,7 +427,7 @@ function DashboardContent({ isMobile, navigate, user }) {
                 <div style={{ fontSize: 14, fontWeight: 800, color: "#0F172A" }}>Students by Class</div>
                 <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>Distribution across grades</div>
               </div>
-              <span onClick={() => navigate("/admin/students")} style={{ fontSize: 11, color: "#6366F1", cursor: "pointer", fontWeight: 700, background: "#EEF2FF", padding: "5px 12px", borderRadius: 20, border: "1px solid #C7D2FE" }}>View all</span>
+              <span onClick={() => navigate("/admin/students")} style={{ fontSize: 11, color: "var(--brand)", cursor: "pointer", fontWeight: 700, background: "var(--brand-soft)", padding: "5px 12px", borderRadius: 20, border: "1px solid var(--brand-border)" }}>View all</span>
             </div>
             {loading ? <div style={{ color: "#94A3B8", fontSize: 13, textAlign: "center", padding: "20px 0" }}>Loading...</div>
               : classDist.length === 0 ? <div style={{ color: "#CBD5E1", fontSize: 13, textAlign: "center", padding: "20px 0" }}>No students yet</div>
@@ -425,7 +438,7 @@ function DashboardContent({ isMobile, navigate, user }) {
                     <span style={{ fontSize: 12, fontWeight: 700, color: a.color }}>{a.count} students ({a.pct}%)</span>
                   </div>
                   <div style={{ height: 8, background: "#F1F5F9", borderRadius: 4, overflow: "hidden" }}>
-                    <div style={{ width: `${a.pct}%`, height: "100%", background: `linear-gradient(90deg,${a.color},${a.color}99)`, borderRadius: 4, transition: "width 1s ease" }} />
+                    <div style={{ width: `${a.pct}%`, height: "100%", background: `linear-gradient(90deg,${a.color},color-mix(in srgb, ${a.color} 60%, transparent))`, borderRadius: 4, transition: "width 1s ease" }} />
                   </div>
                 </div>
               ))}
@@ -439,7 +452,7 @@ function DashboardContent({ isMobile, navigate, user }) {
                 <div style={{ fontSize: 14, fontWeight: 800, color: "#0F172A" }}>Recently Enrolled</div>
                 <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>Latest student additions</div>
               </div>
-              <span onClick={() => navigate("/admin/students")} style={{ fontSize: 11, color: "#6366F1", cursor: "pointer", fontWeight: 700, background: "#EEF2FF", padding: "5px 12px", borderRadius: 20, border: "1px solid #C7D2FE" }}>View all</span>
+              <span onClick={() => navigate("/admin/students")} style={{ fontSize: 11, color: "var(--brand)", cursor: "pointer", fontWeight: 700, background: "var(--brand-soft)", padding: "5px 12px", borderRadius: 20, border: "1px solid var(--brand-border)" }}>View all</span>
             </div>
             {loading ? <div style={{ color: "#94A3B8", fontSize: 13, textAlign: "center", padding: "20px 0" }}>Loading...</div>
               : recentStudents.length === 0 ? <div style={{ color: "#CBD5E1", fontSize: 13, textAlign: "center", padding: "20px 0" }}>No students yet</div>
@@ -448,7 +461,7 @@ function DashboardContent({ isMobile, navigate, user }) {
                   style={{ display: "flex", alignItems: "center", gap: 12, padding: "9px 8px", borderRadius: 12, cursor: "pointer", transition: "background 0.15s", marginBottom: 2 }}
                   onMouseEnter={e => e.currentTarget.style.background = "#F8FAFC"}
                   onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                  <div style={{ width: 38, height: 38, borderRadius: 12, background: "linear-gradient(135deg,#6366F1,#8B5CF6)", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 700, flexShrink: 0, boxShadow: "0 2px 8px rgba(99,102,241,0.3)" }}>
+                  <div style={{ width: 38, height: 38, borderRadius: 12, background: "var(--brand-gradient)", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 700, flexShrink: 0, boxShadow: "0 2px 8px color-mix(in srgb, var(--brand) 30%, transparent)" }}>
                     {s.name?.[0]?.toUpperCase()}
                   </div>
                   <div style={{ flex: 1 }}>
@@ -467,7 +480,7 @@ function DashboardContent({ isMobile, navigate, user }) {
       <AnimatedItem delay={780}>
         <div style={{ ...CARD, marginBottom: 40 }}>
           <div style={{ marginBottom: 18 }}>
-            <div style={{ fontSize: 14, fontWeight: 800, color: "#0F172A", display: "flex", alignItems: "center", gap: 6 }}><TrendingUp size={15} color="#6366F1" /> Recent Activity</div>
+            <div style={{ fontSize: 14, fontWeight: 800, color: "#0F172A", display: "flex", alignItems: "center", gap: 6 }}><TrendingUp size={15} style={{ color: "var(--brand)" }} /> Recent Activity</div>
             <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>Latest system updates</div>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2,1fr)", gap: 8 }}>
@@ -475,7 +488,7 @@ function DashboardContent({ isMobile, navigate, user }) {
               : recentActivity.length === 0 ? <div style={{ color: "#CBD5E1", fontSize: 13, padding: "20px 0" }}>No activity yet</div>
               : recentActivity.map((a, i) => (
                 <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", borderRadius: 12, background: "#F8FAFC", border: "1px solid #F1F5F9" }}>
-                  <div style={{ width: 34, height: 34, borderRadius: 10, background: "linear-gradient(135deg,#EEF2FF,#C7D2FE)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>{a.ic}</div>
+                  <div style={{ width: 34, height: 34, borderRadius: 10, background: "linear-gradient(135deg,var(--brand-soft),var(--brand-border))", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>{a.ic}</div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 12, color: "#1E293B", fontWeight: 600, lineHeight: 1.4 }}>{a.text}</div>
                     <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>{a.time}</div>
@@ -494,6 +507,8 @@ export default function AdminHome() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
+  const theme = userTheme(user);
+  const sb = sidebarLook(theme);
   const [activeNav, setActiveNav] = useState("/admin");
   // Permissions, plan and billing state are refreshed from the server by AuthContext on app start.
 
@@ -519,45 +534,49 @@ export default function AdminHome() {
 
   const SidebarContent = () => (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <div style={{ padding: "22px 18px 18px", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+      <div style={{ padding: "22px 18px 18px", borderBottom: `1px solid ${sb.divider}` }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 38, height: 38, borderRadius: 12, background: "linear-gradient(135deg,#6366F1,#8B5CF6)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(99,102,241,0.5)" }}>
-              <BookOpen size={18} color="white" />
-            </div>
+            {user?.branding?.logoUrl ? (
+              <img src={user.branding.logoUrl} alt="" style={{ width: 38, height: 38, borderRadius: "50%", background: "#fff", objectFit: "contain", border: `2px solid ${theme.accent}`, flexShrink: 0 }} />
+            ) : (
+              <div style={{ width: 38, height: 38, borderRadius: 12, background: theme.button, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 4px 12px ${theme.glow}`, flexShrink: 0 }}>
+                <BookOpen size={18} color="white" />
+              </div>
+            )}
             <div>
-              <div style={{ fontSize: 13, fontWeight: 800, color: "white", letterSpacing: "-0.2px" }}>{user?.school || "EduAmigo"}</div>
-              <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", marginTop: 1, textTransform: "capitalize" }}>{user?.role || "admin"} Portal</div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: sb.text, letterSpacing: "-0.2px" }}>{user?.branding?.appName || user?.school || "EduAmigo"}</div>
+              <div style={{ fontSize: 10, color: sb.muted, marginTop: 1, textTransform: "capitalize" }}>{user?.role || "admin"} Portal</div>
             </div>
           </div>
-          {isMobile && <div onClick={() => setSidebarOpen(false)} style={{ cursor: "pointer", color: "rgba(255,255,255,0.5)", padding: 4 }}><X size={18} /></div>}
+          {isMobile && <div onClick={() => setSidebarOpen(false)} style={{ cursor: "pointer", color: sb.muted, padding: 4 }}><X size={18} /></div>}
         </div>
       </div>
       <nav style={{ overflowY: "auto", flex: 1, padding: "8px 0 16px" }}>
         {visibleNav.map((item, i) => {
-          if (item.section) return <div key={i} style={{ fontSize: 9, color: "rgba(255,255,255,0.28)", padding: "14px 20px 5px", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 700 }}>{item.section}</div>;
+          if (item.section) return <div key={i} style={{ fontSize: 9, color: sb.faint, padding: "14px 20px 5px", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 700 }}>{item.section}</div>;
           const Icon = item.icon;
           const isActive = activeNav === item.path || (item.path !== "/admin" && location.pathname.startsWith(item.path));
           return (
             <div key={i} onClick={() => { setActiveNav(item.path); navigate(item.path); if (isMobile) setSidebarOpen(false); }}
-              style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 16px", margin: "1px 10px", fontSize: 13, cursor: "pointer", color: isActive ? "white" : "rgba(255,255,255,0.5)", background: isActive ? "linear-gradient(135deg,rgba(99,102,241,0.8),rgba(139,92,246,0.6))" : "transparent", fontWeight: isActive ? 700 : 400, borderRadius: 12, transition: "all 0.15s", boxShadow: isActive ? "0 4px 12px rgba(99,102,241,0.3)" : "none" }}
-              onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = "rgba(255,255,255,0.07)"; e.currentTarget.style.color = "rgba(255,255,255,0.85)"; } }}
-              onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "rgba(255,255,255,0.5)"; } }}>
+              style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 16px", margin: "1px 10px", fontSize: 13, cursor: "pointer", color: isActive ? sb.activeText : sb.muted, background: isActive ? sb.activeBg : "transparent", fontWeight: isActive ? 700 : 500, borderRadius: 12, transition: "all 0.15s", boxShadow: isActive ? sb.activeShadow : "none" }}
+              onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = sb.hoverBg; e.currentTarget.style.color = sb.hoverText; } }}
+              onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = sb.muted; } }}>
               <Icon size={15} />
               {item.label}
-              {isActive && <div style={{ marginLeft: "auto", width: 6, height: 6, borderRadius: "50%", background: "rgba(255,255,255,0.8)" }} />}
+              {isActive && <div style={{ marginLeft: "auto", width: 6, height: 6, borderRadius: "50%", background: theme.isLight ? "#fff" : theme.accent }} />}
             </div>
           );
         })}
       </nav>
-      <div style={{ padding: "12px 10px 16px", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", borderRadius: 12, background: "rgba(255,255,255,0.05)", marginBottom: 6 }}>
-          <div style={{ width: 32, height: 32, borderRadius: 10, background: "linear-gradient(135deg,#6366F1,#8B5CF6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: "white" }}>
+      <div style={{ padding: "12px 10px 16px", borderTop: `1px solid ${sb.divider}` }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", borderRadius: 12, background: sb.card, marginBottom: 6 }}>
+          <div style={{ width: 32, height: 32, borderRadius: 10, background: theme.button, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: "white" }}>
             {user?.name?.[0]?.toUpperCase() || "A"}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: "white", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{user?.name || "Admin"}</div>
-            <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)" }}>{ROLE_LABELS[user?.role] || "Staff"}</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: sb.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{user?.name || "Admin"}</div>
+            <div style={{ fontSize: 10, color: sb.muted }}>{ROLE_LABELS[user?.role] || "Staff"}</div>
           </div>
         </div>
         <div onClick={() => { logout(); navigate("/login"); }}
@@ -573,14 +592,14 @@ export default function AdminHome() {
   return (
     <div style={{ display: "flex", width: "100vw", minHeight: "100vh", background: "#E8ECF4", fontFamily: "'Inter',sans-serif", position: "fixed", top: 0, left: 0, overflow: "hidden" }}>
       {!isMobile && (
-        <aside style={{ width: 230, flexShrink: 0, background: "linear-gradient(180deg,#0F172A 0%,#1E1B4B 100%)", display: "flex", flexDirection: "column", height: "100vh", overflowY: "auto", boxShadow: "4px 0 24px rgba(0,0,0,0.15)" }}>
+        <aside style={{ width: 230, flexShrink: 0, background: sb.bg, borderRight: sb.edge, display: "flex", flexDirection: "column", height: "100vh", overflowY: "auto", boxShadow: "4px 0 24px rgba(0,0,0,0.15)" }}>
           <SidebarContent />
         </aside>
       )}
       {isMobile && sidebarOpen && (
         <>
           <div onClick={() => setSidebarOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.6)", zIndex: 40, backdropFilter: "blur(4px)" }} />
-          <aside style={{ position: "fixed", top: 0, left: 0, bottom: 0, width: 230, background: "linear-gradient(180deg,#0F172A 0%,#1E1B4B 100%)", zIndex: 50, display: "flex", flexDirection: "column", boxShadow: "8px 0 32px rgba(0,0,0,0.3)" }}>
+          <aside style={{ position: "fixed", top: 0, left: 0, bottom: 0, width: 230, background: sb.bg, zIndex: 50, display: "flex", flexDirection: "column", boxShadow: "8px 0 32px rgba(0,0,0,0.3)" }}>
             <SidebarContent />
           </aside>
         </>

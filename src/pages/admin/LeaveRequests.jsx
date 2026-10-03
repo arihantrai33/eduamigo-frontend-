@@ -82,7 +82,7 @@ export default function LeaveRequests() {
       {/* Stat Cards */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
         {[
-          { label:"TOTAL REQUESTS", value: leaves.length, icon:"📋", border:"#6366F1", bg:"#EEF2FF" },
+          { label:"TOTAL REQUESTS", value: leaves.length, icon:"📋", border:"var(--brand)", bg:"var(--brand-soft)" },
           { label:"PENDING",        value: pending,        icon:"⏳", border:"#F59E0B", bg:"#FFFBEB" },
           { label:"APPROVED",       value: approved,       icon:"✅", border:"#10B981", bg:"#F0FDF4" },
           { label:"REJECTED",       value: rejected,       icon:"❌", border:"#EF4444", bg:"#FEF2F2" },
@@ -149,7 +149,7 @@ export default function LeaveRequests() {
                   <div style={{ flex:1 }}>
                     <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:4 }}>
                       <span style={{ fontSize:14, fontWeight:800, color:"#0F172A" }}>{l.name || "Unknown"}</span>
-                      <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background: l.role==="teacher" ? "#F0FDF4" : l.role==="student" ? "#EEF2FF" : "#FFF7ED", color: l.role==="teacher" ? "#15803D" : l.role==="student" ? "#4338CA" : "#C2410C" }}>{l.role?.charAt(0).toUpperCase() + l.role?.slice(1) || "User"}</span>
+                      <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background: l.role==="teacher" ? "#F0FDF4" : l.role==="student" ? "var(--brand-soft)" : "#FFF7ED", color: l.role==="teacher" ? "#15803D" : l.role==="student" ? "var(--brand-dark)" : "#C2410C" }}>{l.role?.charAt(0).toUpperCase() + l.role?.slice(1) || "User"}</span>
                       <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:"#F1F5F9", color:"#64748B" }}>{l.leaveType || "Leave"}</span>
                     </div>
                     <div style={{ fontSize:12, color:"#94A3B8" }}>
@@ -185,7 +185,7 @@ export default function LeaveRequests() {
                       <div style={{ fontSize:13, color:"#374151", lineHeight:1.6 }}>{l.reason || "No reason provided"}</div>
                     </div>
                     {l.attachmentUrl && (
-                      <a href={l.attachmentUrl} target="_blank" rel="noreferrer" style={{ display:"inline-block", marginTop:10, fontSize:13, fontWeight:600, color:"#4F46E5" }}>
+                      <a href={l.attachmentUrl} target="_blank" rel="noreferrer" style={{ display:"inline-block", marginTop:10, fontSize:13, fontWeight:600, color:"var(--brand)" }}>
                         View attachment: {l.attachmentName || "document"}
                       </a>
                     )}

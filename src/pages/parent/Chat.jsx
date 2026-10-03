@@ -139,7 +139,7 @@ export default function ParentChat() {
                   <div style={S.timeRow}>
                     <span style={S.timeText}>{formatTime(m.createdAt)}</span>
                     {isMe && (
-                      <span style={{ fontSize: 11, color: m.read ? '#7c3aed' : 'rgba(255,255,255,0.5)' }}>
+                      <span style={{ fontSize: 11, color: m.read ? 'var(--brand)' : 'rgba(255,255,255,0.5)' }}>
                         {m.read ? '✓✓' : '✓'}
                       </span>
                     )}
@@ -182,7 +182,7 @@ export default function ParentChat() {
       </div>
 
       {loading ? (
-        <div style={S.center}><div style={{ color: '#4f46e5', fontWeight: 600 }}>Loading...</div></div>
+        <div style={S.center}><div style={{ color: 'var(--brand)', fontWeight: 600 }}>Loading...</div></div>
       ) : (
         <div style={S.list}>
 
@@ -238,7 +238,7 @@ export default function ParentChat() {
 
 const S = {
   screen:      { maxWidth: 420, margin: '0 auto', minHeight: '100vh', background: '#f5f6fa', fontFamily: 'Inter, sans-serif', display: 'flex', flexDirection: 'column' },
-  header:      { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', padding: '48px 20px 16px', display: 'flex', alignItems: 'center', gap: 12 },
+  header:      { background: 'var(--brand-gradient)', padding: '48px 20px 16px', display: 'flex', alignItems: 'center', gap: 12 },
   headerBack:  { background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: '8px 12px', color: 'white', cursor: 'pointer', fontSize: 18 },
   headerTitle: { color: 'white', fontSize: 20, fontWeight: 800, margin: 0 },
   childBadge:  { color: 'rgba(255,255,255,0.8)', fontSize: 12, marginTop: 4 },
@@ -251,7 +251,7 @@ const S = {
   chevron:     { fontSize: 22, color: '#ccc' },
   emptyBox:    { textAlign: 'center', padding: '32px 0', color: '#999', fontSize: 13 },
   center:      { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  chatHeader:  { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', padding: '48px 16px 16px', display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 },
+  chatHeader:  { background: 'var(--brand-gradient)', padding: '48px 16px 16px', display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 },
   backBtn:     { background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: '8px 12px', color: 'white', cursor: 'pointer', fontSize: 18 },
   chatName:    { color: 'white', fontSize: 16, fontWeight: 700 },
   chatSub:     { color: 'rgba(255,255,255,0.7)', fontSize: 11, marginTop: 2 },
@@ -260,11 +260,11 @@ const S = {
   dateDivider: { textAlign: 'center', fontSize: 11, color: '#aaa', background: '#eee', borderRadius: 20, padding: '3px 12px', margin: '10px auto', width: 'fit-content' },
   miniAvatar:  { width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 12, marginRight: 8, flexShrink: 0, alignSelf: 'flex-end' },
   bubble:      { maxWidth: '75%', padding: '10px 14px', borderRadius: 18, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' },
-  bubbleMe:    { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', borderBottomRightRadius: 4 },
+  bubbleMe:    { background: 'var(--brand-gradient)', color: 'white', borderBottomRightRadius: 4 },
   bubbleThem:  { background: 'white', color: '#111', borderBottomLeftRadius: 4 },
   timeRow:     { display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4, marginTop: 4 },
   timeText:    { fontSize: 10, opacity: 0.7 },
   inputRow:    { padding: '12px 16px', background: 'white', display: 'flex', gap: 10, alignItems: 'center', boxShadow: '0 -2px 8px rgba(0,0,0,0.06)', flexShrink: 0 },
   input:       { flex: 1, border: '1.5px solid #e5e7eb', borderRadius: 24, padding: '10px 16px', fontSize: 14, outline: 'none', fontFamily: 'Inter, sans-serif' },
-  sendBtn:     { background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', color: 'white', border: 'none', borderRadius: '50%', width: 44, height: 44, fontSize: 18, cursor: 'pointer', flexShrink: 0 },
+  sendBtn:     { background: 'var(--brand-gradient)', color: 'white', border: 'none', borderRadius: '50%', width: 44, height: 44, fontSize: 18, cursor: 'pointer', flexShrink: 0 },
 };

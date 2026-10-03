@@ -161,7 +161,7 @@ function NavItem({ icon, label, onClick, active }) {
   return (
     <button onClick={onClick} style={styles.navItem}>
       <span style={{ fontSize: 22 }}>{icon}</span>
-      <span style={{ ...styles.navLabel, color: active ? '#5C6BC0' : '#9E9E9E' }}>{label}</span>
+      <span style={{ ...styles.navLabel, color: active ? 'var(--brand)' : '#9E9E9E' }}>{label}</span>
     </button>
   );
 }
@@ -176,7 +176,7 @@ const styles = {
     position: 'relative',
   },
   header: {
-    background: 'linear-gradient(135deg, #5C6BC0, #3949AB)',
+    background: 'var(--brand-gradient)',
     padding: '20px 16px 24px',
     display: 'flex',
     alignItems: 'center',
@@ -248,8 +248,8 @@ const styles = {
     fontFamily: "'Poppins', sans-serif",
   },
   chipActive: {
-    background: '#5C6BC0',
-    borderColor: '#5C6BC0',
+    background: 'var(--brand)',
+    borderColor: 'var(--brand)',
     color: '#fff',
   },
   resultCount: {
@@ -328,7 +328,7 @@ const styles = {
   },
   targetBadge: {
     fontSize: 10,
-    color: '#5C6BC0',
+    color: 'var(--brand)',
     background: '#EEF0FF',
     padding: '2px 8px',
     borderRadius: 20,
@@ -344,11 +344,11 @@ const styles = {
     width: 32,
     height: 32,
     border: '3px solid #EEF0FF',
-    borderTop: '3px solid #5C6BC0',
+    borderTop: '3px solid var(--brand)',
     borderRadius: '50%',
     animation: 'spin 0.8s linear infinite',
   },
-  loadingText: { color: '#5C6BC0', fontSize: 13, marginTop: 10 },
+  loadingText: { color: 'var(--brand)', fontSize: 13, marginTop: 10 },
   errorBox: {
     background: '#FFEBEE',
     color: '#C62828',

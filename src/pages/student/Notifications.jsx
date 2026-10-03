@@ -55,7 +55,7 @@ export default function Notifications() {
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--bg)", paddingBottom: "80px" }}>
-      <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", padding: "48px 16px 40px", color: "white" }}>
+      <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <button onClick={() => navigate(-1)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px", color: "white", cursor: "pointer" }}>←</button>
           <h2 style={{ margin: 0, fontSize: "18px" }}>Notifications</h2>
@@ -70,7 +70,7 @@ export default function Notifications() {
         ) : (
           notifications.map(n => (
             <div key={n._id} onClick={() => markRead(n._id)}
-              style={{ background: dm ? (n.read ? "#1e293b" : "#1e3a5f") : (n.read ? "white" : "#eff6ff"), borderRadius: "12px", padding: "14px", marginBottom: "10px", boxShadow: "0 1px 4px rgba(0,0,0,0.08)", borderLeft: n.read ? "none" : "3px solid #4f46e5", cursor: "pointer" }}>
+              style={{ background: dm ? (n.read ? "#1e293b" : "#1e3a5f") : (n.read ? "white" : "#eff6ff"), borderRadius: "12px", padding: "14px", marginBottom: "10px", boxShadow: "0 1px 4px rgba(0,0,0,0.08)", borderLeft: n.read ? "none" : "3px solid var(--brand)", cursor: "pointer" }}>
               <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
                 <span style={{ fontSize: "24px" }}>{icons[n.type] || "📢"}</span>
                 <div style={{ flex: 1 }}>
@@ -80,7 +80,7 @@ export default function Notifications() {
                     {n.createdAt ? new Date(n.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : ""}
                   </div>
                 </div>
-                {!n.read && <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#4f46e5", marginTop: "4px" }} />}
+                {!n.read && <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "var(--brand)", marginTop: "4px" }} />}
               </div>
             </div>
           ))

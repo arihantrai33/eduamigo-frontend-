@@ -59,7 +59,7 @@ export default function ParentResult() {
   );
   return (
     <div style={{ minHeight: "100vh", background: "#F4F6FB", fontFamily: "Inter, sans-serif", paddingBottom: 40 }}>
-      <div style={{ background: "linear-gradient(135deg,#4f46e5,#7c3aed)", padding: "48px 20px 32px", color: "white" }}>
+      <div style={{ background: "var(--brand-gradient)", padding: "48px 20px 32px", color: "white" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
           <button onClick={() => navigate(-1)}
             style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "8px 12px", color: "white", cursor: "pointer", fontSize: 16 }}>
@@ -100,7 +100,7 @@ export default function ParentResult() {
               <button key={e} onClick={() => setSelExam(e)}
                 style={{
                   padding: "6px 16px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 600, whiteSpace: "nowrap",
-                  background: selExam === e ? "#4f46e5" : "#fff",
+                  background: selExam === e ? "var(--brand)" : "#fff",
                   color:      selExam === e ? "#fff"    : "#666",
                   boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
                 }}>

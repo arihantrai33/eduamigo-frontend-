@@ -89,7 +89,7 @@ export default function UserManagement() {
             <RefreshCw size={14} color="#64748B" />
           </button>
           <button onClick={() => setShowModal(true)}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 18px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #4F46E5, #7C3AED)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 18px", borderRadius: 10, border: "none", background: "var(--brand-gradient)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
             <Plus size={14} /> Add User
           </button>
         </div>
@@ -122,7 +122,7 @@ export default function UserManagement() {
         <div style={{ display: "flex", gap: 6 }}>
           {["all", ...Object.keys(ROLE_META)].map(r => (
             <button key={r} onClick={() => setFilter(r)}
-              style={{ padding: "6px 14px", borderRadius: 20, fontSize: 11, cursor: "pointer", border: `1px solid ${filter === r ? "#4F46E5" : "#E2E8F0"}`, background: filter === r ? "#EEF2FF" : "#fff", color: filter === r ? "#4F46E5" : "#64748B", fontWeight: filter === r ? 600 : 400, textTransform: "capitalize" }}>
+              style={{ padding: "6px 14px", borderRadius: 20, fontSize: 11, cursor: "pointer", border: `1px solid ${filter === r ? "var(--brand)" : "#E2E8F0"}`, background: filter === r ? "var(--brand-soft)" : "#fff", color: filter === r ? "var(--brand)" : "#64748B", fontWeight: filter === r ? 600 : 400, textTransform: "capitalize" }}>
               {r}
             </button>
           ))}
@@ -203,7 +203,7 @@ export default function UserManagement() {
             <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 20 }}>
               <button onClick={() => setShowModal(false)} style={{ padding: "9px 20px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#F8FAFC", fontSize: 13, cursor: "pointer", color: "#64748B" }}>Cancel</button>
               <button onClick={handleAdd} disabled={saving}
-                style={{ padding: "9px 24px", borderRadius: 8, border: "none", background: saving ? "#94A3B8" : "linear-gradient(135deg, #4F46E5, #7C3AED)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: saving ? "not-allowed" : "pointer" }}>
+                style={{ padding: "9px 24px", borderRadius: 8, border: "none", background: saving ? "#94A3B8" : "var(--brand-gradient)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: saving ? "not-allowed" : "pointer" }}>
                 {saving ? "Creating..." : "Create User"}
               </button>
             </div>

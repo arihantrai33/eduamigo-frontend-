@@ -74,7 +74,7 @@ export default function FeeReports() {
       `}</style>
 
       {/* Header */}
-      <div style={{ background:"linear-gradient(135deg,#8B5CF6,#7C3AED,#6D28D9)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
+      <div style={{ background:"var(--brand-gradient)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
         <div style={{ position:"absolute", top:-40, right:-40, width:180, height:180, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
         <div style={{ position:"absolute", bottom:-30, left:100, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
         <div style={{ position:"relative" }}>
@@ -107,10 +107,10 @@ export default function FeeReports() {
       {/* Stat Cards */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
         {[
-          { label:"TOTAL BILLED",   value: fmtAmt(totalAmount),   icon:"📋", border:"#6366F1", bg:"#EEF2FF" },
+          { label:"TOTAL BILLED",   value: fmtAmt(totalAmount),   icon:"📋", border:"var(--brand)", bg:"var(--brand-soft)" },
           { label:"COLLECTED",      value: fmtAmt(collectedAmt),  icon:"✅", border:"#10B981", bg:"#F0FDF4" },
           { label:"PENDING",        value: fmtAmt(pendingAmt),    icon:"⏳", border:"#F59E0B", bg:"#FFFBEB" },
-          { label:"COLLECTION RATE",value: `${collectionPct}%`,   icon:"📊", border:"#8B5CF6", bg:"#F5F3FF" },
+          { label:"COLLECTION RATE",value: `${collectionPct}%`,   icon:"📊", border:"var(--brand)", bg:"var(--brand-soft)" },
         ].map((card, i) => (
           <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
@@ -144,7 +144,7 @@ export default function FeeReports() {
         </div>
         {loading ? (
           <div style={{ padding:"60px 0", textAlign:"center" }}>
-            <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid #8B5CF6", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
+            <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid var(--brand)", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
             <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading reports...</div>
           </div>
         ) : classStats.length === 0 ? (

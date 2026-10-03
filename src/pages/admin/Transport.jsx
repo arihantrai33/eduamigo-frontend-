@@ -295,7 +295,7 @@ export default function Transport() {
         {[
           { label:"TOTAL BUSES",      value: buses.length,   icon:"🚌", border:"#F59E0B", bg:"#FFFBEB" },
           { label:"ON ROUTE",         value: onRoute,        icon:"🟢", border:"#10B981", bg:"#F0FDF4" },
-          { label:"IDLE",             value: buses.filter(b=>b.busStatus==="Idle").length, icon:"⏸️", border:"#6366F1", bg:"#EEF2FF" },
+          { label:"IDLE",             value: buses.filter(b=>b.busStatus==="Idle").length, icon:"⏸️", border:"var(--brand)", bg:"var(--brand-soft)" },
           { label:"STUDENTS ASSIGNED",value: totalStudents,  icon:"👦", border:"#EC4899", bg:"#FDF4FF" },
         ].map((card,i) => (
           <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
@@ -353,7 +353,7 @@ export default function Transport() {
                   </div>
                   <div style={{ display:"flex", gap:8, alignItems:"center" }}>
                     <button className="act-btn" onClick={() => openStops(bus)}
-                      style={{ padding:"8px 16px", borderRadius:10, border:"1px solid #E2E8F0", background:"white", fontSize:12, fontWeight:700, cursor:"pointer", color:"#6366F1" }}>
+                      style={{ padding:"8px 16px", borderRadius:10, border:"1px solid #E2E8F0", background:"white", fontSize:12, fontWeight:700, cursor:"pointer", color:"var(--brand)" }}>
                       📍 Stops ({bus.stops?.length||0})
                     </button>
                     <button className="act-btn" onClick={() => openStudents(bus)}
@@ -389,7 +389,7 @@ export default function Transport() {
                             <span style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>{stop.name}</span>
                             {stop.estimatedTime && <span style={{ fontSize:11, color:"#94A3B8", marginLeft:8 }}>⏱ {stop.estimatedTime}</span>}
                           </div>
-                          <span style={{ fontSize:11, padding:"2px 8px", borderRadius:20, background: stop.status==="Live"?"#F0FDF4":stop.status==="Departed"?"#EEF2FF":"#F1F5F9", color: stop.status==="Live"?"#15803D":stop.status==="Departed"?"#6366F1":"#94A3B8", fontWeight:700 }}>{stop.status}</span>
+                          <span style={{ fontSize:11, padding:"2px 8px", borderRadius:20, background: stop.status==="Live"?"#F0FDF4":stop.status==="Departed"?"var(--brand-soft)":"#F1F5F9", color: stop.status==="Live"?"#15803D":stop.status==="Departed"?"var(--brand)":"#94A3B8", fontWeight:700 }}>{stop.status}</span>
                         </div>
                       ))}
                     </div>

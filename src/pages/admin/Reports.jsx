@@ -278,11 +278,11 @@ export default function Reports() {
               </div>
             ))}
           </div>
-          <div style={{ background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)", borderRadius:12, padding:"14px 16px", textAlign:"center" }}>
+          <div style={{ background:"linear-gradient(135deg,var(--brand-soft),var(--brand-soft))", borderRadius:12, padding:"14px 16px", textAlign:"center" }}>
             <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:4 }}>AVERAGE SCORE</div>
-            <div style={{ fontSize:32, fontWeight:900, color:"#6366F1" }}>{marks.avgScore}%</div>
+            <div style={{ fontSize:32, fontWeight:900, color:"var(--brand)" }}>{marks.avgScore}%</div>
           </div>
-          <ProgressBar label="Pass Rate" value={marks.passed} total={marks.total} color="#6366F1" />
+          <ProgressBar label="Pass Rate" value={marks.passed} total={marks.total} color="var(--brand)" />
         </SectionCard>
       </div>
 

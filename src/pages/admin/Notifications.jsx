@@ -98,7 +98,7 @@ export default function Notifications() {
             <RefreshCw size={14} color="#64748B" />
           </button>
           <button onClick={() => setShowModal(true)}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 18px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #4F46E5, #7C3AED)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", boxShadow: "0 4px 12px #4F46E540" }}>
+            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 18px", borderRadius: 10, border: "none", background: "var(--brand-gradient)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", boxShadow: "0 4px 12px #4F46E540" }}>
             <Send size={13} /> Send Notification
           </button>
         </div>
@@ -107,7 +107,7 @@ export default function Notifications() {
       {/* Stats */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12, marginBottom: 20 }}>
         {[
-          { label: "Total Sent",  value: stats.total,  color: "#4F46E5", bg: "#EEF2FF", icon: "📢" },
+          { label: "Total Sent",  value: stats.total,  color: "var(--brand)", bg: "var(--brand-soft)", icon: "📢" },
           { label: "Sent Today",  value: stats.today,  color: "#16A34A", bg: "#F0FDF4", icon: "📅" },
           { label: "Unread",      value: stats.unread, color: "#D97706", bg: "#FFFBEB", icon: "🔔" },
         ].map((s, i) => (
@@ -150,12 +150,12 @@ export default function Notifications() {
           const RoleIcon = roleMeta.icon;
           const typeMeta = TYPE_META[n.type] || TYPE_META.General;
           return (
-            <div key={n._id} style={{ background: "#fff", border: `1px solid ${n.isRead ? "#F1F5F9" : "#C7D2FE"}`, borderRadius: 14, padding: "14px 18px", transition: "box-shadow 0.15s" }}
+            <div key={n._id} style={{ background: "#fff", border: `1px solid ${n.isRead ? "#F1F5F9" : "var(--brand-border)"}`, borderRadius: 14, padding: "14px 18px", transition: "box-shadow 0.15s" }}
               onMouseEnter={e => e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.06)"}
               onMouseLeave={e => e.currentTarget.style.boxShadow = "none"}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1 }}>
-                  {!n.isRead && <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#4F46E5", flexShrink: 0 }} />}
+                  {!n.isRead && <div style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--brand)", flexShrink: 0 }} />}
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 14, fontWeight: 600, color: "#0F172A" }}>{n.title}</div>
                     <div style={{ fontSize: 12, color: "#64748B", marginTop: 4, lineHeight: 1.5 }}>{n.message}</div>
@@ -243,7 +243,7 @@ export default function Notifications() {
             <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 20 }}>
               <button onClick={() => setShowModal(false)} style={{ padding: "9px 20px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#F8FAFC", fontSize: 13, cursor: "pointer", color: "#64748B" }}>Cancel</button>
               <button onClick={handleSend} disabled={sending}
-                style={{ display: "flex", alignItems: "center", gap: 6, padding: "9px 24px", borderRadius: 8, border: "none", background: sending ? "#94A3B8" : "linear-gradient(135deg, #4F46E5, #7C3AED)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: sending ? "not-allowed" : "pointer" }}>
+                style={{ display: "flex", alignItems: "center", gap: 6, padding: "9px 24px", borderRadius: 8, border: "none", background: sending ? "#94A3B8" : "var(--brand-gradient)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: sending ? "not-allowed" : "pointer" }}>
                 <Send size={13} /> {sending ? "Sending..." : "Send Now"}
               </button>
             </div>

@@ -201,7 +201,7 @@ const CSS = `
 .rc-toolbar { position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 12px 16px; background: #fff; border-bottom: 1px solid #E5E7EB; }
 .rc-toolbar-title { font-weight: 700; font-size: 15px; margin-right: auto; }
 .rc-toolbar select { padding: 8px 10px; border-radius: 8px; border: 1px solid #D1D5DB; font: inherit; font-size: 13px; background: #fff; }
-.rc-btn { padding: 9px 16px; border-radius: 8px; border: none; background: #4338CA; color: #fff; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.rc-btn { padding: 9px 16px; border-radius: 8px; border: none; background: var(--brand-dark); color: #fff; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
 .rc-btn:disabled { opacity: .5; cursor: default; }
 .rc-btn.ghost { background: #F3F4F6; color: #374151; }
 .rc-msg { max-width: 794px; margin: 24px auto; padding: 24px; background: #fff; border-radius: 12px; text-align: center; color: #6B7280; }
@@ -210,7 +210,7 @@ const CSS = `
 .rc-head { text-align: center; border-bottom: 2px solid #111827; padding-bottom: 12px; margin-bottom: 16px; }
 .rc-school { font-size: 22px; font-weight: 800; letter-spacing: .3px; }
 .rc-sub { font-size: 12px; color: #4B5563; margin-top: 2px; }
-.rc-title { margin-top: 10px; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #4338CA; }
+.rc-title { margin-top: 10px; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--brand-dark); }
 .rc-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px 16px; margin-bottom: 16px; font-size: 13px; }
 .rc-info span, .rc-summary span { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .6px; color: #6B7280; }
 .rc-info b { font-weight: 600; }
@@ -230,7 +230,7 @@ const CSS = `
 .rc-remarks textarea { width: 100%; box-sizing: border-box; font: inherit; font-size: 13px; padding: 8px; border-radius: 6px; border: 1px solid #D1D5DB; }
 .rc-row { display: flex; gap: 8px; justify-content: flex-end; align-items: center; margin-top: 6px; }
 .rc-count { margin-right: auto; font-size: 11px; color: #9CA3AF; }
-.rc-link { margin-left: 8px; background: none; border: none; color: #4338CA; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; }
+.rc-link { margin-left: 8px; background: none; border: none; color: var(--brand-dark); font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; }
 .muted { color: #9CA3AF; }
 .rc-signs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 48px; font-size: 12px; text-align: center; }
 .rc-signs div { border-top: 1px solid #111827; padding-top: 6px; }
