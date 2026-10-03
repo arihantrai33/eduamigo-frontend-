@@ -92,6 +92,49 @@ function OnlinePayments() {
   );
 }
 
+// The school's EduAmigo plan, modules and bills (issued and paid invoices).
+const rupees = (n) => `₹${Number(n || 0).toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
+const utcDay = (d) => (d ? new Date(d).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }) : "—");
+
+function PlanAndBills({ school }) {
+  const [invoices, setInvoices] = useState(null);
+  useEffect(() => {
+    axios.get(`${API}/schools/me/invoices`, auth()).then((r) => setInvoices(r.data.data || [])).catch(() => setInvoices([]));
+  }, []);
+  const sub = school?.subscription;
+  return (
+    <div style={card}>
+      <div style={title}>EduAmigo plan and bills</div>
+      <div style={{ display: "flex", gap: 24, flexWrap: "wrap", fontSize: 13, color: "#334155", marginBottom: 12 }}>
+        <span>Plan: <strong>{school?.plan?.name || "—"}</strong></span>
+        <span>Status: <strong style={{ textTransform: "capitalize" }}>{(sub?.status || "—").replace("_", " ")}</strong></span>
+        {sub?.endsAt && <span>{sub.status === "trial" ? "Trial ends" : "Paid until"}: <strong>{utcDay(sub.endsAt)}</strong></span>}
+        <span>School code: <strong>{school?.code}</strong></span>
+      </div>
+      {!invoices ? <p style={{ fontSize: 13, color: "#64748B" }}>Loading bills…</p> : invoices.length === 0 ? (
+        <p style={{ fontSize: 13, color: "#64748B", margin: 0 }}>No bills yet.</p>
+      ) : (
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+          <thead><tr>{["Invoice", "Period", "Students", "Total", "Status", "Due"].map((h) => <th key={h} style={{ textAlign: "left", padding: "6px 8px", color: "#64748B", fontWeight: 600, borderBottom: "1px solid #E2E8F0" }}>{h}</th>)}</tr></thead>
+          <tbody>
+            {invoices.map((inv) => (
+              <tr key={inv._id}>
+                <td style={td}>{inv.number}</td>
+                <td style={td}>{utcDay(inv.periodFrom)} – {utcDay(inv.periodTo)}</td>
+                <td style={td}>{inv.activeStudents}</td>
+                <td style={td}><strong>{rupees(inv.total)}</strong> <span style={{ color: "#64748B" }}>incl. GST {inv.taxRate}%</span></td>
+                <td style={td}><span style={{ padding: "2px 8px", borderRadius: 999, fontSize: 11.5, fontWeight: 700, background: inv.status === "paid" ? "#DCFCE7" : "#FEF3C7", color: inv.status === "paid" ? "#166534" : "#92400E" }}>{inv.status === "paid" ? "Paid" : "Due"}</span></td>
+                <td style={td}>{inv.status === "paid" ? `Paid ${new Date(inv.paidAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}` : utcDay(inv.dueDate)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+}
+const td = { padding: "8px", borderBottom: "1px solid #F1F5F9" };
+
 export default function Settings() {
   const [school, setSchool] = useState(null);
   const [subjects, setSubjects] = useState([]);
@@ -216,6 +259,7 @@ export default function Settings() {
         </button>
       </div>
 
+      <PlanAndBills school={school} />
       <OnlinePayments />
 
       <div style={card}>
