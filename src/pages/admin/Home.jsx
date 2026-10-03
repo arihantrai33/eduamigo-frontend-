@@ -6,7 +6,7 @@ import {
   CalendarCheck, CreditCard, FileBadge, Clock, Notebook, BadgeDollarSign, Layers,
   Bell, MessageCircle, BarChart2, Settings as SettingsIcon, Menu, X,
   AlertCircle, CheckCircle, BookOpen, LogOut, TrendingUp, Zap,
-  Shield, FileText, GraduationCap, History
+  Shield, FileText, GraduationCap, History, CalendarRange
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { can, ROLE_LABELS } from "../../utils/permissions";
@@ -45,6 +45,8 @@ import SalaryManagement from "./SalaryManagement";
 import Settings from "./Settings";
 import AcademicSetup from "./AcademicSetup";
 import ActivityLog from "./ActivityLog";
+import YearEnd from "./YearEnd";
+import TransferCertificate from "./TransferCertificate";
 import StudentProfile from "./StudentProfile";
 import TeacherProfile from "./TeacherProfile";
 import Timetable from "./Timetable";
@@ -83,6 +85,7 @@ const NAV = [
 
   { section: "ACADEMIC MANAGEMENT" },
   { label: "School Setup",       icon: GraduationCap,   path: "/admin/academic", perm: "academics.manage" },
+  { label: "Year End & TC",      icon: CalendarRange,   path: "/admin/year-end", perm: "academics.manage" },
   { label: "Admissions",         icon: FileText,        path: "/admin/admissions", perm: "admissions.manage" },
   { label: "All Students",       icon: Users,           path: "/admin/students", perm: "students.read" },
   { label: "All Teachers",       icon: School,          path: "/admin/teachers", perm: "teachers.manage" },
@@ -646,6 +649,8 @@ export default function AdminHome() {
           <Route path="settings" element={<Gate user={user} perm="settings.manage"><Settings /></Gate>} />
           <Route path="academic" element={<Gate user={user} perm="academics.manage"><AcademicSetup /></Gate>} />
           <Route path="activity" element={<Gate user={user} perm="audit.read"><ActivityLog /></Gate>} />
+          <Route path="year-end" element={<Gate user={user} perm="academics.manage"><YearEnd /></Gate>} />
+          <Route path="tc/:id" element={<Gate user={user} perm="students.manage"><TransferCertificate /></Gate>} />
           <Route path="timetable" element={<Gate user={user} perm="timetable.manage"><Timetable /></Gate>} />
           <Route path="transport" element={<Gate user={user} perm="transport.manage"><Transport /></Gate>} />
           <Route path="user-management" element={<Gate user={user} perm="users.manage"><UserManagement /></Gate>} />
