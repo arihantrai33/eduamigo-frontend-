@@ -34,23 +34,26 @@ function luminance(hex) {
 export const readableOn = (hex) => (luminance(hex) > 0.45 ? "#14213D" : "#FFFFFF");
 
 export function schoolTheme(school) {
-  let primary = isHex(school?.primaryColor) ? school.primaryColor : DEFAULT_PRIMARY;
+  let base = isHex(school?.primaryColor) ? school.primaryColor : DEFAULT_PRIMARY;
   // Very light brand colours cannot carry white text: darken them for buttons and headers.
-  if (luminance(primary) > 0.5) primary = shade(primary, -0.45);
+  if (luminance(base) > 0.5) base = shade(base, -0.45);
   const accent = isHex(school?.accentColor) ? school.accentColor : DEFAULT_ACCENT;
   const isLight = school?.heroStyle === "light";
+  // Light-style schools use a softer version of their colour for tabs, chips, badges and buttons;
+  // the dark shades (headings, text on tints) still come from the full colour so they stay readable.
+  const primary = isLight ? shade(base, 0.15) : base;
   return {
     isLight,
     // Main buttons: soft and bright on light screens, deeper on bold ones.
     button: isLight
-      ? `linear-gradient(135deg, ${shade(primary, 0.3)} 0%, ${shade(primary, 0.1)} 100%)`
+      ? `linear-gradient(135deg, ${shade(base, 0.3)} 0%, ${shade(base, 0.1)} 100%)`
       : `linear-gradient(135deg, ${primary} 0%, ${shade(primary, -0.3)} 100%)`,
     mist: shade(primary, 0.96),    // near-white tint
     primary,
     accent,
     onAccent: readableOn(accent),
-    deep: shade(primary, -0.55),   // hero background, darkest
-    dark: shade(primary, -0.3),
+    deep: shade(base, -0.55),      // hero background, darkest
+    dark: shade(base, -0.3),
     light: shade(primary, 0.35),
     soft: shade(primary, 0.9),     // selected chips, subtle fills
     ring: alpha(primary, 0.18),    // focus rings

@@ -125,7 +125,7 @@ export default function Login() {
                 onClick={() => { setRole(r.id); setError(""); setIdentifier(""); }}
                 style={{
                   ...s.roleBtn,
-                  ...(active ? { background: theme.primary, color: "#fff", boxShadow: `0 6px 16px ${theme.glow}`, transform: "translateY(-1px)" } : {}),
+                  ...(active ? { background: theme.button, color: "#fff", boxShadow: `0 6px 16px ${theme.glow}`, transform: "translateY(-1px)" } : {}),
                 }}>
                 <span style={{ fontSize: 18 }}>{r.icon}</span>
                 <span style={{ fontSize: 11, fontWeight: 700 }}>{r.label}</span>
