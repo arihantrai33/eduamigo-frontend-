@@ -20,7 +20,7 @@ export default function ForgotPassword() {
   const school = getSavedSchool();
   const role = new URLSearchParams(window.location.search).get("role") || "parent";
   const theme = schoolTheme(school);
-  const color = `linear-gradient(135deg, ${theme.primary} 0%, ${theme.dark} 100%)`;
+  const color = theme.button;
   const [step, setStep] = useState("request"); // request | code | done
   const [identifier, setIdentifier] = useState("");
   const [code, setCode] = useState("");

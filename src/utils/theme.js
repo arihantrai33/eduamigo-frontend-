@@ -38,7 +38,14 @@ export function schoolTheme(school) {
   // Very light brand colours cannot carry white text: darken them for buttons and headers.
   if (luminance(primary) > 0.5) primary = shade(primary, -0.45);
   const accent = isHex(school?.accentColor) ? school.accentColor : DEFAULT_ACCENT;
+  const isLight = school?.heroStyle === "light";
   return {
+    isLight,
+    // Main buttons: bright on light screens, deeper on bold ones.
+    button: isLight
+      ? `linear-gradient(135deg, ${shade(primary, 0.18)} 0%, ${primary} 100%)`
+      : `linear-gradient(135deg, ${primary} 0%, ${shade(primary, -0.3)} 100%)`,
+    mist: shade(primary, 0.96),    // near-white tint
     primary,
     accent,
     onAccent: readableOn(accent),

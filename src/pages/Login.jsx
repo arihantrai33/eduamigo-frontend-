@@ -101,7 +101,14 @@ export default function Login() {
   return (
     <div style={s.page}>
       <SchoolHero school={school} theme={theme}>
-        <button onClick={() => setDarkMode(!darkMode)} style={s.themeBtn} aria-label="Toggle dark mode">
+        <button onClick={() => setDarkMode(!darkMode)} aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"} title={darkMode ? "Light mode" : "Dark mode"}
+          style={{
+            ...s.themeBtn,
+            // A solid, outlined chip so it reads as a button on both light and bold headers.
+            ...(theme.isLight
+              ? { background: "#fff", border: `1.5px solid ${alpha(theme.primary, 0.35)}`, boxShadow: `0 4px 12px ${alpha(theme.primary, 0.2)}` }
+              : { background: alpha("#000000", 0.25), border: "1.5px solid rgba(255,255,255,0.45)", boxShadow: "0 4px 12px rgba(0,0,0,0.2)" }),
+          }}>
           {darkMode ? "☀️" : "🌙"}
         </button>
       </SchoolHero>
@@ -155,7 +162,7 @@ export default function Login() {
         <button onClick={handleLogin} disabled={loading}
           style={{
             ...s.btn,
-            background: `linear-gradient(135deg, ${theme.primary} 0%, ${theme.dark} 100%)`,
+            background: theme.button,
             boxShadow: `0 10px 24px ${theme.glow}`, opacity: loading ? 0.75 : 1,
           }}>
           {loading ? <span style={s.spinner} /> : null}
@@ -179,7 +186,7 @@ export default function Login() {
 
 const s = {
   page: { minHeight: "100vh", height: "100vh", display: "flex", flexDirection: "column", background: "var(--card)", fontFamily: "'Inter','Segoe UI',sans-serif", overflowY: "auto" },
-  themeBtn: { position: "absolute", top: 14, right: 14, zIndex: 2, background: "rgba(255,255,255,0.18)", border: "1px solid rgba(255,255,255,0.25)", borderRadius: "50%", width: 36, height: 36, fontSize: 17, cursor: "pointer", backdropFilter: "blur(6px)" },
+  themeBtn: { position: "absolute", top: 14, right: 14, zIndex: 2, borderRadius: "50%", width: 40, height: 40, fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0 },
   card: { flex: 1, background: "var(--card)", padding: "4px 22px 28px", animation: "cardIn .5s .1s cubic-bezier(.2,.8,.2,1) both" },
   heading: { fontSize: 21, fontWeight: 800, color: "var(--text)", margin: "0 0 2px" },
   sub: { fontSize: 13, color: "var(--subtext)", margin: "0 0 18px" },

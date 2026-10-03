@@ -1,6 +1,34 @@
 import { useState } from "react";
 import { alpha } from "../utils/theme";
 
+// Two looks, chosen per school (branding.heroStyle):
+//   bold  - full brand-colour gradient with white text
+//   light - soft tint of the brand colour with dark text; the brand colour is kept for accents
+function heroLook(theme, light) {
+  if (light) {
+    return {
+      background: `radial-gradient(120% 90% at 85% 0%, ${alpha(theme.accent, 0.22)} 0%, transparent 55%),
+                   linear-gradient(170deg, ${theme.soft} 0%, ${theme.mist} 100%)`,
+      text: theme.deep,
+      dots: alpha(theme.deep, 0.05),
+      rings: alpha(theme.primary, 0.12),
+      nameShadow: "none",
+      logoShadow: `0 12px 28px ${alpha(theme.primary, 0.22)}`,
+      chip: { background: alpha(theme.primary, 0.08), border: `1px solid ${alpha(theme.primary, 0.25)}`, color: theme.primary },
+    };
+  }
+  return {
+    background: `radial-gradient(120% 90% at 85% 0%, ${alpha(theme.light, 0.45)} 0%, transparent 55%),
+                 linear-gradient(160deg, ${theme.deep} 0%, ${theme.primary} 58%, ${theme.dark} 100%)`,
+    text: "#fff",
+    dots: "rgba(255,255,255,0.10)",
+    rings: alpha("#ffffff", 0.12),
+    nameShadow: `0 2px 12px ${alpha(theme.deep, 0.5)}`,
+    logoShadow: `0 14px 34px ${alpha(theme.deep, 0.55)}`,
+    chip: { background: alpha("#ffffff", 0.14), border: `1px solid ${alpha("#ffffff", 0.22)}` },
+  };
+}
+
 // Branded header for pre-login screens: the school's colours, logo, name, campus and motto.
 // `theme` comes from schoolTheme(school).
 export default function SchoolHero({ school, theme, compact = false, children }) {
@@ -9,19 +37,19 @@ export default function SchoolHero({ school, theme, compact = false, children })
   const initials = name.split(/\s+/).filter((w) => /^[A-Za-z]/.test(w)).slice(0, 2).map((w) => w[0]).join("").toUpperCase() || "E";
   const logoSize = compact ? 64 : 92;
   const showLogo = school?.logoUrl && !logoFailed;
+  const look = heroLook(theme, theme.isLight);
 
   return (
     <div style={{
       position: "relative", overflow: "hidden", flexShrink: 0,
       padding: compact ? "26px 24px 46px" : "34px 24px 58px",
-      background: `radial-gradient(120% 90% at 85% 0%, ${alpha(theme.light, 0.45)} 0%, transparent 55%),
-                   linear-gradient(160deg, ${theme.deep} 0%, ${theme.primary} 58%, ${theme.dark} 100%)`,
-      textAlign: "center", color: "#fff",
+      background: look.background,
+      textAlign: "center", color: look.text,
     }}>
       {/* Decoration: soft rings, a dotted texture and an accent glow */}
-      <div aria-hidden style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(255,255,255,0.10) 1px, transparent 1.2px)", backgroundSize: "16px 16px", maskImage: "linear-gradient(180deg, #000 0%, transparent 85%)", WebkitMaskImage: "linear-gradient(180deg, #000 0%, transparent 85%)" }} />
-      <div aria-hidden style={{ position: "absolute", width: 260, height: 260, borderRadius: "50%", border: `1px solid ${alpha("#ffffff", 0.12)}`, top: -120, left: -90 }} />
-      <div aria-hidden style={{ position: "absolute", width: 180, height: 180, borderRadius: "50%", border: `1px solid ${alpha("#ffffff", 0.10)}`, top: -60, left: -40 }} />
+      <div aria-hidden style={{ position: "absolute", inset: 0, backgroundImage: `radial-gradient(${look.dots} 1px, transparent 1.2px)`, backgroundSize: "16px 16px", maskImage: "linear-gradient(180deg, #000 0%, transparent 85%)", WebkitMaskImage: "linear-gradient(180deg, #000 0%, transparent 85%)" }} />
+      <div aria-hidden style={{ position: "absolute", width: 260, height: 260, borderRadius: "50%", border: `1px solid ${look.rings}`, top: -120, left: -90 }} />
+      <div aria-hidden style={{ position: "absolute", width: 180, height: 180, borderRadius: "50%", border: `1px solid ${look.rings}`, top: -60, left: -40 }} />
       <div aria-hidden style={{ position: "absolute", width: 220, height: 220, borderRadius: "50%", background: `radial-gradient(circle, ${alpha(theme.accent, 0.35)} 0%, transparent 70%)`, bottom: -110, right: -70 }} />
 
       {children}
@@ -30,7 +58,7 @@ export default function SchoolHero({ school, theme, compact = false, children })
         <div style={{
           width: logoSize + 14, height: logoSize + 14, margin: "0 auto", borderRadius: "50%", padding: 4,
           background: `conic-gradient(from 200deg, ${theme.accent}, ${alpha(theme.accent, 0.2)}, ${theme.accent})`,
-          boxShadow: `0 14px 34px ${alpha(theme.deep, 0.55)}`,
+          boxShadow: look.logoShadow,
         }}>
           <div style={{ width: "100%", height: "100%", borderRadius: "50%", background: "#fff", padding: 4, boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
             {showLogo ? (
@@ -41,7 +69,7 @@ export default function SchoolHero({ school, theme, compact = false, children })
           </div>
         </div>
 
-        <h1 style={{ margin: compact ? "12px 0 6px" : "16px 0 8px", fontSize: compact ? 18 : 22, fontWeight: 800, lineHeight: 1.2, letterSpacing: 0.2, textShadow: `0 2px 12px ${alpha(theme.deep, 0.5)}` }}>
+        <h1 style={{ margin: compact ? "12px 0 6px" : "16px 0 8px", fontSize: compact ? 18 : 22, fontWeight: 800, lineHeight: 1.2, letterSpacing: 0.2, textShadow: look.nameShadow }}>
           {name}
         </h1>
 
@@ -52,7 +80,7 @@ export default function SchoolHero({ school, theme, compact = false, children })
             </span>
           )}
           {school?.code && !compact && (
-            <span style={{ padding: "4px 10px", borderRadius: 999, background: alpha("#ffffff", 0.14), border: `1px solid ${alpha("#ffffff", 0.22)}`, fontSize: 11, fontWeight: 700, letterSpacing: 1 }}>
+            <span style={{ padding: "4px 10px", borderRadius: 999, ...look.chip, fontSize: 11, fontWeight: 700, letterSpacing: 1 }}>
               {school.code}
             </span>
           )}
