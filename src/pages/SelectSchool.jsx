@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { findSchoolByCode, searchSchools, saveSchool, schoolColor } from "../utils/school";
+import { GraduationCap, MapPin, AlertCircle } from "lucide-react";
 
 // "Find your school": shown once per device, before the first sign-in.
 // The user types the school code given by the school, or searches by name, then confirms.
@@ -63,7 +64,7 @@ export default function SelectSchool() {
             <SchoolLogo school={selected} size={72} />
             <h2 style={{ ...s.heading, textAlign: "center", margin: "14px 0 4px" }}>{selected.appName || selected.name}</h2>
             {selected.appName && selected.appName !== selected.name && <p style={s.muted}>{selected.name}</p>}
-            {selected.city && <p style={s.muted}>📍 {selected.city}</p>}
+            {selected.city && <p style={{ ...s.muted, display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}><MapPin aria-hidden size={13} /> {selected.city}</p>}
             <p style={{ ...s.muted, marginTop: 8 }}>School code: <strong style={{ color: "var(--text)" }}>{selected.code}</strong></p>
           </div>
           <button onClick={confirm} style={{ ...s.btn, background: color }}>Yes, this is my school</button>
@@ -76,7 +77,7 @@ export default function SelectSchool() {
   return (
     <div style={s.page}>
       <div style={s.top}>
-        <div style={s.logoBox}>🎓</div>
+        <div style={s.logoBox}><GraduationCap aria-hidden size={34} strokeWidth={1.8} color="#fff" /></div>
         <h1 style={s.brand}>EduAmigo</h1>
         <p style={s.tagline}>Find your school</p>
       </div>
@@ -90,7 +91,7 @@ export default function SelectSchool() {
           placeholder="School code or name" style={s.input}
           autoCapitalize="characters" autoComplete="off"
         />
-        {error && <div style={s.err}>⚠️ {error}</div>}
+        {error && <div style={s.err}><AlertCircle aria-hidden size={16} style={{ flexShrink: 0 }} />{error}</div>}
 
         {searching && <p style={s.muted}>Searching…</p>}
         {!searching && query.trim().length >= 3 && shown.length === 0 && !error && (
@@ -133,7 +134,7 @@ export function SchoolLink() {
       <div style={{ ...s.card, marginTop: 120, textAlign: "center" }}>
         {error ? (
           <>
-            <div style={s.err}>⚠️ {error}</div>
+            <div style={s.err}><AlertCircle aria-hidden size={16} style={{ flexShrink: 0 }} />{error}</div>
             <button onClick={() => navigate("/select-school", { replace: true })} style={s.btn}>Find my school</button>
           </>
         ) : <p style={s.muted}>Opening your school…</p>}
@@ -169,7 +170,7 @@ const s = {
   label: { fontSize: 12, fontWeight: 600, color: "var(--text)", display: "block", marginBottom: 5 },
   input: { width: "100%", padding: "12px 13px", border: "1.5px solid var(--border)", borderRadius: 10, fontSize: 15, color: "var(--text)", outline: "none", boxSizing: "border-box", background: "var(--input)", marginBottom: 12 },
   muted: { fontSize: 12, color: "var(--subtext)", margin: "0 0 6px", lineHeight: 1.5, textAlign: "center" },
-  err: { background: "#fef2f2", border: "1px solid #fecaca", color: "#dc2626", borderRadius: 10, padding: "9px 13px", fontSize: 12, marginBottom: 12 },
+  err: { display: "flex", gap: 8, alignItems: "flex-start", background: "#fef2f2", border: "1px solid #fecaca", color: "#dc2626", borderRadius: 10, padding: "9px 13px", fontSize: 12, marginBottom: 12 },
   result: { display: "flex", alignItems: "center", gap: 12, width: "100%", padding: "10px 12px", border: "1.5px solid var(--border)", borderRadius: 12, background: "var(--input)", cursor: "pointer" },
   confirmCard: { display: "flex", flexDirection: "column", alignItems: "center", border: "2px solid", borderRadius: 18, padding: "24px 16px", marginBottom: 20 },
   btn: { width: "100%", padding: 13, background: "linear-gradient(135deg, #1a3a8f, #4f8ef7)", color: "white", border: "none", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer" },

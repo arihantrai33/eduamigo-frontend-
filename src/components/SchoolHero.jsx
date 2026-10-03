@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { alpha } from "../utils/theme";
+import { MapPin } from "lucide-react";
 
 // Two looks, chosen per school (branding.heroStyle):
 //   bold  - full brand-colour gradient with white text
@@ -76,7 +77,7 @@ export default function SchoolHero({ school, theme, compact = false, children })
         <div style={{ display: "flex", justifyContent: "center", gap: 6, flexWrap: "wrap" }}>
           {school?.city && (
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 10px", borderRadius: 999, background: theme.accent, color: theme.onAccent, fontSize: 11, fontWeight: 800, letterSpacing: 0.3, boxShadow: `0 4px 12px ${alpha(theme.accent, 0.4)}` }}>
-              📍 {school.city}
+              <MapPin aria-hidden size={12} strokeWidth={2.5} /> {school.city}
             </span>
           )}
           {school?.code && !compact && (

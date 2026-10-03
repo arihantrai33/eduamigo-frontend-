@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getSavedSchool } from "../utils/school";
 import { homeFor } from "../utils/home";
+import { GraduationCap } from "lucide-react";
 
 export default function Splash() {
   const navigate = useNavigate();
@@ -90,11 +91,11 @@ export default function Splash() {
       <div style={{
         width: "88px", height: "88px", borderRadius: "22px",
         background: "white", display: "flex", alignItems: "center",
-        justifyContent: "center", fontSize: "42px", marginBottom: "28px",
+        justifyContent: "center", marginBottom: "28px",
         boxShadow: "0 0 0 8px rgba(79,142,247,0.1), 0 0 0 16px rgba(79,142,247,0.05)",
         animation: "floatUp 0.6s ease-out both",
       }}>
-        🎓
+        <GraduationCap aria-hidden size={46} strokeWidth={1.8} color="#1a3a8f" />
       </div>
 
       {/* App name */}

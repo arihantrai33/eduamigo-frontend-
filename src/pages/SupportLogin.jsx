@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { saveSchool, findSchoolByCode } from "../utils/school";
 import { homeFor } from "../utils/home";
+import { LifeBuoy } from "lucide-react";
 
 // /support#token=... — opened from the EduAmigo owner console. Signs in as the school's admin for the
 // support session (one hour). The token sits in the URL fragment, which is never sent to any server,
@@ -36,7 +37,7 @@ export default function SupportLogin() {
   return (
     <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", fontFamily: "'Inter','Segoe UI',sans-serif", background: "#F4F5F8", padding: 24 }}>
       <div style={{ background: "#fff", borderRadius: 16, padding: 24, maxWidth: 380, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
-        <div style={{ fontSize: 32, marginBottom: 8 }}>🛟</div>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 8 }}><LifeBuoy aria-hidden size={34} color="#2F5BD3" /></div>
         <h2 style={{ margin: "0 0 8px", fontSize: 18 }}>EduAmigo support</h2>
         {error
           ? <p style={{ color: "#B42318", fontSize: 14 }}>{error}</p>

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getSavedSchool } from "../utils/school";
 import { schoolTheme } from "../utils/theme";
 import SchoolHero from "../components/SchoolHero";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -87,7 +88,7 @@ export default function ForgotPassword() {
             <label style={s.label}>{idLabel}</label>
             <input value={identifier} onChange={(e) => setIdentifier(e.target.value)} onKeyDown={(e) => e.key === "Enter" && requestCode()}
               placeholder={role === "parent" ? "98765 43210 or name@mail.com" : "yourname@school.edu"} style={s.input} autoFocus />
-            {error && <div style={s.err}>⚠️ {error}</div>}
+            {error && <div style={s.err}><AlertCircle aria-hidden size={16} style={{ flexShrink: 0 }} />{error}</div>}
             <button onClick={requestCode} disabled={busy} style={{ ...s.btn, background: color, opacity: busy ? 0.7 : 1 }}>
               {busy ? "Sending..." : "Send code"}
             </button>
@@ -104,7 +105,7 @@ export default function ForgotPassword() {
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 8 characters, letters and numbers" style={s.input} autoComplete="new-password" />
             <label style={s.label}>Confirm new password</label>
             <input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} onKeyDown={(e) => e.key === "Enter" && resetPassword()} style={s.input} autoComplete="new-password" />
-            {error && <div style={s.err}>⚠️ {error}</div>}
+            {error && <div style={s.err}><AlertCircle aria-hidden size={16} style={{ flexShrink: 0 }} />{error}</div>}
             <button onClick={resetPassword} disabled={busy} style={{ ...s.btn, background: color, opacity: busy ? 0.7 : 1 }}>
               {busy ? "Saving..." : "Set new password"}
             </button>
@@ -112,7 +113,7 @@ export default function ForgotPassword() {
           </>
         ) : (
           <>
-            <h2 style={s.heading}>Password changed ✅</h2>
+            <h2 style={{ ...s.heading, display: "flex", alignItems: "center", gap: 8 }}><CheckCircle2 aria-hidden size={22} color="#16a34a" />Password changed</h2>
             <p style={s.sub}>You have been signed out on all devices. Please log in with your new password.</p>
             <button onClick={() => navigate("/login", { replace: true })} style={{ ...s.btn, background: color }}>Go to login</button>
           </>
@@ -130,7 +131,7 @@ const s = {
   sub: { fontSize: 13, color: "var(--subtext)", margin: "0 0 16px", lineHeight: 1.55 },
   label: { fontSize: 12, fontWeight: 600, color: "var(--text)", display: "block", marginBottom: 5 },
   input: { width: "100%", padding: "11px 13px", border: "1.5px solid var(--border)", borderRadius: 10, fontSize: 14, color: "var(--text)", outline: "none", boxSizing: "border-box", background: "var(--input)", marginBottom: 14 },
-  err: { background: "#fef2f2", border: "1px solid #fecaca", color: "#dc2626", borderRadius: 10, padding: "9px 13px", fontSize: 12, marginBottom: 14 },
+  err: { display: "flex", gap: 8, alignItems: "flex-start", background: "#fef2f2", border: "1px solid #fecaca", color: "#dc2626", borderRadius: 10, padding: "9px 13px", fontSize: 12, marginBottom: 14 },
   btn: { width: "100%", padding: 13, color: "white", border: "none", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer" },
   linkBtn: { width: "100%", padding: 12, marginTop: 6, background: "none", border: "none", color: "var(--subtext)", fontSize: 13, fontWeight: 600, cursor: "pointer" },
   note: { fontSize: 12, color: "var(--subtext)", marginTop: 14, lineHeight: 1.5, textAlign: "center" },
