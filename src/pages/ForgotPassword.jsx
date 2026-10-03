@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getSavedSchool, schoolColor } from "../utils/school";
-import { SchoolLogo } from "./SelectSchool";
+import { getSavedSchool } from "../utils/school";
+import { schoolTheme } from "../utils/theme";
+import SchoolHero from "../components/SchoolHero";
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -18,7 +19,8 @@ export default function ForgotPassword() {
   const navigate = useNavigate();
   const school = getSavedSchool();
   const role = new URLSearchParams(window.location.search).get("role") || "parent";
-  const color = schoolColor(school);
+  const theme = schoolTheme(school);
+  const color = `linear-gradient(135deg, ${theme.primary} 0%, ${theme.dark} 100%)`;
   const [step, setStep] = useState("request"); // request | code | done
   const [identifier, setIdentifier] = useState("");
   const [code, setCode] = useState("");
@@ -67,10 +69,7 @@ export default function ForgotPassword() {
 
   return (
     <div style={s.page}>
-      <div style={s.top}>
-        <SchoolLogo school={school} size={52} />
-        <h1 style={s.brand}>Reset password</h1>
-      </div>
+      <SchoolHero school={school} theme={theme} compact />
       <div style={s.card}>
         {role === "student" ? (
           <>
@@ -125,10 +124,8 @@ export default function ForgotPassword() {
 }
 
 const s = {
-  page: { minHeight: "100vh", height: "100vh", display: "flex", flexDirection: "column", background: "linear-gradient(160deg, #0f1b4c 0%, #1a3a8f 50%, #0f1b4c 100%)", fontFamily: "'Inter','Segoe UI',sans-serif", overflowY: "auto" },
-  top: { display: "flex", flexDirection: "column", alignItems: "center", padding: "24px 24px 18px", gap: 10 },
-  brand: { color: "white", fontSize: 20, fontWeight: 700, margin: 0 },
-  card: { flex: 1, background: "var(--card)", borderRadius: 24, padding: "24px 20px 32px", overflowY: "auto" },
+  page: { minHeight: "100vh", height: "100vh", display: "flex", flexDirection: "column", background: "var(--card)", fontFamily: "'Inter','Segoe UI',sans-serif", overflowY: "auto" },
+  card: { flex: 1, background: "var(--card)", padding: "4px 22px 32px" },
   heading: { fontSize: 19, fontWeight: 700, color: "var(--text)", margin: "0 0 6px" },
   sub: { fontSize: 13, color: "var(--subtext)", margin: "0 0 16px", lineHeight: 1.55 },
   label: { fontSize: 12, fontWeight: 600, color: "var(--text)", display: "block", marginBottom: 5 },
