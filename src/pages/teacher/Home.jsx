@@ -4,6 +4,8 @@ import { useAuth } from '../../context/AuthContext'
 import { userTheme, brandLook } from '../../utils/theme'
 import SchoolStrip from '../../components/SchoolStrip'
 
+import Glyph from "../../components/Glyph";
+import { plural } from "../../utils/plural";
 const API = import.meta.env.VITE_API_URL
 
 function getGreeting() {
@@ -120,13 +122,13 @@ export default function TeacherHome() {
   }
 
   const quickTiles = teacher ? [
-    { icon: '✅', label: 'Take Attendance', sub: `${teacher.assignedClasses?.length || 0} classes`, path: '/teacher/attendance' },
-    { icon: '📤', label: 'Upload Notes',    sub: 'Share with class',                                path: '/teacher/upload' },
-    { icon: '📊', label: 'Enter Marks',     sub: 'Publish results',                                 path: '/teacher/marks' },
-    { icon: '💬', label: 'Parent Messages', sub: unreadCount > 0 ? `${unreadCount} unread` : 'No new messages', path: '/teacher/chat' },
-    { icon: '📅', label: 'My Timetable',    sub: `Today: ${todayPeriods.length} ${todayPeriods.length === 1 ? 'period' : 'periods'}`,           path: '/teacher/timetable' },
-    { icon: '🗓️', label: 'Leave Request',  sub: 'Apply for leave',                                 path: '/teacher/leave' },
-    { icon: '🧑‍🎓', label: 'My Students',     sub: 'Login IDs and password reset',                    path: '/teacher/students' },
+    { icon: <Glyph e="✅" />, label: 'Take Attendance', sub: plural(teacher.assignedClasses?.length || 0, 'class', 'classes'), path: '/teacher/attendance' },
+    { icon: <Glyph e="📤" />, label: 'Upload Notes',    sub: 'Share with class',                                path: '/teacher/upload' },
+    { icon: <Glyph e="📊" />, label: 'Enter Marks',     sub: 'Publish results',                                 path: '/teacher/marks' },
+    { icon: <Glyph e="💬" />, label: 'Parent Messages', sub: unreadCount > 0 ? `${unreadCount} unread` : 'No new messages', path: '/teacher/chat' },
+    { icon: <Glyph e="📅" />, label: 'My Timetable',    sub: `Today: ${todayPeriods.length} ${todayPeriods.length === 1 ? 'period' : 'periods'}`,           path: '/teacher/timetable' },
+    { icon: <Glyph e="🗓" />, label: 'Leave Request',  sub: 'Apply for leave',                                 path: '/teacher/leave' },
+    { icon: <Glyph e="🧑‍🎓" />, label: 'My Students',     sub: 'Login IDs and password reset',                    path: '/teacher/students' },
   ] : []
 
   if (loading) return (
@@ -138,7 +140,7 @@ export default function TeacherHome() {
 
   if (error) return (
     <div style={styles.centered}>
-      <div style={{ fontSize: 40 }}>⚠️</div>
+      <div style={{ fontSize: 40 }}><Glyph e="⚠" /></div>
       <p style={{ color: '#EF5350', fontWeight: 600, textAlign: 'center', padding: '0 20px' }}>{error}</p>
       <button style={styles.retryBtn} onClick={fetchDashboard}>Retry</button>
       <button style={{ ...styles.retryBtn, background: '#EF5350', marginTop: 8 }} onClick={logout}>Logout</button>
@@ -157,7 +159,7 @@ export default function TeacherHome() {
           <div style={{ ...styles.headerName, color: look.text }}>{teacher?.name || '—'}</div>
         </div>
         <button onClick={() => navigate('/teacher/notifications')} style={{ ...styles.bellBtn, background: look.glass, border: look.border }}>
-          🔔
+          <Glyph e="🔔" />
           {unreadCount > 0 && <div style={{ position: 'absolute', top: -4, right: -4, minWidth: 18, height: 18, background: '#EF5350', borderRadius: '50%', border: '2px solid white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: 'white', padding: '0 4px' }}>{unreadCount}</div>}
         </button>
         </div>
@@ -170,7 +172,7 @@ export default function TeacherHome() {
           <div style={styles.heroSub}>
             {teacher?.subjects?.join(', ') || 'No subjects assigned'}
           </div>
-          <div style={styles.heroGreeting}>{getGreeting()} 👋</div>
+          <div style={styles.heroGreeting}>{getGreeting()} </div>
           <div style={styles.heroDate}>
             {formatDate()} • {todayPeriods.length} {todayPeriods.length === 1 ? 'period' : 'periods'} today
           </div>
@@ -238,11 +240,11 @@ export default function TeacherHome() {
       {/* Bottom Nav */}
       <div style={styles.bottomNav}>
         {[
-          { icon: '🏠', label: 'Home',       path: '/teacher/home' },
-          { icon: '✅', label: 'Attendance', path: '/teacher/attendance' },
-          { icon: '📤', label: 'Upload',     path: '/teacher/upload' },
-          { icon: '💬', label: 'Messages',   path: '/teacher/chat' },
-          { icon: '👤', label: 'Me',         path: '/teacher/profile' },
+          { icon: <Glyph e="🏠" />, label: 'Home',       path: '/teacher/home' },
+          { icon: <Glyph e="✅" />, label: 'Attendance', path: '/teacher/attendance' },
+          { icon: <Glyph e="📤" />, label: 'Upload',     path: '/teacher/upload' },
+          { icon: <Glyph e="💬" />, label: 'Messages',   path: '/teacher/chat' },
+          { icon: <Glyph e="👤" />, label: 'Me',         path: '/teacher/profile' },
         ].map(t => {
           const active = location.pathname === t.path
           return (
@@ -308,7 +310,7 @@ const styles = {
     cursor: 'pointer', border: 'none', textAlign: 'left',
     boxShadow: '0 2px 16px color-mix(in srgb, var(--brand) 10%, transparent)',
   },
-  tileIcon:  { fontSize: 28, marginBottom: 10 },
+  tileIcon:  { width: 40, height: 40, borderRadius: 12, background: "var(--brand-soft)", color: "var(--brand-dark)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, marginBottom: 10 },
   tileLabel: { fontSize: 13, fontWeight: 700, color: '#1C2033' },
   tileSub:   { fontSize: 10.5, color: '#7B8099', fontWeight: 500, marginTop: 2 },
   sectionHeader: {

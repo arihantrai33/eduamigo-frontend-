@@ -4,6 +4,7 @@ import { gradeFor, GRADE_STYLE, PASS_PERCENT } from "../../utils/grades";
 import { useNavigate } from "react-router-dom";
 import { toast, confirmAction, errorMessage } from "../../utils/toast";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -92,10 +93,10 @@ export default function Results() {
       {/* Stat Cards */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
         {[
-          { label:"TOTAL RECORDS", value: filtered.length, icon:"📋", border:"var(--brand)", bg:"var(--brand-soft)" },
-          { label:"AVG SCORE",     value: `${avgScore}%`,  icon:"📊", border:"#3B82F6", bg:"#EFF6FF" },
-          { label:"PASSED",        value: passed,          icon:"✅", border:"#10B981", bg:"#F0FDF4" },
-          { label:"TOPPERS (90%+)",value: toppers,         icon:"🏆", border:"#F59E0B", bg:"#FFFBEB" },
+          { label:"TOTAL RECORDS", value: filtered.length, icon:<Glyph e="📋" />, border:"var(--brand)", bg:"var(--brand-soft)" },
+          { label:"AVG SCORE",     value: `${avgScore}%`,  icon:<Glyph e="📊" />, border:"#3B82F6", bg:"#EFF6FF" },
+          { label:"PASSED",        value: passed,          icon:<Glyph e="✅" />, border:"#10B981", bg:"#F0FDF4" },
+          { label:"TOPPERS (90%+)",value: toppers,         icon:<Glyph e="🏆" />, border:"#F59E0B", bg:"#FFFBEB" },
         ].map((card, i) => (
           <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
@@ -112,7 +113,7 @@ export default function Results() {
       {/* Filters */}
       <div style={{ display:"flex", gap:12, marginBottom:20, alignItems:"center", flexWrap:"wrap", animation:"fadeUp 0.4s ease 0.1s both" }}>
         <div style={{ flex:1, minWidth:200, position:"relative" }}>
-          <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}>🔍</span>
+          <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}><Glyph e="🔍" /></span>
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search student name..."
             style={{ width:"100%", padding:"11px 14px 11px 38px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
             onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
@@ -164,7 +165,7 @@ export default function Results() {
               </td></tr>
             ) : filtered.length === 0 ? (
               <tr><td colSpan={9} style={{ padding:"80px 0", textAlign:"center" }}>
-                <div style={{ fontSize:48, marginBottom:12 }}>🏆</div>
+                <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="🏆" /></div>
                 <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No results found</div>
                 <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Results will appear once teachers publish marks</div>
               </td></tr>

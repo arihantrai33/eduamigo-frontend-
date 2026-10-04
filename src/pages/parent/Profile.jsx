@@ -6,6 +6,7 @@ import SupportContent from "../../components/SupportContent";
 import { signOutEverywhere, resetStudentPassword } from "../../utils/account";
 import { showCredentials, toast } from "../../utils/toast";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -16,11 +17,11 @@ function BottomNav({ active }) {
   return (
     <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: "var(--card)", borderTop: "1px solid var(--border)", display: "flex", padding: "8px 0 16px", boxShadow: "0 -4px 12px rgba(0,0,0,0.06)" }}>
       {[
-        { icon: "🏠", label: "Home",     path: "/parent/home"          },
-        { icon: "💬", label: "Teachers", path: "/parent/chat"          },
-        { icon: "💳", label: "Fees",     path: "/parent/fee"           },
-        { icon: "🔔", label: "Alerts",   path: "/parent/notifications" },
-        { icon: "👤", label: "Me",       path: "/parent/profile"       },
+        { icon: <Glyph e="🏠" />, label: "Home",     path: "/parent/home"          },
+        { icon: <Glyph e="💬" />, label: "Teachers", path: "/parent/chat"          },
+        { icon: <Glyph e="💳" />, label: "Fees",     path: "/parent/fee"           },
+        { icon: <Glyph e="🔔" />, label: "Alerts",   path: "/parent/notifications" },
+        { icon: <Glyph e="👤" />, label: "Me",       path: "/parent/profile"       },
       ].map(tab => (
         <button key={tab.label} onClick={() => navigate(tab.path)}
           style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, color: active === tab.label.toLowerCase() ? "var(--brand)" : "#999" }}>
@@ -84,12 +85,12 @@ export default function ParentProfile() {
   };
 
   const menu = [
-    { icon: "🔔", label: "Notifications",   bg: "#E8F5E9", action: () => navigate("/parent/notifications") },
-    { icon: "🔒", label: "Change Password", bg: "#FFF9C4", action: () => navigate("/change-password") },
-    ...(children.length ? [{ icon: "🔑", label: "Reset child's password", bg: "#EDE7F6", action: () => setShowReset((v) => !v) }] : []),
-    { icon: "❓", label: "Help & Support",  bg: "#E3F2FD", action: () => setShowHelp(true) },
-    { icon: "📵", label: "Sign out on all devices", bg: "#FFF7ED", action: () => signOutEverywhere(logout, navigate) },
-    { icon: "🚪", label: "Logout",          bg: "#FFEBEE", action: handleLogout, danger: true                             },
+    { icon: <Glyph e="🔔" />, label: "Notifications",   bg: "#E8F5E9", action: () => navigate("/parent/notifications") },
+    { icon: <Glyph e="🔒" />, label: "Change Password", bg: "#FFF9C4", action: () => navigate("/change-password") },
+    ...(children.length ? [{ icon: <Glyph e="🔑" />, label: "Reset child's password", bg: "#EDE7F6", action: () => setShowReset((v) => !v) }] : []),
+    { icon: <Glyph e="❓" />, label: "Help & Support",  bg: "#E3F2FD", action: () => setShowHelp(true) },
+    { icon: <Glyph e="📵" />, label: "Sign out on all devices", bg: "#FFF7ED", action: () => signOutEverywhere(logout, navigate) },
+    { icon: <Glyph e="🚪" />, label: "Logout",          bg: "#FFEBEE", action: handleLogout, danger: true                             },
   ];
 
   if (showHelp) return (
@@ -125,7 +126,7 @@ export default function ParentProfile() {
             {parentData?.occupation ? parentData.occupation : "Parent"}
             {parentData?.address ? ` • ${parentData.address}` : ""}
           </div>
-          <span style={s.badge}>👨‍👩‍👧 Parent</span>
+          <span style={s.badge}><Glyph e="👨‍👩‍👧" /> Parent</span>
         </div>
 
         {/* Info Card */}

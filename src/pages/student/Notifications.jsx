@@ -4,13 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 });
 const icons = {
-  fee: "💰", attendance: "📋", result: "📊",
-  leave: "📝", bus: "🚌", general: "📢"
+  fee: <Glyph e="💰" />, attendance: <Glyph e="📋" />, result: <Glyph e="📊" />,
+  leave: <Glyph e="📝" />, bus: <Glyph e="🚌" />, general: <Glyph e="📢" />
 };
 
 export default function Notifications() {
@@ -64,7 +65,7 @@ export default function Notifications() {
       <div style={{ padding: "16px", marginTop: "-20px" }}>
         {notifications.length === 0 ? (
           <div style={{ textAlign: "center", padding: "40px", color: "var(--subtext)" }}>
-            <div style={{ fontSize: "48px" }}>🔔</div>
+            <div style={{ fontSize: "48px" }}><Glyph e="🔔" /></div>
             <p>No notifications yet</p>
           </div>
         ) : (
@@ -72,7 +73,7 @@ export default function Notifications() {
             <div key={n._id} onClick={() => markRead(n._id)}
               style={{ background: dm ? (n.read ? "#1e293b" : "#1e3a5f") : (n.read ? "white" : "#eff6ff"), borderRadius: "12px", padding: "14px", marginBottom: "10px", boxShadow: "0 1px 4px rgba(0,0,0,0.08)", borderLeft: n.read ? "none" : "3px solid var(--brand)", cursor: "pointer" }}>
               <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
-                <span style={{ fontSize: "24px" }}>{icons[n.type] || "📢"}</span>
+                <span style={{ fontSize: "24px" }}>{icons[n.type] || <Glyph e="📢" />}</span>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: n.read ? "500" : "700", fontSize: "14px", color: "var(--text)" }}>{n.title}</div>
                   <div style={{ fontSize: "12px", color: "var(--subtext2)", marginTop: "4px" }}>{n.message}</div>

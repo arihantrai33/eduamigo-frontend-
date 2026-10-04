@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
@@ -90,7 +91,7 @@ export default function TeacherTimetable() {
 
   if (error) return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#F4F6FB', gap: 12, padding: 24 }}>
-      <div style={{ fontSize: 40 }}>⚠️</div>
+      <div style={{ fontSize: 40 }}><Glyph e="⚠" /></div>
       <p style={{ color: '#EF5350', fontWeight: 600, textAlign: 'center' }}>{error}</p>
       <button onClick={fetchData} style={{ padding: '10px 24px', background: 'var(--brand)', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>Retry</button>
     </div>
@@ -162,7 +163,7 @@ export default function TeacherTimetable() {
 
         {selectedPeriods.length === 0 ? (
           <div style={{ background: '#fff', borderRadius: 20, padding: '40px 20px', textAlign: 'center', boxShadow: '0 2px 16px color-mix(in srgb, var(--brand) 8%, transparent)' }}>
-            <div style={{ fontSize: 36, marginBottom: 10 }}>📭</div>
+            <div style={{ fontSize: 36, marginBottom: 10 }}><Glyph e="📭" /></div>
             <div style={{ fontSize: 14, color: '#7B8099', fontWeight: 500 }}>No classes scheduled for {selectedDay}</div>
           </div>
         ) : (
@@ -216,11 +217,11 @@ export default function TeacherTimetable() {
       {/* Bottom Nav */}
       <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 420, background: '#fff', display: 'flex', borderTop: '1px solid #E8EAF0', boxShadow: '0 -4px 24px color-mix(in srgb, var(--brand) 8%, transparent)', zIndex: 200, height: 66 }}>
         {[
-          { icon: '🏠', label: 'Home',       path: '/teacher/home' },
-          { icon: '✅', label: 'Attendance', path: '/teacher/attendance' },
-          { icon: '📤', label: 'Upload',     path: '/teacher/upload' },
-          { icon: '💬', label: 'Messages',   path: '/teacher/chat' },
-          { icon: '👤', label: 'Me',         path: '/teacher/profile' },
+          { icon: <Glyph e="🏠" />, label: 'Home',       path: '/teacher/home' },
+          { icon: <Glyph e="✅" />, label: 'Attendance', path: '/teacher/attendance' },
+          { icon: <Glyph e="📤" />, label: 'Upload',     path: '/teacher/upload' },
+          { icon: <Glyph e="💬" />, label: 'Messages',   path: '/teacher/chat' },
+          { icon: <Glyph e="👤" />, label: 'Me',         path: '/teacher/profile' },
         ].map(t => {
           const active = location.pathname === t.path
           return (

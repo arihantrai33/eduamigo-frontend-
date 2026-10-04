@@ -2,13 +2,14 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { childQuery } from "../../utils/selectedChild";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
 });
 
 const avatarColor = (name = '') => {
-  const colors = ['#4f46e5','#7c3aed','#0891b2','#059669','#d97706','#dc2626','#0284c7'];
+  const colors = ['var(--brand)','var(--brand-dark)','#0891b2','#059669','#d97706','#dc2626','#0284c7'];
   let hash = 0;
   for (let c of name) hash = c.charCodeAt(0) + ((hash << 5) - hash);
   return colors[Math.abs(hash) % colors.length];
@@ -118,7 +119,7 @@ export default function ParentChat() {
       <div style={S.msgList}>
         {messages.length === 0 && (
           <div style={S.emptyChat}>
-            <div style={{ fontSize: 40, marginBottom: 8 }}>💬</div>
+            <div style={{ fontSize: 40, marginBottom: 8 }}><Glyph e="💬" /></div>
             <div style={{ color: '#999', fontSize: 13 }}>Start a conversation</div>
           </div>
         )}
@@ -171,10 +172,10 @@ export default function ParentChat() {
       <div style={S.header}>
         <button style={S.headerBack} onClick={() => navigate('/parent/home')}>←</button>
         <div>
-          <h2 style={S.headerTitle}>💬 Messages</h2>
+          <h2 style={S.headerTitle}><Glyph e="💬" /> Messages</h2>
           {data.child && (
             <div style={S.childBadge}>
-              👦 {data.child.name} · Class {data.child.class}
+              <Glyph e="👦" /> {data.child.name} · Class {data.child.class}
               {data.child.section ? `-${data.child.section}` : ''}
             </div>
           )}
@@ -187,7 +188,7 @@ export default function ParentChat() {
         <div style={S.list}>
 
           {/* Admin Section */}
-          <div style={S.sectionLabel}>🏫 SCHOOL ADMINISTRATION</div>
+          <div style={S.sectionLabel}><Glyph e="🏫" /> SCHOOL ADMINISTRATION</div>
           {data.admin ? (
             <div style={S.chatRow} onClick={() => setActiveChat({
               name:       data.admin.name,
@@ -207,10 +208,10 @@ export default function ParentChat() {
           )}
 
           {/* Teachers Section */}
-          <div style={{ ...S.sectionLabel, marginTop: 20 }}>👨‍🏫 YOUR CHILD'S TEACHERS</div>
+          <div style={{ ...S.sectionLabel, marginTop: 20 }}><Glyph e="👨‍🏫" /> YOUR CHILD'S TEACHERS</div>
           {data.teachers.length === 0 ? (
             <div style={S.emptyBox}>
-              <div style={{ fontSize: 36, marginBottom: 8 }}>📚</div>
+              <div style={{ fontSize: 36, marginBottom: 8 }}><Glyph e="📚" /></div>
               <div>No teachers assigned yet</div>
               <div style={{ fontSize: 11, marginTop: 4, color: '#bbb' }}>Teachers will appear here once they are assigned in the timetable.</div>
             </div>

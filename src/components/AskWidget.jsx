@@ -14,6 +14,8 @@ import { askAssistant, sendFeedback, getAssistantIntro, getTickets, updateTicket
 // the screen; unclear questions come back with choices; serious ones become a ticket for a person.
 
 const PORTALS = ["/student", "/parent", "/teacher", "/admin"];
+// Screens with their own bottom actions or their own AI chat: the button would cover them.
+const HIDDEN_ON = ["/student/bus", "/parent/bus", "/student/chat", "/parent/chat", "/teacher/chat", "/student/revise", "/admin/chat"];
 const METHOD_LABEL = { keywords: "keywords", model: "AI", context: "follow-up", choice: "your choice", rule: "safety rule" };
 const STATUS_LABEL = { open: "Open", in_progress: "In progress", resolved: "Resolved" };
 
@@ -165,7 +167,7 @@ export default function AskWidget() {
   const inputRef = useRef(null);
   const convRef = useRef(null);
 
-  const onPortal = PORTALS.some((p) => pathname.startsWith(p));
+  const onPortal = PORTALS.some((p) => pathname.startsWith(p)) && !HIDDEN_ON.some((p) => pathname.startsWith(p));
   const enabled = !!user && onPortal && !user.mustChangePassword && hasFeature(user, "ai_assistant") && user.role !== "driver";
   const isAdminArea = pathname.startsWith("/admin");
 

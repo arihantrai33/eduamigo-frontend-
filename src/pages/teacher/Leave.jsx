@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 
 const LEAVE_TYPES = ['Sick Leave', 'Casual Leave', 'Emergency Leave', 'Personal Leave', 'Other'];
@@ -152,7 +153,7 @@ export default function TeacherLeave() {
       <div style={styles.content}>
         {/* Success Message */}
         {successMsg && (
-          <div style={styles.successBanner}>✅ {successMsg}</div>
+          <div style={styles.successBanner}><Glyph e="✅" /> {successMsg}</div>
         )}
 
         {/* Quota Card */}
@@ -221,10 +222,10 @@ export default function TeacherLeave() {
                 <p style={styles.loadingText}>Loading leave history...</p>
               </div>
             ) : error ? (
-              <div style={styles.errorBox}>⚠️ {error}</div>
+              <div style={styles.errorBox}><Glyph e="⚠" /> {error}</div>
             ) : leaves.length === 0 ? (
               <div style={styles.emptyBox}>
-                <p style={styles.emptyIcon}>📋</p>
+                <p style={styles.emptyIcon}><Glyph e="📋" /></p>
                 <p style={styles.emptyText}>No leave requests found.</p>
                 <p style={styles.emptySubText}>Tap "Apply Leave" to submit a new request.</p>
               </div>
@@ -249,7 +250,7 @@ export default function TeacherLeave() {
                     </div>
                     <p style={styles.leaveReason}>{leave.reason}</p>
                     {leave.reviewNote && (
-                      <p style={styles.reviewNote}>📝 Admin Note: {leave.reviewNote}</p>
+                      <p style={styles.reviewNote}><Glyph e="📝" /> Admin Note: {leave.reviewNote}</p>
                     )}
                     <p style={styles.leaveApplied}>Applied: {formatDate(leave.createdAt)}</p>
                   </div>
@@ -264,7 +265,7 @@ export default function TeacherLeave() {
           <div style={styles.formCard}>
             <h3 style={styles.formTitle}>New Leave Request</h3>
 
-            {formError && <div style={styles.errorBox}>⚠️ {formError}</div>}
+            {formError && <div style={styles.errorBox}><Glyph e="⚠" /> {formError}</div>}
 
             <label style={styles.label}>Leave Type</label>
             <select
@@ -303,7 +304,7 @@ export default function TeacherLeave() {
 
             {form.fromDate && form.toDate && new Date(form.toDate) >= new Date(form.fromDate) && (
               <div style={styles.durationPreview}>
-                📅 Duration: {dayCount(form.fromDate, form.toDate)} day{dayCount(form.fromDate, form.toDate) > 1 ? 's' : ''}
+                <Glyph e="📅" /> Duration: {dayCount(form.fromDate, form.toDate)} day{dayCount(form.fromDate, form.toDate) > 1 ? 's' : ''}
               </div>
             )}
 
@@ -322,11 +323,11 @@ export default function TeacherLeave() {
 
       {/* Bottom Nav */}
       <div style={styles.bottomNav}>
-        <NavItem icon="🏠" label="Home" onClick={() => navigate('/teacher/home')} />
-        <NavItem icon="✅" label="Attendance" onClick={() => navigate('/teacher/attendance')} />
-        <NavItem icon="📤" label="Upload" onClick={() => navigate('/teacher/upload')} />
-        <NavItem icon="💬" label="Messages" onClick={() => navigate('/teacher/chat')} />
-        <NavItem icon="👤" label="Me" onClick={() => navigate('/teacher/profile')} />
+        <NavItem icon={<Glyph e="🏠" />} label="Home" onClick={() => navigate('/teacher/home')} />
+        <NavItem icon={<Glyph e="✅" />} label="Attendance" onClick={() => navigate('/teacher/attendance')} />
+        <NavItem icon={<Glyph e="📤" />} label="Upload" onClick={() => navigate('/teacher/upload')} />
+        <NavItem icon={<Glyph e="💬" />} label="Messages" onClick={() => navigate('/teacher/chat')} />
+        <NavItem icon={<Glyph e="👤" />} label="Me" onClick={() => navigate('/teacher/profile')} />
       </div>
     </div>
   );

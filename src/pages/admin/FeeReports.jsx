@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -107,10 +108,10 @@ export default function FeeReports() {
       {/* Stat Cards */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
         {[
-          { label:"TOTAL BILLED",   value: fmtAmt(totalAmount),   icon:"📋", border:"var(--brand)", bg:"var(--brand-soft)" },
-          { label:"COLLECTED",      value: fmtAmt(collectedAmt),  icon:"✅", border:"#10B981", bg:"#F0FDF4" },
-          { label:"PENDING",        value: fmtAmt(pendingAmt),    icon:"⏳", border:"#F59E0B", bg:"#FFFBEB" },
-          { label:"COLLECTION RATE",value: `${collectionPct}%`,   icon:"📊", border:"var(--brand)", bg:"var(--brand-soft)" },
+          { label:"TOTAL BILLED",   value: fmtAmt(totalAmount),   icon:<Glyph e="📋" />, border:"var(--brand)", bg:"var(--brand-soft)" },
+          { label:"COLLECTED",      value: fmtAmt(collectedAmt),  icon:<Glyph e="✅" />, border:"#10B981", bg:"#F0FDF4" },
+          { label:"PENDING",        value: fmtAmt(pendingAmt),    icon:<Glyph e="⏳" />, border:"#F59E0B", bg:"#FFFBEB" },
+          { label:"COLLECTION RATE",value: `${collectionPct}%`,   icon:<Glyph e="📊" />, border:"var(--brand)", bg:"var(--brand-soft)" },
         ].map((card, i) => (
           <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
@@ -133,7 +134,7 @@ export default function FeeReports() {
         <ProgressBar value={collectionPct} color={collectionPct >= 75 ? "linear-gradient(90deg,#10B981,#059669)" : "linear-gradient(90deg,#F59E0B,#EF4444)"} />
         <div style={{ display:"flex", gap:20, marginTop:10 }}>
           <span style={{ fontSize:12, color:"#10B981", fontWeight:700 }}>✓ Collected: {fmtAmt(collectedAmt)}</span>
-          <span style={{ fontSize:12, color:"#F59E0B", fontWeight:700 }}>⏳ Pending: {fmtAmt(pendingAmt)}</span>
+          <span style={{ fontSize:12, color:"#F59E0B", fontWeight:700 }}><Glyph e="⏳" /> Pending: {fmtAmt(pendingAmt)}</span>
         </div>
       </div>
 
@@ -149,7 +150,7 @@ export default function FeeReports() {
           </div>
         ) : classStats.length === 0 ? (
           <div style={{ padding:"80px 0", textAlign:"center" }}>
-            <div style={{ fontSize:48, marginBottom:12 }}>📊</div>
+            <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="📊" /></div>
             <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No fee data available</div>
             <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Fee records will appear here once generated</div>
           </div>
@@ -188,7 +189,7 @@ export default function FeeReports() {
                     </td>
                     <td style={{ padding:"14px 18px" }}>
                       <span style={{ fontSize:11, fontWeight:700, padding:"4px 12px", borderRadius:20, background: good ? "#F0FDF4" : "#FFFBEB", color: good ? "#15803D" : "#D97706", border:`1px solid ${good ? "#BBF7D0" : "#FDE68A"}` }}>
-                        {good ? "✓ Good" : "⚠ Low"}
+                        {good ? "✓ Good" : "Low"}
                       </span>
                     </td>
                   </tr>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 const SCHOOL_NAME = "EduAmigo School";
@@ -247,7 +248,7 @@ export default function IDCardGenerator() {
             style={{ display: "flex", alignItems: "center", gap: 8, background: "linear-gradient(135deg,#0F172A,#1E3A5F)", color: "white", border: "none", borderRadius: 14, padding: "11px 24px", fontSize: 13, fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 16px rgba(15,23,42,0.3)", transition: "all 0.2s" }}
             onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
             onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}>
-            🖨️ {printing ? "Preparing..." : "Print ID Card"}
+            <Glyph e="🖨" /> {printing ? "Preparing..." : "Print ID Card"}
           </button>
         )}
       </div>
@@ -256,7 +257,7 @@ export default function IDCardGenerator() {
         {["student","teacher"].map(t => (
           <button key={t} onClick={() => setTab(t)}
             style={{ padding: "9px 28px", borderRadius: 10, border: "none", fontSize: 13, fontWeight: 700, cursor: "pointer", transition: "all 0.2s", background: tab === t ? "var(--brand-gradient)" : "transparent", color: tab === t ? "white" : "#94A3B8", boxShadow: tab === t ? "0 4px 12px color-mix(in srgb, var(--brand) 30%, transparent)" : "none" }}>
-            {t === "student" ? "🎒 Students" : "👩‍🏫 Faculty"}
+            {t === "student" ? "Students" : "Faculty"}
           </button>
         ))}
       </div>
@@ -321,7 +322,7 @@ export default function IDCardGenerator() {
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: 500 }}>
           {animPhase === 0 && (
             <div style={{ textAlign: "center", padding: "60px 40px", background: "white", borderRadius: 24, border: "2px dashed #E2E8F0", width: "100%" }}>
-              <div style={{ fontSize: 64, marginBottom: 16 }}>🪪</div>
+              <div style={{ fontSize: 64, marginBottom: 16 }}><Glyph e="🪪" /></div>
               <div style={{ fontSize: 18, fontWeight: 800, color: "#94A3B8", marginBottom: 8 }}>
                 {tab === "student" ? "Select a Student" : "Select a Faculty Member"}
               </div>
@@ -378,7 +379,7 @@ export default function IDCardGenerator() {
                   style={{ display: "flex", alignItems: "center", gap: 8, background: "var(--brand-gradient)", color: "white", border: "none", borderRadius: 14, padding: "12px 28px", fontSize: 13, fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 16px color-mix(in srgb, var(--brand) 40%, transparent)", transition: "all 0.2s" }}
                   onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
                   onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}>
-                  🖨️ Print Card
+                  <Glyph e="🖨" /> Print Card
                 </button>
                 <button onClick={() => { setSelected(null); setSelectedId(""); setAnimPhase(0); }}
                   style={{ background: "white", color: "#64748B", border: "1.5px solid #E2E8F0", borderRadius: 14, padding: "12px 20px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>

@@ -2,13 +2,14 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 });
 const icons = {
-  fee: "💰", attendance: "📋", result: "📊",
-  leave: "📝", bus: "🚌", general: "📢",
+  fee: <Glyph e="💰" />, attendance: <Glyph e="📋" />, result: <Glyph e="📊" />,
+  leave: <Glyph e="📝" />, bus: <Glyph e="🚌" />, general: <Glyph e="📢" />,
 };
 
 export default function ParentNotifications() {
@@ -52,7 +53,7 @@ export default function ParentNotifications() {
             style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "8px 12px", color: "white", cursor: "pointer", fontSize: 16 }}>
             ←
           </button>
-          <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800 }}>🔔 Notifications</h2>
+          <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800 }}><Glyph e="🔔" /> Notifications</h2>
         </div>
       </div>
       <div style={{ padding: 16, marginTop: -20 }}>
@@ -68,7 +69,7 @@ export default function ParentNotifications() {
         )}
         {!loading && !error && notifications.length === 0 && (
           <div style={{ textAlign: "center", padding: 40, color: "var(--subtext)" }}>
-            <div style={{ fontSize: 48 }}>🔔</div>
+            <div style={{ fontSize: 48 }}><Glyph e="🔔" /></div>
             <p style={{ fontSize: 14, marginTop: 12 }}>No notifications yet</p>
           </div>
         )}
@@ -85,7 +86,7 @@ export default function ParentNotifications() {
                 cursor:      isRead ? "default" : "pointer",
               }}>
               <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                <span style={{ fontSize: 24 }}>{icons[n.type] ?? "📢"}</span>
+                <span style={{ fontSize: 24 }}>{icons[n.type] ?? <Glyph e="📢" />}</span>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: isRead ? 500 : 700, fontSize: 14, color: "var(--text)" }}>
                     {n.title}

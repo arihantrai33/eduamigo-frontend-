@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { payFee, balanceOf } from "../utils/payments";
 import { toast, errorMessage } from "../utils/toast";
 
+import Glyph from "./Glyph";
 const rupees = (n) => `₹${Number(n || 0).toLocaleString("en-IN")}`;
 
 // "Pay online" for one fee. Shown only when the school has online payments enabled and a balance is due.
@@ -60,7 +61,7 @@ export function ReceiptLinks({ fee }) {
 export function PaymentInfo({ enabled }) {
   return (
     <div style={{ background: "var(--card, #fff)", borderRadius: 16, padding: 16, marginBottom: 16, boxShadow: "0 2px 12px rgba(0,0,0,0.06)", display: "flex", gap: 12, alignItems: "flex-start" }}>
-      <div style={{ fontSize: 24 }} aria-hidden="true">💳</div>
+      <div style={{ fontSize: 24 }} aria-hidden="true"><Glyph e="💳" /></div>
       <div>
         <div style={{ fontWeight: 700, fontSize: 14, color: "var(--text, var(--brand-deep))" }}>{enabled ? "Pay online" : "Paying fees"}</div>
         <div style={{ fontSize: 12, color: "#6b7280", marginTop: 4, lineHeight: 1.6 }}>

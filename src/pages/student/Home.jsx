@@ -6,6 +6,8 @@ import { visibleFor } from "../../utils/features";
 import { userTheme, brandLook } from "../../utils/theme";
 import SchoolStrip from "../../components/SchoolStrip";
 import axios from "axios";
+import Glyph from "../../components/Glyph";
+import { plural } from "../../utils/plural";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
 headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -13,9 +15,9 @@ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 const FULL_DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 function getGreeting() {
 const h = new Date().getHours();
-if (h < 12) return "Good Morning ☀️";
-if (h < 17) return "Good Afternoon 🌤️";
-return "Good Evening 🌙";
+if (h < 12) return "Good Morning";
+if (h < 17) return "Good Afternoon";
+return "Good Evening";
 }
 function getInitials(name = "") {
 return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
@@ -81,32 +83,32 @@ const grade         = overallGrade ?? "—";
 const marks         = avgMarks     ? `${avgMarks}%` : "—";
 const quickTiles = [
     {
-icon: "🚌", label: "Live Bus",
+icon: <Glyph e="🚌" />, label: "Live Bus",
 sub: profile?.bus ? "Track your bus" : "Not assigned",
 path: "/student/bus",
     },
     {
-icon: "📅", label: "Timetable",
-sub: timetable.length ? `${timetable.length} classes today` : "View schedule",
+icon: <Glyph e="📅" />, label: "Timetable",
+sub: timetable.length ? `${plural(timetable.length, "class", "classes")} today` : "View schedule",
 path: "/student/timetable",
     },
     {
-icon: "📊", label: "Results",
+icon: <Glyph e="📊" />, label: "Results",
 sub: results ? `${results.subject} • ${results.percentage ?? "—"}%` : "View results",
 path: "/student/result",
     },
     {
-icon: "📚", label: "Notes",
+icon: <Glyph e="📚" />, label: "Notes",
 sub: "Study material",
 path: "/student/notes",
     },
     {
-icon: "💳", label: "Fee Status",
+icon: <Glyph e="💳" />, label: "Fee Status",
 sub: feeStatus ?? "Check status",
 path: "/student/fee",
     },
     {
-icon: "🗓️", label: "Apply Leave",
+icon: <Glyph e="🗓" />, label: "Apply Leave",
 sub: "Request leave",
 path: "/student/apply-leave",
     },
@@ -136,7 +138,7 @@ return (
 <button
 onClick={() => navigate("/student/notifications")}
 style={{ width: 38, height: 38, borderRadius: "50%", background: look.glass, border: look.border, cursor: "pointer", fontSize: 16, position: "relative" }}>
-              🔔
+              <Glyph e="🔔" />
 {notices.length > 0 && (
 <div style={{ position: "absolute", top: -4, right: -4, minWidth: 18, height: 18, background: "#FF5252", borderRadius: "50%", border: "2px solid white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: "white", padding: "0 4px" }}>{notices.length}</div>
               )}
@@ -198,7 +200,7 @@ style={{ flex: 1, background: look.tile, border: look.border, borderRadius: 10, 
 {quickTiles.filter(visibleFor(user)).map((tile) => (
 <button key={tile.label} onClick={() => navigate(tile.path)}
 style={{ background: "var(--card)", borderRadius: 14, padding: 14, border: "none", cursor: "pointer", textAlign: "left", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-<div style={{ fontSize: 24, marginBottom: 6 }}>{tile.icon}</div>
+<div style={{ width: 40, height: 40, borderRadius: 12, background: "var(--brand-soft)", color: "var(--brand-dark)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, marginBottom: 10 }}>{tile.icon}</div>
 <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text)" }}>{tile.label}</div>
 <div style={{ fontSize: 11, color: "var(--subtext)", marginTop: 2 }}>{tile.sub}</div>
 </button>
@@ -262,11 +264,11 @@ notices.map((n, i) => (
 {/* ── Bottom Nav ── */}
 <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: "var(--card)", borderTop: `1px solid ${"#f0f0f0"}`, display: "flex", padding: "8px 0 16px", boxShadow: "0 -4px 12px rgba(0,0,0,0.06)" }}>
 {[
-          { icon: "🏠", label: "Home",  path: "/student/home",  active: true },
-          { icon: "🚌", label: "Bus",   path: "/student/bus" },
-          { icon: "📚", label: "Learn", path: "/student/notes" },
-          { icon: "💬", label: "Chat",  path: "/student/chat" },
-          { icon: "👤", label: "Me",    path: "/student/profile" },
+          { icon: <Glyph e="🏠" />, label: "Home",  path: "/student/home",  active: true },
+          { icon: <Glyph e="🚌" />, label: "Bus",   path: "/student/bus" },
+          { icon: <Glyph e="📚" />, label: "Learn", path: "/student/notes" },
+          { icon: <Glyph e="💬" />, label: "Chat",  path: "/student/chat" },
+          { icon: <Glyph e="👤" />, label: "Me",    path: "/student/profile" },
         ].filter(visibleFor(user)).map((tab) => (
 <button key={tab.label} onClick={() => navigate(tab.path)}
 style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, color: tab.active ? theme.primary : "#999" }}>

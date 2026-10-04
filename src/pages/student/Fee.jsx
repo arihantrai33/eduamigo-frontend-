@@ -4,6 +4,7 @@ import axios from "axios";
 import { getPaymentConfig } from "../../utils/payments";
 import { PayFeeButton, ReceiptLinks, PaymentInfo } from "../../components/FeePayment";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -81,7 +82,7 @@ export default function StudentFee() {
       {/* Due Alert */}
       {nearestDue && (
         <div style={{ margin: "16px 16px 0", background: "#FFF8E1", borderRadius: 14, padding: "14px 16px", borderLeft: "4px solid #f59e0b", display: "flex", gap: 12, alignItems: "center" }}>
-          <div style={{ fontSize: 22 }}>⚠️</div>
+          <div style={{ fontSize: 22 }}><Glyph e="⚠" /></div>
           <div>
             <div style={{ fontSize: 13, fontWeight: 700, color: "#92400e" }}>Payment Due: {formatDate(nearestDue.dueDate)}</div>
             <div style={{ fontSize: 12, color: "#78716c", marginTop: 2 }}>Please clear outstanding dues to avoid late charges.</div>
@@ -111,7 +112,7 @@ export default function StudentFee() {
           <>
             {pendingFees.length === 0 ? (
               <div style={{ textAlign: "center", padding: "48px 0" }}>
-                <div style={{ fontSize: 40, marginBottom: 12 }}>✅</div>
+                <div style={{ fontSize: 40, marginBottom: 12 }}><Glyph e="✅" /></div>
                 <div style={{ fontSize: 15, fontWeight: 700, color: "#22c55e" }}>All fees cleared</div>
                 <div style={{ fontSize: 13, color: "var(--subtext)", marginTop: 4 }}>No outstanding payments</div>
               </div>
@@ -150,7 +151,7 @@ export default function StudentFee() {
           <>
             {paidFees.length === 0 ? (
               <div style={{ textAlign: "center", padding: "48px 0", color: "var(--subtext)" }}>
-                <div style={{ fontSize: 40, marginBottom: 12 }}>📋</div>
+                <div style={{ fontSize: 40, marginBottom: 12 }}><Glyph e="📋" /></div>
                 <div style={{ fontSize: 15, fontWeight: 700 }}>No payment history</div>
               </div>
             ) : (
@@ -179,11 +180,11 @@ export default function StudentFee() {
       {/* Bottom Nav */}
       <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: "var(--card)", borderTop: `1px solid ${"#f0f0f0"}`, display: "flex", padding: "8px 0 16px", boxShadow: "0 -4px 12px rgba(0,0,0,0.06)" }}>
         {[
-          { icon: "🏠", label: "Home",  path: "/student/home"    },
-          { icon: "🚌", label: "Bus",   path: "/student/bus"     },
-          { icon: "📚", label: "Learn", path: "/student/notes"   },
-          { icon: "💬", label: "Chat",  path: "/student/chat"    },
-          { icon: "👤", label: "Me",    path: "/student/profile" },
+          { icon: <Glyph e="🏠" />, label: "Home",  path: "/student/home"    },
+          { icon: <Glyph e="🚌" />, label: "Bus",   path: "/student/bus"     },
+          { icon: <Glyph e="📚" />, label: "Learn", path: "/student/notes"   },
+          { icon: <Glyph e="💬" />, label: "Chat",  path: "/student/chat"    },
+          { icon: <Glyph e="👤" />, label: "Me",    path: "/student/profile" },
         ].map(tab => (
           <button key={tab.label} onClick={() => navigate(tab.path)}
             style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, color: "var(--subtext)" }}>

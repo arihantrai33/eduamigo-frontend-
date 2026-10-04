@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast, confirmAction } from "../../utils/toast";
 import { todayLocal } from "../../utils/dates";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -22,7 +23,7 @@ function ResultBanner({ result, onClose }) {
   return (
     <div style={{ padding:"14px 20px", borderRadius:14, background: ok ? "#F0FDF4" : "#FEF2F2", border:`1.5px solid ${ok?"#86EFAC":"#FCA5A5"}`, display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
       <div>
-        <div style={{ fontWeight:700, fontSize:14, color: ok?"#15803D":"#DC2626" }}>{ok?"✅":"❌"} {result.message}</div>
+        <div style={{ fontWeight:700, fontSize:14, color: ok?"#15803D":"#DC2626" }}>{ok?<Glyph e="✅" />:<Glyph e="❌" />} {result.message}</div>
         {result.errors?.length > 0 && <div style={{ fontSize:12, color:"#94A3B8", marginTop:4 }}>{result.errors.length} errors — check console</div>}
       </div>
       <button onClick={onClose} style={{ border:"none", background:"none", cursor:"pointer", fontSize:18, color:"#94A3B8" }}>×</button>
@@ -185,16 +186,16 @@ export default function BulkOperations() {
 
       <div style={{ display:"flex", gap:6, background:"white", borderRadius:14, padding:5, border:"1px solid #E2E8F0", width:"fit-content", marginBottom:24, boxShadow:"0 2px 8px rgba(0,0,0,0.04)", flexWrap:"wrap" }}>
         {[
-          { key:"attendance", icon:"📋", label:"Bulk Attendance" },
-          { key:"promote",    icon:"🎓", label:"Promote Students" },
-          { key:"fee",        icon:"💰", label:"Fee Reminder" },
-          { key:"csv",        icon:"📂", label:"CSV Upload" },
+          { key:"attendance", icon:<Glyph e="📋" />, label:"Bulk Attendance" },
+          { key:"promote",    icon:<Glyph e="🎓" />, label:"Promote Students" },
+          { key:"fee",        icon:<Glyph e="💰" />, label:"Fee Reminder" },
+          { key:"csv",        icon:<Glyph e="📂" />, label:"CSV Upload" },
         ].map(t => <Tab key={t.key} label={t.label} icon={t.icon} active={tab===t.key} onClick={() => { setTab(t.key); setResult(null); }} />)}
       </div>
 
       {tab === "attendance" && card(
         <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
-          <div style={{ fontSize:15, fontWeight:800, color:"#0F172A" }}>📋 Bulk Attendance Mark</div>
+          <div style={{ fontSize:15, fontWeight:800, color:"#0F172A" }}><Glyph e="📋" /> Bulk Attendance Mark</div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr", gap:12 }}>
             <div>{label("CLASS")}{select(attClass, v => { setAttClass(v); setAttSection(""); }, classes, "Select Class")}</div>
             <div>{label("SECTION")}{select(attSection, setAttSection, sections(attClass), "All Sections")}</div>
@@ -215,7 +216,7 @@ export default function BulkOperations() {
 
       {tab === "promote" && card(
         <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
-          <div style={{ fontSize:15, fontWeight:800, color:"#0F172A" }}>🎓 Promote Students</div>
+          <div style={{ fontSize:15, fontWeight:800, color:"#0F172A" }}><Glyph e="🎓" /> Promote Students</div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr auto 1fr 1fr", gap:12, alignItems:"end" }}>
             <div>{label("FROM CLASS")}{select(fromClass, v => { setFromClass(v); setFromSection(""); }, classes, "From Class")}</div>
             <div>{label("FROM SECTION")}{select(fromSection, setFromSection, sections(fromClass), "Section")}</div>
@@ -226,7 +227,7 @@ export default function BulkOperations() {
           {fromClass && fromSection && (
             <div style={{ padding:"12px 16px", borderRadius:12, background:"#FFF7ED", border:"1px solid #FED7AA" }}>
               <span style={{ fontSize:13, fontWeight:700, color:"#EA580C" }}>
-                ⚠️ {countStudents(fromClass, fromSection)} students will be moved from Class {fromClass}-{fromSection} to {toClass||"?"}-{toSection||"?"}
+                <Glyph e="⚠" /> {countStudents(fromClass, fromSection)} students will be moved from Class {fromClass}-{fromSection} to {toClass||"?"}-{toSection||"?"}
               </span>
             </div>
           )}
@@ -236,7 +237,7 @@ export default function BulkOperations() {
 
       {tab === "fee" && card(
         <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
-          <div style={{ fontSize:15, fontWeight:800, color:"#0F172A" }}>💰 Fee Reminder</div>
+          <div style={{ fontSize:15, fontWeight:800, color:"#0F172A" }}><Glyph e="💰" /> Fee Reminder</div>
           <div style={{ fontSize:13, color:"#64748B", lineHeight:1.6 }}>
             Fetch all students with pending or partial fee status. You can then download the list or send reminders via SMS/Email (integration coming soon).
           </div>
@@ -262,12 +263,12 @@ export default function BulkOperations() {
 
       {tab === "csv" && card(
         <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
-          <div style={{ fontSize:15, fontWeight:800, color:"#0F172A" }}>📂 CSV Bulk Upload</div>
+          <div style={{ fontSize:15, fontWeight:800, color:"#0F172A" }}><Glyph e="📂" /> CSV Bulk Upload</div>
           <div style={{ display:"flex", gap:6, background:"#F8FAFC", borderRadius:10, padding:4, width:"fit-content" }}>
             {["students","teachers"].map(t => (
               <button key={t} onClick={() => { setCsvTab(t); setCsvData(null); setCsvPreview([]); setCsvFileName(""); }}
                 style={{ padding:"7px 20px", borderRadius:8, border:"none", fontSize:12, fontWeight:700, cursor:"pointer", background: csvTab===t ? "white" : "transparent", color: csvTab===t ? "var(--brand)" : "#94A3B8", boxShadow: csvTab===t ? "0 2px 8px rgba(0,0,0,0.06)" : "none" }}>
-                {t === "students" ? "🎒 Students" : "👩‍🏫 Teachers"}
+                {t === "students" ? "Students" : "Teachers"}
               </button>
             ))}
           </div>
@@ -282,7 +283,7 @@ export default function BulkOperations() {
           </div>
 
           <label style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:10, padding:"32px 20px", borderRadius:14, border:"2px dashed var(--brand-border)", background:"var(--brand-soft)", cursor:"pointer" }}>
-            <span style={{ fontSize:32 }}>📁</span>
+            <span style={{ fontSize:32 }}><Glyph e="📁" /></span>
             <span style={{ fontSize:13, fontWeight:700, color:"var(--brand)" }}>{csvFileName || "Click to select CSV file"}</span>
             <span style={{ fontSize:11, color:"#94A3B8" }}>Only .csv files supported</span>
             <input type="file" accept=".csv" onChange={handleCSVUpload} style={{ display:"none" }} />

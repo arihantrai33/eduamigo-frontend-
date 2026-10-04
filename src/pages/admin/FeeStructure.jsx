@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast, confirmAction, errorMessage } from "../../utils/toast";
 import { currentAcademicYear } from "../../utils/academicYear";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -140,10 +141,10 @@ export default function FeeStructure() {
 
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
         {[
-          { label:"TOTAL STRUCTURES", value: structures.length,    icon:"📋", border:"var(--brand)", bg:"var(--brand-soft)" },
-          { label:"CLASSES COVERED",  value: classes.length,       icon:"🏫", border:"#10B981", bg:"#F0FDF4" },
-          { label:"FEE TYPES",        value: [...new Set(structures.map(s=>s.feeType))].length, icon:"🏷️", border:"#F59E0B", bg:"#FFFBEB" },
-          { label:"TOTAL AMOUNT",     value: `₹${totalAmount.toLocaleString()}`, icon:"💰", border:"#06B6D4", bg:"#ECFEFF" },
+          { label:"TOTAL STRUCTURES", value: structures.length,    icon:<Glyph e="📋" />, border:"var(--brand)", bg:"var(--brand-soft)" },
+          { label:"CLASSES COVERED",  value: classes.length,       icon:<Glyph e="🏫" />, border:"#10B981", bg:"#F0FDF4" },
+          { label:"FEE TYPES",        value: [...new Set(structures.map(s=>s.feeType))].length, icon:<Glyph e="🏷" />, border:"#F59E0B", bg:"#FFFBEB" },
+          { label:"TOTAL AMOUNT",     value: `₹${totalAmount.toLocaleString()}`, icon:<Glyph e="💰" />, border:"#06B6D4", bg:"#ECFEFF" },
         ].map((card, i) => (
           <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
@@ -183,7 +184,7 @@ export default function FeeStructure() {
               </td></tr>
             ) : filtered.length === 0 ? (
               <tr><td colSpan={7} style={{ padding:"80px 0", textAlign:"center" }}>
-                <div style={{ fontSize:48, marginBottom:12 }}>💰</div>
+                <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="💰" /></div>
                 <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No fee structures found</div>
                 <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Click "Add Fee" to get started</div>
               </td></tr>
@@ -252,7 +253,7 @@ export default function FeeStructure() {
 
       <Modal show={!!deleteId} onClose={() => setDeleteId(null)} title="Delete Fee Structure">
         <div style={{ textAlign:"center", padding:"8px 0 24px" }}>
-          <div style={{ fontSize:52, marginBottom:16 }}>🗑️</div>
+          <div style={{ fontSize:52, marginBottom:16 }}><Glyph e="🗑" /></div>
           <div style={{ fontSize:16, fontWeight:700, color:"#0F172A", marginBottom:8 }}>Are you sure?</div>
           <div style={{ fontSize:13, color:"#94A3B8", marginBottom:24 }}>This fee structure will be permanently deleted.</div>
           <div style={{ display:"flex", gap:10, justifyContent:"center" }}>

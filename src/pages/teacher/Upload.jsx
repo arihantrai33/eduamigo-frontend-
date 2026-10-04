@@ -1,21 +1,22 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 
 const NOTE_TYPES = ['Notes', 'Assignment', 'Resource', 'Question Paper'];
 
 const TYPE_STYLES = {
-  Notes:           { bg: '#EEF0FF', color: '#3949AB', icon: '📄' },
-  Assignment:      { bg: '#FFF8E1', color: '#F9A825', icon: '📝' },
-  Resource:        { bg: '#E8F5E9', color: '#2E7D32', icon: '📚' },
-  'Question Paper':{ bg: '#FCE4EC', color: '#C2185B', icon: '📋' },
+  Notes:           { bg: '#EEF0FF', color: '#3949AB', icon: <Glyph e="📄" /> },
+  Assignment:      { bg: '#FFF8E1', color: '#F9A825', icon: <Glyph e="📝" /> },
+  Resource:        { bg: '#E8F5E9', color: '#2E7D32', icon: <Glyph e="📚" /> },
+  'Question Paper':{ bg: '#FCE4EC', color: '#C2185B', icon: <Glyph e="📋" /> },
 };
 
 // Status of the note in the AI revision pipeline (see backend docs/AI_REVISION.md).
 const AI_STATUS = {
   pending:    { label: 'Queued', color: '#6B7280' },
-  processing: { label: 'Processing', color: '#2563EB' },
+  processing: { label: 'Processing', color: 'var(--brand-dark)' },
   ready:      { label: 'Ready for students', color: '#059669' },
   failed:     { label: 'Failed, will retry', color: '#DC2626' },
   skipped:    { label: 'No readable text (scanned PDF)', color: '#B45309' },
@@ -128,7 +129,7 @@ export default function TeacherUpload() {
       </div>
 
       <div style={styles.content}>
-        {successMsg && <div style={styles.successBanner}>✅ {successMsg}</div>}
+        {successMsg && <div style={styles.successBanner}><Glyph e="✅" /> {successMsg}</div>}
 
         <div style={styles.tabRow}>
           <button
@@ -153,10 +154,10 @@ export default function TeacherUpload() {
                 <p style={styles.loadingText}>Loading uploads...</p>
               </div>
             ) : error ? (
-              <div style={styles.errorBox}>⚠️ {error}</div>
+              <div style={styles.errorBox}><Glyph e="⚠" /> {error}</div>
             ) : uploads.length === 0 ? (
               <div style={styles.emptyBox}>
-                <p style={styles.emptyIcon}>📤</p>
+                <p style={styles.emptyIcon}><Glyph e="📤" /></p>
                 <p style={styles.emptyText}>No uploads yet</p>
                 <p style={styles.emptySubText}>Tap "New Upload" to share materials with students.</p>
               </div>
@@ -181,7 +182,7 @@ export default function TeacherUpload() {
                         {u.subject} • Class {u.class}{u.section ? ` ${u.section}` : ''}
                       </p>
                       {u.dueDate && (
-                        <p style={styles.dueDateText}>📅 Due: {formatDate(u.dueDate)}</p>
+                        <p style={styles.dueDateText}><Glyph e="📅" /> Due: {formatDate(u.dueDate)}</p>
                       )}
                       {u.type === 'Notes' && u.processing?.status && (
                         <p style={{ ...styles.cardMeta, color: AI_STATUS[u.processing.status]?.color || '#6B7280' }}>
@@ -213,7 +214,7 @@ export default function TeacherUpload() {
         {tab === 'upload' && (
           <div style={styles.formCard}>
             <h3 style={styles.formTitle}>New Material Upload</h3>
-            {formError && <div style={styles.errorBox}>⚠️ {formError}</div>}
+            {formError && <div style={styles.errorBox}><Glyph e="⚠" /> {formError}</div>}
 
             <label style={styles.label}>Title</label>
             <input
@@ -303,11 +304,11 @@ export default function TeacherUpload() {
       </div>
 
       <div style={styles.bottomNav}>
-        <NavItem icon="🏠" label="Home"       onClick={() => navigate('/teacher/home')} />
-        <NavItem icon="✅" label="Attendance" onClick={() => navigate('/teacher/attendance')} />
-        <NavItem icon="📤" label="Upload"     onClick={() => navigate('/teacher/upload')} active />
-        <NavItem icon="💬" label="Messages"   onClick={() => navigate('/teacher/chat')} />
-        <NavItem icon="👤" label="Me"         onClick={() => navigate('/teacher/profile')} />
+        <NavItem icon={<Glyph e="🏠" />} label="Home"       onClick={() => navigate('/teacher/home')} />
+        <NavItem icon={<Glyph e="✅" />} label="Attendance" onClick={() => navigate('/teacher/attendance')} />
+        <NavItem icon={<Glyph e="📤" />} label="Upload"     onClick={() => navigate('/teacher/upload')} active />
+        <NavItem icon={<Glyph e="💬" />} label="Messages"   onClick={() => navigate('/teacher/chat')} />
+        <NavItem icon={<Glyph e="👤" />} label="Me"         onClick={() => navigate('/teacher/profile')} />
       </div>
     </div>
   );

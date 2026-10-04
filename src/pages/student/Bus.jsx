@@ -10,6 +10,8 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import SosModal from "../../components/SosModal";
 
+import Glyph from "../../components/Glyph";
+import { BUS_SVG, schoolSvg, cssVar } from "../../utils/mapIcons";
 // ── Utils ──────────────────────────────────────────────────────
 const getTrafficStatus = (speed) => {
   if (!speed || speed === 0) return { color: "#9CA3AF", label: "Stationary" };
@@ -83,7 +85,7 @@ function getNearestStopIndex(stops, lat, lng) {
 const busIcon = L.divIcon({
   className: "",
   html: `<div style="width:52px;height:52px;background:var(--brand-gradient);border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px color-mix(in srgb, var(--brand) 60%, transparent);border:3px solid white;">
-    <span style="transform:rotate(45deg);font-size:24px;line-height:1;">🚌</span></div>`,
+ <span style="transform:rotate(45deg);display:flex;line-height:1;">${BUS_SVG}</span></div>`,
   iconSize: [52, 52], iconAnchor: [26, 52], popupAnchor: [0, -56],
 });
 
@@ -91,7 +93,7 @@ function makeStopIcon(type) {
   const configs = {
     completed: { bg: "#10B981", text: "✓",  size: 22 },
     current:   { bg: "var(--brand)", text: "●",  size: 26 },
-    school:    { bg: "#F59E0B", text: "🏫", size: 24 },
+    school:    { bg: "#F59E0B", text: schoolSvg(13), size: 24 },
     upcoming:  { bg: "#E5E7EB", text: "●",  size: 18 },
   };
   const c = configs[type] || configs.upcoming;
@@ -148,12 +150,12 @@ function CallModal({ onClose, driverName, driverPhone }) {
   return (
     <div style={styles.modalOverlay}>
       <div style={styles.modalCard}>
-        <div style={{ fontSize: "52px", marginBottom: "12px" }}>📞</div>
+        <div style={{ fontSize: "52px", marginBottom: "12px" }}><Glyph e="📞" /></div>
         <p style={styles.modalTitle}>Call Driver</p>
         <p style={styles.modalSub}><strong>{driverName}</strong><br />{driverPhone}</p>
         <div style={styles.modalBtns}>
           <button style={styles.cancelBtn} onClick={onClose}>Cancel</button>
-          <a href={`tel:${driverPhone}`} style={styles.callConfirmBtn}>📞 Call Now</a>
+          <a href={`tel:${driverPhone}`} style={styles.callConfirmBtn}><Glyph e="📞" /> Call Now</a>
         </div>
       </div>
     </div>
@@ -347,7 +349,7 @@ export default function ParentBus() {
     return (
       <div style={{ ...styles.pageShell, alignItems: "center", justifyContent: "center" }}>
         <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: "48px", marginBottom: "12px" }}>🚌</div>
+          <div style={{ fontSize: "48px", marginBottom: "12px" }}><Glyph e="🚌" /></div>
           <p style={{ color: "var(--brand)", fontWeight: 600 }}>Loading bus info...</p>
         </div>
       </div>
@@ -358,7 +360,7 @@ export default function ParentBus() {
     return (
       <div style={{ ...styles.pageShell, alignItems: "center", justifyContent: "center" }}>
         <div style={{ textAlign: "center", padding: "20px" }}>
-          <div style={{ fontSize: "48px", marginBottom: "12px" }}>⚠️</div>
+          <div style={{ fontSize: "48px", marginBottom: "12px" }}><Glyph e="⚠" /></div>
           <p style={{ color: "#EF4444", fontWeight: 600, marginBottom: "8px" }}>No bus assigned</p>
           <p style={{ color: "#94A3B8", fontSize: "13px", marginBottom: "20px" }}>
             {apiError || "No bus found for your child"}
@@ -387,7 +389,7 @@ export default function ParentBus() {
         attribution='&copy; OpenStreetMap contributors'
       />
       {completedRoute.length > 1 && (
-        <Polyline positions={completedRoute} color="#A5B4FC" weight={5} opacity={0.55} />
+        <Polyline positions={completedRoute} color={cssVar("--brand-light", "#A5B4FC")} weight={5} opacity={0.55} />
       )}
       {remainingRoute.length > 1 && (
         <Polyline
@@ -399,7 +401,7 @@ export default function ParentBus() {
         />
       )}
       {fullRoute.length > 1 && (
-        <Polyline positions={fullRoute} color="#4F46E5" weight={2} opacity={0.18} dashArray="8 10" />
+        <Polyline positions={fullRoute} color={cssVar("--brand", "#0EA5E9")} weight={2} opacity={0.18} dashArray="8 10" />
       )}
       <SmoothBusMarker position={busLocation} driverName={busInfo.driverName} busLabel={busLabel} />
       <MapAutoCenter   position={busLocation} />
@@ -409,10 +411,10 @@ export default function ParentBus() {
           <Marker key={stop.id || i} position={[stop.lat, stop.lng]} icon={makeStopIcon(type)}>
             <Popup>
               <strong>{stop.name}</strong><br />
-              {type === "completed" && "✅ Departed"}
-              {type === "current"   && "🚌 Bus is here now"}
-              {type === "school"    && `🏫 Destination — ETA ${eta}`}
-              {type === "upcoming"  && "⏳ Upcoming stop"}
+              {type === "completed" && "Departed"}
+              {type === "current"   && "Bus is here now"}
+              {type === "school"    && `Destination — ETA ${eta}`}
+              {type === "upcoming"  && "Upcoming stop"}
             </Popup>
           </Marker>
         );
@@ -420,7 +422,7 @@ export default function ParentBus() {
     </MapContainer>
   ) : (
     <div style={styles.mapPlaceholder}>
-      <div style={{ fontSize: "56px" }}>🚌</div>
+      <div style={{ fontSize: "56px" }}><Glyph e="🚌" /></div>
       <p style={styles.busEmptyTitle}>Bus not on route yet</p>
       <p style={styles.busEmptySub}>Trip has not started</p>
     </div>
@@ -439,8 +441,8 @@ export default function ParentBus() {
           <span style={{ fontSize: "12px", fontWeight: 600 }}>Exit</span>
         </button>
         <div style={styles.fsActionRow}>
-          <button style={styles.fsCallBtn} onClick={() => setShowCall(true)}>📞 Call Driver</button>
-          <button style={styles.fsSosBtn}  onClick={() => setShowSOS(true)}>🆘 SOS</button>
+          <button style={styles.fsCallBtn} onClick={() => setShowCall(true)}><Glyph e="📞" /> Call Driver</button>
+          <button style={styles.fsSosBtn}  onClick={() => setShowSOS(true)}><Glyph e="🆘" /> SOS</button>
         </div>
         <div style={styles.fsMiniPill}>
           <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: traffic.color, display: "inline-block" }} />
@@ -494,7 +496,7 @@ export default function ParentBus() {
           </div>
 
           <div style={styles.childCard}>
-            <div style={{ fontSize: "32px" }}>🧒</div>
+            <div style={{ fontSize: "32px" }}><Glyph e="🧒" /></div>
             <div style={{ flex: 1 }}>
               <p style={styles.childName}>{busInfo.studentName}</p>
               <p style={styles.childClass}>{busInfo.studentClass}</p>
@@ -506,7 +508,7 @@ export default function ParentBus() {
                 color: tripActive ? "#4ADE80" : "rgba(255,255,255,0.7)",
                 border: `1px solid ${tripActive ? "rgba(74,222,128,0.4)" : "rgba(255,255,255,0.2)"}`,
               }}>
-                {tripActive ? "🚌 On Bus" : "🏠 At Home"}
+                {tripActive ? "On Bus" : "At Home"}
               </span>
               <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "11px", marginTop: "4px" }}>
                 {tripActive ? `ETA: ${eta}` : "Trip not started yet"}
@@ -570,9 +572,9 @@ export default function ParentBus() {
 
           <div style={styles.panelActionRow}>
             <button style={styles.panelCallBtn} onClick={() => setShowCall(true)}>
-              📞 Call Driver · {busInfo.driverName}
+              <Glyph e="📞" /> Call Driver · {busInfo.driverName}
             </button>
-            <button style={styles.panelSosBtn} onClick={() => setShowSOS(true)}>🆘 SOS</button>
+            <button style={styles.panelSosBtn} onClick={() => setShowSOS(true)}><Glyph e="🆘" /> SOS</button>
           </div>
 
           <div style={styles.stopsList}>
@@ -595,7 +597,7 @@ export default function ParentBus() {
                     <div style={{ ...styles.stopCircle, background: circleBg, border: circleBorder, boxShadow: circleShadow }}>
                       {isCompleted ? <span style={{ fontSize: "9px", color: "#059669" }}>✓</span>
                        : isCurrent ? <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--card)", display: "block" }} />
-                       : isSchool  ? <span style={{ fontSize: "10px" }}>🏫</span>
+                       : isSchool  ? <span style={{ fontSize: "10px" }}><Glyph e="🏫" /></span>
                        : <span style={{ fontSize: "9px", color: "#9CA3AF" }}>{i + 1}</span>}
                     </div>
                     {!isLast && (
@@ -619,9 +621,9 @@ export default function ParentBus() {
                           fontWeight: isCurrent || isSchool ? 600 : 400,
                         }}>{stop.name}</p>
                         <p style={styles.stopSub}>
-                          {isCompleted ? "✅ Departed"
-                           : isCurrent ? "🚌 Bus is here now"
-                           : isSchool  ? `🏁 Est. arrival — ${eta}`
+                          {isCompleted ? "Departed"
+                           : isCurrent ? "Bus is here now"
+                           : isSchool  ? `Est. arrival — ${eta}`
                            : "Upcoming stop"}
                         </p>
                       </div>

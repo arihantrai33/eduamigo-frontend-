@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -141,7 +142,7 @@ export default function Timetable() {
           <div style={{ textAlign: "center", padding: "40px 0", color: "var(--subtext)", fontSize: 14 }}>Loading...</div>
         ) : classes.length === 0 ? (
           <div style={{ background: "var(--card)", borderRadius: "16px", padding: "40px 20px", textAlign: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-            <div style={{ fontSize: 40, marginBottom: 12 }}>📭</div>
+            <div style={{ fontSize: 40, marginBottom: 12 }}><Glyph e="📭" /></div>
             <div style={{ fontSize: 15, fontWeight: 700, color: "var(--text)" }}>No classes scheduled</div>
             <div style={{ fontSize: 13, color: "var(--subtext)", marginTop: 4 }}>No timetable found for {DAY_FULL[selectedDay]}</div>
           </div>

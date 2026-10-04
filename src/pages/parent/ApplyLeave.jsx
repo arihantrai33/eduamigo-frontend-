@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast, errorMessage } from "../../utils/toast";
 import { getSelectedChildId } from "../../utils/selectedChild";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -79,7 +80,7 @@ export default function ApplyLeave() {
         alignItems: "center", justifyContent: "center",
         fontFamily: "'Poppins', sans-serif", background: "var(--bg)",
       }}>
-        <div style={{ fontSize: "64px" }}>✅</div>
+        <div style={{ fontSize: "64px" }}><Glyph e="✅" /></div>
         <div style={{ fontWeight: "800", fontSize: "20px", marginTop: "16px", color: "var(--text)" }}>
           Leave Applied Successfully!
         </div>
@@ -123,7 +124,7 @@ export default function ApplyLeave() {
           >←</button>
           <div>
             <div style={{ color: "white", fontWeight: "800", fontSize: "18px" }}>
-              📝 Leave Application
+              <Glyph e="📝" /> Leave Application
             </div>
             <div style={{ color: "rgba(255,255,255,0.8)", fontSize: "12px" }}>
               Apply leave for your child
@@ -258,7 +259,7 @@ export default function ApplyLeave() {
                 gap: "10px", background: "#fafafa",
               }}
             >
-              <span style={{ fontSize: "20px" }}>📎</span>
+              <span style={{ fontSize: "20px" }}><Glyph e="📎" /></span>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: "13px", fontWeight: "600", color: "#444" }}>
                   {attachedFile ? attachedFile.name : "Attach Medical Report or Document"}
@@ -329,7 +330,7 @@ export default function ApplyLeave() {
                       {leave.leaveType}
                     </div>
                     <span style={{ fontSize: "11px", fontWeight: "700", color: statusColor }}>
-                      {leave.status === "Pending" ? "⏳ Pending" :
+                      {leave.status === "Pending" ? "Pending" :
                        leave.status === "Approved" ? "Approved" : "Rejected"}
                     </span>
                   </div>
@@ -346,7 +347,7 @@ export default function ApplyLeave() {
                       marginTop: "8px", fontSize: "11px", color: "var(--brand)",
                       display: "flex", alignItems: "center", gap: "4px",
                     }}>
-                      📎 {leave.attachmentName}
+                      <Glyph e="📎" /> {leave.attachmentName}
                     </div>
                   )}
                 </div>

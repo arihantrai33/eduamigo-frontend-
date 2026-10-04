@@ -6,6 +6,7 @@ import { currentAcademicYear } from "../../utils/academicYear";
 import SupportContent from "../../components/SupportContent";
 import { signOutEverywhere } from "../../utils/account";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -73,7 +74,7 @@ export default function TeacherProfile() {
           </div>
         ))}
         <div style={{ background: "#FFF9C4", borderRadius: "12px", padding: "12px 16px", marginTop: "8px", display: "flex", gap: "10px", alignItems: "flex-start" }}>
-          <span style={{ fontSize: "18px" }}>⚠️</span>
+          <span style={{ fontSize: "18px" }}><Glyph e="⚠" /></span>
           <div style={{ fontSize: "13px", color: "#F57F17", fontWeight: "600", lineHeight: 1.5 }}>
             Profile details can only be changed by school administration. Contact HR for any corrections.
           </div>
@@ -170,11 +171,11 @@ export default function TeacherProfile() {
   );
 
   const menuItems = [
-    { icon: "👤", label: "View Profile",    sub: "Your school information",  action: () => setShowProfile(true) },
-    { icon: "🔔", label: "Notifications",   sub: "View all notifications",   action: () => navigate("/teacher/notifications") },
-    { icon: "⚙️", label: "Settings",        sub: "App preferences",          action: () => setShowSettings(true) },
-    { icon: "🪪", label: "Teacher ID Card", sub: "View your faculty ID",     action: () => setShowIdCard(true) },
-    { icon: "🤝", label: "Help & Support",  sub: "FAQs and contact",         action: () => setShowHelp(true) },
+    { icon: <Glyph e="👤" />, label: "View Profile",    sub: "Your school information",  action: () => setShowProfile(true) },
+    { icon: <Glyph e="🔔" />, label: "Notifications",   sub: "View all notifications",   action: () => navigate("/teacher/notifications") },
+    { icon: <Glyph e="⚙" />, label: "Settings",        sub: "App preferences",          action: () => setShowSettings(true) },
+    { icon: <Glyph e="🪪" />, label: "Teacher ID Card", sub: "View your faculty ID",     action: () => setShowIdCard(true) },
+    { icon: <Glyph e="🤝" />, label: "Help & Support",  sub: "FAQs and contact",         action: () => setShowHelp(true) },
   ];
 
   return (
@@ -191,7 +192,7 @@ export default function TeacherProfile() {
         <div style={{ fontWeight: "700", fontSize: "22px" }}>{teacher?.name || "—"}</div>
         <div style={{ fontSize: "13px", opacity: 0.8, marginTop: "4px" }}>{teacher?.subjects?.join(" • ") || "—"} • {teacher?.email || "—"}</div>
         <div style={{ marginTop: "10px" }}>
-          <span style={{ background: "rgba(255,255,255,0.2)", padding: "4px 12px", borderRadius: "20px", fontSize: "12px", fontWeight: "600" }}>🏫 Faculty</span>
+          <span style={{ background: "rgba(255,255,255,0.2)", padding: "4px 12px", borderRadius: "20px", fontSize: "12px", fontWeight: "600" }}><Glyph e="🏫" /> Faculty</span>
         </div>
       </div>
 
@@ -227,13 +228,13 @@ export default function TeacherProfile() {
         </div>
 
         <div onClick={() => signOutEverywhere(logout, navigate)} style={{ background: "var(--card)", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", display: "flex", alignItems: "center", gap: "14px", cursor: "pointer", marginBottom: "12px" }}>
-          <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: "#FFF7ED", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>📵</div>
+          <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: "#FFF7ED", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}><Glyph e="📵" /></div>
           <div style={{ flex: 1, fontWeight: "600", fontSize: "14px", color: "#C2410C" }}>Sign out on all devices</div>
           <div style={{ color: "#C2410C", fontSize: "18px" }}>›</div>
         </div>
 
         <div onClick={handleLogout} style={{ background: "var(--card)", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", display: "flex", alignItems: "center", gap: "14px", cursor: "pointer" }}>
-          <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: "#fff5f5", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>🚪</div>
+          <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: "#fff5f5", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}><Glyph e="🚪" /></div>
           <div style={{ flex: 1, fontWeight: "600", fontSize: "14px", color: "#ef4444" }}>Log Out</div>
           <div style={{ color: "#ef4444", fontSize: "18px" }}>›</div>
         </div>
@@ -241,11 +242,11 @@ export default function TeacherProfile() {
 
       <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 420, background: "var(--card)", borderTop: "1px solid #f3f4f6", display: "flex", justifyContent: "space-around", padding: "8px 0 12px", zIndex: 100 }}>
         {[
-          { icon: "🏠", label: "Home",       path: "/teacher/home" },
-          { icon: "✅", label: "Attendance", path: "/teacher/attendance" },
-          { icon: "📤", label: "Upload",     path: "/teacher/upload" },
-          { icon: "💬", label: "Messages",   path: "/teacher/chat" },
-          { icon: "👤", label: "Me",         path: "/teacher/profile" },
+          { icon: <Glyph e="🏠" />, label: "Home",       path: "/teacher/home" },
+          { icon: <Glyph e="✅" />, label: "Attendance", path: "/teacher/attendance" },
+          { icon: <Glyph e="📤" />, label: "Upload",     path: "/teacher/upload" },
+          { icon: <Glyph e="💬" />, label: "Messages",   path: "/teacher/chat" },
+          { icon: <Glyph e="👤" />, label: "Me",         path: "/teacher/profile" },
         ].map(n => (
           <button key={n.label} onClick={() => navigate(n.path)} style={{ background: "none", border: "none", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, cursor: "pointer", padding: "4px 12px" }}>
             <span style={{ fontSize: 22 }}>{n.icon}</span>

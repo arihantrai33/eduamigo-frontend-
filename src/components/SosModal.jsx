@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { toast, errorMessage } from "../utils/toast";
 
+import Glyph from "./Glyph";
 const API = import.meta.env.VITE_API_URL;
 
 // Emergency alert: notifies every administrator of the school through the API.
@@ -35,7 +36,7 @@ export default function SosModal({ onClose, studentName, studentId, location, dr
   return (
     <div style={overlay} role="dialog" aria-modal="true" aria-labelledby="sos-title">
       <div style={card}>
-        <div style={{ fontSize: 44, marginBottom: 8 }} aria-hidden="true">🆘</div>
+        <div style={{ fontSize: 44, marginBottom: 8 }} aria-hidden="true"><Glyph e="🆘" /></div>
         <p id="sos-title" style={{ fontSize: 18, fontWeight: 800, color: "#0F172A", margin: "0 0 8px" }}>
           {sent ? "Alert sent" : "Send an emergency alert?"}
         </p>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -124,10 +125,10 @@ export default function AttendanceReports() {
 
       {/* Stat Cards */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
-        <StatCard label="OVERALL RATE" value={pctText(overallPct)} icon="📊" color="var(--brand-soft)" border="var(--brand)" delay={0} />
-        <StatCard label="TOTAL PRESENT" value={totalPresent} icon="✅" color="#F0FDF4" border="#10B981" delay={0.08} />
-        <StatCard label="TOTAL ABSENT" value={totalAbsent} icon="❌" color="#FEF2F2" border="#EF4444" delay={0.16} />
-        <StatCard label="LATE" value={totalLate} icon="⏰" color="#FFFBEB" border="#F59E0B" delay={0.24} />
+        <StatCard label="OVERALL RATE" value={pctText(overallPct)} icon={<Glyph e="📊" />} color="var(--brand-soft)" border="var(--brand)" delay={0} />
+        <StatCard label="TOTAL PRESENT" value={totalPresent} icon={<Glyph e="✅" />} color="#F0FDF4" border="#10B981" delay={0.08} />
+        <StatCard label="TOTAL ABSENT" value={totalAbsent} icon={<Glyph e="❌" />} color="#FEF2F2" border="#EF4444" delay={0.16} />
+        <StatCard label="LATE" value={totalLate} icon={<Glyph e="⏰" />} color="#FFFBEB" border="#F59E0B" delay={0.24} />
       </div>
 
       {/* Overall Progress */}
@@ -140,14 +141,14 @@ export default function AttendanceReports() {
         <div style={{ display:"flex", gap:16, marginTop:10 }}>
           <span style={{ fontSize:12, color:"#10B981", fontWeight:700 }}>✓ {totalPresent} Present</span>
           <span style={{ fontSize:12, color:"#EF4444", fontWeight:700 }}>✗ {totalAbsent} Absent</span>
-          <span style={{ fontSize:12, color:"#F59E0B", fontWeight:700 }}>⏰ {totalLate} Late</span>
+          <span style={{ fontSize:12, color:"#F59E0B", fontWeight:700 }}><Glyph e="⏰" /> {totalLate} Late</span>
         </div>
       </div>
 
       {/* Low Attendance Alert */}
       {lowAttendance.length > 0 && (
         <div style={{ background:"#FFF7ED", border:"1.5px solid #FED7AA", borderRadius:16, padding:"16px 24px", marginBottom:24, animation:"fadeUp 0.4s ease 0.35s both" }}>
-          <div style={{ fontSize:14, fontWeight:800, color:"#C2410C", marginBottom:8 }}>⚠️ Low Attendance Alert</div>
+          <div style={{ fontSize:14, fontWeight:800, color:"#C2410C", marginBottom:8 }}><Glyph e="⚠" /> Low Attendance Alert</div>
           <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
             {lowAttendance.map((c,i) => (
               <span key={i} style={{ fontSize:12, fontWeight:700, padding:"5px 14px", borderRadius:20, background:"#FEF2F2", color:"#DC2626", border:"1px solid #FECACA" }}>
@@ -172,7 +173,7 @@ export default function AttendanceReports() {
           </div>
         ) : classStats.length === 0 ? (
           <div style={{ padding:"80px 0", textAlign:"center" }}>
-            <div style={{ fontSize:48, marginBottom:12 }}>📊</div>
+            <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="📊" /></div>
             <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No attendance data found</div>
             <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Attendance will appear here once teachers start marking it</div>
           </div>
@@ -214,7 +215,7 @@ export default function AttendanceReports() {
                     </td>
                     <td style={{ padding:"14px 18px" }}>
                       <span style={{ fontSize:11, fontWeight:700, padding:"4px 12px", borderRadius:20, background: noData ? "#F8FAFC" : good ? "#F0FDF4" : "#FEF2F2", color: noData ? "#64748B" : good ? "#15803D" : "#DC2626", border:`1px solid ${noData ? "#E2E8F0" : good ? "#BBF7D0" : "#FECACA"}` }}>
-                        {noData ? "Not marked" : good ? "✓ Good" : "⚠ Low"}
+                        {noData ? "Not marked" : good ? "✓ Good" : "Low"}
                       </span>
                     </td>
                   </tr>

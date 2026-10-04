@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "../../utils/toast";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -139,7 +140,7 @@ export default function SalaryManagement() {
           <div style={{ display:"flex", gap:10 }}>
             <button onClick={() => setShowGenerateModal(true)}
               style={{ padding:"11px 20px", borderRadius:12, border:"1px solid rgba(255,255,255,0.3)", background:"rgba(255,255,255,0.15)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer" }}>
-              ⚡ Generate Month
+              <Glyph e="⚡" /> Generate Month
             </button>
             <button onClick={openAdd}
               style={{ padding:"11px 20px", borderRadius:12, border:"1px solid rgba(255,255,255,0.3)", background:"rgba(255,255,255,0.2)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer" }}>
@@ -152,10 +153,10 @@ export default function SalaryManagement() {
       {/* Stat Cards */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
         {[
-          { label:"TOTAL RECORDS", value: filtered.length, icon:"📋", border:"#0891B2", bg:"#ECFEFF" },
-          { label:"PAID",          value: paidCount,        icon:"✅", border:"#10B981", bg:"#F0FDF4" },
-          { label:"PENDING",       value: pendingCount,     icon:"⏳", border:"#F59E0B", bg:"#FFFBEB" },
-          { label:"TOTAL PAID",    value: `₹${totalPaid.toLocaleString()}`, icon:"💰", border:"#059669", bg:"#F0FDF4" },
+          { label:"TOTAL RECORDS", value: filtered.length, icon:<Glyph e="📋" />, border:"#0891B2", bg:"#ECFEFF" },
+          { label:"PAID",          value: paidCount,        icon:<Glyph e="✅" />, border:"#10B981", bg:"#F0FDF4" },
+          { label:"PENDING",       value: pendingCount,     icon:<Glyph e="⏳" />, border:"#F59E0B", bg:"#FFFBEB" },
+          { label:"TOTAL PAID",    value: `₹${totalPaid.toLocaleString()}`, icon:<Glyph e="💰" />, border:"#059669", bg:"#F0FDF4" },
         ].map((card, i) => (
           <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
@@ -208,7 +209,7 @@ export default function SalaryManagement() {
               </td></tr>
             ) : filtered.length === 0 ? (
               <tr><td colSpan={8} style={{ padding:"80px 0", textAlign:"center" }}>
-                <div style={{ fontSize:48, marginBottom:12 }}>💰</div>
+                <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="💰" /></div>
                 <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No salary records found</div>
                 <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Use "Generate Month" to auto-create salary records</div>
               </td></tr>
@@ -338,7 +339,7 @@ export default function SalaryManagement() {
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
             <button onClick={() => setShowGenerateModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
             <button onClick={handleGenerate} disabled={generating} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#059669,#0891B2)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", opacity:generating?0.7:1 }}>
-              {generating ? "Generating..." : "⚡ Generate"}
+              {generating ? "Generating..." : "Generate"}
             </button>
           </div>
         </div>

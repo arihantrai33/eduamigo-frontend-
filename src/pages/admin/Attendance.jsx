@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast } from "../../utils/toast";
 import { todayLocal } from "../../utils/dates";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -187,10 +188,10 @@ export default function Attendance() {
       {/* Stats */}
       {students.length > 0 && (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 24 }}>
-          <StatCard label="TOTAL STUDENTS" value={stats.total} icon="👥" color="var(--brand)" bg="var(--brand-soft)" delay={0} />
-          <StatCard label="PRESENT" value={stats.present} icon="✅" color="#10B981" bg="#F0FDF4" delay={0.05} />
-          <StatCard label="ABSENT" value={stats.absent} icon="❌" color="#EF4444" bg="#FEF2F2" delay={0.1} />
-          <StatCard label="LATE" value={stats.late} icon="⏰" color="#F59E0B" bg="#FFFBEB" delay={0.15} />
+          <StatCard label="TOTAL STUDENTS" value={stats.total} icon={<Glyph e="👥" />} color="var(--brand)" bg="var(--brand-soft)" delay={0} />
+          <StatCard label="PRESENT" value={stats.present} icon={<Glyph e="✅" />} color="#10B981" bg="#F0FDF4" delay={0.05} />
+          <StatCard label="ABSENT" value={stats.absent} icon={<Glyph e="❌" />} color="#EF4444" bg="#FEF2F2" delay={0.1} />
+          <StatCard label="LATE" value={stats.late} icon={<Glyph e="⏰" />} color="#F59E0B" bg="#FFFBEB" delay={0.15} />
         </div>
       )}
 
@@ -210,7 +211,7 @@ export default function Attendance() {
       {/* Student List */}
       {!selectedClass || !selectedSection ? (
         <div style={{ background: "white", borderRadius: 20, padding: "80px 40px", textAlign: "center", boxShadow: "0 4px 20px rgba(15,23,42,0.07)", border: "1px solid #E2E8F0", animation: "fadeUp 0.4s ease 0.1s both" }}>
-          <div style={{ fontSize: 56, marginBottom: 16 }}>📋</div>
+          <div style={{ fontSize: 56, marginBottom: 16 }}><Glyph e="📋" /></div>
           <div style={{ fontSize: 18, fontWeight: 700, color: "#94A3B8", marginBottom: 8 }}>Select Class and Section</div>
           <div style={{ fontSize: 13, color: "#CBD5E1" }}>Choose a class and section to load students and mark attendance</div>
         </div>
@@ -221,7 +222,7 @@ export default function Attendance() {
         </div>
       ) : students.length === 0 ? (
         <div style={{ background: "white", borderRadius: 20, padding: "80px 40px", textAlign: "center", boxShadow: "0 4px 20px rgba(15,23,42,0.07)", border: "1px solid #E2E8F0" }}>
-          <div style={{ fontSize: 56, marginBottom: 16 }}>🔍</div>
+          <div style={{ fontSize: 56, marginBottom: 16 }}><Glyph e="🔍" /></div>
           <div style={{ fontSize: 18, fontWeight: 700, color: "#94A3B8" }}>No students found</div>
           <div style={{ fontSize: 13, color: "#CBD5E1", marginTop: 4 }}>No students enrolled in Class {selectedClass}-{selectedSection}</div>
         </div>
@@ -262,7 +263,7 @@ export default function Attendance() {
               {stats.present} Present · {stats.absent} Absent · {stats.late} Late
             </div>
             <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-              {saved && <div style={{ fontSize: 13, fontWeight: 700, color: "#10B981" }}>✅ Attendance saved successfully!</div>}
+              {saved && <div style={{ fontSize: 13, fontWeight: 700, color: "#10B981" }}><Glyph e="✅" /> Attendance saved successfully!</div>}
               <button onClick={handleSave} disabled={saving}
                 style={{ padding: "12px 32px", borderRadius: 14, border: "none", background: "var(--brand-gradient)", color: "white", fontWeight: 700, fontSize: 14, cursor: "pointer", boxShadow: "0 4px 16px color-mix(in srgb, var(--brand) 40%, transparent)", opacity: saving ? 0.7 : 1, transition: "all 0.2s" }}
                 onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}

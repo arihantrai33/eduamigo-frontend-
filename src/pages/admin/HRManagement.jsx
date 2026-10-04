@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, confirmAction } from "../../utils/toast";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -135,10 +136,10 @@ export default function HRManagement() {
 
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
         {[
-          { label:"Total Teachers", value: teachers.length, icon:"👩‍🏫", color:"var(--brand)" },
-          { label:"Salary Paid", value: `₹${totalPaid.toLocaleString()}`, icon:"✅", color:"#10B981" },
-          { label:"Salary Pending", value: `₹${totalPending.toLocaleString()}`, icon:"⏳", color:"#F59E0B" },
-          { label:"Leave Requests", value: pendingLeaves, icon:"📋", color:"#EF4444" },
+          { label:"Total Teachers", value: teachers.length, icon:<Glyph e="👩‍🏫" />, color:"var(--brand)" },
+          { label:"Salary Paid", value: `₹${totalPaid.toLocaleString()}`, icon:<Glyph e="✅" />, color:"#10B981" },
+          { label:"Salary Pending", value: `₹${totalPending.toLocaleString()}`, icon:<Glyph e="⏳" />, color:"#F59E0B" },
+          { label:"Leave Requests", value: pendingLeaves, icon:<Glyph e="📋" />, color:"#EF4444" },
         ].map((s,i) => (
           <div key={i} style={{ background:"white", borderRadius:16, padding:"16px 20px", boxShadow:"0 4px 16px rgba(15,23,42,0.06)", border:"1px solid rgba(226,232,240,0.8)" }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
@@ -151,8 +152,8 @@ export default function HRManagement() {
       </div>
 
       <div style={{ display:"flex", gap:6, background:"white", borderRadius:14, padding:5, border:"1px solid #E2E8F0", width:"fit-content", marginBottom:20, boxShadow:"0 2px 8px rgba(0,0,0,0.04)" }}>
-        <Tab label="Salary" icon="💵" active={tab==="salary"} onClick={() => setTab("salary")} />
-        <Tab label="Staff Leaves" icon="🌴" active={tab==="leaves"} onClick={() => setTab("leaves")} />
+        <Tab label="Salary" icon={<Glyph e="💵" />} active={tab==="salary"} onClick={() => setTab("salary")} />
+        <Tab label="Staff Leaves" icon={<Glyph e="🌴" />} active={tab==="leaves"} onClick={() => setTab("leaves")} />
       </div>
 
       {tab === "salary" && (
@@ -168,7 +169,7 @@ export default function HRManagement() {
             </div>
             <div style={{ display:"flex", gap:10 }}>
               <button onClick={generateSalaries} disabled={loading} style={{ padding:"10px 20px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#374151" }}>
-                ⚡ Auto Generate
+                <Glyph e="⚡" /> Auto Generate
               </button>
               <button onClick={() => openModal("salary")} style={{ padding:"10px 20px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#0F172A,#1E3A5F)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer" }}>
                 + Add Salary
@@ -179,7 +180,7 @@ export default function HRManagement() {
           {loading ? <div style={{ textAlign:"center", padding:"40px 0", color:"#94A3B8" }}>Loading...</div>
           : salaries.length === 0 ? (
             <div style={{ textAlign:"center", padding:"60px 0" }}>
-              <div style={{ fontSize:48, marginBottom:12 }}>💵</div>
+              <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="💵" /></div>
               <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No salary records for {MONTHS[filterMonth-1]} {filterYear}</div>
               <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Click "Auto Generate" to create records for all teachers</div>
             </div>
@@ -207,8 +208,8 @@ export default function HRManagement() {
                         {s.status === "Pending" && (
                           <button onClick={() => handleLeaveAction(s._id, "Paid")} style={{ padding:"5px 12px", borderRadius:8, border:"none", background:"#F0FDF4", color:"#15803D", fontSize:11, fontWeight:700, cursor:"pointer" }}>Mark Paid</button>
                         )}
-                        <button onClick={() => openModal("salary", s)} style={{ padding:"5px 10px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", fontSize:11, cursor:"pointer" }}>✏️</button>
-                        <button onClick={() => handleDelete(s._id)} style={{ padding:"5px 10px", borderRadius:8, border:"none", background:"#FEF2F2", color:"#DC2626", fontSize:11, cursor:"pointer" }}>🗑️</button>
+                        <button onClick={() => openModal("salary", s)} style={{ padding:"5px 10px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", fontSize:11, cursor:"pointer" }}><Glyph e="✏" /></button>
+                        <button onClick={() => handleDelete(s._id)} style={{ padding:"5px 10px", borderRadius:8, border:"none", background:"#FEF2F2", color:"#DC2626", fontSize:11, cursor:"pointer" }}><Glyph e="🗑" /></button>
                       </div>
                     </td>
                   </tr>
@@ -234,7 +235,7 @@ export default function HRManagement() {
           {loading ? <div style={{ textAlign:"center", padding:"40px 0", color:"#94A3B8" }}>Loading...</div>
           : leaves.length === 0 ? (
             <div style={{ textAlign:"center", padding:"60px 0" }}>
-              <div style={{ fontSize:48, marginBottom:12 }}>🌴</div>
+              <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="🌴" /></div>
               <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No leave requests found</div>
             </div>
           ) : (
@@ -261,7 +262,7 @@ export default function HRManagement() {
                         <button onClick={() => handleLeaveAction(l._id, "Rejected")} style={{ padding:"6px 14px", borderRadius:8, border:"none", background:"#FEF2F2", color:"#DC2626", fontSize:12, fontWeight:700, cursor:"pointer" }}>✗ Reject</button>
                       </>
                     )}
-                    <button onClick={() => handleDelete(l._id)} style={{ padding:"6px 10px", borderRadius:8, border:"none", background:"#F1F5F9", color:"#64748B", fontSize:12, cursor:"pointer" }}>🗑️</button>
+                    <button onClick={() => handleDelete(l._id)} style={{ padding:"6px 10px", borderRadius:8, border:"none", background:"#F1F5F9", color:"#64748B", fontSize:12, cursor:"pointer" }}><Glyph e="🗑" /></button>
                   </div>
                 </div>
               ))}

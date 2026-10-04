@@ -6,6 +6,7 @@ import { pickChild, childQuery } from "../../utils/selectedChild";
 import { getPaymentConfig, balanceOf } from "../../utils/payments";
 import { PayFeeButton, ReceiptLinks, PaymentInfo } from "../../components/FeePayment";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -78,7 +79,7 @@ export default function ParentFee() {
   /* ── Error ── */
   if (error) return (
     <div style={styles.centered}>
-      <div style={{ fontSize: 40, marginBottom: 12 }}>😕</div>
+      <div style={{ fontSize: 40, marginBottom: 12 }}></div>
       <div style={{ color: "#ef4444", fontSize: 14, fontWeight: 600 }}>{error}</div>
       <button onClick={fetchData} style={styles.retryBtn}>Try Again</button>
     </div>
@@ -145,7 +146,7 @@ export default function ParentFee() {
         {/* Overdue Alert */}
         {overdueFees.length > 0 && (
           <div style={styles.alert}>
-            <div style={{ fontSize: 22 }}>⚠️</div>
+            <div style={{ fontSize: 22 }}><Glyph e="⚠" /></div>
             <div style={{ flex: 1 }}>
               <div style={{ fontWeight: 700, fontSize: 14, color: "#92400e" }}>
                 {overdueFees.length} Overdue Payment{overdueFees.length > 1 ? "s" : ""}
@@ -160,7 +161,7 @@ export default function ParentFee() {
         {/* All Clear */}
         {summary.totalDue === 0 && fees.length > 0 && (
           <div style={styles.allClear}>
-            <div style={{ fontSize: 22 }}>🎉</div>
+            <div style={{ fontSize: 22 }}></div>
             <div style={{ flex: 1 }}>
               <div style={{ fontWeight: 700, fontSize: 14, color: "#14532d" }}>All fees cleared!</div>
               <div style={{ fontSize: 12, color: "#16a34a", marginTop: 2 }}>No outstanding dues.</div>
@@ -189,7 +190,7 @@ export default function ParentFee() {
         <div style={styles.card}>
           {filteredFees.length === 0 ? (
             <div style={styles.empty}>
-              <div style={{ fontSize: 36, marginBottom: 8 }}>📭</div>
+              <div style={{ fontSize: 36, marginBottom: 8 }}><Glyph e="📭" /></div>
               <div style={{ fontWeight: 600, color: "#374151" }}>No records found</div>
               <div style={{ fontSize: 12, color: "#9ca3af", marginTop: 4 }}>
                 {activeTab === "paid" ? "No payments made yet." : "No pending fees."}

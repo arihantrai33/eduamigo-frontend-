@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { getDriverBus, startTrip as apiStartTrip, endTrip as apiEndTrip, markStopDone, updateDriverLocation } from "../../api/transport";
 
+import Glyph from "../../components/Glyph";
 export default function DriverHome() {
   const [token, setToken] = useState(localStorage.getItem("driverToken") || "");
   const [tokenInput, setTokenInput] = useState("");
@@ -195,7 +196,7 @@ export default function DriverHome() {
   if (!token || !busData) {
     return (
       <div style={{ minHeight: "100vh", background: "linear-gradient(160deg, #0f172a 0%, #1e3a5f 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "'Poppins', sans-serif", padding: "24px" }}>
-        <div style={{ width: "80px", height: "80px", background: "rgba(255,255,255,0.08)", borderRadius: "24px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "40px", marginBottom: "16px", border: "1px solid rgba(255,255,255,0.1)" }}>🚌</div>
+        <div style={{ width: "80px", height: "80px", background: "rgba(255,255,255,0.08)", borderRadius: "24px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "40px", marginBottom: "16px", border: "1px solid rgba(255,255,255,0.1)" }}><Glyph e="🚌" /></div>
         <div style={{ color: "white", fontSize: "22px", fontWeight: "800", marginBottom: "4px" }}>EduAmigo Driver</div>
         <div style={{ color: "rgba(255,255,255,0.4)", fontSize: "13px", marginBottom: "32px" }}>Enter your driver token to continue</div>
         {error && (
@@ -217,7 +218,7 @@ export default function DriverHome() {
 
   return (
     <div style={{ minHeight: "100vh", background: "linear-gradient(160deg, #0f172a 0%, #1e3a5f 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "'Poppins', sans-serif", padding: "24px" }}>
-      <div style={{ width: "80px", height: "80px", background: "rgba(255,255,255,0.08)", borderRadius: "24px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "40px", marginBottom: "16px", border: "1px solid rgba(255,255,255,0.1)" }}>🚌</div>
+      <div style={{ width: "80px", height: "80px", background: "rgba(255,255,255,0.08)", borderRadius: "24px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "40px", marginBottom: "16px", border: "1px solid rgba(255,255,255,0.1)" }}><Glyph e="🚌" /></div>
       <div style={{ color: "white", fontSize: "22px", fontWeight: "800", marginBottom: "4px" }}>EduAmigo Driver</div>
       <div style={{ color: "rgba(255,255,255,0.4)", fontSize: "13px", marginBottom: "8px" }}>{busData.busNumber} — {busData.routeName}</div>
       <button onClick={() => { setToken(""); setBusData(null); localStorage.removeItem("driverToken"); setTokenInput(""); firebaseKeyRef.current = null; }} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.3)", fontSize: "11px", cursor: "pointer", marginBottom: "24px" }}>
@@ -248,10 +249,10 @@ export default function DriverHome() {
           })}
           {!isLastStop && (
             <button onClick={markNextStop} style={{ marginTop: "16px", width: "100%", background: "rgba(26,115,232,0.15)", border: "1px solid rgba(26,115,232,0.4)", color: "#60a5fa", borderRadius: "12px", padding: "12px", fontSize: "13px", fontWeight: "700", cursor: "pointer", letterSpacing: "0.5px" }}>
-              ✅ Reached {stops[currentStopIndex]?.name} — Next Stop →
+              <Glyph e="✅" /> Reached {stops[currentStopIndex]?.name} — Next Stop →
             </button>
           )}
-          {isLastStop && <div style={{ marginTop: "16px", textAlign: "center", color: "#22c55e", fontWeight: "700", fontSize: "13px" }}>🎉 Reached School!</div>}
+          {isLastStop && <div style={{ marginTop: "16px", textAlign: "center", color: "#22c55e", fontWeight: "700", fontSize: "13px" }}>Reached School!</div>}
         </div>
       )}
       {!tracking ? (

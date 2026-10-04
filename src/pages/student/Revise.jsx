@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown'
 import { useTheme } from '../../context/ThemeContext';
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 
 const TYPING_CHARS_PER_TICK = 2;
@@ -214,7 +215,7 @@ export default function Revise() {
       }}>
         <button style={{ background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: '50%', width: 32, height: 32, fontSize: 16, cursor: 'pointer', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => navigate('/student/notes')}>←</button>
         <h1 style={{ fontSize: 17, fontWeight: 700, color: '#fff', margin: 0, letterSpacing: 0.2, display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span>🤖</span> Revise with AI
+          <span><Glyph e="🤖" /></span> Revise with AI
         </h1>
         <div style={{ width: 32 }} />
       </div>
@@ -255,7 +256,7 @@ export default function Revise() {
               <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 6 }}>
                 {m.sources.map((s, j) => (
                   <span key={j} style={{ fontSize: 11, fontWeight: 600, color: 'var(--brand-dark)', background: dm ? '#1e2a4a' : '#EEF0FF', padding: '4px 10px', borderRadius: 12 }}>
-                    📄 {s}
+                    <Glyph e="📄" /> {s}
                   </span>
                 ))}
               </div>

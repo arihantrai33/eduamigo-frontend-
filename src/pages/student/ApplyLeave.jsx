@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const LEAVE_TYPES = ["Sick", "Family", "Personal", "Other"];
 export default function ApplyLeave() {
@@ -81,7 +82,7 @@ export default function ApplyLeave() {
   };
   if (success) return (
     <div style={{ height: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "'Poppins', sans-serif", background: dm ? "#0f172a" : "#f5f6fa" }}>
-      <div style={{ fontSize: "64px" }}>✅</div>
+      <div style={{ fontSize: "64px" }}><Glyph e="✅" /></div>
       <div style={{ fontWeight: "800", fontSize: "20px", marginTop: "16px", color: dm ? "#f1f5f9" : "#111" }}>Leave Applied Successfully!</div>
       <div style={{ color: dm ? "#94a3b8" : "#888", fontSize: "13px", marginTop: "8px" }}>Your request has been submitted for approval.</div>
       <button onClick={() => navigate(-1)} style={{ marginTop: "32px", padding: "14px 32px", borderRadius: "12px", background: "var(--brand-gradient)", color: "white", border: "none", fontWeight: "700", fontSize: "15px", cursor: "pointer" }}>
@@ -147,7 +148,7 @@ export default function ApplyLeave() {
           <div style={{ marginBottom: "16px" }}>
             <label style={{ fontSize: "11px", fontWeight: "700", color: dm ? "#94a3b8" : "#666", letterSpacing: "0.5px" }}>ATTACH DOCUMENT (Optional)</label>
             <div onClick={() => document.getElementById("fileInputStudent").click()} style={{ marginTop: "8px", padding: "12px 16px", borderRadius: "10px", border: dm ? "1.5px dashed #334155" : "1.5px dashed #c0c0c0", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px", background: dm ? "#0f172a" : "#fafafa" }}>
-              <span style={{ fontSize: "20px" }}>📎</span>
+              <span style={{ fontSize: "20px" }}><Glyph e="📎" /></span>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: "13px", fontWeight: "600", color: dm ? "#f1f5f9" : "#444" }}>{attachedFile ? attachedFile.name : "Attach Medical Report or Document"}</div>
                 <div style={{ fontSize: "11px", color: dm ? "#94a3b8" : "#888", marginTop: "2px" }}>{attachedFile ? `${(attachedFile.size / 1024).toFixed(1)} KB` : "PDF, JPG, PNG supported"}</div>

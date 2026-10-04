@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -146,7 +147,7 @@ export default function Reports() {
         <div style={{ position:"absolute", bottom:-30, left:60, width:160, height:160, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", position:"relative" }}>
           <div>
-            <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>📊 Reports & Analytics</div>
+            <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}><Glyph e="📊" /> Reports & Analytics</div>
             <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>
               School-wide performance overview
               {lastUpdated && <span style={{ marginLeft:12, fontSize:11, background:"rgba(255,255,255,0.15)", padding:"2px 10px", borderRadius:20 }}>Updated {lastUpdated}</span>}
@@ -154,7 +155,7 @@ export default function Reports() {
           </div>
           <button onClick={fetchAll} disabled={loading}
             style={{ padding:"11px 22px", borderRadius:12, border:"1px solid rgba(255,255,255,0.3)", background:"rgba(255,255,255,0.15)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", display:"flex", alignItems:"center", gap:8 }}>
-            <span style={{ display:"inline-block", animation: loading ? "spin 1s linear infinite" : "none" }}>🔄</span>
+            <span style={{ display:"inline-block", animation: loading ? "spin 1s linear infinite" : "none" }}><Glyph e="🔄" /></span>
             {loading ? "Loading..." : "Refresh"}
           </button>
         </div>
@@ -163,11 +164,11 @@ export default function Reports() {
       {/* Overview Cards */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:14, marginBottom:24 }}>
         {[
-          { label:"STUDENTS",  value:overview.students, icon:"🎓", border:"#6366F1", bg:"#EEF2FF", sub:"Enrolled" },
-          { label:"TEACHERS",  value:overview.teachers, icon:"👨‍🏫", border:"#10B981", bg:"#F0FDF4", sub:"Active Staff" },
-          { label:"PARENTS",   value:overview.parents,  icon:"👨‍👩‍👧", border:"#F59E0B", bg:"#FFFBEB", sub:"Registered" },
-          { label:"BUSES",     value:overview.buses,    icon:"🚌", border:"#EF4444", bg:"#FEF2F2", sub:"Fleet" },
-          { label:"BOOKS",     value:overview.books,    icon:"📚", border:"#8B5CF6", bg:"#F5F3FF", sub:"In Library" },
+          { label:"STUDENTS",  value:overview.students, icon:<Glyph e="🎓" />, border:"#6366F1", bg:"#EEF2FF", sub:"Enrolled" },
+          { label:"TEACHERS",  value:overview.teachers, icon:<Glyph e="👨‍🏫" />, border:"#10B981", bg:"#F0FDF4", sub:"Active Staff" },
+          { label:"PARENTS",   value:overview.parents,  icon:<Glyph e="👨‍👩‍👧" />, border:"#F59E0B", bg:"#FFFBEB", sub:"Registered" },
+          { label:"BUSES",     value:overview.buses,    icon:<Glyph e="🚌" />, border:"#EF4444", bg:"#FEF2F2", sub:"Fleet" },
+          { label:"BOOKS",     value:overview.books,    icon:<Glyph e="📚" />, border:"#8B5CF6", bg:"#F5F3FF", sub:"In Library" },
         ].map((c,i) => <StatCard key={i} {...c} delay={i*0.06} />)}
       </div>
 
@@ -175,7 +176,7 @@ export default function Reports() {
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:20, marginBottom:20 }}>
 
         {/* Fee Analytics */}
-        <SectionCard title="Fee Collection" icon="💰" delay={0.2}>
+        <SectionCard title="Fee Collection" icon={<Glyph e="💰" />} delay={0.2}>
           {/* Big number */}
           <div style={{ display:"flex", gap:16, marginBottom:20 }}>
             {[
@@ -203,7 +204,7 @@ export default function Reports() {
         </SectionCard>
 
         {/* Attendance */}
-        <SectionCard title="Attendance Overview" icon="📋" delay={0.25}>
+        <SectionCard title="Attendance Overview" icon={<Glyph e="📋" />} delay={0.25}>
           <div style={{ display:"flex", gap:16, marginBottom:20 }}>
             {[
               { label:"Total Records", value:attendance.total,   color:"#0F172A", bg:"#F8FAFC" },
@@ -225,7 +226,7 @@ export default function Reports() {
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:20, marginBottom:20 }}>
 
         {/* Salary */}
-        <SectionCard title="Salary Overview" icon="💵" delay={0.3}>
+        <SectionCard title="Salary Overview" icon={<Glyph e="💵" />} delay={0.3}>
           <div style={{ display:"flex", gap:10, marginBottom:16 }}>
             {[
               { label:"Paid",    value:salary.paid,    color:"#15803D", bg:"#F0FDF4" },
@@ -246,7 +247,7 @@ export default function Reports() {
         </SectionCard>
 
         {/* Leaves */}
-        <SectionCard title="Leave Requests" icon="📅" delay={0.35}>
+        <SectionCard title="Leave Requests" icon={<Glyph e="📅" />} delay={0.35}>
           <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
             {[
               { label:"Pending",  value:leaves.pending,  color:"#D97706", bg:"#FFFBEB", dot:"#F59E0B" },
@@ -266,7 +267,7 @@ export default function Reports() {
         </SectionCard>
 
         {/* Marks/Results */}
-        <SectionCard title="Exam Results" icon="📝" delay={0.4}>
+        <SectionCard title="Exam Results" icon={<Glyph e="📝" />} delay={0.4}>
           <div style={{ display:"flex", gap:10, marginBottom:16 }}>
             {[
               { label:"Total Records", value:marks.total,   color:"#0F172A", bg:"#F8FAFC" },
@@ -289,16 +290,16 @@ export default function Reports() {
       {/* Quick Stats Row */}
       <div style={{ background:"white", borderRadius:20, padding:"20px 28px", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0", animation:"fadeUp 0.5s ease 0.45s both" }}>
         <div style={{ fontSize:15, fontWeight:800, color:"#0F172A", marginBottom:16, display:"flex", alignItems:"center", gap:8 }}>
-          <span>⚡</span> Quick Snapshot
+          <span><Glyph e="⚡" /></span> Quick Snapshot
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(6,1fr)", gap:12 }}>
           {[
-            { label:"Students/Teacher", value: overview.teachers > 0 ? (overview.students/overview.teachers).toFixed(1) : "—", icon:"📊" },
-            { label:"Bus Capacity Used", value: `${pct(overview.students, overview.buses*40)}%`, icon:"🚌" },
-            { label:"Fee Collection",   value: `${collectionPct}%`, icon:"💰" },
-            { label:"Attendance Rate",  value: `${pct(attendance.present, attendance.total)}%`, icon:"✅" },
-            { label:"Pass Rate",        value: `${pct(marks.passed, marks.total)}%`, icon:"🎯" },
-            { label:"Leave Approval",   value: `${pct(leaves.approved, leaves.total)}%`, icon:"📅" },
+            { label:"Students/Teacher", value: overview.teachers > 0 ? (overview.students/overview.teachers).toFixed(1) : "—", icon:<Glyph e="📊" /> },
+            { label:"Bus Capacity Used", value: `${pct(overview.students, overview.buses*40)}%`, icon:<Glyph e="🚌" /> },
+            { label:"Fee Collection",   value: `${collectionPct}%`, icon:<Glyph e="💰" /> },
+            { label:"Attendance Rate",  value: `${pct(attendance.present, attendance.total)}%`, icon:<Glyph e="✅" /> },
+            { label:"Pass Rate",        value: `${pct(marks.passed, marks.total)}%`, icon:<Glyph e="🎯" /> },
+            { label:"Leave Approval",   value: `${pct(leaves.approved, leaves.total)}%`, icon:<Glyph e="📅" /> },
           ].map((s,i) => (
             <div key={i} style={{ textAlign:"center", padding:"14px 10px", background:"#F8FAFC", borderRadius:12 }}>
               <div style={{ fontSize:22, marginBottom:6 }}>{s.icon}</div>

@@ -7,6 +7,7 @@ import {
   CheckCircle, XCircle, Clock, GraduationCap, Hash
 } from "lucide-react";
 
+import { plural } from "../../utils/plural";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -352,7 +353,7 @@ export default function TeacherProfile() {
                 borderRadius: 16, padding: "24px",
                 boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
               }}>
-                <SectionHeader title="Assigned Classes" subtitle={`${teacher.assignedClasses?.length || 0} classes assigned`} />
+                <SectionHeader title="Assigned Classes" subtitle={`${plural(teacher.assignedClasses?.length || 0, "class", "classes")} assigned`} />
                 {teacher.assignedClasses?.length > 0 ? (
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                     {teacher.assignedClasses.map((cls, i) => (
@@ -381,7 +382,7 @@ export default function TeacherProfile() {
                 borderRadius: 16, padding: "24px",
                 boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
               }}>
-                <SectionHeader title="Subjects" subtitle={`${teacher.subjects?.length || 0} subjects assigned`} />
+                <SectionHeader title="Subjects" subtitle={`${plural(teacher.subjects?.length || 0, "subject")} assigned`} />
                 {teacher.subjects?.length > 0 ? (
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                     {teacher.subjects.map((sub, i) => (

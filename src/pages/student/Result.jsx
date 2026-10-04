@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useTheme } from '../../context/ThemeContext';
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -65,7 +66,7 @@ export default function StudentResult() {
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center',
       justifyContent: 'center', minHeight: '100vh', fontFamily: 'Inter, sans-serif',
       gap: 12, padding: 24, background: dm ? '#0f172a' : '#F4F6FB' }}>
-      <div style={{ fontSize: 48 }}>⚠️</div>
+      <div style={{ fontSize: 48 }}><Glyph e="⚠" /></div>
       <div style={{ fontSize: 18, fontWeight: 700, color: dm ? '#f1f5f9' : '#1C2033' }}>Something went wrong</div>
       <div style={{ fontSize: 14, color: dm ? '#94a3b8' : '#7B8099', textAlign: 'center' }}>{error}</div>
       <button onClick={fetchResults}
@@ -81,7 +82,7 @@ export default function StudentResult() {
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center',
       justifyContent: 'center', minHeight: '100vh', fontFamily: 'Inter, sans-serif',
       gap: 12, padding: 24, background: dm ? '#0f172a' : '#F4F6FB' }}>
-      <div style={{ fontSize: 48 }}>📭</div>
+      <div style={{ fontSize: 48 }}><Glyph e="📭" /></div>
       <div style={{ fontSize: 18, fontWeight: 700, color: dm ? '#f1f5f9' : '#1C2033' }}>No Results Published</div>
       <div style={{ fontSize: 14, color: dm ? '#94a3b8' : '#7B8099', textAlign: 'center' }}>
         No results have been published yet. Check back later.
@@ -176,7 +177,7 @@ export default function StudentResult() {
                   <div style={{ display: 'flex', justifyContent: 'space-between',
                     alignItems: 'center', marginBottom: 7 }}>
                     <div style={{ fontSize: 13.5, fontWeight: 700, color: dm ? '#f1f5f9' : '#1C2033' }}>
-                      📚 {r.subject}
+                      <Glyph e="📚" /> {r.subject}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <span style={{ background: dm ? '#1e3a5f' : 'var(--brand-soft)',
@@ -206,8 +207,8 @@ export default function StudentResult() {
         {best && worst && best._id !== worst._id && (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 14 }}>
             {[
-              { label: 'Strength',   emoji: '💪', sub: best.subject,  val: `${best.marksObtained}/${best.totalMarks}`,   bg: dm ? 'linear-gradient(135deg,#0f2a25,#1a3a34)' : 'linear-gradient(135deg,#E0F7F4,#B2DFDB)' },
-              { label: 'Focus Area', emoji: '📌', sub: worst.subject, val: `${worst.marksObtained}/${worst.totalMarks}`, bg: dm ? 'linear-gradient(135deg,#2a0f0f,#3a1a1a)' : 'linear-gradient(135deg,#FFEBEE,#FFCDD2)' },
+              { label: 'Strength',   emoji: '', sub: best.subject,  val: `${best.marksObtained}/${best.totalMarks}`,   bg: dm ? 'linear-gradient(135deg,#0f2a25,#1a3a34)' : 'linear-gradient(135deg,#E0F7F4,#B2DFDB)' },
+              { label: 'Focus Area', emoji: <Glyph e="📌" />, sub: worst.subject, val: `${worst.marksObtained}/${worst.totalMarks}`, bg: dm ? 'linear-gradient(135deg,#2a0f0f,#3a1a1a)' : 'linear-gradient(135deg,#FFEBEE,#FFCDD2)' },
             ].map(c => (
               <div key={c.label} style={{ background: c.bg, borderRadius: 16, padding: 14 }}>
                 <div style={{ fontSize: 22 }}>{c.emoji}</div>
@@ -227,11 +228,11 @@ export default function StudentResult() {
         display: 'flex', borderTop: dm ? '1px solid #334155' : '1px solid #E8EAF0',
         boxShadow: '0 -4px 24px color-mix(in srgb, var(--brand) 8%, transparent)', zIndex: 200 }}>
         {[
-          ['🏠', 'Home',   '/student/home'],
-          ['🚌', 'Bus',    '/student/bus'],
-          ['📚', 'Learn',  '/student/notes'],
-          ['📊', 'Result', '/student/result'],
-          ['👤', 'Me',     '/student/profile'],
+          [<Glyph e="🏠" />, 'Home',   '/student/home'],
+          [<Glyph e="🚌" />, 'Bus',    '/student/bus'],
+          [<Glyph e="📚" />, 'Learn',  '/student/notes'],
+          [<Glyph e="📊" />, 'Result', '/student/result'],
+          [<Glyph e="👤" />, 'Me',     '/student/profile'],
         ].map(([ico, lbl, path]) => (
           <button key={lbl} onClick={() => navigate(path)}
             style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',

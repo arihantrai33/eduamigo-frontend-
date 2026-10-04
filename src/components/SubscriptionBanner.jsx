@@ -1,3 +1,4 @@
+import Glyph from "./Glyph";
 // Billing notice for school staff: trial ending soon, payment overdue (grace period) or read-only.
 // The state comes from the server at sign-in and on every app start (user.subscription).
 // End dates are calendar days stored at UTC, so they are shown in UTC (in IST, 31 Mar 23:59Z reads as 1 Apr).
@@ -19,12 +20,12 @@ function noticeFor(sub) {
 }
 
 const TONES = {
-  danger: { background: "#FEF2F2", border: "#FECACA", color: "#B91C1C", icon: "⛔" },
-  warning: { background: "#FFFBEB", border: "#FDE68A", color: "#92400E", icon: "⚠️" },
+  danger: { background: "#FEF2F2", border: "#FECACA", color: "#B91C1C", icon: <Glyph e="⛔" /> },
+  warning: { background: "#FFFBEB", border: "#FDE68A", color: "#92400E", icon: <Glyph e="⚠" /> },
   info: { background: "#EFF6FF", border: "#BFDBFE", color: "#1E40AF", icon: "ℹ️" },
 };
 
-const SUPPORT = { tone: "warning", icon: "🛟", text: "EduAmigo support session: you are signed in as this school's admin for up to one hour. Every change is recorded in the school's activity log." };
+const SUPPORT = { tone: "warning", icon: <Glyph e="🛟" />, text: "EduAmigo support session: you are signed in as this school's admin for up to one hour. Every change is recorded in the school's activity log." };
 
 export default function SubscriptionBanner({ user }) {
   const notices = [user?.supportSession ? SUPPORT : null, noticeFor(user?.subscription)].filter(Boolean);

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, confirmAction } from "../../utils/toast";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -280,7 +281,7 @@ export default function Transport() {
         <div style={{ position:"absolute", bottom:-30, left:80, width:140, height:140, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", position:"relative" }}>
           <div>
-            <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>🚌 Transport</div>
+            <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}><Glyph e="🚌" /> Transport</div>
             <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Manage school buses, routes and students</div>
           </div>
           <button onClick={() => setShowAddModal(true)}
@@ -293,10 +294,10 @@ export default function Transport() {
       {/* Stat Cards */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
         {[
-          { label:"TOTAL BUSES",      value: buses.length,   icon:"🚌", border:"#F59E0B", bg:"#FFFBEB" },
-          { label:"ON ROUTE",         value: onRoute,        icon:"🟢", border:"#10B981", bg:"#F0FDF4" },
-          { label:"IDLE",             value: buses.filter(b=>b.busStatus==="Idle").length, icon:"⏸️", border:"var(--brand)", bg:"var(--brand-soft)" },
-          { label:"STUDENTS ASSIGNED",value: totalStudents,  icon:"👦", border:"#EC4899", bg:"#FDF4FF" },
+          { label:"TOTAL BUSES",      value: buses.length,   icon:<Glyph e="🚌" />, border:"#F59E0B", bg:"#FFFBEB" },
+          { label:"ON ROUTE",         value: onRoute,        icon:<Glyph e="🟢" />, border:"#10B981", bg:"#F0FDF4" },
+          { label:"IDLE",             value: buses.filter(b=>b.busStatus==="Idle").length, icon:<Glyph e="⏸" />, border:"var(--brand)", bg:"var(--brand-soft)" },
+          { label:"STUDENTS ASSIGNED",value: totalStudents,  icon:<Glyph e="👦" />, border:"#EC4899", bg:"#FDF4FF" },
         ].map((card,i) => (
           <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
@@ -318,7 +319,7 @@ export default function Transport() {
         </div>
       ) : buses.length === 0 ? (
         <div style={{ background:"white", borderRadius:20, padding:"80px 0", textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
-          <div style={{ fontSize:56, marginBottom:12 }}>🚌</div>
+          <div style={{ fontSize:56, marginBottom:12 }}><Glyph e="🚌" /></div>
           <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No buses added yet</div>
           <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Add your first bus to get started</div>
         </div>
@@ -334,7 +335,7 @@ export default function Transport() {
                 <div style={{ padding:"20px 24px", display:"flex", alignItems:"center", gap:16 }}>
                   {/* Bus Icon */}
                   <div style={{ width:56, height:56, borderRadius:16, background:"linear-gradient(135deg,#F59E0B,#F97316)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:26, flexShrink:0 }}>
-                    🚌
+                    <Glyph e="🚌" />
                   </div>
                   <div style={{ flex:1 }}>
                     <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:4 }}>
@@ -344,21 +345,21 @@ export default function Transport() {
                       </span>
                     </div>
                     <div style={{ display:"flex", gap:16, fontSize:12, color:"#64748B", fontWeight:500 }}>
-                      <span>👤 {bus.driverName}</span>
-                      <span>📞 {bus.driverPhone}</span>
-                      <span>🗺️ {bus.routeName}</span>
-                      <span>📍 {bus.stops?.length||0} stops</span>
-                      <span>👦 {bus.assignedStudents?.length||0} students</span>
+                      <span><Glyph e="👤" /> {bus.driverName}</span>
+                      <span><Glyph e="📞" /> {bus.driverPhone}</span>
+                      <span><Glyph e="🗺" /> {bus.routeName}</span>
+                      <span><Glyph e="📍" /> {bus.stops?.length||0} stops</span>
+                      <span><Glyph e="👦" /> {bus.assignedStudents?.length||0} students</span>
                     </div>
                   </div>
                   <div style={{ display:"flex", gap:8, alignItems:"center" }}>
                     <button className="act-btn" onClick={() => openStops(bus)}
                       style={{ padding:"8px 16px", borderRadius:10, border:"1px solid #E2E8F0", background:"white", fontSize:12, fontWeight:700, cursor:"pointer", color:"var(--brand)" }}>
-                      📍 Stops ({bus.stops?.length||0})
+                      <Glyph e="📍" /> Stops ({bus.stops?.length||0})
                     </button>
                     <button className="act-btn" onClick={() => openStudents(bus)}
                       style={{ padding:"8px 16px", borderRadius:10, border:"1px solid #E2E8F0", background:"white", fontSize:12, fontWeight:700, cursor:"pointer", color:"#10B981" }}>
-                      👦 Students ({bus.assignedStudents?.length||0})
+                      <Glyph e="👦" /> Students ({bus.assignedStudents?.length||0})
                     </button>
                     <button className="act-btn" onClick={() => setExpandedBus(isExpanded ? null : bus._id)}
                       style={{ padding:"8px 14px", borderRadius:10, border:"1px solid #E2E8F0", background: isExpanded ? "#F1F5F9" : "white", fontSize:12, fontWeight:700, cursor:"pointer", color:"#64748B" }}>
@@ -366,14 +367,14 @@ export default function Transport() {
                     </button>
                     <button className="act-btn" onClick={() => handleDeleteBus(bus._id)}
                       style={{ width:34, height:34, borderRadius:10, border:"none", background:"#FEF2F2", cursor:"pointer", fontSize:14 }}>
-                      🗑️
+                      <Glyph e="🗑" />
                     </button>
                   </div>
                 </div>
 
                 {/* Driver Token */}
                 <div style={{ margin:"0 24px 16px", padding:"10px 16px", background:"#FFFBEB", borderRadius:12, border:"1px solid #FDE68A", display:"flex", alignItems:"center", gap:8 }}>
-                  <span style={{ fontSize:12, color:"#92400E" }}>🔑 Driver Token:</span>
+                  <span style={{ fontSize:12, color:"#92400E" }}><Glyph e="🔑" /> Driver Token:</span>
                   <code style={{ fontSize:12, fontWeight:800, color:"#D97706", letterSpacing:"1px" }}>{bus.driverToken}</code>
                 </div>
 
@@ -387,7 +388,7 @@ export default function Transport() {
                           <div style={{ width:24, height:24, borderRadius:"50%", background:"linear-gradient(135deg,#F59E0B,#F97316)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:10, fontWeight:800, color:"white", flexShrink:0 }}>{si+1}</div>
                           <div style={{ flex:1 }}>
                             <span style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>{stop.name}</span>
-                            {stop.estimatedTime && <span style={{ fontSize:11, color:"#94A3B8", marginLeft:8 }}>⏱ {stop.estimatedTime}</span>}
+                            {stop.estimatedTime && <span style={{ fontSize:11, color:"#94A3B8", marginLeft:8 }}><Glyph e="⏱" /> {stop.estimatedTime}</span>}
                           </div>
                           <span style={{ fontSize:11, padding:"2px 8px", borderRadius:20, background: stop.status==="Live"?"#F0FDF4":stop.status==="Departed"?"var(--brand-soft)":"#F1F5F9", color: stop.status==="Live"?"#15803D":stop.status==="Departed"?"var(--brand)":"#94A3B8", fontWeight:700 }}>{stop.status}</span>
                         </div>
@@ -432,7 +433,7 @@ export default function Transport() {
                 <div key={i} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", background:"#F8FAFC", borderRadius:10 }}>
                   <div style={{ width:22, height:22, borderRadius:"50%", background:"#F59E0B", display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:800, color:"white" }}>{i+1}</div>
                   <span style={{ fontSize:13, fontWeight:600, color:"#0F172A", flex:1 }}>{s.name}</span>
-                  {s.estimatedTime && <span style={{ fontSize:11, color:"#94A3B8" }}>⏱ {s.estimatedTime}</span>}
+                  {s.estimatedTime && <span style={{ fontSize:11, color:"#94A3B8" }}><Glyph e="⏱" /> {s.estimatedTime}</span>}
                 </div>
               ))}
             </div>

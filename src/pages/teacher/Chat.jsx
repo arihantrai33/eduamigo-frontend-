@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 
 const getUser = () => JSON.parse(localStorage.getItem('eduamigo_user'));
@@ -186,7 +187,7 @@ export default function TeacherChat() {
               </div>
             ) : messages.length === 0 ? (
               <div style={styles.emptyChat}>
-                <p style={styles.emptyChatIcon}>💬</p>
+                <p style={styles.emptyChatIcon}><Glyph e="💬" /></p>
                 <p style={styles.emptyChatText}>No messages yet. Say hello!</p>
               </div>
             ) : (
@@ -245,7 +246,7 @@ export default function TeacherChat() {
           <div style={styles.content}>
             {/* Search */}
             <div style={styles.searchBox}>
-              <span style={styles.searchIcon}>🔍</span>
+              <span style={styles.searchIcon}><Glyph e="🔍" /></span>
               <input
                 style={styles.searchInput}
                 placeholder="Search students or parents..."
@@ -260,10 +261,10 @@ export default function TeacherChat() {
                 <p style={styles.loadingText}>Loading contacts...</p>
               </div>
             ) : error ? (
-              <div style={styles.errorBox}>⚠️ {error}</div>
+              <div style={styles.errorBox}><Glyph e="⚠" /> {error}</div>
             ) : contacts.length === 0 ? (
               <div style={styles.emptyBox}>
-                <p style={styles.emptyIcon}>💬</p>
+                <p style={styles.emptyIcon}><Glyph e="💬" /></p>
                 <p style={styles.emptyText}>No contacts found</p>
                 <p style={styles.emptySubText}>Contacts appear when students are assigned to your classes.</p>
               </div>
@@ -292,11 +293,11 @@ export default function TeacherChat() {
 
           {/* Bottom Nav */}
           <div style={styles.bottomNav}>
-            <NavItem icon="🏠" label="Home"       onClick={() => navigate('/teacher/home')} />
-            <NavItem icon="✅" label="Attendance" onClick={() => navigate('/teacher/attendance')} />
-            <NavItem icon="📤" label="Upload"     onClick={() => navigate('/teacher/upload')} />
-            <NavItem icon="💬" label="Messages"   onClick={() => navigate('/teacher/chat')} active />
-            <NavItem icon="👤" label="Me"         onClick={() => navigate('/teacher/profile')} />
+            <NavItem icon={<Glyph e="🏠" />} label="Home"       onClick={() => navigate('/teacher/home')} />
+            <NavItem icon={<Glyph e="✅" />} label="Attendance" onClick={() => navigate('/teacher/attendance')} />
+            <NavItem icon={<Glyph e="📤" />} label="Upload"     onClick={() => navigate('/teacher/upload')} />
+            <NavItem icon={<Glyph e="💬" />} label="Messages"   onClick={() => navigate('/teacher/chat')} active />
+            <NavItem icon={<Glyph e="👤" />} label="Me"         onClick={() => navigate('/teacher/profile')} />
           </div>
         </>
       )}
@@ -315,7 +316,7 @@ function ContactCard({ contact, onOpen }) {
           fontSize: 18,
           color: contact.type === 'parent' ? '#F9A825' : 'var(--brand-dark)',
         }}>
-          {contact.type === 'parent' ? '👨‍👩‍👧' : '🎓'}
+          {contact.type === 'parent' ? <Glyph e="👨‍👩‍👧" /> : <Glyph e="🎓" />}
         </span>
       </div>
       <div style={styles.contactInfo}>

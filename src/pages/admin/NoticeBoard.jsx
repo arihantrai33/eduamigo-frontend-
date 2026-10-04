@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Pin, PinOff, Trash2, Plus, X, AlertTriangle, Info, Megaphone, Users, GraduationCap, UserCircle, Shield } from "lucide-react";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -12,11 +13,11 @@ const PRIORITY_CONFIG = {
 };
 
 const TARGET_CONFIG = {
-  all:     { label: "Everyone",  color: "#6366F1", bg: "#EEF2FF", icon: "🌐" },
-  student: { label: "Students",  color: "#10B981", bg: "#F0FDF4", icon: "🎒" },
-  teacher: { label: "Teachers",  color: "#3B82F6", bg: "#EFF6FF", icon: "👩‍🏫" },
-  parent:  { label: "Parents",   color: "#F59E0B", bg: "#FFFBEB", icon: "👨‍👩‍👧" },
-  admin:   { label: "Admin",     color: "#8B5CF6", bg: "#F5F3FF", icon: "🛡️" },
+  all:     { label: "Everyone",  color: "#6366F1", bg: "#EEF2FF", icon: <Glyph e="🌐" /> },
+  student: { label: "Students",  color: "#10B981", bg: "#F0FDF4", icon: <Glyph e="🎒" /> },
+  teacher: { label: "Teachers",  color: "#3B82F6", bg: "#EFF6FF", icon: <Glyph e="👩‍🏫" /> },
+  parent:  { label: "Parents",   color: "#F59E0B", bg: "#FFFBEB", icon: <Glyph e="👨‍👩‍👧" /> },
+  admin:   { label: "Admin",     color: "#8B5CF6", bg: "#F5F3FF", icon: <Glyph e="🛡" /> },
 };
 
 export default function NoticeBoardPage() {
@@ -146,7 +147,7 @@ export default function NoticeBoardPage() {
         <div style={{ textAlign: "center", padding: "40px 0", color: "#94A3B8" }}>Loading...</div>
       ) : filtered.length === 0 ? (
         <div style={{ textAlign: "center", padding: "60px 0", color: "#CBD5E1" }}>
-          <div style={{ fontSize: 48, marginBottom: 12 }}>📋</div>
+          <div style={{ fontSize: 48, marginBottom: 12 }}><Glyph e="📋" /></div>
           <div style={{ fontSize: 16, fontWeight: 700 }}>No announcements yet</div>
           <div style={{ fontSize: 13, marginTop: 4 }}>Create your first announcement</div>
         </div>
@@ -155,7 +156,7 @@ export default function NoticeBoardPage() {
           {pinned.length > 0 && (
             <div style={{ marginBottom: "1.5rem" }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: "#F59E0B", marginBottom: 10, display: "flex", alignItems: "center", gap: 6, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                📌 Pinned Announcements
+                <Glyph e="📌" /> Pinned Announcements
               </div>
               {pinned.map(ann => <AnnouncementCard key={ann._id} ann={ann} onPin={handleTogglePin} onDelete={setDeleteConfirm} onEdit={openEdit} />)}
             </div>
@@ -241,7 +242,7 @@ export default function NoticeBoardPage() {
       {deleteConfirm && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.6)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(4px)" }}>
           <div style={{ background: "white", borderRadius: 20, padding: "28px", width: "100%", maxWidth: 380, textAlign: "center", boxShadow: "0 24px 64px rgba(0,0,0,0.2)" }}>
-            <div style={{ fontSize: 40, marginBottom: 12 }}>🗑️</div>
+            <div style={{ fontSize: 40, marginBottom: 12 }}><Glyph e="🗑" /></div>
             <div style={{ fontSize: 16, fontWeight: 800, color: "#0F172A", marginBottom: 8 }}>Delete Announcement?</div>
             <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 24 }}>This action cannot be undone.</div>
             <div style={{ display: "flex", gap: 10 }}>
@@ -267,7 +268,7 @@ function AnnouncementCard({ ann, onPin, onDelete, onEdit }) {
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
         <div style={{ flex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8, flexWrap: "wrap" }}>
-            {ann.isPinned && <span style={{ fontSize: 10, fontWeight: 700, color: "#F59E0B", background: "#FFFBEB", padding: "3px 8px", borderRadius: 6, border: "1px solid #FDE68A" }}>📌 PINNED</span>}
+            {ann.isPinned && <span style={{ fontSize: 10, fontWeight: 700, color: "#F59E0B", background: "#FFFBEB", padding: "3px 8px", borderRadius: 6, border: "1px solid #FDE68A" }}><Glyph e="📌" /> PINNED</span>}
             <span style={{ fontSize: 10, fontWeight: 700, color: pc.color, background: pc.bg, padding: "3px 8px", borderRadius: 6, border: `1px solid ${pc.border}`, display: "flex", alignItems: "center", gap: 3 }}>
               <PIcon size={10} /> {pc.label.toUpperCase()}
             </span>
@@ -289,7 +290,7 @@ function AnnouncementCard({ ann, onPin, onDelete, onEdit }) {
           </button>
           <button onClick={() => onEdit(ann)} title="Edit"
             style={{ width: 32, height: 32, borderRadius: 8, border: "1px solid #E2E8F0", background: "white", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--brand)", fontSize: 13, fontWeight: 700 }}>
-            ✏️
+            <Glyph e="✏" />
           </button>
           <button onClick={() => onDelete(ann._id)} title="Delete"
             style={{ width: 32, height: 32, borderRadius: 8, border: "1px solid #FEE2E2", background: "#FEF2F2", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>

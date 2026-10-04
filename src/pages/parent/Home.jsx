@@ -9,6 +9,7 @@ import { pickChild, childQuery } from "../../utils/selectedChild";
 import ChildSwitcher from "../../components/ChildSwitcher";
 import UpcomingExams from "../../components/UpcomingExams";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -20,9 +21,9 @@ function getInitials(name = "") {
 
 function getGreeting() {
   const h = new Date().getHours();
-  if (h < 12) return "Good Morning ☀️";
-  if (h < 17) return "Good Afternoon 🌤️";
-  return "Good Evening 🌙";
+  if (h < 12) return "Good Morning";
+  if (h < 17) return "Good Afternoon";
+  return "Good Evening";
 }
 
 export default function ParentHome() {
@@ -84,12 +85,12 @@ export default function ParentHome() {
   };
 
   const tiles = [
-    { icon: "💬", label: "Chat Teachers", sub: "Message directly",                                                          path: "/parent/chat"          },
-    { icon: "💳", label: "Fee Status",    sub: child?.feeStatus ?? "Check status",                                          path: "/parent/fee"           },
-    { icon: "📊", label: "Results",       sub: results ? `${results.examName} • ${results.percentage ?? "—"}%` : "View results", path: "/parent/result"   },
-    { icon: "🚌", label: "Track Bus",     sub: busInfo ? `${busInfo.busNumber} • ${busInfo.status ?? "Active"}` : "Not assigned", path: "/parent/bus"     },
-    { icon: "✅", label: "Attendance",    sub: attendance ? `${attendance.percentage}% present` : "View attendance", path: "/parent/attendance" },
-    { icon: "📅", label: "School Calendar", sub: "Upcoming events",                                                         path: "/parent/calendar"      },
+    { icon: <Glyph e="💬" />, label: "Chat Teachers", sub: "Message directly",                                                          path: "/parent/chat"          },
+    { icon: <Glyph e="💳" />, label: "Fee Status",    sub: child?.feeStatus ?? "Check status",                                          path: "/parent/fee"           },
+    { icon: <Glyph e="📊" />, label: "Results",       sub: results ? `${results.examName} • ${results.percentage ?? "—"}%` : "View results", path: "/parent/result"   },
+    { icon: <Glyph e="🚌" />, label: "Track Bus",     sub: busInfo ? `${busInfo.busNumber} • ${busInfo.status ?? "Active"}` : "Not assigned", path: "/parent/bus"     },
+    { icon: <Glyph e="✅" />, label: "Attendance",    sub: attendance ? `${attendance.percentage}% present` : "View attendance", path: "/parent/attendance" },
+    { icon: <Glyph e="📅" />, label: "School Calendar", sub: "Upcoming events",                                                         path: "/parent/calendar"      },
   ];
 
   return (
@@ -104,13 +105,13 @@ export default function ParentHome() {
               {getGreeting().toUpperCase()} — PARENT PORTAL
             </div>
             <div style={{ fontSize: 20, fontWeight: 800, color: look.text }}>
-              {user?.name ?? "Parent"} 👩‍👧
+              {user?.name ?? "Parent"}
             </div>
           </div>
           <button
             onClick={() => navigate("/parent/notifications")}
             style={{ width: 38, height: 38, borderRadius: "50%", background: look.glass, border: look.border, cursor: "pointer", fontSize: 16, position: "relative" }}>
-            🔔
+            <Glyph e="🔔" />
             {notices.length > 0 && (
               <div style={{ position: "absolute", top: -4, right: -4, minWidth: 18, height: 18, background: "#FF5252", borderRadius: "50%", border: "2px solid white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: "white", padding: "0 4px" }}>{notices.length}</div>
             )}
@@ -177,7 +178,7 @@ export default function ParentHome() {
           {tiles.filter(visibleFor(user)).map((t) => (
             <button key={t.label} onClick={() => navigate(t.path)}
               style={{ background: "var(--card)", borderRadius: 14, padding: 14, border: "none", cursor: "pointer", textAlign: "left", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-              <div style={{ fontSize: 24, marginBottom: 6 }}>{t.icon}</div>
+              <div style={{ width: 40, height: 40, borderRadius: 12, background: "var(--brand-soft)", color: "var(--brand-dark)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, marginBottom: 10 }}>{t.icon}</div>
               <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text)" }}>{t.label}</div>
               <div style={{ fontSize: 11, color: "var(--subtext)", marginTop: 2 }}>{t.sub}</div>
             </button>
@@ -189,7 +190,7 @@ export default function ParentHome() {
 
         {/* Notices */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-          <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--text)", margin: 0 }}>🔔 Notices</h3>
+          <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--text)", margin: 0 }}><Glyph e="🔔" /> Notices</h3>
           <span onClick={() => navigate("/parent/notifications")}
             style={{ fontSize: 13, color: theme.primary, fontWeight: 700, cursor: "pointer" }}>View all →</span>
         </div>
@@ -218,11 +219,11 @@ export default function ParentHome() {
       {/* Bottom Nav */}
       <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: "var(--card)", borderTop: "1px solid var(--border)", display: "flex", padding: "8px 0 16px", boxShadow: "0 -4px 12px rgba(0,0,0,0.06)" }}>
         {[
-          { icon: "🏠", label: "Home",     path: "/parent/home",          },
-          { icon: "💬", label: "Teachers", path: "/parent/chat"                        },
-          { icon: "💳", label: "Fees",     path: "/parent/fee"                         },
-          { icon: "🔔", label: "Alerts",   path: "/parent/notifications"               },
-          { icon: "👤", label: "Me",       path: "/parent/profile"                     },
+          { icon: <Glyph e="🏠" />, label: "Home",     path: "/parent/home",          },
+          { icon: <Glyph e="💬" />, label: "Teachers", path: "/parent/chat"                        },
+          { icon: <Glyph e="💳" />, label: "Fees",     path: "/parent/fee"                         },
+          { icon: <Glyph e="🔔" />, label: "Alerts",   path: "/parent/notifications"               },
+          { icon: <Glyph e="👤" />, label: "Me",       path: "/parent/profile"                     },
         ].filter(visibleFor(user)).map((tab) => (
           <button key={tab.label} onClick={() => navigate(tab.path)}
             style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, color: location.pathname === tab.path ? theme.primary : "#999" }}>

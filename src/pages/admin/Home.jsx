@@ -61,6 +61,7 @@ import HRManagement from "./HRManagement";
 import Admissions from "./Admissions";
 import AskInsights from "./AskInsights";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -129,15 +130,15 @@ const NAV = [
 ];
 
 const MODULES = [
-  { icon: "🎒", name: "Students",   path: "/admin/students", perm: "students.read",   grad: "linear-gradient(135deg,#6366F1,#8B5CF6)" },
-  { icon: "\u{1F469}\u200D🏫", name: "Teachers",   path: "/admin/teachers", perm: "teachers.manage",   grad: "linear-gradient(135deg,#10B981,#059669)" },
-  { icon: "👨‍👩‍👧", name: "Parents",    path: "/admin/parents", perm: "parents.read",    grad: "linear-gradient(135deg,#F59E0B,#EF4444)" },
-  { icon: "💳", name: "Fee Mgmt",   path: "/admin/fees", perm: "fees.collect",       grad: "linear-gradient(135deg,#06B6D4,#3B82F6)" },
-  { icon: "📊", name: "Att. Reports", path: "/admin/attendance-reports", perm: "attendance.reports", grad: "linear-gradient(135deg,#EC4899,#F43F5E)" },
-  { icon: "📝", name: "Exams",      path: "/admin/exams", perm: "exams.manage",       grad: "linear-gradient(135deg,#F97316,#EF4444)" },
-  { icon: "🕐", name: "Timetable",  path: "/admin/timetable", perm: "timetable.manage",   grad: "linear-gradient(135deg,#3B82F6,#6366F1)" },
-  { icon: "🏖️", name: "Leaves",     path: "/admin/leaves", perm: "leaves.all",      grad: "linear-gradient(135deg,#8B5CF6,#A855F7)" },
-  { icon: "🚌", name: "Transport",  path: "/admin/transport", perm: "transport.manage",   grad: "linear-gradient(135deg,#0EA5E9,#06B6D4)" },
+  { icon: <Glyph e="🎒" />, name: "Students",   path: "/admin/students", perm: "students.read",   grad: "linear-gradient(135deg,#6366F1,#8B5CF6)" },
+  { icon: <Glyph e="👩‍🏫" />, name: "Teachers",   path: "/admin/teachers", perm: "teachers.manage",   grad: "linear-gradient(135deg,#10B981,#059669)" },
+  { icon: <Glyph e="👨‍👩‍👧" />, name: "Parents",    path: "/admin/parents", perm: "parents.read",    grad: "linear-gradient(135deg,#F59E0B,#EF4444)" },
+  { icon: <Glyph e="💳" />, name: "Fee Mgmt",   path: "/admin/fees", perm: "fees.collect",       grad: "linear-gradient(135deg,#06B6D4,#3B82F6)" },
+  { icon: <Glyph e="📊" />, name: "Att. Reports", path: "/admin/attendance-reports", perm: "attendance.reports", grad: "linear-gradient(135deg,#EC4899,#F43F5E)" },
+  { icon: <Glyph e="📝" />, name: "Exams",      path: "/admin/exams", perm: "exams.manage",       grad: "linear-gradient(135deg,#F97316,#EF4444)" },
+  { icon: <Glyph e="🕐" />, name: "Timetable",  path: "/admin/timetable", perm: "timetable.manage",   grad: "linear-gradient(135deg,#3B82F6,#6366F1)" },
+  { icon: <Glyph e="🏖" />, name: "Leaves",     path: "/admin/leaves", perm: "leaves.all",      grad: "linear-gradient(135deg,#8B5CF6,#A855F7)" },
+  { icon: <Glyph e="🚌" />, name: "Transport",  path: "/admin/transport", perm: "transport.manage",   grad: "linear-gradient(135deg,#0EA5E9,#06B6D4)" },
 ];
 
 function useCounter(target, duration = 400) {
@@ -244,7 +245,7 @@ function DashboardContent({ isMobile, navigate, user }) {
       setAttendanceStats({ present, absent: att.absent || 0, total: att.total || 0, marked: att.marked || 0, totalStudents: att.totalStudents || 0 });
 
       setRecentActivity(students.slice(-6).reverse().map(s => ({
-        ic: "🎒", text: `${s.name} added to class ${s.class}-${s.section}`,
+        ic: <Glyph e="🎒" />, text: `${s.name} added to class ${s.class}-${s.section}`,
         time: new Date(s.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" }),
       })));
 
@@ -261,13 +262,12 @@ function DashboardContent({ isMobile, navigate, user }) {
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good Morning" : hour < 17 ? "Good Afternoon" : "Good Evening";
-  const greetEmoji = hour < 12 ? "🌅" : hour < 17 ? "☀️" : "🌙";
 
   const statCards = [
-    { icon: "🎒", value: stats.students, label: "Total Students",  sub: "Enrolled this year",   grad: "linear-gradient(135deg,#6366F1,#8B5CF6)", delay: 0 },
-    { icon: "\u{1F469}\u200D🏫", value: stats.teachers, label: "Total Teachers",  sub: "Active staff members", grad: "linear-gradient(135deg,#10B981,#059669)", delay: 80 },
-    { icon: "👨‍👩‍👧", value: stats.parents,  label: "Linked Parents",  sub: "Connected families",   grad: "linear-gradient(135deg,#F59E0B,#EF4444)", delay: 160 },
-    { icon: "🚌", value: stats.buses,    label: "Total Buses",     sub: "Active fleet",          grad: "linear-gradient(135deg,#0EA5E9,#3B82F6)", delay: 240, feature: "transport" },
+    { icon: <Glyph e="🎒" />, value: stats.students, label: "Total Students",  sub: "Enrolled this year",   grad: "linear-gradient(135deg,#6366F1,#8B5CF6)", delay: 0 },
+    { icon: <Glyph e="👩‍🏫" />, value: stats.teachers, label: "Total Teachers",  sub: "Active staff members", grad: "linear-gradient(135deg,#10B981,#059669)", delay: 80 },
+    { icon: <Glyph e="👨‍👩‍👧" />, value: stats.parents,  label: "Linked Parents",  sub: "Connected families",   grad: "linear-gradient(135deg,#F59E0B,#EF4444)", delay: 160 },
+    { icon: <Glyph e="🚌" />, value: stats.buses,    label: "Total Buses",     sub: "Active fleet",          grad: "linear-gradient(135deg,#0EA5E9,#3B82F6)", delay: 240, feature: "transport" },
   ].filter((c) => hasFeature(user, c.feature));
 
   const attPct = attendanceStats.total > 0 ? Math.round((attendanceStats.present / attendanceStats.total) * 100) : 0;
@@ -313,11 +313,11 @@ function DashboardContent({ isMobile, navigate, user }) {
           <div style={{ position: "relative", zIndex: 1 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
               <div style={{ background: theme.isLight ? "#fff" : "rgba(255,255,255,0.15)", border: theme.isLight ? `1px solid ${theme.ring}` : "none", borderRadius: 8, padding: "3px 10px", fontSize: 11, color: theme.isLight ? theme.primary : "rgba(255,255,255,0.9)", fontWeight: 600, backdropFilter: "blur(8px)" }}>
-                🏫 {user?.school || "EduAmigo School"}
+                <Glyph e="🏫" /> {user?.school || "EduAmigo School"}
               </div>
             </div>
             <div style={{ fontSize: isMobile ? 20 : 26, fontWeight: 800, color: theme.isLight ? theme.deep : "white", marginBottom: 8, letterSpacing: "-0.3px" }}>
-              {greeting}, {user?.name || "Admin"} {greetEmoji}
+              {greeting}, {user?.name || "Admin"}
             </div>
             <div style={{ fontSize: 13, color: theme.isLight ? alpha(theme.deep, 0.65) : "rgba(255,255,255,0.7)", lineHeight: 1.6 }}>
               You have <span style={{ color: "#A5B4FC", fontWeight: 700 }}>{stats.students} students</span> and <span style={{ color: "#6EE7B7", fontWeight: 700 }}>{stats.teachers} teachers</span> enrolled.
@@ -421,7 +421,7 @@ function DashboardContent({ isMobile, navigate, user }) {
             </div>
             <div style={{ fontSize: 48, fontWeight: 800, color: pendingLeaves > 0 ? "#EF4444" : "#10B981", lineHeight: 1, marginBottom: 8 }}>{pendingLeaves}</div>
             <div style={{ fontSize: 12, color: pendingLeaves > 0 ? "#EF4444" : "#10B981", fontWeight: 700 }}>
-              {pendingLeaves > 0 ? `${pendingLeaves} requests pending →` : "All caught up! ✓"}
+              {pendingLeaves > 0 ? `${pendingLeaves} ${pendingLeaves === 1 ? "request" : "requests"} pending →` : "All caught up"}
             </div>
           </div>
         </AnimatedItem>

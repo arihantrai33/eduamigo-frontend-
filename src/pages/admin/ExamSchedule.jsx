@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, errorMessage } from "../../utils/toast";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -166,10 +167,10 @@ export default function ExamSchedule() {
       {/* Stat Cards */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
         {[
-          { label:"TOTAL EXAMS",   value: exams.length, icon:"📝", border:"var(--brand)", bg:"var(--brand-soft)" },
-          { label:"UPCOMING",      value: upcoming,     icon:"📅", border:"#F97316", bg:"#FFF7ED" },
-          { label:"TODAY",         value: today,        icon:"🔔", border:"#EF4444", bg:"#FEF2F2" },
-          { label:"EXAM TYPES",    value: [...new Set(exams.map(e=>e.examType))].length, icon:"🗂️", border:"#10B981", bg:"#F0FDF4" },
+          { label:"TOTAL EXAMS",   value: exams.length, icon:<Glyph e="📝" />, border:"var(--brand)", bg:"var(--brand-soft)" },
+          { label:"UPCOMING",      value: upcoming,     icon:<Glyph e="📅" />, border:"#F97316", bg:"#FFF7ED" },
+          { label:"TODAY",         value: today,        icon:<Glyph e="🔔" />, border:"#EF4444", bg:"#FEF2F2" },
+          { label:"EXAM TYPES",    value: [...new Set(exams.map(e=>e.examType))].length, icon:<Glyph e="🗂" />, border:"#10B981", bg:"#F0FDF4" },
         ].map((card, i) => (
           <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
@@ -206,7 +207,7 @@ export default function ExamSchedule() {
         </div>
       ) : filtered.length === 0 ? (
         <div style={{ background:"white", borderRadius:20, padding:"80px 0", textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
-          <div style={{ fontSize:48, marginBottom:12 }}>📝</div>
+          <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="📝" /></div>
           <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No exams scheduled</div>
           <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Click "Schedule Exam" to add your first exam</div>
         </div>
@@ -225,18 +226,18 @@ export default function ExamSchedule() {
                 <div style={{ fontSize:16, fontWeight:800, color:"#0F172A", marginBottom:4 }}>{exam.title}</div>
                 <div style={{ fontSize:13, color:"var(--brand)", fontWeight:700, marginBottom:12 }}>{exam.subject}</div>
                 <div style={{ display:"flex", flexDirection:"column", gap:6, marginBottom:16 }}>
-                  {exam.class && <div style={{ fontSize:12, color:"#64748B" }}>🏫 Class {exam.class}{exam.section ? `-${exam.section}` : ""}</div>}
-                  <div style={{ fontSize:12, color:"#64748B" }}>📅 {fmtDate(exam.date)}</div>
-                  {exam.startTime && <div style={{ fontSize:12, color:"#64748B" }}>🕐 {exam.startTime}{exam.endTime ? ` – ${exam.endTime}` : ""}</div>}
-                  {exam.totalMarks ? <div style={{ fontSize:12, color:"#64748B" }}>📊 Total Marks: {exam.totalMarks}</div> : <div style={{ fontSize:12, color:"#B45309", fontWeight:600 }}>Total marks not set: teachers cannot enter marks yet</div>}
-                  {exam.term && <div style={{ fontSize:12, color:"#64748B" }}>🗂️ {exam.term} · {exam.academicYear}</div>}
-                  {exam.venue && <div style={{ fontSize:12, color:"#64748B" }}>📍 {exam.venue}</div>}
+                  {exam.class && <div style={{ fontSize:12, color:"#64748B" }}><Glyph e="🏫" /> Class {exam.class}{exam.section ? `-${exam.section}` : ""}</div>}
+                  <div style={{ fontSize:12, color:"#64748B" }}><Glyph e="📅" /> {fmtDate(exam.date)}</div>
+                  {exam.startTime && <div style={{ fontSize:12, color:"#64748B" }}><Glyph e="🕐" /> {exam.startTime}{exam.endTime ? ` – ${exam.endTime}` : ""}</div>}
+                  {exam.totalMarks ? <div style={{ fontSize:12, color:"#64748B" }}><Glyph e="📊" /> Total Marks: {exam.totalMarks}</div> : <div style={{ fontSize:12, color:"#B45309", fontWeight:600 }}>Total marks not set: teachers cannot enter marks yet</div>}
+                  {exam.term && <div style={{ fontSize:12, color:"#64748B" }}><Glyph e="🗂" /> {exam.term} · {exam.academicYear}</div>}
+                  {exam.venue && <div style={{ fontSize:12, color:"#64748B" }}><Glyph e="📍" /> {exam.venue}</div>}
                 </div>
                 <div style={{ display:"flex", gap:8, borderTop:"1px solid #F1F5F9", paddingTop:12 }}>
                   <button className="act-btn" onClick={() => openEdit(exam)}
                     style={{ flex:1, padding:"8px", borderRadius:10, border:"1px solid #E2E8F0", background:"white", color:"#374151", fontSize:12, fontWeight:700, cursor:"pointer" }}>Edit</button>
                   <button className="act-btn" onClick={() => setDeleteId(exam._id)}
-                    style={{ padding:"8px 14px", borderRadius:10, border:"none", background:"#FEF2F2", color:"#DC2626", fontSize:12, fontWeight:700, cursor:"pointer" }}>🗑️</button>
+                    style={{ padding:"8px 14px", borderRadius:10, border:"none", background:"#FEF2F2", color:"#DC2626", fontSize:12, fontWeight:700, cursor:"pointer" }}><Glyph e="🗑" /></button>
                 </div>
               </div>
             );
@@ -294,7 +295,7 @@ export default function ExamSchedule() {
 
       <Modal show={!!deleteId} onClose={() => setDeleteId(null)} title="Delete Exam">
         <div style={{ textAlign:"center", padding:"8px 0 24px" }}>
-          <div style={{ fontSize:52, marginBottom:16 }}>🗑️</div>
+          <div style={{ fontSize:52, marginBottom:16 }}><Glyph e="🗑" /></div>
           <div style={{ fontSize:16, fontWeight:700, color:"#0F172A", marginBottom:8 }}>Delete this exam?</div>
           <div style={{ fontSize:13, color:"#94A3B8", marginBottom:24 }}>This exam will be permanently removed. Exams that already have marks cannot be deleted.</div>
           <div style={{ display:"flex", gap:10, justifyContent:"center" }}>

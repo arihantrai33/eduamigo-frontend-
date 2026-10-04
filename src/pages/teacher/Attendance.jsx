@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { todayLocal } from "../../utils/dates";
 
+import Glyph from "../../components/Glyph";
+import { plural } from "../../utils/plural";
 const API = import.meta.env.VITE_API_URL
 
 const STATUS_COLORS = {
@@ -114,7 +116,7 @@ export default function TeacherAttendance() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.message || "Failed to save")
-      showToast(`Attendance saved for ${data.count} students`)
+      showToast(`Attendance saved for ${plural(data.count, "student")}`)
       setExisting(true)
     } catch (err) {
       showToast(err.message, "error")
@@ -138,7 +140,7 @@ export default function TeacherAttendance() {
           color: toast.type === "error" ? "#DC2626" : "#15803D",
           boxShadow: "0 4px 20px rgba(0,0,0,0.12)", whiteSpace: "nowrap",
         }}>
-          {toast.type === "error" ? "⚠️" : "✅"} {toast.msg}
+          {toast.type === "error" ? <Glyph e="⚠" /> : <Glyph e="✅" />} {toast.msg}
         </div>
       )}
 
@@ -232,7 +234,7 @@ export default function TeacherAttendance() {
           <>
             {existing && (
               <div style={{ background: "#FEF9C3", border: "1px solid #FDE047", borderRadius: 12, padding: "10px 14px", marginBottom: 12, fontSize: 12, color: "#CA8A04", fontWeight: 600 }}>
-                ⚠️ Attendance already marked — saving will update existing records
+                <Glyph e="⚠" /> Attendance already marked — saving will update existing records
               </div>
             )}
             {students.map((s, i) => (
@@ -307,11 +309,11 @@ export default function TeacherAttendance() {
       {/* Bottom Nav */}
       <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 420, background: "var(--card)", display: "flex", borderTop: "1px solid #E8EAF0", overflowY: "auto", boxShadow: "0 -4px 24px color-mix(in srgb, var(--brand) 8%, transparent)", zIndex: 200, height: 66 }}>
         {[
-          { icon: "🏠", label: "Home",       path: "/teacher/home" },
-          { icon: "✅", label: "Attendance", path: "/teacher/attendance" },
-          { icon: "📤", label: "Upload",     path: "/teacher/upload" },
-          { icon: "💬", label: "Messages",   path: "/teacher/chat" },
-          { icon: "👤", label: "Me",         path: "/teacher/profile" },
+          { icon: <Glyph e="🏠" />, label: "Home",       path: "/teacher/home" },
+          { icon: <Glyph e="✅" />, label: "Attendance", path: "/teacher/attendance" },
+          { icon: <Glyph e="📤" />, label: "Upload",     path: "/teacher/upload" },
+          { icon: <Glyph e="💬" />, label: "Messages",   path: "/teacher/chat" },
+          { icon: <Glyph e="👤" />, label: "Me",         path: "/teacher/profile" },
         ].map(t => {
           const active = location.pathname === t.path
           return (

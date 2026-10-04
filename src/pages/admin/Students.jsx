@@ -5,6 +5,7 @@ import { toast, showCredentials } from "../../utils/toast";
 import { useAuth } from "../../context/AuthContext";
 import { can } from "../../utils/permissions";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -120,7 +121,7 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
           {(form.photoPreview || form.photo) ? (
             <img src={form.photoPreview || form.photo} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }} />
           ) : (
-            <span style={{ fontSize: 22, color: "#94A3B8" }}>👤</span>
+            <span style={{ fontSize: 22, color: "#94A3B8" }}><Glyph e="👤" /></span>
           )}
         </div>
         <div>
@@ -291,15 +292,15 @@ export default function Students() {
       </div>
 
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:28 }}>
-        <StatCard label="TOTAL STUDENTS" value={stats.total} icon="🎒" gradient="var(--brand-gradient)" delay={0} border="var(--brand)" />
-        <StatCard label="FEE PAID" value={stats.paid} icon="✅" gradient="linear-gradient(135deg,#10B981,#059669)" delay={0.08} border="#10B981" />
-        <StatCard label="FEE PENDING" value={stats.pending} icon="⏳" gradient="linear-gradient(135deg,#F59E0B,#D97706)" delay={0.16} border="#F59E0B" />
-        <StatCard label="PARTIAL" value={stats.partial} icon="⚡" gradient="linear-gradient(135deg,#F97316,#EA580C)" delay={0.24} border="#F97316" />
+        <StatCard label="TOTAL STUDENTS" value={stats.total} icon={<Glyph e="🎒" />} gradient="var(--brand-gradient)" delay={0} border="var(--brand)" />
+        <StatCard label="FEE PAID" value={stats.paid} icon={<Glyph e="✅" />} gradient="linear-gradient(135deg,#10B981,#059669)" delay={0.08} border="#10B981" />
+        <StatCard label="FEE PENDING" value={stats.pending} icon={<Glyph e="⏳" />} gradient="linear-gradient(135deg,#F59E0B,#D97706)" delay={0.16} border="#F59E0B" />
+        <StatCard label="PARTIAL" value={stats.partial} icon={<Glyph e="⚡" />} gradient="linear-gradient(135deg,#F97316,#EA580C)" delay={0.24} border="#F97316" />
       </div>
 
       <div style={{ display:"flex", gap:12, marginBottom:20, alignItems:"center", animation:"fadeSlideUp 0.5s ease 0.1s both" }}>
         <div style={{ flex:1, position:"relative" }}>
-          <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:16, color:"#94A3B8" }}>🔍</span>
+          <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:16, color:"#94A3B8" }}><Glyph e="🔍" /></span>
           <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search by name, email or roll number..."
             style={{ width:"100%", padding:"11px 14px 11px 40px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", transition:"border 0.2s", background:"white" }}
             onFocus={e=>e.target.style.borderColor="var(--brand)"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
@@ -336,7 +337,7 @@ export default function Students() {
               </td></tr>
             ) : filtered.length === 0 ? (
               <tr><td colSpan={7} style={{ padding:"80px 0", textAlign:"center" }}>
-                <div style={{ fontSize:48, marginBottom:12 }}>🔍</div>
+                <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="🔍" /></div>
                 <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No students found</div>
                 <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Try adjusting your filters</div>
               </td></tr>
@@ -385,7 +386,7 @@ export default function Students() {
                       <button className="action-btn" onClick={() => openEdit(s)}
                         style={{ padding:"6px 14px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", color:"#374151", fontSize:12, fontWeight:700, cursor:"pointer" }}>Edit</button>
                       <button className="action-btn" onClick={() => setDeleteId(s._id)}
-                        style={{ padding:"6px 12px", borderRadius:8, border:"none", background:"#FEF2F2", color:"#DC2626", fontSize:12, fontWeight:700, cursor:"pointer" }}>🗑️</button>
+                        style={{ padding:"6px 12px", borderRadius:8, border:"none", background:"#FEF2F2", color:"#DC2626", fontSize:12, fontWeight:700, cursor:"pointer" }}><Glyph e="🗑" /></button>
                       </>}
                     </div>
                   </td>
@@ -402,7 +403,7 @@ export default function Students() {
 
       <Modal show={!!deleteId} onClose={() => setDeleteId(null)} title="Delete Student">
         <div style={{ textAlign:"center", padding:"8px 0 24px" }}>
-          <div style={{ fontSize:52, marginBottom:16 }}>🗑️</div>
+          <div style={{ fontSize:52, marginBottom:16 }}><Glyph e="🗑" /></div>
           <div style={{ fontSize:16, fontWeight:700, color:"#0F172A", marginBottom:8 }}>Are you sure?</div>
           <div style={{ fontSize:13, color:"#94A3B8", marginBottom:24 }}>This action cannot be undone.</div>
           <div style={{ display:"flex", gap:10, justifyContent:"center" }}>

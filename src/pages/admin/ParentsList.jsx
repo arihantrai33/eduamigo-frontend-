@@ -4,6 +4,7 @@ import { toast, showCredentials } from "../../utils/toast";
 import { useAuth } from "../../context/AuthContext";
 import { can } from "../../utils/permissions";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -111,9 +112,9 @@ export default function ParentsList() {
       {/* Stat Cards */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16, marginBottom:24 }}>
         {[
-          { label:"TOTAL PARENTS",   value: parents.length,  icon:"👨‍👩‍👧", border:"#F59E0B", bg:"#FFFBEB" },
-          { label:"WITH STUDENTS",   value: withChildren,    icon:"🔗", border:"#10B981", bg:"#F0FDF4" },
-          { label:"ACTIVE",          value: parents.filter(p=>p.isActive).length, icon:"✅", border:"var(--brand)", bg:"var(--brand-soft)" },
+          { label:"TOTAL PARENTS",   value: parents.length,  icon:<Glyph e="👨‍👩‍👧" />, border:"#F59E0B", bg:"#FFFBEB" },
+          { label:"WITH STUDENTS",   value: withChildren,    icon:<Glyph e="🔗" />, border:"#10B981", bg:"#F0FDF4" },
+          { label:"ACTIVE",          value: parents.filter(p=>p.isActive).length, icon:<Glyph e="✅" />, border:"var(--brand)", bg:"var(--brand-soft)" },
         ].map((card, i) => (
           <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
@@ -129,7 +130,7 @@ export default function ParentsList() {
 
       {/* Search */}
       <div style={{ position:"relative", marginBottom:20, animation:"fadeUp 0.4s ease 0.1s both" }}>
-        <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}>🔍</span>
+        <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}><Glyph e="🔍" /></span>
         <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by parent name, email, phone or child name..."
           style={{ width:"100%", padding:"12px 14px 12px 40px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
           onFocus={e => e.target.style.borderColor="#F59E0B"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
@@ -153,7 +154,7 @@ export default function ParentsList() {
               </td></tr>
             ) : filtered.length === 0 ? (
               <tr><td colSpan={6} style={{ padding:"80px 0", textAlign:"center" }}>
-                <div style={{ fontSize:48, marginBottom:12 }}>👨‍👩‍👧</div>
+                <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="👨‍👩‍👧" /></div>
                 <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No parents found</div>
                 <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Add parents and link them to students</div>
               </td></tr>
@@ -216,10 +217,10 @@ export default function ParentsList() {
             {/* Details Grid */}
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
               {[
-                ["📞 Phone", selectedParent.phone],
-                ["👤 Gender", selectedParent.gender],
-                ["💼 Occupation", selectedParent.occupation],
-                ["📍 Address", selectedParent.address],
+                ["Phone", selectedParent.phone],
+                ["Gender", selectedParent.gender],
+                ["Occupation", selectedParent.occupation],
+                ["Address", selectedParent.address],
               ].map(([label, value]) => value ? (
                 <div key={label} style={{ background:"#F8FAFC", borderRadius:10, padding:"12px 14px" }}>
                   <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:4 }}>{label}</div>

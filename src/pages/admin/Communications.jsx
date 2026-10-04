@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, confirmAction } from "../../utils/toast";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -136,9 +137,9 @@ export default function Communications() {
   const fmtDate = (d) => d ? new Date(d).toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" }) : "—";
 
   const TABS = [
-    { id:"announcements", label:"📢 Announcements", count: announcements.length },
-    { id:"circulars",     label:"📋 Circulars",     count: circulars.length },
-    { id:"notifications", label:"🔔 Notifications", count: notifications.length },
+    { id:"announcements", label:"Announcements", count: announcements.length },
+    { id:"circulars",     label:"Circulars",     count: circulars.length },
+    { id:"notifications", label:"Notifications", count: notifications.length },
   ];
 
   return (
@@ -165,7 +166,7 @@ export default function Communications() {
           <div style={{ display:"flex", gap:10 }}>
             <button onClick={openAddNotification}
               style={{ padding:"11px 20px", borderRadius:12, border:"1px solid rgba(255,255,255,0.3)", background:"rgba(255,255,255,0.2)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer" }}>
-              🔔 Send Notification
+              <Glyph e="🔔" /> Send Notification
             </button>
           </div>
         </div>
@@ -174,10 +175,10 @@ export default function Communications() {
       {/* Stat Cards */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
         {[
-          { label:"ANNOUNCEMENTS", value: announcements.length,                                    icon:"📢", border:"var(--brand)", bg:"var(--brand-soft)" },
-          { label:"PINNED",        value: announcements.filter(a=>a.isPinned).length,              icon:"📌", border:"#F59E0B", bg:"#FFFBEB" },
-          { label:"CIRCULARS",     value: circulars.length,                                        icon:"📋", border:"#EC4899", bg:"#FDF4FF" },
-          { label:"NOTIFICATIONS", value: notifications.length,                                    icon:"🔔", border:"#10B981", bg:"#F0FDF4" },
+          { label:"ANNOUNCEMENTS", value: announcements.length,                                    icon:<Glyph e="📢" />, border:"var(--brand)", bg:"var(--brand-soft)" },
+          { label:"PINNED",        value: announcements.filter(a=>a.isPinned).length,              icon:<Glyph e="📌" />, border:"#F59E0B", bg:"#FFFBEB" },
+          { label:"CIRCULARS",     value: circulars.length,                                        icon:<Glyph e="📋" />, border:"#EC4899", bg:"#FDF4FF" },
+          { label:"NOTIFICATIONS", value: notifications.length,                                    icon:<Glyph e="🔔" />, border:"#10B981", bg:"#F0FDF4" },
         ].map((card, i) => (
           <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
@@ -210,7 +211,7 @@ export default function Communications() {
           {/* Filters + Add Button */}
           <div style={{ display:"flex", gap:12, marginBottom:20, alignItems:"center" }}>
             <div style={{ flex:1, position:"relative" }}>
-              <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}>🔍</span>
+              <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}><Glyph e="🔍" /></span>
               <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search announcements..."
                 style={{ width:"100%", padding:"11px 14px 11px 38px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
                 onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
@@ -253,7 +254,7 @@ export default function Communications() {
             </div>
           ) : filteredAnn.length === 0 ? (
             <div style={{ background:"white", borderRadius:20, padding:"80px 0", textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
-              <div style={{ fontSize:48, marginBottom:12 }}>📢</div>
+              <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="📢" /></div>
               <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No announcements yet</div>
             </div>
           ) : (
@@ -267,7 +268,7 @@ export default function Communications() {
                     <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                       <div style={{ flex:1 }}>
                         <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
-                          {a.isPinned && <span style={{ fontSize:12 }}>📌</span>}
+                          {a.isPinned && <span style={{ fontSize:12 }}><Glyph e="📌" /></span>}
                           <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:pcfg.bg, color:pcfg.color, border:`1px solid ${pcfg.border}` }}>{pcfg.label}</span>
                           <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:tcfg.bg, color:tcfg.color }}>{tcfg.label}</span>
                         </div>
@@ -280,15 +281,15 @@ export default function Communications() {
                       <div style={{ display:"flex", gap:6, marginLeft:16 }}>
                         <button className="act-btn" onClick={() => handleTogglePin(a._id)}
                           style={{ width:32, height:32, borderRadius:8, border:"1px solid #E2E8F0", background: a.isPinned ? "#FFFBEB" : "white", cursor:"pointer", fontSize:14 }}>
-                          📌
+                          <Glyph e="📌" />
                         </button>
                         <button className="act-btn" onClick={() => openEditAnnouncement(a)}
                           style={{ width:32, height:32, borderRadius:8, border:"1px solid #E2E8F0", background:"white", cursor:"pointer", fontSize:14 }}>
-                          ✏️
+                          <Glyph e="✏" />
                         </button>
                         <button className="act-btn" onClick={() => handleDeleteAnn(a._id)}
                           style={{ width:32, height:32, borderRadius:8, border:"none", background:"#FEF2F2", cursor:"pointer", fontSize:14 }}>
-                          🗑️
+                          <Glyph e="🗑" />
                         </button>
                       </div>
                     </div>
@@ -311,7 +312,7 @@ export default function Communications() {
           </div>
           {circulars.length === 0 ? (
             <div style={{ background:"white", borderRadius:20, padding:"80px 0", textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
-              <div style={{ fontSize:48, marginBottom:12 }}>📋</div>
+              <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="📋" /></div>
               <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No circulars yet</div>
               <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Important/Urgent announcements appear here as circulars</div>
             </div>
@@ -327,7 +328,7 @@ export default function Communications() {
                       <div style={{ flex:1 }}>
                         <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
                           <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:pcfg.bg, color:pcfg.color, border:`1px solid ${pcfg.border}` }}>{pcfg.label}</span>
-                          <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:tcfg.bg, color:tcfg.color }}>📣 {tcfg.label}</span>
+                          <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:tcfg.bg, color:tcfg.color }}><Glyph e="📣" /> {tcfg.label}</span>
                           <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:"#F1F5F9", color:"#64748B" }}>CIRCULAR</span>
                         </div>
                         <div style={{ fontSize:15, fontWeight:800, color:"#0F172A", marginBottom:6 }}>{a.title}</div>
@@ -336,7 +337,7 @@ export default function Communications() {
                       </div>
                       <button className="act-btn" onClick={() => handleDeleteAnn(a._id)}
                         style={{ width:32, height:32, borderRadius:8, border:"none", background:"#FEF2F2", cursor:"pointer", fontSize:14, marginLeft:16 }}>
-                        🗑️
+                        <Glyph e="🗑" />
                       </button>
                     </div>
                   </div>
@@ -353,12 +354,12 @@ export default function Communications() {
           <div style={{ display:"flex", justifyContent:"flex-end", marginBottom:16 }}>
             <button onClick={openAddNotification}
               style={{ padding:"11px 24px", borderRadius:12, border:"none", background:"var(--brand-gradient)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 14px color-mix(in srgb, var(--brand) 30%, transparent)" }}>
-              🔔 Send New Notification
+              <Glyph e="🔔" /> Send New Notification
             </button>
           </div>
           {notifications.length === 0 ? (
             <div style={{ background:"white", borderRadius:20, padding:"80px 0", textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
-              <div style={{ fontSize:48, marginBottom:12 }}>🔔</div>
+              <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="🔔" /></div>
               <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No notifications sent yet</div>
             </div>
           ) : (
@@ -369,7 +370,7 @@ export default function Communications() {
                   <div key={n._id} className="comm-card"
                     style={{ background:"white", borderRadius:14, padding:"16px 20px", boxShadow:"0 2px 12px rgba(15,23,42,0.06)", border:"1px solid #E2E8F0", display:"flex", justifyContent:"space-between", alignItems:"center", animation:`fadeUp 0.3s ease ${i*0.03}s both` }}>
                     <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-                      <div style={{ width:40, height:40, borderRadius:12, background:"var(--brand-gradient)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}>🔔</div>
+                      <div style={{ width:40, height:40, borderRadius:12, background:"var(--brand-gradient)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}><Glyph e="🔔" /></div>
                       <div>
                         <div style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>{n.title}</div>
                         <div style={{ fontSize:12, color:"#64748B", marginTop:2 }}>{n.message}</div>
@@ -381,7 +382,7 @@ export default function Communications() {
                     </div>
                     <button className="act-btn" onClick={() => handleDeleteNotif(n._id)}
                       style={{ width:32, height:32, borderRadius:8, border:"none", background:"#FEF2F2", cursor:"pointer", fontSize:14 }}>
-                      🗑️
+                      <Glyph e="🗑" />
                     </button>
                   </div>
                 );
@@ -423,7 +424,7 @@ export default function Communications() {
           </div>
           <label style={{ display:"flex", alignItems:"center", gap:8, cursor:"pointer" }}>
             <input type="checkbox" checked={annForm.isPinned} onChange={e => setAnnForm(p=>({...p,isPinned:e.target.checked}))} style={{ accentColor:"var(--brand)", width:16, height:16 }} />
-            <span style={{ fontSize:13, fontWeight:600, color:"#374151" }}>📌 Pin this announcement</span>
+            <span style={{ fontSize:13, fontWeight:600, color:"#374151" }}><Glyph e="📌" /> Pin this announcement</span>
           </label>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
             <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
@@ -464,7 +465,7 @@ export default function Communications() {
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
             <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
             <button onClick={handleSendNotification} disabled={saving} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"var(--brand-gradient)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", opacity:saving?0.7:1 }}>
-              {saving ? "Sending..." : "🔔 Send Now"}
+              {saving ? "Sending..." : "Send Now"}
             </button>
           </div>
         </div>

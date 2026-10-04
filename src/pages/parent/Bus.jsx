@@ -8,24 +8,26 @@ import L from "leaflet";
 import { getChildBus } from "../../api/transport";
 import SosModal from "../../components/SosModal";
 
+import Glyph from "../../components/Glyph";
+import { BUS_SVG, schoolSvg, cssVar } from "../../utils/mapIcons";
 const API = import.meta.env.VITE_API_URL;
 const COLOR = {
-  primary: "#0EA5E9", primaryDark: "#0284C7", primaryLight: "#E0F2FE",
+  primary: "var(--brand)", primaryDark: "var(--brand-dark)", primaryLight: "var(--brand-soft)",
   success: "#10B981", successLight: "#D1FAE5",
   danger: "#EF4444", warning: "#F59E0B", sos: "#DC2626", safe: "#10B981",
 };
 
 const busIcon = L.divIcon({
   className: "",
-  html: `<div style="width:52px;height:52px;background:linear-gradient(135deg,#0EA5E9,#38BDF8);border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(14,165,233,0.6);border:3px solid white;"><span style="transform:rotate(45deg);font-size:24px;line-height:1;">🚌</span></div>`,
+  html: `<div style="width:52px;height:52px;background:linear-gradient(135deg,var(--brand),var(--brand-light));border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px color-mix(in srgb, var(--brand) 60%, transparent);border:3px solid white;"><span style="transform:rotate(45deg);display:flex;line-height:1;">${BUS_SVG}</span></div>`,
   iconSize: [52, 52], iconAnchor: [26, 52], popupAnchor: [0, -56],
 });
 
 function makeStopIcon(type) {
   const configs = {
     completed: { bg: "#10B981", text: "✓", size: 22 },
-    current:   { bg: "#0EA5E9", text: "●", size: 26 },
-    school:    { bg: "#F59E0B", text: "🏫", size: 24 },
+    current:   { bg: "var(--brand)", text: "●", size: 26 },
+    school:    { bg: "#F59E0B", text: schoolSvg(13), size: 24 },
     upcoming:  { bg: "#E5E7EB", text: "●", size: 18 },
   };
   const c = configs[type] || configs.upcoming;
@@ -62,9 +64,9 @@ function getTrafficStatus(speed) {
 }
 
 function getChildStatus(tripActive, currentStopIdx, stops) {
-  if (!tripActive) return { emoji: "🏠", label: "At Home", color: COLOR.success, sub: "Trip not started yet" };
-  if (currentStopIdx === stops.length - 1) return { emoji: "🏫", label: "Reached School", color: COLOR.success, sub: "Safe at school" };
-  return { emoji: "🚌", label: "On the Bus", color: COLOR.primary, sub: `Near ${stops[currentStopIdx]?.name}` };
+  if (!tripActive) return { emoji: <Glyph e="🏠" />, label: "At Home", color: COLOR.success, sub: "Trip not started yet" };
+  if (currentStopIdx === stops.length - 1) return { emoji: <Glyph e="🏫" />, label: "Reached School", color: COLOR.success, sub: "Safe at school" };
+  return { emoji: <Glyph e="🚌" />, label: "On the Bus", color: COLOR.primary, sub: `Near ${stops[currentStopIdx]?.name}` };
 }
 
 async function fetchETA(fromLat, fromLng, toLat, toLng) {
@@ -164,7 +166,7 @@ function CallModal({ onClose, name, phone }) {
   return (
     <div style={styles.modalOverlay}>
       <div style={styles.modalCard}>
-        <div style={{ fontSize:"52px", marginBottom:"12px" }}>📞</div>
+        <div style={{ fontSize:"52px", marginBottom:"12px" }}><Glyph e="📞" /></div>
         <p style={styles.modalTitle}>Call {name}</p>
         <p style={styles.modalSub}>{phone}</p>
         <div style={styles.modalBtns}>
@@ -184,15 +186,15 @@ function CallModal({ onClose, name, phone }) {
 
 function NotificationSettingsModal({ onClose, prefs, onChange }) {
   const items = [
-    { key: "tripStartEnd", icon: "🚦", label: "Trip Started / Ended" },
-    { key: "stopReached",  icon: "📍", label: "Bus reached a stop" },
-    { key: "nearby",       icon: "📡", label: "Bus nearby (within 500m)" },
-    { key: "sos",          icon: "🆘", label: "Emergency alerts" },
+    { key: "tripStartEnd", icon: <Glyph e="🚦" />, label: "Trip Started / Ended" },
+    { key: "stopReached",  icon: <Glyph e="📍" />, label: "Bus reached a stop" },
+    { key: "nearby",       icon: <Glyph e="📡" />, label: "Bus nearby (within 500m)" },
+    { key: "sos",          icon: <Glyph e="🆘" />, label: "Emergency alerts" },
   ];
   return (
     <div style={styles.modalOverlay}>
       <div style={styles.modalCard}>
-        <div style={{ fontSize:"36px", marginBottom:"8px" }}>🔔</div>
+        <div style={{ fontSize:"36px", marginBottom:"8px" }}><Glyph e="🔔" /></div>
         <p style={styles.modalTitle}>Notification Preferences</p>
         <p style={{ fontSize:"13px", color:"#64748B", marginBottom:"16px" }}>Select which alerts you want to receive.</p>
         {items.map(item => (
@@ -205,7 +207,7 @@ function NotificationSettingsModal({ onClose, prefs, onChange }) {
               <span style={{ fontSize:"20px" }}>{item.icon}</span>
               <span style={{ fontSize:"13px", fontWeight:500, color:"#1E293B" }}>{item.label}</span>
             </div>
-            <div style={{ width:"44px", height:"24px", borderRadius:"12px", background: prefs[item.key] ? "#0EA5E9" : "#E2E8F0", position:"relative", transition:"background 0.2s", flexShrink:0 }}>
+            <div style={{ width:"44px", height:"24px", borderRadius:"12px", background: prefs[item.key] ? "var(--brand)" : "#E2E8F0", position:"relative", transition:"background 0.2s", flexShrink:0 }}>
               <div style={{ position:"absolute", top:"3px", left: prefs[item.key] ? "23px" : "3px", width:"18px", height:"18px", borderRadius:"50%", background:"white", boxShadow:"0 1px 4px rgba(0,0,0,0.2)", transition:"left 0.2s" }} />
             </div>
           </div>
@@ -304,7 +306,7 @@ export default function ParentBus() {
     const unsubscribe = onValue(busRef, async (snapshot) => {
       const data = snapshot.val();
       if (!data?.lat || !data?.lng) {
-        if (prevTrip.current && notifPrefs.tripStartEnd) pushNotif("🏁", "Trip has ended. Your child's bus has stopped.");
+        if (prevTrip.current && notifPrefs.tripStartEnd) pushNotif(<Glyph e="🏁" />, "Trip has ended. Your child's bus has stopped.");
         prevTrip.current = false;
         setTripActive(false); setBusLocation(null); setBusSpeed(0);
         setEta("—"); setCurrentStopIdx(0); setRemainingRoute([]); setCompletedRoute([]);
@@ -325,7 +327,7 @@ export default function ParentBus() {
 
       // Trip started notification
       if (!prevTrip.current && notifPrefs.tripStartEnd) {
-        pushNotif("🚦", "Trip has started. Your child's bus is now on the way.");
+        pushNotif(<Glyph e="🚦" />, "Trip has started. Your child's bus is now on the way.");
       }
       prevTrip.current = true;
       setTripActive(true);
@@ -337,7 +339,7 @@ export default function ParentBus() {
       // Stop reached notification
       if (prevStopIdx.current !== null && prevStopIdx.current !== nearestIdx && notifPrefs.stopReached) {
         const stopName = stops[nearestIdx]?.name;
-        if (stopName) pushNotif("📍", `Bus has reached ${stopName}.`);
+        if (stopName) pushNotif(<Glyph e="📍" />, `Bus has reached ${stopName}.`);
       }
       prevStopIdx.current = nearestIdx;
 
@@ -346,7 +348,7 @@ export default function ParentBus() {
         const myStop = stops[0];
         if (myStop) {
           const dist = Math.sqrt(((data.lat - myStop.lat) * 111000) ** 2 + ((data.lng - myStop.lng) * 111000) ** 2);
-          if (dist < 500) pushNotif("📡", `Bus is less than 500m away from your stop.`);
+          if (dist < 500) pushNotif(<Glyph e="📡" />, `Bus is less than 500m away from your stop.`);
         }
       }
 
@@ -386,19 +388,19 @@ export default function ParentBus() {
 
   if (loading) {
     return (
-      <div style={{ minHeight:"100dvh", display:"flex", alignItems:"center", justifyContent:"center", background:"#F0F9FF", flexDirection:"column", gap:"16px" }}>
-        <div style={{ fontSize:"48px" }}>🚌</div>
-        <p style={{ fontSize:"16px", color:"#0EA5E9", fontWeight:600 }}>Loading bus information...</p>
+      <div style={{ minHeight:"100dvh", display:"flex", alignItems:"center", justifyContent:"center", background:"var(--bg)", flexDirection:"column", gap:"16px" }}>
+        <div style={{ fontSize:"48px" }}><Glyph e="🚌" /></div>
+        <p style={{ fontSize:"16px", color:"var(--brand)", fontWeight:600 }}>Loading bus information...</p>
       </div>
     );
   }
 
   if (!driverToken) {
     return (
-      <div style={{ minHeight:"100dvh", display:"flex", alignItems:"center", justifyContent:"center", background:"#F0F9FF", flexDirection:"column", gap:"16px" }}>
-        <div style={{ fontSize:"48px" }}>🚌</div>
+      <div style={{ minHeight:"100dvh", display:"flex", alignItems:"center", justifyContent:"center", background:"var(--bg)", flexDirection:"column", gap:"16px" }}>
+        <div style={{ fontSize:"48px" }}><Glyph e="🚌" /></div>
         <p style={{ fontSize:"16px", color:"#64748B", fontWeight:600 }}>No bus has been assigned yet.</p>
-        <button onClick={() => navigate("/parent/home")} style={{ padding:"10px 24px", borderRadius:"12px", background:"#0EA5E9", color:"white", border:"none", fontWeight:600, cursor:"pointer" }}>Go Back</button>
+        <button onClick={() => navigate("/parent/home")} style={{ padding:"10px 24px", borderRadius:"12px", background:"var(--brand)", color:"white", border:"none", fontWeight:600, cursor:"pointer" }}>Go Back</button>
       </div>
     );
   }
@@ -406,9 +408,9 @@ export default function ParentBus() {
   const mapContent = busLocation ? (
     <MapContainer center={[busLocation.lat, busLocation.lng]} zoom={16} style={{ height:"100%", width:"100%" }} zoomControl={false}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; OpenStreetMap' />
-      {completedRoute.length > 1 && <Polyline positions={completedRoute} color="#BAE6FD" weight={5} opacity={0.55} />}
+      {completedRoute.length > 1 && <Polyline positions={completedRoute} color={cssVar("--brand-border", "#BAE6FD")} weight={5} opacity={0.55} />}
       {remainingRoute.length > 1 && <Polyline positions={remainingRoute} color={traffic.color} weight={6} opacity={0.92} dashArray={traffic.color === COLOR.danger ? "10 6" : undefined} />}
-      {fullRoute.length > 1 && <Polyline positions={fullRoute} color={COLOR.primary} weight={2} opacity={0.18} dashArray="8 10" />}
+      {fullRoute.length > 1 && <Polyline positions={fullRoute} color={cssVar("--brand", "#0EA5E9")} weight={2} opacity={0.18} dashArray="8 10" />}
       <SmoothBusMarker position={busLocation} driverName={driverData?.name || "Driver"} busLabel={busLabel} />
       <MapAutoCenter position={busLocation} />
       {stops.map((stop, i) => {
@@ -428,7 +430,7 @@ export default function ParentBus() {
     </MapContainer>
   ) : (
     <div style={styles.mapPlaceholder}>
-      <div style={{ fontSize:"56px" }}>🚌</div>
+      <div style={{ fontSize:"56px" }}><Glyph e="🚌" /></div>
       <p style={styles.busEmptyTitle}>Bus is not on route yet</p>
       <p style={styles.busEmptySub}>Trip has not started</p>
     </div>
@@ -443,7 +445,7 @@ export default function ParentBus() {
           <span style={{ fontSize:"12px", fontWeight:600 }}>Exit</span>
         </button>
         <div style={styles.fsActionRow}>
-          <button style={styles.fsCallBtn} onClick={() => setShowCallDriver(true)}>📞 Driver</button>
+          <button style={styles.fsCallBtn} onClick={() => setShowCallDriver(true)}><Glyph e="📞" /> Driver</button>
           <button style={styles.fsCallBtn} onClick={() => setShowCallSchool(true)}>School</button>
           <button style={styles.fsSosBtn}  onClick={() => setShowSOS(true)}>SOS</button>
         </div>
@@ -482,18 +484,18 @@ export default function ParentBus() {
             {tripActive && (
               <span style={{ ...styles.liveDot, marginRight:"2px" }} />
               )}
-            <button onClick={() => setShowNotifSettings(true)} style={styles.notifBtn}>🔔</button>
+            <button onClick={() => setShowNotifSettings(true)} style={styles.notifBtn}><Glyph e="🔔" /></button>
           </div>
 
           <div style={styles.childCard}>
-            <div style={styles.childAvatar}><span style={{ fontSize:"26px" }}>👦</span></div>
+            <div style={styles.childAvatar}><span style={{ fontSize:"26px" }}><Glyph e="👦" /></span></div>
             <div style={{ flex:1 }}>
               <p style={styles.childName}>{studentData?.name || "Your Child"}</p>
               <p style={styles.childClass}>{studentData?.class || "—"}</p>
             </div>
             <div style={{ textAlign:"right" }}>
-              <div style={{ ...styles.statusBadge, background:`color-mix(in srgb, ${childStatus.color} 13%, transparent)`, border:`1px solid color-mix(in srgb, ${childStatus.color} 33%, transparent)` }}>
-                <span>{childStatus.emoji}</span>
+              <div style={{ ...styles.statusBadge, background:"rgba(255,255,255,0.95)", border:`1px solid color-mix(in srgb, ${childStatus.color} 33%, transparent)` }}>
+                <span style={{ color:childStatus.color, display:"flex" }}>{childStatus.emoji}</span>
                 <span style={{ color:childStatus.color, fontSize:"11px", fontWeight:700 }}>{childStatus.label}</span>
               </div>
               <p style={{ color:"rgba(255,255,255,0.5)", fontSize:"10px", marginTop:"4px" }}>{childStatus.sub}</p>
@@ -551,7 +553,7 @@ export default function ParentBus() {
           <div style={styles.routeBar}><div style={{ ...styles.routeBarFill, width:`${progressPct}%` }} /></div>
 
           <div style={styles.panelActionRow}>
-            <button style={styles.panelCallBtn}  onClick={() => setShowCallDriver(true)}>📞 Call Driver</button>
+            <button style={styles.panelCallBtn}  onClick={() => setShowCallDriver(true)}><Glyph e="📞" /> Call Driver</button>
             <button style={styles.panelSchoolBtn} onClick={() => setShowCallSchool(true)}>Call School</button>
             <button style={styles.panelSosBtn}   onClick={() => setShowSOS(true)}>SOS</button>
           </div>
@@ -588,7 +590,7 @@ export default function ParentBus() {
                     <div style={{ ...styles.stopCircle, background:circleBg, border:circleBorder, boxShadow:circleShadow }}>
                       {isCompleted ? <span style={{ fontSize:"9px", color:"#059669" }}>✓</span>
                         : isCurrent ? <span style={{ width:"6px", height:"6px", borderRadius:"50%", background:"white", display:"block" }} />
-                        : isSchool  ? <span style={{ fontSize:"10px" }}>🏫</span>
+                        : isSchool  ? <span style={{ fontSize:"10px" }}><Glyph e="🏫" /></span>
                         : <span style={{ fontSize:"9px", color:"#9CA3AF" }}>{i + 1}</span>}
                     </div>
                     {!isLast && <div style={{ ...styles.connector, background: isCompleted ? "linear-gradient(to bottom, #6EE7B7, #D1FAE5)" : isCurrent ? `linear-gradient(to bottom, ${COLOR.primary}, #E5E7EB)` : "#E5E7EB" }} />}
@@ -606,7 +608,7 @@ export default function ParentBus() {
                       </div>
                       <div style={{ flexShrink:0 }}>
                         {isCompleted        && <span style={{ ...styles.badge, background:"#F0FDF4", color:"#16A34A", border:"0.5px solid #BBF7D0" }}>Done</span>}
-                        {isCurrent          && <span style={{ ...styles.badge, background:COLOR.primaryLight, color:COLOR.primary, border:`0.5px solid #BAE6FD` }}>Live</span>}
+                        {isCurrent          && <span style={{ ...styles.badge, background:COLOR.primaryLight, color:COLOR.primary, border:`0.5px solid var(--brand-border)` }}>Live</span>}
                         {isSchool           && <span style={{ ...styles.badge, background:"#FFF7ED", color:"#C2410C", border:"0.5px solid #FED7AA" }}>{eta}</span>}
                         {type === "upcoming" && <span style={{ fontSize:"10px", color:"#D1D5DB" }}>—</span>}
                       </div>
@@ -628,18 +630,18 @@ export default function ParentBus() {
 }
 
 const styles = {
-  pageShell:      { minHeight:"100dvh", background:"#E0F2FE", display:"flex", justifyContent:"center", alignItems:"flex-start", fontFamily:"'SF Pro Display', -apple-system, 'Helvetica Neue', sans-serif" },
-  phoneCard:      { position:"relative", width:"100%", maxWidth:"430px", height:"100dvh", overflow:"hidden", background:"#F0F9FF", boxShadow:"0 0 60px rgba(0,0,0,0.18)" },
-  mapPlaceholder: { height:"100%", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:"10px", background:"#F0F9FF" },
+  pageShell:      { minHeight:"100dvh", background:"var(--brand-soft)", display:"flex", justifyContent:"center", alignItems:"flex-start", fontFamily:"'SF Pro Display', -apple-system, 'Helvetica Neue', sans-serif" },
+  phoneCard:      { position:"relative", width:"100%", maxWidth:"430px", height:"100dvh", overflow:"hidden", background:"var(--bg)", boxShadow:"0 0 60px rgba(0,0,0,0.18)" },
+  mapPlaceholder: { height:"100%", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:"10px", background:"var(--bg)" },
   busEmptyTitle:  { fontSize:"17px", fontWeight:600, color:"#1E293B" },
   busEmptySub:    { fontSize:"13px", color:"#94A3B8" },
   fullscreenRoot: { position:"fixed", inset:0, zIndex:9999, background:"black" },
   exitFsBtn:      { position:"fixed", top:"max(20px, env(safe-area-inset-top, 20px))", right:"16px", zIndex:10000, display:"flex", alignItems:"center", gap:"6px", padding:"8px 14px", borderRadius:"20px", background:"rgba(0,0,0,0.55)", backdropFilter:"blur(10px)", border:"1px solid rgba(255,255,255,0.2)", color:"white", cursor:"pointer" },
   fsActionRow:    { position:"fixed", top:"max(20px, env(safe-area-inset-top, 20px))", left:"16px", zIndex:10000, display:"flex", gap:"8px" },
-  fsCallBtn:      { display:"flex", alignItems:"center", gap:"6px", padding:"8px 12px", borderRadius:"20px", fontSize:"12px", fontWeight:600, background:"rgba(14,165,233,0.85)", backdropFilter:"blur(10px)", border:"1px solid rgba(255,255,255,0.2)", color:"white", cursor:"pointer" },
+  fsCallBtn:      { display:"flex", alignItems:"center", gap:"6px", padding:"8px 12px", borderRadius:"20px", fontSize:"12px", fontWeight:600, background:"color-mix(in srgb, var(--brand) 85%, transparent)", backdropFilter:"blur(10px)", border:"1px solid rgba(255,255,255,0.2)", color:"white", cursor:"pointer" },
   fsSosBtn:       { display:"flex", alignItems:"center", gap:"6px", padding:"8px 12px", borderRadius:"20px", fontSize:"12px", fontWeight:600, background:"rgba(220,38,38,0.85)", backdropFilter:"blur(10px)", border:"1px solid rgba(255,255,255,0.2)", color:"white", cursor:"pointer" },
   fsMiniPill:     { position:"fixed", bottom:"max(24px, env(safe-area-inset-bottom, 24px))", left:"50%", transform:"translateX(-50%)", zIndex:10000, display:"flex", alignItems:"center", gap:"8px", padding:"10px 20px", borderRadius:"30px", background:"rgba(0,0,0,0.55)", backdropFilter:"blur(10px)", border:"1px solid rgba(255,255,255,0.15)", whiteSpace:"nowrap" },
-  header:         { position:"absolute", top:0, left:0, right:0, zIndex:100, background:"linear-gradient(135deg, #0284C7 0%, #0EA5E9 100%)", paddingTop:"env(safe-area-inset-top, 44px)", paddingLeft:"16px", paddingRight:"16px", paddingBottom:"14px", borderRadius:"0 0 24px 24px", boxShadow:"0 4px 24px rgba(2,132,199,0.3)" },
+  header:         { position:"absolute", top:0, left:0, right:0, zIndex:100, background:"var(--brand-gradient)", paddingTop:"env(safe-area-inset-top, 44px)", paddingLeft:"16px", paddingRight:"16px", paddingBottom:"14px", borderRadius:"0 0 24px 24px", boxShadow:"0 4px 24px color-mix(in srgb, var(--brand-dark) 30%, transparent)" },
   navRow:         { display:"flex", alignItems:"center", gap:"12px", marginBottom:"12px", marginTop:"10px" },
   backBtn:        { width:"36px", height:"36px", borderRadius:"12px", background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", flexShrink:0 },
   notifBtn:       { width:"36px", height:"36px", borderRadius:"12px", background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", fontSize:"18px", flexShrink:0 },
@@ -663,7 +665,7 @@ const styles = {
   trafficStrip:   { display:"flex", alignItems:"center", gap:"8px", background:"rgba(255,255,255,0.1)", border:"1px solid rgba(255,255,255,0.12)", borderRadius:"12px", padding:"8px 14px" },
   trafficLabel:   { color:"rgba(255,255,255,0.85)", fontSize:"12px", flex:1, fontWeight:500 },
   trafficRight:   { color:"rgba(255,255,255,0.45)", fontSize:"11px" },
-  fsBtn:          { position:"absolute", right:"14px", zIndex:200, width:"40px", height:"40px", borderRadius:"12px", background:"rgba(2,132,199,0.85)", backdropFilter:"blur(8px)", border:"1px solid rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", boxShadow:"0 2px 12px rgba(2,132,199,0.35)", transition:"bottom 0.35s cubic-bezier(0.4,0,0.2,1)" },
+  fsBtn:          { position:"absolute", right:"14px", zIndex:200, width:"40px", height:"40px", borderRadius:"12px", background:"color-mix(in srgb, var(--brand-dark) 85%, transparent)", backdropFilter:"blur(8px)", border:"1px solid rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", boxShadow:"0 2px 12px color-mix(in srgb, var(--brand-dark) 35%, transparent)", transition:"bottom 0.35s cubic-bezier(0.4,0,0.2,1)" },
   stopsPanel:     { position:"absolute", bottom:0, left:0, right:0, zIndex:100, background:"white", borderRadius:"24px 24px 0 0", boxShadow:"0 -4px 30px rgba(0,0,0,0.10)", overflowY:"auto", transition:"max-height 0.35s cubic-bezier(0.4,0,0.2,1)", paddingBottom:"env(safe-area-inset-bottom, 0px)", WebkitOverflowScrolling:"touch" },
   stopsHeader:    { position:"sticky", top:0, background:"white", borderBottom:"1px solid #F1F5F9", paddingBottom:"10px", zIndex:1, cursor:"pointer", userSelect:"none" },
   dragHandle:     { width:"36px", height:"4px", borderRadius:"2px", background:"#E2E8F0", margin:"10px auto 8px" },
@@ -671,13 +673,13 @@ const styles = {
   stopsTitle:     { fontSize:"14px", fontWeight:700, color:"#0F172A" },
   stopsBadge:     { fontSize:"11px", color:"#64748B", background:"#F8FAFC", border:"1px solid #E2E8F0", padding:"3px 10px", borderRadius:"20px", fontWeight:500 },
   progressPill:   { position:"relative", width:"68px", height:"18px", background:"#F1F5F9", borderRadius:"10px", overflow:"hidden", display:"flex", alignItems:"center" },
-  progressFill:   { position:"absolute", left:0, top:0, bottom:0, background:"linear-gradient(90deg, #38BDF8, #0EA5E9)", borderRadius:"10px", transition:"width 0.5s ease" },
+  progressFill:   { position:"absolute", left:0, top:0, bottom:0, background:"linear-gradient(90deg, var(--brand-light), var(--brand))", borderRadius:"10px", transition:"width 0.5s ease" },
   progressText:   { position:"relative", zIndex:1, fontSize:"9px", fontWeight:700, color:"#1E3A5F", width:"100%", textAlign:"center", letterSpacing:"0.2px" },
   chevron:        { fontSize:"10px", color:"#94A3B8", transition:"transform 0.3s ease", display:"inline-block" },
   routeBar:       { height:"3px", background:"#F1F5F9" },
-  routeBarFill:   { height:"100%", background:"linear-gradient(90deg, #38BDF8, #0EA5E9)", transition:"width 0.5s ease" },
+  routeBarFill:   { height:"100%", background:"linear-gradient(90deg, var(--brand-light), var(--brand))", transition:"width 0.5s ease" },
   panelActionRow: { display:"flex", gap:"8px", padding:"10px 16px 4px" },
-  panelCallBtn:   { flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", padding:"9px 8px", borderRadius:"12px", fontSize:"11px", fontWeight:600, background:"#E0F2FE", color:"#0284C7", border:"1px solid #BAE6FD", cursor:"pointer" },
+  panelCallBtn:   { flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", padding:"9px 8px", borderRadius:"12px", fontSize:"11px", fontWeight:600, background:"var(--brand-soft)", color:"var(--brand-dark)", border:"1px solid var(--brand-border)", cursor:"pointer" },
   panelSchoolBtn: { flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", padding:"9px 8px", borderRadius:"12px", fontSize:"11px", fontWeight:600, background:"#FFF7ED", color:"#C2410C", border:"1px solid #FED7AA", cursor:"pointer" },
   panelSosBtn:    { display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", padding:"9px 14px", borderRadius:"12px", fontSize:"11px", fontWeight:700, background:"#FEF2F2", color:"#DC2626", border:"1px solid #FECACA", cursor:"pointer" },
   notifSection:   { padding:"12px 20px 0", borderTop:"1px solid #F1F5F9" },
@@ -702,5 +704,5 @@ const styles = {
   modalBtns:      { display:"flex", gap:"10px" },
   cancelBtn:      { flex:1, padding:"12px", borderRadius:"14px", fontSize:"14px", fontWeight:600, background:"#F1F5F9", color:"#475569", border:"none", cursor:"pointer" },
   confirmSosBtn:  { flex:1, padding:"12px", borderRadius:"14px", fontSize:"14px", fontWeight:700, background:"linear-gradient(135deg,#DC2626,#EF4444)", color:"white", border:"none", cursor:"pointer", boxShadow:"0 4px 16px rgba(220,38,38,0.4)" },
-  callConfirmBtn: { flex:1, padding:"12px", borderRadius:"14px", fontSize:"14px", fontWeight:700, background:"linear-gradient(135deg,#0284C7,#0EA5E9)", color:"white", border:"none", cursor:"pointer", textDecoration:"none", display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 4px 16px rgba(2,132,199,0.4)" },
+  callConfirmBtn: { flex:1, padding:"12px", borderRadius:"14px", fontSize:"14px", fontWeight:700, background:"linear-gradient(135deg,var(--brand-dark),var(--brand))", color:"white", border:"none", cursor:"pointer", textDecoration:"none", display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 4px 16px color-mix(in srgb, var(--brand-dark) 40%, transparent)" },
 };

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { pickChild, childQuery } from "../../utils/selectedChild";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -103,7 +104,7 @@ export default function ParentAttendance() {
             style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "8px 12px", color: "white", cursor: "pointer", fontSize: 16 }}>
             ←
           </button>
-          <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800 }}>✅ Attendance Report</h2>
+          <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800 }}><Glyph e="✅" /> Attendance Report</h2>
         </div>
         <div style={{ textAlign: "center" }}>
           <div style={{ fontSize: 12, opacity: 0.8 }}>{monthLabel} — {child?.name || ""}</div>
@@ -206,7 +207,7 @@ export default function ParentAttendance() {
                   display: "flex", alignItems: "center", gap: 12, padding: "12px 0",
                   borderBottom: i < absentRecords.length - 1 ? "1px solid #f3f4f6" : "none",
                 }}>
-                  <span style={{ fontSize: 20 }}>{isLeave ? "✅" : "❌"}</span>
+                  <span style={{ fontSize: 20 }}>{isLeave ? <Glyph e="✅" /> : <Glyph e="❌" />}</span>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontWeight: 600, fontSize: 14 }}>
                       {new Date(r.date).toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" })}

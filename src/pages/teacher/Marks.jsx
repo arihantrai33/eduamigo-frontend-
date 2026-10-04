@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import axios from 'axios'
 import { toast, confirmAction, errorMessage } from '../../utils/toast'
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
 
@@ -261,11 +262,11 @@ function Shell({ children, navigate, location, title = 'Enter Marks', onBack }) 
       <div style={styles.scroll}>{children}</div>
       <div style={styles.nav}>
         {[
-          { icon: '🏠', label: 'Home', path: '/teacher/home' },
-          { icon: '✅', label: 'Attendance', path: '/teacher/attendance' },
-          { icon: '📤', label: 'Upload', path: '/teacher/upload' },
-          { icon: '💬', label: 'Messages', path: '/teacher/chat' },
-          { icon: '👤', label: 'Me', path: '/teacher/profile' },
+          { icon: <Glyph e="🏠" />, label: 'Home', path: '/teacher/home' },
+          { icon: <Glyph e="✅" />, label: 'Attendance', path: '/teacher/attendance' },
+          { icon: <Glyph e="📤" />, label: 'Upload', path: '/teacher/upload' },
+          { icon: <Glyph e="💬" />, label: 'Messages', path: '/teacher/chat' },
+          { icon: <Glyph e="👤" />, label: 'Me', path: '/teacher/profile' },
         ].map(t => {
           const active = location.pathname === t.path
           return (

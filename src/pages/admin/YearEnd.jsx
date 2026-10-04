@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, errorMessage, confirmAction } from "../../utils/toast";
 
+import Glyph from "../../components/Glyph";
 // End of the academic year: promote, detain, leave or pass out (backend: /api/academic/year-end),
 // and transfer certificates for students who have left.
 const API = import.meta.env.VITE_API_URL;
@@ -139,7 +140,7 @@ export default function YearEnd() {
             {!upcoming.length && <span style={{ fontSize: 12, color: "#B45309" }}>Create next year's session in <a href="/admin/academic" onClick={(e) => { e.preventDefault(); navigate("/admin/academic"); }}>School Setup</a> first.</span>}
           </div>
 
-          {result && <div style={{ ...card, borderColor: "#86EFAC", background: "#F0FDF4", color: "#166534", fontSize: 13 }}>✅ {result.message}{result.data.skipped ? `; ${result.data.skipped} were already in ${toSession}` : ""}. New roll numbers were given in every class.</div>}
+          {result && <div style={{ ...card, borderColor: "#86EFAC", background: "#F0FDF4", color: "#166534", fontSize: 13 }}><Glyph e="✅" /> {result.message}{result.data.skipped ? `; ${result.data.skipped} were already in ${toSession}` : ""}. New roll numbers were given in every class.</div>}
 
           {preview && (
             <>

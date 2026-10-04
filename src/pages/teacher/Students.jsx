@@ -4,6 +4,7 @@ import axios from "axios";
 import { resetStudentPassword } from "../../utils/account";
 import { showCredentials, toast, errorMessage } from "../../utils/toast";
 
+import { plural } from "../../utils/plural";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -43,7 +44,7 @@ export default function TeacherStudents() {
         <button onClick={() => navigate("/teacher/home")} style={s.back} aria-label="Back">←</button>
         <div>
           <div style={s.headerTitle}>My Students</div>
-          <div style={s.headerSub}>{students ? `${students.length} students in your classes` : "Loading..."}</div>
+          <div style={s.headerSub}>{students ? `${plural(students.length, "student")} in your classes` : "Loading..."}</div>
         </div>
       </div>
 

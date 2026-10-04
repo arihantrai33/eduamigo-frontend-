@@ -48,11 +48,12 @@ import ParentProfile from './pages/parent/Profile'
 import DriverHome from './pages/driver/Driver'
 import { hasFeature, FEATURE_OF_PATH } from './utils/features'
 
+import Glyph from "./components/Glyph";
 // Shown when a screen belongs to a module the school's plan does not include.
 function FeatureUnavailable({ home }) {
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 32, textAlign: 'center', fontFamily: "'Inter','Segoe UI',sans-serif", background: 'var(--bg, #F4F6FB)' }}>
-      <div style={{ fontSize: 44, marginBottom: 12 }}>🔒</div>
+      <div style={{ fontSize: 44, marginBottom: 12 }}><Glyph e="🔒" /></div>
       <h2 style={{ fontSize: 18, color: 'var(--text, #111)', margin: '0 0 8px' }}>Not available for your school</h2>
       <p style={{ fontSize: 13, color: 'var(--subtext, #666)', lineHeight: 1.5, margin: '0 0 20px' }}>
         This feature is not part of your school's EduAmigo plan. Please contact the school office if you need it.
@@ -77,7 +78,7 @@ function LoadingScreen() {
       {[{ top: "12%", left: "15%", size: 3 }, { top: "18%", left: "78%", size: 2 }, { top: "8%", left: "55%", size: 2 }, { top: "75%", left: "12%", size: 2 }, { top: "80%", left: "85%", size: 3 }].map((s, i) => (
         <div key={i} style={{ position: "absolute", top: s.top, left: s.left, width: s.size, height: s.size, borderRadius: "50%", background: "rgba(255,255,255,0.35)", animation: `twinkle 2s ease-in-out ${i * 0.4}s infinite` }} />
       ))}
-      <div style={{ width: "88px", height: "88px", borderRadius: "22px", background: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "42px", marginBottom: "28px", boxShadow: "0 0 0 8px rgba(79,142,247,0.1), 0 0 0 16px rgba(79,142,247,0.05)" }}>🎓</div>
+      <div style={{ width: "88px", height: "88px", borderRadius: "22px", background: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "42px", marginBottom: "28px", boxShadow: "0 0 0 8px rgba(79,142,247,0.1), 0 0 0 16px rgba(79,142,247,0.05)" }}><Glyph e="🎓" /></div>
       <h1 style={{ color: "white", fontSize: "34px", fontWeight: "700", margin: "0 0 8px 0", letterSpacing: "2px" }}>EduAmigo</h1>
       <p style={{ color: "#8BA4D4", fontSize: "11px", letterSpacing: "4px", margin: "0 0 20px 0", fontWeight: "400" }}>YOUR SCHOOL COMPANION</p>
       <div style={{ width: "60px", height: "0.5px", background: "linear-gradient(90deg, transparent, var(--brand), transparent)", marginBottom: "28px" }} />

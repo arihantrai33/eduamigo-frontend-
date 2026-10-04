@@ -2,18 +2,19 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, confirmAction } from "../../utils/toast";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 const CATEGORIES = ["Textbook","Fiction","Biography","Reference","Science","History","Other"];
 const CAT_CONFIG = {
-  Textbook:  { bg:"#EEF2FF", color:"#6366F1", icon:"📚" },
-  Fiction:   { bg:"#FDF4FF", color:"#9333EA", icon:"📖" },
-  Biography: { bg:"#FFF7ED", color:"#EA580C", icon:"👤" },
-  Reference: { bg:"#F0FDF4", color:"#15803D", icon:"🔍" },
-  Science:   { bg:"#ECFEFF", color:"#0891B2", icon:"🔬" },
-  History:   { bg:"#FFFBEB", color:"#D97706", icon:"🏛️" },
-  Other:     { bg:"#F8FAFC", color:"#64748B", icon:"📄" },
+  Textbook:  { bg:"#EEF2FF", color:"#6366F1", icon:<Glyph e="📚" /> },
+  Fiction:   { bg:"#FDF4FF", color:"#9333EA", icon:<Glyph e="📖" /> },
+  Biography: { bg:"#FFF7ED", color:"#EA580C", icon:<Glyph e="👤" /> },
+  Reference: { bg:"#F0FDF4", color:"#15803D", icon:<Glyph e="🔍" /> },
+  Science:   { bg:"#ECFEFF", color:"#0891B2", icon:<Glyph e="🔬" /> },
+  History:   { bg:"#FFFBEB", color:"#D97706", icon:<Glyph e="🏛" /> },
+  Other:     { bg:"#F8FAFC", color:"#64748B", icon:<Glyph e="📄" /> },
 };
 
 function Modal({ show, onClose, title, children }) {
@@ -113,13 +114,13 @@ export default function Library() {
         <div style={{ position:"absolute", top:-50, right:-50, width:220, height:220, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
         <div style={{ position:"absolute", bottom:-30, left:60, width:160, height:160, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
         {/* Floating book emojis */}
-        {["📚","📖","📕","📗"].map((e,i) => (
+        {[<Glyph e="📚" />,<Glyph e="📖" />,<Glyph e="📕" />,<Glyph e="📗" />].map((e,i) => (
           <div key={i} style={{ position:"absolute", fontSize:28, opacity:0.15, animation:`shimmer 2s ease ${i*0.5}s infinite`,
             top: i<2 ? "15%" : "60%", right: `${8+i*8}%` }}>{e}</div>
         ))}
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", position:"relative" }}>
           <div>
-            <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>📚 Library</div>
+            <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}><Glyph e="📚" /> Library</div>
             <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Manage books, categories and issue records</div>
           </div>
           <button onClick={openAdd}
@@ -132,10 +133,10 @@ export default function Library() {
       {/* Stat Cards */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
         {[
-          { label:"TOTAL TITLES",  value: books.length,  icon:"📚", border:"var(--brand)", bg:"var(--brand-soft)" },
-          { label:"TOTAL COPIES",  value: totalBooks,    icon:"📦", border:"var(--brand)", bg:"var(--brand-soft)" },
-          { label:"AVAILABLE",     value: totalAvail,    icon:"✅", border:"#10B981", bg:"#F0FDF4" },
-          { label:"ISSUED",        value: totalIssued,   icon:"📤", border:"#F59E0B", bg:"#FFFBEB" },
+          { label:"TOTAL TITLES",  value: books.length,  icon:<Glyph e="📚" />, border:"var(--brand)", bg:"var(--brand-soft)" },
+          { label:"TOTAL COPIES",  value: totalBooks,    icon:<Glyph e="📦" />, border:"var(--brand)", bg:"var(--brand-soft)" },
+          { label:"AVAILABLE",     value: totalAvail,    icon:<Glyph e="✅" />, border:"#10B981", bg:"#F0FDF4" },
+          { label:"ISSUED",        value: totalIssued,   icon:<Glyph e="📤" />, border:"#F59E0B", bg:"#FFFBEB" },
         ].map((card,i) => (
           <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
@@ -152,7 +153,7 @@ export default function Library() {
       {/* Category Chips + Search + Add */}
       <div style={{ display:"flex", gap:10, marginBottom:20, alignItems:"center", flexWrap:"wrap", animation:"fadeUp 0.4s ease 0.1s both" }}>
         <div style={{ position:"relative", flex:1, minWidth:200 }}>
-          <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}>🔍</span>
+          <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}><Glyph e="🔍" /></span>
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by title, author, ISBN..."
             style={{ width:"100%", padding:"11px 14px 11px 38px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
             onFocus={e=>e.target.style.borderColor="var(--brand)"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
@@ -191,7 +192,7 @@ export default function Library() {
               </td></tr>
             ) : filtered.length === 0 ? (
               <tr><td colSpan={8} style={{ padding:"80px 0", textAlign:"center" }}>
-                <div style={{ fontSize:52, marginBottom:12 }}>📚</div>
+                <div style={{ fontSize:52, marginBottom:12 }}><Glyph e="📚" /></div>
                 <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No books found</div>
                 <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Add your first book using the button above</div>
               </td></tr>
@@ -234,7 +235,7 @@ export default function Library() {
                       </button>
                       <button className="act-btn" onClick={() => handleDelete(b._id)}
                         style={{ width:30, height:30, borderRadius:8, border:"none", background:"#FEF2F2", cursor:"pointer", fontSize:13 }}>
-                        🗑️
+                        <Glyph e="🗑" />
                       </button>
                     </div>
                   </td>

@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 
 const TYPE_STYLES = {
-  General:     { bg: '#EEF0FF', color: '#3949AB', icon: '📢' },
-  Exam:        { bg: '#FFF8E1', color: '#F9A825', icon: '📝' },
-  Fee:         { bg: '#E8F5E9', color: '#2E7D32', icon: '💰' },
-  Holiday:     { bg: '#FCE4EC', color: '#C2185B', icon: '🎉' },
-  Attendance:  { bg: '#E3F2FD', color: '#1565C0', icon: '✅' },
-  Emergency:   { bg: '#FFEBEE', color: '#C62828', icon: '🚨' },
+  General:     { bg: '#EEF0FF', color: '#3949AB', icon: <Glyph e="📢" /> },
+  Exam:        { bg: '#FFF8E1', color: '#F9A825', icon: <Glyph e="📝" /> },
+  Fee:         { bg: '#E8F5E9', color: '#2E7D32', icon: <Glyph e="💰" /> },
+  Holiday:     { bg: '#FCE4EC', color: '#C2185B', icon: '' },
+  Attendance:  { bg: '#E3F2FD', color: '#1565C0', icon: <Glyph e="✅" /> },
+  Emergency:   { bg: '#FFEBEE', color: '#C62828', icon: <Glyph e="🚨" /> },
 };
 
 const getTypeStyle = (type) => TYPE_STYLES[type] || TYPE_STYLES.General;
@@ -96,10 +97,10 @@ export default function TeacherNotifications() {
             <p style={styles.loadingText}>Loading notifications...</p>
           </div>
         ) : error ? (
-          <div style={styles.errorBox}>⚠️ {error}</div>
+          <div style={styles.errorBox}><Glyph e="⚠" /> {error}</div>
         ) : filtered.length === 0 ? (
           <div style={styles.emptyBox}>
-            <p style={styles.emptyIcon}>🔔</p>
+            <p style={styles.emptyIcon}><Glyph e="🔔" /></p>
             <p style={styles.emptyText}>No notifications found</p>
             <p style={styles.emptySubText}>
               {filter === 'All'
@@ -147,11 +148,11 @@ export default function TeacherNotifications() {
 
       {/* Bottom Nav */}
       <div style={styles.bottomNav}>
-        <NavItem icon="🏠" label="Home"       onClick={() => navigate('/teacher/home')} />
-        <NavItem icon="✅" label="Attendance" onClick={() => navigate('/teacher/attendance')} />
-        <NavItem icon="📤" label="Upload"     onClick={() => navigate('/teacher/upload')} />
-        <NavItem icon="💬" label="Messages"   onClick={() => navigate('/teacher/chat')} />
-        <NavItem icon="👤" label="Me"         onClick={() => navigate('/teacher/profile')} />
+        <NavItem icon={<Glyph e="🏠" />} label="Home"       onClick={() => navigate('/teacher/home')} />
+        <NavItem icon={<Glyph e="✅" />} label="Attendance" onClick={() => navigate('/teacher/attendance')} />
+        <NavItem icon={<Glyph e="📤" />} label="Upload"     onClick={() => navigate('/teacher/upload')} />
+        <NavItem icon={<Glyph e="💬" />} label="Messages"   onClick={() => navigate('/teacher/chat')} />
+        <NavItem icon={<Glyph e="👤" />} label="Me"         onClick={() => navigate('/teacher/profile')} />
       </div>
     </div>
   );

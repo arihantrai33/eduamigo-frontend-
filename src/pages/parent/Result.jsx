@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { pickChild } from "../../utils/selectedChild";
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -66,7 +67,7 @@ export default function ParentResult() {
             ←
           </button>
           <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 800, fontSize: 18 }}>📊 Results</div>
+            <div style={{ fontWeight: 800, fontSize: 18 }}><Glyph e="📊" /> Results</div>
             <div style={{ fontSize: 12, opacity: 0.8 }}>{child?.name ?? "—"}</div>
           </div>
           {child?._id && (

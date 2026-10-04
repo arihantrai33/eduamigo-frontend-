@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../context/ThemeContext";
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
 const avatarColor = (name = '') => {
-  const colors = ['#4f46e5','#7c3aed','#0891b2','#059669','#d97706','#dc2626','#0284c7'];
+  const colors = ['var(--brand)','var(--brand-dark)','#0891b2','#059669','#d97706','#dc2626','#0284c7'];
   let hash = 0;
   for (let c of name) hash = c.charCodeAt(0) + ((hash << 5) - hash);
   return colors[Math.abs(hash) % colors.length];
@@ -151,7 +152,7 @@ export default function Chat() {
       <div style={S.msgList}>
         {messages.length === 0 && (
           <div style={S.emptyChat}>
-            <div style={{ fontSize: 40, marginBottom: 8 }}>💬</div>
+            <div style={{ fontSize: 40, marginBottom: 8 }}><Glyph e="💬" /></div>
             <div style={{ color: dm ? '#94a3b8' : '#999', fontSize: 13 }}>Start a conversation</div>
           </div>
         )}
@@ -188,10 +189,10 @@ export default function Chat() {
     <div style={S.screen}>
       <div style={S.header}>
         <button style={S.headerBack} onClick={() => navigate('/student/home')}>←</button>
-        <h2 style={S.headerTitle}>💬 Messages</h2>
+        <h2 style={S.headerTitle}><Glyph e="💬" /> Messages</h2>
       </div>
       <div style={S.tabRow}>
-        {[['chats','💬 Chats'],['broadcasts','📢 Broadcasts']].map(([key, label]) => (
+        {[['chats','Chats'],['broadcasts','Broadcasts']].map(([key, label]) => (
           <button key={key} style={{ ...S.tabBtn, ...(tab === key ? S.tabActive : {}) }} onClick={() => setTab(key)}>{label}</button>
         ))}
       </div>
@@ -199,7 +200,7 @@ export default function Chat() {
         <div style={S.center}><div style={{ color: 'var(--brand)', fontWeight: 600 }}>Loading...</div></div>
       ) : tab === 'chats' ? (
         <div style={S.list}>
-          <div style={S.sectionLabel}>🏫 SCHOOL ADMINISTRATION</div>
+          <div style={S.sectionLabel}><Glyph e="🏫" /> SCHOOL ADMINISTRATION</div>
           {adminContact && (
             <div style={S.chatRow} onClick={() => setActiveChat({ name: adminContact.name, sub: 'Admin · Complaints & Queries', receiverId: adminContact.userId, roomId: adminContact.roomId })}>
               <div style={{ ...S.avatar, background: '#dc2626' }}>A</div>
@@ -210,7 +211,7 @@ export default function Chat() {
               <div style={S.chevron}>›</div>
             </div>
           )}
-          <div style={{ ...S.sectionLabel, marginTop: 16 }}>👨‍🏫 YOUR TEACHERS</div>
+          <div style={{ ...S.sectionLabel, marginTop: 16 }}><Glyph e="👨‍🏫" /> YOUR TEACHERS</div>
           {teachers.length === 0 ? (
             <div style={S.emptyBox}>No teachers found</div>
           ) : teachers.map((t) => (
@@ -226,10 +227,10 @@ export default function Chat() {
         </div>
       ) : (
         <div style={S.list}>
-          <div style={S.sectionLabel}>📢 CLASS BROADCASTS</div>
+          <div style={S.sectionLabel}><Glyph e="📢" /> CLASS BROADCASTS</div>
           {broadcasts.length === 0 ? (
             <div style={S.emptyBox}>
-              <div style={{ fontSize: 36, marginBottom: 8 }}>📢</div>
+              <div style={{ fontSize: 36, marginBottom: 8 }}><Glyph e="📢" /></div>
               <div style={{ color: dm ? '#94a3b8' : '#999', fontSize: 13 }}>No broadcasts yet</div>
             </div>
           ) : broadcasts.map((b, i) => (

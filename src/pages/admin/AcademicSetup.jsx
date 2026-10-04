@@ -50,7 +50,7 @@ function Checklist({ status, onJump }) {
   return (
     <div style={ui.card}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
-        <h3 style={ui.title}>{status.complete ? "Your school is set up ✅" : "Set up your school"}</h3>
+        <h3 style={ui.title}>{status.complete ? "Your school is set up" : "Set up your school"}</h3>
         <span style={{ fontSize: 12, color: "#64748B", fontWeight: 600 }}>{status.done} of {status.total} done</span>
       </div>
       <div style={{ height: 6, background: "var(--brand-soft)", borderRadius: 999, margin: "10px 0 14px", overflow: "hidden" }}>

@@ -4,17 +4,18 @@ import axios from "axios";
 import { errorMessage } from "../../utils/toast";
 import { childQuery } from "../../utils/selectedChild";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 const EVENT_STYLE = {
-  holiday: { icon: "🏖️", bg: "#fce4ec", color: "#c2185b" },
-  exam:    { icon: "📝", bg: "#fff9c4", color: "#f57f17" },
-  ptm:     { icon: "👨‍👩‍👧", bg: "#e8f5e9", color: "#2e7d32" },
-  sports:  { icon: "🏃", bg: "#e8f5e9", color: "#2e7d32" },
-  event:   { icon: "🎉", bg: "#ede9fe", color: "#6d28d9" },
-  other:   { icon: "📌", bg: "#f1f5f9", color: "#475569" },
-  fee:     { icon: "💳", bg: "#ffebee", color: "#ef4444" },
+  holiday: { icon: <Glyph e="🏖" />, bg: "#fce4ec", color: "#c2185b" },
+  exam:    { icon: <Glyph e="📝" />, bg: "#fff9c4", color: "#f57f17" },
+  ptm:     { icon: <Glyph e="👨‍👩‍👧" />, bg: "#e8f5e9", color: "#2e7d32" },
+  sports:  { icon: <Glyph e="🏃" />, bg: "#e8f5e9", color: "#2e7d32" },
+  event:   { icon: "", bg: "#ede9fe", color: "#6d28d9" },
+  other:   { icon: <Glyph e="📌" />, bg: "#f1f5f9", color: "#475569" },
+  fee:     { icon: <Glyph e="💳" />, bg: "#ffebee", color: "#ef4444" },
 };
 
 const today = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };

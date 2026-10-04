@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "../../utils/toast";
 
+import Glyph from "../../components/Glyph";
+import { plural } from "../../utils/plural";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -184,7 +186,7 @@ export default function Timetable() {
       {/* Timetable Grid */}
       {!selectedClass || !selectedSection ? (
         <div style={{ background:"white", borderRadius:20, padding:"80px 0", textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
-          <div style={{ fontSize:48, marginBottom:12 }}>🗓️</div>
+          <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="🗓" /></div>
           <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>Select a class and section</div>
           <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>to view or edit the timetable</div>
         </div>
@@ -195,7 +197,7 @@ export default function Timetable() {
               Class {selectedClass}-{selectedSection} · <span style={{ color: DAY_COLORS[selectedDay] }}>{selectedDay}</span>
             </div>
             <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600 }}>
-              {currentTimetable ? `${currentTimetable.periods?.length || 0} periods scheduled` : "No timetable yet — add periods below"}
+              {currentTimetable ? `${plural(currentTimetable.periods?.length || 0, "period")} scheduled` : "No timetable yet — add periods below"}
             </div>
           </div>
 
@@ -219,10 +221,10 @@ export default function Timetable() {
                     <>
                       <div style={{ fontSize:14, fontWeight:800, color:"#0F172A", marginBottom:4 }}>{period.subject}</div>
                       {getTeacherName(period.teacher) && (
-                        <div style={{ fontSize:11, color:"#64748B", fontWeight:600 }}>👩‍🏫 {getTeacherName(period.teacher)}</div>
+                        <div style={{ fontSize:11, color:"#64748B", fontWeight:600 }}><Glyph e="👩‍🏫" /> {getTeacherName(period.teacher)}</div>
                       )}
                       {(period.startTime || period.endTime) && (
-                        <div style={{ fontSize:11, color:"#94A3B8", marginTop:4 }}>🕐 {period.startTime} - {period.endTime}</div>
+                        <div style={{ fontSize:11, color:"#94A3B8", marginTop:4 }}><Glyph e="🕐" /> {period.startTime} - {period.endTime}</div>
                       )}
                       <div style={{ marginTop:8, fontSize:11, color, fontWeight:700 }}>Click to edit →</div>
                     </>

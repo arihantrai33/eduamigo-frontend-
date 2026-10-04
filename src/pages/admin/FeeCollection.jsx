@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast, confirmAction, errorMessage } from "../../utils/toast";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -139,11 +140,11 @@ export default function FeeCollection() {
       {/* Stat Cards */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:16, marginBottom:24 }}>
         {[
-          { label:"COLLECTED",    value:`₹${totalCollected.toLocaleString()}`, icon:"✅", border:"#10B981", bg:"#F0FDF4" },
-          { label:"AMOUNT DUE",   value:`₹${totalPending.toLocaleString()}`,   icon:"⏳", border:"#F59E0B", bg:"#FFFBEB" },
-          { label:"FULLY PAID",   value: paidCount,    icon:"💚", border:"#22C55E", bg:"#F0FDF4" },
-          { label:"UNPAID FEES",  value: pendingCount, icon:"🟡", border:"#F59E0B", bg:"#FFFBEB" },
-          { label:"OVERDUE",      value: overdueCount, icon:"🔴", border:"#EF4444", bg:"#FEF2F2" },
+          { label:"COLLECTED",    value:`₹${totalCollected.toLocaleString()}`, icon:<Glyph e="✅" />, border:"#10B981", bg:"#F0FDF4" },
+          { label:"AMOUNT DUE",   value:`₹${totalPending.toLocaleString()}`,   icon:<Glyph e="⏳" />, border:"#F59E0B", bg:"#FFFBEB" },
+          { label:"FULLY PAID",   value: paidCount,    icon:"", border:"#22C55E", bg:"#F0FDF4" },
+          { label:"UNPAID FEES",  value: pendingCount, icon:<Glyph e="🟡" />, border:"#F59E0B", bg:"#FFFBEB" },
+          { label:"OVERDUE",      value: overdueCount, icon:<Glyph e="🔴" />, border:"#EF4444", bg:"#FEF2F2" },
         ].map((card, i) => (
           <div key={i} style={{ background:"white", borderRadius:16, padding:"16px 20px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.07}s both` }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
@@ -160,7 +161,7 @@ export default function FeeCollection() {
       {/* Filters */}
       <div style={{ display:"flex", gap:12, marginBottom:20, alignItems:"center", animation:"fadeUp 0.4s ease 0.1s both" }}>
         <div style={{ flex:1, position:"relative" }}>
-          <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}>🔍</span>
+          <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}><Glyph e="🔍" /></span>
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by student name or fee type..."
             style={{ width:"100%", padding:"11px 14px 11px 38px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
             onFocus={e => e.target.style.borderColor="#10B981"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
@@ -196,7 +197,7 @@ export default function FeeCollection() {
               </td></tr>
             ) : filtered.length === 0 ? (
               <tr><td colSpan={8} style={{ padding:"80px 0", textAlign:"center" }}>
-                <div style={{ fontSize:48, marginBottom:12 }}>💳</div>
+                <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="💳" /></div>
                 <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No fee records found</div>
                 <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Fee records will appear here once generated</div>
               </td></tr>

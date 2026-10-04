@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import { toast, errorMessage } from "../../utils/toast";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -106,7 +107,7 @@ function FileMessage({ msg, isMe }) {
       ) : (
         <a href={msg.fileUrl} download={msg.fileName} target="_blank" rel="noreferrer"
           style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", background: isMe ? "rgba(255,255,255,0.15)" : "#F1F5F9", borderRadius: 10, textDecoration: "none", minWidth: 180 }}>
-          <div style={{ fontSize: 24 }}>📎</div>
+          <div style={{ fontSize: 24 }}><Glyph e="📎" /></div>
           <div>
             <div style={{ fontSize: 12, fontWeight: 700, color: isMe ? "white" : "#0F172A", maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{msg.fileName}</div>
             <div style={{ fontSize: 10, color: isMe ? "rgba(255,255,255,0.7)" : "#94A3B8" }}>Click to download</div>
@@ -271,7 +272,7 @@ export default function Chat() {
           </div>
 
           <div style={{ position: "relative", marginBottom: 12 }}>
-            <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", fontSize: 13, color: "#475569" }}>🔍</span>
+            <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", fontSize: 13, color: "#475569" }}><Glyph e="🔍" /></span>
             <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search contacts..."
               style={{ width: "100%", padding: "9px 12px 9px 32px", borderRadius: 11, border: "1px solid #E2E8F0", background: "#F8FAFC", fontSize: 12, color: "#0F172A", boxSizing: "border-box", fontFamily: "inherit" }} />
           </div>
@@ -296,7 +297,7 @@ export default function Chat() {
             </div>
           ) : filtered.length === 0 ? (
             <div style={{ padding: "64px 20px", textAlign: "center" }}>
-              <div style={{ fontSize: 32, marginBottom: 8, opacity: 0.3 }}>💬</div>
+              <div style={{ fontSize: 32, marginBottom: 8, opacity: 0.3 }}><Glyph e="💬" /></div>
               <div style={{ fontSize: 12, color: "#475569" }}>No contacts found</div>
             </div>
           ) : filtered.map((c, i) => {
@@ -381,7 +382,7 @@ export default function Chat() {
                 </div>
               ) : messages.length === 0 ? (
                 <div style={{ margin: "auto", textAlign: "center" }}>
-                  <div style={{ width: 68, height: 68, borderRadius: 20, background: "white", border: "1px solid #E2E8F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, margin: "0 auto 14px", boxShadow: "0 4px 16px rgba(15,23,42,0.06)" }}>💬</div>
+                  <div style={{ width: 68, height: 68, borderRadius: 20, background: "white", border: "1px solid #E2E8F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, margin: "0 auto 14px", boxShadow: "0 4px 16px rgba(15,23,42,0.06)" }}><Glyph e="💬" /></div>
                   <div style={{ fontSize: 15, fontWeight: 700, color: "#0F172A", marginBottom: 4 }}>No messages yet</div>
                   <div style={{ fontSize: 12, color: "#94A3B8" }}>Send the first message to {selected.name}</div>
                 </div>
@@ -449,13 +450,13 @@ export default function Chat() {
           </>
         ) : (
           <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 16 }}>
-            <div style={{ width: 88, height: 88, borderRadius: 26, background: "white", border: "1px solid #E2E8F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 40, boxShadow: "0 4px 24px rgba(15,23,42,0.07)" }}>💬</div>
+            <div style={{ width: 88, height: 88, borderRadius: 26, background: "white", border: "1px solid #E2E8F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 40, boxShadow: "0 4px 24px rgba(15,23,42,0.07)" }}><Glyph e="💬" /></div>
             <div style={{ textAlign: "center" }}>
               <div style={{ fontSize: 18, fontWeight: 700, color: "#0F172A", marginBottom: 6 }}>Welcome to Messages</div>
               <div style={{ fontSize: 13, color: "#94A3B8" }}>Select a contact from the sidebar to start a conversation</div>
             </div>
             <div style={{ display: "flex", gap: 12, marginTop: 4 }}>
-              {[["🎓","Students","#6366F1","#EEF2FF"],["👨‍🏫","Teachers","#16A34A","#F0FDF4"],["👨‍👩‍👧","Parents","#D97706","#FFFBEB"]].map(([icon,label,color,bg]) => (
+              {[[<Glyph e="🎓" />,"Students","#6366F1","#EEF2FF"],[<Glyph e="👨‍🏫" />,"Teachers","#16A34A","#F0FDF4"],[<Glyph e="👨‍👩‍👧" />,"Parents","#D97706","#FFFBEB"]].map(([icon,label,color,bg]) => (
                 <div key={label} style={{ padding: "12px 18px", borderRadius: 14, background: bg, border: `1px solid color-mix(in srgb, ${color} 13%, transparent)`, textAlign: "center" }}>
                   <div style={{ fontSize: 22, marginBottom: 4 }}>{icon}</div>
                   <div style={{ fontSize: 11, fontWeight: 600, color }}>{label}</div>

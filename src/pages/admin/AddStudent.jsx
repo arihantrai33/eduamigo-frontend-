@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -141,7 +142,7 @@ export default function AddStudent() {
           padding: "12px 18px", borderRadius: 10, fontSize: 13, fontWeight: 500,
           boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
         }}>
-          {toast.type === "error" ? "⚠️" : "✅"} {toast.msg}
+          {toast.type === "error" ? <Glyph e="⚠" /> : <Glyph e="✅" />} {toast.msg}
         </div>
       )}
 
@@ -162,7 +163,7 @@ export default function AddStudent() {
           borderRadius: 12, padding: "16px 20px", marginBottom: 20,
         }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: "#15803D", marginBottom: 10 }}>
-            ✅ Accounts Created
+            <Glyph e="✅" /> Accounts Created
           </div>
           <div style={{ display: "grid", gap: 6, fontSize: 12, color: "#166534" }}>
             <div>School code: <strong>{credentials.student?.schoolCode || "—"}</strong></div>
@@ -201,7 +202,7 @@ export default function AddStudent() {
             {photoPreview ? (
               <img src={photoPreview} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             ) : (
-              <span style={{ fontSize: 24, color: "#9CA3AF" }}>👤</span>
+              <span style={{ fontSize: 24, color: "#9CA3AF" }}><Glyph e="👤" /></span>
             )}
           </div>
           <div>

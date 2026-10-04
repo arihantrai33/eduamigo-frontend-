@@ -3,29 +3,30 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import axios from 'axios';
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
 });
 const subjectIcon = (subject = '') => {
   const s = subject.toLowerCase();
-  if (s.includes('math'))  return { icon: '📐', color: '#E8F0FE' };
-  if (s.includes('phys'))  return { icon: '⚡', color: '#FEF9E7' };
-  if (s.includes('chem'))  return { icon: '⚗️', color: '#E6F4EA' };
-  if (s.includes('eng'))   return { icon: '📖', color: '#F3E8FF' };
-  if (s.includes('bio'))   return { icon: '🔬', color: '#E8F5E9' };
-  if (s.includes('hist'))  return { icon: '🌍', color: '#FBE9E7' };
-  if (s.includes('hindi')) return { icon: '📝', color: '#FFF8E1' };
-  return                          { icon: '📚', color: '#F0F4FF' };
+  if (s.includes('math'))  return { icon: <Glyph e="📐" />, color: '#E8F0FE' };
+  if (s.includes('phys'))  return { icon: <Glyph e="⚡" />, color: '#FEF9E7' };
+  if (s.includes('chem'))  return { icon: <Glyph e="⚗" />, color: '#E6F4EA' };
+  if (s.includes('eng'))   return { icon: <Glyph e="📖" />, color: '#F3E8FF' };
+  if (s.includes('bio'))   return { icon: <Glyph e="🔬" />, color: '#E8F5E9' };
+  if (s.includes('hist'))  return { icon: <Glyph e="🌍" />, color: '#FBE9E7' };
+  if (s.includes('hindi')) return { icon: <Glyph e="📝" />, color: '#FFF8E1' };
+  return                          { icon: <Glyph e="📚" />, color: 'var(--brand-soft)' };
 };
 const formatDate = (d) => {
   if (!d) return '—';
   return new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 };
 const tabs = [
-  { key: 'Notes',     label: '📝 Notes' },
-  { key: 'Tasks',     label: '📌 Tasks' },
-  { key: 'Resources', label: '📂 Resources' },
+  { key: 'Notes',     label: 'Notes' },
+  { key: 'Tasks',     label: 'Tasks' },
+  { key: 'Resources', label: 'Resources' },
 ];
 export default function Notes() {
   const navigate = useNavigate();
@@ -90,7 +91,7 @@ export default function Notes() {
     }
   };
   if (loading) return (
-    <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: dm ? '#0f172a' : '#F8F9FB', fontFamily: 'Inter, sans-serif', color: '#4361EE' }}>
+    <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: dm ? '#0f172a' : '#F8F9FB', fontFamily: 'Inter, sans-serif', color: 'var(--brand)' }}>
       Loading...
     </div>
   );
@@ -99,22 +100,22 @@ export default function Notes() {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '48px 20px 12px', background: dm ? 'var(--brand-gradient)' : '#fff', borderBottom: `1px solid ${dm ? '#334155' : '#F0F0F0'}` }}>
         <button style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: dm ? '#ffffff' : '#333', padding: '4px 8px' }} onClick={() => navigate('/student/home')}>←</button>
-        <h1 style={{ fontSize: 18, fontWeight: 700, color: dm ? '#f1f5f9' : '#1A1A2E', margin: 0 }}>📚 Notes & Assignments</h1>
+        <h1 style={{ fontSize: 18, fontWeight: 700, color: dm ? '#f1f5f9' : '#1A1A2E', margin: 0 }}><Glyph e="📚" /> Notes & Assignments</h1>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button style={{ background: dm ? '#1e3a5f' : '#F0F4FF', border: 'none', borderRadius: 10, padding: '0 12px', height: 36, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#4361EE', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, whiteSpace: 'nowrap' }} onClick={() => navigate('/student/revise')}>🤖 Revise</button>
-          <button style={{ background: dm ? '#1e3a5f' : '#F0F4FF', border: 'none', borderRadius: 10, width: 36, height: 36, fontSize: 22, cursor: 'pointer', color: '#4361EE', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setShowModal(true)}>+</button>
+          <button style={{ background: dm ? '#1e3a5f' : 'var(--brand-soft)', border: 'none', borderRadius: 10, padding: '0 12px', height: 36, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: 'var(--brand)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, whiteSpace: 'nowrap' }} onClick={() => navigate('/student/revise')}><Glyph e="🤖" /> Revise</button>
+          <button style={{ background: dm ? '#1e3a5f' : 'var(--brand-soft)', border: 'none', borderRadius: 10, width: 36, height: 36, fontSize: 22, cursor: 'pointer', color: 'var(--brand)', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setShowModal(true)}>+</button>
         </div>
       </div>
       {/* Search */}
       <div style={{ display: 'flex', alignItems: 'center', background: dm ? '#0f172a' : '#F0F2F5', borderRadius: 12, margin: '12px 16px', padding: '10px 14px', gap: 8 }}>
-        <span style={{ fontSize: 16, opacity: 0.5 }}>🔍</span>
+        <span style={{ fontSize: 16, opacity: 0.5 }}><Glyph e="🔍" /></span>
         <input style={{ border: 'none', background: 'transparent', fontSize: 14, color: dm ? '#cbd5e1' : '#333', outline: 'none', width: '100%', colorScheme: dm ? 'dark' : 'light' }} placeholder="Search notes, subjects..." value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
       {/* Tabs */}
       <div style={{ display: 'flex', gap: 8, padding: '0 16px 12px' }}>
         {tabs.map(tab => (
           <button key={tab.key}
-            style={{ padding: '8px 16px', borderRadius: 20, border: activeTab === tab.key ? '1.5px solid #4361EE' : `1.5px solid ${dm ? '#334155' : '#E0E0E0'}`, background: activeTab === tab.key ? (dm ? '#1e3a5f' : '#F0F4FF') : (dm ? '#1e293b' : '#fff'), fontSize: 13, fontWeight: activeTab === tab.key ? 700 : 500, cursor: 'pointer', color: activeTab === tab.key ? '#4361EE' : (dm ? '#94a3b8' : '#666') }}
+            style={{ padding: '8px 16px', borderRadius: 20, border: activeTab === tab.key ? '1.5px solid var(--brand)' : `1.5px solid ${dm ? '#334155' : '#E0E0E0'}`, background: activeTab === tab.key ? (dm ? '#1e3a5f' : 'var(--brand-soft)') : (dm ? '#1e293b' : '#fff'), fontSize: 13, fontWeight: activeTab === tab.key ? 700 : 500, cursor: 'pointer', color: activeTab === tab.key ? 'var(--brand)' : (dm ? '#94a3b8' : '#666') }}
             onClick={() => setActiveTab(tab.key)}>
             {tab.label}
           </button>
@@ -123,11 +124,11 @@ export default function Notes() {
       {/* Content */}
       <div style={{ flex: 1, padding: '0 16px', overflowY: 'auto' }}>
         {activeTab === 'Notes' && urgentTask && (
-          <div style={{ background: 'linear-gradient(135deg, #FF6B00, #FF8C00)', borderRadius: 14, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-            <span style={{ fontSize: 20 }}>⚠️</span>
+          <div style={{ background: '#FFF7ED', border: '1px solid #FED7AA', borderRadius: 14, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+            <span style={{ fontSize: 20, color: '#C2410C', display: 'flex' }}><Glyph e="⚠" /></span>
             <div>
-              <div style={{ color: '#fff', fontWeight: 700, fontSize: 14 }}>{urgentTask.title} — Due Soon!</div>
-              <div style={{ color: 'rgba(255,255,255,0.85)', fontSize: 12, marginTop: 2 }}>Submit before {formatDate(urgentTask.dueDate)}</div>
+              <div style={{ color: '#7C2D12', fontWeight: 700, fontSize: 14 }}>{urgentTask.title}: due soon</div>
+              <div style={{ color: '#9A3412', fontSize: 12, marginTop: 2 }}>Submit before {formatDate(urgentTask.dueDate)}</div>
             </div>
           </div>
         )}
@@ -137,7 +138,7 @@ export default function Notes() {
             <div style={{ fontSize: 11, fontWeight: 700, color: dm ? '#64748b' : '#999', letterSpacing: 1, marginBottom: 10, marginTop: 4 }}>RECENT NOTES</div>
             {filtered.length === 0 ? (
               <div style={{ background: dm ? '#1e293b' : '#fff', borderRadius: 14, padding: 24, textAlign: 'center', boxShadow: '0 1px 6px rgba(0,0,0,0.05)', marginTop: 8 }}>
-                <div style={{ fontSize: 36, marginBottom: 8 }}>📭</div>
+                <div style={{ fontSize: 36, marginBottom: 8 }}><Glyph e="📭" /></div>
                 <div style={{ fontSize: 14, color: dm ? '#94a3b8' : '#999' }}>No notes available yet</div>
                 <div style={{ fontSize: 12, color: dm ? '#64748b' : '#bbb', marginTop: 4 }}>Notes will appear here once uploaded by your teacher.</div>
               </div>
@@ -165,14 +166,14 @@ export default function Notes() {
             <div style={{ fontSize: 11, fontWeight: 700, color: dm ? '#64748b' : '#999', letterSpacing: 1, marginBottom: 10, marginTop: 4 }}>MY ASSIGNMENTS</div>
             {assignments.length === 0 ? (
               <div style={{ background: dm ? '#1e293b' : '#fff', borderRadius: 14, padding: 24, textAlign: 'center', boxShadow: '0 1px 6px rgba(0,0,0,0.05)', marginTop: 8 }}>
-                <div style={{ fontSize: 36, marginBottom: 8 }}>📭</div>
+                <div style={{ fontSize: 36, marginBottom: 8 }}><Glyph e="📭" /></div>
                 <div style={{ fontSize: 14, color: dm ? '#94a3b8' : '#999' }}>No assignments yet</div>
                 <div style={{ fontSize: 12, color: dm ? '#64748b' : '#bbb', marginTop: 4 }}>Assignments will appear here once assigned by your teacher.</div>
               </div>
             ) : assignments.map(task => {
               const isUrgent = task.status === 'Urgent' || (task.dueDate && new Date(task.dueDate) - new Date() < 86400000);
               const isDone = task.status === 'Submitted';
-              const accentColor = isDone ? '#2E7D32' : isUrgent ? '#FF6B00' : '#1565C0';
+              const accentColor = isDone ? '#2E7D32' : isUrgent ? '#C2410C' : 'var(--brand-dark)';
               const { icon, color } = subjectIcon(task.subject);
               return (
                 <div key={task._id} style={{ background: dm ? '#1e293b' : '#fff', borderRadius: 14, padding: '12px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, boxShadow: '0 1px 6px rgba(0,0,0,0.05)', gap: 8 }}>
@@ -181,12 +182,12 @@ export default function Notes() {
                     <div style={{ width: 44, height: 44, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0, background: color }}>{icon}</div>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 14, fontWeight: 600, color: dm ? '#f1f5f9' : '#1A1A2E', marginBottom: 3 }}>{task.title}</div>
-                      <div style={{ fontSize: 12, color: dm ? '#94a3b8' : '#888' }}>Due: {formatDate(task.dueDate)} • <span style={{ color: accentColor, fontWeight: 600 }}>{isDone ? 'Submitted ✅' : isUrgent ? 'Urgent' : 'Pending'}</span></div>
+                      <div style={{ fontSize: 12, color: dm ? '#94a3b8' : '#888' }}>Due: {formatDate(task.dueDate)} • <span style={{ color: accentColor, fontWeight: 600 }}>{isDone ? 'Submitted' : isUrgent ? 'Urgent' : 'Pending'}</span></div>
                     </div>
                   </div>
                   {isDone
                     ? <button style={{ background: '#E8F5E9', color: '#2E7D32', border: '1.5px solid #A5D6A7', borderRadius: 10, padding: '8px 16px', fontSize: 13, fontWeight: 700, cursor: 'default', flexShrink: 0 }}>Done</button>
-                    : <button style={{ background: 'linear-gradient(135deg, #FF6B00, #FF8C00)', color: '#fff', border: 'none', borderRadius: 10, padding: '8px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>Submit</button>
+                    : <button style={{ background: 'var(--brand-gradient)', color: '#fff', border: 'none', borderRadius: 10, padding: '8px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>Submit</button>
                   }
                 </div>
               );
@@ -199,7 +200,7 @@ export default function Notes() {
             <div style={{ fontSize: 11, fontWeight: 700, color: dm ? '#64748b' : '#999', letterSpacing: 1, marginBottom: 10, marginTop: 4 }}>STUDY RESOURCES</div>
             {filtered.length === 0 ? (
               <div style={{ background: dm ? '#1e293b' : '#fff', borderRadius: 14, padding: 24, textAlign: 'center', boxShadow: '0 1px 6px rgba(0,0,0,0.05)', marginTop: 8 }}>
-                <div style={{ fontSize: 36, marginBottom: 8 }}>📭</div>
+                <div style={{ fontSize: 36, marginBottom: 8 }}><Glyph e="📭" /></div>
                 <div style={{ fontSize: 14, color: dm ? '#94a3b8' : '#999' }}>No resources available yet</div>
                 <div style={{ fontSize: 12, color: dm ? '#64748b' : '#bbb', marginTop: 4 }}>Study resources will appear here once uploaded by your teacher.</div>
               </div>
@@ -225,15 +226,15 @@ export default function Notes() {
       {/* Bottom Nav */}
       <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 420, background: dm ? '#1e293b' : '#fff', borderTop: `1px solid ${dm ? '#334155' : '#F0F0F0'}`, display: 'flex', justifyContent: 'space-around', padding: '8px 0 12px', zIndex: 100 }}>
         {[
-          { icon: '🏠', label: 'HOME',  path: '/student/home' },
-          { icon: '🚌', label: 'BUS',   path: '/student/bus' },
-          { icon: '📚', label: 'LEARN', path: '/student/notes', active: true },
-          { icon: '💬', label: 'CHAT',  path: '/student/chat' },
-          { icon: '👤', label: 'ME',    path: '/student/profile' },
+          { icon: <Glyph e="🏠" />, label: 'HOME',  path: '/student/home' },
+          { icon: <Glyph e="🚌" />, label: 'BUS',   path: '/student/bus' },
+          { icon: <Glyph e="📚" />, label: 'LEARN', path: '/student/notes', active: true },
+          { icon: <Glyph e="💬" />, label: 'CHAT',  path: '/student/chat' },
+          { icon: <Glyph e="👤" />, label: 'ME',    path: '/student/profile' },
         ].map(item => (
           <button key={item.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, background: 'none', border: 'none', cursor: 'pointer', padding: '4px 12px' }} onClick={() => navigate(item.path)}>
             <span style={{ fontSize: 22 }}>{item.icon}</span>
-            <span style={{ fontSize: 10, fontWeight: 600, color: item.active ? '#4361EE' : (dm ? '#64748b' : '#999') }}>{item.label}</span>
+            <span style={{ fontSize: 10, fontWeight: 600, color: item.active ? 'var(--brand)' : (dm ? '#64748b' : '#999') }}>{item.label}</span>
           </button>
         ))}
       </div>
@@ -242,7 +243,7 @@ export default function Notes() {
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', zIndex: 200 }}>
           <div style={{ background: dm ? '#1e293b' : '#fff', borderRadius: '24px 24px 0 0', padding: '12px 24px 36px', width: '100%', maxWidth: 420, display: 'flex', flexDirection: 'column' }}>
             <div style={{ width: 40, height: 4, background: dm ? '#334155' : '#E0E0E0', borderRadius: 4, alignSelf: 'center', marginBottom: 16 }} />
-            <h2 style={{ fontSize: 20, fontWeight: 700, color: dm ? '#f1f5f9' : '#1A1A2E', margin: '0 0 20px' }}>🗂️ Upload File</h2>
+            <h2 style={{ fontSize: 20, fontWeight: 700, color: dm ? '#f1f5f9' : '#1A1A2E', margin: '0 0 20px' }}><Glyph e="🗂" /> Upload File</h2>
             {[
               { label: 'SUBJECT', key: 'subject', options: ['Mathematics','Physics','Chemistry','English','Biology','History','Hindi'] },
               { label: 'TYPE',    key: 'type',    options: ['Notes','Assignment','Resource','Question Paper'] },
@@ -264,10 +265,10 @@ export default function Notes() {
                 <input style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: `1.5px solid ${dm ? '#334155' : '#E8E8F0'}`, background: dm ? '#0f172a' : '#fff', fontSize: 14, color: dm ? '#f1f5f9' : '#1A1A2E', outline: 'none', boxSizing: 'border-box', colorScheme: dm ? 'dark' : 'light' }} type="date" value={form.dueDate} onChange={e => setForm({ ...form, dueDate: e.target.value })} />
               </>
             )}
-            <button style={{ marginTop: 20, width: '100%', padding: '14px', background: 'linear-gradient(135deg, #4361EE, #3A0CA3)', color: '#fff', border: 'none', borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: 'pointer', opacity: uploading ? 0.7 : 1 }} onClick={handleUpload} disabled={uploading}>
-              {uploaded ? '✅ Uploaded successfully!' : uploading ? 'Uploading...' : '⬆️ Upload Now'}
+            <button style={{ marginTop: 20, width: '100%', padding: '14px', background: 'linear-gradient(135deg, var(--brand), #3A0CA3)', color: '#fff', border: 'none', borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: 'pointer', opacity: uploading ? 0.7 : 1 }} onClick={handleUpload} disabled={uploading}>
+              {uploaded ? 'Uploaded successfully!' : uploading ? 'Uploading...' : 'Upload Now'}
             </button>
-            <button style={{ marginTop: 12, background: 'none', border: 'none', color: '#4361EE', fontSize: 15, fontWeight: 600, cursor: 'pointer', alignSelf: 'center' }} onClick={() => { setShowModal(false); setForm({ ...form, title: '', fileUrl: '' }); }}>
+            <button style={{ marginTop: 12, background: 'none', border: 'none', color: 'var(--brand)', fontSize: 15, fontWeight: 600, cursor: 'pointer', alignSelf: 'center' }} onClick={() => { setShowModal(false); setForm({ ...form, title: '', fileUrl: '' }); }}>
               Cancel
             </button>
           </div>

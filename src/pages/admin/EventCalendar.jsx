@@ -2,16 +2,17 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { ChevronLeft, ChevronRight, Plus, X, Trash2, Calendar, Sparkles } from "lucide-react";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 const EVENT_TYPES = {
-  holiday: { label: "Holiday", color: "#EF4444", light: "#FEF2F2", grad: "linear-gradient(135deg,#EF4444,#EC4899)", icon: "🏖️" },
-  exam:    { label: "Exam",    color: "#F59E0B", light: "#FFFBEB", grad: "linear-gradient(135deg,#F59E0B,#EF4444)", icon: "📝" },
-  ptm:     { label: "PTM",     color: "#8B5CF6", light: "#F5F3FF", grad: "linear-gradient(135deg,#8B5CF6,#6366F1)", icon: "👨‍👩‍👧" },
-  event:   { label: "Event",   color: "#6366F1", light: "#EEF2FF", grad: "linear-gradient(135deg,#6366F1,#3B82F6)", icon: "🎉" },
-  sports:  { label: "Sports",  color: "#10B981", light: "#F0FDF4", grad: "linear-gradient(135deg,#10B981,#06B6D4)", icon: "🏆" },
-  other:   { label: "Other",   color: "#64748B", light: "#F8FAFC", grad: "linear-gradient(135deg,#64748B,#475569)", icon: "📌" },
+  holiday: { label: "Holiday", color: "#EF4444", light: "#FEF2F2", grad: "linear-gradient(135deg,#EF4444,#EC4899)", icon: <Glyph e="🏖" /> },
+  exam:    { label: "Exam",    color: "#F59E0B", light: "#FFFBEB", grad: "linear-gradient(135deg,#F59E0B,#EF4444)", icon: <Glyph e="📝" /> },
+  ptm:     { label: "PTM",     color: "#8B5CF6", light: "#F5F3FF", grad: "linear-gradient(135deg,#8B5CF6,#6366F1)", icon: <Glyph e="👨‍👩‍👧" /> },
+  event:   { label: "Event",   color: "#6366F1", light: "#EEF2FF", grad: "linear-gradient(135deg,#6366F1,#3B82F6)", icon: "" },
+  sports:  { label: "Sports",  color: "#10B981", light: "#F0FDF4", grad: "linear-gradient(135deg,#10B981,#06B6D4)", icon: <Glyph e="🏆" /> },
+  other:   { label: "Other",   color: "#64748B", light: "#F8FAFC", grad: "linear-gradient(135deg,#64748B,#475569)", icon: <Glyph e="📌" /> },
 };
 
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -239,7 +240,7 @@ export default function EventCalendar() {
             </div>
           ) : allUpcoming.length === 0 ? (
             <div style={{ textAlign:"center", padding:"48px 0", color:"#CBD5E1" }}>
-              <div style={{ fontSize:48, marginBottom:12 }}>📅</div>
+              <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="📅" /></div>
               <div style={{ fontSize:15, fontWeight:700, color:"#94A3B8" }}>No upcoming events</div>
               <div style={{ fontSize:12, color:"#CBD5E1", marginTop:4 }}>Add your first event!</div>
             </div>
@@ -294,7 +295,7 @@ export default function EventCalendar() {
             </div>
             {selectedDayEvents.length===0 ? (
               <div style={{ textAlign:"center", padding:"24px 0", color:"#CBD5E1" }}>
-                <div style={{ fontSize:36, marginBottom:8 }}>📅</div>
+                <div style={{ fontSize:36, marginBottom:8 }}><Glyph e="📅" /></div>
                 <div style={{ fontSize:14, fontWeight:600 }}>No events on this day</div>
               </div>
             ) : selectedDayEvents.map((ev,i) => {

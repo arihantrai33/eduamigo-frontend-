@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast, showCredentials } from "../../utils/toast";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -219,16 +220,16 @@ export default function Teachers() {
 
       {/* Stat Cards */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
-        <StatCard label="TOTAL TEACHERS" value={stats.total}    icon="👩‍🏫" color="var(--brand-soft)" border="var(--brand)" delay={0} />
-        <StatCard label="ACTIVE"         value={stats.active}   icon="✅"   color="#F0FDF4" border="#10B981" delay={0.08} />
-        <StatCard label="ON LEAVE"       value={stats.onLeave}  icon="🌴"   color="#FFFBEB" border="#F59E0B" delay={0.16} />
-        <StatCard label="INACTIVE"       value={stats.inactive} icon="⛔"   color="#FEF2F2" border="#EF4444" delay={0.24} />
+        <StatCard label="TOTAL TEACHERS" value={stats.total}    icon={<Glyph e="👩‍🏫" />} color="var(--brand-soft)" border="var(--brand)" delay={0} />
+        <StatCard label="ACTIVE"         value={stats.active}   icon={<Glyph e="✅" />}   color="#F0FDF4" border="#10B981" delay={0.08} />
+        <StatCard label="ON LEAVE"       value={stats.onLeave}  icon={<Glyph e="🌴" />}   color="#FFFBEB" border="#F59E0B" delay={0.16} />
+        <StatCard label="INACTIVE"       value={stats.inactive} icon={<Glyph e="⛔" />}   color="#FEF2F2" border="#EF4444" delay={0.24} />
       </div>
 
       {/* Filters */}
       <div style={{ display:"flex", gap:12, marginBottom:20, alignItems:"center", animation:"fadeUp 0.5s ease 0.1s both" }}>
         <div style={{ flex:1, position:"relative" }}>
-          <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:16, color:"#94A3B8" }}>🔍</span>
+          <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:16, color:"#94A3B8" }}><Glyph e="🔍" /></span>
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by name, email or employee ID..."
             style={{ width:"100%", padding:"11px 14px 11px 40px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
             onFocus={e => e.target.style.borderColor="#10B981"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
@@ -266,7 +267,7 @@ export default function Teachers() {
               </td></tr>
             ) : filtered.length === 0 ? (
               <tr><td colSpan={7} style={{ padding:"80px 0", textAlign:"center" }}>
-                <div style={{ fontSize:48, marginBottom:12 }}>🔍</div>
+                <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="🔍" /></div>
                 <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No teachers found</div>
                 <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Try adjusting your filters</div>
               </td></tr>
@@ -315,7 +316,7 @@ export default function Teachers() {
                       <button className="act-btn" onClick={() => openEdit(t)}
                         style={{ padding:"6px 14px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", color:"#374151", fontSize:12, fontWeight:700, cursor:"pointer" }}>Edit</button>
                       <button className="act-btn" onClick={() => setDeleteId(t._id)}
-                        style={{ padding:"6px 12px", borderRadius:8, border:"none", background:"#FEF2F2", color:"#DC2626", fontSize:12, fontWeight:700, cursor:"pointer" }}>🗑️</button>
+                        style={{ padding:"6px 12px", borderRadius:8, border:"none", background:"#FEF2F2", color:"#DC2626", fontSize:12, fontWeight:700, cursor:"pointer" }}><Glyph e="🗑" /></button>
                     </div>
                   </td>
                 </tr>
@@ -331,7 +332,7 @@ export default function Teachers() {
 
       <Modal show={!!deleteId} onClose={() => setDeleteId(null)} title="Delete Teacher">
         <div style={{ textAlign:"center", padding:"8px 0 24px" }}>
-          <div style={{ fontSize:52, marginBottom:16 }}>🗑️</div>
+          <div style={{ fontSize:52, marginBottom:16 }}><Glyph e="🗑" /></div>
           <div style={{ fontSize:16, fontWeight:700, color:"#0F172A", marginBottom:8 }}>Are you sure?</div>
           <div style={{ fontSize:13, color:"#94A3B8", marginBottom:24 }}>This teacher record will be permanently deleted.</div>
           <div style={{ display:"flex", gap:10, justifyContent:"center" }}>

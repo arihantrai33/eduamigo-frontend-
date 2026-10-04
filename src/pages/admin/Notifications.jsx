@@ -3,6 +3,7 @@ import axios from "axios";
 import { Send, Trash2, RefreshCw, Filter, Bell, Users, GraduationCap, UserCheck, Bus, Globe } from "lucide-react";
 import { toast, confirmAction } from "../../utils/toast";
 
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -107,9 +108,9 @@ export default function Notifications() {
       {/* Stats */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12, marginBottom: 20 }}>
         {[
-          { label: "Total Sent",  value: stats.total,  color: "var(--brand)", bg: "var(--brand-soft)", icon: "📢" },
-          { label: "Sent Today",  value: stats.today,  color: "#16A34A", bg: "#F0FDF4", icon: "📅" },
-          { label: "Unread",      value: stats.unread, color: "#D97706", bg: "#FFFBEB", icon: "🔔" },
+          { label: "Total Sent",  value: stats.total,  color: "var(--brand)", bg: "var(--brand-soft)", icon: <Glyph e="📢" /> },
+          { label: "Sent Today",  value: stats.today,  color: "#16A34A", bg: "#F0FDF4", icon: <Glyph e="📅" /> },
+          { label: "Unread",      value: stats.unread, color: "#D97706", bg: "#FFFBEB", icon: <Glyph e="🔔" /> },
         ].map((s, i) => (
           <div key={i} style={{ background: "#fff", border: `1px solid ${s.bg}`, borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 14 }}>
             <div style={{ width: 40, height: 40, borderRadius: 10, background: s.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>{s.icon}</div>
@@ -141,7 +142,7 @@ export default function Notifications() {
           <div style={{ textAlign: "center", padding: "40px 0", color: "#94A3B8", fontSize: 13 }}>Loading notifications...</div>
         ) : filtered.length === 0 ? (
           <div style={{ textAlign: "center", padding: "40px 0" }}>
-            <div style={{ fontSize: 36, marginBottom: 8 }}>🔔</div>
+            <div style={{ fontSize: 36, marginBottom: 8 }}><Glyph e="🔔" /></div>
             <div style={{ fontSize: 14, color: "#64748B", fontWeight: 600 }}>No notifications yet</div>
             <div style={{ fontSize: 12, color: "#94A3B8", marginTop: 4 }}>Send your first notification using the button above</div>
           </div>
@@ -223,7 +224,7 @@ export default function Notifications() {
 
               {/* Class/Section targeting */}
               <div style={{ background: "#F8FAFC", borderRadius: 10, padding: "14px", border: "1px solid #E2E8F0" }}>
-                <div style={{ fontSize: 11, color: "#64748B", fontWeight: 600, marginBottom: 10 }}>🎯 TARGET SPECIFIC CLASS (Optional)</div>
+                <div style={{ fontSize: 11, color: "#64748B", fontWeight: 600, marginBottom: 10 }}><Glyph e="🎯" /> TARGET SPECIFIC CLASS (Optional)</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                   <div>
                     <label style={{ fontSize: 11, color: "#94A3B8", display: "block", marginBottom: 4 }}>Class</label>
