@@ -84,11 +84,11 @@ export default function AskInsights() {
           <h2 style={s.h2}>Routing evaluation</h2>
           {ev ? (
             <>
-              <div style={s.muted}>{ev.overall.questions} labelled questions ({ev.mode}; {ev.skipped} need a language model). Holdout questions were never used for tuning.</div>
+              <div style={s.muted}>{ev.overall.questions} labelled questions, read by {ev.mode}{ev.savedAt ? ` (run on ${new Date(ev.savedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })})` : " (free run; no language model)"}. Holdout and Fresh questions were never used to tune the assistant.</div>
               <table style={s.table}>
                 <thead><tr><th style={s.th}>Set</th><th style={s.th}>Questions</th><th style={s.th}>Topic</th><th style={s.th}>Action</th><th style={s.th}>Both</th></tr></thead>
                 <tbody>
-                  {[["Development", ev.dev], ["Holdout", ev.holdout], ["All", ev.overall]].map(([n, r]) => (
+                  {[["Development", ev.dev], ["Holdout", ev.holdout], ["Unseen", ev.unseen], ["Fresh (never tuned on)", ev.fresh], ["All", ev.overall]].filter(([, r]) => r?.questions).map(([n, r]) => (
                     <tr key={n}><td style={s.td}>{n}</td><td style={s.td}>{r.questions}</td><td style={s.td}>{pct(r.routingAccuracy)}</td><td style={s.td}>{pct(r.actionAccuracy)}</td><td style={s.td}><strong>{pct(r.fullyCorrect)}</strong></td></tr>
                   ))}
                 </tbody>
