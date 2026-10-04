@@ -49,7 +49,7 @@ function Reply({ r, onOption, onLink, disabled }) {
       )}
       <AnswerText text={r.text} />
       {r.ticket && (
-        <div style={s.ticket}><LifeBuoy size={14} aria-hidden /> Ticket {r.ticket.number} · {r.ticket.team}</div>
+        <div style={s.ticket}><LifeBuoy size={14} aria-hidden /> Ticket {r.ticket.number} · {r.ticket.sentTo?.length ? r.ticket.sentTo.map((p) => p.name).join(", ") : r.ticket.team}</div>
       )}
       {r.sources?.length > 0 && (
         <div style={s.sources}>
@@ -135,6 +135,7 @@ function Requests({ user }) {
             <span style={{ ...s.status, ...(t.status === "resolved" ? s.statusDone : {}) }}>{STATUS_LABEL[t.status]}</span>
           </div>
           <div style={s.ticketQ}>"{t.question}"</div>
+          {!staff && t.sentTo?.length > 0 && <div style={s.ticketMeta}>Sent to {t.sentTo.map((p) => `${p.name} (${p.title})`).join(", ")}</div>}
           <div style={s.ticketMeta}>
             {t.raisedBy?.name && staff ? `${t.raisedBy.name} (${t.raisedBy.role})` : ""}{t.student ? ` · about ${t.student.name} ${t.student.class || ""}` : ""}
             {` · ${new Date(t.createdAt).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" })}`}
