@@ -6,6 +6,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { hasFeature } from "../utils/features";
 import { can } from "../utils/permissions";
+import { userTheme, brandLook, alpha } from "../utils/theme";
 import { askAssistant, sendFeedback, getAssistantIntro, getTickets, updateTicket, errorText } from "../api/assistant";
 
 // EduAmigo Ask: one assistant for every school topic, available on every signed-in screen.
@@ -221,24 +222,38 @@ export default function AskWidget() {
   };
 
   const panelStyle = useMemo(() => (isAdminArea && wide ? s.panelSide : s.panelPhone), [isAdminArea, wide]);
+  // Same look as the school's home screens: a soft tint with dark text for light-style schools,
+  // the brand gradient with white text for bold ones.
+  const theme = useMemo(() => userTheme(user), [user]);
+  const look = useMemo(() => brandLook(theme), [theme]);
   if (!enabled) return null;
+
+  const fabStyle = {
+    ...(isAdminArea ? s.fabAdmin : s.fab),
+    ...(theme.isLight
+      ? { background: "#fff", color: theme.dark, border: `1px solid ${alpha(theme.primary, 0.28)}`, boxShadow: `0 6px 18px ${alpha(theme.deep, 0.18)}` }
+      : { background: "var(--brand-gradient)", color: "#fff", border: "none", boxShadow: `0 6px 18px ${alpha(theme.deep, 0.35)}` }),
+  };
 
   return (
     <>
       {!open && (
-        <button type="button" aria-label="Open EduAmigo Ask" style={isAdminArea ? s.fabAdmin : s.fab} onClick={() => setOpen(true)}>
-          <MessageSquareText size={22} aria-hidden />
-          <span style={s.fabText}>Ask</span>
+        <button type="button" aria-label="Ask EduAmigo" title="Ask EduAmigo" style={fabStyle} onClick={() => setOpen(true)}>
+          <MessageSquareText size={isAdminArea ? 20 : 22} strokeWidth={2} aria-hidden />
+          {isAdminArea && <span style={s.fabText}>Ask EduAmigo</span>}
         </button>
       )}
       {open && (
         <div role="dialog" aria-label="EduAmigo Ask" style={panelStyle}>
-          <div style={s.header}>
+          <div style={{ ...s.header, background: look.header, color: look.text, borderBottom: look.border }}>
+            <div style={{ ...s.badge, background: theme.isLight ? "#fff" : "rgba(255,255,255,0.18)", color: theme.isLight ? theme.dark : "#fff", border: look.border }}>
+              <MessageSquareText size={18} strokeWidth={2} aria-hidden />
+            </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={s.title}>EduAmigo Ask</div>
-              <div style={s.subtitle}>One place for fees, attendance, exams, bus, notices and more</div>
+              <div style={{ ...s.subtitle, color: look.muted }}>Fees, attendance, exams, bus and more</div>
             </div>
-            <button type="button" aria-label="Close" style={s.iconBtn} onClick={() => setOpen(false)}><X size={20} /></button>
+            <button type="button" aria-label="Close" style={{ ...s.iconBtn, background: look.glass, color: look.text, border: look.border }} onClick={() => setOpen(false)}><X size={18} /></button>
           </div>
           <div style={s.tabs}>
             {[["chat", "Chat"], ["requests", "Requests"]].map(([k, l]) => (
@@ -298,29 +313,28 @@ export default function AskWidget() {
 
 const font = "'Inter','Segoe UI',sans-serif";
 const s = {
+  // Phone: a round button inside the app frame, just above the bottom navigation.
   fab: {
-    position: "fixed", bottom: 84, right: "max(16px, calc(50vw - 215px + 16px))", zIndex: 900, display: "flex", alignItems: "center", gap: 6,
-    padding: "11px 16px", borderRadius: 999, border: "none", background: "var(--brand-gradient)", color: "#fff", fontFamily: font,
-    fontWeight: 700, fontSize: 14, cursor: "pointer", boxShadow: "0 8px 22px rgba(0,0,0,0.22)", textShadow: "0 1px 2px rgba(0,0,0,0.2)",
+    position: "fixed", bottom: 88, right: 16, zIndex: 900, width: 52, height: 52, borderRadius: "50%",
+    display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontFamily: font,
   },
+  // Admin portal (desktop): a labelled button in the corner.
   fabAdmin: {
-    position: "fixed", bottom: 24, right: 24, zIndex: 900, display: "flex", alignItems: "center", gap: 6, padding: "12px 18px", borderRadius: 999,
-    border: "none", background: "var(--brand-gradient)", color: "#fff", fontFamily: font, fontWeight: 700, fontSize: 14, cursor: "pointer",
-    boxShadow: "0 8px 22px rgba(0,0,0,0.22)", textShadow: "0 1px 2px rgba(0,0,0,0.2)",
+    position: "fixed", bottom: 24, right: 24, zIndex: 900, display: "flex", alignItems: "center", gap: 8, padding: "11px 16px",
+    borderRadius: 12, fontFamily: font, fontWeight: 700, fontSize: 14, cursor: "pointer",
   },
-  fabText: { letterSpacing: 0.2 },
-  panelPhone: {
-    position: "fixed", top: 0, bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, zIndex: 1000,
-    background: "var(--bg)", display: "flex", flexDirection: "column", fontFamily: font, boxShadow: "0 0 40px rgba(0,0,0,0.25)",
-  },
+  fabText: { letterSpacing: 0.1 },
+  // Phone: fills the app frame exactly (the frame is the containing block, see App.jsx).
+  panelPhone: { position: "fixed", inset: 0, zIndex: 1000, background: "var(--bg)", display: "flex", flexDirection: "column", fontFamily: font },
   panelSide: {
     position: "fixed", top: 0, bottom: 0, right: 0, width: 420, zIndex: 1000, background: "var(--bg)", display: "flex", flexDirection: "column",
-    fontFamily: font, boxShadow: "-8px 0 30px rgba(0,0,0,0.18)", borderLeft: "1px solid var(--border)",
+    fontFamily: font, boxShadow: "-8px 0 30px rgba(0,0,0,0.14)", borderLeft: "1px solid var(--border)",
   },
-  header: { display: "flex", alignItems: "center", gap: 10, padding: "16px 16px 14px", background: "var(--brand-gradient)", color: "#fff" },
-  title: { fontSize: 17, fontWeight: 800, textShadow: "0 1px 2px rgba(0,0,0,0.18)" },
-  subtitle: { fontSize: 12, opacity: 0.92, marginTop: 2 },
-  iconBtn: { background: "rgba(255,255,255,0.18)", border: "none", color: "#fff", borderRadius: 10, padding: 6, cursor: "pointer", display: "flex" },
+  header: { display: "flex", alignItems: "center", gap: 12, padding: "18px 16px 14px" },
+  badge: { width: 38, height: 38, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 },
+  title: { fontSize: 16, fontWeight: 800, letterSpacing: 0.1 },
+  subtitle: { fontSize: 12, marginTop: 2 },
+  iconBtn: { borderRadius: 10, padding: 7, cursor: "pointer", display: "flex" },
   tabs: { display: "flex", alignItems: "center", gap: 6, padding: "8px 12px", background: "var(--card)", borderBottom: "1px solid var(--border)" },
   tabOn: { padding: "6px 14px", borderRadius: 999, border: "1px solid var(--brand-border)", background: "var(--brand-soft)", color: "var(--brand-dark)", fontWeight: 700, fontSize: 13, cursor: "pointer" },
   tabOff: { padding: "6px 14px", borderRadius: 999, border: "1px solid transparent", background: "transparent", color: "var(--subtext)", fontWeight: 600, fontSize: 13, cursor: "pointer" },

@@ -209,7 +209,9 @@ function AppLayout() {
   }
   return (
     <div style={{ minHeight: '100vh', background: '#0f0f1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ width: 390, height: '100vh', maxHeight: 844, position: 'relative', overflow: 'hidden', background: 'var(--app-bg, #F4F6FB)', boxShadow: '0 40px 100px rgba(0,0,0,.6)', borderRadius: 40 }}>
+      {/* transform makes this frame the containing block for position: fixed children (bottom navs,
+          sheets, EduAmigo Ask), so they stay inside the phone frame instead of the browser window. */}
+      <div style={{ width: 390, height: '100vh', maxHeight: 844, position: 'relative', overflow: 'hidden', background: 'var(--app-bg, #F4F6FB)', boxShadow: '0 40px 100px rgba(0,0,0,.6)', borderRadius: 40, transform: 'translateZ(0)' }}>
         <AppRoutes />
       </div>
     </div>
