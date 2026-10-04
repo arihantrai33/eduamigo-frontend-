@@ -213,7 +213,8 @@ export default function AskWidget() {
 
   const goTo = (path) => {
     if (!path) return;
-    if (!wide) setOpen(false);
+    // The admin side panel can stay open next to the page; the phone-frame chat covers the whole screen, so it closes.
+    if (!(isAdminArea && wide)) setOpen(false);
     navigate(path);
   };
 
