@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
-  MessageSquareText, SendHorizontal, X, ThumbsUp, ThumbsDown, FileText, ArrowUpRight, LifeBuoy, Loader2, Inbox, CheckCircle2, Route, Sparkles,
+  MessageSquareText, SendHorizontal, X, ThumbsUp, ThumbsDown, FileText, ArrowUpRight, LifeBuoy, Loader2, Inbox, CheckCircle2, Route, Sparkles, MessagesSquare, Clock3, RotateCcw, AlertTriangle,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { hasFeature } from "../utils/features";
@@ -17,6 +17,7 @@ const PORTALS = ["/student", "/parent", "/teacher", "/admin"];
 // Screens with their own bottom actions or their own AI chat: the button would cover them.
 const HIDDEN_ON = ["/student/bus", "/parent/bus", "/student/chat", "/parent/chat", "/teacher/chat", "/student/revise", "/admin/chat"];
 const METHOD_LABEL = { keywords: "keywords", model: "AI", context: "follow-up", choice: "your choice", rule: "safety rule" };
+const NOTE_KIND = { note: "Staff note", follow_up: "Follow-up", repeat: "Asked again", escalation: "Escalated", reopen: "Reopened" };
 const STATUS_LABEL = { open: "Open", in_progress: "In progress", resolved: "Resolved" };
 
 const greeting = () => { const h = new Date().getHours(); return h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening"; };
@@ -86,6 +87,28 @@ function TypingIndicator() {
   );
 }
 
+const OUTCOME = {
+  created: ["Ticket raised", LifeBuoy], followed_up: ["Added to your existing ticket", MessagesSquare], repeat: ["Already open", Clock3],
+  escalated: ["Escalated to urgent", ArrowUpRight], reopened: ["Reopened", RotateCcw], status: ["Request status", Inbox],
+};
+
+// What actually happened to the person's request, from the verified result of the action (never from what was attempted).
+function TicketCard({ ticket }) {
+  const [label, Icon] = OUTCOME[ticket.outcome] || OUTCOME.created;
+  const sentTo = ticket.sentTo?.length ? ticket.sentTo.map((p) => p.name).join(", ") : ticket.team;
+  const failed = ticket.notified?.failed || [];
+  const confirmed = ticket.notified?.confirmed || [];
+  return (
+    <div style={s.ticketBox}>
+      <div style={s.ticketBoxHead}><Icon size={14} aria-hidden /> {label} · {ticket.number}{ticket.priority === "high" && <span style={s.urgent}>Urgent</span>}</div>
+      {ticket.title && <div style={s.ticketBoxTitle}>{ticket.title}</div>}
+      <div style={s.ticketBoxMeta}>With {sentTo}</div>
+      {confirmed.length > 0 && <div style={s.ticketOk}><CheckCircle2 size={12} aria-hidden /> Notified: {confirmed.join(", ")}</div>}
+      {failed.length > 0 && <div style={s.ticketWarn}><AlertTriangle size={12} aria-hidden /> Could not confirm that {failed.join(", ")} was notified. The ticket is saved.</div>}
+    </div>
+  );
+}
+
 function Reply({ r, onOption, onLink, disabled, animate, onDone, onTick, showRouting }) {
   const pct = Math.round((r.confidence || 0) * 100);
   const { shown, finished, skip } = useTypewriter(r.text, animate, onDone, onTick);
@@ -102,9 +125,7 @@ function Reply({ r, onOption, onLink, disabled, animate, onDone, onTick, showRou
       )}
       <AnswerText text={shown} />
       <div style={finished ? s.extras : s.extrasHidden}>
-      {r.ticket && (
-        <div style={s.ticket}><LifeBuoy size={14} aria-hidden /> Ticket {r.ticket.number} · {r.ticket.sentTo?.length ? r.ticket.sentTo.map((p) => p.name).join(", ") : r.ticket.team}</div>
-      )}
+      {r.ticket && <TicketCard ticket={r.ticket} />}
       {r.sources?.some((x) => x.evidence) && (
         <div style={s.evidenceList}>
           {r.sources.filter((x) => x.evidence).slice(0, 2).map((src, i) => (
@@ -205,14 +226,27 @@ function Requests({ user }) {
             {t.priority === "high" && <span style={s.urgent}>Urgent</span>}
             <span style={{ ...s.status, ...(t.status === "resolved" ? s.statusDone : {}) }}>{STATUS_LABEL[t.status]}</span>
           </div>
-          <div style={s.ticketQ}>"{t.question}"</div>
-          {t.summary && <div style={s.ticketMeta}>In short: {t.summary}</div>}
+          <div style={s.ticketTitle}>{t.title || t.question}</div>
+          {t.summary && <div style={s.ticketQ}>{t.summary}</div>}
+          {staff && t.requestedAction && <div style={s.ticketMeta}><strong>Requested:</strong> {t.requestedAction}</div>}
+          {staff && t.priority === "high" && t.priorityReason && <div style={s.ticketMeta}>{t.priorityReason}</div>}
+          {staff && t.original && t.original !== t.title && (
+            <details style={s.original}><summary style={s.originalSum}>Original message</summary><div style={s.originalText}>"{t.original}"</div></details>
+          )}
           {!staff && t.sentTo?.length > 0 && <div style={s.ticketMeta}>Sent to {t.sentTo.map((p) => `${p.name} (${p.title})`).join(", ")}</div>}
           <div style={s.ticketMeta}>
             {t.raisedBy?.name && staff ? `${t.raisedBy.name} (${t.raisedBy.role})` : ""}{t.student ? ` · about ${t.student.name} ${t.student.class || ""}` : ""}
             {` · ${new Date(t.createdAt).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" })}`}
           </div>
-          {t.notes?.length > 0 && <div style={s.ticketNote}>{t.notes[t.notes.length - 1].by ? `${t.notes[t.notes.length - 1].by}: ` : ""}{t.notes[t.notes.length - 1].text}</div>}
+          {t.notes?.length > 0 && (
+            <div style={s.timeline}>
+              {t.notes.slice(-4).map((n, i) => (
+                <div key={i} style={s.ticketNote}>
+                  <span style={s.noteKind}>{NOTE_KIND[n.kind] || "Note"}</span> {n.by ? `${n.by}: ` : ""}{n.text}
+                </div>
+              ))}
+            </div>
+          )}
           {staff && scope !== "mine" && t.status !== "resolved" && (
             <div style={s.links}>
               {t.status === "open" && <button type="button" disabled={busy === t.id} style={s.link} onClick={() => act(t, "in_progress")}>Mark in progress</button>}
@@ -495,5 +529,17 @@ const s = {
   ticketMeta: { fontSize: 11, color: "var(--subtext)" },
   resolveBox: { marginTop: 8, display: "flex", flexDirection: "column", gap: 6 },
   noteInput: { width: "100%", boxSizing: "border-box", padding: "9px 11px", borderRadius: 10, border: "1.5px solid var(--border)", background: "var(--input)", color: "var(--text)", fontSize: 13, fontFamily: font, resize: "vertical", outline: "none" },
+  ticketTitle: { fontSize: 14, fontWeight: 700, color: "var(--text)", margin: "6px 0 2px", lineHeight: 1.35 },
+  original: { margin: "4px 0" },
+  originalSum: { fontSize: 11, color: "var(--subtext)", cursor: "pointer" },
+  originalText: { fontSize: 12, color: "var(--subtext)", fontStyle: "italic", padding: "4px 0" },
+  timeline: { display: "grid", gap: 4, marginTop: 6 },
+  noteKind: { fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: 0.3, color: "var(--brand-dark)" },
+  ticketBox: { background: "#fffbeb", border: "1px solid #fde68a", borderRadius: 10, padding: "8px 10px", marginTop: 8, display: "grid", gap: 3 },
+  ticketBoxHead: { display: "flex", alignItems: "center", gap: 6, fontSize: 12, fontWeight: 800, color: "#92400e" },
+  ticketBoxTitle: { fontSize: 13, fontWeight: 600, color: "var(--text)" },
+  ticketBoxMeta: { fontSize: 12, color: "var(--subtext)" },
+  ticketOk: { display: "flex", alignItems: "center", gap: 5, fontSize: 11.5, color: "#166534" },
+  ticketWarn: { display: "flex", alignItems: "center", gap: 5, fontSize: 11.5, color: "#b45309" },
   ticketNote: { fontSize: 12, color: "var(--text)", background: "var(--bg)", borderRadius: 8, padding: "6px 8px", marginTop: 6 },
 };

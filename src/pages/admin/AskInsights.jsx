@@ -190,15 +190,15 @@ export default function AskInsights() {
           </div>
         </div>
         <table style={s.table}>
-          <thead><tr><th style={s.th}>Ticket</th><th style={s.th}>Question</th><th style={s.th}>From</th><th style={s.th}>Team</th><th style={s.th}>Status</th><th style={s.th} /></tr></thead>
+          <thead><tr><th style={s.th}>Ticket</th><th style={s.th}>Issue</th><th style={s.th}>From</th><th style={s.th}>With</th><th style={s.th}>Status</th><th style={s.th} /></tr></thead>
           <tbody>
             {tickets?.length === 0 && <tr><td style={s.td} colSpan={6}>No tickets.</td></tr>}
             {tickets?.map((t) => (
               <tr key={t.id}>
                 <td style={s.td}><strong>{t.number}</strong>{t.priority === "high" && <div style={s.urgent}>Urgent</div>}</td>
-                <td style={{ ...s.td, maxWidth: 360 }}>"{t.question}"{t.notes?.length ? <div style={s.muted}>Note: {t.notes[t.notes.length - 1].text}</div> : null}</td>
+                <td style={{ ...s.td, maxWidth: 380 }}><strong>{t.title || t.question}</strong>{t.summary && <div style={s.muted}>{t.summary}</div>}{t.priority === "high" && t.priorityReason && <div style={s.muted}>{t.priorityReason}</div>}{t.notes?.length ? <div style={s.muted}>Latest: {t.notes[t.notes.length - 1].text}</div> : null}{t.original && t.original !== t.title && <details><summary style={s.muted}>Original message</summary><div style={s.muted}>"{t.original}"</div></details>}</td>
                 <td style={s.td}>{t.raisedBy?.name} <span style={s.muted}>({t.raisedBy?.role})</span>{t.student && <div style={s.muted}>about {t.student.name} {t.student.class}</div>}</td>
-                <td style={s.td}>{t.domainLabel || "General"}</td>
+                <td style={s.td}>{t.sentTo?.length ? t.sentTo.map((p) => p.name).join(", ") : (t.domainLabel || "General")}<div style={s.muted}>{t.domainLabel || "General"}{t.delivery?.some((d) => !d.ok) ? " · notification failed" : ""}</div></td>
                 <td style={s.td}>{STATUS_LABEL[t.status]}</td>
                 <td style={s.td}>
                   {t.status === "open" && <button type="button" style={s.btnSm} onClick={() => resolve(t, "in_progress")}>In progress</button>}
