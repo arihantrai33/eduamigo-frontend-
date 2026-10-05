@@ -135,6 +135,7 @@ function Requests({ user }) {
             <span style={{ ...s.status, ...(t.status === "resolved" ? s.statusDone : {}) }}>{STATUS_LABEL[t.status]}</span>
           </div>
           <div style={s.ticketQ}>"{t.question}"</div>
+          {t.summary && <div style={s.ticketMeta}>In short: {t.summary}</div>}
           {!staff && t.sentTo?.length > 0 && <div style={s.ticketMeta}>Sent to {t.sentTo.map((p) => `${p.name} (${p.title})`).join(", ")}</div>}
           <div style={s.ticketMeta}>
             {t.raisedBy?.name && staff ? `${t.raisedBy.name} (${t.raisedBy.role})` : ""}{t.student ? ` · about ${t.student.name} ${t.student.class || ""}` : ""}
