@@ -42,6 +42,7 @@ import ParentCalendar from './pages/parent/Calendar'
 import ParentFee from './pages/parent/Fee'
 import BrandTheme from './components/BrandTheme'
 import AskWidget from './components/AskWidget'
+import ErrorBoundary from './components/ErrorBoundary'
 import ParentResult from './pages/parent/Result'
 import ParentBus from './pages/parent/Bus'
 import ParentProfile from './pages/parent/Profile'
@@ -184,7 +185,7 @@ function AppRoutes() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Toast />
-      <AskWidget />
+      <ErrorBoundary fallback={null}><AskWidget /></ErrorBoundary>
       <BrandTheme />
     </div>
   )

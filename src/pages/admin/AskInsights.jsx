@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { RefreshCw, Target, CheckCircle2, CircleHelp, LifeBuoy, Gauge, FileText, Bot, Loader2 } from "lucide-react";
+import AskKnowledge from "./AskKnowledge";
 import { getAssistantMetrics, getAssistantEvaluation, getTickets, updateTicket, errorText } from "../../api/assistant";
 
 // EduAmigo Ask insights: how well the assistant routes and resolves questions (PS18 metrics),
@@ -30,6 +31,9 @@ export default function AskInsights() {
   const [status, setStatus] = useState("open");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [tab, setTab] = useState("insights");
+  const [resolving, setResolving] = useState(null); // ticket being resolved, with its note
+  const [note, setNote] = useState("");
 
   const load = useCallback(() => Promise.all([getAssistantMetrics(days), getAssistantEvaluation()])
     .then(([m, e]) => { setMetrics(m); setEvaluation(e); setError(""); })
@@ -42,11 +46,10 @@ export default function AskInsights() {
   useEffect(() => { load(); }, [load]);
   useEffect(() => { loadTickets(); }, [loadTickets]);
 
-  const resolve = async (t, next) => {
-    const note = next === "resolved" ? window.prompt(`Note for ${t.raisedBy?.name || "the sender"} (optional):`, "") : "";
-    if (note === null) return;
+  const resolve = async (t, next, text = "") => {
     try {
-      await updateTicket(t.id, { status: next, ...(note ? { note } : {}) });
+      await updateTicket(t.id, { status: next, ...(text.trim() ? { note: text.trim() } : {}) });
+      setResolving(null); setNote("");
       loadTickets(); load();
     } catch (err) { setError(errorText(err)); }
   };
@@ -68,14 +71,20 @@ export default function AskInsights() {
           </button>
         </div>
       </div>
+      <div style={s.tabs} role="tablist">
+        {[["insights", "Insights and tickets"], ["knowledge", "School documents"]].map(([k, l]) => (
+          <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)} style={tab === k ? s.tabOn : s.tabOff}>{l}</button>
+        ))}
+      </div>
       {error && <div style={s.error}>{error}</div>}
+      {tab === "knowledge" ? <AskKnowledge /> : (<>
 
       <div style={s.kpis}>
         <Kpi icon={Target} label="Routing accuracy" value={ev ? pct(ev.overall.routingAccuracy) : "-"} note={ev ? `Holdout ${pct(ev.holdout.fullyCorrect)} fully correct` : ""} />
-        <Kpi icon={CheckCircle2} label="End-to-end resolution" value={metrics ? pct(metrics.rates.resolution) : "-"} note={metrics ? `${metrics.resolution.resolved} of ${metrics.resolution.answered} answers` : ""} />
+        <Kpi icon={CheckCircle2} label="End-to-end resolution" value={metrics ? pct(metrics.rates.resolution) : "-"} note={metrics ? `${metrics.resolution.resolvedByAssistant} by the assistant, ${metrics.resolution.resolvedByStaff} by staff, ${metrics.resolution.pending} waiting on staff` : ""} />
         <Kpi icon={CircleHelp} label="Asked to clarify" value={metrics ? pct(metrics.rates.clarify) : "-"} note="instead of guessing" />
         <Kpi icon={LifeBuoy} label="Handed to staff" value={metrics ? pct(metrics.rates.handoff) : "-"} note={metrics ? `${metrics.tickets.open || 0} open tickets` : ""} />
-        <Kpi icon={FileText} label="Answers with sources" value={metrics ? pct(metrics.rates.sourceCitation) : "-"} />
+        <Kpi icon={FileText} label="Answers with sources" value={metrics ? pct(metrics.rates.sourceCitation) : "-"} note={metrics?.grounding && (metrics.grounding.composed + metrics.grounding.keptStandard) > 0 ? `${pct(metrics.grounding.rejectedPct)} of model-written answers failed the fact check and were replaced` : ""} />
         <Kpi icon={Gauge} label="Speed (p95)" value={metrics ? secs(metrics.speed.p95) : "-"} note={metrics ? `median ${secs(metrics.speed.p50)}` : ""} />
       </div>
 
@@ -101,6 +110,33 @@ export default function AskInsights() {
                   ))}
                 </tbody>
               </table>
+              {ev.overall.calibration && (
+                <>
+                  <h3 style={s.h3}>Is the confidence trustworthy?</h3>
+                  <div style={s.muted}>Questions grouped by the confidence the assistant reported, and how many it really got right. Calibration error {ev.overall.calibration.ece.toFixed(3)} (0 is perfect). It answers directly at {Math.round((ev.thresholds?.answer || 0.75) * 100)}% or more and asks a question below that.</div>
+                  <table style={s.table}>
+                    <thead><tr><th style={s.th}>Reported confidence</th><th style={s.th}>Questions</th><th style={s.th}>Actually right</th></tr></thead>
+                    <tbody>
+                      {ev.overall.calibration.buckets.map((b) => (
+                        <tr key={b.from}><td style={s.td}>{Math.round(b.from * 100)}% to {Math.round(b.to * 100)}%</td><td style={s.td}>{b.questions}</td><td style={s.td}>{b.questions ? <strong>{pct(b.accuracy)}</strong> : "-"}</td></tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </>
+              )}
+              {ev.answers && (
+                <>
+                  <h3 style={s.h3}>Did people get the right answer?</h3>
+                  <div style={s.muted}>{ev.answers.questions} questions asked as a parent, student, teacher and admin on a demo school, each checked for the exact facts it must contain, the facts it must not (another child's data) and who a hand-off went to. {ev.answers.fresh?.questions ? `${ev.answers.fresh.correct} of ${ev.answers.fresh.questions} fresh questions written after the last fixes were right. ` : ""}Run on {new Date(ev.answers.savedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}.</div>
+                  <table style={s.table}>
+                    <thead><tr><th style={s.th}>Asked as</th><th style={s.th}>Questions</th><th style={s.th}>Correct</th></tr></thead>
+                    <tbody>
+                      {Object.entries(ev.answers.byRole).map(([k, v]) => <tr key={k}><td style={s.td}>{k}</td><td style={s.td}>{v.questions}</td><td style={s.td}><strong>{pct((v.correct / v.questions) * 100)}</strong></td></tr>)}
+                      <tr><td style={s.td}>All</td><td style={s.td}>{ev.answers.questions}</td><td style={s.td}><strong>{pct(ev.answers.accuracy)}</strong></td></tr>
+                    </tbody>
+                  </table>
+                </>
+              )}
               {ev.overall.mistakes.length > 0 && (
                 <>
                   <h3 style={s.h3}>Questions it got wrong</h3>
@@ -166,19 +202,34 @@ export default function AskInsights() {
                 <td style={s.td}>{STATUS_LABEL[t.status]}</td>
                 <td style={s.td}>
                   {t.status === "open" && <button type="button" style={s.btnSm} onClick={() => resolve(t, "in_progress")}>In progress</button>}
-                  {t.status !== "resolved" && <button type="button" style={s.btnPrimary} onClick={() => resolve(t, "resolved")}>Resolve</button>}
+                  {t.status !== "resolved" && <button type="button" style={s.btnPrimary} onClick={() => { setResolving(t.id); setNote(""); }}>Resolve</button>}
+                  {resolving === t.id && (
+                    <div style={s.resolveBox}>
+                      <textarea value={note} maxLength={1000} rows={3} onChange={(e) => setNote(e.target.value)} style={s.noteInput} placeholder={`Note for ${t.raisedBy?.name || "the sender"} (optional)`} aria-label="Resolution note" autoFocus />
+                      <div style={{ display: "flex", gap: 6 }}>
+                        <button type="button" style={s.btnPrimary} onClick={() => resolve(t, "resolved", note)}>Mark resolved</button>
+                        <button type="button" style={s.btnSm} onClick={() => setResolving(null)}>Cancel</button>
+                      </div>
+                    </div>
+                  )}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </section>
+      </>)}
       <style>{".ins-spin{animation:insspin 1s linear infinite}@keyframes insspin{to{transform:rotate(360deg)}}"}</style>
     </div>
   );
 }
 
 const s = {
+  tabs: { display: "flex", gap: 6, borderBottom: "1px solid var(--border)" },
+  tabOn: { padding: "9px 14px", border: "none", borderBottom: "2px solid var(--brand-dark)", background: "none", color: "var(--brand-dark)", fontWeight: 800, fontSize: 14, cursor: "pointer" },
+  tabOff: { padding: "9px 14px", border: "none", borderBottom: "2px solid transparent", background: "none", color: "var(--subtext)", fontWeight: 600, fontSize: 14, cursor: "pointer" },
+  resolveBox: { display: "grid", gap: 6, marginTop: 8, minWidth: 220 },
+  noteInput: { width: "100%", boxSizing: "border-box", padding: "8px 10px", borderRadius: 8, border: "1.5px solid var(--border)", background: "var(--input)", color: "var(--text)", fontSize: 12, fontFamily: "inherit", resize: "vertical" },
   page: { padding: 24, fontFamily: "'Inter','Segoe UI',sans-serif", color: "var(--text)", display: "grid", gap: 16 },
   head: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" },
   h1: { fontSize: 22, fontWeight: 800, margin: 0 },

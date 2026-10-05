@@ -105,9 +105,23 @@ function Reply({ r, onOption, onLink, disabled, animate, onDone, onTick, showRou
       {r.ticket && (
         <div style={s.ticket}><LifeBuoy size={14} aria-hidden /> Ticket {r.ticket.number} · {r.ticket.sentTo?.length ? r.ticket.sentTo.map((p) => p.name).join(", ") : r.ticket.team}</div>
       )}
-      {r.sources?.length > 0 && (
+      {r.sources?.some((x) => x.evidence) && (
+        <div style={s.evidenceList}>
+          {r.sources.filter((x) => x.evidence).slice(0, 2).map((src, i) => (
+            <figure key={i} style={s.evidence}>
+              <blockquote style={s.quote}>{src.evidence}</blockquote>
+              <figcaption style={s.cite}><FileText size={11} aria-hidden /> {src.label}{src.at ? ` · updated ${new Date(src.at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}` : ""}</figcaption>
+            </figure>
+          ))}
+        </div>
+      )}
+      {r.sources?.length > 0 && !r.sources.some((x) => x.evidence) && (
         <div style={s.sources}>
-          {r.sources.map((src, i) => <span key={i} style={s.source}><FileText size={11} aria-hidden /> {src.label}</span>)}
+          {r.sources.map((src, i) => (
+            <span key={i} style={s.source} title={src.at ? `Record last updated ${new Date(src.at).toLocaleString("en-IN")}` : undefined}>
+              <FileText size={11} aria-hidden /> {src.label}{src.at ? ` · updated ${new Date(src.at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}` : ""}
+            </span>
+          ))}
         </div>
       )}
       {(r.link || r.actions?.length > 0) && (
@@ -151,19 +165,20 @@ function Requests({ user }) {
   const [items, setItems] = useState(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(null);
+  const [resolving, setResolving] = useState(null); // ticket being resolved, with the note being typed
+  const [note, setNote] = useState("");
 
   const load = useCallback(() => getTickets({ scope })
     .then((list) => { setItems(list); setError(""); })
     .catch((e) => setError(errorText(e))), [scope]);
   useEffect(() => { load(); }, [load]);
 
-  const act = async (t, status) => {
-    const note = status === "resolved" ? window.prompt(`Note for ${t.raisedBy?.name || "the sender"} (optional):`, "") : "";
-    if (note === null) return;
+  const act = async (t, status, text = "") => {
     setBusy(t.id);
     try {
-      const fresh = await updateTicket(t.id, { status, ...(note ? { note } : {}) });
+      const fresh = await updateTicket(t.id, { status, ...(text.trim() ? { note: text.trim() } : {}) });
       setItems((list) => list.map((x) => (x.id === t.id ? fresh : x)));
+      setResolving(null); setNote("");
     } catch (e) { setError(errorText(e)); }
     setBusy(null);
   };
@@ -201,7 +216,17 @@ function Requests({ user }) {
           {staff && scope !== "mine" && t.status !== "resolved" && (
             <div style={s.links}>
               {t.status === "open" && <button type="button" disabled={busy === t.id} style={s.link} onClick={() => act(t, "in_progress")}>Mark in progress</button>}
-              <button type="button" disabled={busy === t.id} style={s.primaryLink} onClick={() => act(t, "resolved")}><CheckCircle2 size={13} aria-hidden /> Resolve</button>
+              <button type="button" disabled={busy === t.id} style={s.primaryLink} onClick={() => { setResolving(t.id); setNote(""); }}><CheckCircle2 size={13} aria-hidden /> Resolve</button>
+            </div>
+          )}
+          {resolving === t.id && (
+            <div style={s.resolveBox}>
+              <label style={s.ticketMeta} htmlFor={`note-${t.id}`}>Note for {t.raisedBy?.name || "the sender"} (optional)</label>
+              <textarea id={`note-${t.id}`} value={note} maxLength={1000} rows={3} onChange={(e) => setNote(e.target.value)} style={s.noteInput} placeholder="What was done, or what they should do next" autoFocus />
+              <div style={s.links}>
+                <button type="button" disabled={busy === t.id} style={s.primaryLink} onClick={() => act(t, "resolved", note)}>{busy === t.id ? "Saving" : "Mark resolved"}</button>
+                <button type="button" style={s.link} onClick={() => setResolving(null)}>Cancel</button>
+              </div>
             </div>
           )}
         </div>
@@ -438,6 +463,10 @@ const s = {
   p: { margin: "0 0 6px" },
   list: { margin: "0 0 6px", paddingLeft: 18 },
   ticket: { display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, fontWeight: 700, color: "#92400e", background: "#fef3c7", borderRadius: 8, padding: "4px 8px", marginTop: 4 },
+  evidenceList: { display: "grid", gap: 6, marginTop: 8 },
+  evidence: { margin: 0, background: "var(--bg)", borderLeft: "3px solid var(--brand-dark)", borderRadius: 8, padding: "7px 10px" },
+  quote: { margin: 0, fontSize: 12.5, lineHeight: 1.45, color: "var(--text)", fontStyle: "italic" },
+  cite: { display: "flex", alignItems: "center", gap: 5, marginTop: 5, fontSize: 11, fontWeight: 700, color: "var(--brand-dark)" },
   sources: { display: "flex", flexWrap: "wrap", gap: 5, marginTop: 6 },
   source: { display: "inline-flex", alignItems: "center", gap: 4, fontSize: 11, color: "var(--brand-dark)", background: "var(--brand-soft)", border: "1px solid var(--brand-border)", borderRadius: 6, padding: "2px 7px" },
   links: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 9 },
@@ -464,5 +493,7 @@ const s = {
   statusDone: { color: "#166534", background: "#dcfce7" },
   ticketQ: { fontSize: 13, color: "var(--text)", margin: "6px 0 4px", lineHeight: 1.45 },
   ticketMeta: { fontSize: 11, color: "var(--subtext)" },
+  resolveBox: { marginTop: 8, display: "flex", flexDirection: "column", gap: 6 },
+  noteInput: { width: "100%", boxSizing: "border-box", padding: "9px 11px", borderRadius: 10, border: "1.5px solid var(--border)", background: "var(--input)", color: "var(--text)", fontSize: 13, fontFamily: font, resize: "vertical", outline: "none" },
   ticketNote: { fontSize: 12, color: "var(--text)", background: "var(--bg)", borderRadius: 8, padding: "6px 8px", marginTop: 6 },
 };

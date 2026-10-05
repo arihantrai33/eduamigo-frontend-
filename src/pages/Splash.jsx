@@ -9,12 +9,15 @@ export default function Splash() {
   const [done, setDone] = useState(false);
   const school = getSavedSchool();
 
+  // The brand screen is shown briefly; a person who is already signed in should not wait long for their portal.
+  const signedIn = (() => { try { return !!(localStorage.getItem("token") && localStorage.getItem("eduamigo_user")); } catch { return false; } })();
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setDone(true);
-    }, 3000);
+    }, signedIn ? 1200 : 2500);
     return () => clearTimeout(timer);
-  }, []);
+  }, [signedIn]);
 
   useEffect(() => {
     if (!done) return;

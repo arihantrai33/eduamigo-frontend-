@@ -4,13 +4,16 @@ import "./index.css"
 import App from "./App.jsx"
 import { ThemeProvider } from "./context/ThemeContext.jsx"
 import { installSessionGuard } from "./utils/session"
+import ErrorBoundary from "./components/ErrorBoundary.jsx"
 
 installSessionGuard()
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ThemeProvider>
-      <App />
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
     </ThemeProvider>
   </StrictMode>
 )

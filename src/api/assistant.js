@@ -24,4 +24,20 @@ export const getAssistantMetrics = async (days = 30) =>
 
 export const getAssistantEvaluation = async () => data(await axios.get(`${API}/assistant/evaluation`, authHeader()));
 
+// School documents EduAmigo Ask answers from (admin)
+export const getKnowledge = async () => (await axios.get(`${API}/assistant/knowledge`, authHeader())).data;
+export const addKnowledge = async (fields) => {
+  // A PDF goes up as a form; pasted text as JSON.
+  if (fields.file) {
+    const form = new FormData();
+    form.append('file', fields.file);
+    ['title', 'category'].forEach((k) => form.append(k, fields[k]));
+    form.append('audience', JSON.stringify(fields.audience || []));
+    return data(await axios.post(`${API}/assistant/knowledge`, form, authHeader()));
+  }
+  return data(await axios.post(`${API}/assistant/knowledge`, { title: fields.title, category: fields.category, audience: fields.audience, text: fields.text }, authHeader()));
+};
+export const updateKnowledge = async (id, body) => data(await axios.patch(`${API}/assistant/knowledge/${id}`, body, authHeader()));
+export const deleteKnowledge = async (id) => (await axios.delete(`${API}/assistant/knowledge/${id}`, authHeader())).data;
+
 export const errorText = (err) => err?.response?.data?.message || 'Something went wrong. Please try again.';
