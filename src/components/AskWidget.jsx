@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
-  MessageSquareText, SendHorizontal, X, ThumbsUp, ThumbsDown, FileText, ArrowUpRight, LifeBuoy, Loader2, Inbox, CheckCircle2, Route,
+  MessageSquareText, SendHorizontal, X, ThumbsUp, ThumbsDown, FileText, ArrowUpRight, LifeBuoy, Loader2, Inbox, CheckCircle2, Route, Sparkles,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { hasFeature } from "../utils/features";
@@ -19,6 +19,7 @@ const HIDDEN_ON = ["/student/bus", "/parent/bus", "/student/chat", "/parent/chat
 const METHOD_LABEL = { keywords: "keywords", model: "AI", context: "follow-up", choice: "your choice", rule: "safety rule" };
 const STATUS_LABEL = { open: "Open", in_progress: "In progress", resolved: "Resolved" };
 
+const greeting = () => { const h = new Date().getHours(); return h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening"; };
 const convKey = (user) => `eduamigo_ask_conv_${user?._id || user?.id || ""}`;
 
 // Answer text: "- " lines become a list, other lines paragraphs.
@@ -36,18 +37,71 @@ function AnswerText({ text }) {
     : <p key={i} style={s.p}>{b.text}</p>));
 }
 
-function Reply({ r, onOption, onLink, disabled }) {
-  const pct = Math.round((r.confidence || 0) * 100);
+const reducedMotion = () => typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
+// Reveals text word by word, like a person typing. Long answers speed up so none takes more than about 3.5 seconds.
+// Clicking the answer shows all of it. onTick lets the chat keep scrolling to the newest line.
+function useTypewriter(text, active, onDone, onTick) {
+  const words = useMemo(() => String(text || "").match(/\s*\S+\s*/g) || [], [text]);
+  const [count, setCount] = useState(0);
+  const instant = !active || reducedMotion();
+  const doneRef = useRef(false);
+  useEffect(() => {
+    if (instant) return undefined;
+    const step = Math.max(1, Math.ceil((words.length * 38) / 3500));
+    const timer = setInterval(() => {
+      setCount((c) => {
+        const n = Math.min(words.length, c + step);
+        if (n >= words.length) clearInterval(timer);
+        return n;
+      });
+      onTick?.();
+    }, 38);
+    return () => clearInterval(timer);
+  }, [instant, words, onTick]);
+  const visible = instant ? words.length : count;
+  const finished = visible >= words.length;
+  useEffect(() => {
+    if (active && finished && !doneRef.current) { doneRef.current = true; onDone?.(); }
+  }, [active, finished, onDone]);
+  return { shown: words.slice(0, visible).join(""), finished, skip: () => setCount(words.length) };
+}
+
+function Avatar({ size = 28 }) {
   return (
-    <div style={{ ...s.card, ...(r.action === "handoff" ? s.cardHandoff : {}) }}>
-      {r.label && (
+    <div style={{ ...s.avatar, width: size, height: size }} aria-hidden>
+      <Sparkles size={Math.round(size * 0.55)} strokeWidth={2.2} />
+    </div>
+  );
+}
+
+function TypingIndicator() {
+  return (
+    <div style={s.botRow} role="status" aria-label="EduAmigo Ask is typing">
+      <Avatar />
+      <div style={{ ...s.card, ...s.typingBubble }}>
+        {[0, 1, 2].map((i) => <span key={i} className="ask-dot" style={{ animationDelay: `${i * 0.16}s` }} />)}
+      </div>
+    </div>
+  );
+}
+
+function Reply({ r, onOption, onLink, disabled, animate, onDone, onTick, showRouting }) {
+  const pct = Math.round((r.confidence || 0) * 100);
+  const { shown, finished, skip } = useTypewriter(r.text, animate, onDone, onTick);
+  return (
+    <div style={s.botRow}>
+    <Avatar />
+    <div style={{ ...s.card, ...(r.action === "handoff" ? s.cardHandoff : {}) }} onClick={animate && !finished ? skip : undefined}>
+      {showRouting && r.label && (
         <div style={s.route}>
           <Route size={12} aria-hidden />
           <span>{r.label}</span>
           {r.action !== "handoff" && <span style={s.routeMeta}>· {pct}% · {METHOD_LABEL[r.method] || r.method}</span>}
         </div>
       )}
-      <AnswerText text={r.text} />
+      <AnswerText text={shown} />
+      <div style={finished ? s.extras : s.extrasHidden}>
       {r.ticket && (
         <div style={s.ticket}><LifeBuoy size={14} aria-hidden /> Ticket {r.ticket.number} · {r.ticket.sentTo?.length ? r.ticket.sentTo.map((p) => p.name).join(", ") : r.ticket.team}</div>
       )}
@@ -69,6 +123,8 @@ function Reply({ r, onOption, onLink, disabled }) {
           ))}
         </div>
       )}
+      </div>
+    </div>
     </div>
   );
 }
@@ -172,6 +228,8 @@ export default function AskWidget() {
   const onPortal = PORTALS.some((p) => pathname.startsWith(p)) && !HIDDEN_ON.some((p) => pathname.startsWith(p));
   const enabled = !!user && onPortal && !user.mustChangePassword && hasFeature(user, "ai_assistant") && user.role !== "driver";
   const isAdminArea = pathname.startsWith("/admin");
+  // Topic and confidence are for the people who run the assistant, not for parents and students.
+  const staffView = !!user && can(user, "assistant.insights");
 
   useEffect(() => {
     const onResize = () => setWide(window.innerWidth >= 900);
@@ -201,12 +259,19 @@ export default function AskWidget() {
       const out = await askAssistant({ message, conversationId: convRef.current, choice });
       convRef.current = out.conversationId;
       try { sessionStorage.setItem(convKey(user), out.conversationId); } catch { /* private mode */ }
-      setTurns((t) => [...t, { id: `${Date.now()}a`, queryId: out.queryId, replies: out.replies }]);
+      setTurns((t) => [...t, { id: `${Date.now()}a`, queryId: out.queryId, replies: out.replies, revealed: 0, animate: true }]);
     } catch (err) {
       setTurns((t) => [...t, { id: `${Date.now()}e`, error: errorText(err) }]);
     }
     setBusy(false);
   }, [busy, user]);
+
+  const scrollEnd = useCallback(() => endRef.current?.scrollIntoView({ block: "end" }), []);
+  const revealNext = useCallback((id, total) => setTurns((t) => t.map((x) => {
+    if (x.id !== id) return x;
+    const revealed = x.revealed + 1;
+    return { ...x, revealed, animate: revealed < total };
+  })), []);
 
   const rate = async (turn, helpful) => {
     setTurns((t) => t.map((x) => (x.id === turn.id ? { ...x, rated: true } : x)));
@@ -252,11 +317,11 @@ export default function AskWidget() {
         <div role="dialog" aria-label="EduAmigo Ask" style={panelStyle}>
           <div style={{ ...s.header, background: look.header, color: look.text, borderBottom: look.border }}>
             <div style={{ ...s.badge, background: theme.isLight ? "#fff" : "rgba(255,255,255,0.18)", color: theme.isLight ? theme.dark : "#fff", border: look.border }}>
-              <MessageSquareText size={18} strokeWidth={2} aria-hidden />
+              <Sparkles size={18} strokeWidth={2} aria-hidden />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={s.title}>EduAmigo Ask</div>
-              <div style={{ ...s.subtitle, color: look.muted }}>Fees, attendance, exams, bus and more</div>
+              <div style={{ ...s.subtitle, color: look.muted }}>Your school assistant</div>
             </div>
             <button type="button" aria-label="Close" style={{ ...s.iconBtn, background: look.glass, color: look.text, border: look.border }} onClick={() => setOpen(false)}><X size={18} /></button>
           </div>
@@ -272,11 +337,15 @@ export default function AskWidget() {
               <div style={s.scroll}>
                 {turns.length === 0 && (
                   <div style={s.welcome}>
-                    <div style={s.welcomeTitle}>How can I help{user?.name ? `, ${String(user.name).split(" ")[0]}` : ""}?</div>
-                    <div style={s.welcomeText}>Ask in English, Hindi or Hinglish. You can ask about more than one thing at once, for example "fees kitni baki hai aur kal exam kab hai?"</div>
-                    <div style={s.options}>
+                    <Avatar size={44} />
+                    <div style={s.welcomeTitle}>{greeting()}{user?.name ? `, ${String(user.name).split(" ")[0]}` : ""}</div>
+                    <div style={s.welcomeText}>I am here to help with your school questions: fees, attendance, exams, timetable, the bus and more. Write in English, Hindi or Hinglish, whichever is easiest. If something needs a person at school, I will pass it on and tell you who has it.</div>
+                    {(intro?.suggestions || []).length > 0 && <div style={s.tryLabel}>Popular questions</div>}
+                    <div style={s.suggestList}>
                       {(intro?.suggestions || []).map((o) => (
-                        <button key={o.label} type="button" style={s.option} onClick={() => send(o.value)}>{o.label}</button>
+                        <button key={o.label} type="button" style={s.suggestion} onClick={() => send(o.value)}>
+                          <span>{o.label}</span><ArrowUpRight size={14} aria-hidden />
+                        </button>
                       ))}
                     </div>
                   </div>
@@ -288,20 +357,24 @@ export default function AskWidget() {
                     <div key={t.id} style={s.error}>{t.error}</div>
                   ) : (
                     <div key={t.id}>
-                      {t.replies.map((r, i) => (
-                        <Reply key={i} r={r} disabled={busy} onLink={goTo} onOption={(o) => send(o.label, o.type === "ask" ? { type: "ask", value: o.value } : { type: o.type, value: o.value })} />
+                      {t.replies.slice(0, t.animate ? t.revealed + 1 : t.replies.length).map((r, i) => (
+                        <Reply
+                          key={i} r={r} disabled={busy} onLink={goTo} showRouting={staffView}
+                          animate={!!t.animate && i === t.revealed} onTick={scrollEnd} onDone={() => revealNext(t.id, t.replies.length)}
+                          onOption={(o) => send(o.label, o.type === "ask" ? { type: "ask", value: o.value } : { type: o.type, value: o.value })}
+                        />
                       ))}
-                      <Feedback turn={t} onRate={rate} />
+                      {!t.animate && <Feedback turn={t} onRate={rate} />}
                     </div>
                   )
                 ))}
-                {busy && <div style={s.typing}><Loader2 size={16} className="ask-spin" aria-hidden /> Looking it up</div>}
+                {busy && <TypingIndicator />}
                 <div ref={endRef} />
               </div>
               <form style={s.inputBar} onSubmit={(e) => { e.preventDefault(); send(input); }}>
                 <input
                   ref={inputRef} value={input} maxLength={500} onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask about fees, attendance, exams, bus..." aria-label="Your question" style={s.input}
+                  placeholder="Type your question" aria-label="Your question" style={s.input}
                 />
                 <button type="submit" aria-label="Send" disabled={busy || !input.trim()} style={{ ...s.send, opacity: busy || !input.trim() ? 0.5 : 1 }}>
                   <SendHorizontal size={18} />
@@ -309,7 +382,7 @@ export default function AskWidget() {
               </form>
             </>
           )}
-          <style>{".ask-spin{animation:askspin 1s linear infinite}@keyframes askspin{to{transform:rotate(360deg)}}"}</style>
+          <style>{".ask-spin{animation:askspin 1s linear infinite}@keyframes askspin{to{transform:rotate(360deg)}}.ask-dot{width:7px;height:7px;border-radius:50%;background:var(--subtext);display:inline-block;margin:0 2px;opacity:.45;animation:askdot 1.1s ease-in-out infinite}@keyframes askdot{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-4px);opacity:1}}@keyframes askin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}@media (prefers-reduced-motion:reduce){.ask-dot{animation:none}}"}</style>
         </div>
       )}
     </>
@@ -346,11 +419,19 @@ const s = {
   newChat: { marginLeft: "auto", background: "none", border: "none", color: "var(--brand-dark)", fontSize: 12, fontWeight: 700, cursor: "pointer" },
   scroll: { flex: 1, overflowY: "auto", padding: "14px 12px 8px" },
   welcome: { background: "var(--card)", border: "1px solid var(--border)", borderRadius: 16, padding: 16 },
-  welcomeTitle: { fontSize: 16, fontWeight: 800, color: "var(--text)" },
+  welcomeTitle: { marginTop: 10, fontSize: 18, fontWeight: 800, color: "var(--text)" },
   welcomeText: { fontSize: 13, color: "var(--subtext)", margin: "6px 0 12px", lineHeight: 1.5 },
   userRow: { display: "flex", justifyContent: "flex-end", margin: "10px 0" },
   userBubble: { maxWidth: "82%", background: "var(--brand-gradient)", color: "#fff", padding: "9px 13px", borderRadius: "16px 16px 4px 16px", fontSize: 14, lineHeight: 1.45, textShadow: "0 1px 1px rgba(0,0,0,0.15)", wordBreak: "break-word" },
-  card: { background: "var(--card)", border: "1px solid var(--border)", borderRadius: "16px 16px 16px 4px", padding: "11px 13px", margin: "8px 0", maxWidth: "92%", fontSize: 14, color: "var(--text)", lineHeight: 1.5 },
+  botRow: { display: "flex", alignItems: "flex-start", gap: 8, margin: "8px 0" },
+  avatar: { borderRadius: "50%", background: "var(--brand-gradient)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 },
+  typingBubble: { margin: 0, padding: "12px 14px", display: "flex", alignItems: "center" },
+  extras: { animation: "askin .25s ease-out" },
+  extrasHidden: { display: "none" },
+  tryLabel: { fontSize: 11, fontWeight: 700, letterSpacing: 0.4, textTransform: "uppercase", color: "var(--subtext)", margin: "4px 0 8px" },
+  suggestList: { display: "flex", flexDirection: "column", gap: 7 },
+  suggestion: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, textAlign: "left", background: "var(--bg)", border: "1px solid var(--border)", color: "var(--text)", borderRadius: 12, padding: "10px 12px", fontSize: 13.5, fontWeight: 600, cursor: "pointer" },
+  card: { background: "var(--card)", border: "1px solid var(--border)", borderRadius: "16px 16px 16px 4px", padding: "11px 13px", margin: 0, maxWidth: "calc(100% - 36px)", fontSize: 14, color: "var(--text)", lineHeight: 1.5 },
   cardHandoff: { borderColor: "#f3d9a4", background: "linear-gradient(0deg, rgba(255,248,235,0.6), rgba(255,248,235,0.6)), var(--card)" },
   route: { display: "flex", alignItems: "center", gap: 5, fontSize: 11, fontWeight: 700, color: "var(--brand-dark)", marginBottom: 6 },
   routeMeta: { fontWeight: 600, color: "var(--subtext)" },
