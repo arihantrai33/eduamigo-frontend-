@@ -90,6 +90,7 @@ function TypingIndicator() {
 const OUTCOME = {
   created: ["Ticket raised", LifeBuoy], followed_up: ["Added to your existing ticket", MessagesSquare], repeat: ["Already open", Clock3],
   escalated: ["Escalated to urgent", ArrowUpRight], reopened: ["Reopened", RotateCcw], status: ["Request status", Inbox],
+  uncertain: ["Not confirmed, please check Requests", AlertTriangle],
 };
 
 // What actually happened to the person's request, from the verified result of the action (never from what was attempted).
