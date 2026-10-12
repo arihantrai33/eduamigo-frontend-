@@ -8,6 +8,10 @@ import { isNative } from "./platform";
 // from memory, writing every change through to the secure store. Other localStorage keys are untouched.
 // In a browser it does nothing.
 const SECURE_KEYS = ["token", "eduamigo_user"];
+// iOS keeps Keychain items after the app is deleted, so a reinstalled app would sign the previous user back in
+// (for example on a phone handed on to someone else). Plain storage is deleted with the app: when this marker is
+// missing the app is a fresh install, and a session left in the secure store by an earlier install is removed.
+const INSTALL_MARKER = "eduamigo_installed";
 
 export async function installSecureSession() {
   if (!isNative()) return;
@@ -20,6 +24,13 @@ export async function installSecureSession() {
     clear: Storage.prototype.clear,
   };
   const memory = new Map();
+
+  if (original.getItem.call(ls, INSTALL_MARKER) == null) {
+    for (const key of SECURE_KEYS) {
+      try { await SecureStorage.remove(key); } catch { /* nothing stored */ }
+    }
+    original.setItem.call(ls, INSTALL_MARKER, "1");
+  }
 
   for (const key of SECURE_KEYS) {
     let value;
