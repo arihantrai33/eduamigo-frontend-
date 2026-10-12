@@ -24,3 +24,13 @@ export async function signIn(page, role, { school = 'GVPS', password = PASSWORD,
   await page.getByRole('button', { name: `Log in as ${u.tab}` }).click();
   if (expectSuccess) await page.waitForURL((url) => !/\/(login|select-school)/.test(url.pathname));
 }
+
+export const API = 'http://localhost:8000/api';
+
+// A signed-in API session, for checking what the database holds after a step done in the UI.
+export async function apiSession(request, role, school = 'GVPS') {
+  const res = await request.post(`${API}/users/login`, { data: { schoolCode: school, identifier: USERS[role].id, password: PASSWORD } });
+  const { token } = await res.json();
+  const headers = { Authorization: `Bearer ${token}` };
+  return { get: async (path) => (await request.get(`${API}${path}`, { headers })).json() };
+}

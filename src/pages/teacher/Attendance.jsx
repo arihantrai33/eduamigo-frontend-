@@ -147,7 +147,7 @@ export default function TeacherAttendance() {
 
       {/* Header */}
       <div style={{ background: "var(--brand-gradient)", padding: "48px 18px 20px", display: "flex", alignItems: "center", gap: 12 }}>
-        <button onClick={() => navigate('/teacher/home')} style={{ background: "rgba(255,255,255,0.15)", border: "none", borderRadius: 10, width: 36, height: 36, fontSize: 18, cursor: "pointer", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>←</button>
+        <button type="button" aria-label="Back" onClick={() => navigate('/teacher/home')} style={{ background: "rgba(255,255,255,0.15)", border: "none", borderRadius: 10, width: 36, height: 36, fontSize: 18, cursor: "pointer", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>←</button>
         <div>
           <div style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", fontWeight: 700, letterSpacing: 1 }}>TEACHER PORTAL</div>
           <div style={{ fontSize: 20, fontWeight: 800, color: "#fff", fontFamily: "inherit" }}>Attendance</div>
@@ -193,8 +193,8 @@ export default function TeacherAttendance() {
           )}
 
           {/* Date */}
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#1C2033", marginBottom: 8 }}>Date</div>
-          <input type="date" value={filters.date} onChange={e => setFilters(f => ({ ...f, date: e.target.value }))}
+          <label htmlFor="attendance-date" style={{ display: "block", fontSize: 13, fontWeight: 700, color: "#1C2033", marginBottom: 8 }}>Date</label>
+          <input id="attendance-date" type="date" value={filters.date} onChange={e => setFilters(f => ({ ...f, date: e.target.value }))}
             style={{ padding: "9px 12px", borderRadius: 10, border: "1px solid #E5E7EB", fontSize: 13, outline: "none", background: "#F9FAFB", width: "100%", boxSizing: "border-box" }} />
         </div>
 
@@ -266,7 +266,8 @@ export default function TeacherAttendance() {
                   {["Present", "Absent", "Late", "Holiday"].map(st => {
                     const active = attendance[s._id]?.status === st
                     return (
-                      <button key={st} onClick={() => setAttendance(a => ({ ...a, [s._id]: { ...a[s._id], status: st } }))}
+                      <button key={st} type="button" aria-label={`${st}: ${s.name}`} aria-pressed={active}
+                        onClick={() => setAttendance(a => ({ ...a, [s._id]: { ...a[s._id], status: st } }))}
                         style={{
                           flex: 1, padding: "6px 0", borderRadius: 10, fontSize: 11, fontWeight: 700, cursor: "pointer",
                           background: active ? STATUS_COLORS[st].bg : "#F4F6FB",
@@ -278,7 +279,7 @@ export default function TeacherAttendance() {
                 </div>
 
                 {/* Remarks */}
-                <input type="text" placeholder="Add remark (optional)..."
+                <input type="text" placeholder="Add remark (optional)..." aria-label={`Remark for ${s.name}`}
                   value={attendance[s._id]?.remarks || ""}
                   onChange={e => setAttendance(a => ({ ...a, [s._id]: { ...a[s._id], remarks: e.target.value } }))}
                   style={{ width: "100%", padding: "8px 12px", borderRadius: 10, border: "1px solid #E5E7EB", fontSize: 12, outline: "none", background: "#F9FAFB", boxSizing: "border-box" }}

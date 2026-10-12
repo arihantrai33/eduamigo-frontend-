@@ -259,8 +259,8 @@ export default function FeeCollection() {
               <div style={{ fontSize:12, color:"#64748B", marginTop:2 }}>{selectedFee.feeType} — Due: {fmtDate(selectedFee.dueDate)}</div>
             </div>
             <div>
-              <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>AMOUNT (₹)</div>
-              <input type="number" value={payAmount} onChange={e => setPayAmount(e.target.value)}
+              <label htmlFor="collect-amount" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>AMOUNT (₹)</label>
+              <input id="collect-amount" type="number" inputMode="decimal" value={payAmount} onChange={e => setPayAmount(e.target.value)}
                 style={{ width:"100%", padding:"12px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:15, fontWeight:700, outline:"none", boxSizing:"border-box" }}
                 onFocus={e => e.target.style.borderColor="#10B981"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
             </div>
