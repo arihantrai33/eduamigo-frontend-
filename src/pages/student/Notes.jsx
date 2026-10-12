@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import axios from 'axios';
 import Glyph from "../../components/Glyph";
+import BottomNav from "../../layout/BottomNav";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -223,21 +224,7 @@ export default function Notes() {
           </>
         )}
       </div>
-      {/* Bottom Nav */}
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: dm ? '#1e293b' : '#fff', borderTop: `1px solid ${dm ? '#334155' : '#F0F0F0'}`, display: 'flex', justifyContent: 'space-around', padding: '8px 0 12px', zIndex: 100 }}>
-        {[
-          { icon: <Glyph e="🏠" />, label: 'HOME',  path: '/student/home' },
-          { icon: <Glyph e="🚌" />, label: 'BUS',   path: '/student/bus' },
-          { icon: <Glyph e="📚" />, label: 'LEARN', path: '/student/notes', active: true },
-          { icon: <Glyph e="💬" />, label: 'CHAT',  path: '/student/chat' },
-          { icon: <Glyph e="👤" />, label: 'ME',    path: '/student/profile' },
-        ].map(item => (
-          <button key={item.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, background: 'none', border: 'none', cursor: 'pointer', padding: '4px 12px' }} onClick={() => navigate(item.path)}>
-            <span style={{ fontSize: 22 }}>{item.icon}</span>
-            <span style={{ fontSize: 10, fontWeight: 600, color: item.active ? 'var(--brand)' : (dm ? '#64748b' : '#999') }}>{item.label}</span>
-          </button>
-        ))}
-      </div>
+      <BottomNav role="student" />
       {/* Upload Modal */}
       {showModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', zIndex: 200 }}>

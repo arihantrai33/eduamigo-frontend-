@@ -225,7 +225,7 @@ function AppLayout() {
   return (
     <div className={isDocument ? 'ea-solo ea-solo--document' : 'ea-solo'}>
       <div className="ea-solo__stage">
-        <AppRoutes />
+        <div className="ea-scroll"><AppRoutes /></div>
       </div>
     </div>
   )

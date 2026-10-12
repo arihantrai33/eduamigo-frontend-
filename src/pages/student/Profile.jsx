@@ -8,6 +8,7 @@ import SupportContent from "../../components/SupportContent";
 import { signOutEverywhere } from "../../utils/account";
 
 import Glyph from "../../components/Glyph";
+import BottomNav from "../../layout/BottomNav";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -274,6 +275,7 @@ export default function Profile() {
           <div style={{ color: "#ef4444", fontSize: "18px" }}>›</div>
         </div>
       </div>
+      <BottomNav role="student" />
     </div>
   );
 }

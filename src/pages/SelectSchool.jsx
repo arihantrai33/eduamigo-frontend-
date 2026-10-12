@@ -84,9 +84,9 @@ export default function SelectSchool() {
       <div style={s.card}>
         <h2 style={s.heading}>Which school are you from?</h2>
         <p style={s.sub}>Enter the school code given by your school, or search by the school's name.</p>
-        <label style={s.label}>School code or name</label>
+        <label htmlFor="school-query" style={s.label}>School code or name</label>
         <input
-          autoFocus value={query} onChange={(e) => { setQuery(e.target.value); setError(""); }}
+          id="school-query" autoFocus value={query} onChange={(e) => { setQuery(e.target.value); setError(""); }}
           onKeyDown={(e) => e.key === "Enter" && lookupCode()}
           placeholder="School code or name" style={s.input}
           autoCapitalize="characters" autoComplete="off"

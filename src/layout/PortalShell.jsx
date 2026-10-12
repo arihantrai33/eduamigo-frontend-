@@ -68,7 +68,8 @@ export default function PortalShell({ role, children }) {
       </aside>
 
       <main className="ea-main">
-        <div className="ea-stage">{children}</div>
+        {/* .ea-stage anchors fixed bars; .ea-scroll scrolls the page (pages taller than the screen were cut off before). */}
+        <div className="ea-stage"><div className="ea-scroll">{children}</div></div>
       </main>
     </div>
   );

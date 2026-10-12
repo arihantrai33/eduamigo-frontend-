@@ -60,6 +60,18 @@ input, button, select, textarea {
   background: var(--app-bg, #F4F6FB);
 }
 
+/* The page scrolls here. Fixed bars inside it stay put, because their containing block is the transformed stage. */
+.ea-scroll {
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+/* Room for the tab bar so the last item of a page is never hidden under it. */
+@media (max-width: 1023px) {
+  .ea-scroll:has(.ea-bottom-nav) { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
+}
+
 .ea-bottom-nav {
   position: fixed;
   left: 0;

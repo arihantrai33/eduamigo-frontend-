@@ -7,6 +7,7 @@ import { getPaymentConfig, balanceOf } from "../../utils/payments";
 import { PayFeeButton, ReceiptLinks, PaymentInfo } from "../../components/FeePayment";
 
 import Glyph from "../../components/Glyph";
+import BottomNav from "../../layout/BottomNav";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -294,6 +295,7 @@ export default function ParentFee() {
         <PaymentInfo enabled={onlineEnabled} />
 
       </div>
+      <BottomNav role="parent" />
     </div>
   );
 }

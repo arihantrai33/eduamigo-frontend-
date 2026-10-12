@@ -148,21 +148,21 @@ export default function Login() {
           })}
         </div>
 
-        <label style={s.label}>{current.idLabel}</label>
+        <label htmlFor="login-id" style={s.label}>{current.idLabel}</label>
         {inputBox("id", current.idIcon, (
-          <input type={current.type} inputMode={current.mode} value={identifier} onChange={(e) => setIdentifier(e.target.value)}
+          <input id="login-id" type={current.type} inputMode={current.mode} value={identifier} onChange={(e) => setIdentifier(e.target.value)}
             onFocus={() => setFocused("id")} onBlur={() => setFocused("")}
             placeholder={current.placeholder} style={s.input} autoComplete="username" />
         ))}
 
-        <label style={{ ...s.label, marginTop: 14 }}>Password</label>
+        <label htmlFor="login-password" style={{ ...s.label, marginTop: 14 }}>Password</label>
         {inputBox("pw", Lock, (
-          <input type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)}
+          <input id="login-password" type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)}
             onFocus={() => setFocused("pw")} onBlur={() => setFocused("")}
             onKeyDown={(e) => e.key === "Enter" && handleLogin()} placeholder="Enter your password"
             style={s.input} autoComplete="current-password" />
         ), (
-          <button onClick={() => setShowPassword((p) => !p)} tabIndex={-1} style={{ ...s.showBtn, color: theme.primary }}>
+          <button type="button" onClick={() => setShowPassword((p) => !p)} tabIndex={-1} aria-label={showPassword ? "Hide password" : "Show password"} style={{ ...s.showBtn, color: theme.primary }}>
             {showPassword ? "Hide" : "Show"}
           </button>
         ))}
