@@ -41,18 +41,28 @@ export function PayFeeButton({ fee, enabled, onPaid }) {
   );
 }
 
-// Links to the receipt of every payment made against a fee.
+// Links to the receipts of the payments made against a fee, newest first. A fee paid in many instalments shows the
+// latest two and a "+N more" button, so the row stays readable on a phone.
+const SHOWN_RECEIPTS = 2;
 export function ReceiptLinks({ fee }) {
   const navigate = useNavigate();
+  const [all, setAll] = useState(false);
   if (!fee.payments?.length) return null;
+  const payments = [...fee.payments].reverse();
+  const shown = all ? payments : payments.slice(0, SHOWN_RECEIPTS);
+  const hidden = payments.length - shown.length;
+  const chip = { border: "1px solid var(--brand-soft)", background: "var(--brand-soft)", color: "var(--brand-dark)", borderRadius: 8, padding: "3px 8px", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" };
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
-      {fee.payments.map((p) => (
-        <button key={p.receiptNo} onClick={() => navigate(`/receipt/${fee._id}/${p.receiptNo}`)}
-          style={{ border: "1px solid var(--brand-soft)", background: "var(--brand-soft)", color: "var(--brand-dark)", borderRadius: 8, padding: "3px 8px", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+      {shown.map((p) => (
+        <button key={p.receiptNo} type="button" onClick={() => navigate(`/receipt/${fee._id}/${p.receiptNo}`)} style={chip}
+          aria-label={`Receipt ${p.receiptNo} for ${rupees(p.amount)}`}>
           Receipt {rupees(p.amount)}
         </button>
       ))}
+      {hidden > 0 && (
+        <button type="button" onClick={() => setAll(true)} style={{ ...chip, background: "transparent" }}>+{hidden} more</button>
+      )}
     </div>
   );
 }

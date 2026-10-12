@@ -220,8 +220,9 @@ export default function ParentFee() {
                           : `Due: ${f.dueDate ? new Date(f.dueDate).toLocaleDateString("en-IN") : "—"}`,
                       ].filter(Boolean).join(" · ")}
                     </div>
+                    <ReceiptLinks fee={f} />
                   </div>
-                  <div style={{ textAlign: "right" }}>
+                  <div style={{ textAlign: "right", flexShrink: 0 }}>
                     <div style={{ fontWeight: 800, fontSize: 15, color: cfg.color }}>
                       ₹{(f.amount ?? 0).toLocaleString("en-IN")}
                     </div>
@@ -236,7 +237,6 @@ export default function ParentFee() {
                       {f.status?.toUpperCase()}
                     </div>
                     <div><PayFeeButton fee={f} enabled={onlineEnabled} onPaid={fetchData} /></div>
-                    <ReceiptLinks fee={f} />
                   </div>
                 </div>
               );

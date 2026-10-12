@@ -124,7 +124,7 @@ export default function StudentFee() {
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                       <div>
                         <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text)" }}>{f.feeType}</div>
-                        <div style={{ fontSize: 12, color: "var(--subtext)", marginTop: 3 }}>{f.month} {f.year}</div>
+                        {f.academicYear && <div style={{ fontSize: 12, color: "var(--subtext)", marginTop: 3 }}>{f.academicYear}</div>}
                         <div style={{ fontSize: 12, color: "#ef4444", marginTop: 2 }}>Due: {formatDate(f.dueDate)}</div>
                       </div>
                       <div style={{ textAlign: "right" }}>
@@ -161,7 +161,7 @@ export default function StudentFee() {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                     <div>
                       <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text)" }}>{f.feeType}</div>
-                      <div style={{ fontSize: 12, color: "var(--subtext)", marginTop: 3 }}>{f.month} {f.year}</div>
+                      {f.academicYear && <div style={{ fontSize: 12, color: "var(--subtext)", marginTop: 3 }}>{f.academicYear}</div>}
                       {f.paidDate && <div style={{ fontSize: 12, color: "#22c55e", marginTop: 2 }}>Last paid on {formatDate(f.paidDate)}</div>}
                       <ReceiptLinks fee={f} />
                     </div>
