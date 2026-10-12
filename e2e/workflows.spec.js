@@ -102,3 +102,48 @@ test('a parent asks for leave, the office approves it, and the parent sees the d
   const card = page.locator('div').filter({ hasText: reason }).filter({ hasText: 'Approved' }).last();
   await expect(card).toBeVisible();
 });
+
+test('the office sends a notice to parents: parents see it, teachers do not', async ({ page, request }) => {
+  const title = `PTM on Saturday (e2e ${Date.now()})`;
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await signIn(page, 'admin');
+  await page.goto('/admin/communications');
+  await page.getByRole('button', { name: /Send Notification/ }).first().click();
+  const dialog = page.getByRole('dialog', { name: 'Send Notification' });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByLabel('TITLE')).toBeFocused(); // focus moves into the dialog
+  await dialog.getByLabel('TITLE').fill(title);
+  await dialog.getByLabel('MESSAGE').fill('Parent-teacher meeting from 10 am in the school hall.');
+  await dialog.getByRole('button', { name: 'Parents', exact: true }).click();
+  await expect(dialog.getByRole('button', { name: 'Parents', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await dialog.getByRole('button', { name: 'Send Now' }).click();
+  await expect(dialog).toBeHidden();
+
+  const parentApi = await apiSession(request, 'parent');
+  const teacherApi = await apiSession(request, 'teacher');
+  const has = async (api) => ((await api.get('/notifications/my')).data || []).some((n) => n.title === title);
+  await expect.poll(() => has(parentApi)).toBe(true);
+  expect(await has(teacherApi)).toBe(false);
+
+  await page.goto('/login');
+  await page.evaluate(() => { localStorage.removeItem('eduamigo_user'); localStorage.removeItem('token'); });
+  await signIn(page, 'parent');
+  await page.goto('/parent/notifications');
+  await expect(page.getByText(title)).toBeVisible();
+});
+
+test('dialogs: Escape closes them, focus returns to the button that opened them, and they fit a phone', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await signIn(page, 'admin');
+  await page.goto('/admin/communications');
+  const opener = page.getByRole('button', { name: /Send Notification/ }).first();
+  await opener.click();
+  const dialog = page.getByRole('dialog', { name: 'Send Notification' });
+  await expect(dialog).toBeVisible();
+  const box = await dialog.boundingBox();
+  expect(box.x).toBeGreaterThanOrEqual(0);
+  expect(box.x + box.width).toBeLessThanOrEqual(375);
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+  await expect(opener).toBeFocused();
+});

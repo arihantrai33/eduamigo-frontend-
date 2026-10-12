@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, errorMessage, showCredentials, confirmAction } from "../../utils/toast";
+import Modal from "../../components/Dialog";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -33,20 +34,6 @@ const fmtDate = (d, time = false) => (d ? new Date(d).toLocaleString("en-IN", ti
 function Badge({ status }) {
   const s = STATUS_STYLE[status] || STATUS_STYLE.Withdrawn;
   return <span style={{ display: "inline-block", padding: "3px 10px", borderRadius: 20, fontSize: 11, fontWeight: 700, background: s.bg, color: s.color, border: `1px solid ${s.border}`, whiteSpace: "nowrap" }}>{status}</span>;
-}
-
-function Modal({ title, onClose, children, width = 560 }) {
-  return (
-    <div role="dialog" aria-label={title} style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,.45)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }} onClick={onClose}>
-      <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 16, width: "100%", maxWidth: width, maxHeight: "90vh", overflowY: "auto", boxShadow: "0 20px 50px rgba(0,0,0,.2)" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 20px", borderBottom: "1px solid #F1F5F9" }}>
-          <div style={{ fontSize: 16, fontWeight: 800, color: "#0F172A" }}>{title}</div>
-          <button aria-label="Close" onClick={onClose} style={{ border: "none", background: "#F1F5F9", borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 16 }}>×</button>
-        </div>
-        <div style={{ padding: 20 }}>{children}</div>
-      </div>
-    </div>
-  );
 }
 
 function Field({ label, required, children, full }) {

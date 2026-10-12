@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast, confirmAction } from "../../utils/toast";
 
 import Glyph from "../../components/Glyph";
+import Modal from "../../components/Dialog";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -19,21 +20,6 @@ const TARGET_CONFIG = {
   parent:  { bg:"#FDF4FF", color:"#9333EA", label:"Parents" },
   admin:   { bg:"#F1F5F9", color:"#475569", label:"Admin" },
 };
-
-function Modal({ show, onClose, title, children }) {
-  if (!show) return null;
-  return (
-    <div style={{ position:"fixed", inset:0, background:"rgba(15,23,42,0.5)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:1000, backdropFilter:"blur(6px)" }}>
-      <div style={{ background:"white", borderRadius:24, padding:32, width:540, maxHeight:"90vh", overflowY:"auto", boxShadow:"0 32px 80px rgba(0,0,0,0.25)", animation:"slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1)" }}>
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:24 }}>
-          <div style={{ fontSize:18, fontWeight:800, color:"#0F172A" }}>{title}</div>
-          <button onClick={onClose} style={{ width:32, height:32, borderRadius:"50%", border:"none", background:"#F1F5F9", cursor:"pointer", fontSize:16, color:"#64748B" }}>x</button>
-        </div>
-        {children}
-      </div>
-    </div>
-  );
-}
 
 export default function Communications() {
   const [activeTab, setActiveTab] = useState("announcements");
@@ -442,20 +428,20 @@ export default function Communications() {
             This will send a push notification to all selected users
           </div>
           <div>
-            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TITLE</div>
-            <input value={notifForm.title} onChange={e => setNotifForm(p=>({...p,title:e.target.value}))} placeholder="Notification title..."
+            <label htmlFor="notif-title" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TITLE</label>
+            <input id="notif-title" value={notifForm.title} onChange={e => setNotifForm(p=>({...p,title:e.target.value}))} placeholder="Notification title..."
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />
           </div>
           <div>
-            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>MESSAGE</div>
-            <textarea value={notifForm.message} onChange={e => setNotifForm(p=>({...p,message:e.target.value}))} placeholder="Notification message..."
+            <label htmlFor="notif-message" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>MESSAGE</label>
+            <textarea id="notif-message" value={notifForm.message} onChange={e => setNotifForm(p=>({...p,message:e.target.value}))} placeholder="Notification message..."
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", resize:"vertical", minHeight:80 }} />
           </div>
           <div>
             <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TARGET</div>
             <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
               {[["all","Everyone"],["student","Students"],["teacher","Teachers"],["parent","Parents"]].map(([v,l]) => (
-                <button key={v} onClick={() => setNotifForm(p=>({...p,targetRole:v}))}
+                <button key={v} type="button" aria-pressed={notifForm.targetRole===v} onClick={() => setNotifForm(p=>({...p,targetRole:v}))}
                   style={{ padding:"8px 16px", borderRadius:10, border:`2px solid ${notifForm.targetRole===v?"var(--brand)":"#E2E8F0"}`, background: notifForm.targetRole===v?"var(--brand-soft)":"white", color: notifForm.targetRole===v?"var(--brand)":"#64748B", fontWeight:700, fontSize:13, cursor:"pointer" }}>
                   {l}
                 </button>

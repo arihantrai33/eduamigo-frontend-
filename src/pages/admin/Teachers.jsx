@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast, showCredentials } from "../../utils/toast";
 
 import Glyph from "../../components/Glyph";
+import Modal from "../../components/Dialog";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -56,21 +57,6 @@ function StatCard({ label, value, icon, color, border, delay }) {
           <div style={{ fontSize:28, fontWeight:900, color:"#0F172A" }}>{typeof value === "number" ? count : value}</div>
         </div>
         <div style={{ width:42, height:42, borderRadius:12, background:color, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>{icon}</div>
-      </div>
-    </div>
-  );
-}
-
-function Modal({ show, onClose, title, children }) {
-  if (!show) return null;
-  return (
-    <div style={{ position:"fixed", inset:0, background:"rgba(15,23,42,0.5)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:1000, backdropFilter:"blur(6px)", animation:"fadeIn 0.2s ease" }}>
-      <div style={{ background:"white", borderRadius:24, padding:32, width:540, maxHeight:"90vh", overflowY:"auto", boxShadow:"0 32px 80px rgba(0,0,0,0.25)", animation:"slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1)" }}>
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:24 }}>
-          <div style={{ fontSize:18, fontWeight:800, color:"#0F172A" }}>{title}</div>
-          <button onClick={onClose} style={{ width:32, height:32, borderRadius:"50%", border:"none", background:"#F1F5F9", cursor:"pointer", fontSize:16, color:"#64748B" }}>×</button>
-        </div>
-        {children}
       </div>
     </div>
   );

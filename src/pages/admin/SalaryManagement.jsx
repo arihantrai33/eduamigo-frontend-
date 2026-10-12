@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast } from "../../utils/toast";
 
 import Glyph from "../../components/Glyph";
+import Modal from "../../components/Dialog";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -11,21 +12,6 @@ const STATUS_CONFIG = {
   Paid:    { bg:"#F0FDF4", color:"#15803D", dot:"#22C55E", border:"#BBF7D0" },
   Pending: { bg:"#FFFBEB", color:"#D97706", dot:"#F59E0B", border:"#FDE68A" },
 };
-
-function Modal({ show, onClose, title, children }) {
-  if (!show) return null;
-  return (
-    <div style={{ position:"fixed", inset:0, background:"rgba(15,23,42,0.5)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:1000, backdropFilter:"blur(6px)" }}>
-      <div style={{ background:"white", borderRadius:24, padding:32, width:520, maxHeight:"90vh", overflowY:"auto", boxShadow:"0 32px 80px rgba(0,0,0,0.25)", animation:"slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1)" }}>
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:24 }}>
-          <div style={{ fontSize:18, fontWeight:800, color:"#0F172A" }}>{title}</div>
-          <button onClick={onClose} style={{ width:32, height:32, borderRadius:"50%", border:"none", background:"#F1F5F9", cursor:"pointer", fontSize:16, color:"#64748B" }}>x</button>
-        </div>
-        {children}
-      </div>
-    </div>
-  );
-}
 
 export default function SalaryManagement() {
   const [salaries, setSalaries] = useState([]);
