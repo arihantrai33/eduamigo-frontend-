@@ -71,10 +71,10 @@ export default function StudentProfile() {
     </div>
   );
 
-  if (loading) return <div style={{ fontFamily: "Inter, sans-serif" }}>{header}<div style={{ ...card, color: "#999", fontSize: 13 }}>Loading student details...</div></div>;
+  if (loading) return <div style={{ fontFamily: "inherit" }}>{header}<div style={{ ...card, color: "#999", fontSize: 13 }}>Loading student details...</div></div>;
   if (error || !student) {
     return (
-      <div style={{ fontFamily: "Inter, sans-serif" }}>
+      <div style={{ fontFamily: "inherit" }}>
         {header}
         <div style={{ ...card, color: "#B91C1C", fontSize: 13 }}>{error || "Student not found"}</div>
       </div>
@@ -86,7 +86,7 @@ export default function StudentProfile() {
   const feeStatus = feeSummary ? (feeSummary.totalDue <= 0 ? "Paid" : feeSummary.totalPaid > 0 ? "Partial" : "Pending") : null;
 
   return (
-    <div style={{ fontFamily: "Inter, sans-serif" }}>
+    <div style={{ fontFamily: "inherit" }}>
       {header}
 
       <div style={card}>

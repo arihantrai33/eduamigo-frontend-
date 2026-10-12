@@ -115,7 +115,7 @@ export default function YearEnd() {
   const upcoming = sessions.filter((s) => s.name !== current);
 
   return (
-    <div style={{ fontFamily: "Inter, sans-serif", maxWidth: 1050, margin: "0 auto" }}>
+    <div style={{ fontFamily: "inherit", maxWidth: 1050, margin: "0 auto" }}>
       <div style={{ marginBottom: 14 }}>
         <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111827", margin: 0 }}>Year End</h1>
         <p style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4 }}>Move students to the next session, and issue transfer certificates</p>

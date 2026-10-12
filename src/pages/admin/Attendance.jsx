@@ -128,7 +128,7 @@ export default function Attendance() {
   const pct = stats.total ? Math.round((stats.present / stats.total) * 100) : 0;
 
   return (
-    <div style={{ fontFamily: "'Inter',sans-serif" }}>
+    <div style={{ fontFamily: "inherit" }}>
       <style>{`
         @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
         @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }

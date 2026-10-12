@@ -10,7 +10,7 @@ const authHeader = () => ({
 const inputStyle = {
   padding: "8px 10px", borderRadius: 8, border: "0.5px solid #E8E8E5",
   fontSize: 12, color: "#1a1a1a", outline: "none", background: "#F5F5F3",
-  fontFamily: "Inter, sans-serif", width: "100%", boxSizing: "border-box",
+  fontFamily: "inherit", width: "100%", boxSizing: "border-box",
 };
 
 const AddParent = () => {
@@ -98,7 +98,7 @@ const AddParent = () => {
   );
 
   return (
-    <div style={{ fontFamily: "Inter, sans-serif" }}>
+    <div style={{ fontFamily: "inherit" }}>
 
       {/* Toast */}
       {toast.msg && (

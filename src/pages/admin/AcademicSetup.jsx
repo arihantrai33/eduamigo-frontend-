@@ -22,7 +22,7 @@ const ui = {
   title: { fontSize: 14, fontWeight: 700, color: "#0F172A", margin: "0 0 4px" },
   hint: { fontSize: 12, color: "#64748B", margin: "0 0 14px", lineHeight: 1.5 },
   label: { fontSize: 11, color: "#64748B", fontWeight: 600, display: "flex", flexDirection: "column", gap: 4 },
-  input: { padding: "8px 10px", borderRadius: 8, border: "1px solid #E2E8F0", fontSize: 13, color: "#0F172A", outline: "none", background: "#F8FAFC", fontFamily: "Inter, sans-serif", boxSizing: "border-box" },
+  input: { padding: "8px 10px", borderRadius: 8, border: "1px solid #E2E8F0", fontSize: 13, color: "#0F172A", outline: "none", background: "#F8FAFC", fontFamily: "inherit", boxSizing: "border-box" },
   btn: { padding: "8px 14px", borderRadius: 8, border: "none", background: "var(--brand)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer" },
   ghost: { padding: "7px 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", color: "#334155", fontSize: 12, fontWeight: 600, cursor: "pointer" },
   danger: { padding: "7px 12px", borderRadius: 8, border: "1px solid #FECACA", background: "#FEF2F2", color: "#B91C1C", fontSize: 12, fontWeight: 600, cursor: "pointer" },
@@ -374,7 +374,7 @@ export default function AcademicSetup() {
   const jump = (anchor) => document.getElementById(anchor)?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   return (
-    <div style={{ fontFamily: "Inter, sans-serif", maxWidth: 900, margin: "0 auto" }}>
+    <div style={{ fontFamily: "inherit", maxWidth: 900, margin: "0 auto" }}>
       <div style={{ marginBottom: 18 }}>
         <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111827", margin: 0 }}>School Setup</h1>
         <p style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4 }}>Sessions, classes, sections, class teachers and subjects</p>

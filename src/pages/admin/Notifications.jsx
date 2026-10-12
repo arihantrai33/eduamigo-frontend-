@@ -29,7 +29,7 @@ const ROLE_META = {
 const inp = {
   padding: "9px 12px", borderRadius: 8, border: "1px solid #E2E8F0",
   fontSize: 13, color: "#1a1a1a", outline: "none", background: "#F8FAFC",
-  fontFamily: "Inter, sans-serif", width: "100%", boxSizing: "border-box",
+  fontFamily: "inherit", width: "100%", boxSizing: "border-box",
   transition: "border 0.15s",
 };
 
@@ -87,7 +87,7 @@ export default function Notifications() {
   };
 
   return (
-    <div style={{ fontFamily: "Inter, sans-serif", maxWidth: 900 }}>
+    <div style={{ fontFamily: "inherit", maxWidth: 900 }}>
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
         <div>

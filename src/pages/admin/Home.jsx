@@ -69,7 +69,7 @@ const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.get
 function Gate({ user, perm, children }) {
   if (can(user, perm)) return children;
   return (
-    <div style={{ padding: 48, textAlign: "center", fontFamily: "Inter, sans-serif" }}>
+    <div style={{ padding: 48, textAlign: "center", fontFamily: "inherit" }}>
       <div style={{ fontSize: 18, fontWeight: 800, color: "#0F172A" }}>No access</div>
       <div style={{ fontSize: 13, color: "#64748B", marginTop: 6 }}>Your role does not include this section. Ask your school administrator if you need it.</div>
     </div>
@@ -598,7 +598,7 @@ export default function AdminHome() {
   );
 
   return (
-    <div style={{ display: "flex", width: "100vw", minHeight: "100vh", background: "#E8ECF4", fontFamily: "'Inter',sans-serif", position: "fixed", top: 0, left: 0, overflow: "hidden" }}>
+    <div style={{ display: "flex", width: "100vw", minHeight: "100vh", background: "#E8ECF4", fontFamily: "inherit", position: "fixed", top: 0, left: 0, overflow: "hidden" }}>
       {!isMobile && (
         <aside style={{ width: 230, flexShrink: 0, background: sb.bg, borderRight: sb.edge, display: "flex", flexDirection: "column", height: "100vh", overflowY: "auto", boxShadow: "4px 0 24px rgba(0,0,0,0.15)" }}>
           <SidebarContent />

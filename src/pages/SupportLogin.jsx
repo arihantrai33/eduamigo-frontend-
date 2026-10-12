@@ -35,7 +35,7 @@ export default function SupportLogin() {
   }, [token, login, navigate]);
 
   return (
-    <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", fontFamily: "'Inter','Segoe UI',sans-serif", background: "#F4F5F8", padding: 24 }}>
+    <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", fontFamily: "inherit", background: "#F4F5F8", padding: 24 }}>
       <div style={{ background: "#fff", borderRadius: 16, padding: 24, maxWidth: 380, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 8 }}><LifeBuoy aria-hidden size={34} color="#2F5BD3" /></div>
         <h2 style={{ margin: "0 0 8px", fontSize: 18 }}>EduAmigo support</h2>

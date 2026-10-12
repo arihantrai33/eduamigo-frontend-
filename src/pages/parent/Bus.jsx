@@ -630,8 +630,8 @@ export default function ParentBus() {
 }
 
 const styles = {
-  pageShell:      { minHeight:"100dvh", background:"var(--brand-soft)", display:"flex", justifyContent:"center", alignItems:"flex-start", fontFamily:"'SF Pro Display', -apple-system, 'Helvetica Neue', sans-serif" },
-  phoneCard:      { position:"relative", width:"100%", maxWidth:"430px", height:"100dvh", overflow:"hidden", background:"var(--bg)", boxShadow:"0 0 60px rgba(0,0,0,0.18)" },
+  pageShell:      { minHeight:"100dvh", background:"var(--brand-soft)", display:"flex", justifyContent:"center", alignItems:"flex-start", fontFamily: "inherit" },
+  phoneCard:      { position:"relative", width:"100%", height:"100dvh", overflow:"hidden", background:"var(--bg)" },
   mapPlaceholder: { height:"100%", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:"10px", background:"var(--bg)" },
   busEmptyTitle:  { fontSize:"17px", fontWeight:600, color:"#1E293B" },
   busEmptySub:    { fontSize:"13px", color:"#94A3B8" },

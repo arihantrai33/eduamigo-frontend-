@@ -135,7 +135,7 @@ export default function ExamSchedule() {
   );
 
   return (
-    <div style={{ fontFamily:"Inter,sans-serif" }}>
+    <div style={{ fontFamily: "inherit" }}>
       <style>{`
         @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
         @keyframes slideUp { from { opacity:0; transform:translateY(24px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }

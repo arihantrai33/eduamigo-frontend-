@@ -88,7 +88,7 @@ export default function TeacherStudents() {
 }
 
 const s = {
-  screen: { maxWidth: 420, margin: "0 auto", minHeight: "100vh", background: "#F4F6FB", fontFamily: "'Poppins', sans-serif" },
+  screen: { minHeight: "100vh", background: "#F4F6FB", fontFamily: "inherit" },
   header: { background: "var(--brand-gradient)", padding: "20px 16px 18px", display: "flex", alignItems: "center", gap: 12, color: "#fff" },
   back: { width: 36, height: 36, borderRadius: 10, border: "none", background: "rgba(255,255,255,.2)", color: "#fff", fontSize: 18, cursor: "pointer" },
   headerTitle: { fontSize: 18, fontWeight: 800 },

@@ -72,7 +72,7 @@ export default function Results() {
   const toppers  = filtered.filter(r => r.pct >= 90).length;
 
   return (
-    <div style={{ fontFamily:"Inter,sans-serif" }}>
+    <div style={{ fontFamily: "inherit" }}>
       <style>{`
         @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
         @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }

@@ -83,19 +83,19 @@ export default function ParentAttendance() {
   const absentRecords = records.filter((r) => r.status === "Absent" || r.status === "Leave");
 
   if (loading) return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Inter, sans-serif" }}>
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "inherit" }}>
       <div style={{ color: "var(--subtext)", fontSize: 14 }}>Loading attendance...</div>
     </div>
   );
 
   if (error) return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Inter, sans-serif" }}>
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "inherit" }}>
       <div style={{ color: "#ef4444", fontSize: 14 }}>{error}</div>
     </div>
   );
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "Inter, sans-serif", paddingBottom: 30 }}>
+    <div style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "inherit", paddingBottom: 30 }}>
 
       {/* Header */}
       <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white" }}>

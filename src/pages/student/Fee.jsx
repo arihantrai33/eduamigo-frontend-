@@ -5,6 +5,7 @@ import { getPaymentConfig } from "../../utils/payments";
 import { PayFeeButton, ReceiptLinks, PaymentInfo } from "../../components/FeePayment";
 
 import Glyph from "../../components/Glyph";
+import BottomNav from "../../layout/BottomNav";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -57,7 +58,7 @@ export default function StudentFee() {
   );
 
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "Inter, sans-serif" }}>
+    <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "inherit" }}>
 
       {/* Header */}
       <div style={{ background: "var(--brand-gradient)", padding: "48px 20px 24px", flexShrink: 0 }}>
@@ -177,22 +178,7 @@ export default function StudentFee() {
         )}
       </div>
 
-      {/* Bottom Nav */}
-      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: "var(--card)", borderTop: `1px solid ${"#f0f0f0"}`, display: "flex", padding: "8px 0 16px", boxShadow: "0 -4px 12px rgba(0,0,0,0.06)" }}>
-        {[
-          { icon: <Glyph e="🏠" />, label: "Home",  path: "/student/home"    },
-          { icon: <Glyph e="🚌" />, label: "Bus",   path: "/student/bus"     },
-          { icon: <Glyph e="📚" />, label: "Learn", path: "/student/notes"   },
-          { icon: <Glyph e="💬" />, label: "Chat",  path: "/student/chat"    },
-          { icon: <Glyph e="👤" />, label: "Me",    path: "/student/profile" },
-        ].map(tab => (
-          <button key={tab.label} onClick={() => navigate(tab.path)}
-            style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, color: "var(--subtext)" }}>
-            <span style={{ fontSize: 22 }}>{tab.icon}</span>
-            <span style={{ fontSize: 10, fontWeight: 500 }}>{tab.label}</span>
-          </button>
-        ))}
-      </div>
+      <BottomNav role="student" />
     </div>
   );
 }

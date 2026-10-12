@@ -7,7 +7,7 @@ const API = import.meta.env.VITE_API_URL
 const inputStyle = {
   padding: "8px 10px", borderRadius: 8, border: "0.5px solid #E8E8E5",
   fontSize: 12, color: "#1a1a1a", outline: "none", background: "#F5F5F3",
-  fontFamily: "Inter, sans-serif", width: "100%", boxSizing: "border-box"
+  fontFamily: "inherit", width: "100%", boxSizing: "border-box"
 }
 
 const SUBJECTS = ["Mathematics", "Science", "English", "Hindi", "Social Studies", "Physics", "Chemistry", "Biology", "Computer Science", "Physical Education", "Art", "Music"]
@@ -83,7 +83,7 @@ const AddTeacher = () => {
   )
 
   return (
-    <div style={{ fontFamily: "Inter, sans-serif" }}>
+    <div style={{ fontFamily: "inherit" }}>
       <div style={{ marginBottom: "1.5rem" }}>
         <div style={{ fontSize: 20, fontWeight: 600, color: "#1a1a1a" }}>Add Teacher</div>
         <div style={{ fontSize: 11, color: "#999", marginTop: 2 }}>Fill in the details to register a new teacher</div>

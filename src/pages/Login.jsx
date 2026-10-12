@@ -199,7 +199,7 @@ export default function Login() {
 }
 
 const s = {
-  page: { minHeight: "100vh", height: "100vh", display: "flex", flexDirection: "column", background: "var(--card)", fontFamily: "'Inter','Segoe UI',sans-serif", overflowY: "auto" },
+  page: { minHeight: "100vh", height: "100vh", display: "flex", flexDirection: "column", background: "var(--card)", fontFamily: "inherit", overflowY: "auto" },
   themeBtn: { position: "absolute", top: 14, right: 14, zIndex: 2, borderRadius: "50%", width: 40, height: 40, fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0 },
   card: { flex: 1, background: "var(--card)", padding: "4px 22px 28px", animation: "cardIn .5s .1s cubic-bezier(.2,.8,.2,1) both" },
   titleRow: { display: "flex", alignItems: "center", gap: 12, marginBottom: 18 },

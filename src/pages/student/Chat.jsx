@@ -103,7 +103,7 @@ export default function Chat() {
     finally { setSending(false); }
   };
   const S = {
-    screen: { maxWidth: 420, margin: '0 auto', minHeight: '100vh', background: dm ? '#0f172a' : '#f5f6fa', fontFamily: 'Inter, sans-serif', display: 'flex', flexDirection: 'column' },
+    screen: { minHeight: '100vh', background: dm ? '#0f172a' : '#f5f6fa', fontFamily: 'inherit', display: 'flex', flexDirection: 'column' },
     header: { background: 'var(--brand-gradient)', padding: '48px 20px 16px', display: 'flex', alignItems: 'center', gap: 12 },
     headerBack: { background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: '8px 12px', color: 'white', cursor: 'pointer', fontSize: 18 },
     headerTitle: { color: 'white', fontSize: 20, fontWeight: 800, margin: 0 },
@@ -136,7 +136,7 @@ export default function Chat() {
     timeRow: { display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4, marginTop: 4 },
     timeText: { fontSize: 10, opacity: 0.7 },
     inputRow: { padding: '12px 16px', background: dm ? '#1e293b' : 'white', display: 'flex', gap: 10, alignItems: 'center', boxShadow: '0 -2px 8px rgba(0,0,0,0.06)', flexShrink: 0 },
-    input: { flex: 1, border: dm ? '1.5px solid #334155' : '1.5px solid #e5e7eb', borderRadius: 24, padding: '10px 16px', fontSize: 14, outline: 'none', fontFamily: 'Inter, sans-serif', background: dm ? '#0f172a' : 'white', color: dm ? '#f1f5f9' : '#111' },
+    input: { flex: 1, border: dm ? '1.5px solid #334155' : '1.5px solid #e5e7eb', borderRadius: 24, padding: '10px 16px', fontSize: 14, outline: 'none', fontFamily: 'inherit', background: dm ? '#0f172a' : 'white', color: dm ? '#f1f5f9' : '#111' },
     sendBtn: { background: 'var(--brand-gradient)', color: 'white', border: 'none', borderRadius: '50%', width: 44, height: 44, fontSize: 18, cursor: 'pointer', flexShrink: 0 },
   };
   if (activeChat) return (

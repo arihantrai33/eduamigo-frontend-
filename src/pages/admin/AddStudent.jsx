@@ -98,7 +98,7 @@ export default function AddStudent() {
           style={{
             padding: "9px 12px", borderRadius: 8, border: "1px solid #E5E7EB",
             fontSize: 13, color: "#111827", outline: "none", background: "#F9FAFB",
-            fontFamily: "Inter, sans-serif", width: "100%", boxSizing: "border-box",
+            fontFamily: "inherit", width: "100%", boxSizing: "border-box",
             transition: "border 0.2s",
           }}
           onFocus={e => e.target.style.borderColor = "var(--brand)"}
@@ -117,7 +117,7 @@ export default function AddStudent() {
           padding: "9px 12px", borderRadius: 8, border: "1px solid #E5E7EB",
           fontSize: 13, color: form[name] ? "#111827" : "#9CA3AF",
           outline: "none", background: "#F9FAFB",
-          fontFamily: "Inter, sans-serif", width: "100%", boxSizing: "border-box",
+          fontFamily: "inherit", width: "100%", boxSizing: "border-box",
         }}>
         <option value="">Select {label}</option>
         {options.map(o => (
@@ -130,7 +130,7 @@ export default function AddStudent() {
   });
 
   return (
-    <div style={{ fontFamily: "Inter, sans-serif", maxWidth: 760, margin: "0 auto" }}>
+    <div style={{ fontFamily: "inherit", maxWidth: 760, margin: "0 auto" }}>
 
       {/* Toast */}
       {toast && (

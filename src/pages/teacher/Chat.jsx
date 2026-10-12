@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Glyph from "../../components/Glyph";
+import BottomNav from "../../layout/BottomNav";
 const API = import.meta.env.VITE_API_URL;
 
 const getUser = () => JSON.parse(localStorage.getItem('eduamigo_user'));
@@ -291,14 +292,7 @@ export default function TeacherChat() {
             <div style={{ height: 100 }} />
           </div>
 
-          {/* Bottom Nav */}
-          <div style={styles.bottomNav}>
-            <NavItem icon={<Glyph e="🏠" />} label="Home"       onClick={() => navigate('/teacher/home')} />
-            <NavItem icon={<Glyph e="✅" />} label="Attendance" onClick={() => navigate('/teacher/attendance')} />
-            <NavItem icon={<Glyph e="📤" />} label="Upload"     onClick={() => navigate('/teacher/upload')} />
-            <NavItem icon={<Glyph e="💬" />} label="Messages"   onClick={() => navigate('/teacher/chat')} active />
-            <NavItem icon={<Glyph e="👤" />} label="Me"         onClick={() => navigate('/teacher/profile')} />
-          </div>
+          <BottomNav role="teacher" />
         </>
       )}
     </div>
@@ -333,22 +327,12 @@ function ContactCard({ contact, onOpen }) {
   );
 }
 
-function NavItem({ icon, label, onClick, active }) {
-  return (
-    <button onClick={onClick} style={styles.navItem}>
-      <span style={{ fontSize: 22 }}>{icon}</span>
-      <span style={{ ...styles.navLabel, color: active ? 'var(--brand)' : '#9E9E9E' }}>{label}</span>
-    </button>
-  );
-}
 
 const styles = {
   container: {
-    fontFamily: "'Poppins', sans-serif",
+    fontFamily: "inherit",
     backgroundColor: '#F5F6FA',
     minHeight: '100vh',
-    maxWidth: 420,
-    margin: '0 auto',
     position: 'relative',
     display: 'flex',
     flexDirection: 'column',
@@ -432,7 +416,7 @@ const styles = {
     outline: 'none',
     flex: 1,
     fontSize: 14,
-    fontFamily: "'Poppins', sans-serif",
+    fontFamily: "inherit",
     color: '#1A1A2E',
     background: 'transparent',
   },
@@ -456,7 +440,7 @@ const styles = {
     gap: 12,
     cursor: 'pointer',
     textAlign: 'left',
-    fontFamily: "'Poppins', sans-serif",
+    fontFamily: "inherit",
   },
   contactAvatar: {
     width: 44,
@@ -525,10 +509,8 @@ const styles = {
   inputRow: {
     position: 'fixed',
     bottom: 0,
-    left: '50%',
-    transform: 'translateX(-50%)',
-    width: '100%',
-    maxWidth: 420,
+    left: 0,
+    right: 0,
     background: '#fff',
     borderTop: '1px solid #EEEEEE',
     padding: '10px 12px',
@@ -544,7 +526,7 @@ const styles = {
     borderRadius: 12,
     padding: '10px 12px',
     fontSize: 14,
-    fontFamily: "'Poppins', sans-serif",
+    fontFamily: "inherit",
     resize: 'none',
     outline: 'none',
     color: '#1A1A2E',
@@ -595,29 +577,4 @@ const styles = {
   emptyIcon: { fontSize: 52, margin: '0 0 8px' },
   emptyText: { fontSize: 15, fontWeight: 700, color: '#1A1A2E', margin: '0 0 6px' },
   emptySubText: { fontSize: 13, color: '#9E9E9E', margin: 0 },
-  bottomNav: {
-    position: 'fixed',
-    bottom: 0,
-    left: '50%',
-    transform: 'translateX(-50%)',
-    width: '100%',
-    maxWidth: 420,
-    background: '#fff',
-    borderTop: '1px solid #EEEEEE',
-    display: 'flex',
-    justifyContent: 'space-around',
-    padding: '8px 0 12px',
-    zIndex: 100,
-  },
-  navItem: {
-    background: 'none',
-    border: 'none',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: 2,
-    cursor: 'pointer',
-    padding: '4px 12px',
-  },
-  navLabel: { fontSize: 10, fontWeight: 600 },
 };

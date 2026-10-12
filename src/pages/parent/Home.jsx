@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { visibleFor } from "../../utils/features";
 import { userTheme, brandLook } from "../../utils/theme";
@@ -10,6 +10,7 @@ import ChildSwitcher from "../../components/ChildSwitcher";
 import UpcomingExams from "../../components/UpcomingExams";
 
 import Glyph from "../../components/Glyph";
+import BottomNav from "../../layout/BottomNav";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -32,7 +33,6 @@ export default function ParentHome() {
   // School branding, in the same style (light or bold) as the school's sign-in page.
   const theme = userTheme(user);
   const look = brandLook(theme);
-  const location = useLocation();
   const [child,      setChild]      = useState(null);
   const [attendance, setAttendance] = useState(null);
   const [results,    setResults]    = useState(null);
@@ -94,7 +94,7 @@ export default function ParentHome() {
   ];
 
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "Inter, sans-serif" }}>
+    <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "inherit" }}>
 
       {/* Header */}
       <div style={{ background: look.header, padding: "20px 20px 20px", flexShrink: 0 }}>
@@ -174,7 +174,7 @@ export default function ParentHome() {
       <div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 80px" }}>
 
         {/* Quick Tiles */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
+        <div className="ea-tile-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
           {tiles.filter(visibleFor(user)).map((t) => (
             <button key={t.label} onClick={() => navigate(t.path)}
               style={{ background: "var(--card)", borderRadius: 14, padding: 14, border: "none", cursor: "pointer", textAlign: "left", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
@@ -216,22 +216,7 @@ export default function ParentHome() {
         </div>
       </div>
 
-      {/* Bottom Nav */}
-      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: "var(--card)", borderTop: "1px solid var(--border)", display: "flex", padding: "8px 0 16px", boxShadow: "0 -4px 12px rgba(0,0,0,0.06)" }}>
-        {[
-          { icon: <Glyph e="🏠" />, label: "Home",     path: "/parent/home",          },
-          { icon: <Glyph e="💬" />, label: "Teachers", path: "/parent/chat"                        },
-          { icon: <Glyph e="💳" />, label: "Fees",     path: "/parent/fee"                         },
-          { icon: <Glyph e="🔔" />, label: "Alerts",   path: "/parent/notifications"               },
-          { icon: <Glyph e="👤" />, label: "Me",       path: "/parent/profile"                     },
-        ].filter(visibleFor(user)).map((tab) => (
-          <button key={tab.label} onClick={() => navigate(tab.path)}
-            style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, color: location.pathname === tab.path ? theme.primary : "#999" }}>
-            <span style={{ fontSize: 22 }}>{tab.icon}</span>
-            <span style={{ fontSize: 10, fontWeight: location.pathname === tab.path ? 700 : 500 }}>{tab.label}</span>
-          </button>
-        ))}
-      </div>
+      <BottomNav role="parent" />
 
     </div>
   );

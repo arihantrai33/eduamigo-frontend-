@@ -76,7 +76,7 @@ export default function ActivityLog() {
   const goTo = (n) => { setLoading(true); setPage(n); };
 
   return (
-    <div style={{ fontFamily: "Inter, sans-serif", maxWidth: 1000, margin: "0 auto" }}>
+    <div style={{ fontFamily: "inherit", maxWidth: 1000, margin: "0 auto" }}>
       <div style={{ marginBottom: 18 }}>
         <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111827", margin: 0 }}>Activity Log</h1>
         <p style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4 }}>Who changed marks, fees, students, logins and settings, and when</p>

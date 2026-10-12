@@ -303,7 +303,7 @@ const styles = {
   page: {
     minHeight: "100vh",
     background: "var(--bg)",
-    fontFamily: "'Inter', sans-serif",
+    fontFamily: "inherit",
     paddingBottom: 48,
   },
   centered: {
@@ -312,7 +312,7 @@ const styles = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    fontFamily: "'Inter', sans-serif",
+    fontFamily: "inherit",
   },
   spinner: {
     width: 32, height: 32,

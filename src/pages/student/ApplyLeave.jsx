@@ -78,10 +78,10 @@ export default function ApplyLeave() {
     fontSize: "14px", outline: "none",
     color: dm ? "#f1f5f9" : "#111",
     background: dm ? "#0f172a" : "#fff",
-    fontFamily: "'Poppins', sans-serif", boxSizing: "border-box", appearance: "none", WebkitAppearance: "none", colorScheme: dm ? "dark" : "light",
+    fontFamily: "inherit", boxSizing: "border-box", appearance: "none", WebkitAppearance: "none", colorScheme: dm ? "dark" : "light",
   };
   if (success) return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "'Poppins', sans-serif", background: dm ? "#0f172a" : "#f5f6fa" }}>
+    <div style={{ height: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "inherit", background: dm ? "#0f172a" : "#f5f6fa" }}>
       <div style={{ fontSize: "64px" }}><Glyph e="✅" /></div>
       <div style={{ fontWeight: "800", fontSize: "20px", marginTop: "16px", color: dm ? "#f1f5f9" : "#111" }}>Leave Applied Successfully!</div>
       <div style={{ color: dm ? "#94a3b8" : "#888", fontSize: "13px", marginTop: "8px" }}>Your request has been submitted for approval.</div>
@@ -91,7 +91,7 @@ export default function ApplyLeave() {
     </div>
   );
   return (
-    <div style={{ minHeight: "100vh", background: dm ? "#0f172a" : "#f5f6fa", fontFamily: "'Poppins', sans-serif", paddingBottom: "32px" }}>
+    <div style={{ minHeight: "100vh", background: dm ? "#0f172a" : "#f5f6fa", fontFamily: "inherit", paddingBottom: "32px" }}>
       <div style={{ background: "var(--brand-gradient)", padding: "48px 20px 24px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <button onClick={() => navigate(-1)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "50%", width: "36px", height: "36px", color: "white", fontSize: "18px", cursor: "pointer" }}>←</button>
@@ -160,7 +160,7 @@ export default function ApplyLeave() {
           {formError && (
             <div style={{ marginBottom: "12px", padding: "10px 14px", background: dm ? "#2a0f0f" : "#fff5f5", borderRadius: "8px", border: "1px solid #fee2e2", fontSize: "13px", color: "#ef4444", fontWeight: "600" }}>{formError}</div>
           )}
-          <button onClick={handleSubmit} disabled={loading} style={{ width: "100%", padding: "16px", borderRadius: "12px", border: "none", background: loading ? "#aaa" : "var(--brand-gradient)", color: "white", fontSize: "15px", fontWeight: "700", cursor: loading ? "not-allowed" : "pointer", fontFamily: "'Poppins', sans-serif" }}>
+          <button onClick={handleSubmit} disabled={loading} style={{ width: "100%", padding: "16px", borderRadius: "12px", border: "none", background: loading ? "#aaa" : "var(--brand-gradient)", color: "white", fontSize: "15px", fontWeight: "700", cursor: loading ? "not-allowed" : "pointer", fontFamily: "inherit" }}>
             {loading ? "Submitting..." : "Submit Leave Request"}
           </button>
         </div>

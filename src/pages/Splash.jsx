@@ -41,7 +41,7 @@ export default function Splash() {
       justifyContent: "center",
       position: "relative",
       overflow: "hidden",
-      fontFamily: "Georgia, serif",
+      fontFamily: "inherit",
     }}>
 
       {/* Background glow blobs */}

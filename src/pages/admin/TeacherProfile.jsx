@@ -121,7 +121,7 @@ export default function TeacherProfile() {
         .profile-card { animation: fadeIn 0.3s ease; }
       `}</style>
 
-      <div style={{ fontFamily: "'Inter', sans-serif", maxWidth: 900, margin: "0 auto" }}>
+      <div style={{ fontFamily: "inherit", maxWidth: 900, margin: "0 auto" }}>
 
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.5rem" }}>

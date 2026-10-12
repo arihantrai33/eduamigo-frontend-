@@ -66,7 +66,7 @@ export default function Profile() {
 
   // ── View Profile ──
   if (showProfile) return (
-    <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
+    <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "inherit", display: "flex", flexDirection: "column" }}>
       <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
         <button onClick={() => setShowProfile(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
         <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>My Information</h2>
@@ -104,7 +104,7 @@ export default function Profile() {
 
   // ── Settings ──
   if (showSettings) return (
-    <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
+    <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "inherit", display: "flex", flexDirection: "column" }}>
       <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
         <button onClick={() => setShowSettings(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
         <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Settings</h2>
@@ -140,7 +140,7 @@ export default function Profile() {
 
   // ── ID Card ──
   if (showIdCard) return (
-    <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
+    <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "inherit", display: "flex", flexDirection: "column" }}>
       <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
         <button onClick={() => setShowIdCard(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
         <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Student ID Card</h2>
@@ -185,7 +185,7 @@ export default function Profile() {
 
   // ── Help ──
   if (showHelp) return (
-    <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
+    <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "inherit", display: "flex", flexDirection: "column" }}>
       <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
         <button onClick={() => setShowHelp(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
         <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Help & Support</h2>
@@ -206,7 +206,7 @@ export default function Profile() {
   ];
 
   return (
-    <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "Inter, sans-serif", overflowY: "auto", paddingBottom: "80px" }}>
+    <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "inherit", overflowY: "auto", paddingBottom: "80px" }}>
       {/* Header */}
       <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white", textAlign: "center" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Glyph from "../../components/Glyph";
+import BottomNav from "../../layout/BottomNav";
 const API = import.meta.env.VITE_API_URL;
 
 const NOTE_TYPES = ['Notes', 'Assignment', 'Resource', 'Question Paper'];
@@ -303,33 +304,17 @@ export default function TeacherUpload() {
         <div style={{ height: 100 }} />
       </div>
 
-      <div style={styles.bottomNav}>
-        <NavItem icon={<Glyph e="🏠" />} label="Home"       onClick={() => navigate('/teacher/home')} />
-        <NavItem icon={<Glyph e="✅" />} label="Attendance" onClick={() => navigate('/teacher/attendance')} />
-        <NavItem icon={<Glyph e="📤" />} label="Upload"     onClick={() => navigate('/teacher/upload')} active />
-        <NavItem icon={<Glyph e="💬" />} label="Messages"   onClick={() => navigate('/teacher/chat')} />
-        <NavItem icon={<Glyph e="👤" />} label="Me"         onClick={() => navigate('/teacher/profile')} />
-      </div>
+      <BottomNav role="teacher" />
     </div>
   );
 }
 
-function NavItem({ icon, label, onClick, active }) {
-  return (
-    <button onClick={onClick} style={styles.navItem}>
-      <span style={{ fontSize: 22 }}>{icon}</span>
-      <span style={{ ...styles.navLabel, color: active ? 'var(--brand)' : '#9E9E9E' }}>{label}</span>
-    </button>
-  );
-}
 
 const styles = {
   container: {
-    fontFamily: "'Poppins', sans-serif",
+    fontFamily: "inherit",
     backgroundColor: '#F5F6FA',
     minHeight: '100vh',
-    maxWidth: 420,
-    margin: '0 auto',
     position: 'relative',
   },
   header: {
@@ -402,7 +387,7 @@ const styles = {
     fontWeight: 600,
     color: '#9E9E9E',
     cursor: 'pointer',
-    fontFamily: "'Poppins', sans-serif",
+    fontFamily: "inherit",
   },
   tabActive: { background: 'var(--brand)', color: '#fff' },
   card: {
@@ -476,7 +461,7 @@ const styles = {
     border: '1.5px solid #E0E0E0',
     borderRadius: 10,
     fontSize: 14,
-    fontFamily: "'Poppins', sans-serif",
+    fontFamily: "inherit",
     marginBottom: 14,
     boxSizing: 'border-box',
     color: '#1A1A2E',
@@ -488,7 +473,7 @@ const styles = {
     border: '1.5px solid #E0E0E0',
     borderRadius: 10,
     fontSize: 14,
-    fontFamily: "'Poppins', sans-serif",
+    fontFamily: "inherit",
     marginBottom: 14,
     boxSizing: 'border-box',
     color: '#1A1A2E',
@@ -506,7 +491,7 @@ const styles = {
     fontSize: 15,
     fontWeight: 700,
     cursor: 'pointer',
-    fontFamily: "'Poppins', sans-serif",
+    fontFamily: "inherit",
   },
   centered: { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 0' },
   spinner: {
@@ -531,29 +516,4 @@ const styles = {
   emptyIcon: { fontSize: 52, margin: '0 0 8px' },
   emptyText: { fontSize: 15, fontWeight: 700, color: '#1A1A2E', margin: '0 0 6px' },
   emptySubText: { fontSize: 13, color: '#9E9E9E', margin: 0 },
-  bottomNav: {
-    position: 'fixed',
-    bottom: 0,
-    left: '50%',
-    transform: 'translateX(-50%)',
-    width: '100%',
-    maxWidth: 420,
-    background: '#fff',
-    borderTop: '1px solid #EEEEEE',
-    display: 'flex',
-    justifyContent: 'space-around',
-    padding: '8px 0 12px',
-    zIndex: 100,
-  },
-  navItem: {
-    background: 'none',
-    border: 'none',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: 2,
-    cursor: 'pointer',
-    padding: '4px 12px',
-  },
-  navLabel: { fontSize: 10, fontWeight: 600 },
 };

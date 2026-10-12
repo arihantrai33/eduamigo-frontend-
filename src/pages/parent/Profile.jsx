@@ -7,31 +7,11 @@ import { signOutEverywhere, resetStudentPassword } from "../../utils/account";
 import { showCredentials, toast } from "../../utils/toast";
 
 import Glyph from "../../components/Glyph";
+import BottomNav from "../../layout/BottomNav";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 });
-
-function BottomNav({ active }) {
-  const navigate = useNavigate();
-  return (
-    <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: "var(--card)", borderTop: "1px solid var(--border)", display: "flex", padding: "8px 0 16px", boxShadow: "0 -4px 12px rgba(0,0,0,0.06)" }}>
-      {[
-        { icon: <Glyph e="🏠" />, label: "Home",     path: "/parent/home"          },
-        { icon: <Glyph e="💬" />, label: "Teachers", path: "/parent/chat"          },
-        { icon: <Glyph e="💳" />, label: "Fees",     path: "/parent/fee"           },
-        { icon: <Glyph e="🔔" />, label: "Alerts",   path: "/parent/notifications" },
-        { icon: <Glyph e="👤" />, label: "Me",       path: "/parent/profile"       },
-      ].map(tab => (
-        <button key={tab.label} onClick={() => navigate(tab.path)}
-          style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, color: active === tab.label.toLowerCase() ? "var(--brand)" : "#999" }}>
-          <span style={{ fontSize: 22 }}>{tab.icon}</span>
-          <span style={{ fontSize: 10, fontWeight: active === tab.label.toLowerCase() ? "700" : "500" }}>{tab.label}</span>
-        </button>
-      ))}
-    </div>
-  );
-}
 
 function InfoRow({ label, value, last }) {
   return (
@@ -94,7 +74,7 @@ export default function ParentProfile() {
   ];
 
   if (showHelp) return (
-    <div style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "Inter, sans-serif" }}>
+    <div style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "inherit" }}>
       <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px" }}>
         <button onClick={() => setShowHelp(false)} aria-label="Back" style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
         <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Help & Support</h2>
@@ -171,13 +151,13 @@ export default function ParentProfile() {
         <p style={s.version}>EduAmigo v1.0.0</p>
       </div>
 
-      <BottomNav active="me" />
+      <BottomNav role="parent" />
     </div>
   );
 }
 
 const s = {
-  wrap:     { minHeight: "100vh", background: "#F4F6FB", display: "flex", flexDirection: "column", fontFamily: "'Inter', sans-serif", maxWidth: 430, margin: "0 auto" },
+  wrap:     { minHeight: "100vh", background: "#F4F6FB", display: "flex", flexDirection: "column", fontFamily: "inherit" },
   topBar:   { background: "var(--card)", padding: "48px 20px 16px", display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid #E8EAF0" },
   backBtn:  { background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#1C2033", fontWeight: 700 },
   title:    { fontSize: 17, fontWeight: 700, color: "#1C2033" },

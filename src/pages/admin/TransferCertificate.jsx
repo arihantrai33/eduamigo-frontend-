@@ -32,7 +32,7 @@ export default function TransferCertificate() {
 
   return (
     <div style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
-      <div className="no-print" style={{ display: "flex", gap: 8, marginBottom: 14, fontFamily: "Inter, sans-serif" }}>
+      <div className="no-print" style={{ display: "flex", gap: 8, marginBottom: 14, fontFamily: "inherit" }}>
         <button onClick={() => navigate(-1)} style={btn}>← Back</button>
         <button onClick={() => window.print()} style={{ ...btn, background: "var(--brand)", color: "#fff", border: "none" }}>Print</button>
       </div>

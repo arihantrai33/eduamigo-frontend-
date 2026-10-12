@@ -243,7 +243,7 @@ export default function Chat() {
   }
 
   return (
-    <div style={{ fontFamily: "Inter, sans-serif", display: "flex", height: "calc(100vh - 80px)", borderRadius: 20, overflow: "hidden", boxShadow: "0 8px 40px rgba(15,23,42,0.15)" }}>
+    <div style={{ fontFamily: "inherit", display: "flex", height: "calc(100vh - 80px)", borderRadius: 20, overflow: "hidden", boxShadow: "0 8px 40px rgba(15,23,42,0.15)" }}>
       <style>{`
         @keyframes fadeIn  { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
         @keyframes spin    { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }

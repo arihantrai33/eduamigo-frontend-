@@ -337,7 +337,7 @@ export default function Admissions() {
   const classes = [...new Set(rows.map((r) => r.classApplied))].sort((a, b) => (Number(a) || 0) - (Number(b) || 0) || a.localeCompare(b));
 
   return (
-    <div style={{ padding: 24, fontFamily: "Inter, sans-serif", maxWidth: 1200, margin: "0 auto" }}>
+    <div style={{ padding: 24, fontFamily: "inherit", maxWidth: 1200, margin: "0 auto" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 12, marginBottom: 18 }}>
         <div>
           <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: "#0F172A" }}>Admissions</h1>

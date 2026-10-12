@@ -157,7 +157,7 @@ export function SchoolLogo({ school, size = 48 }) {
 }
 
 const s = {
-  page: { minHeight: "100vh", height: "100vh", display: "flex", flexDirection: "column", background: "linear-gradient(160deg, #0f1b4c 0%, #1a3a8f 50%, #0f1b4c 100%)", fontFamily: "'Inter','Segoe UI',sans-serif", overflowY: "auto" },
+  page: { minHeight: "100vh", height: "100vh", display: "flex", flexDirection: "column", background: "linear-gradient(160deg, #0f1b4c 0%, #1a3a8f 50%, #0f1b4c 100%)", fontFamily: "inherit", overflowY: "auto" },
   // Taller brand area so the logo sits in the middle of it and the card starts about a third down.
   top: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "64px 24px 44px", minHeight: "28vh", boxSizing: "border-box" },
   logoBox: { width: 72, height: 72, borderRadius: 20, background: "rgba(255,255,255,0.12)", border: "1.5px solid rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, marginBottom: 12 },

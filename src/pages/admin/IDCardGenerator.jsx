@@ -82,7 +82,7 @@ function BuildingAnimation({ tab }) {
 
 function StudentCard({ student, animPhase }) {
   return (
-    <div style={{ width: 340, borderRadius: 20, overflow: "hidden", boxShadow: "0 24px 64px rgba(0,0,0,0.18)", fontFamily: "'Inter',sans-serif", position: "relative", background: "white", transition: "all 0.5s cubic-bezier(0.34,1.56,0.64,1)", transform: animPhase === 2 ? "scale(1) translateY(0)" : "scale(0.85) translateY(30px)", opacity: animPhase === 2 ? 1 : 0 }}>
+    <div style={{ width: 340, borderRadius: 20, overflow: "hidden", boxShadow: "0 24px 64px rgba(0,0,0,0.18)", fontFamily: "inherit", position: "relative", background: "white", transition: "all 0.5s cubic-bezier(0.34,1.56,0.64,1)", transform: animPhase === 2 ? "scale(1) translateY(0)" : "scale(0.85) translateY(30px)", opacity: animPhase === 2 ? 1 : 0 }}>
       <div style={{ background: "var(--brand-gradient)", height: 80, position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: -30, right: -30, width: 120, height: 120, borderRadius: "50%", background: "rgba(255,255,255,0.1)" }} />
         <div style={{ position: "absolute", top: -40, left: 80, width: 100, height: 100, borderRadius: "50%", background: "rgba(255,255,255,0.07)" }} />
@@ -123,7 +123,7 @@ function StudentCard({ student, animPhase }) {
 
 function TeacherCard({ teacher, animPhase }) {
   return (
-    <div style={{ width: 340, borderRadius: 20, overflow: "hidden", boxShadow: "0 24px 64px rgba(0,0,0,0.18)", fontFamily: "'Inter',sans-serif", position: "relative", background: "white", transition: "all 0.5s cubic-bezier(0.34,1.56,0.64,1)", transform: animPhase === 2 ? "scale(1) translateY(0)" : "scale(0.85) translateY(30px)", opacity: animPhase === 2 ? 1 : 0 }}>
+    <div style={{ width: 340, borderRadius: 20, overflow: "hidden", boxShadow: "0 24px 64px rgba(0,0,0,0.18)", fontFamily: "inherit", position: "relative", background: "white", transition: "all 0.5s cubic-bezier(0.34,1.56,0.64,1)", transform: animPhase === 2 ? "scale(1) translateY(0)" : "scale(0.85) translateY(30px)", opacity: animPhase === 2 ? 1 : 0 }}>
       <div style={{ background: "linear-gradient(135deg,#0F172A,#1E3A5F,#1E40AF)", height: 80, position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: -30, right: -30, width: 120, height: 120, borderRadius: "50%", background: "rgba(255,255,255,0.06)" }} />
         <div style={{ padding: "12px 18px" }}>
@@ -229,7 +229,7 @@ export default function IDCardGenerator() {
       ];
 
   return (
-    <div style={{ fontFamily: "'Inter',sans-serif" }}>
+    <div style={{ fontFamily: "inherit" }}>
       <style>{`
         @media print {
           body * { visibility: hidden !important; }

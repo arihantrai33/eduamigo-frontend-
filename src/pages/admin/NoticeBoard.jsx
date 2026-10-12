@@ -91,7 +91,7 @@ export default function NoticeBoardPage() {
   const CARD = { background: "white", borderRadius: 16, padding: "20px 24px", boxShadow: "0 2px 12px rgba(15,23,42,0.06)", border: "1px solid rgba(226,232,240,0.8)", marginBottom: 12 };
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }}>
+    <div style={{ fontFamily: "inherit" }}>
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.5rem" }}>
         <div>

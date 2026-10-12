@@ -7,6 +7,7 @@ import SupportContent from "../../components/SupportContent";
 import { signOutEverywhere } from "../../utils/account";
 
 import Glyph from "../../components/Glyph";
+import BottomNav from "../../layout/BottomNav";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -46,7 +47,7 @@ export default function TeacherProfile() {
   );
 
   if (showProfile) return (
-    <div style={{ position: "absolute", inset: 0, background: "var(--bg)", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
+    <div style={{ position: "absolute", inset: 0, background: "var(--bg)", fontFamily: "inherit", display: "flex", flexDirection: "column" }}>
       <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
         <button onClick={() => setShowProfile(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
         <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>My Information</h2>
@@ -84,7 +85,7 @@ export default function TeacherProfile() {
   );
 
   if (showSettings) return (
-    <div style={{ position: "absolute", inset: 0, background: "var(--bg)", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
+    <div style={{ position: "absolute", inset: 0, background: "var(--bg)", fontFamily: "inherit", display: "flex", flexDirection: "column" }}>
       <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
         <button onClick={() => setShowSettings(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
         <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Settings</h2>
@@ -119,7 +120,7 @@ export default function TeacherProfile() {
   );
 
   if (showIdCard) return (
-    <div style={{ position: "absolute", inset: 0, background: "var(--bg)", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
+    <div style={{ position: "absolute", inset: 0, background: "var(--bg)", fontFamily: "inherit", display: "flex", flexDirection: "column" }}>
       <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
         <button onClick={() => setShowIdCard(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
         <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Teacher ID Card</h2>
@@ -159,7 +160,7 @@ export default function TeacherProfile() {
   );
 
   if (showHelp) return (
-    <div style={{ position: "absolute", inset: 0, background: "var(--bg)", fontFamily: "Inter, sans-serif", display: "flex", flexDirection: "column" }}>
+    <div style={{ position: "absolute", inset: 0, background: "var(--bg)", fontFamily: "inherit", display: "flex", flexDirection: "column" }}>
       <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
         <button onClick={() => setShowHelp(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
         <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Help & Support</h2>
@@ -179,7 +180,7 @@ export default function TeacherProfile() {
   ];
 
   return (
-    <div style={{ position: "absolute", inset: 0, background: "var(--bg)", fontFamily: "Inter, sans-serif", overflowY: "auto", paddingBottom: "80px" }}>
+    <div style={{ position: "absolute", inset: 0, background: "var(--bg)", fontFamily: "inherit", overflowY: "auto", paddingBottom: "80px" }}>
       <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white", textAlign: "center" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
           <button onClick={() => navigate(-1)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
@@ -240,20 +241,7 @@ export default function TeacherProfile() {
         </div>
       </div>
 
-      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 420, background: "var(--card)", borderTop: "1px solid #f3f4f6", display: "flex", justifyContent: "space-around", padding: "8px 0 12px", zIndex: 100 }}>
-        {[
-          { icon: <Glyph e="🏠" />, label: "Home",       path: "/teacher/home" },
-          { icon: <Glyph e="✅" />, label: "Attendance", path: "/teacher/attendance" },
-          { icon: <Glyph e="📤" />, label: "Upload",     path: "/teacher/upload" },
-          { icon: <Glyph e="💬" />, label: "Messages",   path: "/teacher/chat" },
-          { icon: <Glyph e="👤" />, label: "Me",         path: "/teacher/profile" },
-        ].map(n => (
-          <button key={n.label} onClick={() => navigate(n.path)} style={{ background: "none", border: "none", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, cursor: "pointer", padding: "4px 12px" }}>
-            <span style={{ fontSize: 22 }}>{n.icon}</span>
-            <span style={{ fontSize: 10, fontWeight: 600, color: n.path === "/teacher/profile" ? "var(--brand)" : "#9E9E9E" }}>{n.label}</span>
-          </button>
-        ))}
-      </div>
+      <BottomNav role="teacher" />
     </div>
   );
 }

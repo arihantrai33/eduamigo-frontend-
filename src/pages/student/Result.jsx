@@ -56,7 +56,7 @@ export default function StudentResult() {
 
   if (loading) return (
     <div style={{ height: '100vh', display: 'flex', alignItems: 'center',
-      justifyContent: 'center', fontFamily: 'Inter, sans-serif', color: 'var(--brand)',
+      justifyContent: 'center', fontFamily: 'inherit', color: 'var(--brand)',
       background: dm ? '#0f172a' : '#F4F6FB' }}>
       Loading results...
     </div>
@@ -64,7 +64,7 @@ export default function StudentResult() {
 
   if (error) return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center',
-      justifyContent: 'center', minHeight: '100vh', fontFamily: 'Inter, sans-serif',
+      justifyContent: 'center', minHeight: '100vh', fontFamily: 'inherit',
       gap: 12, padding: 24, background: dm ? '#0f172a' : '#F4F6FB' }}>
       <div style={{ fontSize: 48 }}><Glyph e="⚠" /></div>
       <div style={{ fontSize: 18, fontWeight: 700, color: dm ? '#f1f5f9' : '#1C2033' }}>Something went wrong</div>
@@ -80,7 +80,7 @@ export default function StudentResult() {
 
   if (results.length === 0) return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center',
-      justifyContent: 'center', minHeight: '100vh', fontFamily: 'Inter, sans-serif',
+      justifyContent: 'center', minHeight: '100vh', fontFamily: 'inherit',
       gap: 12, padding: 24, background: dm ? '#0f172a' : '#F4F6FB' }}>
       <div style={{ fontSize: 48 }}><Glyph e="📭" /></div>
       <div style={{ fontSize: 18, fontWeight: 700, color: dm ? '#f1f5f9' : '#1C2033' }}>No Results Published</div>
@@ -97,8 +97,8 @@ export default function StudentResult() {
   );
 
   return (
-    <div style={{ maxWidth: 430, margin: '0 auto', minHeight: '100vh',
-      background: dm ? '#0f172a' : '#F4F6FB', fontFamily: 'Inter, sans-serif',
+    <div style={{ minHeight: '100vh',
+      background: dm ? '#0f172a' : '#F4F6FB', fontFamily: 'inherit',
       display: 'flex', flexDirection: 'column' }}>
 
       <div style={{ background: 'linear-gradient(145deg,#1C2033,var(--brand-dark),var(--brand))',
@@ -222,8 +222,8 @@ export default function StudentResult() {
         )}
       </div>
 
-      <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
-        width: '100%', maxWidth: 430, height: 66,
+      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0,
+         height: 66,
         background: dm ? '#1e293b' : '#fff',
         display: 'flex', borderTop: dm ? '1px solid #334155' : '1px solid #E8EAF0',
         boxShadow: '0 -4px 24px color-mix(in srgb, var(--brand) 8%, transparent)', zIndex: 200 }}>

@@ -30,7 +30,7 @@ export default function SosModal({ onClose, studentName, studentId, location, dr
   };
 
   const overlay = { position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 };
-  const card = { background: "#fff", borderRadius: 20, padding: 24, width: "100%", maxWidth: 360, textAlign: "center", fontFamily: "Inter, system-ui, sans-serif" };
+  const card = { background: "#fff", borderRadius: 20, padding: 24, width: "100%", maxWidth: 360, textAlign: "center", fontFamily: "inherit" };
   const btn = { flex: 1, padding: "12px", borderRadius: 12, fontWeight: 700, fontSize: 14, cursor: "pointer", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center" };
 
   return (

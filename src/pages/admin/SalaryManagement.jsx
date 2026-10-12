@@ -117,7 +117,7 @@ export default function SalaryManagement() {
   const years = [...new Set(salaries.map(s => s.year))].sort((a,b) => b-a);
 
   return (
-    <div style={{ fontFamily:"Inter,sans-serif" }}>
+    <div style={{ fontFamily: "inherit" }}>
       <style>{`
         @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
         @keyframes slideUp { from { opacity:0; transform:translateY(24px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }

@@ -5,6 +5,7 @@ import { userTheme, brandLook } from '../../utils/theme'
 import SchoolStrip from '../../components/SchoolStrip'
 
 import Glyph from "../../components/Glyph";
+import BottomNav from "../../layout/BottomNav";
 import { plural } from "../../utils/plural";
 const API = import.meta.env.VITE_API_URL
 
@@ -191,7 +192,7 @@ export default function TeacherHome() {
         </div>
 
         {/* Quick Tiles */}
-        <div style={styles.tilesGrid}>
+        <div className="ea-tile-grid" style={styles.tilesGrid}>
           {quickTiles.map(t => (
             <button key={t.path} onClick={() => navigate(t.path)} style={styles.tile}>
               <div style={styles.tileIcon}>{t.icon}</div>
@@ -237,36 +238,15 @@ export default function TeacherHome() {
         <div style={{ height: 90 }} />
       </div>
 
-      {/* Bottom Nav */}
-      <div style={styles.bottomNav}>
-        {[
-          { icon: <Glyph e="🏠" />, label: 'Home',       path: '/teacher/home' },
-          { icon: <Glyph e="✅" />, label: 'Attendance', path: '/teacher/attendance' },
-          { icon: <Glyph e="📤" />, label: 'Upload',     path: '/teacher/upload' },
-          { icon: <Glyph e="💬" />, label: 'Messages',   path: '/teacher/chat' },
-          { icon: <Glyph e="👤" />, label: 'Me',         path: '/teacher/profile' },
-        ].map(t => {
-          const active = location.pathname === t.path
-          return (
-            <button key={t.path} onClick={() => navigate(t.path)} style={{
-              ...styles.navBtn,
-              color:     active ? theme.primary : '#7B8099',
-              borderTop: active ? `3px solid ${theme.primary}` : '3px solid transparent',
-            }}>
-              <span style={{ fontSize: 20 }}>{t.icon}</span>
-              <span>{t.label}</span>
-            </button>
-          )
-        })}
-      </div>
+      <BottomNav role="teacher" />
     </div>
   )
 }
 
 const styles = {
   screen: {
-    maxWidth: 420, margin: '0 auto', minHeight: '100vh',
-    background: '#F4F6FB', fontFamily: "'Poppins', sans-serif",
+    minHeight: '100vh',
+    background: '#F4F6FB', fontFamily: "inherit",
     display: 'flex', flexDirection: 'column', position: 'relative',
   },
   header: {
@@ -276,7 +256,7 @@ const styles = {
     flexShrink: 0,
   },
   headerSub:  { fontSize: 11, color: 'rgba(255,255,255,.7)', fontWeight: 700, letterSpacing: 1 },
-  headerName: { fontSize: 20, fontWeight: 800, color: '#fff', fontFamily: "'Baloo 2', cursive" },
+  headerName: { fontSize: 20, fontWeight: 800, color: '#fff', fontFamily: "inherit" },
   bellBtn: {
     width: 38, height: 38, borderRadius: 12, border: 'none', cursor: 'pointer',
     background: 'rgba(255,255,255,.15)', fontSize: 18, position: 'relative',
@@ -292,7 +272,7 @@ const styles = {
     borderRadius: 20, padding: '20px', marginBottom: 16, color: '#fff',
   },
   heroSub:      { fontSize: 11, opacity: .75, marginBottom: 4 },
-  heroGreeting: { fontSize: 22, fontWeight: 800, fontFamily: "'Baloo 2', cursive" },
+  heroGreeting: { fontSize: 22, fontWeight: 800, fontFamily: "inherit" },
   heroDate:     { fontSize: 12, opacity: .8, marginTop: 2, marginBottom: 14 },
   statsRow:     { display: 'flex', gap: 10 },
   statBox: {
@@ -317,7 +297,7 @@ const styles = {
     display: 'flex', justifyContent: 'space-between',
     alignItems: 'center', marginBottom: 12,
   },
-  sectionTitle: { fontSize: 16, fontWeight: 800, color: '#1C2033', fontFamily: "'Baloo 2', cursive" },
+  sectionTitle: { fontSize: 16, fontWeight: 800, color: '#1C2033', fontFamily: "inherit" },
   sectionDay:   { fontSize: 12, color: 'var(--brand)', fontWeight: 700 },
   periodCard: {
     background: '#fff', borderRadius: 20, padding: '13px 15px',
@@ -331,19 +311,6 @@ const styles = {
   emptySchedule: {
     textAlign: 'center', padding: '30px 20px',
     color: '#999', fontSize: 14, fontWeight: 500,
-  },
-  bottomNav: {
-    position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
-    width: '100%', maxWidth: 420, background: '#fff',
-    display: 'flex', borderTop: '1px solid #E8EAF0',
-    boxShadow: '0 -4px 24px color-mix(in srgb, var(--brand) 8%, transparent)', zIndex: 200, height: 66,
-  },
-  navBtn: {
-    flex: 1, display: 'flex', flexDirection: 'column',
-    alignItems: 'center', justifyContent: 'center', gap: 3,
-    cursor: 'pointer', fontSize: '9.5px', fontWeight: 700,
-    letterSpacing: '.3px', textTransform: 'uppercase',
-    border: 'none', background: 'none',
   },
   centered: {
     display: 'flex', flexDirection: 'column',

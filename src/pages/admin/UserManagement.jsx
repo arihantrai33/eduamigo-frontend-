@@ -21,7 +21,7 @@ const ROLE_META = {
 const inp = {
   padding: "9px 12px", borderRadius: 8, border: "1px solid #E2E8F0",
   fontSize: 13, outline: "none", background: "#F8FAFC",
-  fontFamily: "Inter, sans-serif", width: "100%", boxSizing: "border-box",
+  fontFamily: "inherit", width: "100%", boxSizing: "border-box",
 };
 
 export default function UserManagement() {
@@ -77,7 +77,7 @@ export default function UserManagement() {
   }, {});
 
   return (
-    <div style={{ fontFamily: "Inter, sans-serif", maxWidth: 1000 }}>
+    <div style={{ fontFamily: "inherit", maxWidth: 1000 }}>
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
         <div>

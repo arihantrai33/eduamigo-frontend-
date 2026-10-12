@@ -91,12 +91,12 @@ export default function Notes() {
     }
   };
   if (loading) return (
-    <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: dm ? '#0f172a' : '#F8F9FB', fontFamily: 'Inter, sans-serif', color: 'var(--brand)' }}>
+    <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: dm ? '#0f172a' : '#F8F9FB', fontFamily: 'inherit', color: 'var(--brand)' }}>
       Loading...
     </div>
   );
   return (
-    <div style={{ maxWidth: 420, margin: '0 auto', minHeight: '100vh', background: dm ? '#0f172a' : '#F8F9FB', fontFamily: 'Inter, sans-serif', display: 'flex', flexDirection: 'column', position: 'relative', paddingBottom: 80 }}>
+    <div style={{ minHeight: '100vh', background: dm ? '#0f172a' : '#F8F9FB', fontFamily: 'inherit', display: 'flex', flexDirection: 'column', position: 'relative', paddingBottom: 80 }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '48px 20px 12px', background: dm ? 'var(--brand-gradient)' : '#fff', borderBottom: `1px solid ${dm ? '#334155' : '#F0F0F0'}` }}>
         <button style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: dm ? '#ffffff' : '#333', padding: '4px 8px' }} onClick={() => navigate('/student/home')}>←</button>
@@ -224,7 +224,7 @@ export default function Notes() {
         )}
       </div>
       {/* Bottom Nav */}
-      <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 420, background: dm ? '#1e293b' : '#fff', borderTop: `1px solid ${dm ? '#334155' : '#F0F0F0'}`, display: 'flex', justifyContent: 'space-around', padding: '8px 0 12px', zIndex: 100 }}>
+      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: dm ? '#1e293b' : '#fff', borderTop: `1px solid ${dm ? '#334155' : '#F0F0F0'}`, display: 'flex', justifyContent: 'space-around', padding: '8px 0 12px', zIndex: 100 }}>
         {[
           { icon: <Glyph e="🏠" />, label: 'HOME',  path: '/student/home' },
           { icon: <Glyph e="🚌" />, label: 'BUS',   path: '/student/bus' },

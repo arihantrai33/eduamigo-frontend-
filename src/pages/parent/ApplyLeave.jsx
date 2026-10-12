@@ -78,7 +78,7 @@ export default function ApplyLeave() {
       <div style={{
         height: "100vh", display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
-        fontFamily: "'Poppins', sans-serif", background: "var(--bg)",
+        fontFamily: "inherit", background: "var(--bg)",
       }}>
         <div style={{ fontSize: "64px" }}><Glyph e="✅" /></div>
         <div style={{ fontWeight: "800", fontSize: "20px", marginTop: "16px", color: "var(--text)" }}>
@@ -105,7 +105,7 @@ export default function ApplyLeave() {
   return (
     <div style={{
       minHeight: "100vh", background: "var(--bg)",
-      fontFamily: "'Poppins', sans-serif", paddingBottom: "32px",
+      fontFamily: "inherit", paddingBottom: "32px",
     }}>
 
       {/* Header */}
@@ -179,7 +179,7 @@ export default function ApplyLeave() {
                 width: "100%", marginTop: "8px", padding: "12px",
                 borderRadius: "10px", border: "1px solid #e0e0e0",
                 fontSize: "14px", color: "var(--text)", outline: "none",
-                fontFamily: "'Poppins', sans-serif",
+                fontFamily: "inherit",
                 background: "var(--card)", boxSizing: "border-box",
               }}
             >
@@ -203,7 +203,7 @@ export default function ApplyLeave() {
                   width: "100%", marginTop: "8px", padding: "12px",
                   borderRadius: "10px", border: "1px solid #e0e0e0",
                   fontSize: "13px", outline: "none", color: "var(--text)",
-                  fontFamily: "'Poppins', sans-serif", boxSizing: "border-box",
+                  fontFamily: "inherit", boxSizing: "border-box",
                 }}
               />
             </div>
@@ -219,7 +219,7 @@ export default function ApplyLeave() {
                   width: "100%", marginTop: "8px", padding: "12px",
                   borderRadius: "10px", border: "1px solid #e0e0e0",
                   fontSize: "13px", outline: "none", color: "var(--text)",
-                  fontFamily: "'Poppins', sans-serif", boxSizing: "border-box",
+                  fontFamily: "inherit", boxSizing: "border-box",
                 }}
               />
             </div>
@@ -239,7 +239,7 @@ export default function ApplyLeave() {
                 width: "100%", marginTop: "8px", padding: "12px",
                 borderRadius: "10px", border: "1px solid #e0e0e0",
                 fontSize: "14px", outline: "none", color: "var(--text)",
-                resize: "none", fontFamily: "'Poppins', sans-serif",
+                resize: "none", fontFamily: "inherit",
                 boxSizing: "border-box",
               }}
             />
@@ -296,7 +296,7 @@ export default function ApplyLeave() {
               background: loading ? "#aaa" : "var(--brand-gradient)",
               color: "white", fontSize: "15px", fontWeight: "700",
               cursor: loading ? "not-allowed" : "pointer",
-              fontFamily: "'Poppins', sans-serif",
+              fontFamily: "inherit",
             }}
           >
             {loading ? "Submitting..." : "Submit Leave Request"}

@@ -48,12 +48,14 @@ import ParentBus from './pages/parent/Bus'
 import ParentProfile from './pages/parent/Profile'
 import DriverHome from './pages/driver/Driver'
 import { hasFeature, FEATURE_OF_PATH } from './utils/features'
+import PortalShell from './layout/PortalShell'
+import { portalOf } from './layout/portalNav'
 
 import Glyph from "./components/Glyph";
 // Shown when a screen belongs to a module the school's plan does not include.
 function FeatureUnavailable({ home }) {
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 32, textAlign: 'center', fontFamily: "'Inter','Segoe UI',sans-serif", background: 'var(--bg, #F4F6FB)' }}>
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 32, textAlign: 'center', fontFamily: "inherit", background: 'var(--bg, #F4F6FB)' }}>
       <div style={{ fontSize: 44, marginBottom: 12 }}><Glyph e="🔒" /></div>
       <h2 style={{ fontSize: 18, color: 'var(--text, #111)', margin: '0 0 8px' }}>Not available for your school</h2>
       <p style={{ fontSize: 13, color: 'var(--subtext, #666)', lineHeight: 1.5, margin: '0 0 20px' }}>
@@ -70,7 +72,7 @@ function LoadingScreen() {
       height: "100vh",
       background: "linear-gradient(135deg, #0A0E27 0%, #0D1F5C 100%)",
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-      gap: "0px", position: "relative", overflow: "hidden", fontFamily: "Georgia, serif",
+      gap: "0px", position: "relative", overflow: "hidden", fontFamily: "inherit",
     }}>
       <div style={{ position: "absolute", width: "350px", height: "350px", borderRadius: "50%", background: "radial-gradient(circle, rgba(59,111,232,0.25) 0%, transparent 70%)", top: "15%", left: "50%", transform: "translateX(-50%)", pointerEvents: "none" }} />
       <div style={{ position: "absolute", width: "250px", height: "250px", borderRadius: "50%", background: "radial-gradient(circle, rgba(108,59,232,0.18) 0%, transparent 70%)", bottom: "20%", right: "-10%", pointerEvents: "none" }} />
@@ -209,11 +211,20 @@ function AppLayout() {
       </div>
     )
   }
+  // Student, Teacher and Parent portals: sidebar on desktop, bottom tabs on phones and tablets (see layout/PortalShell).
+  const portal = portalOf(location.pathname)
+  if (portal) {
+    return (
+      <PortalShell role={portal}>
+        <AppRoutes />
+      </PortalShell>
+    )
+  }
+  // Sign-in, school search, password, driver: one centred column. Report cards and receipts get a wider page.
+  const isDocument = /^\/(report-card|receipt)(\/|$)/.test(location.pathname)
   return (
-    <div style={{ minHeight: '100vh', background: '#0f0f1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      {/* transform makes this frame the containing block for position: fixed children (bottom navs,
-          sheets, EduAmigo Ask), so they stay inside the phone frame instead of the browser window. */}
-      <div style={{ width: 390, height: '100vh', maxHeight: 844, position: 'relative', overflow: 'hidden', background: 'var(--app-bg, #F4F6FB)', boxShadow: '0 40px 100px rgba(0,0,0,.6)', borderRadius: 40, transform: 'translateZ(0)' }}>
+    <div className={isDocument ? 'ea-solo ea-solo--document' : 'ea-solo'}>
+      <div className="ea-solo__stage">
         <AppRoutes />
       </div>
     </div>

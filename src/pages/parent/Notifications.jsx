@@ -46,7 +46,7 @@ export default function ParentNotifications() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "Inter, sans-serif", paddingBottom: 80 }}>
+    <div style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "inherit", paddingBottom: 80 }}>
       <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <button onClick={() => navigate(-1)}

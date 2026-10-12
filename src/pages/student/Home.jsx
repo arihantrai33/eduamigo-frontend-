@@ -7,6 +7,7 @@ import { userTheme, brandLook } from "../../utils/theme";
 import SchoolStrip from "../../components/SchoolStrip";
 import axios from "axios";
 import Glyph from "../../components/Glyph";
+import BottomNav from "../../layout/BottomNav";
 import { plural } from "../../utils/plural";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -121,7 +122,7 @@ return (
     );
   }
 return (
-<div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "Inter, sans-serif" }}>
+<div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "inherit" }}>
 {/* ── Header ── */}
 <div style={{ background: look.header, padding: "20px 20px 20px", flexShrink: 0 }}>
 <SchoolStrip user={user} theme={theme} look={look} />
@@ -196,7 +197,7 @@ style={{ flex: 1, background: look.tile, border: look.border, borderRadius: 10, 
 {/* ── Body ── */}
 <div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 80px" }}>
 {/* Quick Tiles */}
-<div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
+<div className="ea-tile-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
 {quickTiles.filter(visibleFor(user)).map((tile) => (
 <button key={tile.label} onClick={() => navigate(tile.path)}
 style={{ background: "var(--card)", borderRadius: 14, padding: 14, border: "none", cursor: "pointer", textAlign: "left", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
@@ -261,22 +262,7 @@ notices.map((n, i) => (
           )}
 </div>
 </div>
-{/* ── Bottom Nav ── */}
-<div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: "var(--card)", borderTop: `1px solid ${"#f0f0f0"}`, display: "flex", padding: "8px 0 16px", boxShadow: "0 -4px 12px rgba(0,0,0,0.06)" }}>
-{[
-          { icon: <Glyph e="🏠" />, label: "Home",  path: "/student/home",  active: true },
-          { icon: <Glyph e="🚌" />, label: "Bus",   path: "/student/bus" },
-          { icon: <Glyph e="📚" />, label: "Learn", path: "/student/notes" },
-          { icon: <Glyph e="💬" />, label: "Chat",  path: "/student/chat" },
-          { icon: <Glyph e="👤" />, label: "Me",    path: "/student/profile" },
-        ].filter(visibleFor(user)).map((tab) => (
-<button key={tab.label} onClick={() => navigate(tab.path)}
-style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, color: tab.active ? theme.primary : "#999" }}>
-<span style={{ fontSize: 22 }}>{tab.icon}</span>
-<span style={{ fontSize: 10, fontWeight: tab.active ? 700 : 500 }}>{tab.label}</span>
-</button>
-        ))}
-</div>
+<BottomNav role="student" />
 </div>
   );
 }

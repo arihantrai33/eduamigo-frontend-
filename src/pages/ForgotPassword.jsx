@@ -125,7 +125,7 @@ export default function ForgotPassword() {
 }
 
 const s = {
-  page: { minHeight: "100vh", height: "100vh", display: "flex", flexDirection: "column", background: "var(--card)", fontFamily: "'Inter','Segoe UI',sans-serif", overflowY: "auto" },
+  page: { minHeight: "100vh", height: "100vh", display: "flex", flexDirection: "column", background: "var(--card)", fontFamily: "inherit", overflowY: "auto" },
   card: { flex: 1, background: "var(--card)", padding: "4px 22px 32px" },
   heading: { fontSize: 19, fontWeight: 700, color: "var(--text)", margin: "0 0 6px" },
   sub: { fontSize: 13, color: "var(--subtext)", margin: "0 0 16px", lineHeight: 1.55 },

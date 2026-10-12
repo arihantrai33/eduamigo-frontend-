@@ -128,7 +128,7 @@ export default function HRManagement() {
   );
 
   return (
-    <div style={{ fontFamily:"'Inter',sans-serif" }}>
+    <div style={{ fontFamily: "inherit" }}>
       <div style={{ marginBottom:24 }}>
         <div style={{ fontSize:22, fontWeight:800, color:"#0F172A", letterSpacing:"-0.3px" }}>HR Management</div>
         <div style={{ fontSize:12, color:"#94A3B8", marginTop:3 }}>Salary records and staff leave management</div>

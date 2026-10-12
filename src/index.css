@@ -19,7 +19,7 @@ html {
 body {
   min-height: 100vh;
   background: #f5f6fa;
-  font-family: 'Inter', 'Segoe UI', sans-serif;
+  font-family: var(--ea-font);
   color: #111;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -35,19 +35,191 @@ input, button, select, textarea {
   background: #f5f6fa;
 }
 
-/* Mobile app shell — only for non-admin pages */
-@media (min-width: 768px) {
-  body:not(.admin-body) {
+/* ───────────── Layout: portals (Student, Teacher, Parent) ─────────────
+   Below 1024 px the page fills the screen and uses the bottom tab bar.
+   From 1024 px a sidebar holds the navigation and the page gets a wide content area. */
+.ea-shell {
+  display: flex;
+  min-height: 100dvh;
+  background: var(--app-bg, #F4F6FB);
+}
+.ea-sidebar { display: none; }
+.ea-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+}
+/* Containing block for the pages' fixed bars and sheets (transform), and the scroll owner's parent. */
+.ea-stage {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  transform: translateZ(0);
+  background: var(--app-bg, #F4F6FB);
+}
+
+.ea-bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  display: flex;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -4px 12px rgba(15, 23, 42, 0.06);
+  padding: 6px 0 calc(10px + env(safe-area-inset-bottom));
+}
+.ea-bottom-nav__item {
+  flex: 1;
+  min-height: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--ea-muted);
+  font-size: 11px;
+  font-weight: 500;
+}
+.ea-bottom-nav__item.is-active { color: var(--brand); font-weight: 700; }
+
+@media (min-width: 1024px) {
+  .ea-bottom-nav { display: none; }
+  .ea-sidebar {
+    position: sticky;
+    top: 0;
     display: flex;
-    justify-content: center;
-    background: #0f0f1a;
+    flex-direction: column;
+    flex: none;
+    width: 260px;
+    height: 100dvh;
+    background: var(--ea-surface);
+    border-right: 1px solid var(--ea-line);
   }
-  body:not(.admin-body) #root {
-    max-width: 430px;
-    min-height: 100vh;
-    box-shadow: 0 0 60px rgba(0,0,0,0.4);
-    border-radius: 0;
+  .ea-stage { max-width: 1280px; }
+  /* Home screens: the quick-access tiles use three columns when there is room (inline styles set two). */
+  .ea-tile-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+}
+
+.ea-sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--ea-line);
+}
+.ea-sidebar__logo {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 12px;
+  object-fit: contain;
+  background: #fff;
+  border: 1px solid var(--ea-line);
+}
+.ea-sidebar__logo--initial {
+  display: grid;
+  place-items: center;
+  background: var(--brand);
+  border-color: transparent;
+  color: #fff;
+  font-weight: 800;
+  font-size: 17px;
+}
+.ea-sidebar__school, .ea-sidebar__user-text { display: flex; flex-direction: column; min-width: 0; }
+.ea-sidebar__school strong, .ea-sidebar__user-text strong {
+  font-size: 14px;
+  color: var(--ea-ink);
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* A school's name may take two lines; a person's name stays on one. */
+.ea-sidebar__school strong { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.ea-sidebar__user-text strong { white-space: nowrap; }
+.ea-sidebar__school small, .ea-sidebar__user-text small { font-size: 12px; color: var(--ea-muted); margin-top: 2px; }
+.ea-sidebar__nav { flex: 1; overflow-y: auto; padding: 12px 12px 16px; }
+.ea-sidebar__section + .ea-sidebar__section { margin-top: 14px; }
+.ea-sidebar__heading {
+  padding: 4px 12px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ea-faint);
+}
+.ea-sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 40px;
+  padding: 0 12px;
+  border-radius: 10px;
+  color: var(--ea-body);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.ea-sidebar__link:hover { background: var(--ea-hover); color: var(--ea-ink); }
+.ea-sidebar__link.is-active { background: var(--brand-soft); color: var(--brand-dark); font-weight: 650; }
+.ea-sidebar__footer { padding: 12px; border-top: 1px solid var(--ea-line); }
+.ea-sidebar__user { display: flex; align-items: center; gap: 10px; padding: 8px 8px 12px; }
+.ea-avatar {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--brand-soft);
+  color: var(--brand-dark);
+  font-weight: 700;
+  font-size: 14px;
+}
+.ea-sidebar__signout {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--ea-line);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ea-danger);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.ea-sidebar__signout:hover { background: #FEF2F2; border-color: #FECACA; }
+
+/* ───────────── Layout: single-column screens (sign-in, school search, driver) ─────────────
+   Full screen on phones; a centred column on a calm background from 768 px. */
+.ea-solo { min-height: 100dvh; background: var(--app-bg, #F4F6FB); }
+.ea-solo__stage {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  transform: translateZ(0);
+  background: var(--app-bg, #F4F6FB);
+}
+@media (min-width: 768px) {
+  .ea-solo { display: grid; place-items: center; padding: 32px 16px; background: var(--ea-canvas); }
+  .ea-solo__stage {
+    max-width: 480px;
+    height: min(860px, calc(100dvh - 64px));
+    border-radius: 20px;
+    border: 1px solid var(--ea-line);
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
   }
+  .ea-solo--document .ea-solo__stage { max-width: 920px; }
 }
 
 /* Admin full width */
@@ -118,6 +290,32 @@ body.admin-body #root {
   --brand-border: #C7D2FE;
   --brand-accent: #F5B301;
   --brand-gradient: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+
+  /* Design tokens (neutral UI). New and refactored screens use these instead of literals.
+     Brand colour comes from --brand*; status colours stay fixed so meaning never depends on the school's palette. */
+  --ea-font: "Inter Variable", Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --ea-canvas: #EEF1F6;      /* page background around content */
+  --ea-surface: #FFFFFF;     /* cards, sidebar */
+  --ea-hover: #F3F5F9;
+  --ea-line: #E3E7EE;        /* borders and dividers */
+  --ea-ink: #0F172A;         /* headings */
+  --ea-body: #334155;        /* body text */
+  --ea-muted: #64748B;       /* secondary text (4.6:1 on white) */
+  --ea-faint: #94A3B8;       /* section labels */
+  --ea-success: #15803D;
+  --ea-warning: #B45309;
+  --ea-danger: #B91C1C;
+  --ea-info: #1D4ED8;
+  --ea-radius-sm: 8px;
+  --ea-radius: 12px;
+  --ea-radius-lg: 16px;
+  --ea-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.04);
+  --ea-space-1: 4px;
+  --ea-space-2: 8px;
+  --ea-space-3: 12px;
+  --ea-space-4: 16px;
+  --ea-space-5: 24px;
+  --ea-space-6: 32px;
 }
 
 /* Dark mode */

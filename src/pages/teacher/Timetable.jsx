@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 
 import Glyph from "../../components/Glyph";
+import BottomNav from "../../layout/BottomNav";
 const API = import.meta.env.VITE_API_URL
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
@@ -98,14 +99,14 @@ export default function TeacherTimetable() {
   )
 
   return (
-    <div style={{ maxWidth: 420, margin: '0 auto', minHeight: '100vh', background: '#F4F6FB', fontFamily: "'Poppins', sans-serif", paddingBottom: 90 }}>
+    <div style={{ minHeight: '100vh', background: '#F4F6FB', fontFamily: "inherit", paddingBottom: 90 }}>
 
       {/* Header */}
       <div style={{ background: 'var(--brand-gradient)', padding: '48px 18px 20px', display: 'flex', alignItems: 'center', gap: 12 }}>
         <button onClick={() => navigate('/teacher/home')} style={{ background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: 10, width: 36, height: 36, fontSize: 18, cursor: 'pointer', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>←</button>
         <div>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', fontWeight: 700, letterSpacing: 1 }}>TEACHER PORTAL</div>
-          <div style={{ fontSize: 20, fontWeight: 800, color: '#fff', fontFamily: "'Baloo 2', cursive" }}>My Timetable</div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: '#fff', fontFamily: "inherit" }}>My Timetable</div>
         </div>
       </div>
 
@@ -114,7 +115,7 @@ export default function TeacherTimetable() {
         {/* Summary Card */}
         <div style={{ background: 'var(--brand-gradient)', borderRadius: 20, padding: 18, marginBottom: 16, color: '#fff' }}>
           <div style={{ fontSize: 12, opacity: 0.75, marginBottom: 4 }}>{teacher?.subjects?.join(', ') || 'No subjects'}</div>
-          <div style={{ fontSize: 18, fontWeight: 800, fontFamily: "'Baloo 2', cursive", marginBottom: 12 }}>{teacher?.name || '—'}</div>
+          <div style={{ fontSize: 18, fontWeight: 800, fontFamily: "inherit", marginBottom: 12 }}>{teacher?.name || '—'}</div>
           <div style={{ display: 'flex', gap: 10 }}>
             {[
               { val: totalPeriods,                              lbl: 'Total Periods' },
@@ -141,7 +142,7 @@ export default function TeacherTimetable() {
                 background: isActive ? 'var(--brand)' : '#fff',
                 color: isActive ? '#fff' : isToday ? 'var(--brand)' : '#7B8099',
                 fontWeight: isActive || isToday ? 700 : 500,
-                fontSize: 12, fontFamily: "'Poppins', sans-serif",
+                fontSize: 12, fontFamily: "inherit",
                 boxShadow: isActive ? '0 4px 12px color-mix(in srgb, var(--brand) 30%, transparent)' : '0 2px 8px rgba(0,0,0,0.06)',
                 outline: isToday && !isActive ? '2px solid var(--brand)' : 'none',
               }}>
@@ -157,7 +158,7 @@ export default function TeacherTimetable() {
         </div>
 
         {/* Periods */}
-        <div style={{ fontSize: 14, fontWeight: 700, color: '#1C2033', marginBottom: 12, fontFamily: "'Baloo 2', cursive" }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: '#1C2033', marginBottom: 12, fontFamily: "inherit" }}>
           {selectedDay} {selectedDay === today && <span style={{ fontSize: 11, color: 'var(--brand)', fontWeight: 600 }}>• Today</span>}
         </div>
 
@@ -214,30 +215,7 @@ export default function TeacherTimetable() {
         )}
       </div>
 
-      {/* Bottom Nav */}
-      <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 420, background: '#fff', display: 'flex', borderTop: '1px solid #E8EAF0', boxShadow: '0 -4px 24px color-mix(in srgb, var(--brand) 8%, transparent)', zIndex: 200, height: 66 }}>
-        {[
-          { icon: <Glyph e="🏠" />, label: 'Home',       path: '/teacher/home' },
-          { icon: <Glyph e="✅" />, label: 'Attendance', path: '/teacher/attendance' },
-          { icon: <Glyph e="📤" />, label: 'Upload',     path: '/teacher/upload' },
-          { icon: <Glyph e="💬" />, label: 'Messages',   path: '/teacher/chat' },
-          { icon: <Glyph e="👤" />, label: 'Me',         path: '/teacher/profile' },
-        ].map(t => {
-          const active = location.pathname === t.path
-          return (
-            <button key={t.path} onClick={() => navigate(t.path)} style={{
-              flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-              gap: 3, cursor: 'pointer', fontSize: '9.5px', fontWeight: 700,
-              letterSpacing: '.3px', textTransform: 'uppercase', border: 'none', background: 'none',
-              color: active ? 'var(--brand)' : '#7B8099',
-              borderTop: active ? '3px solid var(--brand)' : '3px solid transparent',
-            }}>
-              <span style={{ fontSize: 20 }}>{t.icon}</span>
-              <span>{t.label}</span>
-            </button>
-          )
-        })}
-      </div>
+      <BottomNav role="teacher" />
     </div>
   )
 }

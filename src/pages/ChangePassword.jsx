@@ -45,7 +45,7 @@ export default function ChangePassword() {
   const label = { display: "block", fontSize: 12, fontWeight: 600, color: "#475569", margin: "14px 0 6px" };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#F4F5FA", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: "Inter, system-ui, sans-serif" }}>
+    <div style={{ minHeight: "100vh", background: "#F4F5FA", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: "inherit" }}>
       <form onSubmit={submit} style={{ background: "#fff", borderRadius: 16, padding: 24, width: "100%", maxWidth: 400, boxShadow: "0 10px 30px rgba(15,23,42,0.08)" }}>
         <h1 style={{ fontSize: 20, margin: "0 0 6px", color: "#0F172A" }}>{forced ? "Set a new password" : "Change password"}</h1>
         <p style={{ fontSize: 13, color: "#64748B", margin: 0, lineHeight: 1.5 }}>

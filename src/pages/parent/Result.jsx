@@ -49,17 +49,17 @@ export default function ParentResult() {
   const pct      = max > 0 ? Math.round((total / max) * 100) : 0;
   const topGrade = filtered[0]?.grade ?? "—";
   if (loading) return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Inter, sans-serif" }}>
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "inherit" }}>
       <div style={{ color: "var(--subtext)", fontSize: 14 }}>Loading results...</div>
     </div>
   );
   if (error) return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Inter, sans-serif" }}>
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "inherit" }}>
       <div style={{ color: "#ef4444", fontSize: 14 }}>{error}</div>
     </div>
   );
   return (
-    <div style={{ minHeight: "100vh", background: "#F4F6FB", fontFamily: "Inter, sans-serif", paddingBottom: 40 }}>
+    <div style={{ minHeight: "100vh", background: "#F4F6FB", fontFamily: "inherit", paddingBottom: 40 }}>
       <div style={{ background: "var(--brand-gradient)", padding: "48px 20px 32px", color: "white" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
           <button onClick={() => navigate(-1)}

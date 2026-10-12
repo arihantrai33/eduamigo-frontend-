@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext'
 import { todayLocal } from "../../utils/dates";
 
 import Glyph from "../../components/Glyph";
+import BottomNav from "../../layout/BottomNav";
 import { plural } from "../../utils/plural";
 const API = import.meta.env.VITE_API_URL
 
@@ -130,7 +131,7 @@ export default function TeacherAttendance() {
   const late    = students.filter(s => attendance[s._id]?.status === "Late").length
 
   return (
-    <div style={{ maxWidth: 420, margin: "0 auto", height: "100vh", overflowY: "auto", background: "#F4F6FB", fontFamily: "'Poppins', sans-serif", paddingBottom: 90 }}>
+    <div style={{ height: "100vh", overflowY: "auto", background: "#F4F6FB", fontFamily: "inherit", paddingBottom: 90 }}>
 
       {toast && (
         <div style={{
@@ -149,7 +150,7 @@ export default function TeacherAttendance() {
         <button onClick={() => navigate('/teacher/home')} style={{ background: "rgba(255,255,255,0.15)", border: "none", borderRadius: 10, width: 36, height: 36, fontSize: 18, cursor: "pointer", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>←</button>
         <div>
           <div style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", fontWeight: 700, letterSpacing: 1 }}>TEACHER PORTAL</div>
-          <div style={{ fontSize: 20, fontWeight: 800, color: "#fff", fontFamily: "'Baloo 2', cursive" }}>Attendance</div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: "#fff", fontFamily: "inherit" }}>Attendance</div>
         </div>
       </div>
 
@@ -306,30 +307,7 @@ export default function TeacherAttendance() {
         )}
       </div>
 
-      {/* Bottom Nav */}
-      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 420, background: "var(--card)", display: "flex", borderTop: "1px solid #E8EAF0", overflowY: "auto", boxShadow: "0 -4px 24px color-mix(in srgb, var(--brand) 8%, transparent)", zIndex: 200, height: 66 }}>
-        {[
-          { icon: <Glyph e="🏠" />, label: "Home",       path: "/teacher/home" },
-          { icon: <Glyph e="✅" />, label: "Attendance", path: "/teacher/attendance" },
-          { icon: <Glyph e="📤" />, label: "Upload",     path: "/teacher/upload" },
-          { icon: <Glyph e="💬" />, label: "Messages",   path: "/teacher/chat" },
-          { icon: <Glyph e="👤" />, label: "Me",         path: "/teacher/profile" },
-        ].map(t => {
-          const active = location.pathname === t.path
-          return (
-            <button key={t.path} onClick={() => navigate(t.path)} style={{
-              flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-              gap: 3, cursor: "pointer", fontSize: "9.5px", fontWeight: 700,
-              letterSpacing: ".3px", textTransform: "uppercase", border: "none", background: "none",
-              color: active ? "var(--brand)" : "#7B8099",
-              borderTop: active ? "3px solid var(--brand)" : "3px solid transparent",
-            }}>
-              <span style={{ fontSize: 20 }}>{t.icon}</span>
-              <span>{t.label}</span>
-            </button>
-          )
-        })}
-      </div>
+      <BottomNav role="teacher" />
     </div>
   )
 }

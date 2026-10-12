@@ -49,7 +49,7 @@ export default function Toast() {
         {toasts.map((t) => {
           const c = COLORS[t.type] || COLORS.info;
           return (
-            <div key={t.id} onClick={() => dismiss(t.id)} style={{ pointerEvents: "auto", cursor: "pointer", display: "flex", gap: 10, alignItems: "flex-start", background: c.bg, borderLeft: `4px solid ${c.border}`, color: c.color, padding: "12px 14px", borderRadius: 10, boxShadow: "0 8px 24px rgba(15,23,42,0.15)", fontSize: 14, fontFamily: "Inter, system-ui, sans-serif", lineHeight: 1.4 }}>
+            <div key={t.id} onClick={() => dismiss(t.id)} style={{ pointerEvents: "auto", cursor: "pointer", display: "flex", gap: 10, alignItems: "flex-start", background: c.bg, borderLeft: `4px solid ${c.border}`, color: c.color, padding: "12px 14px", borderRadius: 10, boxShadow: "0 8px 24px rgba(15,23,42,0.15)", fontSize: 14, fontFamily: "inherit", lineHeight: 1.4 }}>
               <span style={{ width: 20, height: 20, borderRadius: "50%", background: c.border, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, flexShrink: 0 }}>{c.icon}</span>
               <span>{t.message}</span>
             </div>
@@ -59,7 +59,7 @@ export default function Toast() {
 
       {confirm && (
         <div role="dialog" aria-modal="true" onClick={() => answer(false)} style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.45)", zIndex: 10001, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 14, padding: 20, width: "100%", maxWidth: 380, boxShadow: "0 20px 50px rgba(15,23,42,0.3)", fontFamily: "Inter, system-ui, sans-serif" }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 14, padding: 20, width: "100%", maxWidth: 380, boxShadow: "0 20px 50px rgba(15,23,42,0.3)", fontFamily: "inherit" }}>
             <p style={{ margin: "0 0 18px", fontSize: 15, color: "#0F172A", lineHeight: 1.5 }}>{confirm.message}</p>
             <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
               <button onClick={() => answer(false)} style={{ padding: "9px 16px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", color: "#334155", fontWeight: 600, cursor: "pointer" }}>Cancel</button>
@@ -71,7 +71,7 @@ export default function Toast() {
 
       {creds && (
         <div role="dialog" aria-modal="true" style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.45)", zIndex: 10001, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-          <div style={{ background: "#fff", borderRadius: 14, padding: 20, width: "100%", maxWidth: 440, boxShadow: "0 20px 50px rgba(15,23,42,0.3)", fontFamily: "Inter, system-ui, sans-serif" }}>
+          <div style={{ background: "#fff", borderRadius: 14, padding: 20, width: "100%", maxWidth: 440, boxShadow: "0 20px 50px rgba(15,23,42,0.3)", fontFamily: "inherit" }}>
             <h3 style={{ margin: "0 0 6px", fontSize: 17, color: "#0F172A" }}>{creds.title}</h3>
             <p style={{ margin: "0 0 14px", fontSize: 13, color: "#64748B", lineHeight: 1.5 }}>Share these securely. Each password is temporary and must be changed at first login. They will not be shown again.</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 8, maxHeight: 280, overflowY: "auto" }}>

@@ -8,7 +8,7 @@ const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("
 const inputStyle = {
   padding: "9px 11px", borderRadius: 8, border: "1px solid #E2E8F0",
   fontSize: 13, color: "#0F172A", outline: "none", background: "#F8FAFC",
-  fontFamily: "Inter, sans-serif", width: "100%", boxSizing: "border-box",
+  fontFamily: "inherit", width: "100%", boxSizing: "border-box",
 };
 const card = { background: "#fff", border: "1px solid #E8E8E5", borderRadius: 12, padding: "1.5rem", marginBottom: 16 };
 const title = { fontSize: 13, fontWeight: 600, color: "var(--brand)", marginBottom: 12 };
@@ -213,11 +213,11 @@ export default function Settings() {
     </div>
   );
 
-  if (loading) return <div style={{ fontFamily: "Inter, sans-serif" }}>{header}<div style={{ ...card, color: "#94A3B8", fontSize: 13 }}>Loading settings...</div></div>;
-  if (error) return <div style={{ fontFamily: "Inter, sans-serif" }}>{header}<div style={{ ...card, color: "#B91C1C", fontSize: 13 }}>{error}</div></div>;
+  if (loading) return <div style={{ fontFamily: "inherit" }}>{header}<div style={{ ...card, color: "#94A3B8", fontSize: 13 }}>Loading settings...</div></div>;
+  if (error) return <div style={{ fontFamily: "inherit" }}>{header}<div style={{ ...card, color: "#B91C1C", fontSize: 13 }}>{error}</div></div>;
 
   return (
-    <div style={{ fontFamily: "Inter, sans-serif" }}>
+    <div style={{ fontFamily: "inherit" }}>
       {header}
 
       <div style={card}>

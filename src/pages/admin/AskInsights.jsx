@@ -230,7 +230,7 @@ const s = {
   tabOff: { padding: "9px 14px", border: "none", borderBottom: "2px solid transparent", background: "none", color: "var(--subtext)", fontWeight: 600, fontSize: 14, cursor: "pointer" },
   resolveBox: { display: "grid", gap: 6, marginTop: 8, minWidth: 220 },
   noteInput: { width: "100%", boxSizing: "border-box", padding: "8px 10px", borderRadius: 8, border: "1.5px solid var(--border)", background: "var(--input)", color: "var(--text)", fontSize: 12, fontFamily: "inherit", resize: "vertical" },
-  page: { padding: 24, fontFamily: "'Inter','Segoe UI',sans-serif", color: "var(--text)", display: "grid", gap: 16 },
+  page: { padding: 24, fontFamily: "inherit", color: "var(--text)", display: "grid", gap: 16 },
   head: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" },
   h1: { fontSize: 22, fontWeight: 800, margin: 0 },
   sub: { fontSize: 13, color: "var(--subtext)", marginTop: 4 },

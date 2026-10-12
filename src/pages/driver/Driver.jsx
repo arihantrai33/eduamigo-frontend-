@@ -195,7 +195,7 @@ export default function DriverHome() {
 
   if (!token || !busData) {
     return (
-      <div style={{ minHeight: "100vh", background: "linear-gradient(160deg, #0f172a 0%, #1e3a5f 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "'Poppins', sans-serif", padding: "24px" }}>
+      <div style={{ minHeight: "100vh", background: "linear-gradient(160deg, #0f172a 0%, #1e3a5f 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "inherit", padding: "24px" }}>
         <div style={{ width: "80px", height: "80px", background: "rgba(255,255,255,0.08)", borderRadius: "24px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "40px", marginBottom: "16px", border: "1px solid rgba(255,255,255,0.1)" }}><Glyph e="🚌" /></div>
         <div style={{ color: "white", fontSize: "22px", fontWeight: "800", marginBottom: "4px" }}>EduAmigo Driver</div>
         <div style={{ color: "rgba(255,255,255,0.4)", fontSize: "13px", marginBottom: "32px" }}>Enter your driver token to continue</div>
@@ -217,7 +217,7 @@ export default function DriverHome() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "linear-gradient(160deg, #0f172a 0%, #1e3a5f 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "'Poppins', sans-serif", padding: "24px" }}>
+    <div style={{ minHeight: "100vh", background: "linear-gradient(160deg, #0f172a 0%, #1e3a5f 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "inherit", padding: "24px" }}>
       <div style={{ width: "80px", height: "80px", background: "rgba(255,255,255,0.08)", borderRadius: "24px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "40px", marginBottom: "16px", border: "1px solid rgba(255,255,255,0.1)" }}><Glyph e="🚌" /></div>
       <div style={{ color: "white", fontSize: "22px", fontWeight: "800", marginBottom: "4px" }}>EduAmigo Driver</div>
       <div style={{ color: "rgba(255,255,255,0.4)", fontSize: "13px", marginBottom: "8px" }}>{busData.busNumber} — {busData.routeName}</div>

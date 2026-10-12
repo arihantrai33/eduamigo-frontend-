@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { toast, confirmAction, errorMessage } from '../../utils/toast'
 
-import Glyph from "../../components/Glyph";
+import BottomNav from "../../layout/BottomNav";
 const API = import.meta.env.VITE_API_URL
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
 
@@ -18,7 +18,6 @@ const fmtDate = (d) => new Date(d).toLocaleDateString('en-IN', { day: 'numeric',
 // name, term and maximum marks, so the teacher only picks it and types each student's score.
 export default function TeacherMarks() {
   const navigate = useNavigate()
-  const location = useLocation()
 
   const [classes, setClasses] = useState([])
   const [classKey, setClassKey] = useState('')
@@ -130,14 +129,14 @@ export default function TeacherMarks() {
     }
   }
 
-  if (loading) return <Shell navigate={navigate} location={location}><div style={styles.empty}>Loading...</div></Shell>
-  if (error) return <Shell navigate={navigate} location={location}><div style={{ ...styles.empty, color: '#B91C1C' }}>{error}</div></Shell>
-  if (!classes.length) return <Shell navigate={navigate} location={location}><div style={styles.empty}>No classes are assigned to you yet. Contact the school admin.</div></Shell>
+  if (loading) return <Shell navigate={navigate}><div style={styles.empty}>Loading...</div></Shell>
+  if (error) return <Shell navigate={navigate}><div style={{ ...styles.empty, color: '#B91C1C' }}>{error}</div></Shell>
+  if (!classes.length) return <Shell navigate={navigate}><div style={styles.empty}>No classes are assigned to you yet. Contact the school admin.</div></Shell>
 
   // ---- Marks sheet for one exam ----
   if (exam) {
     return (
-      <Shell navigate={navigate} location={location} title="Enter Marks" onBack={closeExam}>
+      <Shell navigate={navigate} title="Enter Marks" onBack={closeExam}>
         {loadingSheet || !sheet ? <div style={styles.empty}>Loading class list...</div> : (
           <>
             <div style={styles.card}>
@@ -200,7 +199,7 @@ export default function TeacherMarks() {
 
   // ---- Exam list for the chosen class ----
   return (
-    <Shell navigate={navigate} location={location} title="Enter Marks">
+    <Shell navigate={navigate} title="Enter Marks">
       <div style={styles.card}>
         <div style={styles.label}>Class</div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
@@ -251,7 +250,7 @@ function Badge({ status }) {
   return <span style={{ fontSize: 11, fontWeight: 700, padding: '4px 10px', borderRadius: 20, background: s.bg, color: s.color, whiteSpace: 'nowrap', height: 'fit-content' }}>{status}</span>
 }
 
-function Shell({ children, navigate, location, title = 'Enter Marks', onBack }) {
+function Shell({ children, navigate, title = 'Enter Marks', onBack }) {
   return (
     <div style={styles.screen}>
       <div style={styles.header}>
@@ -260,34 +259,13 @@ function Shell({ children, navigate, location, title = 'Enter Marks', onBack }) 
         <div style={{ width: 36 }} />
       </div>
       <div style={styles.scroll}>{children}</div>
-      <div style={styles.nav}>
-        {[
-          { icon: <Glyph e="🏠" />, label: 'Home', path: '/teacher/home' },
-          { icon: <Glyph e="✅" />, label: 'Attendance', path: '/teacher/attendance' },
-          { icon: <Glyph e="📤" />, label: 'Upload', path: '/teacher/upload' },
-          { icon: <Glyph e="💬" />, label: 'Messages', path: '/teacher/chat' },
-          { icon: <Glyph e="👤" />, label: 'Me', path: '/teacher/profile' },
-        ].map(t => {
-          const active = location.pathname === t.path
-          return (
-            <button key={t.path} onClick={() => navigate(t.path)} style={{
-              flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3,
-              cursor: 'pointer', fontSize: '9.5px', fontWeight: 700, letterSpacing: '.3px', textTransform: 'uppercase',
-              border: 'none', background: 'none', color: active ? 'var(--brand)' : '#7B8099',
-              borderTop: active ? '3px solid var(--brand)' : '3px solid transparent',
-            }}>
-              <span style={{ fontSize: 20 }}>{t.icon}</span>
-              <span>{t.label}</span>
-            </button>
-          )
-        })}
-      </div>
+      <BottomNav role="teacher" />
     </div>
   )
 }
 
 const styles = {
-  screen: { maxWidth: 420, margin: '0 auto', minHeight: '100vh', background: 'var(--bg, #F8F9FB)', fontFamily: "'Poppins', sans-serif", display: 'flex', flexDirection: 'column' },
+  screen: { minHeight: '100vh', background: 'var(--bg, #F8F9FB)', fontFamily: "inherit", display: 'flex', flexDirection: 'column' },
   header: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px 12px', background: 'var(--card, #fff)', borderBottom: '1px solid #F0F0F0', position: 'sticky', top: 0, zIndex: 10 },
   backBtn: { background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: 'var(--text, #333)', padding: '4px 8px' },
   headerTitle: { fontSize: 18, fontWeight: 700, color: 'var(--text, #1A1A2E)', margin: 0 },
@@ -298,5 +276,4 @@ const styles = {
   markInput: { width: 72, padding: '9px 10px', borderRadius: 10, border: '1.5px solid #E2E8F0', fontSize: 15, fontWeight: 600, textAlign: 'center', outline: 'none', fontFamily: 'inherit' },
   absentBtn: { border: 'none', borderRadius: 10, padding: '9px 10px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' },
   btn: { flex: 1, padding: '14px', borderRadius: 14, border: 'none', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' },
-  nav: { position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 420, background: 'var(--card, #fff)', display: 'flex', borderTop: '1px solid #E8EAF0', boxShadow: '0 -4px 24px color-mix(in srgb, var(--brand) 8%, transparent)', zIndex: 200, height: 66 },
 }

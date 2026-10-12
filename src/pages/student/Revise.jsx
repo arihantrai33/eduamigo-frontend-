@@ -191,7 +191,7 @@ export default function Revise() {
   const isBusy = loading || streaming;
 
   return (
-    <div style={{ maxWidth: 420, margin: '0 auto', height: '100vh', overflow: 'hidden', background: dm ? '#0b1220' : '#F4F5FA', fontFamily: 'Inter, sans-serif', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+    <div style={{ height: '100vh', overflow: 'hidden', background: dm ? '#0b1220' : '#F4F5FA', fontFamily: 'inherit', display: 'flex', flexDirection: 'column', position: 'relative' }}>
       <style>{`
   .typing-dot { width: 7px; height: 7px; border-radius: 50%; background: ${dm ? '#64748b' : '#b0b0c0'}; animation: bounce 1.2s infinite ease-in-out; }
   @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); opacity: 0.5; } 30% { transform: translateY(-5px); opacity: 1; } }
@@ -276,7 +276,7 @@ export default function Revise() {
         <div ref={scrollRef} />
       </div>
 
-      <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 420, background: dm ? '#101a2e' : '#fff', borderTop: `1px solid ${dm ? '#1f2a44' : '#F0F0F0'}`, padding: '12px 16px', display: 'flex', gap: 8, alignItems: 'flex-end', zIndex: 100 }}>
+      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: dm ? '#101a2e' : '#fff', borderTop: `1px solid ${dm ? '#1f2a44' : '#F0F0F0'}`, padding: '12px 16px', display: 'flex', gap: 8, alignItems: 'flex-end', zIndex: 100 }}>
         <textarea
           ref={textareaRef}
           className="revise-textarea"

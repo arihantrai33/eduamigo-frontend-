@@ -115,7 +115,7 @@ export default function EventCalendar() {
   const [c1, c2] = monthColors[currentMonth];
 
   return (
-    <div style={{ fontFamily:"'Inter',sans-serif" }}>
+    <div style={{ fontFamily: "inherit" }}>
       {/* Header */}
       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"1.25rem" }}>
         <div>
