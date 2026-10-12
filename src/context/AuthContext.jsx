@@ -57,6 +57,18 @@ export function AuthProvider({ children }) {
   const logout = useCallback(() => {
     const role = (JSON.parse(localStorage.getItem("eduamigo_user") || "{}"))?.role;
     if (role) localStorage.setItem("lastRole", role);
+    // Mobile app: this phone stops receiving this person's notifications (best effort, before the session is gone).
+    const pushToken = localStorage.getItem("eduamigo_push_token");
+    const sessionToken = localStorage.getItem("token");
+    if (pushToken && sessionToken) {
+      fetch(`${import.meta.env.VITE_API_URL}/users/fcm-token`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${sessionToken}` },
+        body: JSON.stringify({ fcmToken: pushToken }),
+        keepalive: true,
+      }).catch(() => {});
+      localStorage.removeItem("eduamigo_push_token");
+    }
     localStorage.removeItem("eduamigo_user");
     localStorage.removeItem("token");
     setUser(null);

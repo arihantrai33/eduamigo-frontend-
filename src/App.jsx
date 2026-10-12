@@ -49,6 +49,7 @@ import ParentProfile from './pages/parent/Profile'
 import DriverHome from './pages/driver/Driver'
 import { hasFeature, FEATURE_OF_PATH } from './utils/features'
 import PortalShell from './layout/PortalShell'
+import NativeBridge from './native/NativeBridge'
 import { portalOf } from './layout/portalNav'
 
 import Glyph from "./components/Glyph";
@@ -236,6 +237,7 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <AppLayout />
+        <NativeBridge />
       </AuthProvider>
     </BrowserRouter>
   )
