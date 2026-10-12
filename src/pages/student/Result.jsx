@@ -105,7 +105,7 @@ export default function StudentResult() {
         paddingBottom: 16, flexShrink: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: '48px 18px 10px' }}>
-          <button onClick={() => navigate('/student/home')}
+          <button onClick={() => navigate('/student/home')} aria-label="Back"
             style={{ width: 38, height: 38, borderRadius: 12, border: 'none',
               background: 'rgba(255,255,255,.18)', color: '#fff', fontSize: 20, cursor: 'pointer' }}>
             ←
@@ -222,8 +222,8 @@ export default function StudentResult() {
         )}
       </div>
 
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0,
-         height: 66,
+      <div className="ea-phone-only" style={{ position: 'fixed', bottom: 0, left: 0, right: 0,
+        height: 'calc(66px + env(safe-area-inset-bottom))', paddingBottom: 'env(safe-area-inset-bottom)',
         background: dm ? '#1e293b' : '#fff',
         display: 'flex', borderTop: dm ? '1px solid #334155' : '1px solid #E8EAF0',
         boxShadow: '0 -4px 24px color-mix(in srgb, var(--brand) 8%, transparent)', zIndex: 200 }}>

@@ -212,7 +212,7 @@ export default function AdminHome() {
   );
 
   return (
-    <div style={{ display: "flex", width: "100vw", minHeight: "100vh", background: "#E8ECF4", fontFamily: "inherit", position: "fixed", top: 0, left: 0, overflow: "hidden" }}>
+    <div className="ea-admin-shell" style={{ display: "flex", width: "100vw", minHeight: "100vh", background: "#E8ECF4", fontFamily: "inherit", position: "fixed", top: 0, left: 0, overflow: "hidden" }}>
       {!isMobile && (
         <aside style={{ width: 230, flexShrink: 0, background: sb.bg, borderRight: sb.edge, display: "flex", flexDirection: "column", height: "100vh", overflowY: "auto", boxShadow: "4px 0 24px rgba(0,0,0,0.15)" }}>
           <SidebarContent />

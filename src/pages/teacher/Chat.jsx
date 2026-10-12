@@ -516,7 +516,7 @@ const styles = {
     right: 0,
     background: '#fff',
     borderTop: '1px solid #EEEEEE',
-    padding: '10px 12px',
+    padding: '10px 12px calc(10px + env(safe-area-inset-bottom))',
     display: 'flex',
     gap: 8,
     alignItems: 'flex-end',

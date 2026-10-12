@@ -276,7 +276,7 @@ export default function Revise() {
         <div ref={scrollRef} />
       </div>
 
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: dm ? '#101a2e' : '#fff', borderTop: `1px solid ${dm ? '#1f2a44' : '#F0F0F0'}`, padding: '12px 16px', display: 'flex', gap: 8, alignItems: 'flex-end', zIndex: 100 }}>
+      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: dm ? '#101a2e' : '#fff', borderTop: `1px solid ${dm ? '#1f2a44' : '#F0F0F0'}`, padding: '12px 16px calc(12px + env(safe-area-inset-bottom))', display: 'flex', gap: 8, alignItems: 'flex-end', zIndex: 100 }}>
         <textarea
           ref={textareaRef}
           className="revise-textarea"

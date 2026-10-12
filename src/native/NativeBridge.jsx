@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 import { toast } from "../utils/toast";
 import { isNative, platformName } from "./platform";
 
@@ -21,16 +22,33 @@ const targetFor = (role, type) => TARGETS[role]?.[type] || INBOX[role] || "/";
 //   - Links (https school links or eduamigo://...) open the matching screen
 //   - Push notifications: asked for after sign-in (not at first launch), the device is registered with the API,
 //     a tapped notification opens the related screen, one that arrives while the app is open shows as a message
+//   - iOS status bar text: readable on the strip above the page (dark on the light theme, light on the dark one)
+//   - The screen layouts follow the WebView's height, so they fit above the keyboard
 export default function NativeBridge() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const { darkMode } = useTheme();
   const { user } = useAuth();
   const role = user?.role;
   const signedIn = !!user?.token;
   const roleRef = useRef(role);
   useEffect(() => { roleRef.current = role; }, [role]);
 
+  // The admin portal has no dark theme, so its strip stays light.
+  const darkStrip = darkMode && !pathname.startsWith("/admin");
+  useEffect(() => {
+    if (platformName() !== "ios") return;
+    import("@capacitor/status-bar")
+      .then(({ StatusBar, Style }) => StatusBar.setStyle({ style: darkStrip ? Style.Dark : Style.Light }))
+      .catch(() => {});
+  }, [darkStrip]);
+
   useEffect(() => {
     if (!isNative()) return undefined;
+    // The WebView shrinks to the space above the keyboard; the layouts take their height from --ea-vh (index.css).
+    const fitHeight = () => document.documentElement.style.setProperty("--ea-vh", `${window.innerHeight}px`);
+    fitHeight();
+    window.addEventListener("resize", fitHeight);
     let handles = [];
     (async () => {
       const { App } = await import("@capacitor/app");
@@ -43,7 +61,7 @@ export default function NativeBridge() {
         } catch { /* not a link the app understands */ }
       }));
     })();
-    return () => handles.forEach((h) => h.remove());
+    return () => { window.removeEventListener("resize", fitHeight); handles.forEach((h) => h.remove()); };
   }, [navigate]);
 
   useEffect(() => {

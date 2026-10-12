@@ -215,8 +215,9 @@ function AppLayout() {
   const location = useLocation()
   const isAdmin = location.pathname.startsWith('/admin')
   if (isAdmin) {
+    // One frame inside the screen's safe area (below the iPhone status bar); see .ea-admin-frame.
     return (
-      <div style={{ minHeight: '100vh', width: '100%', background: '#F5F5F3' }}>
+      <div className="ea-admin-frame">
         <AppRoutes />
       </div>
     )

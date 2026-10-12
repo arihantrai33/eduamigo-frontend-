@@ -9,8 +9,10 @@ import { installSessionGuard } from "./utils/session"
 import ErrorBoundary from "./components/ErrorBoundary.jsx"
 import { installSecureSession } from "./native/secureSession"
 import { isNative } from "./native/platform"
+import { preventIosInputZoom } from "./utils/iosZoom"
 
 async function start() {
+  preventIosInputZoom()
   // Mobile apps: load the sign-in session from the phone's secure store before anything reads it.
   await installSecureSession()
   installSessionGuard()

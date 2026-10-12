@@ -453,7 +453,7 @@ const font = "'Inter','Segoe UI',sans-serif";
 const s = {
   // Phone: a round button inside the app frame, just above the bottom navigation.
   fab: {
-    position: "fixed", bottom: 88, right: 16, zIndex: 900, width: 52, height: 52, borderRadius: "50%",
+    position: "fixed", bottom: "calc(88px + env(safe-area-inset-bottom))", right: 16, zIndex: 900, width: 52, height: 52, borderRadius: "50%",
     display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontFamily: font,
   },
   // Admin portal (desktop): a labelled button in the corner.
@@ -514,7 +514,7 @@ const s = {
   rate: { background: "none", border: "1px solid var(--border)", borderRadius: 8, padding: "3px 6px", color: "var(--subtext)", cursor: "pointer", display: "flex" },
   typing: { display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "var(--subtext)", padding: "8px 4px" },
   error: { background: "#fef2f2", border: "1px solid #fecaca", color: "#b91c1c", borderRadius: 12, padding: "9px 12px", fontSize: 13, margin: "8px 0" },
-  inputBar: { display: "flex", gap: 8, padding: "10px 12px 16px", background: "var(--card)", borderTop: "1px solid var(--border)" },
+  inputBar: { display: "flex", gap: 8, padding: "10px 12px calc(16px + env(safe-area-inset-bottom))", background: "var(--card)", borderTop: "1px solid var(--border)" },
   input: { flex: 1, padding: "11px 14px", borderRadius: 12, border: "1.5px solid var(--border)", background: "var(--input)", color: "var(--text)", fontSize: 14, outline: "none", fontFamily: font },
   send: { width: 44, borderRadius: 12, border: "none", background: "var(--brand-gradient)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" },
   empty: { textAlign: "center", color: "var(--subtext)", padding: "40px 16px", fontSize: 14 },

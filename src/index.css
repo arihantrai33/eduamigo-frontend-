@@ -37,10 +37,14 @@ input, button, select, textarea {
 
 /* ───────────── Layout: portals (Student, Teacher, Parent) ─────────────
    Below 1024 px the page fills the screen and uses the bottom tab bar.
-   From 1024 px a sidebar holds the navigation and the page gets a wide content area. */
+   From 1024 px a sidebar holds the navigation and the page gets a wide content area.
+   Status bar: in the iOS app (and a web app added to an iPhone home screen) the page is drawn under the status bar.
+   The layouts start below it, and clear the camera cut-out in landscape, with env(safe-area-inset-*); the strip
+   above takes the page colour. The insets are 0 in a browser tab and in the Android app, so nothing moves there. */
 .ea-shell {
   display: flex;
-  min-height: 100dvh;
+  min-height: var(--ea-vh);
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
   background: var(--app-bg, #F4F6FB);
 }
 .ea-sidebar { display: none; }
@@ -54,7 +58,7 @@ input, button, select, textarea {
 .ea-stage {
   position: relative;
   width: 100%;
-  height: 100dvh;
+  height: calc(var(--ea-vh) - env(safe-area-inset-top));
   overflow: hidden;
   transform: translateZ(0);
   background: var(--app-bg, #F4F6FB);
@@ -66,7 +70,18 @@ input, button, select, textarea {
   overflow-y: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+  /* The end of a page scrolls clear of the iPhone home indicator. */
+  padding-bottom: env(safe-area-inset-bottom);
 }
+/* Pages written for a full-screen phone frame size their root in viewport units (inline styles). Here the screen is
+   the stage, which starts below the status bar and, in the apps, ends at the keyboard, so page roots (children of
+   the routes wrapper, whose height is the stage's) follow it. Only roots: an inner element keeps its own height. */
+.ea-scroll > div > [style*="min-height: 100vh"],
+.ea-scroll > div > [style*="min-height: 100dvh"] { min-height: 100% !important; }
+.ea-scroll > div > [style^="height: 100vh"],
+.ea-scroll > div > [style*="; height: 100vh"],
+.ea-scroll > div > [style^="height: 100dvh"],
+.ea-scroll > div > [style*="; height: 100dvh"] { height: 100% !important; }
 /* Room for the tab bar so the last item of a page is never hidden under it. */
 @media (max-width: 1023px) {
   .ea-scroll:has(.ea-bottom-nav) { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
@@ -103,6 +118,8 @@ input, button, select, textarea {
 
 @media (min-width: 1024px) {
   .ea-bottom-nav { display: none; }
+  /* A page's own phone tab bar (inline styles) gives way to the sidebar too. */
+  .ea-phone-only { display: none !important; }
   .ea-sidebar {
     position: sticky;
     top: 0;
@@ -110,7 +127,7 @@ input, button, select, textarea {
     flex-direction: column;
     flex: none;
     width: 260px;
-    height: 100dvh;
+    height: calc(var(--ea-vh) - env(safe-area-inset-top));
     background: var(--ea-surface);
     border-right: 1px solid var(--ea-line);
   }
@@ -212,12 +229,16 @@ input, button, select, textarea {
 .ea-sidebar__signout:hover { background: #FEF2F2; border-color: #FECACA; }
 
 /* ───────────── Layout: single-column screens (sign-in, school search, driver) ─────────────
-   Full screen on phones; a centred column on a calm background from 768 px. */
-.ea-solo { min-height: 100dvh; background: var(--app-bg, #F4F6FB); }
+   Full screen on phones (below the status bar, see the portal layout); a centred column on a calm background from 768 px. */
+.ea-solo {
+  min-height: var(--ea-vh);
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
+  background: var(--app-bg, #F4F6FB);
+}
 .ea-solo__stage {
   position: relative;
   width: 100%;
-  height: 100dvh;
+  height: calc(var(--ea-vh) - env(safe-area-inset-top));
   overflow: hidden;
   transform: translateZ(0);
   background: var(--app-bg, #F4F6FB);
@@ -226,13 +247,31 @@ input, button, select, textarea {
   .ea-solo { display: grid; place-items: center; padding: 32px 16px; background: var(--ea-canvas); }
   .ea-solo__stage {
     max-width: 480px;
-    height: min(860px, calc(100dvh - 64px));
+    height: min(860px, calc(var(--ea-vh) - 64px));
     border-radius: 20px;
     border: 1px solid var(--ea-line);
     box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
   }
   .ea-solo--document .ea-solo__stage { max-width: 920px; }
 }
+/* Dark theme: the strip under the status bar (and the canvas around the column) is dark too. */
+[data-theme="dark"] .ea-shell,
+[data-theme="dark"] .ea-solo { background: var(--bg); }
+
+/* Admin: one frame inside the safe area (below the status bar, above the iPhone home indicator). Its pages,
+   dialogs and messages are placed inside it, because the frame is their containing block (transform). */
+.ea-admin-frame {
+  position: fixed;
+  top: env(safe-area-inset-top);
+  right: env(safe-area-inset-right);
+  bottom: env(safe-area-inset-bottom);
+  left: env(safe-area-inset-left);
+  transform: translateZ(0);
+  background: #F5F5F3;
+}
+.ea-admin-shell { width: 100% !important; height: 100%; min-height: 0 !important; }
+.ea-admin-shell > main,
+.ea-admin-shell > aside { height: 100% !important; }
 
 /* Admin full width */
 body.admin-body {
@@ -285,6 +324,9 @@ body.admin-body #root {
 
 /* CSS Variables */
 :root {
+  /* Screen height for the layouts. The mobile apps set it to the WebView's height (NativeBridge), which shrinks
+     above the keyboard; viewport units do not follow that in iOS. */
+  --ea-vh: 100dvh;
   --bg: #f5f6fa;
   --card: #ffffff;
   --card2: #f0f4f8;
@@ -582,7 +624,7 @@ input:-webkit-autofill:focus {
   padding: 16px; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px);
 }
 .ea-dialog {
-  max-width: 100%; max-height: calc(100dvh - 32px); overflow-y: auto; outline: none;
+  max-width: 100%; max-height: calc(var(--ea-vh) - 32px); overflow-y: auto; outline: none;
   background: #fff; border-radius: 20px; padding: 24px; box-shadow: 0 32px 80px rgba(15, 23, 42, 0.25);
   animation: ea-dialog-in 0.18s ease-out;
 }

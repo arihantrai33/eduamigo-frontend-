@@ -650,18 +650,20 @@ export default function ParentBus() {
 
 // ── Styles ─────────────────────────────────────────────────────
 const styles = {
-  pageShell: { minHeight: "100dvh", background: "#E5E7EB", display: "flex", justifyContent: "center", alignItems: "flex-start", fontFamily: "inherit" },
-  phoneCard: { position: "relative", width: "100%", height: "100dvh", overflow: "hidden", background: "#F1F5F9" },
+  // The shell fills the screen (the app layout maps 100dvh on a page root to the screen area); the map card fills the shell.
+  pageShell: { minHeight: "100dvh", height: "100dvh", background: "#E5E7EB", display: "flex", justifyContent: "center", alignItems: "flex-start", fontFamily: "inherit" },
+  phoneCard: { position: "relative", width: "100%", height: "100%", overflow: "hidden", background: "#F1F5F9" },
   mapPlaceholder: { height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "10px", background: "#F8FAFC" },
   busEmptyTitle: { fontSize: "17px", fontWeight: 600, color: "#1E293B" },
   busEmptySub:   { fontSize: "13px", color: "#94A3B8" },
   fullscreenRoot: { position: "fixed", inset: 0, zIndex: 9999, background: "black" },
-  exitFsBtn: { position: "fixed", top: "max(20px, env(safe-area-inset-top, 20px))", right: "16px", zIndex: 10000, display: "flex", alignItems: "center", gap: "6px", padding: "8px 14px", borderRadius: "20px", background: "rgba(0,0,0,0.55)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.2)", color: "white", cursor: "pointer" },
-  fsActionRow: { position: "fixed", top: "max(20px, env(safe-area-inset-top, 20px))", left: "16px", zIndex: 10000, display: "flex", gap: "10px" },
+  // The app layout already keeps the page below the status bar, so these need no safe-area offset at the top.
+  exitFsBtn: { position: "fixed", top: "20px", right: "16px", zIndex: 10000, display: "flex", alignItems: "center", gap: "6px", padding: "8px 14px", borderRadius: "20px", background: "rgba(0,0,0,0.55)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.2)", color: "white", cursor: "pointer" },
+  fsActionRow: { position: "fixed", top: "20px", left: "16px", zIndex: 10000, display: "flex", gap: "10px" },
   fsCallBtn: { display: "flex", alignItems: "center", gap: "6px", padding: "8px 14px", borderRadius: "20px", fontSize: "12px", fontWeight: 600, background: "color-mix(in srgb, var(--brand) 85%, transparent)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.2)", color: "white", cursor: "pointer" },
   fsSosBtn:  { display: "flex", alignItems: "center", gap: "6px", padding: "8px 14px", borderRadius: "20px", fontSize: "12px", fontWeight: 600, background: "rgba(220,38,38,0.85)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.2)", color: "white", cursor: "pointer" },
   fsMiniPill: { position: "fixed", bottom: "max(24px, env(safe-area-inset-bottom, 24px))", left: "50%", transform: "translateX(-50%)", zIndex: 10000, display: "flex", alignItems: "center", gap: "8px", padding: "10px 20px", borderRadius: "30px", background: "rgba(0,0,0,0.55)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.15)", whiteSpace: "nowrap" },
-  header: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 100, background: "var(--brand-gradient)", paddingTop: "env(safe-area-inset-top, 44px)", paddingLeft: "16px", paddingRight: "16px", paddingBottom: "14px", borderRadius: "0 0 24px 24px", boxShadow: "0 4px 24px color-mix(in srgb, var(--brand) 25%, transparent)" },
+  header: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 100, background: "var(--brand-gradient)", paddingTop: "0px", paddingLeft: "16px", paddingRight: "16px", paddingBottom: "14px", borderRadius: "0 0 24px 24px", boxShadow: "0 4px 24px color-mix(in srgb, var(--brand) 25%, transparent)" },
   navRow: { display: "flex", alignItems: "center", gap: "12px", marginBottom: "10px", marginTop: "10px" },
   backBtn: { width: "36px", height: "36px", borderRadius: "12px", background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 },
   navTitle: { color: "white", fontSize: "17px", fontWeight: 600, letterSpacing: "-0.3px" },
