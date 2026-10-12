@@ -68,3 +68,37 @@ test('the office records a fee payment and gets the next receipt number of the s
   const all = fees.flatMap((f) => (f.payments || []).map((p) => p.receiptNo));
   expect(new Set(all).size).toBe(all.length);
 });
+
+test('a parent asks for leave, the office approves it, and the parent sees the decision', async ({ page, request }) => {
+  const reason = `Family function (e2e ${Date.now()})`;
+  const day = new Date(Date.now() + 3 * 86400000).toISOString().slice(0, 10);
+
+  await signIn(page, 'parent');
+  await page.goto('/parent/apply-leave');
+  await page.getByLabel('FROM DATE').fill(day);
+  await page.getByLabel('TO DATE').fill(day);
+  await page.getByLabel('REASON').fill(reason);
+  await page.getByRole('button', { name: 'Submit Leave Request' }).click();
+
+  const parentApi = await apiSession(request, 'parent');
+  const mine = async () => ((await parentApi.get('/leaves/my')).data || []).find((l) => l.reason === reason);
+  await expect.poll(async () => (await mine())?.status).toBe('Pending');
+
+  // The office approves it.
+  await page.goto('/login');
+  await page.evaluate(() => { localStorage.removeItem('eduamigo_user'); localStorage.removeItem('token'); });
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await signIn(page, 'admin');
+  await page.goto('/admin/leaves');
+  await page.getByPlaceholder('Search by name or reason...').fill(reason);
+  await page.getByRole('button', { name: /Approve/ }).first().click();
+  await expect.poll(async () => (await mine())?.status).toBe('Approved');
+
+  // The parent sees the decision in their leave history.
+  await page.goto('/login');
+  await page.evaluate(() => { localStorage.removeItem('eduamigo_user'); localStorage.removeItem('token'); });
+  await signIn(page, 'parent');
+  await page.goto('/parent/apply-leave');
+  const card = page.locator('div').filter({ hasText: reason }).filter({ hasText: 'Approved' }).last();
+  await expect(card).toBeVisible();
+});

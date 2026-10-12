@@ -169,10 +169,11 @@ export default function ApplyLeave() {
 
           {/* Leave Type */}
           <div style={{ marginBottom: "16px" }}>
-            <label style={{ fontSize: "11px", fontWeight: "700", color: "var(--subtext2)", letterSpacing: "0.5px" }}>
+            <label htmlFor="leave-type" style={{ fontSize: "11px", fontWeight: "700", color: "var(--subtext2)", letterSpacing: "0.5px" }}>
               LEAVE TYPE
             </label>
             <select
+              id="leave-type"
               value={leaveType}
               onChange={(e) => setLeaveType(e.target.value)}
               style={{
@@ -192,10 +193,11 @@ export default function ApplyLeave() {
           {/* From / To Date */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "16px" }}>
             <div>
-              <label style={{ fontSize: "11px", fontWeight: "700", color: "var(--subtext2)", letterSpacing: "0.5px" }}>
+              <label htmlFor="leave-from" style={{ fontSize: "11px", fontWeight: "700", color: "var(--subtext2)", letterSpacing: "0.5px" }}>
                 FROM DATE
               </label>
               <input
+                id="leave-from"
                 type="date"
                 value={fromDate}
                 onChange={(e) => setFromDate(e.target.value)}
@@ -208,10 +210,11 @@ export default function ApplyLeave() {
               />
             </div>
             <div>
-              <label style={{ fontSize: "11px", fontWeight: "700", color: "var(--subtext2)", letterSpacing: "0.5px" }}>
+              <label htmlFor="leave-to" style={{ fontSize: "11px", fontWeight: "700", color: "var(--subtext2)", letterSpacing: "0.5px" }}>
                 TO DATE
               </label>
               <input
+                id="leave-to"
                 type="date"
                 value={toDate}
                 onChange={(e) => setToDate(e.target.value)}
@@ -227,10 +230,11 @@ export default function ApplyLeave() {
 
           {/* Reason */}
           <div style={{ marginBottom: "16px" }}>
-            <label style={{ fontSize: "11px", fontWeight: "700", color: "var(--subtext2)", letterSpacing: "0.5px" }}>
+            <label htmlFor="leave-reason" style={{ fontSize: "11px", fontWeight: "700", color: "var(--subtext2)", letterSpacing: "0.5px" }}>
               REASON
             </label>
             <textarea
+              id="leave-reason"
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder="Explain the reason for leave..."

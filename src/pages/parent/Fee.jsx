@@ -213,10 +213,12 @@ export default function ParentFee() {
                       {f.feeType ?? "Fee"}
                     </div>
                     <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 3 }}>
-                      {f.month} {f.year} &nbsp;·&nbsp;
-                      {f.status === "Paid"
-                        ? `Paid on ${f.paidDate ? new Date(f.paidDate).toLocaleDateString("en-IN") : "—"}`
-                        : `Due: ${f.dueDate ? new Date(f.dueDate).toLocaleDateString("en-IN") : "—"}`}
+                      {[
+                        f.academicYear,
+                        f.status === "Paid"
+                          ? `Paid on ${f.paidDate ? new Date(f.paidDate).toLocaleDateString("en-IN") : "—"}`
+                          : `Due: ${f.dueDate ? new Date(f.dueDate).toLocaleDateString("en-IN") : "—"}`,
+                      ].filter(Boolean).join(" · ")}
                     </div>
                   </div>
                   <div style={{ textAlign: "right" }}>
