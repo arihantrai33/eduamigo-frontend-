@@ -147,3 +147,35 @@ test('dialogs: Escape closes them, focus returns to the button that opened them,
   await expect(dialog).toBeHidden();
   await expect(opener).toBeFocused();
 });
+
+test('a parent messages the class teacher and the teacher replies', async ({ page }) => {
+  const question = `Is there homework for Monday? (e2e ${Date.now()})`;
+  const answer = `Yes, chapter 4 exercises. (e2e ${Date.now()})`;
+
+  await signIn(page, 'parent');
+  await page.goto('/parent/chat');
+  // The teacher row opens with the keyboard too.
+  const teacherRow = page.getByRole('button', { name: /Anita Verma/ });
+  await teacherRow.focus();
+  await page.keyboard.press('Enter');
+  await page.getByLabel('Message to Anita Verma').fill(question);
+  await page.getByRole('button', { name: 'Send message' }).click();
+  await expect(page.getByText(question)).toBeVisible();
+
+  await page.goto('/login');
+  await page.evaluate(() => { localStorage.removeItem('eduamigo_user'); localStorage.removeItem('token'); });
+  await signIn(page, 'teacher');
+  await page.goto('/teacher/chat');
+  await page.getByRole('button', { name: /Meera Sharma/ }).first().click();
+  await expect(page.getByText(question)).toBeVisible();
+  await page.getByLabel('Message', { exact: true }).fill(answer);
+  await page.getByRole('button', { name: 'Send message' }).click();
+  await expect(page.getByText(answer)).toBeVisible();
+
+  await page.goto('/login');
+  await page.evaluate(() => { localStorage.removeItem('eduamigo_user'); localStorage.removeItem('token'); });
+  await signIn(page, 'parent');
+  await page.goto('/parent/chat');
+  await page.getByRole('button', { name: /Anita Verma/ }).click();
+  await expect(page.getByText(answer)).toBeVisible();
+});

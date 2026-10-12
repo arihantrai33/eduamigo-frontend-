@@ -164,7 +164,7 @@ export default function TeacherChat() {
       {tab === 'chat' && activeChat ? (
         <>
           <div style={styles.chatHeader}>
-            <button onClick={goBack} style={styles.backBtn}>←</button>
+            <button type="button" aria-label="Back to contacts" onClick={goBack} style={styles.backBtn}>←</button>
             <div style={styles.chatAvatar}>
               <span style={styles.chatAvatarText}>
                 {activeChat.name?.charAt(0).toUpperCase()}
@@ -216,12 +216,15 @@ export default function TeacherChat() {
             <textarea
               style={styles.textInput}
               placeholder="Type a message..."
+              aria-label="Message"
               value={text}
               onChange={e => setText(e.target.value)}
               onKeyDown={handleKeyDown}
               rows={1}
             />
             <button
+              type="button"
+              aria-label="Send message"
               style={{ ...styles.sendBtn, opacity: sending || !text.trim() ? 0.5 : 1 }}
               onClick={handleSend}
               disabled={sending || !text.trim()}
@@ -234,7 +237,7 @@ export default function TeacherChat() {
         <>
           {/* CONTACTS LIST */}
           <div style={styles.header}>
-            <button onClick={() => navigate('/teacher/home')} style={styles.backBtn}>←</button>
+            <button type="button" aria-label="Back" onClick={() => navigate('/teacher/home')} style={styles.backBtn}>←</button>
             <div style={{ flex: 1 }}>
               <p style={styles.portalLabel}>TEACHER PORTAL</p>
               <h1 style={styles.headerTitle}>Messages</h1>
@@ -301,7 +304,7 @@ export default function TeacherChat() {
 
 function ContactCard({ contact, onOpen }) {
   return (
-    <button onClick={() => onOpen(contact)} style={styles.contactCard}>
+    <button type="button" onClick={() => onOpen(contact)} style={styles.contactCard}>
       <div style={{
         ...styles.contactAvatar,
         background: contact.type === 'parent' ? '#FFF8E1' : '#EEF0FF',

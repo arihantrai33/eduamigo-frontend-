@@ -34,6 +34,14 @@ const formatDate = (d) => {
   } catch { return ''; }
 };
 
+// A list row that opens something: reachable with Tab and opened with Enter or Space, like a button.
+const pressable = (onPress) => ({
+  role: 'button',
+  tabIndex: 0,
+  onClick: onPress,
+  onKeyDown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onPress(); } },
+});
+
 export default function ParentChat() {
   const navigate = useNavigate();
   const [data, setData]           = useState({ child: null, teachers: [], admin: null });
@@ -108,7 +116,7 @@ export default function ParentChat() {
   if (activeChat) return (
     <div style={S.screen}>
       <div style={S.chatHeader}>
-        <button style={S.backBtn} onClick={() => { setActiveChat(null); clearInterval(pollRef.current); }}>←</button>
+        <button type="button" aria-label="Back to contacts" style={S.backBtn} onClick={() => { setActiveChat(null); clearInterval(pollRef.current); }}>←</button>
         <div style={{ ...S.avatar, background: avatarColor(activeChat.name) }}>{activeChat.name[0]}</div>
         <div>
           <div style={S.chatName}>{activeChat.name}</div>
@@ -160,8 +168,9 @@ export default function ParentChat() {
           onChange={e => setInput(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && sendMessage()}
           placeholder={`Message ${activeChat.name}...`}
+          aria-label={`Message to ${activeChat.name}`}
         />
-        <button style={{ ...S.sendBtn, opacity: sending ? 0.6 : 1 }} onClick={sendMessage} disabled={sending}>➤</button>
+        <button type="button" aria-label="Send message" style={{ ...S.sendBtn, opacity: sending ? 0.6 : 1 }} onClick={sendMessage} disabled={sending}>➤</button>
       </div>
     </div>
   );
@@ -170,7 +179,7 @@ export default function ParentChat() {
   return (
     <div style={S.screen}>
       <div style={S.header}>
-        <button style={S.headerBack} onClick={() => navigate('/parent/home')}>←</button>
+        <button type="button" aria-label="Back" style={S.headerBack} onClick={() => navigate('/parent/home')}>←</button>
         <div>
           <h2 style={S.headerTitle}><Glyph e="💬" /> Messages</h2>
           {data.child && (
@@ -190,12 +199,12 @@ export default function ParentChat() {
           {/* Admin Section */}
           <div style={S.sectionLabel}><Glyph e="🏫" /> SCHOOL ADMINISTRATION</div>
           {data.admin ? (
-            <div style={S.chatRow} onClick={() => setActiveChat({
+            <div style={S.chatRow} {...pressable(() => setActiveChat({
               name:       data.admin.name,
               sub:        'Admin · Complaints & Queries',
               receiverId: data.admin.userId,
               roomId:     data.admin.roomId,
-            })}>
+            }))}>
               <div style={{ ...S.avatar, background: '#dc2626' }}>A</div>
               <div style={{ flex: 1 }}>
                 <div style={S.rowName}>{data.admin.name}</div>
@@ -216,12 +225,12 @@ export default function ParentChat() {
               <div style={{ fontSize: 11, marginTop: 4, color: '#bbb' }}>Teachers will appear here once they are assigned in the timetable.</div>
             </div>
           ) : data.teachers.map((t) => (
-            <div key={t._id} style={S.chatRow} onClick={() => setActiveChat({
+            <div key={t._id} style={S.chatRow} {...pressable(() => setActiveChat({
               name:       t.name,
               sub:        t.subject,
               receiverId: t.userId,
               roomId:     t.roomId,
-            })}>
+            }))}>
               <div style={{ ...S.avatar, background: avatarColor(t.name) }}>{t.name[0]}</div>
               <div style={{ flex: 1 }}>
                 <div style={S.rowName}>{t.name}</div>
