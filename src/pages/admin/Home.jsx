@@ -1,19 +1,18 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Routes, Route, useLocation, Navigate } from "react-router-dom";
-import axios from "axios";
 import {
   LayoutDashboard, Users, School, UserCircle, Bus,
   CalendarCheck, CreditCard, FileBadge, Clock, Notebook, BadgeDollarSign, Layers,
   Bell, MessageCircle, BarChart2, Settings as SettingsIcon, Menu, X,
-  AlertCircle, CheckCircle, BookOpen, LogOut, TrendingUp, Zap,
+  BookOpen, LogOut, TrendingUp,
   Shield, FileText, GraduationCap, History, CalendarRange,
   MessageSquareText,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
+import Dashboard from "./Dashboard";
 import { can, ROLE_LABELS } from "../../utils/permissions";
 import SubscriptionBanner from "../../components/SubscriptionBanner";
-import { hasFeature } from "../../utils/features";
-import { userTheme, alpha } from "../../utils/theme";
+import { userTheme } from "../../utils/theme";
 
 // Sidebar colours from the school theme: white with a brand-colour active item for light schools,
 // a deep brand-colour sidebar for bold ones.
@@ -30,7 +29,6 @@ import AddStudent from "./AddStudent";
 import AddParent from "./AddParent";
 import Teachers from "./Teachers";
 import AddTeacher from "./AddTeacher";
-import Attendance from "./Attendance";
 import AttendanceReport from "./AttendanceReport";
 import Chat from "./Chat";
 import ExamSchedule from "./ExamSchedule";
@@ -60,10 +58,6 @@ import BulkOperations from "./BulkOperations";
 import HRManagement from "./HRManagement";
 import Admissions from "./Admissions";
 import AskInsights from "./AskInsights";
-
-import Glyph from "../../components/Glyph";
-const API = import.meta.env.VITE_API_URL;
-const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 // Shown when a staff member opens a screen their role does not include.
 function Gate({ user, perm, children }) {
@@ -128,388 +122,6 @@ const NAV = [
   { label: "EduAmigo Ask",       icon: MessageSquareText, path: "/admin/ask", perm: "assistant.insights" },
   { label: "Settings",           icon: SettingsIcon,    path: "/admin/settings", perm: "settings.manage" },
 ];
-
-const MODULES = [
-  { icon: <Glyph e="🎒" />, name: "Students",   path: "/admin/students", perm: "students.read",   grad: "linear-gradient(135deg,#6366F1,#8B5CF6)" },
-  { icon: <Glyph e="👩‍🏫" />, name: "Teachers",   path: "/admin/teachers", perm: "teachers.manage",   grad: "linear-gradient(135deg,#10B981,#059669)" },
-  { icon: <Glyph e="👨‍👩‍👧" />, name: "Parents",    path: "/admin/parents", perm: "parents.read",    grad: "linear-gradient(135deg,#F59E0B,#EF4444)" },
-  { icon: <Glyph e="💳" />, name: "Fee Mgmt",   path: "/admin/fees", perm: "fees.collect",       grad: "linear-gradient(135deg,#06B6D4,#3B82F6)" },
-  { icon: <Glyph e="📊" />, name: "Att. Reports", path: "/admin/attendance-reports", perm: "attendance.reports", grad: "linear-gradient(135deg,#EC4899,#F43F5E)" },
-  { icon: <Glyph e="📝" />, name: "Exams",      path: "/admin/exams", perm: "exams.manage",       grad: "linear-gradient(135deg,#F97316,#EF4444)" },
-  { icon: <Glyph e="🕐" />, name: "Timetable",  path: "/admin/timetable", perm: "timetable.manage",   grad: "linear-gradient(135deg,#3B82F6,#6366F1)" },
-  { icon: <Glyph e="🏖" />, name: "Leaves",     path: "/admin/leaves", perm: "leaves.all",      grad: "linear-gradient(135deg,#8B5CF6,#A855F7)" },
-  { icon: <Glyph e="🚌" />, name: "Transport",  path: "/admin/transport", perm: "transport.manage",   grad: "linear-gradient(135deg,#0EA5E9,#06B6D4)" },
-];
-
-function useCounter(target, duration = 400) {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    if (!target) { setCount(0); return; }
-    let start = 0;
-    const step = target / (duration / 16);
-    const timer = setInterval(() => {
-      start += step;
-      if (start >= target) { setCount(target); clearInterval(timer); }
-      else setCount(Math.floor(start));
-    }, 16);
-    return () => clearInterval(timer);
-  }, [target]);
-  return count;
-}
-
-function AnimatedItem({ children, delay = 0 }) {
-  const [show, setShow] = useState(false);
-  useEffect(() => { const t = setTimeout(() => setShow(true), delay); return () => clearTimeout(t); }, [delay]);
-  return (
-    <div style={{ opacity: show ? 1 : 0, transform: show ? "translateY(0)" : "translateY(20px)", transition: "all 0.4s cubic-bezier(0.34,1.56,0.64,1)" }}>
-      {children}
-    </div>
-  );
-}
-
-function StatCard({ icon, value, label, sub, grad, delay = 0 }) {
-  const count = useCounter(value);
-  return (
-    <AnimatedItem delay={delay}>
-      <div style={{ background: grad, borderRadius: 20, padding: "22px 24px", position: "relative", overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.12)", cursor: "default", transition: "all 0.2s" }}
-        onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-5px) scale(1.02)"; e.currentTarget.style.boxShadow = "0 20px 48px rgba(0,0,0,0.2)"; }}
-        onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0) scale(1)"; e.currentTarget.style.boxShadow = "0 8px 32px rgba(0,0,0,0.12)"; }}>
-        <div style={{ position: "absolute", top: -20, right: -20, width: 100, height: 100, borderRadius: "50%", background: "rgba(255,255,255,0.1)" }} />
-        <div style={{ position: "absolute", bottom: -30, left: -10, width: 80, height: 80, borderRadius: "50%", background: "rgba(255,255,255,0.06)" }} />
-        <div style={{ fontSize: 28, marginBottom: 10 }}>{icon}</div>
-        <div style={{ fontSize: 36, fontWeight: 800, color: "white", lineHeight: 1, letterSpacing: "-1px" }}>{count}</div>
-        <div style={{ fontSize: 13, fontWeight: 700, color: "rgba(255,255,255,0.95)", marginTop: 6 }}>{label}</div>
-        <div style={{ fontSize: 11, color: "rgba(255,255,255,0.6)", marginTop: 3 }}>{sub}</div>
-      </div>
-    </AnimatedItem>
-  );
-}
-
-function PageWrapper({ children }) {
-  const [show, setShow] = useState(false);
-  useEffect(() => { requestAnimationFrame(() => setShow(true)); }, []);
-  return <div style={{ opacity: show ? 1 : 0, transform: show ? "translateY(0)" : "translateY(12px)", transition: "all 0.3s ease" }}>{children}</div>;
-}
-
-const CARD = { background: "white", borderRadius: 20, padding: "22px 26px", boxShadow: "0 2px 16px rgba(15,23,42,0.06)", border: "1px solid rgba(226,232,240,0.8)" };
-
-function DashboardContent({ isMobile, navigate, user }) {
-  const theme = userTheme(user);
-  const [stats, setStats] = useState({ students: 0, teachers: 0, buses: 0, parents: 0 });
-  const [recentStudents, setRecentStudents] = useState([]);
-  const [recentActivity, setRecentActivity] = useState([]);
-  const [classDist, setClassDist] = useState([]);
-  const [pendingLeaves, setPendingLeaves] = useState(0);
-  const [feeStats, setFeeStats] = useState({ paid: 0, pending: 0, total: 0 });
-  const [attendanceStats, setAttendanceStats] = useState({ present: 0, absent: 0, total: 0 });
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => { fetchAll(); }, []);
-
-  // Until the school is fully set up, the dashboard points the admin to the setup checklist.
-  const [setup, setSetup] = useState(null);
-  useEffect(() => {
-    if (!can(user, "academics.manage")) return;
-    axios.get(`${API}/academic/setup-status`, authHeader()).then((r) => setSetup(r.data.data)).catch(() => {});
-  }, [user]);
-
-  const fetchAll = async () => {
-    try {
-      const [studentsRes, teachersRes, busesRes, leavesRes, attendanceRes, feesRes, parentsRes] = await Promise.allSettled([
-        axios.get(`${API}/students`, authHeader()),
-        axios.get(`${API}/teachers`, authHeader()),
-        axios.get(`${API}/transport`, authHeader()),
-        axios.get(`${API}/leaves/pending`, authHeader()),
-        axios.get(`${API}/attendance/today`, authHeader()),
-        axios.get(`${API}/fees`, authHeader()),
-        axios.get(`${API}/parents`, authHeader()),
-      ]);
-      const students = studentsRes.status === "fulfilled" ? (studentsRes.value.data.data || []) : [];
-      const teachers = teachersRes.status === "fulfilled" ? (teachersRes.value.data.data || []) : [];
-      const busData  = busesRes.status === "fulfilled"   ? (busesRes.value.data.data   || []) : [];
-      const leaves   = leavesRes.status === "fulfilled"  ? (leavesRes.value.data.data  || []) : [];
-      const att      = attendanceRes.status === "fulfilled" ? (attendanceRes.value.data.data || {}) : {};
-      const fees     = feesRes.status === "fulfilled" ? (feesRes.value.data.data || []) : [];
-      const parents  = parentsRes.status === "fulfilled" ? (parentsRes.value.data.data || []) : [];
-
-      setStats({ students: students.length, teachers: teachers.length, buses: busData.length, parents: parents.length });
-      setRecentStudents(students.slice(-5).reverse());
-      setPendingLeaves(leaves.length);
-
-      // Collection rate is by amount: money received against money billed.
-      const billedAmount = fees.reduce((sum, f) => sum + (f.amount || 0), 0);
-      const collected = fees.reduce((sum, f) => sum + (f.paidAmount || 0), 0);
-      setFeeStats({ paid: collected, pending: Math.max(0, billedAmount - collected), total: billedAmount });
-
-      const present = (att.present || 0) + (att.late || 0);
-      setAttendanceStats({ present, absent: att.absent || 0, total: att.total || 0, marked: att.marked || 0, totalStudents: att.totalStudents || 0 });
-
-      setRecentActivity(students.slice(-6).reverse().map(s => ({
-        ic: <Glyph e="🎒" />, text: `${s.name} added to class ${s.class}-${s.section}`,
-        time: new Date(s.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" }),
-      })));
-
-      const classMap = {};
-      students.forEach(s => { const k = `${s.class}-${s.section}`; classMap[k] = (classMap[k] || 0) + 1; });
-      const total = students.length || 1;
-      const colors = ["#6366F1", "#10B981", "#F59E0B", "#EC4899", "#3B82F6"];
-      setClassDist(Object.entries(classMap).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([cls, count], i) => ({
-        cls, count, pct: Math.round((count / total) * 100), color: colors[i % colors.length]
-      })));
-    } catch (e) { console.error(e); }
-    finally { setLoading(false); }
-  };
-
-  const hour = new Date().getHours();
-  const greeting = hour < 12 ? "Good Morning" : hour < 17 ? "Good Afternoon" : "Good Evening";
-
-  const statCards = [
-    { icon: <Glyph e="🎒" />, value: stats.students, label: "Total Students",  sub: "Enrolled this year",   grad: "linear-gradient(135deg,#6366F1,#8B5CF6)", delay: 0 },
-    { icon: <Glyph e="👩‍🏫" />, value: stats.teachers, label: "Total Teachers",  sub: "Active staff members", grad: "linear-gradient(135deg,#10B981,#059669)", delay: 80 },
-    { icon: <Glyph e="👨‍👩‍👧" />, value: stats.parents,  label: "Linked Parents",  sub: "Connected families",   grad: "linear-gradient(135deg,#F59E0B,#EF4444)", delay: 160 },
-    { icon: <Glyph e="🚌" />, value: stats.buses,    label: "Total Buses",     sub: "Active fleet",          grad: "linear-gradient(135deg,#0EA5E9,#3B82F6)", delay: 240, feature: "transport" },
-  ].filter((c) => hasFeature(user, c.feature));
-
-  const attPct = attendanceStats.total > 0 ? Math.round((attendanceStats.present / attendanceStats.total) * 100) : 0;
-  const feePct = feeStats.total > 0 ? Math.round((feeStats.paid / feeStats.total) * 100) : 0;
-
-  return (
-    <PageWrapper>
-      {setup && !setup.complete && (
-        <div onClick={() => navigate("/admin/academic")} style={{ display: "flex", alignItems: "center", gap: 12, background: "white", border: "1px solid var(--brand-border)", borderRadius: 14, padding: "12px 16px", marginBottom: "1rem", cursor: "pointer", boxShadow: "0 2px 8px color-mix(in srgb, var(--brand) 8%, transparent)" }}>
-          <GraduationCap size={20} style={{ color: "var(--brand)" }} />
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#0F172A" }}>Finish setting up your school</div>
-            <div style={{ fontSize: 12, color: "#64748B" }}>{setup.done} of {setup.total} steps done. Next: {setup.steps.find((x) => !x.done)?.label}</div>
-          </div>
-          <span style={{ fontSize: 12, fontWeight: 700, color: "var(--brand)" }}>Continue ›</span>
-        </div>
-      )}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.5rem" }}>
-        <div>
-          <div style={{ fontSize: isMobile ? 18 : 26, fontWeight: 800, color: "#0F172A", letterSpacing: "-0.5px" }}>Dashboard</div>
-          <div style={{ fontSize: 12, color: "#94A3B8", marginTop: 3 }}>{new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</div>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          {pendingLeaves > 0 && (
-            <div onClick={() => navigate("/admin/leaves")} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, background: "linear-gradient(135deg,#FEF3C7,#FDE68A)", color: "#92400E", padding: "6px 14px", borderRadius: 20, cursor: "pointer", fontWeight: 700, border: "1px solid #FCD34D", boxShadow: "0 2px 8px rgba(245,158,11,0.25)" }}>
-              <AlertCircle size={12} />{pendingLeaves} leave{pendingLeaves > 1 ? "s" : ""} pending
-            </div>
-          )}
-          <div style={{ display: "flex", alignItems: "center", gap: 8, background: "white", border: "1px solid #E2E8F0", borderRadius: 24, padding: "5px 14px 5px 5px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-            <div style={{ width: 32, height: 32, borderRadius: "50%", background: theme.button, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, color: "white", boxShadow: `0 2px 8px ${theme.glow}` }}>
-              {user?.name?.[0]?.toUpperCase() || "A"}
-            </div>
-            <span style={{ fontSize: 13, fontWeight: 700, color: "#0F172A" }}>{user?.name || "Admin"}</span>
-          </div>
-        </div>
-      </div>
-
-      <AnimatedItem delay={0}>
-        <div style={{ background: theme.isLight ? `linear-gradient(135deg, ${theme.soft} 0%, ${theme.mist} 100%)` : `linear-gradient(135deg, ${theme.deep} 0%, ${theme.dark} 45%, ${theme.primary} 100%)`, border: theme.isLight ? `1px solid ${theme.ring}` : "none", borderRadius: 24, padding: isMobile ? "22px 20px" : "28px 36px", marginBottom: "1.5rem", position: "relative", overflow: "hidden", boxShadow: `0 12px 40px ${alpha(theme.primary, theme.isLight ? 0.12 : 0.3)}` }}>
-          <div style={{ position: "absolute", top: -40, right: -40, width: 200, height: 200, borderRadius: "50%", background: "rgba(255,255,255,0.05)" }} />
-          <div style={{ position: "absolute", bottom: -60, right: 80, width: 160, height: 160, borderRadius: "50%", background: "rgba(255,255,255,0.04)" }} />
-          <div style={{ position: "absolute", top: 20, right: 140, width: 8, height: 8, borderRadius: "50%", background: "rgba(255,255,255,0.4)" }} />
-          <div style={{ position: "relative", zIndex: 1 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-              <div style={{ background: theme.isLight ? "#fff" : "rgba(255,255,255,0.15)", border: theme.isLight ? `1px solid ${theme.ring}` : "none", borderRadius: 8, padding: "3px 10px", fontSize: 11, color: theme.isLight ? theme.primary : "rgba(255,255,255,0.9)", fontWeight: 600, backdropFilter: "blur(8px)" }}>
-                <Glyph e="🏫" /> {user?.school || "EduAmigo School"}
-              </div>
-            </div>
-            <div style={{ fontSize: isMobile ? 20 : 26, fontWeight: 800, color: theme.isLight ? theme.deep : "white", marginBottom: 8, letterSpacing: "-0.3px" }}>
-              {greeting}, {user?.name || "Admin"}
-            </div>
-            <div style={{ fontSize: 13, color: theme.isLight ? alpha(theme.deep, 0.65) : "rgba(255,255,255,0.7)", lineHeight: 1.6 }}>
-              You have <span style={{ color: "#A5B4FC", fontWeight: 700 }}>{stats.students} students</span> and <span style={{ color: "#6EE7B7", fontWeight: 700 }}>{stats.teachers} teachers</span> enrolled.
-              {pendingLeaves > 0 && <span style={{ color: "#FCD34D", fontWeight: 700 }}> &middot; {pendingLeaves} leave{pendingLeaves > 1 ? "s" : ""} awaiting approval.</span>}
-            </div>
-          </div>
-        </div>
-      </AnimatedItem>
-
-      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2,1fr)" : "repeat(4,1fr)", gap: 16, marginBottom: "1.75rem" }}>
-        {statCards.map((s, i) => <StatCard key={i} {...s} />)}
-      </div>
-
-      <AnimatedItem delay={350}>
-        <div style={{ ...CARD, marginBottom: "1.5rem" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-            <div>
-              <div style={{ fontSize: 14, fontWeight: 800, color: "#0F172A", display: "flex", alignItems: "center", gap: 6 }}><Zap size={15} color="#F59E0B" /> Quick Access</div>
-              <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>Jump to any module</div>
-            </div>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(3,1fr)" : "repeat(9,1fr)", gap: 10 }}>
-            {MODULES.filter(m => can(user, m.perm)).map((m, i) => (
-              <div key={i} onClick={() => navigate(m.path)}
-                style={{ background: m.grad, borderRadius: 14, padding: "14px 8px", cursor: "pointer", textAlign: "center", transition: "all 0.2s cubic-bezier(0.34,1.56,0.64,1)", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
-                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-6px) scale(1.08)"; e.currentTarget.style.boxShadow = "0 14px 30px rgba(0,0,0,0.2)"; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0) scale(1)"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)"; }}>
-                <div style={{ fontSize: 22, marginBottom: 5 }}>{m.icon}</div>
-                <div style={{ fontSize: 10, fontWeight: 700, color: "white", lineHeight: 1.3, textShadow: "0 1px 3px rgba(0,0,0,0.2)" }}>{m.name}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </AnimatedItem>
-
-      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3,1fr)", gap: 16, marginBottom: "1.5rem" }}>
-        <AnimatedItem delay={420}>
-          <div style={{ ...CARD, cursor:"pointer" }} onClick={() => navigate("/admin/attendance-reports")}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: "#0F172A" }}>Today's Attendance</div>
-                <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>
-                  {attendanceStats.marked ? `${attendanceStats.marked} of ${attendanceStats.totalStudents} students marked` : "Not marked yet today"}
-                </div>
-              </div>
-              <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg,#EC4899,#F43F5E)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <CalendarCheck size={16} color="white" />
-              </div>
-            </div>
-            <div style={{ display: "flex", alignItems: "flex-end", gap: 4, marginBottom: 12 }}>
-              <div style={{ fontSize: 36, fontWeight: 800, color: attendanceStats.total ? "#0F172A" : "#CBD5E1", lineHeight: 1 }}>{attendanceStats.total ? attPct : "—"}</div>
-              {attendanceStats.total > 0 && <div style={{ fontSize: 18, fontWeight: 700, color: "#94A3B8", marginBottom: 4 }}>%</div>}
-            </div>
-            <div style={{ height: 8, background: "#F1F5F9", borderRadius: 4, overflow: "hidden", marginBottom: 12 }}>
-              <div style={{ width: `${attPct}%`, height: "100%", background: "linear-gradient(90deg,#EC4899,#F43F5E)", borderRadius: 4, transition: "width 1s ease" }} />
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ fontSize: 11, color: "#10B981", fontWeight: 700 }}>&#10003; {attendanceStats.present} Present</span>
-              <span style={{ fontSize: 11, color: "#EF4444", fontWeight: 700 }}>&#10007; {attendanceStats.absent} Absent</span>
-            </div>
-          </div>
-        </AnimatedItem>
-
-        <AnimatedItem delay={490}>
-          <div style={{ ...CARD }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: "#0F172A" }}>Fee Collection</div>
-                <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>Collected against billed</div>
-              </div>
-              <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg,#06B6D4,#3B82F6)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <BadgeDollarSign size={16} color="white" />
-              </div>
-            </div>
-            <div style={{ display: "flex", alignItems: "flex-end", gap: 4, marginBottom: 12 }}>
-              <div style={{ fontSize: 36, fontWeight: 800, color: "#0F172A", lineHeight: 1 }}>{feePct}</div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: "#94A3B8", marginBottom: 4 }}>%</div>
-            </div>
-            <div style={{ height: 8, background: "#F1F5F9", borderRadius: 4, overflow: "hidden", marginBottom: 12 }}>
-              <div style={{ width: `${feePct}%`, height: "100%", background: "linear-gradient(90deg,#06B6D4,#3B82F6)", borderRadius: 4, transition: "width 1s ease" }} />
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ fontSize: 11, color: "#10B981", fontWeight: 700 }}>&#10003; ₹{feeStats.paid.toLocaleString("en-IN")} collected</span>
-              <span style={{ fontSize: 11, color: "#F59E0B", fontWeight: 700 }}>&#8987; ₹{feeStats.pending.toLocaleString("en-IN")} due</span>
-            </div>
-          </div>
-        </AnimatedItem>
-
-        <AnimatedItem delay={560}>
-          <div style={{ ...CARD, cursor: "pointer" }} onClick={() => navigate("/admin/leaves")}
-            onMouseEnter={e => e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.1)"}
-            onMouseLeave={e => e.currentTarget.style.boxShadow = "0 2px 16px rgba(15,23,42,0.06)"}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: "#0F172A" }}>Leave Requests</div>
-                <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>Needs your approval</div>
-              </div>
-              <div style={{ width: 36, height: 36, borderRadius: 10, background: "var(--brand-gradient)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <Notebook size={16} color="white" />
-              </div>
-            </div>
-            <div style={{ fontSize: 48, fontWeight: 800, color: pendingLeaves > 0 ? "#EF4444" : "#10B981", lineHeight: 1, marginBottom: 8 }}>{pendingLeaves}</div>
-            <div style={{ fontSize: 12, color: pendingLeaves > 0 ? "#EF4444" : "#10B981", fontWeight: 700 }}>
-              {pendingLeaves > 0 ? `${pendingLeaves} ${pendingLeaves === 1 ? "request" : "requests"} pending →` : "All caught up"}
-            </div>
-          </div>
-        </AnimatedItem>
-      </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 16, marginBottom: "1.5rem" }}>
-        <AnimatedItem delay={620}>
-          <div style={{ ...CARD }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-              <div>
-                <div style={{ fontSize: 14, fontWeight: 800, color: "#0F172A" }}>Students by Class</div>
-                <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>Distribution across grades</div>
-              </div>
-              <span onClick={() => navigate("/admin/students")} style={{ fontSize: 11, color: "var(--brand)", cursor: "pointer", fontWeight: 700, background: "var(--brand-soft)", padding: "5px 12px", borderRadius: 20, border: "1px solid var(--brand-border)" }}>View all</span>
-            </div>
-            {loading ? <div style={{ color: "#94A3B8", fontSize: 13, textAlign: "center", padding: "20px 0" }}>Loading...</div>
-              : classDist.length === 0 ? <div style={{ color: "#CBD5E1", fontSize: 13, textAlign: "center", padding: "20px 0" }}>No students yet</div>
-              : classDist.map((a, i) => (
-                <div key={i} style={{ marginBottom: 14 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: "#374151" }}>Class {a.cls}</span>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: a.color }}>{a.count} students ({a.pct}%)</span>
-                  </div>
-                  <div style={{ height: 8, background: "#F1F5F9", borderRadius: 4, overflow: "hidden" }}>
-                    <div style={{ width: `${a.pct}%`, height: "100%", background: `linear-gradient(90deg,${a.color},color-mix(in srgb, ${a.color} 60%, transparent))`, borderRadius: 4, transition: "width 1s ease" }} />
-                  </div>
-                </div>
-              ))}
-          </div>
-        </AnimatedItem>
-
-        <AnimatedItem delay={700}>
-          <div style={{ ...CARD }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-              <div>
-                <div style={{ fontSize: 14, fontWeight: 800, color: "#0F172A" }}>Recently Enrolled</div>
-                <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>Latest student additions</div>
-              </div>
-              <span onClick={() => navigate("/admin/students")} style={{ fontSize: 11, color: "var(--brand)", cursor: "pointer", fontWeight: 700, background: "var(--brand-soft)", padding: "5px 12px", borderRadius: 20, border: "1px solid var(--brand-border)" }}>View all</span>
-            </div>
-            {loading ? <div style={{ color: "#94A3B8", fontSize: 13, textAlign: "center", padding: "20px 0" }}>Loading...</div>
-              : recentStudents.length === 0 ? <div style={{ color: "#CBD5E1", fontSize: 13, textAlign: "center", padding: "20px 0" }}>No students yet</div>
-              : recentStudents.map((s, i) => (
-                <div key={i} onClick={() => navigate(`/admin/students/${s._id}`)}
-                  style={{ display: "flex", alignItems: "center", gap: 12, padding: "9px 8px", borderRadius: 12, cursor: "pointer", transition: "background 0.15s", marginBottom: 2 }}
-                  onMouseEnter={e => e.currentTarget.style.background = "#F8FAFC"}
-                  onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                  <div style={{ width: 38, height: 38, borderRadius: 12, background: "var(--brand-gradient)", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 700, flexShrink: 0, boxShadow: "0 2px 8px color-mix(in srgb, var(--brand) 30%, transparent)" }}>
-                    {s.name?.[0]?.toUpperCase()}
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: "#0F172A" }}>{s.name}</div>
-                    <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 1 }}>Class {s.class}-{s.section} &middot; Roll {s.rollNumber}</div>
-                  </div>
-                  <span style={{ fontSize: 10, padding: "4px 10px", borderRadius: 20, fontWeight: 700, background: s.feeStatus === "Paid" ? "#F0FDF4" : "#FFF7ED", color: s.feeStatus === "Paid" ? "#16A34A" : "#EA580C", border: `1px solid ${s.feeStatus === "Paid" ? "#BBF7D0" : "#FED7AA"}` }}>
-                    {s.feeStatus || "Not billed"}
-                  </span>
-                </div>
-              ))}
-          </div>
-        </AnimatedItem>
-      </div>
-
-      <AnimatedItem delay={780}>
-        <div style={{ ...CARD, marginBottom: 40 }}>
-          <div style={{ marginBottom: 18 }}>
-            <div style={{ fontSize: 14, fontWeight: 800, color: "#0F172A", display: "flex", alignItems: "center", gap: 6 }}><TrendingUp size={15} style={{ color: "var(--brand)" }} /> Recent Activity</div>
-            <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>Latest system updates</div>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2,1fr)", gap: 8 }}>
-            {loading ? <div style={{ color: "#94A3B8", fontSize: 13, padding: "20px 0" }}>Loading...</div>
-              : recentActivity.length === 0 ? <div style={{ color: "#CBD5E1", fontSize: 13, padding: "20px 0" }}>No activity yet</div>
-              : recentActivity.map((a, i) => (
-                <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", borderRadius: 12, background: "#F8FAFC", border: "1px solid #F1F5F9" }}>
-                  <div style={{ width: 34, height: 34, borderRadius: 10, background: "linear-gradient(135deg,var(--brand-soft),var(--brand-border))", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>{a.ic}</div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 12, color: "#1E293B", fontWeight: 600, lineHeight: 1.4 }}>{a.text}</div>
-                    <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>{a.time}</div>
-                  </div>
-                  <CheckCircle size={14} color="#10B981" />
-                </div>
-              ))}
-          </div>
-        </div>
-      </AnimatedItem>
-    </PageWrapper>
-  );
-}
 
 export default function AdminHome() {
   const navigate = useNavigate();
@@ -623,7 +235,7 @@ export default function AdminHome() {
         )}
         <SubscriptionBanner user={user} />
         <Routes>
-          <Route path="" element={can(user, "attendance.reports") ? <DashboardContent isMobile={isMobile} navigate={navigate} user={user} /> : <Navigate to={firstAllowedPath(user)} replace />} />
+          <Route path="" element={can(user, "attendance.reports") ? <Dashboard navigate={navigate} user={user} /> : <Navigate to={firstAllowedPath(user)} replace />} />
           <Route path="students" element={<Gate user={user} perm="students.read"><Students /></Gate>} />
           <Route path="students/add" element={<Gate user={user} perm="students.manage"><AddStudent /></Gate>} />
           <Route path="students/:id" element={<Gate user={user} perm="students.read"><StudentProfile /></Gate>} />

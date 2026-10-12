@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast, errorMessage } from "../../utils/toast";
+import { activityLabel } from "../../utils/activity";
 
 // School activity log: who changed what (backend: GET /api/audit).
 const API = import.meta.env.VITE_API_URL;
@@ -22,30 +23,7 @@ const CATEGORIES = [
   { value: "s", label: "Sessions, classes, settings" },
 ];
 
-const LABELS = {
-  "marks.saved": "Saved marks", "marks.published": "Published marks", "marks.reopened": "Reopened published marks",
-  "fee.created": "Added a fee", "fee.payment_recorded": "Recorded a fee payment",
-  "fee_structure.created": "Created a fee structure", "fee_structure.updated": "Edited a fee structure",
-  "fee_structure.reapplied": "Re-applied a fee structure", "fee_structure.deleted": "Deleted a fee structure",
-  "fee_structure.applied": "Billed a class", "payment.verified": "Online fee payment received",
-  "payments.settings_changed": "Changed online payment settings",
-  "student.created": "Added a student", "student.updated": "Edited a student", "student.removed": "Removed a student",
-  "student.password_reset": "Reset a student's password", "students.promoted": "Promoted a class",
-  "students.uploaded": "Uploaded students", "teachers.uploaded": "Uploaded teachers",
-  "user.created": "Created a login", "user.status_toggled": "Activated or deactivated a login", "user.password_reset": "Reset a password",
-  "exam.scheduled": "Scheduled an exam", "exam.updated": "Changed an exam", "exam.cancelled": "Cancelled an exam",
-  "attendance.marked": "Marked attendance", "attendance.class_marked": "Marked class attendance", "attendance.bulk_marked": "Marked attendance in bulk",
-  "salary.created": "Added a salary", "salary.generated": "Generated monthly salaries", "salary.updated": "Edited a salary", "salary.deleted": "Deleted a salary",
-  "session.created": "Created a session", "session.made_current": "Changed the current session",
-  "class.created": "Added a class", "class.updated": "Edited a class", "class.deleted": "Deleted a class", "classes.imported": "Imported classes",
-  "academic.settings_changed": "Changed academic settings", "school.profile_updated": "Edited the school profile",
-  "school.branding_updated": "Changed school branding", "support.write": "EduAmigo support made a change",
-  "support.session_started": "EduAmigo support signed in",
-  "notification.sent": "Sent a notification", "notification.deleted": "Deleted a notification",
-  "announcement.posted": "Posted an announcement", "announcement.edited": "Edited an announcement", "announcement.deleted": "Deleted an announcement",
-  "event.created": "Added a calendar event", "event.updated": "Edited a calendar event", "event.deleted": "Deleted a calendar event",
-};
-const label = (action) => LABELS[action] || action;
+const label = activityLabel;
 const when = (d) => new Date(d).toLocaleString("en-IN", { day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "2-digit" });
 
 export default function ActivityLog() {
