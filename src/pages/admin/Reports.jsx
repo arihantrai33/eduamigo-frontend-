@@ -178,13 +178,13 @@ export default function Reports() {
         {/* Fee Analytics */}
         <SectionCard title="Fee Collection" icon={<Glyph e="💰" />} delay={0.2}>
           {/* Big number */}
-          <div style={{ display:"flex", gap:16, marginBottom:20 }}>
+          <div style={{ display:"flex", flexWrap:"wrap", gap:16, marginBottom:20 }}>
             {[
               { label:"Total Expected", value:fmt(fees.total),   color:"#0F172A", bg:"#F8FAFC" },
               { label:"Collected",      value:fmt(fees.paid),    color:"#15803D", bg:"#F0FDF4" },
               { label:"Pending",        value:fmt(fees.pending), color:"#DC2626", bg:"#FEF2F2" },
             ].map((f,i) => (
-              <div key={i} style={{ flex:1, background:f.bg, borderRadius:12, padding:"14px 16px", textAlign:"center" }}>
+              <div key={i} style={{ flex:"1 1 96px", minWidth:0, background:f.bg, borderRadius:12, padding:"14px 16px", textAlign:"center" }}>
                 <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>{f.label}</div>
                 <div style={{ fontSize:18, fontWeight:900, color:f.color }}>{f.value}</div>
               </div>
@@ -205,13 +205,13 @@ export default function Reports() {
 
         {/* Attendance */}
         <SectionCard title="Attendance Overview" icon={<Glyph e="📋" />} delay={0.25}>
-          <div style={{ display:"flex", gap:16, marginBottom:20 }}>
+          <div style={{ display:"flex", flexWrap:"wrap", gap:16, marginBottom:20 }}>
             {[
               { label:"Total Records", value:attendance.total,   color:"#0F172A", bg:"#F8FAFC" },
               { label:"Present",       value:attendance.present, color:"#15803D", bg:"#F0FDF4" },
               { label:"Absent",        value:attendance.absent,  color:"#DC2626", bg:"#FEF2F2" },
             ].map((a,i) => (
-              <div key={i} style={{ flex:1, background:a.bg, borderRadius:12, padding:"14px 16px", textAlign:"center" }}>
+              <div key={i} style={{ flex:"1 1 96px", minWidth:0, background:a.bg, borderRadius:12, padding:"14px 16px", textAlign:"center" }}>
                 <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>{a.label}</div>
                 <div style={{ fontSize:18, fontWeight:900, color:a.color }}>{a.value}</div>
               </div>

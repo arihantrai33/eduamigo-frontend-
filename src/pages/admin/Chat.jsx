@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast, errorMessage } from "../../utils/toast";
 
 import Glyph from "../../components/Glyph";
+import { ArrowLeft } from "lucide-react";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -260,7 +261,7 @@ export default function Chat() {
       `}</style>
 
       {/* ══ DARK LEFT SIDEBAR ══ */}
-      <div style={{ width: 300, background: "#F8FAFC", display: "flex", flexDirection: "column", flexShrink: 0 }}>
+      <div className={selected ? "ea-chat-list is-hidden-phone" : "ea-chat-list"} style={{ width: 300, background: "#F8FAFC", display: "flex", flexDirection: "column", flexShrink: 0 }}>
 
         <div style={{ padding: "22px 18px 14px" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
@@ -350,12 +351,16 @@ export default function Chat() {
       </div>
 
       {/* ══ CHAT AREA ══ */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "white" }}>
+      <div className={selected ? "ea-chat-pane" : "ea-chat-pane is-hidden-phone"} style={{ flex: 1, display: "flex", flexDirection: "column", background: "white", minWidth: 0 }}>
         {selected ? (
           <>
             {/* Header — clickable for details */}
             <div className="hdr-click" onClick={() => setShowModal(true)}
               style={{ padding: "0 24px", height: 70, background: "white", borderBottom: `3px solid ${cfg?.badge?.color || "var(--brand)"}`, display: "flex", alignItems: "center", gap: 14, boxShadow: "0 1px 6px rgba(15,23,42,0.05)" }}>
+              <button type="button" className="ea-chat-back" aria-label="Back to contacts"
+                onClick={(e) => { e.stopPropagation(); setSelected(null); }}>
+                <ArrowLeft size={20} aria-hidden="true" />
+              </button>
               <Avatar name={selected.name} type={selected.type} size={44} />
               <div style={{ flex: 1 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3 }}>
@@ -365,7 +370,7 @@ export default function Chat() {
                 <span style={{ fontSize: 11, color: "#64748B" }}>{getHeaderSub(selected)}</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <div style={{ fontSize: 10, color: "#94A3B8", fontWeight: 500 }}>Click for details</div>
+                <div className="is-hidden-phone" style={{ fontSize: 10, color: "#94A3B8", fontWeight: 500 }}>Click for details</div>
                 <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "5px 11px", borderRadius: 20, background: "#F0FDF4", border: "1px solid #BBF7D0" }}>
                   <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#22C55E", animation: "pulse 2s infinite" }} />
                   <span style={{ fontSize: 11, color: "#16A34A", fontWeight: 700 }}>Live</span>

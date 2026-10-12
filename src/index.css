@@ -512,3 +512,42 @@ input:-webkit-autofill:focus {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }
+
+/* ───────────── Admin screens: responsive safety net ─────────────
+   The admin screens were built with inline styles for wide screens. Until each is moved to the shared components,
+   these rules keep them usable on phones and tablets without touching their logic. They match React's serialised
+   inline styles (e.g. "grid-template-columns: repeat(4, 1fr)"). */
+.ea-admin-main { min-width: 0; }
+/* Tables scroll sideways inside their card instead of squeezing or clipping columns. */
+.ea-admin-main div:has(> table) { overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
+.ea-admin-main table { min-width: 100%; }
+@media (max-width: 1023px) {
+  .ea-admin-main [style*="grid-template-columns: repeat(4"],
+  .ea-admin-main [style*="grid-template-columns: repeat(5"],
+  .ea-admin-main [style*="grid-template-columns: repeat(6"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .ea-admin-main [style*="grid-template-columns: 360px"],
+  .ea-admin-main [style*="grid-template-columns: 2fr 1fr 1fr 1fr"] { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 767px) {
+  .ea-admin-main table { min-width: 640px; }
+  .ea-admin-main th, .ea-admin-main td { white-space: nowrap; }
+  .ea-admin-main [style*="grid-template-columns: 1fr 1fr 1fr"],
+  .ea-admin-main [style*="grid-template-columns: repeat(3"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  /* Filter and toolbar rows wrap instead of pushing selects off screen. */
+  .ea-admin-main [style*="display: flex"]:has(> select),
+  .ea-admin-main [style*="display: flex"]:has(> input),
+  .ea-admin-main [style*="display: flex"]:has(> button + button) { flex-wrap: wrap; }
+  .ea-admin-main select, .ea-admin-main input:not([type="checkbox"]):not([type="radio"]) { max-width: 100%; min-width: 0; }
+  .ea-admin-main [style*="display: flex"] > select, .ea-admin-main [style*="display: flex"] > input:not([type="checkbox"]):not([type="radio"]) { flex: 1 1 140px; }
+}
+
+/* Chat (admin): one pane at a time on phones — the contact list, or the open conversation with a back button. */
+.ea-chat-back {
+  display: none; align-items: center; justify-content: center; width: 36px; height: 36px; flex: none;
+  border: none; border-radius: 10px; background: var(--ea-hover); color: var(--ea-ink); cursor: pointer;
+}
+@media (max-width: 767px) {
+  .is-hidden-phone { display: none !important; }
+  .ea-chat-list { width: 100% !important; }
+  .ea-chat-back { display: inline-flex; }
+}

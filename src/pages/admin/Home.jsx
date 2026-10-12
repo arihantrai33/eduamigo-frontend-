@@ -224,7 +224,7 @@ export default function AdminHome() {
           </aside>
         </>
       )}
-      <main style={{ flex: 1, padding: isMobile ? "1rem" : "1.75rem 2.5rem", overflowY: "auto", height: "100vh", minWidth: 0 }}>
+      <main className="ea-admin-main" style={{ flex: 1, padding: isMobile ? "1rem" : "1.75rem 2.5rem", overflowY: "auto", height: "100vh", minWidth: 0 }}>
         {isMobile && (
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "1rem" }}>
             <div onClick={() => setSidebarOpen(true)} style={{ width: 38, height: 38, borderRadius: 12, background: "white", border: "1px solid #E2E8F0", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
