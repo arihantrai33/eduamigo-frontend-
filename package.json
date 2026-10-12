@@ -9,6 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test:e2e": "playwright test",
+    "test:android": "node e2e/native/android-smoke.mjs",
+    "test:ios": "node e2e/native/ios-smoke.mjs",
     "build:mobile": "vite build --mode mobile && cap sync",
     "cap:android": "cap open android",
     "cap:ios": "cap open ios"
