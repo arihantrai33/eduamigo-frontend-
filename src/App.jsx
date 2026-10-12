@@ -1,58 +1,65 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, lazy, Suspense } from 'react'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Toast from './components/Toast'
-import Splash from './pages/Splash'
-import Login from './pages/Login'
 import SelectSchool, { SchoolLink } from './pages/SelectSchool'
-import ForgotPassword from './pages/ForgotPassword'
-import SupportLogin from './pages/SupportLogin'
-import ChangePassword from './pages/ChangePassword'
-import ReportCard from './pages/ReportCard'
-import Receipt from './pages/Receipt'
-import StudentHome from './pages/student/Home'
-import StudentAttendance from './pages/student/Attendance'
-import StudentResult from './pages/student/Result'
-import StudentFee from './pages/student/Fee'
-import StudentBus from './pages/student/Bus'
-import Timetable from './pages/student/Timetable'
-import Notes from './pages/student/Notes'
-import Revise from './pages/student/Revise'
-import StudentApplyLeave from './pages/student/ApplyLeave'
-import StudentNotifications from './pages/student/Notifications'
-import StudentChat from './pages/student/Chat'
-import StudentProfile from './pages/student/Profile'
-import TeacherHome from './pages/teacher/Home'
-import TeacherAttendance from './pages/teacher/Attendance'
-import TeacherMarks from './pages/teacher/Marks'
-import TeacherUpload from './pages/teacher/Upload'
-import TeacherTimetable from './pages/teacher/Timetable'
-import TeacherLeave from './pages/teacher/Leave'
-import TeacherNotifications from './pages/teacher/Notifications'
-import TeacherProfile from './pages/teacher/Profile'
-import TeacherChat from './pages/teacher/Chat'
-import TeacherStudents from './pages/teacher/Students'
-import AdminHome from './pages/admin/Home'
-import ParentHome from './pages/parent/Home'
-import ParentChat from './pages/parent/Chat'
-import ParentApplyLeave from './pages/parent/ApplyLeave'
-import ParentNotifications from './pages/parent/Notifications'
-import ParentAttendance from './pages/parent/Attendance'
-import ParentCalendar from './pages/parent/Calendar'
-import ParentFee from './pages/parent/Fee'
 import BrandTheme from './components/BrandTheme'
 import AskWidget from './components/AskWidget'
 import ErrorBoundary from './components/ErrorBoundary'
-import ParentResult from './pages/parent/Result'
-import ParentBus from './pages/parent/Bus'
-import ParentProfile from './pages/parent/Profile'
-import DriverHome from './pages/driver/Driver'
 import { hasFeature, FEATURE_OF_PATH } from './utils/features'
 import PortalShell from './layout/PortalShell'
 import NativeBridge from './native/NativeBridge'
 import { portalOf } from './layout/portalNav'
 
 import Glyph from "./components/Glyph";
+
+// Shown for a moment the first time a screen is opened, while its code loads.
+function ScreenLoading() {
+  return <div role="status" aria-label="Loading" style={{ height: '100%', display: 'grid', placeItems: 'center' }}><span className="ea-spinner" /></div>
+}
+
+// Screens load when first opened, so a parent does not download the admin screens (and so on).
+const Splash = lazy(() => import('./pages/Splash'))
+const Login = lazy(() => import('./pages/Login'))
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'))
+const SupportLogin = lazy(() => import('./pages/SupportLogin'))
+const ChangePassword = lazy(() => import('./pages/ChangePassword'))
+const ReportCard = lazy(() => import('./pages/ReportCard'))
+const Receipt = lazy(() => import('./pages/Receipt'))
+const StudentHome = lazy(() => import('./pages/student/Home'))
+const StudentAttendance = lazy(() => import('./pages/student/Attendance'))
+const StudentResult = lazy(() => import('./pages/student/Result'))
+const StudentFee = lazy(() => import('./pages/student/Fee'))
+const StudentBus = lazy(() => import('./pages/student/Bus'))
+const Timetable = lazy(() => import('./pages/student/Timetable'))
+const Notes = lazy(() => import('./pages/student/Notes'))
+const Revise = lazy(() => import('./pages/student/Revise'))
+const StudentApplyLeave = lazy(() => import('./pages/student/ApplyLeave'))
+const StudentNotifications = lazy(() => import('./pages/student/Notifications'))
+const StudentChat = lazy(() => import('./pages/student/Chat'))
+const StudentProfile = lazy(() => import('./pages/student/Profile'))
+const TeacherHome = lazy(() => import('./pages/teacher/Home'))
+const TeacherAttendance = lazy(() => import('./pages/teacher/Attendance'))
+const TeacherMarks = lazy(() => import('./pages/teacher/Marks'))
+const TeacherUpload = lazy(() => import('./pages/teacher/Upload'))
+const TeacherTimetable = lazy(() => import('./pages/teacher/Timetable'))
+const TeacherLeave = lazy(() => import('./pages/teacher/Leave'))
+const TeacherNotifications = lazy(() => import('./pages/teacher/Notifications'))
+const TeacherProfile = lazy(() => import('./pages/teacher/Profile'))
+const TeacherChat = lazy(() => import('./pages/teacher/Chat'))
+const TeacherStudents = lazy(() => import('./pages/teacher/Students'))
+const AdminHome = lazy(() => import('./pages/admin/Home'))
+const ParentHome = lazy(() => import('./pages/parent/Home'))
+const ParentChat = lazy(() => import('./pages/parent/Chat'))
+const ParentApplyLeave = lazy(() => import('./pages/parent/ApplyLeave'))
+const ParentNotifications = lazy(() => import('./pages/parent/Notifications'))
+const ParentAttendance = lazy(() => import('./pages/parent/Attendance'))
+const ParentCalendar = lazy(() => import('./pages/parent/Calendar'))
+const ParentFee = lazy(() => import('./pages/parent/Fee'))
+const ParentResult = lazy(() => import('./pages/parent/Result'))
+const ParentBus = lazy(() => import('./pages/parent/Bus'))
+const ParentProfile = lazy(() => import('./pages/parent/Profile'))
+const DriverHome = lazy(() => import('./pages/driver/Driver'))
 // Shown when a screen belongs to a module the school's plan does not include.
 function FeatureUnavailable({ home }) {
   return (
@@ -128,6 +135,7 @@ function AppRoutes() {
   const isAdmin = location.pathname.startsWith('/admin')
   return (
     <div style={{ position: 'relative', width: '100%', ...(isAdmin ? { minHeight: '100vh' } : { height: '100%' }) }}>
+      <Suspense fallback={<ScreenLoading />}>
       <Routes>
         <Route path="/" element={<Splash />} />
         <Route path="/select-school" element={<SelectSchool />} />
@@ -187,6 +195,7 @@ function AppRoutes() {
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      </Suspense>
       <Toast />
       <ErrorBoundary fallback={null}><AskWidget /></ErrorBoundary>
       <BrandTheme />

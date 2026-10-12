@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { useNavigate, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import {
   LayoutDashboard, Users, School, UserCircle, Bus,
@@ -14,6 +14,42 @@ import { can, ROLE_LABELS } from "../../utils/permissions";
 import SubscriptionBanner from "../../components/SubscriptionBanner";
 import { userTheme } from "../../utils/theme";
 
+// Screens load when first opened, so a parent does not download the admin screens (and so on).
+const Students = lazy(() => import('./Students'))
+const AddStudent = lazy(() => import('./AddStudent'))
+const AddParent = lazy(() => import('./AddParent'))
+const Teachers = lazy(() => import('./Teachers'))
+const AddTeacher = lazy(() => import('./AddTeacher'))
+const AttendanceReport = lazy(() => import('./AttendanceReport'))
+const Chat = lazy(() => import('./Chat'))
+const ExamSchedule = lazy(() => import('./ExamSchedule'))
+const FeeCollection = lazy(() => import('./FeeCollection'))
+const FeeReports = lazy(() => import('./FeeReports'))
+const FeeStructure = lazy(() => import('./FeeStructure'))
+const LeaveRequests = lazy(() => import('./LeaveRequests'))
+const Library = lazy(() => import('./Library'))
+const Communications = lazy(() => import('./Communications'))
+const Reports = lazy(() => import('./Reports'))
+const Results = lazy(() => import('./Results'))
+const SalaryManagement = lazy(() => import('./SalaryManagement'))
+const Settings = lazy(() => import('./Settings'))
+const AcademicSetup = lazy(() => import('./AcademicSetup'))
+const ActivityLog = lazy(() => import('./ActivityLog'))
+const YearEnd = lazy(() => import('./YearEnd'))
+const TransferCertificate = lazy(() => import('./TransferCertificate'))
+const StudentProfile = lazy(() => import('./StudentProfile'))
+const TeacherProfile = lazy(() => import('./TeacherProfile'))
+const Timetable = lazy(() => import('./Timetable'))
+const Transport = lazy(() => import('./Transport'))
+const UserManagement = lazy(() => import('./UserManagement'))
+const ParentsList = lazy(() => import('./ParentsList'))
+const EventCalendar = lazy(() => import('./EventCalendar'))
+const IDCardGenerator = lazy(() => import('./IDCardGenerator'))
+const BulkOperations = lazy(() => import('./BulkOperations'))
+const HRManagement = lazy(() => import('./HRManagement'))
+const Admissions = lazy(() => import('./Admissions'))
+const AskInsights = lazy(() => import('./AskInsights'))
+
 // Sidebar colours from the school theme: white with a brand-colour active item for light schools,
 // a deep brand-colour sidebar for bold ones.
 function sidebarLook(theme) {
@@ -24,40 +60,6 @@ function sidebarLook(theme) {
   return { bg: `linear-gradient(180deg, ${theme.deep} 0%, ${theme.dark} 100%)`, edge: "none", text: "#fff", muted: "rgba(255,255,255,0.55)", faint: "rgba(255,255,255,0.32)", divider: "rgba(255,255,255,0.08)",
     hoverBg: "rgba(255,255,255,0.08)", hoverText: "rgba(255,255,255,0.9)", activeBg: "rgba(255,255,255,0.16)", activeText: "#fff", activeShadow: `inset 3px 0 0 ${theme.accent}`, card: "rgba(255,255,255,0.06)" };
 }
-import Students from "./Students";
-import AddStudent from "./AddStudent";
-import AddParent from "./AddParent";
-import Teachers from "./Teachers";
-import AddTeacher from "./AddTeacher";
-import AttendanceReport from "./AttendanceReport";
-import Chat from "./Chat";
-import ExamSchedule from "./ExamSchedule";
-import FeeCollection from "./FeeCollection";
-import FeeReports from "./FeeReports";
-import FeeStructure from "./FeeStructure";
-import LeaveRequests from "./LeaveRequests";
-import Library from "./Library";
-import Communications from "./Communications";
-import Reports from "./Reports";
-import Results from "./Results";
-import SalaryManagement from "./SalaryManagement";
-import Settings from "./Settings";
-import AcademicSetup from "./AcademicSetup";
-import ActivityLog from "./ActivityLog";
-import YearEnd from "./YearEnd";
-import TransferCertificate from "./TransferCertificate";
-import StudentProfile from "./StudentProfile";
-import TeacherProfile from "./TeacherProfile";
-import Timetable from "./Timetable";
-import Transport from "./Transport";
-import UserManagement from "./UserManagement";
-import ParentsList from "./ParentsList";
-import EventCalendar from "./EventCalendar";
-import IDCardGenerator from "./IDCardGenerator";
-import BulkOperations from "./BulkOperations";
-import HRManagement from "./HRManagement";
-import Admissions from "./Admissions";
-import AskInsights from "./AskInsights";
 
 // Shown when a staff member opens a screen their role does not include.
 function Gate({ user, perm, children }) {
@@ -234,6 +236,7 @@ export default function AdminHome() {
           </div>
         )}
         <SubscriptionBanner user={user} />
+        <Suspense fallback={<div role="status" aria-label="Loading" style={{ display: "grid", placeItems: "center", minHeight: "40vh" }}><span className="ea-spinner" /></div>}>
         <Routes>
           <Route path="" element={can(user, "attendance.reports") ? <Dashboard navigate={navigate} user={user} /> : <Navigate to={firstAllowedPath(user)} replace />} />
           <Route path="students" element={<Gate user={user} perm="students.read"><Students /></Gate>} />
@@ -276,6 +279,7 @@ export default function AdminHome() {
           <Route path="bulk-operations" element={<Gate user={user} perm="bulk.manage"><BulkOperations /></Gate>} />
           <Route path="hr-management" element={<Gate user={user} perm="hr.manage"><HRManagement /></Gate>} />
         </Routes>
+        </Suspense>
       </main>
     </div>
   );
