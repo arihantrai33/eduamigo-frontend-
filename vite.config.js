@@ -31,13 +31,11 @@ export default defineConfig(({ mode }) => {
           orientation: 'portrait',
           scope: '/',
           start_url: '/',
+          // EduAmigo icon (source: assets/*.svg). The old entry pointed at Vite's template sprite of social-media logos.
           icons: [
-            {
-              src: '/icons.svg',
-              sizes: 'any',
-              type: 'image/svg+xml',
-              purpose: 'any maskable'
-            }
+            { src: '/pwa-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+            { src: '/pwa-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+            { src: '/favicon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' }
           ]
         },
         workbox: {
