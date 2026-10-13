@@ -22,6 +22,10 @@ export const updateTicket = async (id, body) =>
 export const getAssistantMetrics = async (days = 30) =>
   data(await axios.get(`${API}/assistant/metrics`, { ...authHeader(), params: { days } }));
 
+// AI usage and cost control of the school (admin). Reading it makes no AI call.
+export const getAiUsage = async (month) =>
+  data(await axios.get(`${API}/ai-usage/summary`, { ...authHeader(), params: month ? { month } : {} }));
+
 export const getAssistantEvaluation = async () => data(await axios.get(`${API}/assistant/evaluation`, authHeader()));
 
 // School documents EduAmigo Ask answers from (admin)

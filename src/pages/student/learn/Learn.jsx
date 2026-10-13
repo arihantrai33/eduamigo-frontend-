@@ -27,7 +27,7 @@ export default function Learn() {
   const [context, setContext] = useState(null);
   const [error, setError] = useState("");
   const [preset, setPreset] = useState(null);
-  const [question] = useState(() => params.get("q") || "");
+  const [question, setQuestion] = useState(() => params.get("q") || "");
   const tabRefs = useRef({});
 
   useEffect(() => {
@@ -35,6 +35,16 @@ export default function Learn() {
   }, []);
 
   const select = (key) => { const next = new URLSearchParams(params); next.set("tab", key); next.delete("q"); setParams(next, { replace: true }); };
+  // Buttons inside answers: a checked practice set on the conversation's topic, or the planner.
+  const onSuggest = (sug) => {
+    if (sug.action === "practice") { setPreset({ subject: sug.subject, topic: sug.topic, count: sug.count }); select("practice"); }
+    if (sug.action === "planner") select("planner");
+  };
+  // After a practice set that went badly: the tutor teaches the missed topics again, with the question already typed.
+  const onReteach = ({ subject, topics }) => {
+    setQuestion(`I did not understand ${topics.join(" and ")}${subject ? ` in ${subject}` : ""}. Please teach it again from the basics, with a simple example.`);
+    select("tutor");
+  };
   // Arrow keys move between tabs (WAI-ARIA tabs pattern).
   const onKey = (e) => {
     const i = TABS.findIndex((t) => t.key === tab);
@@ -59,8 +69,15 @@ export default function Learn() {
       <div className="ea-learn__panel" role="tabpanel" id={`learn-panel-${tab}`} aria-labelledby={`learn-tab-${tab}`}>
         {error ? <p className="ea-alert" role="alert"><span>{error}</span></p> : (
           <>
-            {tab === "tutor" && <TutorChat context={context} initialQuestion={question} />}
-            {tab === "practice" && <Practice key={preset ? `${preset.subject}|${preset.topic}` : "p"} context={context} preset={preset} />}
+            {context?.capabilities?.ai && !context.capabilities.ai.available && (
+              <p className="ea-alert ea-alert--warning" role="status">
+                <span>{context.capabilities.ai.reason === "off"
+                  ? "The AI is switched off on this server, so answers, practice questions and marking are not available. The Revision Planner and your progress still work."
+                  : "No AI provider is configured on this server, so answers, practice questions and marking are not available. The Revision Planner and your progress still work."}</span>
+              </p>
+            )}
+            {tab === "tutor" && <TutorChat key={question} context={context} initialQuestion={question} onSuggest={onSuggest} />}
+            {tab === "practice" && <Practice key={preset ? `${preset.subject}|${preset.topic}|${preset.count}` : "p"} context={context} preset={preset} onReteach={onReteach} />}
             {tab === "planner" && <Planner context={context} />}
             {tab === "progress" && <Progress onPractise={(t) => { setPreset(t); select("practice"); }} />}
           </>

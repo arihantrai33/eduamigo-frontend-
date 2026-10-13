@@ -15,7 +15,7 @@ const saveConsent = () => { try { localStorage.setItem(CONSENT_KEY, "yes"); } ca
 let seq = 0;
 const nextId = () => { seq += 1; return `m${seq}`; };
 
-export default function TutorChat({ context, initialQuestion }) {
+export default function TutorChat({ context, initialQuestion, onSuggest }) {
   const [messages, setMessages] = useState([]);
   const [conversationId, setConversationId] = useState(null);
   const [input, setInput] = useState(initialQuestion || "");
@@ -29,7 +29,9 @@ export default function TutorChat({ context, initialQuestion }) {
   const logRef = useRef(null);
   const inputRef = useRef(null);
   const timing = useRef({});
+  const sending = useRef(false); // set at once, before React re-renders: a double tap or Enter twice cannot send two requests
   const voice = useVoice();
+  const voiceDebug = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("voicedebug") === "1";
 
   useEffect(() => { logRef.current?.scrollTo?.({ top: logRef.current.scrollHeight }); }, [messages]);
   useEffect(() => { if (initialQuestion) inputRef.current?.focus(); }, [initialQuestion]);
@@ -38,7 +40,8 @@ export default function TutorChat({ context, initialQuestion }) {
 
   async function send(text, { spoken = false, endedAt = null } = {}) {
     const question = String(text || "").trim();
-    if (!question || busy) return;
+    if (!question || busy || sending.current) return;
+    sending.current = true;
     setInput("");
     voice.stopSpeaking();
     voice.resetFirstAudio();
@@ -47,7 +50,8 @@ export default function TutorChat({ context, initialQuestion }) {
     const answerId = nextId();
     setMessages((list) => [...list, userMsg, { id: answerId, role: "assistant", text: "", streaming: true, raw: "" }]);
     setBusy(true);
-    controller.current = new AbortController();
+    const mine = new AbortController();
+    controller.current = mine;
     let raw = "";
     let spokenUpTo = 0;
     let language = "en";
@@ -58,6 +62,8 @@ export default function TutorChat({ context, initialQuestion }) {
       if (!spoken || !t.endedAt || !logRef.current) return;
       if (t.firstText) logRef.current.dataset.voiceFirstTextMs = String(Math.round(t.firstText - t.endedAt));
       if (t.firstAudio) logRef.current.dataset.voiceFirstAudioMs = String(Math.round(t.firstAudio - t.endedAt));
+      // Shown under the answer with ?voicedebug=1, so the delay can be read off a real phone.
+      if (voiceDebug) patch(answerId, () => ({ voiceTiming: { text: t.firstText ? Math.round(t.firstText - t.endedAt) : null, audio: t.firstAudio ? Math.round(t.firstAudio - t.endedAt) : null } }));
     };
     const speakNew = (final = false) => {
       if (!spoken) return;
@@ -72,8 +78,10 @@ export default function TutorChat({ context, initialQuestion }) {
       await streamChat(
         { message: question, conversationId, subject: subject || undefined, mode: guided ? "guided" : "tutor", voice: spoken },
         {
-          signal: controller.current.signal,
+          signal: mine.signal,
           onEvent: (ev) => {
+            // A stopped or replaced answer must not touch the new one (stale events can still arrive after an abort).
+            if (mine.signal.aborted) return;
             if (ev.type === "meta") { if (ev.conversationId) setConversationId(ev.conversationId); language = ev.language || "en"; }
             if (ev.type === "delta") {
               if (!timing.current.firstText) timing.current.firstText = performance.now();
@@ -82,7 +90,7 @@ export default function TutorChat({ context, initialQuestion }) {
               speakNew();
             }
             if (ev.type === "final") {
-              patch(answerId, () => ({ streaming: false, text: ev.text, confidence: ev.confidence, sources: ev.used, checks: ev.checks, diagrams: ev.diagrams, timings: ev.timings }));
+              patch(answerId, () => ({ streaming: false, text: ev.text, confidence: ev.confidence, sources: ev.used, checks: ev.checks, diagrams: ev.diagrams, timings: ev.timings, suggest: ev.suggest, cached: ev.cached }));
               // The rest of what was streamed is spoken (the final text has the hidden blocks removed, so it is not re-read).
               if (spoken) speakNew(true);
             }
@@ -96,12 +104,18 @@ export default function TutorChat({ context, initialQuestion }) {
       else patch(answerId, () => ({ streaming: false, error: errorMessage(err, "Could not get an answer"), retry: question }));
     } finally {
       setBusy(false);
-      controller.current = null;
+      sending.current = false;
+      if (controller.current === mine) controller.current = null;
       record();
     }
   }
 
   const stop = () => { controller.current?.abort(); voice.stopSpeaking(); };
+  // Escape: stop talking, stop listening, or stop the answer that is coming in, whichever is happening.
+  const onComposerKey = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(input); return; }
+    if (e.key === "Escape") { voice.stopSpeaking(); voice.stopListening(); if (busy) stop(); }
+  };
 
   function startVoice() {
     if (!readConsent()) { setConsentAsk(true); return; }
@@ -192,6 +206,11 @@ export default function TutorChat({ context, initialQuestion }) {
               {m.streaming && !m.text && <span className="ea-learn__muted">Thinking…</span>}
               {m.text && <AnswerView msg={m} idPrefix={m.id} />}
               {m.stopped && <p className="ea-learn__muted">Stopped.</p>}
+              {m.suggest?.action === "practice" && (
+                <button type="button" className="ea-btn ea-btn--primary" onClick={() => onSuggest?.(m.suggest)}>Start practice{m.suggest.topic ? `: ${m.suggest.topic}` : ""} ({m.suggest.count} questions)</button>
+              )}
+              {m.suggest?.action === "planner" && <button type="button" className="ea-btn ea-btn--primary" onClick={() => onSuggest?.(m.suggest)}>Open Revision Planner</button>}
+              {m.voiceTiming && <p className="ea-learn__muted" data-testid="voice-timing">Voice timing on this device: first text {m.voiceTiming.text ?? "n/a"} ms, first sound {m.voiceTiming.audio ?? "n/a"} ms after you stopped speaking.</p>}
               {m.error && (
                 <div className="ea-alert" role="alert">
                   <span>{m.error}</span>
@@ -225,7 +244,7 @@ export default function TutorChat({ context, initialQuestion }) {
         <label className="ea-sr-only" htmlFor="ea-learn-input">Your question</label>
         <textarea id="ea-learn-input" ref={inputRef} className="ea-input" rows={2} maxLength={2000} value={input} placeholder="Type your question…"
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(input); } }} />
+          onKeyDown={onComposerKey} />
         <div className="ea-learn__composer-actions">
           {voice.supported.listen ? (
             <>
@@ -233,7 +252,7 @@ export default function TutorChat({ context, initialQuestion }) {
                 {VOICE_LANGS.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}
               </select>
               <button type="button" className={`ea-btn ${listening ? "ea-btn--primary" : "ea-btn--ghost"}`} aria-pressed={listening}
-                aria-label={listening ? "Stop listening" : "Ask with your voice"} disabled={busy} onClick={() => (listening ? voice.stopListening() : startVoice())}>
+                aria-label={listening ? "Stop listening" : "Ask with your voice"} onClick={() => { if (listening) { voice.stopListening(); return; } if (busy) stop(); startVoice(); }}>
                 {listening ? <MicOff size={18} aria-hidden="true" /> : <Mic size={18} aria-hidden="true" />}
               </button>
             </>

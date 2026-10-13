@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { RefreshCw, Target, CheckCircle2, CircleHelp, LifeBuoy, Gauge, FileText, Bot, Loader2 } from "lucide-react";
 import AskKnowledge from "./AskKnowledge";
+import AiUsage from "./AiUsage";
 import PageHeader from "../../components/ui/PageHeader";
 import { getAssistantMetrics, getAssistantEvaluation, getTickets, updateTicket, errorText } from "../../api/assistant";
 
@@ -68,12 +69,12 @@ export default function AskInsights() {
           </button>
         </>} />
       <div style={s.tabs} role="tablist">
-        {[["insights", "Insights and tickets"], ["knowledge", "School documents"]].map(([k, l]) => (
+        {[["insights", "Insights and tickets"], ["usage", "AI usage and cost"], ["knowledge", "School documents"]].map(([k, l]) => (
           <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)} style={tab === k ? s.tabOn : s.tabOff}>{l}</button>
         ))}
       </div>
       {error && <div style={s.error}>{error}</div>}
-      {tab === "knowledge" ? <AskKnowledge /> : (<>
+      {tab === "knowledge" ? <AskKnowledge /> : tab === "usage" ? <AiUsage /> : (<>
 
       <div style={s.kpis}>
         <Kpi icon={Target} label="Routing accuracy" value={ev ? pct(ev.overall.routingAccuracy) : "-"} note={ev ? `Holdout ${pct(ev.holdout.fullyCorrect)} fully correct` : ""} />

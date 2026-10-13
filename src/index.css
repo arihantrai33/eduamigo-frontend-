@@ -900,6 +900,12 @@ body:has(.ea-dialog-backdrop) .ea-ask-fab { display: none !important; }
 .ea-diagram__title { font-size: 13px; font-weight: 700; color: var(--ea-ink); margin-bottom: 6px; }
 .ea-diagram__axis { stroke: var(--ea-muted); stroke-width: 1.5; }
 .ea-diagram__ring { stroke: var(--ea-line); stroke-width: 2; }
+.ea-diagram__grid { stroke: var(--ea-line); stroke-width: 1; stroke-dasharray: 3 3; }
+.ea-diagram__line--2 { stroke: #B45309; stroke-dasharray: none; }
+.ea-diagram__line--3 { stroke: #6D28D9; stroke-dasharray: 6 3; }
+.ea-diagram__node { fill: var(--brand-soft); stroke: var(--brand); stroke-width: 1; }
+.ea-diagram__center { fill: var(--brand); }
+.ea-diagram__label--on-brand { fill: #fff; }
 .ea-diagram__line { stroke: var(--brand); stroke-width: 2.5; }
 .ea-diagram__bar, .ea-diagram__point { fill: var(--brand); }
 .ea-diagram__range { fill: var(--brand); opacity: 0.25; }

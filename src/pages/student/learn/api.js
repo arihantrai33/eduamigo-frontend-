@@ -49,7 +49,7 @@ export async function streamChat(body, { signal, onEvent }) {
 // answer arrives with them taken out.
 export function visibleWhileStreaming(text) {
   return String(text || "")
-    .replace(/```(check|diagram)[\s\S]*?```/g, "")
-    .replace(/```(check|diagram)[\s\S]*$/, "")
-    .replace(/```(c|ch|che|chec|d|di|dia|diag|diagr|diagra)?$/, "");
+    .replace(/```(check|diagram|context)[\s\S]*?```/g, "")
+    .replace(/```(check|diagram|context)[\s\S]*$/, "")
+    .replace(/```(c|ch|che|chec|d|di|dia|diag|diagr|diagra|co|con|cont|conte|contex)?$/, "");
 }

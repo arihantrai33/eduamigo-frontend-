@@ -79,8 +79,8 @@ function Question({ q, n, sessionId, onDone }) {
   );
 }
 
-export default function Practice({ context, preset }) {
-  const [form, setForm] = useState({ subject: preset?.subject || "", topic: preset?.topic || "", difficulty: "medium", count: 5, formats: ["mcq", "numeric", "short"] });
+export default function Practice({ context, preset, onReteach }) {
+  const [form, setForm] = useState({ subject: preset?.subject || "", topic: preset?.topic || "", difficulty: "medium", count: preset?.count || 5, formats: ["mcq", "numeric", "short"] });
   const [session, setSession] = useState(null);
   const [summary, setSummary] = useState(null);
   const [recent, setRecent] = useState([]);
@@ -122,9 +122,15 @@ export default function Practice({ context, preset }) {
         {summary && (
           <div className="ea-card ea-learn__summary" role="status">
             <p><strong>Score: {summary.score} / {summary.marked || 0}</strong> marked · {summary.answered} of {summary.total} answered</p>
+            {summary.struggling && summary.reteach && (
+              <div className="ea-learn__row">
+                <span>This set was hard. Let the tutor teach {summary.reteach.topics.join(" and ")} again before you practise more.</span>
+                <button type="button" className="ea-btn ea-btn--primary" onClick={() => onReteach?.(summary.reteach)}>Teach me this again</button>
+              </div>
+            )}
             {done && (
               <div className="ea-learn__row">
-                <span>{summary.nextDifficulty !== session.difficulty ? `Next time try ${summary.nextDifficulty}.` : "Stay at this level for one more set."}</span>
+                <span>{!summary.enoughEvidence ? "Too few answers to change the level yet: one more set at this level." : summary.nextDifficulty !== session.difficulty ? `Next time try ${summary.nextDifficulty}.` : "Stay at this level for one more set."}</span>
                 <button type="button" className="ea-btn ea-btn--primary" disabled={busy} onClick={() => create({ subject: session.subject, topic: session.topic, difficulty: summary.nextDifficulty })}>
                   <RefreshCw size={15} aria-hidden="true" /> New {summary.nextDifficulty} set
                 </button>

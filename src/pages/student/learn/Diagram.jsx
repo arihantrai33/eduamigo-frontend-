@@ -58,28 +58,67 @@ function Bars({ d }) {
   );
 }
 
+const SERIES_CLASS = ["ea-diagram__line", "ea-diagram__line ea-diagram__line--2", "ea-diagram__line ea-diagram__line--3"];
+
 function Graph({ d }) {
-  const ys = d.points.map((p) => p[1]);
+  const series = d.series?.length ? d.series : [{ label: d.title, points: d.points }];
+  const ys = series.flatMap((s) => s.points.map((p) => p[1]));
   const yMin = Math.min(0, ...ys); const yMax = Math.max(0, ...ys);
-  const H = 200; const pad = 24;
+  const legendH = series.length > 1 ? 18 * series.length + 4 : 0;
+  const H = 210 + legendH; const pad = 30; const top = 8; const bottom = H - legendH - pad;
   const sx = (x) => pad + ((x - d.xMin) / (d.xMax - d.xMin)) * (W - 2 * pad);
-  const sy = (y) => H - pad - ((y - yMin) / ((yMax - yMin) || 1)) * (H - 2 * pad);
-  // Break the line where points are missing (for example 1/x around 0).
-  const segments = [];
-  let cur = [];
+  const sy = (y) => bottom - ((y - yMin) / ((yMax - yMin) || 1)) * (bottom - top);
   const step = (d.xMax - d.xMin) / 60;
-  d.points.forEach((p, i) => {
-    if (i && p[0] - d.points[i - 1][0] > step * 1.5) { segments.push(cur); cur = []; }
-    cur.push(`${sx(p[0]).toFixed(1)},${sy(p[1]).toFixed(1)}`);
+  // A line is broken where points are missing (for example 1/x around 0).
+  const lines = series.map((s) => {
+    const segments = []; let cur = [];
+    s.points.forEach((p, i) => {
+      if (i && p[0] - s.points[i - 1][0] > step * 1.5) { segments.push(cur); cur = []; }
+      cur.push(`${sx(p[0]).toFixed(1)},${sy(p[1]).toFixed(1)}`);
+    });
+    segments.push(cur);
+    return segments.filter((x) => x.length > 1);
   });
-  segments.push(cur);
+  const xTicks = [d.xMin, (d.xMin + d.xMax) / 2, d.xMax].map((v) => Math.round(v * 100) / 100);
+  const yTicks = [yMin, (yMin + yMax) / 2, yMax].map((v) => Math.round(v * 100) / 100);
   return (
     <Frame d={d} height={H}>
+      {yTicks.map((v) => <line key={`gy${v}`} x1={pad} y1={sy(v)} x2={W - pad} y2={sy(v)} className="ea-diagram__grid" />)}
       <line x1={pad} y1={sy(0)} x2={W - pad} y2={sy(0)} className="ea-diagram__axis" />
-      {d.xMin <= 0 && d.xMax >= 0 && <line x1={sx(0)} y1={pad / 2} x2={sx(0)} y2={H - pad / 2} className="ea-diagram__axis" />}
-      {segments.filter((s) => s.length > 1).map((s, i) => <polyline key={i} points={s.join(" ")} className="ea-diagram__line" fill="none" />)}
-      <text x={pad} y={H - 6} className="ea-diagram__text">{d.xMin}</text>
-      <text x={W - pad} y={H - 6} textAnchor="end" className="ea-diagram__text">{d.xMax}</text>
+      {d.xMin <= 0 && d.xMax >= 0 && <line x1={sx(0)} y1={top} x2={sx(0)} y2={bottom} className="ea-diagram__axis" />}
+      {lines.map((segs, i) => segs.map((seg, j) => <polyline key={`${i}-${j}`} points={seg.join(" ")} className={SERIES_CLASS[i % 3]} fill="none" />))}
+      {xTicks.map((v) => <text key={`tx${v}`} x={sx(v)} y={bottom + 14} textAnchor="middle" className="ea-diagram__text">{v}</text>)}
+      {yTicks.map((v) => <text key={`ty${v}`} x={pad - 4} y={sy(v) + 3} textAnchor="end" className="ea-diagram__text">{v}</text>)}
+      {d.xLabel && <text x={W - pad} y={bottom + 26} textAnchor="end" className="ea-diagram__label">{d.xLabel}</text>}
+      {d.yLabel && <text x={pad + 4} y={top + 8} className="ea-diagram__label">{d.yLabel}</text>}
+      {series.length > 1 && series.map((s, i) => (
+        <g key={`lg${i}`} transform={`translate(${pad}, ${H - legendH + 4 + i * 18})`}>
+          <line x1="0" y1="6" x2="22" y2="6" className={SERIES_CLASS[i % 3]} />
+          <text x="28" y="10" className="ea-diagram__text">{s.label}</text>
+        </g>
+      ))}
+    </Frame>
+  );
+}
+
+function ConceptMap({ d }) {
+  const n = d.branches.length; const cx = W / 2; const cy = 130; const rx = 105; const ry = 78;
+  return (
+    <Frame d={d} height={270}>
+      {d.branches.map((b, i) => {
+        const a = (2 * Math.PI * i) / n - Math.PI / 2;
+        const x = cx + rx * Math.cos(a); const y = cy + ry * Math.sin(a);
+        return (
+          <g key={i}>
+            <line x1={cx} y1={cy} x2={x} y2={y} className="ea-diagram__axis" />
+            <rect x={x - 40} y={y - 11} width={80} height={22} rx={11} className="ea-diagram__node" />
+            <text x={x} y={y + 4} textAnchor="middle" className="ea-diagram__label">{b.label}</text>
+            {b.children.map((c, k) => <text key={k} x={x} y={y + (y >= cy ? 24 + k * 11 : -16 - k * 11)} textAnchor="middle" className="ea-diagram__text">{c}</text>)}
+          </g>
+        );
+      })}
+      <ellipse cx={cx} cy={cy} rx={46} ry={20} className="ea-diagram__center" />
+      <text x={cx} y={cy + 4} textAnchor="middle" className="ea-diagram__label ea-diagram__label--on-brand">{d.center}</text>
     </Frame>
   );
 }
@@ -128,7 +167,7 @@ function Table({ d }) {
   );
 }
 
-const SHAPES = { numberline: NumberLine, bar: Bars, graph: Graph, flow: Flow, cycle: Cycle, table: Table };
+const SHAPES = { numberline: NumberLine, bar: Bars, graph: Graph, flow: Flow, cycle: Cycle, table: Table, conceptmap: ConceptMap };
 
 export default function Diagram({ d }) {
   const Shape = d && SHAPES[d.type];
