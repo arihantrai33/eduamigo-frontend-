@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { errorMessage } from "../../utils/toast";
+import { FileText } from "lucide-react";
+import PageHeader from "../../components/ui/PageHeader";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -64,10 +66,9 @@ export default function StudentProfile() {
   }, [id]);
 
   const header = (
-    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "1.5rem" }}>
-      <button onClick={() => navigate("/admin/students")} style={{ padding: "6px 12px", borderRadius: 8, border: "0.5px solid #E8E8E5", background: "#fff", fontSize: 12, cursor: "pointer", color: "#666" }}>← Back</button>
-      <div style={{ fontSize: 20, fontWeight: 600, color: "#1a1a1a" }}>Student Profile</div>
-      <button onClick={() => navigate(`/report-card?studentId=${id}`)} style={{ marginLeft: "auto", padding: "8px 14px", borderRadius: 8, border: "none", background: "var(--brand)", color: "#fff", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Report Card</button>
+    <div style={{ marginBottom: "1.5rem" }}>
+      <PageHeader title="Student Profile" onBack={() => navigate("/admin/students")} backLabel="Back to students"
+        actions={<button type="button" className="ea-btn ea-btn--primary" onClick={() => navigate(`/report-card?studentId=${id}`)}><FileText size={16} aria-hidden="true" /> Report Card</button>} />
     </div>
   );
 

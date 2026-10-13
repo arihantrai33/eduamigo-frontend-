@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast, errorMessage, confirmAction } from "../../utils/toast";
 import Glyph from "../../components/Glyph";
+import PageHeader from "../../components/ui/PageHeader";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -209,8 +210,7 @@ export default function Settings() {
 
   const header = (
     <div style={{ marginBottom: "1.5rem" }}>
-      <div style={{ fontSize: 20, fontWeight: 600, color: "#1a1a1a" }}>Settings</div>
-      <div style={{ fontSize: 12, color: "#94A3B8", marginTop: 2 }}>School profile, academic year and subjects</div>
+      <PageHeader title="Settings" subtitle="School profile, academic year and subjects" />
     </div>
   );
 

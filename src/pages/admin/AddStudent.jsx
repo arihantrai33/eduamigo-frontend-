@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 import Glyph from "../../components/Glyph";
+import PageHeader from "../../components/ui/PageHeader";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -148,12 +149,7 @@ export default function AddStudent() {
 
       {/* Header */}
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111827", margin: 0 }}>
-          Add New Student
-        </h1>
-        <p style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4 }}>
-          Student and parent accounts will be created automatically
-        </p>
+        <PageHeader title="Add New Student" subtitle="Student and parent accounts will be created automatically" />
       </div>
 
       {/* Credentials Card — shown after success */}

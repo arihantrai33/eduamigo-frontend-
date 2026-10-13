@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { showCredentials } from "../../utils/toast";
+import PageHeader from "../../components/ui/PageHeader";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -115,10 +116,7 @@ const AddParent = () => {
 
       {/* Header */}
       <div style={{ marginBottom: "1.5rem" }}>
-        <div style={{ fontSize: 20, fontWeight: 600, color: "#1a1a1a" }}>Add Parent</div>
-        <div style={{ fontSize: 11, color: "#999", marginTop: 2 }}>
-          A temporary password is generated and shown once after saving
-        </div>
+        <PageHeader title="Add Parent" subtitle="A temporary password is generated and shown once after saving" />
       </div>
 
       {/* Parent Info */}

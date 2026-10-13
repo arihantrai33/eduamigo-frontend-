@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useAuth } from "../../context/AuthContext"
 import { showCredentials } from "../../utils/toast";
+import PageHeader from "../../components/ui/PageHeader";
 
 const API = import.meta.env.VITE_API_URL
 
@@ -85,8 +86,7 @@ const AddTeacher = () => {
   return (
     <div style={{ fontFamily: "inherit" }}>
       <div style={{ marginBottom: "1.5rem" }}>
-        <div style={{ fontSize: 20, fontWeight: 600, color: "#1a1a1a" }}>Add Teacher</div>
-        <div style={{ fontSize: 11, color: "#999", marginTop: 2 }}>Fill in the details to register a new teacher</div>
+        <PageHeader title="Add Teacher" subtitle="Fill in the details to register a new teacher" />
       </div>
 
       {error   && <div style={{ background: "#FEE2E2", color: "#DC2626", padding: "10px 14px", borderRadius: 8, fontSize: 12, marginBottom: 12 }}>{error}</div>}
