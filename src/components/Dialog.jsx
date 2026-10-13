@@ -1,12 +1,14 @@
-import { useCallback, useEffect, useId, useRef } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { X } from "lucide-react";
 import { confirmAction } from "../utils/toast";
+import { useUnsavedChanges } from "../utils/unsavedChanges";
 
 // The one dialog of the app (replaces 12 per-screen copies). Accessible: announced as a dialog named by its title,
 // Escape closes it, keyboard focus moves into it, stays inside while it is open and returns to where it was.
 // It fits the screen on phones. A click on the dim background does nothing, so a half-filled form is never lost.
 // Once something has been typed or picked inside it, Escape and the close button ask before discarding it
-// (the screen's own Cancel button and a successful save still close it straight away).
+// (the screen's own Cancel button and a successful save still close it straight away). Reloading or closing the tab,
+// or moving to another screen, also asks while it holds changes (see utils/unsavedChanges.js).
 //   <Dialog show={open} onClose={close} title="Collect Fee Payment" width={540}>...</Dialog>
 const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -15,8 +17,10 @@ export default function Dialog({ show = true, onClose, title, children, width = 
   const box = useRef(null);
   const closeRef = useRef(onClose);
   const dirty = useRef(false);
+  const [hasChanges, setHasChanges] = useState(false);
   const asking = useRef(false);
   useEffect(() => { closeRef.current = onClose; }, [onClose]);
+  useUnsavedChanges(show && hasChanges);
 
   const requestClose = useCallback(async () => {
     if (asking.current) return;
@@ -33,7 +37,7 @@ export default function Dialog({ show = true, onClose, title, children, width = 
     if (!show) return undefined;
     dirty.current = false;
     const opener = document.activeElement;
-    const markDirty = (e) => { if (e.isTrusted) dirty.current = true; };
+    const markDirty = (e) => { if (e.isTrusted) { dirty.current = true; setHasChanges(true); } };
     const node = box.current;
     node?.addEventListener("input", markDirty);
     node?.addEventListener("change", markDirty);
@@ -57,6 +61,7 @@ export default function Dialog({ show = true, onClose, title, children, width = 
       document.removeEventListener("keydown", onKey);
       node?.removeEventListener("input", markDirty);
       node?.removeEventListener("change", markDirty);
+      setHasChanges(false);
       if (opener && typeof opener.focus === "function") opener.focus();
     };
   }, [show, requestClose]);

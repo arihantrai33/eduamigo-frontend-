@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { useStackedTables } from "../../utils/stackTables";
+import { confirmLeave } from "../../utils/unsavedChanges";
 import { useNavigate, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import {
   LayoutDashboard, Users, School, UserCircle, Bus,
@@ -134,7 +135,6 @@ export default function AdminHome() {
   useStackedTables(mainRef);   // record tables become cards on phones (utils/stackTables.js)
   const theme = userTheme(user);
   const sb = sidebarLook(theme);
-  const [activeNav, setActiveNav] = useState("/admin");
   // Permissions, plan and billing state are refreshed from the server by AuthContext on app start.
 
   // Menu filtered by permission; section headings without any visible entries are dropped.
@@ -151,11 +151,6 @@ export default function AdminHome() {
     window.addEventListener("resize", h);
     return () => window.removeEventListener("resize", h);
   }, []);
-
-  useEffect(() => {
-    const p = "/" + location.pathname.split("/").slice(1, 3).join("/");
-    setActiveNav(p);
-  }, [location]);
 
   const SidebarContent = () => (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -181,9 +176,10 @@ export default function AdminHome() {
         {visibleNav.map((item, i) => {
           if (item.section) return <div key={i} style={{ fontSize: 9, color: sb.faint, padding: "14px 20px 5px", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 700 }}>{item.section}</div>;
           const Icon = item.icon;
-          const isActive = activeNav === item.path || (item.path !== "/admin" && location.pathname.startsWith(item.path));
+          // From the address only: a move that waits for "Leave unsaved changes?" must not light up the new entry early.
+          const isActive = location.pathname === item.path || (item.path !== "/admin" && location.pathname.startsWith(item.path));
           return (
-            <div key={i} onClick={() => { setActiveNav(item.path); navigate(item.path); if (isMobile) setSidebarOpen(false); }}
+            <div key={i} onClick={() => { navigate(item.path); if (isMobile) setSidebarOpen(false); }}
               style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 16px", margin: "1px 10px", fontSize: 13, cursor: "pointer", color: isActive ? sb.activeText : sb.muted, background: isActive ? sb.activeBg : "transparent", fontWeight: isActive ? 700 : 500, borderRadius: 12, transition: "all 0.15s", boxShadow: isActive ? sb.activeShadow : "none" }}
               onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = sb.hoverBg; e.currentTarget.style.color = sb.hoverText; } }}
               onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = sb.muted; } }}>
@@ -204,7 +200,7 @@ export default function AdminHome() {
             <div style={{ fontSize: 10, color: sb.muted }}>{ROLE_LABELS[user?.role] || "Staff"}</div>
           </div>
         </div>
-        <div onClick={() => { logout(); navigate("/login"); }}
+        <div onClick={async () => { if (!(await confirmLeave())) return; logout(); navigate("/login"); }}
           style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", borderRadius: 12, cursor: "pointer", color: "rgba(239,68,68,0.8)", fontSize: 13, fontWeight: 600, transition: "all 0.15s" }}
           onMouseEnter={e => { e.currentTarget.style.background = "rgba(239,68,68,0.1)"; e.currentTarget.style.color = "#EF4444"; }}
           onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "rgba(239,68,68,0.8)"; }}>
