@@ -133,7 +133,8 @@ input, button, select, textarea {
     background: var(--ea-surface);
     border-right: 1px solid var(--ea-line);
   }
-  .ea-stage { max-width: 1280px; }
+  /* Portal screens were designed for phones: on a wide screen they sit in a centred column instead of stretching. */
+  .ea-stage { max-width: 1080px; }
   /* Home screens: the quick-access tiles use three columns when there is room (inline styles set two). */
   .ea-tile-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
 }
