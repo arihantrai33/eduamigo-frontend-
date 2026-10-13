@@ -181,7 +181,7 @@ export default function HRManagement() {
               <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Click "Auto Generate" to create records for all teachers</div>
             </div>
           ) : (
-            <table style={{ width:"100%", borderCollapse:"collapse" }}>
+            <table data-stack style={{ width:"100%", borderCollapse:"collapse" }}>
               <thead>
                 <tr style={{ background:"#F8FAFC" }}>
                   {["Teacher","Emp ID","Basic","Allowances","Deductions","Net Salary","Status","Actions"].map(h => (

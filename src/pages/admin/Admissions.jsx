@@ -360,7 +360,7 @@ export default function Admissions() {
       {error && <div style={{ background: "#FEF2F2", color: "#B91C1C", padding: 12, borderRadius: 10, fontSize: 13, marginBottom: 12 }}>{error} <button style={{ ...btn("ghost"), padding: "4px 10px", marginLeft: 8 }} onClick={load}>Retry</button></div>}
 
       <div style={{ background: "#fff", borderRadius: 14, border: "1px solid #E2E8F0", overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 760 }}>
+        <table data-stack style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 760 }}>
           <thead>
             <tr style={{ background: "#F8FAFC", textAlign: "left", color: "#475569" }}>
               {["Application", "Student", "Class", "Parent", "Mobile", "Status", "Next date", "Updated"].map((h) => (

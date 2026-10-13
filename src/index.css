@@ -678,13 +678,34 @@ input:-webkit-autofill:focus {
   .ea-admin-main [style*="grid-template-columns: 340px"] > * { min-width: 0; }
 }
 @media (max-width: 767px) {
-  .ea-admin-main table { min-width: 640px; }
-  .ea-admin-main th, .ea-admin-main td { white-space: nowrap; }
-  /* A wide table scrolls sideways inside its card; the first column (the name) stays in view while it does. */
-  .ea-admin-main table th:first-child, .ea-admin-main table td:first-child {
+  .ea-admin-main table:not([data-stack]) { min-width: 640px; }
+  .ea-admin-main table:not([data-stack]) th, .ea-admin-main table:not([data-stack]) td { white-space: nowrap; }
+  /* A wide data table (reports) scrolls sideways inside its card; the first column stays in view while it does. */
+  .ea-admin-main table:not([data-stack]) th:first-child, .ea-admin-main table:not([data-stack]) td:first-child {
     position: sticky; left: 0; z-index: 1; background: var(--ea-surface); box-shadow: 1px 0 0 var(--ea-line);
   }
-  .ea-admin-main table thead th:first-child { background: #F8FAFC; }
+  .ea-admin-main table:not([data-stack]) thead th:first-child { background: #F8FAFC; }
+
+  /* A record list (table[data-stack], labelled by utils/stackTables.js) becomes one card per row: the first cell is
+     the card's title, every other cell shows its column name in front of the value. */
+  .ea-admin-main table[data-stack] { min-width: 0 !important; width: 100%; }
+  .ea-admin-main table[data-stack] thead { display: none; }
+  .ea-admin-main table[data-stack] tr { display: block; padding: 12px 14px; border-bottom: 1px solid var(--ea-line); }
+  .ea-admin-main table[data-stack] td {
+    display: flex; justify-content: flex-end; align-items: center; gap: 8px; flex-wrap: wrap;
+    padding: 3px 0 !important; border: none !important; white-space: normal; text-align: right; min-width: 0;
+  }
+  /* The label sits on the left; everything in the cell stays together on the right. */
+  .ea-admin-main table[data-stack] td::before {
+    content: attr(data-label); margin-right: auto; font-size: 12px; font-weight: 600; color: var(--ea-muted); text-align: left;
+  }
+  .ea-admin-main table[data-stack] td:first-child { justify-content: flex-start; text-align: left; padding-bottom: 8px !important; }
+  .ea-admin-main table[data-stack] td:first-child::before,
+  .ea-admin-main table[data-stack] td[data-label=""]::before,
+  .ea-admin-main table[data-stack] td[colspan]::before { content: none; }
+  .ea-admin-main table[data-stack] td[colspan] { display: block; text-align: center; }
+  /* The end of an admin page scrolls clear of the Ask button. */
+  .ea-admin-frame:has(.ea-ask-fab) .ea-admin-main { padding-bottom: 88px !important; }
   .ea-admin-main [style*="grid-template-columns: 1fr 1fr 1fr"],
   .ea-admin-main [style*="grid-template-columns: repeat(3"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
   /* Filter and toolbar rows wrap instead of pushing selects off screen. */

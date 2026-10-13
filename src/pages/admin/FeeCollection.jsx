@@ -154,7 +154,7 @@ export default function FeeCollection() {
 
       {/* Table */}
       <div style={{ background:"white", borderRadius:20, boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid rgba(226,232,240,0.8)", overflow:"hidden", animation:"fadeUp 0.5s ease 0.15s both" }}>
-        <table style={{ width:"100%", borderCollapse:"collapse" }}>
+        <table data-stack style={{ width:"100%", borderCollapse:"collapse" }}>
           <thead>
             <tr style={{ background:"linear-gradient(90deg,#F8FAFC,#F1F5F9)" }}>
               {["Student","Class","Fee Type","Amount","Due Date","Paid Date","Status","Action"].map(h => (

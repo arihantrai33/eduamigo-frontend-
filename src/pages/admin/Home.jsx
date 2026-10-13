@@ -1,4 +1,5 @@
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
+import { useStackedTables } from "../../utils/stackTables";
 import { useNavigate, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import {
   LayoutDashboard, Users, School, UserCircle, Bus,
@@ -129,6 +130,8 @@ export default function AdminHome() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
+  const mainRef = useRef(null);
+  useStackedTables(mainRef);   // record tables become cards on phones (utils/stackTables.js)
   const theme = userTheme(user);
   const sb = sidebarLook(theme);
   const [activeNav, setActiveNav] = useState("/admin");
@@ -226,7 +229,7 @@ export default function AdminHome() {
           </aside>
         </>
       )}
-      <main className="ea-admin-main" style={{ flex: 1, padding: isMobile ? "1rem" : "1.75rem 2.5rem", overflowY: "auto", height: "100vh", minWidth: 0 }}>
+      <main ref={mainRef} className="ea-admin-main" style={{ flex: 1, padding: isMobile ? "1rem" : "1.75rem 2.5rem", overflowY: "auto", height: "100vh", minWidth: 0 }}>
         {isMobile && (
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "1rem" }}>
             <div onClick={() => setSidebarOpen(true)} style={{ width: 38, height: 38, borderRadius: 12, background: "white", border: "1px solid #E2E8F0", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>

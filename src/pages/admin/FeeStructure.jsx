@@ -138,7 +138,7 @@ export default function FeeStructure() {
       </div>
 
       <div style={{ background:"white", borderRadius:20, boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid rgba(226,232,240,0.8)", overflow:"hidden" }}>
-        <table style={{ width:"100%", borderCollapse:"collapse" }}>
+        <table data-stack style={{ width:"100%", borderCollapse:"collapse" }}>
           <thead>
             <tr style={{ background:"linear-gradient(90deg,#F8FAFC,#F1F5F9)" }}>
               {["Class","Fee Type","Amount","Academic Year","Due Date","Description","Actions"].map(h => (
