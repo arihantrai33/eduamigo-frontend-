@@ -243,7 +243,8 @@ const s = {
   kpiValue: { fontSize: 20, fontWeight: 800 },
   kpiLabel: { fontSize: 12, fontWeight: 600, color: "var(--subtext)" },
   kpiNote: { fontSize: 11, color: "var(--subtext)", marginTop: 2 },
-  grid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(380px, 1fr))", gap: 16 },
+  // A column is at least 380 px, or the full width on a narrower screen (a phone), so the page never scrolls sideways.
+  grid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(380px, 100%), 1fr))", gap: 16 },
   card: { background: "var(--card)", border: "1px solid var(--border)", borderRadius: 14, padding: 16, overflowX: "auto" },
   table: { width: "100%", borderCollapse: "collapse", marginTop: 10, fontSize: 13 },
   th: { textAlign: "left", fontSize: 11, textTransform: "uppercase", letterSpacing: 0.4, color: "var(--subtext)", padding: "6px 8px", borderBottom: "1px solid var(--border)" },

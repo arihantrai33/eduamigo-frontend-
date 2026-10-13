@@ -667,7 +667,9 @@ input:-webkit-autofill:focus {
   .ea-admin-main [style*="grid-template-columns: repeat(5"],
   .ea-admin-main [style*="grid-template-columns: repeat(6"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
   .ea-admin-main [style*="grid-template-columns: 360px"],
+  .ea-admin-main [style*="grid-template-columns: 340px"],
   .ea-admin-main [style*="grid-template-columns: 2fr 1fr 1fr 1fr"] { grid-template-columns: 1fr !important; }
+  .ea-admin-main [style*="grid-template-columns: 340px"] > * { min-width: 0; }
 }
 @media (max-width: 767px) {
   .ea-admin-main table { min-width: 640px; }

@@ -262,7 +262,7 @@ export default function IDCardGenerator() {
         ))}
       </div>
 
-      <div style={{ display: "flex", gap: 8, marginBottom: "1.25rem" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: "1.25rem" }}>
         {steps.map((step, i) => (
           <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 14px", borderRadius: 20, background: step.done ? "var(--brand-gradient)" : "white", border: step.done ? "none" : "1.5px solid #E2E8F0", boxShadow: step.done ? "0 4px 12px color-mix(in srgb, var(--brand) 25%, transparent)" : "none", transition: "all 0.3s" }}>
