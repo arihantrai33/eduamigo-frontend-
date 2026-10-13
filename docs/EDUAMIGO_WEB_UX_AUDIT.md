@@ -7,7 +7,7 @@ Local development only: nothing here is deployed.
 - Screenshots of every route below at 375 px (phone) and 1440 px (desktop), signed in as the GVPS demo account
   for the route's role (`npm run demo` in the backend). A script records JavaScript errors, elements wider than the
   screen and horizontal page scroll for each screenshot.
-- `npm run test:e2e` (Playwright, 35 tests since the final pass) after each batch; `npm run build`; ESLint on
+- `npm run test:e2e` (Playwright, 42 tests since the owner decisions) after each batch; `npm run build`; ESLint on
   changed lines. Since 95bf32e the tests start their own in-memory demo on port 8100 and Vite on 5174; they never
   touch a demo running on 8000/5173. (Before that they reused whatever answered on 8000: on 2026-10-13 that was the
   owner's in-memory allied demo, so test records — a fee payment, a leave, a notice, chat messages, attendance in
@@ -29,7 +29,7 @@ overdue).
 | CSS: admin tables on phones | Record lists (`<table data-stack>`) become one card per row below 768 px, each value labelled with its column heading (`utils/stackTables.js` copies the headings into `data-label`). Report and matrix tables keep scrolling inside their card with the first column fixed |
 | `PortalHeader` | Header of the portal screens (back button, title, subtitle, actions) |
 | `Dialog` | The one dialog: dialog role, Escape, focus kept inside. Since batch 7 it asks "Discard the changes you have made?" when something was typed and Escape or the close button is used (Cancel and a successful save close it directly). The floating Ask button is hidden while a dialog is open |
-| `utils/unsavedChanges.js` | `useUnsavedChanges(dirty)`, used by Add Student/Teacher/Parent and by every Dialog holding typed-in changes. Reload, tab close, leaving the site: the browser asks (`beforeunload`). Moving to another screen inside the app (links, sidebar, `navigate()`): the app asks "You have unsaved changes. Leave this page and lose them?". `BrowserRouter` has no `useBlocker`, so the router's navigator (`push`/`replace`) is guarded while anything is unsaved; `confirmLeave()` covers sign-out, which clears the session before it navigates. **Not covered: the browser's Back/Forward buttons** |
+| `utils/unsavedChanges.js` | `useUnsavedChanges(dirty)`, used by Add Student/Teacher/Parent and by every Dialog holding typed-in changes. Reload, tab close, leaving the site: the browser asks (`beforeunload`). Moving to another screen inside the app (links, sidebar, `navigate()`), and the browser's Back/Forward buttons: the app asks "You have unsaved changes. Leave this page and lose them?". `BrowserRouter` has no `useBlocker`, so the router's navigator (`push`/`replace`) is guarded and a `popstate` listener added before the router (`installBackForwardGuard()` in main.jsx) handles Back/Forward; `confirmLeave()` covers sign-out, which clears the session before it navigates |
 | `utils/toast.js` `errorMessage()` | Readable error for every failure: the server's own words (4xx), plain advice for no connection, timeouts, 401/403/404/413/429, and for a server failure the action that failed plus `Reference: <first 8 characters of the request id>` (the same id is in the server log line). Development builds log method, path, status and request id to the console (never bodies, queries or tokens) |
 | `.ea-print-doc` (index.css) | Marks a printable document (report card, receipt, transfer certificate): when printing, its wrappers drop their fixed height, scrolling and centring, and nothing else on the page is printed |
 | Earlier work | Portal shell (sidebar from 1024 px, tab bar below), Glyph line icons instead of emoji, safe-area and keyboard handling in the apps |
@@ -198,9 +198,8 @@ documents (93-character school name, long address, 12 and 30 subjects, 12 and 45
 | Fee receipt | The last line ("Due date…") alone on a second page | One A5 page |
 | Transfer certificate | Printed the sidebar, the Ask button and the grey canvas; a long one would stop after one page (the admin page scrolls inside a fixed-height box) | Only the certificate; 45 class records = 2 pages; signatures kept together |
 Also: remarks being edited are printed (they were left out). Missing data: none of the printed fields is dropped;
-empty ones print "—". **Data concern, not changed:** the certificate's "Date of admission" is the date the student's
-record was created (`createdAt`), because the student model has no admission date; for students imported later it
-would be the import date. Needs an owner decision (add an admission date field, or rename the line).
+empty ones print "—". Data concern found here (the certificate's "Date of admission" was the record's `createdAt`):
+resolved by the owner's decision, see "Owner decisions" below.
 Tests: three print tests check the printed page count, full width and that no app chrome is printed; with the old
 CSS all three fail.
 
@@ -217,20 +216,86 @@ nothing), a server failure's reference, phone layout.
 | Reload, close the tab, leave the site | Yes: full-page add forms and any dialog with typed-in changes | Browser's own question (`beforeunload`; browsers only ask after the person has interacted with the page) |
 | Another screen inside the app: links, sidebar, buttons calling `navigate()` | Yes | App's question; Cancel keeps the form, Leave moves on and lifts the guard |
 | Sign out | Yes | Asked before the session is cleared |
-| Browser Back/Forward buttons | **No** | `BrowserRouter` learns of it after the address has changed; would need a data router (`createBrowserRouter` + `useBlocker`), an architectural change not made |
+| Browser Back/Forward buttons, app back buttons (`navigate(-1)`) | Yes, since 3ff48d3 (see "Owner decisions") | App's question; Cancel keeps the page and the address, Leave repeats the move |
 | Session expiry while a form is dirty | Partly | The browser asks before going to sign-in; staying keeps the typed text on screen, but the session is already gone, so saving says "Your session has ended. Please sign in again." |
 The admin sidebar's highlight now follows the address only (it used to light up the clicked entry before the move,
 and showed Dashboard plus the current entry on a direct load).
 
+## Owner decisions carried out (2026-10-13)
+
+**A. Date of admission (backend 6ea4038, frontend 16f3531).**
+- `Student.admittedOn` (calendar day; `null` = not recorded). It is set by: Add Student, the student edit form, a
+  bulk upload column (`admissionDate` or `admittedOn`), and admitting an Admissions application (that day). It is
+  checked: a real date, not in the future, not before the date of birth (also when the date of birth changes later).
+  It is never filled in from `createdAt`.
+- Transfer certificate: the API returns `admittedOn` as recorded plus `missing: ["admittedOn", "dateOfBirth"]` for
+  facts not recorded. The certificate prints "Not recorded" for them. On screen only (never printed), a warning asks
+  for the real date "from the school's admission register… do not guess" and saves it to the student.
+- Migration `npm run migrate:admission-dates` (dry run unless `--apply`, safe to repeat). It is backward compatible:
+  the field is optional. It fills a date only where a real one is on record: students admitted through Admissions
+  get the day of the "Admitted" step. Existing dates, imported students and legacy records are left alone. **It has
+  not been run against any real database**, only in tests; running it on production needs the owner's go-ahead and a
+  backup first.
+- Tests: backend `tests/admission-date.test.js` covers form input, refusals, record-later/clear, a legacy record
+  inserted without the field, bulk import with and without the column, Admissions admit, and the migration (dry run,
+  apply, existing dates kept, other school skipped, second run). The legacy test fails when the certificate is
+  pointed back at `createdAt`. Frontend `e2e/admission-date.spec.js` covers "Not recorded" with the screen-only
+  warning, recording the date there, and the edit form saving both dates.
+- Found on the way: the student edit form's "Date of birth" used a `dob` key the server ignores, so it was never
+  shown or saved (fixed). The certificate overflowed a 375 px phone by 331 px, because the admin phone table rule made
+  it 640 px wide (fixed: 0 px). Its on-screen parts used the certificate's serif font (fixed).
+
+**B. Back/Forward protection (3ff48d3), no router migration.** In React Router 7.18.4, `useBlocker` (and `usePrompt`)
+call `useDataRouterContext`, so they need a data router (checked in the installed source). `BrowserRouter` hears
+Back/Forward through a plain `popstate` listener on `window`. Testing showed that Chrome runs listeners on `window` in
+the order they were added (a capturing listener added later still ran second). So the guard's listener is added from
+`main.jsx` before the app starts. While a form is dirty, it stops the event before the router sees it, puts the
+address back with `history.go(delta)` (each BrowserRouter entry stores its position `idx`), asks, and on "Leave"
+lifts the guard and repeats the move. The app's own back buttons (`navigate(-1)`) take the same path.
+- Tests: Back (Cancel keeps the address and the typed text; Leave goes back; afterwards nothing is guarded), Forward,
+  and Back without changes. 8 unsaved-changes tests repeated 4 times: 32/32.
+- Limits: an entry without `idx` (not made by the app) is let through. Verified in Chrome only. A move to a different
+  site via Back is a page unload and gets the browser's own question instead.
+- A data-router migration (`createBrowserRouter`) is **not needed** for this. It stays a possible future change:
+  about 75 routes, the nested admin `<Routes>`, and every `navigate()` would need checking.
+
+**C. Admin menu with the keyboard (7ed0f18).**
+- Menu entries were clickable `div`s (no Tab stop, no Enter). They are now links with `aria-current="page"`.
+- Log Out, the phone menu button ("Open menu", `aria-expanded`) and its close button are buttons with names.
+- The menu was a component created during render (the two lint errors in this file), so it was rebuilt on every
+  render and keyboard focus was lost after each move. It is now rendered in place, and focus stays on the entry used.
+- A focus ring (`currentColor`) shows on the dark and the light menus.
+- "Skip to main content" is the first Tab stop.
+- On phones the menu is a dialog: focus moves in, Tab and Shift+Tab stay inside, Escape closes it and focus returns
+  to the menu button.
+- Tests: `e2e/admin-keyboard.spec.js` (desktop and phone, keyboard only). Both fail against the old menu.
+
+**D. Printing across browsers.**
+| Browser | Status |
+|---|---|
+| Chrome (desktop, current) | **Verified**: 8 PDFs (A4 report cards 1/3/2 pages, A5 receipts 1 page, A4 certificates 1/2 pages) and 3 automated print tests |
+| Brave | Installed; same Chromium print engine as Chrome; not tested separately |
+| Safari 26.5.2 | Installed but **not verified**. Automation is off: `safaridriver` refuses until "Allow remote automation" is turned on in Safari ▸ Settings ▸ Developer (the owner's setting, not changed). It has no print-to-PDF command either, so a check means printing by hand |
+| Firefox | **Not installed; not verified** (nothing was downloaded) |
+
+Manual check for Safari/Firefox: open a fee receipt (Fee Collection ▸ a paid row ▸ receipt), a report card (Results ▸
+report card) and a transfer certificate (Year End & TC ▸ a former student), press ⌘P, and check: one page for a
+receipt and a one-student report card; no sidebar, Ask button or grey band; the table header repeats on a second
+page.
+
+Found while re-checking Chrome: a **grey band under the printed certificate**. There were two causes: the app's global
+0.15 s colour transitions were still running when the printout was taken, and `body.admin-body` (later in the CSS,
+same specificity) kept the body grey. Fixed in 7cae7d3. The print tests now read every wrapper's background at the
+moment print media applies, and fail on the old rule.
+
 ## Known defects and open items
 1. Admin screens on the old look but working: Reports-type pages keep their own chart colours; Settings and the
-   portal heroes (Results, Profile) keep their own design. The admin sidebar entries are clickable `div`s, not
-   links or buttons (no keyboard access); noticed, not changed.
+   portal heroes (Results, Profile) keep their own design.
 2. Forms: no per-field inline error text.
-3. Unsaved changes: Back/Forward buttons not covered (see above).
-4. Transfer certificate "Date of admission" is the record's creation date (owner decision needed).
+3. Printing not verified in Safari or Firefox (see D).
+4. Back/Forward guard verified in Chrome only; the admission-date migration has not been run on real data.
 5. Owner console: tests run locally (`npm run test:e2e`); its CI workflow still runs lint and build only.
-6. Printing was checked in Chrome only (Safari and Firefox print engines not checked).
+6. Portal (student/teacher/parent) navigation was not part of the keyboard pass; only the admin menu was.
 
 ## Verification log
 | Date | Batch | Checks |
@@ -244,3 +309,4 @@ and showed Dashboard plus the current entry on a direct load).
 | 2026-10-13 | Batch 7, forms (2fb3287, ab8a986) | Playwright **24/24** incl. new tests: discard question on a dialog with changes (none when empty; Cancel keeps the text); HR checks a missing teacher, the Ask button hides under a dialog, user and event dialogs are real dialogs. Phone screenshots of the HR, event (discard question) and user dialogs reviewed. Build ok; 0 new lint messages |
 | 2026-10-13 | Owner console (console 8b35e3a) | Before: all 6 signed-in routes checked at 375 px scrolled sideways 57–137 px (school page 61 px). After: 16 screenshots (8 routes × 375/1440 px), 0 sideways scroll, 0 JS errors; school-off confirmation and nav highlight checked in the browser; console lint and build clean |
 | 2026-10-13 | Final pass (frontend dea2606, 95bf32e, 403714f, 7091a85; console ad35921) | Frontend Playwright **35/35, twice in a row**, on its own servers (8100/5174); 11 new tests (3 error feedback, 3 print, 5 unsaved changes). Console Playwright **6/6**, lint clean, build ok. Backend **727/727** (38 suites). Frontend build ok; ESLint on every file changed since 81a572b: 70 messages before, 64 after, none added. Responsive sweep on the isolated servers: **150 screenshots (75 routes × 375/1440 px), 0 JavaScript errors, 0 routes with page-level sideways scroll**. Print: 8 PDFs reviewed (real and long mocked documents). The owner's demo on 8000 was not used by any of these |
+| 2026-10-13 | Owner decisions (backend 6ea4038; frontend 16f3531, 3ff48d3, 7ed0f18, 7cae7d3) | Backend **733/733** (39 suites; 6 new admission-date tests). Frontend Playwright **42/42** on fresh test servers, after the last change; 7 new tests (2 admission date, 3 Back/Forward, 2 keyboard); unsaved-changes spec 8 × 4 repeats 32/32. Each new test checked against the old code (fails there). Build ok; 0 lint messages on changed lines; admin Home.jsx lint errors 2 → 0. Sweep on the test servers: **150 screenshots, 0 JS errors, 0 page-level sideways scroll**. Chrome print: 8 PDFs reviewed, no grey band. Safari/Firefox printing not verified (see D) |
