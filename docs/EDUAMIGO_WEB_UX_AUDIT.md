@@ -7,7 +7,11 @@ Local development only: nothing here is deployed.
 - Screenshots of every route below at 375 px (phone) and 1440 px (desktop), signed in as the GVPS demo account
   for the route's role (`npm run demo` in the backend). A script records JavaScript errors, elements wider than the
   screen and horizontal page scroll for each screenshot.
-- `npm run test:e2e` (Playwright, 24 tests since batch 7) after each batch; `npm run build`; ESLint on changed lines.
+- `npm run test:e2e` (Playwright, 35 tests since the final pass) after each batch; `npm run build`; ESLint on
+  changed lines. Since 95bf32e the tests start their own in-memory demo on port 8100 and Vite on 5174; they never
+  touch a demo running on 8000/5173. (Before that they reused whatever answered on 8000: on 2026-10-13 that was the
+  owner's in-memory allied demo, so test records — a fee payment, a leave, a notice, chat messages, attendance in
+  the GVPS demo school — were written into it. It keeps no data on disk; restarting it clears them.)
 - Baseline sweep (2026-10-13, before the transformation): 150 screenshots, **no JavaScript errors on any route**.
 
 ## Design system (src/components/ui, src/index.css)
@@ -25,7 +29,9 @@ overdue).
 | CSS: admin tables on phones | Record lists (`<table data-stack>`) become one card per row below 768 px, each value labelled with its column heading (`utils/stackTables.js` copies the headings into `data-label`). Report and matrix tables keep scrolling inside their card with the first column fixed |
 | `PortalHeader` | Header of the portal screens (back button, title, subtitle, actions) |
 | `Dialog` | The one dialog: dialog role, Escape, focus kept inside. Since batch 7 it asks "Discard the changes you have made?" when something was typed and Escape or the close button is used (Cancel and a successful save close it directly). The floating Ask button is hidden while a dialog is open |
-| `utils/unsavedChanges.js` | `useUnsavedChanges(dirty)`: the browser asks before a full-page form with entries is closed or reloaded. Moving to another screen inside the app is not blocked: the app uses `BrowserRouter`, which cannot block navigation (needs a data router; not changed) |
+| `utils/unsavedChanges.js` | `useUnsavedChanges(dirty)`, used by Add Student/Teacher/Parent and by every Dialog holding typed-in changes. Reload, tab close, leaving the site: the browser asks (`beforeunload`). Moving to another screen inside the app (links, sidebar, `navigate()`): the app asks "You have unsaved changes. Leave this page and lose them?". `BrowserRouter` has no `useBlocker`, so the router's navigator (`push`/`replace`) is guarded while anything is unsaved; `confirmLeave()` covers sign-out, which clears the session before it navigates. **Not covered: the browser's Back/Forward buttons** |
+| `utils/toast.js` `errorMessage()` | Readable error for every failure: the server's own words (4xx), plain advice for no connection, timeouts, 401/403/404/413/429, and for a server failure the action that failed plus `Reference: <first 8 characters of the request id>` (the same id is in the server log line). Development builds log method, path, status and request id to the console (never bodies, queries or tokens) |
+| `.ea-print-doc` (index.css) | Marks a printable document (report card, receipt, transfer certificate): when printing, its wrappers drop their fixed height, scrolling and centring, and nothing else on the page is printed |
 | Earlier work | Portal shell (sidebar from 1024 px, tab bar below), Glyph line icons instead of emoji, safe-area and keyboard handling in the apps |
 
 ## Route inventory
@@ -165,17 +171,66 @@ error), double submission, and loss of typed-in work.
 | Half-filled full-page form lost on tab close or reload | Add Student, Add Teacher, Add Parent | Browser asks first (2fb3287) |
 | Already sound | Enter Marks (range 0–max, at least one mark), Year end (reason for each leaver, confirmation), Bulk operations (required selections, confirmation), Add Student/Parent, Admissions, Exam schedule | No change |
 
-Not changed, recorded: about 15 places fall back to the word "Error" when the server sends no message (only on a
-network failure; Transport, Fee structure, Bulk operations, Parents and others); navigation inside the app is not
-blocked for unsaved forms (`BrowserRouter`); per-field inline error text is not used (messages appear as toasts).
+Recorded at the time and done in the final pass below: the generic "Error" fallbacks and navigation inside the app.
+Still not used: per-field inline error text (messages appear as toasts or as a line in the form).
+
+## Final verification and hardening pass (2026-10-13)
+No redesign; four fixes, each with regression tests, then a full re-check.
+
+**1. Error feedback (dea2606; console ad35921).** 18 places showed the word "Error" when the server sent no message
+(Transport ×4, Bulk operations ×4, Salaries ×2, Communications ×2, Fee structure, HR, Parents, Students, Teachers,
+Library) and 18 more showed the raw technical text (`err.message`: "Failed to fetch", "Load failed", "Network Error",
+"Request failed with status code 500") on sign-in, school search, password reset, support sign-in, Add Teacher,
+the student bus and revision screens and seven teacher screens. All now use `errorMessage()` with a fallback naming
+the action ("Could not save the book."). Two terse checks were reworded ("Name, lat, lng required" → "Enter the
+stop name, latitude and longitude"; "Teacher and basic salary required" → "Select a teacher and enter the basic
+salary"). The backend already hid internals (a 500 says only "Something went wrong" with a request id, and logs the
+details with that id); the console now shows the same short reference. Tests: 15 kinds of failure through
+`errorMessage()`; a mocked 500 on saving a book shows "Could not save the book. The server had a problem; please try
+again in a moment. Reference: 9f8e7d6c" and keeps the dialog open; a lost connection on teacher notifications says
+"Can't reach EduAmigo right now…".
+
+**2. Printing (403714f).** Printed to PDF (A4 report card and TC, A5 receipt) with real demo data and with mocked long
+documents (93-character school name, long address, 12 and 30 subjects, 12 and 45 class records). Found and fixed:
+| Document | Before | After |
+|---|---|---|
+| Report card | Printed in a 420 px column (half the paper); the last line ("Issued on…") alone on a second page | Full width; one page per student (3 students = 3 pages); 30 subjects = 2 pages, rows never split, table header repeated |
+| Fee receipt | The last line ("Due date…") alone on a second page | One A5 page |
+| Transfer certificate | Printed the sidebar, the Ask button and the grey canvas; a long one would stop after one page (the admin page scrolls inside a fixed-height box) | Only the certificate; 45 class records = 2 pages; signatures kept together |
+Also: remarks being edited are printed (they were left out). Missing data: none of the printed fields is dropped;
+empty ones print "—". **Data concern, not changed:** the certificate's "Date of admission" is the date the student's
+record was created (`createdAt`), because the student model has no admission date; for students imported later it
+would be the import date. Needs an owner decision (add an admission date field, or rename the line).
+Tests: three print tests check the printed page count, full width and that no app chrome is printed; with the old
+CSS all three fail.
+
+**3. Console Void (ad35921).** The console got Playwright tests against an in-memory mock of the platform API (the
+dev proxy points at a closed port, so nothing can reach a backend; no invoices are created anywhere). Void asks
+"Void EA/2026-27/0001? A voided invoice cannot be issued or paid again."; Cancel sends nothing; OK sends one
+`PATCH {action: "void"}` and shows "EA/2026-27/0001 voided."; with the confirmation removed the test fails. Also
+covered: Mark paid (cancelling the reference question sends nothing), Issue, turning a school off (Cancel sends
+nothing), a server failure's reference, phone layout.
+
+**4. Unsaved changes (7091a85).** Covered separately:
+| Case | Covered | How |
+|---|---|---|
+| Reload, close the tab, leave the site | Yes: full-page add forms and any dialog with typed-in changes | Browser's own question (`beforeunload`; browsers only ask after the person has interacted with the page) |
+| Another screen inside the app: links, sidebar, buttons calling `navigate()` | Yes | App's question; Cancel keeps the form, Leave moves on and lifts the guard |
+| Sign out | Yes | Asked before the session is cleared |
+| Browser Back/Forward buttons | **No** | `BrowserRouter` learns of it after the address has changed; would need a data router (`createBrowserRouter` + `useBlocker`), an architectural change not made |
+| Session expiry while a form is dirty | Partly | The browser asks before going to sign-in; staying keeps the typed text on screen, but the session is already gone, so saving says "Your session has ended. Please sign in again." |
+The admin sidebar's highlight now follows the address only (it used to light up the clicked entry before the move,
+and showed Dashboard plus the current entry on a direct load).
 
 ## Known defects and open items
 1. Admin screens on the old look but working: Reports-type pages keep their own chart colours; Settings and the
-   portal heroes (Results, Profile) keep their own design.
-2. Forms: the generic "Error" fallback above; inline per-field error text if wanted.
-3. Owner console: reviewed (see Platform). Open: browser check of Void with a priced plan; the console has no
-   automated tests.
-4. Print views (report card, receipt, TC) need a print check.
+   portal heroes (Results, Profile) keep their own design. The admin sidebar entries are clickable `div`s, not
+   links or buttons (no keyboard access); noticed, not changed.
+2. Forms: no per-field inline error text.
+3. Unsaved changes: Back/Forward buttons not covered (see above).
+4. Transfer certificate "Date of admission" is the record's creation date (owner decision needed).
+5. Owner console: tests run locally (`npm run test:e2e`); its CI workflow still runs lint and build only.
+6. Printing was checked in Chrome only (Safari and Firefox print engines not checked).
 
 ## Verification log
 | Date | Batch | Checks |
@@ -188,3 +243,4 @@ blocked for unsaved forms (`BrowserRouter`); per-field inline error text is not 
 | 2026-10-13 | Batch 6, five admin screens and phone table cards (409af42, 4a07f74) | Screens reviewed at 375/1440 px; new test: Edit Profile opens the edit dialog and does not reopen after reload; Playwright 22/22; build ok; 0 new lint messages |
 | 2026-10-13 | Batch 7, forms (2fb3287, ab8a986) | Playwright **24/24** incl. new tests: discard question on a dialog with changes (none when empty; Cancel keeps the text); HR checks a missing teacher, the Ask button hides under a dialog, user and event dialogs are real dialogs. Phone screenshots of the HR, event (discard question) and user dialogs reviewed. Build ok; 0 new lint messages |
 | 2026-10-13 | Owner console (console 8b35e3a) | Before: all 6 signed-in routes checked at 375 px scrolled sideways 57–137 px (school page 61 px). After: 16 screenshots (8 routes × 375/1440 px), 0 sideways scroll, 0 JS errors; school-off confirmation and nav highlight checked in the browser; console lint and build clean |
+| 2026-10-13 | Final pass (frontend dea2606, 95bf32e, 403714f, 7091a85; console ad35921) | Frontend Playwright **35/35, twice in a row**, on its own servers (8100/5174); 11 new tests (3 error feedback, 3 print, 5 unsaved changes). Console Playwright **6/6**, lint clean, build ok. Backend **727/727** (38 suites). Frontend build ok; ESLint on every file changed since 81a572b: 70 messages before, 64 after, none added. Responsive sweep on the isolated servers: **150 screenshots (75 routes × 375/1440 px), 0 JavaScript errors, 0 routes with page-level sideways scroll**. Print: 8 PDFs reviewed (real and long mocked documents). The owner's demo on 8000 was not used by any of these |
