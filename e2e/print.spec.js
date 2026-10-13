@@ -26,9 +26,17 @@ async function printLayout(page, docSelector) {
   const out = await page.evaluate((sel) => {
     const shown = (el) => { const s = getComputedStyle(el); return s.display !== 'none' && s.visibility !== 'hidden' && el.getBoundingClientRect().height > 0; };
     const doc = document.querySelector(sel);
+    // Read at once, as the printout is taken: html, body and every wrapper must already be white (the app's colour
+    // transitions and the admin body's grey used to leave a grey block under the document).
+    const notWhite = [];
+    for (let el = doc.parentElement; el; el = el.parentElement) {
+      const bg = getComputedStyle(el).backgroundColor;
+      if (bg !== 'rgb(255, 255, 255)') notWhite.push(`${el.tagName}.${el.className} ${bg}`);
+    }
     return {
       chrome: [...document.querySelectorAll('aside, nav, .ea-ask-fab, .no-print, [role="status"]')].filter(shown).map((e) => e.className || e.tagName),
       widthShare: doc.getBoundingClientRect().width / document.body.getBoundingClientRect().width,
+      notWhite,
     };
   }, docSelector);
   return out;
@@ -41,6 +49,7 @@ test('a report card prints alone on one A4 page at full width; a long one breaks
   await expect(page.getByText('Subject 12', { exact: true })).toBeVisible();
   const layout = await printLayout(page, '.rc-page');
   expect(layout.chrome).toEqual([]);
+  expect(layout.notWhite).toEqual([]);
   expect(layout.widthShare).toBeGreaterThan(0.95); // it used to print in a 420 px column
   expect(await pdfPages(page)).toBe(1); // the footer used to fall onto a second page
 
@@ -62,6 +71,7 @@ test('a fee receipt prints on one A5 page with every line', async ({ page }) => 
   await expect(page.getByText('Due date for this fee: 10 October 2026')).toBeVisible();
   const layout = await printLayout(page, '.rcpt');
   expect(layout.chrome).toEqual([]);
+  expect(layout.notWhite).toEqual([]);
   expect(layout.widthShare).toBeGreaterThan(0.95);
   expect(await pdfPages(page)).toBe(1); // "Due date" used to be alone on page 2
 });
@@ -73,6 +83,7 @@ test('a transfer certificate prints without the admin shell and continues onto a
   await expect(page.getByText('TRANSFER CERTIFICATE', { exact: true })).toBeVisible();
   const layout = await printLayout(page, '.tc-sheet');
   expect(layout.chrome).toEqual([]); // sidebar and Ask button used to print
+  expect(layout.notWhite).toEqual([]);
   expect(layout.widthShare).toBeGreaterThan(0.95);
   // The admin page scrolls inside a fixed-height box; printing used to stop at one page.
   expect(await pdfPages(page)).toBe(2);

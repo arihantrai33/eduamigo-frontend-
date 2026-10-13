@@ -269,7 +269,11 @@ input, button, select, textarea {
    wrappers let it flow over as many pages as it needs, and nothing else is printed (sidebar, menu bar, banners, the
    Ask button, toasts). */
 @media print {
-  html:has(.ea-print-doc), body:has(.ea-print-doc) { background: #fff !important; }
+  /* The page's 0.15 s colour transitions (see "Smooth transitions globally") would otherwise still be running when
+     the printout is taken, leaving the grey app background on the paper. */
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+  /* "html body" outranks "body.admin-body" (admin pages paint the body grey further down this file). */
+  html:has(.ea-print-doc), html body:has(.ea-print-doc) { background: #fff !important; }
   body:has(.ea-print-doc) :is(div, main):has(.ea-print-doc) {
     position: static !important; display: block !important; width: auto !important; max-width: none !important;
     height: auto !important; min-height: 0 !important; max-height: none !important; overflow: visible !important;
