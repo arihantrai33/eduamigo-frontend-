@@ -13,7 +13,8 @@ export const PORTAL_NAV = {
     bottom: [
       { icon: House, label: "Home", path: "/student/home" },
       { icon: Bus, label: "Bus", path: "/student/bus" },
-      { icon: BookOpen, label: "Learn", path: "/student/notes" },
+      // Results is part of Learning (see the sidebar), so the Learn tab is the current one on the results screen.
+      { icon: BookOpen, label: "Learn", path: "/student/notes", also: ["/student/result"] },
       { icon: MessageCircle, label: "Chat", path: "/student/chat" },
       { icon: User, label: "Me", path: "/student/profile" },
     ],

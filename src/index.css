@@ -82,6 +82,12 @@ input, button, select, textarea {
 .ea-scroll > div > [style*="; height: 100vh"],
 .ea-scroll > div > [style^="height: 100dvh"],
 .ea-scroll > div > [style*="; height: 100dvh"] { height: 100% !important; }
+/* Student and parent home on phones and tablets: the welcome header scrolls away with the content, so the whole
+   screen scrolls (navigation stays in the tab bar). From 1024 px the header stays in place as before. */
+@media (max-width: 1023px) {
+  .ea-scroll > div > .ea-home { height: auto !important; min-height: 100%; }
+  .ea-scroll .ea-home__body { flex: none !important; overflow: visible !important; }
+}
 /* Room for the tab bar so the last item of a page is never hidden under it. */
 @media (max-width: 1023px) {
   .ea-scroll:has(.ea-bottom-nav) { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }

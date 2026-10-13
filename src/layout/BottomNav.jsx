@@ -13,8 +13,8 @@ export default function BottomNav({ role }) {
 
   return (
     <nav className="ea-bottom-nav" aria-label="Main">
-      {items.map(({ icon: Icon, label, path }) => {
-        const active = isActivePath(pathname, path);
+      {items.map(({ icon: Icon, label, path, also = [] }) => {
+        const active = [path, ...also].some((p) => isActivePath(pathname, p));
         return (
           <button key={path} type="button" onClick={() => navigate(path)} aria-current={active ? "page" : undefined}
             className={active ? "ea-bottom-nav__item is-active" : "ea-bottom-nav__item"}>

@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useTheme } from '../../context/ThemeContext';
 
 import Glyph from "../../components/Glyph";
+import BottomNav from "../../layout/BottomNav";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -207,7 +208,7 @@ export default function StudentResult() {
         {best && worst && best._id !== worst._id && (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 14 }}>
             {[
-              { label: 'Strength',   emoji: '', sub: best.subject,  val: `${best.marksObtained}/${best.totalMarks}`,   bg: dm ? 'linear-gradient(135deg,#0f2a25,#1a3a34)' : 'linear-gradient(135deg,#E0F7F4,#B2DFDB)' },
+              { label: 'Strength',   emoji: <Glyph e="🏆" />, sub: best.subject,  val: `${best.marksObtained}/${best.totalMarks}`,   bg: dm ? 'linear-gradient(135deg,#0f2a25,#1a3a34)' : 'linear-gradient(135deg,#E0F7F4,#B2DFDB)' },
               { label: 'Focus Area', emoji: <Glyph e="📌" />, sub: worst.subject, val: `${worst.marksObtained}/${worst.totalMarks}`, bg: dm ? 'linear-gradient(135deg,#2a0f0f,#3a1a1a)' : 'linear-gradient(135deg,#FFEBEE,#FFCDD2)' },
             ].map(c => (
               <div key={c.label} style={{ background: c.bg, borderRadius: 16, padding: 14 }}>
@@ -222,28 +223,7 @@ export default function StudentResult() {
         )}
       </div>
 
-      <div className="ea-phone-only" style={{ position: 'fixed', bottom: 0, left: 0, right: 0,
-        height: 'calc(66px + env(safe-area-inset-bottom))', paddingBottom: 'env(safe-area-inset-bottom)',
-        background: dm ? '#1e293b' : '#fff',
-        display: 'flex', borderTop: dm ? '1px solid #334155' : '1px solid #E8EAF0',
-        boxShadow: '0 -4px 24px color-mix(in srgb, var(--brand) 8%, transparent)', zIndex: 200 }}>
-        {[
-          [<Glyph e="🏠" />, 'Home',   '/student/home'],
-          [<Glyph e="🚌" />, 'Bus',    '/student/bus'],
-          [<Glyph e="📚" />, 'Learn',  '/student/notes'],
-          [<Glyph e="📊" />, 'Result', '/student/result'],
-          [<Glyph e="👤" />, 'Me',     '/student/profile'],
-        ].map(([ico, lbl, path]) => (
-          <button key={lbl} onClick={() => navigate(path)}
-            style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
-              justifyContent: 'center', gap: 3, cursor: 'pointer', fontSize: 9.5, fontWeight: 700,
-              color: path === '/student/result' ? 'var(--brand)' : (dm ? '#94a3b8' : '#7B8099'),
-              border: 'none', background: 'none', textTransform: 'uppercase' }}>
-            <span style={{ fontSize: 22 }}>{ico}</span>
-            <span>{lbl}</span>
-          </button>
-        ))}
-      </div>
+      <BottomNav role="student" />
     </div>
   );
 }

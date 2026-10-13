@@ -94,7 +94,7 @@ export default function ParentHome() {
   ];
 
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "inherit" }}>
+    <div className="ea-home" style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "inherit" }}>
 
       {/* Header */}
       <div style={{ background: look.header, padding: "20px 20px 20px", flexShrink: 0 }}>
@@ -171,7 +171,7 @@ export default function ParentHome() {
       </div>
 
       {/* Body */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 80px" }}>
+      <div className="ea-home__body" style={{ flex: 1, overflowY: "auto", padding: "16px 16px 80px" }}>
 
         {/* Quick Tiles */}
         <div className="ea-tile-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>

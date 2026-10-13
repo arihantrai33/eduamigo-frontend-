@@ -122,7 +122,7 @@ return (
     );
   }
 return (
-<div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "inherit" }}>
+<div className="ea-home" style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "inherit" }}>
 {/* ── Header ── */}
 <div style={{ background: look.header, padding: "20px 20px 20px", flexShrink: 0 }}>
 <SchoolStrip user={user} theme={theme} look={look} />
@@ -195,7 +195,7 @@ style={{ flex: 1, background: look.tile, border: look.border, borderRadius: 10, 
 </div>
 </div>
 {/* ── Body ── */}
-<div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 80px" }}>
+<div className="ea-home__body" style={{ flex: 1, overflowY: "auto", padding: "16px 16px 80px" }}>
 {/* Quick Tiles */}
 <div className="ea-tile-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
 {quickTiles.filter(visibleFor(user)).map((tile) => (
