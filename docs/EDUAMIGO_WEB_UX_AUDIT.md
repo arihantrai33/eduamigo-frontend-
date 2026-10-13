@@ -7,7 +7,7 @@ Local development only: nothing here is deployed.
 - Screenshots of every route below at 375 px (phone) and 1440 px (desktop), signed in as the GVPS demo account
   for the route's role (`npm run demo` in the backend). A script records JavaScript errors, elements wider than the
   screen and horizontal page scroll for each screenshot.
-- `npm run test:e2e` (Playwright, 19 tests) after each batch; `npm run build`; ESLint on changed lines.
+- `npm run test:e2e` (Playwright, 24 tests since batch 7) after each batch; `npm run build`; ESLint on changed lines.
 - Baseline sweep (2026-10-13, before the transformation): 150 screenshots, **no JavaScript errors on any route**.
 
 ## Design system (src/components/ui, src/index.css)
@@ -22,8 +22,11 @@ overdue).
 | `tone.js` | `toneOf(colour)` maps the raw colours older screens passed to a tone |
 | CSS: `.ea-toolbar`, `.ea-search`, `.ea-input`, `.ea-select` | Search and filter rows that wrap on phones, with a visible focus ring |
 | CSS: `.ea-btn--primary`, `--ghost`, `--danger`, `.ea-back`, `.ea-badge--*`, `.ea-icon-chip--*` | Buttons, back button, status badges and icon chips |
-| CSS: admin tables on phones | A wide table scrolls inside its card and the first column (the name) stays in view |
-| Earlier work | Portal shell (sidebar from 1024 px, tab bar below), one shared Dialog, Glyph line icons instead of emoji, safe-area and keyboard handling in the apps |
+| CSS: admin tables on phones | Record lists (`<table data-stack>`) become one card per row below 768 px, each value labelled with its column heading (`utils/stackTables.js` copies the headings into `data-label`). Report and matrix tables keep scrolling inside their card with the first column fixed |
+| `PortalHeader` | Header of the portal screens (back button, title, subtitle, actions) |
+| `Dialog` | The one dialog: dialog role, Escape, focus kept inside. Since batch 7 it asks "Discard the changes you have made?" when something was typed and Escape or the close button is used (Cancel and a successful save close it directly). The floating Ask button is hidden while a dialog is open |
+| `utils/unsavedChanges.js` | `useUnsavedChanges(dirty)`: the browser asks before a full-page form with entries is closed or reloaded. Moving to another screen inside the app is not blocked: the app uses `BrowserRouter`, which cannot block navigation (needs a data router; not changed) |
+| Earlier work | Portal shell (sidebar from 1024 px, tab bar below), Glyph line icons instead of emoji, safe-area and keyboard handling in the apps |
 
 ## Route inventory
 Condition: what the baseline sweep showed. Done: changes made so far (commit). Open: what is still to do.
@@ -51,8 +54,11 @@ phone screen does not scroll). `result` had its own tab bar (shown on desktop to
 instead of "Chat" (owner decision pending). Back/send buttons used text arrows (fixed 837b4d7).
 Done: Notes and Timetable use the shared PortalHeader like the other screens (960f901); on wide screens the portal
 sits in a centred 1080 px column instead of stretching (a1af197); the end of each page clears the Ask button.
-Open: header that scrolls away on phones (owner decision); the centred-title heroes (Results, Profile) keep their
-own design.
+Owner decisions applied (2ab6301): on phones the home header scrolls away with the content (desktop unchanged);
+Results now shows the shared tab bar (Home, Bus, Learn, Chat, Me) with Learn marked as the current tab, because
+Results is reached from Learn. No label was renamed: the page-specific bar with "Result" in place of "Chat" was
+removed, and "Results" stays the page title.
+Open: the centred-title heroes (Results, Profile) keep their own design.
 
 ### Teacher portal (10)
 `/teacher/home`, `students`, `attendance`, `marks`, `upload`, `timetable`, `leave`, `notifications`, `profile`, `chat`.
@@ -71,56 +77,72 @@ Done: My Profile uses PortalHeader (960f901); the Ask button no longer covers th
 | Route | Purpose | Condition (baseline) | Done |
 |---|---|---|---|
 | `/admin` | Dashboard | Reference design | (earlier, 19995f1) |
-| `/admin/students` | Student list | Teal banner, colour-bordered stats, table 818 px on phones | b15be6f |
-| `/admin/teachers` | Teacher list | Green banner, colour stats | b15be6f |
-| `/admin/parents` | Parent list | Orange banner | b15be6f |
+| `/admin/students` | Student list | Teal banner, colour-bordered stats, table 818 px on phones | b15be6f; 4a07f74 (cards on phones); 2fb3287 (delete feedback) |
+| `/admin/teachers` | Teacher list | Green banner, colour stats | b15be6f; 4a07f74; 2fb3287 |
+| `/admin/parents` | Parent list | Orange banner | b15be6f; 4a07f74 |
 | `/admin/attendance-reports` | Attendance analytics | Pink banner, filter labels not linked | b15be6f |
 | `/admin/exams` | Exam schedule | Orange/red banner | b15be6f |
-| `/admin/fees` | Fee collection | Green banner; "Fully paid" card had no icon; table 939 px on phones | b15be6f |
-| `/admin/fee-reports` | Fee analytics | Brand banner, filter labels not linked | b15be6f |
-| `/admin/fee-structure` | Fee structure | Blue banner, decorative colours | b15be6f |
-| `/admin/leaves` | Leave approvals | Orange banner | b15be6f |
-| `/admin/library` | Library | Banner with floating book icons | b15be6f |
-| `/admin/communications` | Announcements, circulars, notifications | Brand banner | b15be6f |
+| `/admin/fees` | Fee collection | Green banner; "Fully paid" card had no icon; table 939 px on phones | b15be6f; 4a07f74 |
+| `/admin/fee-reports` | Fee analytics | Brand banner, filter labels not linked | b15be6f (report table keeps scrolling) |
+| `/admin/fee-structure` | Fee structure | Blue banner, decorative colours | b15be6f; 4a07f74 |
+| `/admin/leaves` | Leave approvals | Orange banner; approve/reject gave no feedback and could be pressed twice | b15be6f; 2fb3287 (message, buttons disabled while saving) |
+| `/admin/library` | Library | Banner with floating book icons | b15be6f; 4a07f74; 2fb3287 |
+| `/admin/communications` | Announcements, circulars, notifications | Brand banner; pin/delete failed silently | b15be6f; 2fb3287 |
 | `/admin/reports` | School reports | Blue banner | b15be6f |
-| `/admin/results` | Results and grades | Brand banner | b15be6f |
-| `/admin/salaries` | Salaries | Green/cyan banner | b15be6f |
+| `/admin/results` | Results and grades | Brand banner | b15be6f; 4a07f74 |
+| `/admin/salaries` | Salaries | Green/cyan banner; "mark paid" failed silently | b15be6f; 4a07f74; 2fb3287 |
 | `/admin/timetable` | Class timetables | Brand banner | b15be6f |
 | `/admin/transport` | Buses and routes | Orange banner; **2.8 s full-screen bus animation** before the page opened | b15be6f (animation removed) |
 | `/admin/academic` | School setup checklist, sessions, classes | White header (own style) | ee52fbc |
 | `/admin/activity` | Activity log | White header | ee52fbc |
-| `/admin/admissions` | Admissions pipeline | White header; table 1008 px on phones | ee52fbc (table scrolls in its card, name column stays) |
-| `/admin/ask` | EduAmigo Ask insights | White header; page scrolls sideways on phones (45 px) | c87c491 (no sideways scroll) |
+| `/admin/admissions` | Admissions pipeline | White header; table 1008 px on phones | ee52fbc; 4a07f74 (cards on phones) |
+| `/admin/ask` | EduAmigo Ask insights | White header; page scrolls sideways on phones (45 px) | c87c491 (no sideways scroll); 409af42 (PageHeader) |
 | `/admin/bulk-operations` | Bulk attendance, promotion, CSV | White header | ee52fbc |
-| `/admin/chat` | Messages | One pane on phones (earlier) | |
-| `/admin/event-calendar` | Events | Calendar colour changed every month | ee52fbc (school colour) |
-| `/admin/hr-management` | HR & payroll | White header, colour stats | ee52fbc |
-| `/admin/id-card-generator` | ID cards | Page scrolled 372 px sideways on phones | c87c491 (fits) |
+| `/admin/chat` | Messages | One pane on phones (earlier); own colours | 409af42 (design tokens, labelled refresh, pressed filters) |
+| `/admin/event-calendar` | Events | Calendar colour changed every month; hand-rolled event dialogs (close was a div) | ee52fbc (school colour); ab8a986 (shared dialog) |
+| `/admin/hr-management` | HR & payroll | White header, colour stats; hand-rolled dialog; saved without checks and showed "Error" | ee52fbc; 4a07f74; 2fb3287; ab8a986 (shared dialog, required-field checks, saved message) |
+| `/admin/id-card-generator` | ID cards | Page scrolled 372 px sideways on phones | c87c491 (fits); 409af42 (PageHeader, print action) |
 | `/admin/settings` | School settings | Plain | 73b6faf |
-| `/admin/user-management` | Staff accounts | Role cards were clickable divs (no keyboard) | ee52fbc (buttons, pressed state) |
+| `/admin/user-management` | Staff accounts | Role cards were clickable divs (no keyboard); hand-rolled dialog | ee52fbc (buttons, pressed state); ab8a986 (shared dialog) |
 | `/admin/year-end` | Year end and TC | White header | ee52fbc |
-| `/admin/students/add`, `/teachers/add`, `/parents/add` | Add forms | Plain headers | 73b6faf |
+| `/admin/students/add`, `/teachers/add`, `/parents/add` | Add forms | Plain headers; nothing warned before a half-filled form was lost | 73b6faf; 2fb3287 (browser asks before closing or reloading) |
 | `/admin/students/:id` | Student profile | Plain header, text back button | 73b6faf |
-| `/admin/teachers/:id` | Teacher profile | Overflowed on phones | c87c491 (one column on phones) |
-| `/admin/tc/:id` | Transfer certificate | Shows a clear message for active students | |
+| `/admin/teachers/:id` | Teacher profile | Overflowed on phones; **"Edit Profile" opened a route that does not exist (blank page)** | c87c491 (one column on phones); 409af42 (PageHeader; Edit Profile opens the edit dialog on Teachers) |
+| `/admin/tc/:id` | Transfer certificate | Shows a clear message for active students | 409af42 (PageHeader with back and print, alert style) |
 | `/admin/marks`, `/admin/notice-board`, `/admin/admissions/*` | Old links | Redirect to Results, Communications, Admissions | |
 
-Unrouted page files (not reachable): `admin/AskKnowledge.jsx`, `admin/Attendance.jsx`, `admin/NoticeBoard.jsx`,
-`admin/Notifications.jsx`, `parent/ParentRoutes.jsx`.
+Unrouted page files (not reachable): `admin/Attendance.jsx`, `admin/NoticeBoard.jsx`, `admin/Notifications.jsx`,
+`parent/ParentRoutes.jsx`. (Correction: `admin/AskKnowledge.jsx` is not unrouted; it is a section shown inside
+`/admin/ask`.)
 
 ### Platform (super admin)
 The owner console is a separate application (`eduamigo-console`), not part of this repository's routes. Not yet
 reviewed in this pass.
 
+## Forms review (batch 7)
+Every screen that writes data was checked for: checks before sending, a visible result (success or a readable
+error), double submission, and loss of typed-in work.
+
+| Finding | Screens | Change |
+|---|---|---|
+| Write failed or succeeded silently (empty `catch`) | Communications (pin, delete ×2), HR (delete, leave decision), Library (delete), Salaries (mark paid), Students (delete), Teachers (delete), Leave approvals | Success message and the server's error message (2fb3287) |
+| Approve/Reject could be pressed twice | Leave approvals | Buttons disabled with "Approving…"/"Rejecting…" while saving (2fb3287) |
+| Saved without checking required fields; error shown as "Error" | HR salary and leave records | Teacher, basic salary, leave type, both dates and date order checked first; saved message (ab8a986) |
+| Hand-rolled dialogs without dialog role, Escape or a real close button | HR, Event calendar (event form, day view), User management | Shared Dialog (ab8a986) |
+| Typed-in work lost on Escape or the close button | All 15 screens with the shared Dialog | Asks before discarding (2fb3287) |
+| Half-filled full-page form lost on tab close or reload | Add Student, Add Teacher, Add Parent | Browser asks first (2fb3287) |
+| Already sound | Enter Marks (range 0–max, at least one mark), Year end (reason for each leaver, confirmation), Bulk operations (required selections, confirmation), Add Student/Parent, Admissions, Exam schedule | No change |
+
+Not changed, recorded: about 15 places fall back to the word "Error" when the server sends no message (only on a
+network failure; Transport, Fee structure, Bulk operations, Parents and others); navigation inside the app is not
+blocked for unsaved forms (`BrowserRouter`); per-field inline error text is not used (messages appear as toasts).
+
 ## Known defects and open items
-1. Owner decisions: (a) phone home screens: should the large header scroll away with the content (about half the
-   screen is a fixed header today); (b) student results tab bar (Result vs Chat).
-2. Admin screens not yet on the shared header: Chat, ID Card Generator, Ask insights, Teacher Profile, Transfer
-   Certificate (they already fit the screen).
-3. Tables on phones scroll sideways inside their card (name column fixed); a card layout per table would read better.
-4. Forms: unsaved-change warnings and per-field validation are uneven across admin forms; not yet reviewed screen by
-   screen.
-5. Owner console (`eduamigo-console`) not reviewed.
+1. Admin screens on the old look but working: Reports-type pages keep their own chart colours; Settings and the
+   portal heroes (Results, Profile) keep their own design.
+2. Forms: the generic "Error" fallback above; inline per-field error text if wanted.
+3. Owner console (`eduamigo-console`): next.
+4. Print views (report card, receipt, TC) need a print check.
 
 ## Verification log
 | Date | Batch | Checks |
@@ -129,3 +151,6 @@ reviewed in this pass.
 | 2026-10-13 | Batch 1, admin headers and stats (b15be6f) | 32 screenshots reviewed (16 screens × 2 widths), 0 JS errors, 0 page-level sideways scroll; Playwright 19/19; build ok; 0 new lint messages |
 | 2026-10-13 | Batches 2-4 and phone fixes (ee52fbc, 73b6faf, 960f901, a1af197, c87c491) | Screens reviewed after each batch; Playwright 19/19; build ok; 0 new lint messages |
 | 2026-10-13 | Full sweep after the batches | 150 screenshots (75 routes × 375/1440 px): **0 JavaScript errors, 0 routes with page-level sideways scroll** (baseline had 2: Ask insights 45 px, ID cards 372 px) |
+| 2026-10-13 | Batch 5, owner decisions (2ab6301) | Playwright 22/22 incl. 2 new tests (home header scrolls more than 200 px on a 375 px phone; Results shows the shared bar with Learn current) |
+| 2026-10-13 | Batch 6, five admin screens and phone table cards (409af42, 4a07f74) | Screens reviewed at 375/1440 px; new test: Edit Profile opens the edit dialog and does not reopen after reload; Playwright 22/22; build ok; 0 new lint messages |
+| 2026-10-13 | Batch 7, forms (2fb3287, ab8a986) | Playwright **24/24** incl. new tests: discard question on a dialog with changes (none when empty; Cancel keeps the text); HR checks a missing teacher, the Ask button hides under a dialog, user and event dialogs are real dialogs. Phone screenshots of the HR, event (discard question) and user dialogs reviewed. Build ok; 0 new lint messages |
