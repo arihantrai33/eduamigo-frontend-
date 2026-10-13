@@ -33,5 +33,11 @@ export async function apiSession(request, role, school = 'GVPS') {
   const res = await request.post(`${API}/users/login`, { data: { schoolCode: school, identifier: USERS[role].id, password: PASSWORD } });
   const { token } = await res.json();
   const headers = { Authorization: `Bearer ${token}` };
-  return { get: async (path) => (await request.get(`${API}${path}`, { headers })).json() };
+  return {
+    get: async (path) => (await request.get(`${API}${path}`, { headers })).json(),
+    // For setting up a test's own records (on the test backend only).
+    post: async (path, data) => (await request.post(`${API}${path}`, { headers, data })).json(),
+    put: async (path, data) => (await request.put(`${API}${path}`, { headers, data })).json(),
+    del: async (path, data) => (await request.delete(`${API}${path}`, { headers, data })).json(),
+  };
 }

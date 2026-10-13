@@ -109,6 +109,8 @@ export default function StudentProfile() {
           <Field label="Gender" value={s.gender} />
           <Field label="Date of Birth" value={s.dateOfBirth ? fmtDate(s.dateOfBirth) : null} />
           <Field label="Address" value={s.address} />
+          {/* A calendar day stored at midnight UTC: shown in UTC so it never moves a day. */}
+          <Field label="Date of Admission" value={s.admittedOn ? new Date(s.admittedOn).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric", timeZone: "UTC" }) : "Not recorded"} />
         </div>
 
         <div style={sectionTitle}>Parent Info</div>

@@ -4,6 +4,7 @@ import axios from "axios";
 import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
 import { hasEntries, useUnsavedChanges } from "../../utils/unsavedChanges";
+import { todayLocal } from "../../utils/dates";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -15,7 +16,7 @@ const DEFAULT_SECTIONS = ["A","B","C","D","E"];
 
 const emptyForm = {
   name: "", admissionNo: "", email: "", phone: "", rollNumber: "",
-  class: "", section: "", gender: "", dateOfBirth: "",
+  class: "", section: "", gender: "", dateOfBirth: "", admittedOn: "",
   address: "", parentName: "", parentPhone: "", parentEmail: "",
 };
 
@@ -89,14 +90,14 @@ export default function AddStudent() {
 
   // Plain render helpers, called as functions: defining components inside render would remount
   // the inputs on every keystroke and lose focus.
-  const Field = ({ label, name, type = "text", required = false, hint, children }) => (
+  const Field = ({ label, name, type = "text", required = false, hint, max, children }) => (
     <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
       <label style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.05em" }}>
         {label} {required && <span style={{ color: "#EF4444" }}>*</span>}
       </label>
       {children || (
         <input
-          type={type} name={name} value={form[name]}
+          type={type} name={name} value={form[name]} max={max}
           onChange={handleChange}
           style={{
             padding: "9px 12px", borderRadius: 8, border: "1px solid #E5E7EB",
@@ -232,6 +233,7 @@ export default function AddStudent() {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 24 }}>
           {Field({ label: "Admission Number", name: "admissionNo", hint: "Leave empty to assign the next number" })}
           {Field({ label: "Roll Number", name: "rollNumber", hint: "Leave empty for the next roll number" })}
+          {Field({ label: "Date of Admission", name: "admittedOn", type: "date", max: todayLocal(), hint: "The day the school admitted the student. Leave empty if not known; it is printed on the transfer certificate" })}
           {Select({ label: "Class", name: "class", required: true, options: classOptions })}
           {Select({ label: "Section", name: "section", required: true, options: sectionOptions,
             hint: classList.length && form.class && !sectionOptions.length ? "This class has no sections yet" : undefined })}

@@ -519,6 +519,7 @@ input:-webkit-autofill:focus {
   background: #FEF2F2; border: 1px solid #FECACA; color: var(--ea-danger); font-size: 13px;
 }
 .ea-alert span { flex: 1; }
+.ea-alert--warning { background: #FFFBEB; border-color: #FDE68A; color: #92400E; }
 .ea-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; padding: 0 14px;
   border-radius: 10px; font-size: 13px; font-weight: 650; cursor: pointer; border: 1px solid transparent;

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast, showCredentials, errorMessage } from "../../utils/toast";
 import { useAuth } from "../../context/AuthContext";
 import { can } from "../../utils/permissions";
+import { todayLocal } from "../../utils/dates";
 
 import { Plus, Search } from "lucide-react";
 import Glyph from "../../components/Glyph";
@@ -48,7 +49,8 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
   const inp = (label, key, type="text", placeholder="") => (
     <div>
       <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
-      <input type={type} value={form[key]||""} onChange={e=>f(key,e.target.value)} placeholder={placeholder}
+      <input type={type} value={type === "date" ? String(form[key]||"").slice(0, 10) : form[key]||""} onChange={e=>f(key,e.target.value)} placeholder={placeholder}
+        max={type === "date" ? todayLocal() : undefined}
         style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", transition:"border 0.2s" }}
         onFocus={e=>e.target.style.borderColor="var(--brand)"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
     </div>
@@ -101,7 +103,7 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
         {inp("FULL NAME","name","text","e.g. Rahul Sharma")}
         {inp("EMAIL","email","email","student@school.com")}
         {inp("PHONE","phone","tel","10-digit number")}
-        {inp("DATE OF BIRTH","dob","date")}
+        {inp("DATE OF BIRTH","dateOfBirth","date")}
       </div>
       {sel("GENDER","gender",["Male","Female","Other"])}
       <div style={{ height:1, background:"#F1F5F9", margin:"4px 0" }} />
@@ -110,6 +112,10 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
         {inp("CLASS","class","text","e.g. 10")}
         {inp("SECTION","section","text","e.g. A")}
         {inp("ROLL NUMBER","rollNumber","text","e.g. 23")}
+      </div>
+      <div>
+        {inp("DATE OF ADMISSION","admittedOn","date")}
+        <div style={{ fontSize:11, color:"#94A3B8", marginTop:5 }}>The day the school admitted the student. Leave empty if not known; it is printed on the transfer certificate.</div>
       </div>
       <div style={{ height:1, background:"#F1F5F9", margin:"4px 0" }} />
       <div style={{ fontSize:12, fontWeight:700, color:"var(--brand)", marginBottom:2, letterSpacing:"0.06em" }}>PARENT INFO</div>

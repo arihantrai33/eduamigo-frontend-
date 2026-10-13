@@ -280,6 +280,11 @@ export default function BulkOperations() {
                 ? "name, email, rollNumber, class, section, phone, gender, parentName, parentPhone"
                 : "name, email, employeeId, phone, subjects, qualification, experience"}
             </div>
+            {csvTab === "students" && (
+              <div style={{ fontSize:12, color:"#64748B", marginTop:6, lineHeight:1.6 }}>
+                Optional: <span style={{ fontFamily:"monospace" }}>admissionDate</span> (YYYY-MM-DD), the real date of admission. Leave it out when not known; it is never filled in automatically.
+              </div>
+            )}
           </div>
 
           <label style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:10, padding:"32px 20px", borderRadius:14, border:"2px dashed var(--brand-border)", background:"var(--brand-soft)", cursor:"pointer" }}>
