@@ -142,7 +142,7 @@ export default function Chat() {
   if (activeChat) return (
     <div style={S.screen}>
       <div style={S.chatHeader}>
-        <button style={S.backBtn} onClick={() => { setActiveChat(null); clearInterval(pollRef.current); }}>←</button>
+        <button type="button" aria-label="Back to contacts" style={S.backBtn} onClick={() => { setActiveChat(null); clearInterval(pollRef.current); }}><Glyph e="←" /></button>
         <div style={{ ...S.avatar, background: avatarColor(activeChat.name) }}>{activeChat.name[0]}</div>
         <div>
           <div style={S.chatName}>{activeChat.name}</div>
@@ -180,15 +180,15 @@ export default function Chat() {
       <div style={S.inputRow}>
         <input style={S.input} value={input} onChange={e => setInput(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && sendMessage()}
-          placeholder={`Message ${activeChat.name}...`} />
-        <button style={{ ...S.sendBtn, opacity: sending ? 0.6 : 1 }} onClick={sendMessage} disabled={sending}>➤</button>
+          placeholder={`Message ${activeChat.name}...`} aria-label={`Message to ${activeChat.name}`} />
+        <button type="button" aria-label="Send message" style={{ ...S.sendBtn, opacity: sending ? 0.6 : 1 }} onClick={sendMessage} disabled={sending}><Glyph e="➤" /></button>
       </div>
     </div>
   );
   return (
     <div style={S.screen}>
       <div style={S.header}>
-        <button style={S.headerBack} onClick={() => navigate('/student/home')}>←</button>
+        <button type="button" aria-label="Back" style={S.headerBack} onClick={() => navigate('/student/home')}><Glyph e="←" /></button>
         <h2 style={S.headerTitle}><Glyph e="💬" /> Messages</h2>
       </div>
       <div style={S.tabRow}>

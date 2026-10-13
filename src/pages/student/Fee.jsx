@@ -63,7 +63,7 @@ export default function StudentFee() {
       {/* Header */}
       <div style={{ background: "var(--brand-gradient)", padding: "48px 20px 24px", flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-          <button onClick={() => navigate(-1)} style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(255,255,255,0.2)", border: "none", color: "white", fontSize: 18, cursor: "pointer" }}>←</button>
+          <button type="button" aria-label="Back" onClick={() => navigate(-1)} style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(255,255,255,0.2)", border: "none", color: "white", fontSize: 18, cursor: "pointer" }}><Glyph e="←" /></button>
           <div style={{ fontSize: 18, fontWeight: 800, color: "white" }}>Fee Statement</div>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>

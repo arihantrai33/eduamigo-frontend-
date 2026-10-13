@@ -164,7 +164,7 @@ export default function TeacherChat() {
       {tab === 'chat' && activeChat ? (
         <>
           <div style={styles.chatHeader}>
-            <button type="button" aria-label="Back to contacts" onClick={goBack} style={styles.backBtn}>←</button>
+            <button type="button" aria-label="Back to contacts" onClick={goBack} style={styles.backBtn}><Glyph e="←" /></button>
             <div style={styles.chatAvatar}>
               <span style={styles.chatAvatarText}>
                 {activeChat.name?.charAt(0).toUpperCase()}
@@ -229,7 +229,7 @@ export default function TeacherChat() {
               onClick={handleSend}
               disabled={sending || !text.trim()}
             >
-              ➤
+              <Glyph e="➤" />
             </button>
           </div>
         </>
@@ -237,7 +237,7 @@ export default function TeacherChat() {
         <>
           {/* CONTACTS LIST */}
           <div style={styles.header}>
-            <button type="button" aria-label="Back" onClick={() => navigate('/teacher/home')} style={styles.backBtn}>←</button>
+            <button type="button" aria-label="Back" onClick={() => navigate('/teacher/home')} style={styles.backBtn}><Glyph e="←" /></button>
             <div style={{ flex: 1 }}>
               <p style={styles.portalLabel}>TEACHER PORTAL</p>
               <h1 style={styles.headerTitle}>Messages</h1>

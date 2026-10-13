@@ -119,7 +119,7 @@ export default function TeacherUpload() {
   return (
     <div style={styles.container}>
       <div style={styles.header}>
-        <button onClick={() => navigate('/teacher/home')} style={styles.backBtn}>←</button>
+        <button type="button" aria-label="Back" onClick={() => navigate('/teacher/home')} style={styles.backBtn}><Glyph e="←" /></button>
         <div style={{ flex: 1 }}>
           <p style={styles.portalLabel}>TEACHER PORTAL</p>
           <h1 style={styles.headerTitle}>Upload Materials</h1>

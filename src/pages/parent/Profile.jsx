@@ -76,7 +76,7 @@ export default function ParentProfile() {
   if (showHelp) return (
     <div style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "inherit" }}>
       <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px" }}>
-        <button onClick={() => setShowHelp(false)} aria-label="Back" style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}>←</button>
+        <button onClick={() => setShowHelp(false)} aria-label="Back" style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}><Glyph e="←" /></button>
         <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Help & Support</h2>
       </div>
       <div style={{ padding: "16px" }}>
@@ -92,7 +92,7 @@ export default function ParentProfile() {
 
       {/* Top Bar */}
       <div style={s.topBar}>
-        <button style={s.backBtn} onClick={() => navigate(-1)}>←</button>
+        <button type="button" aria-label="Back" style={s.backBtn} onClick={() => navigate(-1)}><Glyph e="←" /></button>
         <h2 style={s.title}>My Profile</h2>
       </div>
 

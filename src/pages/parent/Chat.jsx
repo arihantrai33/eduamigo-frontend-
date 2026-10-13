@@ -116,7 +116,7 @@ export default function ParentChat() {
   if (activeChat) return (
     <div style={S.screen}>
       <div style={S.chatHeader}>
-        <button type="button" aria-label="Back to contacts" style={S.backBtn} onClick={() => { setActiveChat(null); clearInterval(pollRef.current); }}>←</button>
+        <button type="button" aria-label="Back to contacts" style={S.backBtn} onClick={() => { setActiveChat(null); clearInterval(pollRef.current); }}><Glyph e="←" /></button>
         <div style={{ ...S.avatar, background: avatarColor(activeChat.name) }}>{activeChat.name[0]}</div>
         <div>
           <div style={S.chatName}>{activeChat.name}</div>
@@ -170,7 +170,7 @@ export default function ParentChat() {
           placeholder={`Message ${activeChat.name}...`}
           aria-label={`Message to ${activeChat.name}`}
         />
-        <button type="button" aria-label="Send message" style={{ ...S.sendBtn, opacity: sending ? 0.6 : 1 }} onClick={sendMessage} disabled={sending}>➤</button>
+        <button type="button" aria-label="Send message" style={{ ...S.sendBtn, opacity: sending ? 0.6 : 1 }} onClick={sendMessage} disabled={sending}><Glyph e="➤" /></button>
       </div>
     </div>
   );
@@ -179,7 +179,7 @@ export default function ParentChat() {
   return (
     <div style={S.screen}>
       <div style={S.header}>
-        <button type="button" aria-label="Back" style={S.headerBack} onClick={() => navigate('/parent/home')}>←</button>
+        <button type="button" aria-label="Back" style={S.headerBack} onClick={() => navigate('/parent/home')}><Glyph e="←" /></button>
         <div>
           <h2 style={S.headerTitle}><Glyph e="💬" /> Messages</h2>
           {data.child && (

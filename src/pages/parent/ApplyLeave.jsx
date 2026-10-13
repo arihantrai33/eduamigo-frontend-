@@ -115,13 +115,15 @@ export default function ApplyLeave() {
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <button
+            type="button"
+            aria-label="Back"
             onClick={() => navigate(-1)}
             style={{
               background: "rgba(255,255,255,0.2)", border: "none",
               borderRadius: "50%", width: "36px", height: "36px",
               color: "white", fontSize: "18px", cursor: "pointer",
             }}
-          >←</button>
+          ><Glyph e="←" /></button>
           <div>
             <div style={{ color: "white", fontWeight: "800", fontSize: "18px" }}>
               <Glyph e="📝" /> Leave Application
@@ -273,12 +275,14 @@ export default function ApplyLeave() {
                 </div>
               </div>
               {attachedFile && (
-                <span
+                <button
+                  type="button"
+                  aria-label="Remove attachment"
                   onClick={(e) => { e.stopPropagation(); setAttachedFile(null); }}
-                  style={{ fontSize: "18px", color: "var(--subtext)", cursor: "pointer" }}
+                  style={{ background: "none", border: "none", padding: 0, lineHeight: 1, fontSize: "18px", color: "var(--subtext)", cursor: "pointer" }}
                 >
-                  ✕
-                </span>
+                  <Glyph e="✕" />
+                </button>
               )}
             </div>
             <input

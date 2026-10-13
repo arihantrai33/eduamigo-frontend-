@@ -195,7 +195,7 @@ export default function Notifications() {
                 <div style={{ fontSize: 17, fontWeight: 700, color: "#0F172A" }}>Send Notification</div>
                 <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>Reach your audience instantly</div>
               </div>
-              <button onClick={() => setShowModal(false)} style={{ width: 30, height: 30, borderRadius: 8, border: "1px solid #E2E8F0", background: "#F8FAFC", cursor: "pointer", fontSize: 16, color: "#64748B" }}>×</button>
+              <button type="button" aria-label="Close" onClick={() => setShowModal(false)} style={{ width: 30, height: 30, borderRadius: 8, border: "1px solid #E2E8F0", background: "#F8FAFC", cursor: "pointer", fontSize: 16, color: "#64748B" }}><Glyph e="×" /></button>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>

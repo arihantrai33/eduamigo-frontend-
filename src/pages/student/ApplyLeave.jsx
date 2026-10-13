@@ -94,7 +94,7 @@ export default function ApplyLeave() {
     <div style={{ minHeight: "100vh", background: dm ? "#0f172a" : "#f5f6fa", fontFamily: "inherit", paddingBottom: "32px" }}>
       <div style={{ background: "var(--brand-gradient)", padding: "48px 20px 24px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <button onClick={() => navigate(-1)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "50%", width: "36px", height: "36px", color: "white", fontSize: "18px", cursor: "pointer" }}>←</button>
+          <button type="button" aria-label="Back" onClick={() => navigate(-1)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "50%", width: "36px", height: "36px", color: "white", fontSize: "18px", cursor: "pointer" }}><Glyph e="←" /></button>
           <div>
             <div style={{ color: "white", fontWeight: "800", fontSize: "18px" }}>Leave Application</div>
             <div style={{ color: "rgba(255,255,255,0.8)", fontSize: "12px" }}>Submit and track your leave requests</div>
@@ -153,7 +153,7 @@ export default function ApplyLeave() {
                 <div style={{ fontSize: "13px", fontWeight: "600", color: dm ? "#f1f5f9" : "#444" }}>{attachedFile ? attachedFile.name : "Attach Medical Report or Document"}</div>
                 <div style={{ fontSize: "11px", color: dm ? "#94a3b8" : "#888", marginTop: "2px" }}>{attachedFile ? `${(attachedFile.size / 1024).toFixed(1)} KB` : "PDF, JPG, PNG supported"}</div>
               </div>
-              {attachedFile && <span onClick={(e) => { e.stopPropagation(); setAttachedFile(null); }} style={{ fontSize: "18px", color: dm ? "#94a3b8" : "#888", cursor: "pointer" }}>✕</span>}
+              {attachedFile && <button type="button" aria-label="Remove attachment" onClick={(e) => { e.stopPropagation(); setAttachedFile(null); }} style={{ background: "none", border: "none", padding: 0, lineHeight: 1, fontSize: "18px", color: dm ? "#94a3b8" : "#888", cursor: "pointer" }}><Glyph e="✕" /></button>}
             </div>
             <input id="fileInputStudent" type="file" accept=".pdf,.jpg,.jpeg,.png" style={{ display: "none" }} onChange={(e) => setAttachedFile(e.target.files[0] || null)} />
           </div>

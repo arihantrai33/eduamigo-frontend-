@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { resetStudentPassword } from "../../utils/account";
 import { showCredentials, toast, errorMessage } from "../../utils/toast";
+import Glyph from "../../components/Glyph";
 
 import { plural } from "../../utils/plural";
 const API = import.meta.env.VITE_API_URL;
@@ -41,7 +42,7 @@ export default function TeacherStudents() {
   return (
     <div style={s.screen}>
       <div style={s.header}>
-        <button onClick={() => navigate("/teacher/home")} style={s.back} aria-label="Back">←</button>
+        <button onClick={() => navigate("/teacher/home")} style={s.back} aria-label="Back"><Glyph e="←" /></button>
         <div>
           <div style={s.headerTitle}>My Students</div>
           <div style={s.headerSub}>{students ? `${plural(students.length, "student")} in your classes` : "Loading..."}</div>

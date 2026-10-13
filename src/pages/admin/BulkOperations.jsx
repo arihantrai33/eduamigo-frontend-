@@ -26,7 +26,7 @@ function ResultBanner({ result, onClose }) {
         <div style={{ fontWeight:700, fontSize:14, color: ok?"#15803D":"#DC2626" }}>{ok?<Glyph e="✅" />:<Glyph e="❌" />} {result.message}</div>
         {result.errors?.length > 0 && <div style={{ fontSize:12, color:"#94A3B8", marginTop:4 }}>{result.errors.length} errors — check console</div>}
       </div>
-      <button onClick={onClose} style={{ border:"none", background:"none", cursor:"pointer", fontSize:18, color:"#94A3B8" }}>×</button>
+      <button type="button" aria-label="Close" onClick={onClose} style={{ border:"none", background:"none", cursor:"pointer", fontSize:18, color:"#94A3B8" }}><Glyph e="×" /></button>
     </div>
   );
 }

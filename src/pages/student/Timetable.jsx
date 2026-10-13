@@ -99,8 +99,8 @@ export default function Timetable() {
       {/* Header */}
       <div style={{ background: "var(--card)", padding: "48px 20px 0px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
-          <button onClick={() => navigate("/student/home")}
-            style={{ background: "none", border: "none", fontSize: "20px", cursor: "pointer" }}>←</button>
+          <button type="button" aria-label="Back" onClick={() => navigate("/student/home")}
+            style={{ background: "none", border: "none", fontSize: "20px", cursor: "pointer" }}><Glyph e="←" /></button>
           <div style={{ fontSize: "18px", fontWeight: "800", color: "var(--text)" }}>Timetable</div>
         </div>
         <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "8px" }}>

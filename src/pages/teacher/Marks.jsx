@@ -4,6 +4,7 @@ import axios from 'axios'
 import { toast, confirmAction, errorMessage } from '../../utils/toast'
 
 import BottomNav from "../../layout/BottomNav";
+import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
 
@@ -254,7 +255,7 @@ function Shell({ children, navigate, title = 'Enter Marks', onBack }) {
   return (
     <div style={styles.screen}>
       <div style={styles.header}>
-        <button style={styles.backBtn} aria-label="Back" onClick={onBack || (() => navigate('/teacher/home'))}>←</button>
+        <button style={styles.backBtn} aria-label="Back" onClick={onBack || (() => navigate('/teacher/home'))}><Glyph e="←" /></button>
         <h1 style={styles.headerTitle}>{title}</h1>
         <div style={{ width: 36 }} />
       </div>

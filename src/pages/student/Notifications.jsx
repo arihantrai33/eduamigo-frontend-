@@ -58,7 +58,7 @@ export default function Notifications() {
     <div style={{ minHeight: "100vh", background: "var(--bg)", paddingBottom: "80px" }}>
       <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <button onClick={() => navigate(-1)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px", color: "white", cursor: "pointer" }}>←</button>
+          <button type="button" aria-label="Back" onClick={() => navigate(-1)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px", color: "white", cursor: "pointer" }}><Glyph e="←" /></button>
           <h2 style={{ margin: 0, fontSize: "18px" }}>Notifications</h2>
         </div>
       </div>

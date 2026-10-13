@@ -100,7 +100,7 @@ export default function Notes() {
     <div style={{ minHeight: '100vh', background: dm ? '#0f172a' : '#F8F9FB', fontFamily: 'inherit', display: 'flex', flexDirection: 'column', position: 'relative', paddingBottom: 80 }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '48px 20px 12px', background: dm ? 'var(--brand-gradient)' : '#fff', borderBottom: `1px solid ${dm ? '#334155' : '#F0F0F0'}` }}>
-        <button style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: dm ? '#ffffff' : '#333', padding: '4px 8px' }} onClick={() => navigate('/student/home')}>←</button>
+        <button type="button" aria-label="Back" style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: dm ? '#ffffff' : '#333', padding: '4px 8px' }} onClick={() => navigate('/student/home')}><Glyph e="←" /></button>
         <h1 style={{ fontSize: 18, fontWeight: 700, color: dm ? '#f1f5f9' : '#1A1A2E', margin: 0 }}><Glyph e="📚" /> Notes & Assignments</h1>
         <div style={{ display: 'flex', gap: 8 }}>
           <button style={{ background: dm ? '#1e3a5f' : 'var(--brand-soft)', border: 'none', borderRadius: 10, padding: '0 12px', height: 36, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: 'var(--brand)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, whiteSpace: 'nowrap' }} onClick={() => navigate('/student/revise')}><Glyph e="🤖" /> Revise</button>

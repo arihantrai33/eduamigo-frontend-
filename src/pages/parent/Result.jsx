@@ -62,9 +62,9 @@ export default function ParentResult() {
     <div style={{ minHeight: "100vh", background: "#F4F6FB", fontFamily: "inherit", paddingBottom: 40 }}>
       <div style={{ background: "var(--brand-gradient)", padding: "48px 20px 32px", color: "white" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-          <button onClick={() => navigate(-1)}
+          <button type="button" aria-label="Back" onClick={() => navigate(-1)}
             style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "8px 12px", color: "white", cursor: "pointer", fontSize: 16 }}>
-            ←
+            <Glyph e="←" />
           </button>
           <div style={{ flex: 1 }}>
             <div style={{ fontWeight: 800, fontSize: 18 }}><Glyph e="📊" /> Results</div>

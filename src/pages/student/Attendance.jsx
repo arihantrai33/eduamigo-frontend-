@@ -48,10 +48,10 @@ export default function StudentAttendance() {
       <div style={{ background: "var(--brand-gradient)",
         padding: "48px 20px 24px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-          <button onClick={() => navigate(-1)}
+          <button type="button" aria-label="Back" onClick={() => navigate(-1)}
             style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "50%",
               width: 36, height: 36, cursor: "pointer", color: "#fff", fontSize: 18 }}>
-            ←
+            <Glyph e="←" />
           </button>
           <div style={{ fontSize: 18, fontWeight: 800, color: "#fff" }}>My Attendance</div>
         </div>

@@ -213,7 +213,7 @@ export default function Revise() {
         background: 'linear-gradient(135deg, var(--brand-deep), var(--brand-dark) 55%, var(--brand))',
         boxShadow: '0 4px 14px rgba(46, 16, 101, 0.25)',
       }}>
-        <button style={{ background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: '50%', width: 32, height: 32, fontSize: 16, cursor: 'pointer', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => navigate('/student/notes')}>←</button>
+        <button type="button" aria-label="Back" style={{ background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: '50%', width: 32, height: 32, fontSize: 16, cursor: 'pointer', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => navigate('/student/notes')}><Glyph e="←" /></button>
         <h1 style={{ fontSize: 17, fontWeight: 700, color: '#fff', margin: 0, letterSpacing: 0.2, display: 'flex', alignItems: 'center', gap: 6 }}>
           <span><Glyph e="🤖" /></span> Revise with AI
         </h1>
@@ -288,12 +288,14 @@ export default function Revise() {
           onKeyDown={handleKeyDown}
         />
         <button
+          type="button"
+          aria-label="Send question"
           className="revise-send-btn"
           style={{ background: 'var(--brand-gradient)', border: 'none', borderRadius: '50%', width: 44, height: 44, fontSize: 18, color: '#fff', cursor: 'pointer', flexShrink: 0, opacity: isBusy || !input.trim() ? 0.5 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'transform 0.1s ease' }}
           onClick={handleSend}
           disabled={isBusy || !input.trim()}
         >
-          ➤
+          <Glyph e="➤" />
         </button>
       </div>
     </div>

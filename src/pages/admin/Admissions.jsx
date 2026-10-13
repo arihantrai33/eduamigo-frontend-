@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, errorMessage, showCredentials, confirmAction } from "../../utils/toast";
 import Modal from "../../components/Dialog";
+import Glyph from "../../components/Glyph";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -230,7 +231,7 @@ function Detail({ record, next, onClose, onEdit, onStatus, onAdmit, onOpenStuden
             <div style={{ fontSize: 19, fontWeight: 800, color: "#0F172A", marginTop: 2 }}>{record.studentName}</div>
             <div style={{ marginTop: 6 }}><Badge status={record.status} /></div>
           </div>
-          <button aria-label="Close" onClick={onClose} style={{ border: "none", background: "#F1F5F9", borderRadius: 8, width: 32, height: 32, cursor: "pointer", fontSize: 18 }}>×</button>
+          <button aria-label="Close" onClick={onClose} style={{ border: "none", background: "#F1F5F9", borderRadius: 8, width: 32, height: 32, cursor: "pointer", fontSize: 18 }}><Glyph e="×" /></button>
         </div>
 
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, margin: "16px 0" }}>

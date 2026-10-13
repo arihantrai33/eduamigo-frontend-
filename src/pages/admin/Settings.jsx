@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast, errorMessage, confirmAction } from "../../utils/toast";
+import Glyph from "../../components/Glyph";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -276,7 +277,7 @@ export default function Settings() {
             {subjects.map((s) => (
               <span key={s} style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#F1F5F9", borderRadius: 999, padding: "5px 6px 5px 12px", fontSize: 12, color: "#334155" }}>
                 {s}
-                <button aria-label={`Remove ${s}`} onClick={() => removeSubject(s)} style={{ border: "none", background: "#E2E8F0", borderRadius: "50%", width: 20, height: 20, cursor: "pointer", color: "#475569" }}>×</button>
+                <button aria-label={`Remove ${s}`} onClick={() => removeSubject(s)} style={{ border: "none", background: "#E2E8F0", borderRadius: "50%", width: 20, height: 20, cursor: "pointer", color: "#475569" }}><Glyph e="×" /></button>
               </span>
             ))}
           </div>

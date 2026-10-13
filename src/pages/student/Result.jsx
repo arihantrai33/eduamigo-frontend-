@@ -108,7 +108,7 @@ export default function StudentResult() {
           <button onClick={() => navigate('/student/home')} aria-label="Back"
             style={{ width: 38, height: 38, borderRadius: 12, border: 'none',
               background: 'rgba(255,255,255,.18)', color: '#fff', fontSize: 20, cursor: 'pointer' }}>
-            ←
+            <Glyph e="←" />
           </button>
           <span style={{ fontSize: 17, fontWeight: 800, color: '#fff' }}>Academic Results</span>
           <button onClick={() => navigate('/report-card?studentId=me')} aria-label="Report card"

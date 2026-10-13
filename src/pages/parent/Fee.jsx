@@ -92,7 +92,7 @@ export default function ParentFee() {
       {/* ── Header ── */}
       <div style={styles.header}>
         <div style={styles.headerTop}>
-          <button onClick={() => navigate(-1)} style={styles.backBtn}>←</button>
+          <button type="button" aria-label="Back" onClick={() => navigate(-1)} style={styles.backBtn}><Glyph e="←" /></button>
           <div>
             <div style={{ fontWeight: 800, fontSize: 18, color: "white" }}>Fee Overview</div>
             <div style={{ fontSize: 12, color: "rgba(255,255,255,0.75)", marginTop: 2 }}>
