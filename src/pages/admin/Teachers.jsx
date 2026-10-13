@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast, showCredentials } from "../../utils/toast";
 
 import { Plus, Search } from "lucide-react";
@@ -92,6 +92,8 @@ function TeacherForm({ form, setForm, onSave, loading, onClose }) {
 
 export default function Teachers() {
   const navigate = useNavigate();
+  // "Edit Profile" on a teacher's profile opens this screen's edit form for that teacher.
+  const editId = useLocation().state?.editId;
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -109,7 +111,13 @@ export default function Teachers() {
     setLoading(true);
     try {
       const r = await axios.get(`${API}/teachers`, auth());
-      setTeachers(r.data.data || []);
+      const list = r.data.data || [];
+      setTeachers(list);
+      const toEdit = editId && list.find((t) => t._id === editId);
+      if (toEdit) {
+        setEditTeacher(toEdit); setForm({ ...toEdit }); setShowModal(true);
+        navigate(".", { replace: true, state: null });   // a refresh does not reopen the form
+      }
     } catch(e) {}
     setLoading(false);
   };

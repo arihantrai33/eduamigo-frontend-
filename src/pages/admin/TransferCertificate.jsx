@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { errorMessage } from "../../utils/toast";
+import { Printer } from "lucide-react";
+import PageHeader from "../../components/ui/PageHeader";
 
 // Printable transfer certificate (backend: GET /api/students/:id/transfer-certificate).
 const API = import.meta.env.VITE_API_URL;
@@ -20,8 +22,14 @@ export default function TransferCertificate() {
       .catch((err) => setError(errorMessage(err)));
   }, [id]);
 
-  if (error) return <div style={{ padding: 24, color: "#B91C1C" }}>{error}</div>;
-  if (!tc) return <div style={{ padding: 24, color: "#64748B" }}>Loading…</div>;
+  const header = (
+    <div className="no-print" style={{ marginBottom: 14, fontFamily: "inherit" }}>
+      <PageHeader title="Transfer Certificate" onBack={() => navigate(-1)}
+        actions={tc && <button type="button" className="ea-btn ea-btn--primary" onClick={() => window.print()}><Printer size={16} aria-hidden="true" /> Print</button>} />
+    </div>
+  );
+  if (error) return <div>{header}<div className="ea-alert" role="alert"><span>{error}</span></div></div>;
+  if (!tc) return <div>{header}<div role="status" style={{ padding: 24, color: "var(--ea-muted)" }}>Loading…</div></div>;
   const s = tc.student;
   const rows = [
     ["Name of the student", s.name], ["Admission number", s.admissionNo || "—"], ["Date of birth", d(s.dateOfBirth)],
@@ -32,10 +40,7 @@ export default function TransferCertificate() {
 
   return (
     <div style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
-      <div className="no-print" style={{ display: "flex", gap: 8, marginBottom: 14, fontFamily: "inherit" }}>
-        <button onClick={() => navigate(-1)} style={btn}>← Back</button>
-        <button onClick={() => window.print()} style={{ ...btn, background: "var(--brand)", color: "#fff", border: "none" }}>Print</button>
-      </div>
+      {header}
       <div style={{ background: "#fff", maxWidth: 760, margin: "0 auto", padding: "36px 44px", border: "1px solid #CBD5E1", color: "#0F172A" }}>
         <div style={{ textAlign: "center", borderBottom: "2px solid var(--brand)", paddingBottom: 14, marginBottom: 18 }}>
           {tc.school?.branding?.logoUrl && <img src={tc.school.branding.logoUrl} alt="" style={{ height: 64, marginBottom: 6 }} />}

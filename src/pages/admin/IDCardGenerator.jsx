@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+import { Printer } from "lucide-react";
 import Glyph from "../../components/Glyph";
+import PageHeader from "../../components/ui/PageHeader";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 const SCHOOL_NAME = "EduAmigo School";
@@ -238,19 +240,13 @@ export default function IDCardGenerator() {
         }
       `}</style>
 
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.25rem" }}>
-        <div>
-          <div style={{ fontSize: 22, fontWeight: 800, color: "#0F172A", letterSpacing: "-0.3px" }}>ID Card Generator</div>
-          <div style={{ fontSize: 12, color: "#94A3B8", marginTop: 3 }}>Generate and print professional identity cards</div>
-        </div>
-        {animPhase === 2 && (
-          <button onClick={handlePrint} disabled={printing}
-            style={{ display: "flex", alignItems: "center", gap: 8, background: "linear-gradient(135deg,#0F172A,#1E3A5F)", color: "white", border: "none", borderRadius: 14, padding: "11px 24px", fontSize: 13, fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 16px rgba(15,23,42,0.3)", transition: "all 0.2s" }}
-            onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
-            onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}>
-            <Glyph e="🖨" /> {printing ? "Preparing..." : "Print ID Card"}
-          </button>
-        )}
+      <div style={{ marginBottom: "1.25rem" }}>
+        <PageHeader title="ID Card Generator" subtitle="Generate and print professional identity cards"
+          actions={animPhase === 2 && (
+            <button type="button" className="ea-btn ea-btn--primary" onClick={handlePrint} disabled={printing}>
+              <Printer size={16} aria-hidden="true" /> {printing ? "Preparing..." : "Print ID Card"}
+            </button>
+          )} />
       </div>
 
       <div style={{ display: "flex", gap: 4, background: "white", borderRadius: 14, padding: 5, border: "1px solid #E2E8F0", width: "fit-content", marginBottom: "1.25rem", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>

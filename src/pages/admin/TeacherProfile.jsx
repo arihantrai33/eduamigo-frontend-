@@ -2,12 +2,13 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
-  ArrowLeft, Mail, Phone, MapPin, Calendar, Award,
+  Mail, Phone, MapPin, Calendar,
   BookOpen, Users, Briefcase, IndianRupee, Edit,
   CheckCircle, XCircle, Clock, GraduationCap, Hash
 } from "lucide-react";
 
 import { plural } from "../../utils/plural";
+import PageHeader from "../../components/ui/PageHeader";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -124,42 +125,15 @@ export default function TeacherProfile() {
       <div style={{ fontFamily: "inherit", maxWidth: 900, margin: "0 auto" }}>
 
         {/* Header */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.5rem" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <button
-              onClick={() => navigate("/admin/teachers")}
-              style={{
-                display: "flex", alignItems: "center", gap: 6,
-                padding: "8px 14px", borderRadius: 10,
-                border: "1px solid #E2E8F0", background: "#fff",
-                fontSize: 13, cursor: "pointer", color: "#64748B",
-                fontWeight: 500, transition: "all 0.15s",
-              }}
-              onMouseEnter={e => { e.currentTarget.style.background = "#F8FAFC"; e.currentTarget.style.color = "#0F172A"; }}
-              onMouseLeave={e => { e.currentTarget.style.background = "#fff"; e.currentTarget.style.color = "#64748B"; }}
-            >
-              <ArrowLeft size={14} />
-              Back
-            </button>
-            <div style={{ fontSize: 18, fontWeight: 700, color: "#0F172A" }}>Teacher Profile</div>
-          </div>
-          {!loading && teacher && (
-            <button
-              onClick={() => navigate(`/admin/teachers/edit/${id}`)}
-              style={{
-                display: "flex", alignItems: "center", gap: 6,
-                padding: "8px 16px", borderRadius: 10,
-                border: "none", background: "var(--brand)",
-                fontSize: 13, cursor: "pointer", color: "#fff",
-                fontWeight: 600, transition: "all 0.15s",
-              }}
-              onMouseEnter={e => { e.currentTarget.style.background = "var(--brand-dark)"; }}
-              onMouseLeave={e => { e.currentTarget.style.background = "var(--brand)"; }}
-            >
-              <Edit size={13} />
-              Edit Profile
-            </button>
-          )}
+        <div style={{ marginBottom: "1.5rem" }}>
+          {/* Edit Profile used to open /admin/teachers/edit/:id, a route that does not exist (blank screen); it now
+              opens the edit form of the teachers list for this teacher. */}
+          <PageHeader title="Teacher Profile" onBack={() => navigate("/admin/teachers")} backLabel="Back to teachers"
+            actions={!loading && teacher && (
+              <button type="button" className="ea-btn ea-btn--primary" onClick={() => navigate("/admin/teachers", { state: { editId: id } })}>
+                <Edit size={16} aria-hidden="true" /> Edit Profile
+              </button>
+            )} />
         </div>
 
         {/* Error State */}

@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast, errorMessage } from "../../utils/toast";
 
 import Glyph from "../../components/Glyph";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, RefreshCw, Search } from "lucide-react";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -244,7 +244,7 @@ export default function Chat() {
   }
 
   return (
-    <div style={{ fontFamily: "inherit", display: "flex", height: "calc(100vh - 80px)", borderRadius: 20, overflow: "hidden", boxShadow: "0 8px 40px rgba(15,23,42,0.15)" }}>
+    <div style={{ fontFamily: "inherit", display: "flex", height: "calc(100vh - 80px)", borderRadius: "var(--ea-radius-lg)", overflow: "hidden", border: "1px solid var(--ea-line)", boxShadow: "var(--ea-shadow)", background: "var(--ea-surface)" }}>
       <style>{`
         @keyframes fadeIn  { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
         @keyframes spin    { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
@@ -269,18 +269,19 @@ export default function Chat() {
               <div style={{ fontSize: 17, fontWeight: 800, color: "#0F172A", letterSpacing: "-0.3px" }}>Messages</div>
               {totalUnread > 0 && <div style={{ fontSize: 11, color: "var(--brand)", fontWeight: 700, marginTop: 2 }}>{totalUnread} unread</div>}
             </div>
-            <button onClick={fetchContacts} style={{ width: 32, height: 32, borderRadius: 10, border: "none", background: "rgba(255,255,255,0.08)", cursor: "pointer", fontSize: 16, color: "#94A3B8", display: "flex", alignItems: "center", justifyContent: "center" }}>↺</button>
+            <button type="button" className="ea-btn ea-btn--ghost" onClick={fetchContacts} aria-label="Refresh contacts" style={{ width: 36, padding: 0 }}>
+              <RefreshCw size={16} aria-hidden="true" />
+            </button>
           </div>
 
-          <div style={{ position: "relative", marginBottom: 12 }}>
-            <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", fontSize: 13, color: "#475569" }}><Glyph e="🔍" /></span>
-            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search contacts..."
-              style={{ width: "100%", padding: "9px 12px 9px 32px", borderRadius: 11, border: "1px solid #E2E8F0", background: "#F8FAFC", fontSize: 12, color: "#0F172A", boxSizing: "border-box", fontFamily: "inherit" }} />
+          <div className="ea-search" style={{ marginBottom: 12 }}>
+            <Search aria-hidden="true" />
+            <input className="ea-input" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search contacts..." aria-label="Search contacts" />
           </div>
 
           <div style={{ display: "flex", gap: 4, background: "#F1F5F9", borderRadius: 10, padding: 3 }}>
             {[["", "All"], ["student", "Students"], ["teacher", "Teachers"], ["parent", "Parents"]].map(([val, lbl]) => (
-              <button key={val} onClick={() => setFilterRole(val)}
+              <button key={val} type="button" aria-pressed={filterRole === val} onClick={() => setFilterRole(val)}
                 style={{ flex: 1, padding: "6px 2px", borderRadius: 8, border: "none", cursor: "pointer", fontWeight: 700, fontSize: 10,
                   background: filterRole === val ? "color-mix(in srgb, var(--brand) 85%, transparent)" : "transparent",
                   color: filterRole === val ? "white" : "#64748B", transition: "all 0.15s ease" }}>

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { RefreshCw, Target, CheckCircle2, CircleHelp, LifeBuoy, Gauge, FileText, Bot, Loader2 } from "lucide-react";
 import AskKnowledge from "./AskKnowledge";
+import PageHeader from "../../components/ui/PageHeader";
 import { getAssistantMetrics, getAssistantEvaluation, getTickets, updateTicket, errorText } from "../../api/assistant";
 
 // EduAmigo Ask insights: how well the assistant routes and resolves questions (PS18 metrics),
@@ -57,20 +58,15 @@ export default function AskInsights() {
   const ev = evaluation;
   return (
     <div style={s.page}>
-      <div style={s.head}>
-        <div>
-          <h1 style={s.h1}>EduAmigo Ask</h1>
-          <div style={s.sub}>How the assistant routes and resolves questions, and what it handed to staff.</div>
-        </div>
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <select value={days} onChange={(e) => setDays(Number(e.target.value))} style={s.select} aria-label="Period">
+      <PageHeader title="EduAmigo Ask" subtitle="How the assistant routes and resolves questions, and what it handed to staff."
+        actions={<>
+          <select className="ea-select" value={days} onChange={(e) => setDays(Number(e.target.value))} aria-label="Period">
             {[7, 30, 90].map((d) => <option key={d} value={d}>Last {d} days</option>)}
           </select>
-          <button type="button" onClick={refresh} style={s.btn} disabled={loading}>
-            {loading ? <Loader2 size={15} className="ins-spin" /> : <RefreshCw size={15} />} Refresh
+          <button type="button" className="ea-btn ea-btn--ghost" onClick={refresh} disabled={loading}>
+            {loading ? <Loader2 size={16} className="ins-spin" aria-hidden="true" /> : <RefreshCw size={16} aria-hidden="true" />} Refresh
           </button>
-        </div>
-      </div>
+        </>} />
       <div style={s.tabs} role="tablist">
         {[["insights", "Insights and tickets"], ["knowledge", "School documents"]].map(([k, l]) => (
           <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)} style={tab === k ? s.tabOn : s.tabOff}>{l}</button>
