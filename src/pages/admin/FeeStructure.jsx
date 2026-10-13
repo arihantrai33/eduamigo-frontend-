@@ -56,7 +56,7 @@ export default function FeeStructure() {
       }
       setShowModal(false);
       fetchStructures();
-    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(errorMessage(e, "Could not save the fee structure")); }
     setSaving(false);
   };
 

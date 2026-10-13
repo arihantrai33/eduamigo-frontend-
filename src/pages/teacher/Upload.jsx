@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
+import { errorMessage } from "../../utils/toast";
 const API = import.meta.env.VITE_API_URL;
 
 const NOTE_TYPES = ['Notes', 'Assignment', 'Resource', 'Question Paper'];
@@ -61,7 +62,7 @@ export default function TeacherUpload() {
       setTeacher(teacherData.data);
       setUploads(uploadsData.data);
     } catch (err) {
-      setError(err.message);
+      setError(errorMessage(err, "Could not load your uploads"));
     } finally {
       setLoading(false);
     }
@@ -107,7 +108,7 @@ export default function TeacherUpload() {
       await fetchData();
       setTimeout(() => setSuccessMsg(''), 3000);
     } catch (err) {
-      setFormError(err.message);
+      setFormError(errorMessage(err, "Could not upload the file"));
     } finally {
       setSubmitting(false);
     }

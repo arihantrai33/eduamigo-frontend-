@@ -4,6 +4,7 @@ import { getSavedSchool } from "../utils/school";
 import { schoolTheme } from "../utils/theme";
 import SchoolHero from "../components/SchoolHero";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { errorMessage } from "../utils/toast";
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -47,7 +48,7 @@ export default function ForgotPassword() {
       setInfo(data.message);
       setStep("code");
     } catch (err) {
-      setError(err.message);
+      setError(errorMessage(err, "Could not send the reset code"));
     } finally {
       setBusy(false);
     }
@@ -62,7 +63,7 @@ export default function ForgotPassword() {
       await post("/users/reset-password", { ...credentials, code: code.trim(), newPassword: password });
       setStep("done");
     } catch (err) {
-      setError(err.message);
+      setError(errorMessage(err, "Could not reset the password"));
     } finally {
       setBusy(false);
     }

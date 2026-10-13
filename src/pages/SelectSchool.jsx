@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { findSchoolByCode, searchSchools, saveSchool, schoolColor } from "../utils/school";
 import { GraduationCap, MapPin, AlertCircle } from "lucide-react";
+import { errorMessage } from "../utils/toast";
 
 // "Find your school": shown once per device, before the first sign-in.
 // The user types the school code given by the school, or searches by name, then confirms.
@@ -25,7 +26,7 @@ export default function SelectSchool() {
         const found = await searchSchools(q);
         if (ticket === latest.current) setResults(found);
       } catch (err) {
-        if (ticket === latest.current) setError(err.message);
+        if (ticket === latest.current) setError(errorMessage(err, "Could not search for schools"));
       } finally {
         if (ticket === latest.current) setSearching(false);
       }
@@ -40,7 +41,7 @@ export default function SelectSchool() {
     try {
       setSelected(await findSchoolByCode(q));
     } catch (err) {
-      setError(err.status === 404 ? "No school found with this code. Please check it with your school." : err.message);
+      setError(err.status === 404 ? "No school found with this code. Please check it with your school." : errorMessage(err, "Could not look up the school code"));
     }
   };
 

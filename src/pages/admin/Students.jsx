@@ -196,7 +196,7 @@ export default function Students() {
       }
       setShowModal(false);
       fetchStudents();
-    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(errorMessage(e, "Could not save the student")); }
     setSaving(false);
   };
 

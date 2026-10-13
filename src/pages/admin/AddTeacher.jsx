@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useAuth } from "../../context/AuthContext"
-import { showCredentials } from "../../utils/toast";
+import { showCredentials, errorMessage } from "../../utils/toast";
 import PageHeader from "../../components/ui/PageHeader";
 import { hasEntries, useUnsavedChanges } from "../../utils/unsavedChanges";
 
@@ -65,7 +65,7 @@ const AddTeacher = () => {
       showCredentials([{ label: "Teacher", ...data.credentials }], "Teacher added")
       setForm({ name: "", email: "", phone: "", employeeId: "", subjects: [], qualification: "", experience: "", gender: "", dateOfBirth: "", address: "", salary: "" })
     } catch (err) {
-      setError(err.message)
+      setError(errorMessage(err, "Could not add the teacher"))
     } finally {
       setLoading(false)
     }

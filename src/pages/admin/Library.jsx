@@ -63,7 +63,7 @@ export default function Library() {
       else await axios.post(`${API}/library`, form, auth());
       setShowModal(false);
       fetchBooks();
-    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(errorMessage(e, "Could not save the book")); }
     setSaving(false);
   };
 

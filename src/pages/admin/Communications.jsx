@@ -84,7 +84,7 @@ export default function Communications() {
       else await axios.post(`${API}/announcements`, annForm, auth());
       setShowModal(false);
       fetchAll();
-    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(errorMessage(e, "Could not save the announcement")); }
     setSaving(false);
   };
 
@@ -95,7 +95,7 @@ export default function Communications() {
       await axios.post(`${API}/notifications/send`, notifForm, auth());
       setShowModal(false);
       fetchAll();
-    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(errorMessage(e, "Could not send the notification")); }
     setSaving(false);
   };
 

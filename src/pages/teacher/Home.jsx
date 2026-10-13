@@ -7,6 +7,7 @@ import SchoolStrip from '../../components/SchoolStrip'
 import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
 import { plural } from "../../utils/plural";
+import { errorMessage } from "../../utils/toast";
 const API = import.meta.env.VITE_API_URL
 
 function getGreeting() {
@@ -81,7 +82,7 @@ export default function TeacherHome() {
       }
 
     } catch (err) {
-      setError(err.message)
+      setError(errorMessage(err, 'Could not load your dashboard'))
     } finally {
       setLoading(false)
     }

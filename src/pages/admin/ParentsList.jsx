@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { toast, showCredentials } from "../../utils/toast";
+import { toast, showCredentials, errorMessage } from "../../utils/toast";
 import { useAuth } from "../../context/AuthContext";
 import { can } from "../../utils/permissions";
 
@@ -48,7 +48,7 @@ export default function ParentsList() {
       setShowAddModal(false);
       setForm({ name:"", email:"", phone:"", gender:"", occupation:"", address:"", childrenIds:[] });
       fetchAll();
-    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(errorMessage(e, "Could not add the parent")); }
     setSaving(false);
   };
 

@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown'
 import { useTheme } from '../../context/ThemeContext';
 
 import Glyph from "../../components/Glyph";
+import { errorMessage } from "../../utils/toast";
 const API = import.meta.env.VITE_API_URL;
 
 const TYPING_CHARS_PER_TICK = 2;
@@ -174,7 +175,7 @@ export default function Revise() {
       doneRef.current = true;
       setLoading(false);
       if (!aiMessageStarted) {
-        setMessages(prev => [...prev, { id: Date.now() + '-ai-error', role: 'ai', isError: true, text: err.message || "Sorry, something went wrong. Please try again.", sources: [] }]);
+        setMessages(prev => [...prev, { id: Date.now() + '-ai-error', role: 'ai', isError: true, text: errorMessage(err, "Sorry, something went wrong. Please try again."), sources: [] }]);
       }
       setStreaming(false);
       focusInput();

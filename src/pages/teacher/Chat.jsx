@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
+import { errorMessage } from "../../utils/toast";
 const API = import.meta.env.VITE_API_URL;
 
 const getUser = () => JSON.parse(localStorage.getItem('eduamigo_user'));
@@ -47,7 +48,7 @@ export default function TeacherChat() {
       setContacts(data.data);
       setFiltered(data.data);
     } catch (err) {
-      setError(err.message);
+      setError(errorMessage(err, 'Could not load your contacts'));
     } finally {
       setLoading(false);
     }

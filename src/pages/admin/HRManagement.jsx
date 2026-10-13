@@ -77,7 +77,7 @@ export default function HRManagement() {
       if (res.data.skipped?.length) toast.error(res.data.message);
       else toast.success(res.data.message);
       fetchSalaries();
-    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(errorMessage(e, "Could not generate the salaries")); }
     setLoading(false);
   };
 

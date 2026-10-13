@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
+import { errorMessage } from "../../utils/toast";
 const API = import.meta.env.VITE_API_URL;
 
 const LEAVE_TYPES = ['Sick Leave', 'Casual Leave', 'Emergency Leave', 'Personal Leave', 'Other'];
@@ -53,7 +54,7 @@ export default function TeacherLeave() {
       setLeaves(leavesData.data);
       setQuota(quotaData.data);
     } catch (err) {
-      setError(err.message);
+      setError(errorMessage(err, 'Could not load your leave details'));
     } finally {
       setLoading(false);
     }
@@ -87,7 +88,7 @@ export default function TeacherLeave() {
       setTimeout(() => setSuccessMsg(''), 3000);
       fetchStudentLeaves();
     } catch (err) {
-      setError(err.message || 'Could not update the request');
+      setError(errorMessage(err, 'Could not update the request'));
     } finally {
       setReviewing('');
     }
@@ -126,7 +127,7 @@ export default function TeacherLeave() {
       await fetchData();
       setTimeout(() => setSuccessMsg(''), 3000);
     } catch (err) {
-      setFormError(err.message);
+      setFormError(errorMessage(err, 'Could not submit the leave request'));
     } finally {
       setSubmitting(false);
     }

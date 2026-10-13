@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
+import { errorMessage } from "../../utils/toast";
 const API = import.meta.env.VITE_API_URL;
 
 const TYPE_STYLES = {
@@ -48,7 +49,7 @@ export default function TeacherNotifications() {
         if (!data.success) throw new Error(data.message || 'Failed to load notifications');
         setNotifications(data.data);
       } catch (err) {
-        setError(err.message);
+        setError(errorMessage(err, 'Could not load notifications'));
       } finally {
         setLoading(false);
       }

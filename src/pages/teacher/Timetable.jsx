@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext'
 
 import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
+import { errorMessage } from "../../utils/toast";
 const API = import.meta.env.VITE_API_URL
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
@@ -48,7 +49,7 @@ export default function TeacherTimetable() {
         setTimetable([])
       }
     } catch (err) {
-      setError(err.message)
+      setError(errorMessage(err, 'Could not load your timetable'))
     } finally {
       setLoading(false)
     }

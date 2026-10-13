@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { toast, confirmAction } from "../../utils/toast";
+import { toast, confirmAction, errorMessage } from "../../utils/toast";
 import { todayLocal } from "../../utils/dates";
 
 import Glyph from "../../components/Glyph";
@@ -76,7 +76,7 @@ export default function BulkOperations() {
     try {
       const r = await axios.post(`${API}/bulk/attendance`, { className: attClass, section: attSection, date: attDate, status: attStatus }, auth());
       setResult({ success: true, message: r.data.message });
-    } catch(e) { setResult({ success: false, message: e.response?.data?.message || "Error" }); }
+    } catch(e) { setResult({ success: false, message: errorMessage(e, "Could not mark the attendance") }); }
     setLoading(false);
   };
 
@@ -87,7 +87,7 @@ export default function BulkOperations() {
     try {
       const r = await axios.post(`${API}/bulk/promote`, { fromClass, fromSection, toClass, toSection }, auth());
       setResult({ success: true, message: r.data.message });
-    } catch(e) { setResult({ success: false, message: e.response?.data?.message || "Error" }); }
+    } catch(e) { setResult({ success: false, message: errorMessage(e, "Could not promote the students") }); }
     setLoading(false);
   };
 
@@ -97,7 +97,7 @@ export default function BulkOperations() {
       const r = await axios.post(`${API}/bulk/fee-reminder`, {}, auth());
       setFeeStudents(r.data.data || []);
       setResult({ success: true, message: r.data.message });
-    } catch(e) { setResult({ success: false, message: e.response?.data?.message || "Error" }); }
+    } catch(e) { setResult({ success: false, message: errorMessage(e, "Could not send the fee reminders") }); }
     setLoading(false);
   };
 
@@ -151,7 +151,7 @@ export default function BulkOperations() {
       const d = r.data.data;
       setResult({ success: true, message: `${d.success} records uploaded, ${d.failed} failed`, errors: d.errors });
       if (d.credentials?.length) downloadCredentials(d.credentials, key);
-    } catch(e) { setResult({ success: false, message: e.response?.data?.message || "Error" }); }
+    } catch(e) { setResult({ success: false, message: errorMessage(e, "Could not upload the file") }); }
     setLoading(false);
   };
 

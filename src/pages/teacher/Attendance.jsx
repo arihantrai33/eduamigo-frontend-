@@ -6,6 +6,7 @@ import { todayLocal } from "../../utils/dates";
 import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
 import { plural } from "../../utils/plural";
+import { errorMessage } from "../../utils/toast";
 const API = import.meta.env.VITE_API_URL
 
 const STATUS_COLORS = {
@@ -91,7 +92,7 @@ export default function TeacherAttendance() {
       })
       setAttendance(att)
     } catch (err) {
-      showToast("Failed to load students", "error")
+      showToast(errorMessage(err, "Could not load the students"), "error")
     } finally {
       setLoading(false)
     }
@@ -125,7 +126,7 @@ export default function TeacherAttendance() {
       showToast(`Attendance saved for ${plural(data.count, "student")}`)
       setExisting(true)
     } catch (err) {
-      showToast(err.message, "error")
+      showToast(errorMessage(err, "Could not save the attendance"), "error")
     } finally {
       setSaving(false)
     }

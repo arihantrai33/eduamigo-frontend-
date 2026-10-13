@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { toast, confirmAction } from "../../utils/toast";
+import { toast, confirmAction, errorMessage } from "../../utils/toast";
 
 import { Plus } from "lucide-react";
 import Glyph from "../../components/Glyph";
@@ -51,21 +51,21 @@ export default function Transport() {
   };
 
   const handleAddBus = async () => {
-    if (!form.busNumber || !form.driverName || !form.driverPhone || !form.routeName) return toast.error("All fields required");
+    if (!form.busNumber || !form.driverName || !form.driverPhone || !form.routeName) return toast.error("Fill in the bus number, driver name, driver phone and route name");
     setSaving(true);
     try {
       await axios.post(`${API}/transport`, form, auth());
       setShowAddModal(false);
       setForm({ busNumber:"", driverName:"", driverPhone:"", routeName:"", capacity:40, serviceArea:"" });
       fetchAll();
-    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(errorMessage(e, "Could not add the bus")); }
     setSaving(false);
   };
 
   const handleDeleteBus = async (id) => {
     if (!(await confirmAction("Delete this bus?"))) return;
     try { await axios.delete(`${API}/transport/${id}`, auth()); fetchAll(); }
-    catch(e) { toast.error("Error deleting bus"); }
+    catch(e) { toast.error(errorMessage(e, "Could not delete the bus")); }
   };
 
   const openStops = (bus) => {
@@ -76,14 +76,14 @@ export default function Transport() {
   };
 
   const handleAddStop = async () => {
-    if (!newStop.name || !newStop.latitude || !newStop.longitude) return toast.error("Name, lat, lng required");
+    if (!newStop.name || !newStop.latitude || !newStop.longitude) return toast.error("Enter the stop name, latitude and longitude");
     const updated = [...stops, { ...newStop, latitude: Number(newStop.latitude), longitude: Number(newStop.longitude), order: stops.length+1 }];
     try {
       await axios.put(`${API}/transport/${selectedBus._id}/stops`, { stops: updated }, auth());
       fetchAll();
       setStops(updated);
       setNewStop({ name:"", latitude:"", longitude:"", estimatedTime:"", order:updated.length+1 });
-    } catch(e) { toast.error("Error saving stop"); }
+    } catch(e) { toast.error(errorMessage(e, "Could not save the stop")); }
   };
 
   const openStudents = (bus) => {
@@ -97,7 +97,7 @@ export default function Transport() {
       await axios.put(`${API}/transport/${selectedBus._id}/assign-students`, { studentIds: selectedStudents }, auth());
       setShowStudentsModal(false);
       fetchAll();
-    } catch(e) { toast.error("Error assigning students"); }
+    } catch(e) { toast.error(errorMessage(e, "Could not assign the students")); }
   };
 
   const toggleStudent = (id) => setSelectedStudents(p => p.includes(id) ? p.filter(s=>s!==id) : [...p,id]);

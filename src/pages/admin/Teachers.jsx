@@ -136,7 +136,7 @@ export default function Teachers() {
       }
       setShowModal(false);
       fetchTeachers();
-    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(errorMessage(e, "Could not save the teacher")); }
     setSaving(false);
   };
 

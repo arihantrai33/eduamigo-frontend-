@@ -60,7 +60,7 @@ export default function SalaryManagement() {
   };
 
   const handleSave = async () => {
-    if (!form.teacherId || !form.basicSalary) return toast.error("Teacher and basic salary required");
+    if (!form.teacherId || !form.basicSalary) return toast.error("Select a teacher and enter the basic salary");
     setSaving(true);
     try {
       const payload = { teacher: form.teacherId, month: form.month, year: form.year, basicSalary: Number(form.basicSalary), allowances: Number(form.allowances||0), deductions: Number(form.deductions||0), remarks: form.remarks };
@@ -68,7 +68,7 @@ export default function SalaryManagement() {
       else await axios.post(`${API}/hr/salaries`, payload, auth());
       setShowModal(false);
       fetchAll();
-    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(errorMessage(e, "Could not save the salary")); }
     setSaving(false);
   };
 
@@ -87,7 +87,7 @@ export default function SalaryManagement() {
       setShowGenerateModal(false);
       fetchAll();
       toast.success(`Generated salary for ${r.data.data} teacher(s)`);
-    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(errorMessage(e, "Could not generate the salaries")); }
     setGenerating(false);
   };
 

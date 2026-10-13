@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { saveSchool, findSchoolByCode } from "../utils/school";
 import { homeFor } from "../utils/home";
 import { LifeBuoy } from "lucide-react";
+import { errorMessage } from "../utils/toast";
 
 // /support#token=... — opened from the EduAmigo owner console. Signs in as the school's admin for the
 // support session (one hour). The token sits in the URL fragment, which is never sent to any server,
@@ -29,7 +30,7 @@ export default function SupportLogin() {
         login(user, token);
         navigate(homeFor(user.role), { replace: true });
       } catch (err) {
-        setError(err.message);
+        setError(errorMessage(err, "Could not start the support session"));
       }
     })();
   }, [token, login, navigate]);

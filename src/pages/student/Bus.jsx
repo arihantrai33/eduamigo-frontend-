@@ -12,6 +12,7 @@ import SosModal from "../../components/SosModal";
 
 import Glyph from "../../components/Glyph";
 import { BUS_SVG, schoolSvg, cssVar } from "../../utils/mapIcons";
+import { errorMessage } from "../../utils/toast";
 // ── Utils ──────────────────────────────────────────────────────
 const getTrafficStatus = (speed) => {
   if (!speed || speed === 0) return { color: "#9CA3AF", label: "Stationary" };
@@ -202,7 +203,7 @@ export default function ParentBus() {
         if (!data.success) throw new Error(data.message);
         setBusInfo(data.data);
       } catch (err) {
-        setApiError(err.message);
+        setApiError(errorMessage(err, "Could not load the bus details"));
       } finally {
         setLoading(false);
       }
