@@ -103,7 +103,7 @@ export default function Notes() {
       {/* Header */}
       <PortalHeader title="Notes & Assignments" onBack={() => navigate('/student/home')}
         actions={<>
-          <button type="button" className="ea-portal-head__btn" onClick={() => navigate('/student/revise')}><Sparkles size={16} aria-hidden="true" /> Revise</button>
+          <button type="button" className="ea-portal-head__btn" onClick={() => navigate('/student/learn')}><Sparkles size={16} aria-hidden="true" /> Revise</button>
           <button type="button" className="ea-portal-head__btn" aria-label="Add a note" onClick={() => setShowModal(true)}><Plus size={18} aria-hidden="true" /></button>
         </>} />
       {/* Search */}

@@ -22,7 +22,8 @@ export default defineConfig({
     trace: 'retain-on-failure',
   },
   webServer: [
-    { command: 'npm run demo', cwd: '../eduamigo-backend', env: { PORT: String(API_PORT) }, url: `http://localhost:${API_PORT}/api/health`, reuseExistingServer: true, timeout: 180_000 },
+    // ASSISTANT_AI=off: routine tests never call a paid AI provider; AI paths are tested with mocked answers.
+    { command: 'npm run demo', cwd: '../eduamigo-backend', env: { PORT: String(API_PORT), ASSISTANT_AI: 'off', LEARNING_VECTOR_SEARCH: 'off' }, url: `http://localhost:${API_PORT}/api/health`, reuseExistingServer: true, timeout: 180_000 },
     { command: `npx vite --port ${WEB_PORT} --strictPort`, env: { VITE_DEV_API_TARGET: `http://localhost:${API_PORT}` }, url: `http://localhost:${WEB_PORT}`, reuseExistingServer: true, timeout: 60_000 },
   ],
 });

@@ -8,6 +8,8 @@ import { hasFeature } from "../utils/features";
 import { can } from "../utils/permissions";
 import { userTheme, brandLook, alpha } from "../utils/theme";
 import { askAssistant, sendFeedback, getAssistantIntro, getTickets, updateTicket, errorText } from "../api/assistant";
+import Diagram from "../pages/student/learn/Diagram";
+import Reliability from "../pages/student/learn/Reliability";
 
 // EduAmigo Ask: one assistant for every school topic, available on every signed-in screen.
 // Each answer shows where it was routed (topic and confidence), the records it came from, and a link to
@@ -15,7 +17,7 @@ import { askAssistant, sendFeedback, getAssistantIntro, getTickets, updateTicket
 
 const PORTALS = ["/student", "/parent", "/teacher", "/admin"];
 // Screens with their own bottom actions or their own AI chat: the button would cover them.
-const HIDDEN_ON = ["/student/bus", "/parent/bus", "/student/chat", "/parent/chat", "/teacher/chat", "/student/revise", "/admin/chat"];
+const HIDDEN_ON = ["/student/bus", "/parent/bus", "/student/chat", "/parent/chat", "/teacher/chat", "/student/revise", "/student/learn", "/admin/chat"];
 const METHOD_LABEL = { keywords: "keywords", model: "AI", context: "follow-up", choice: "your choice", rule: "safety rule" };
 const NOTE_KIND = { note: "Staff note", follow_up: "Follow-up", repeat: "Asked again", escalation: "Escalated", reopen: "Reopened" };
 const STATUS_LABEL = { open: "Open", in_progress: "In progress", resolved: "Resolved" };
@@ -112,7 +114,8 @@ function TicketCard({ ticket }) {
 
 function Reply({ r, onOption, onLink, disabled, animate, onDone, onTick, showRouting }) {
   const pct = Math.round((r.confidence || 0) * 100);
-  const { shown, finished, skip } = useTypewriter(r.text, animate, onDone, onTick);
+  // Study answers may hold diagram places ([[diagram:0]]); the diagrams are drawn under the text.
+  const { shown, finished, skip } = useTypewriter(String(r.text || "").replace(/\[\[diagram:\d+\]\]/g, "").replace(/\n{3,}/g, "\n\n").trim(), animate, onDone, onTick);
   return (
     <div style={s.botRow}>
     <Avatar />
@@ -126,6 +129,8 @@ function Reply({ r, onOption, onLink, disabled, animate, onDone, onTick, showRou
       )}
       <AnswerText text={shown} />
       <div style={finished ? s.extras : s.extrasHidden}>
+      {r.diagrams?.map((d, i) => <Diagram key={`d${i}`} d={d} />)}
+      {r.reliability && <Reliability value={r.reliability} />}
       {r.ticket && <TicketCard ticket={r.ticket} />}
       {r.sources?.some((x) => x.evidence) && (
         <div style={s.evidenceList}>

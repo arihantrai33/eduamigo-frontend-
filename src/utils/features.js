@@ -14,6 +14,7 @@ export const FEATURE_OF_PATH = {
   "/student/fee": "fees",
   "/student/chat": "chat",
   "/student/revise": "ai_revision",
+  "/student/learn": "ai_revision",
   "/parent/bus": "transport",
   "/parent/result": "exams",
   "/parent/fee": "fees",

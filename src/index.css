@@ -793,3 +793,141 @@ body:has(.ea-dialog-backdrop) .ea-ask-fab { display: none !important; }
 .ea-dialog__close:hover { color: var(--ea-ink); }
 @keyframes ea-dialog-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 @media (max-width: 480px) { .ea-dialog { padding: 20px 16px; border-radius: 16px; } }
+
+/* Visually hidden, still read by screen readers. */
+.ea-sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* ───────────── Learning AI (pages/student/learn) ───────────── */
+.ea-learn { min-height: 100%; background: var(--app-bg, #F4F6FB); padding-bottom: 96px; color: var(--ea-body); }
+.ea-learn__tabs { display: flex; gap: 4px; padding: 10px 16px 0; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid var(--ea-line); background: var(--ea-surface); }
+.ea-learn__tab { flex: none; padding: 10px 12px; border: none; border-bottom: 2px solid transparent; background: none; font: inherit; font-size: 14px; font-weight: 600; color: var(--ea-muted); cursor: pointer; white-space: nowrap; }
+.ea-learn__tab.is-on { color: var(--brand); border-bottom-color: var(--brand); }
+.ea-learn__tab:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; border-radius: 6px; }
+.ea-learn__panel { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
+.ea-learn__toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.ea-learn__spacer { flex: 1; }
+.ea-learn__row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.ea-learn__muted { color: var(--ea-muted); font-size: 13px; }
+.ea-learn__danger { color: var(--ea-danger); }
+.ea-btn.is-on { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
+
+.ea-learn__log { display: flex; flex-direction: column; gap: 10px; min-height: 240px; }
+.ea-learn__empty { padding: 16px; border: 1px dashed var(--ea-line); border-radius: var(--ea-radius); background: var(--ea-surface); font-size: 14px; line-height: 1.55; }
+.ea-learn__bubble { max-width: 100%; padding: 12px 14px; border-radius: 14px; font-size: 15px; line-height: 1.6; overflow-wrap: anywhere; }
+.ea-learn__bubble.is-user { align-self: flex-end; max-width: 85%; background: var(--brand); color: #fff; border-bottom-right-radius: 4px; }
+.ea-learn__bubble.is-ai { align-self: stretch; background: var(--ea-surface); border: 1px solid var(--ea-line); border-bottom-left-radius: 4px; }
+.ea-learn__answer > * + * { margin-top: 8px; }
+.ea-learn__answer p { margin: 0 0 8px; }
+.ea-learn__answer ul, .ea-learn__answer ol { margin: 0 0 8px; padding-left: 20px; }
+.ea-learn__answer code { font-family: ui-monospace, Menlo, monospace; font-size: 0.92em; background: var(--ea-hover); padding: 1px 4px; border-radius: 4px; }
+.ea-learn__answer pre { white-space: pre-wrap; background: var(--ea-hover); padding: 8px 10px; border-radius: 8px; overflow-x: auto; }
+.ea-learn__cite { display: inline-block; padding: 0 6px; margin: 0 1px; border-radius: 999px; background: var(--brand-soft); color: var(--brand); font-size: 11px; font-weight: 700; text-decoration: none; vertical-align: 1px; }
+.ea-learn__reliability { margin: 6px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--ea-muted); }
+.ea-learn__reliability svg { vertical-align: -2px; }
+.ea-learn__reliability.is-high strong { color: var(--ea-success); }
+.ea-learn__reliability.is-moderate strong { color: var(--ea-info); }
+.ea-learn__reliability.is-needs_verification strong { color: var(--ea-warning); }
+.ea-learn__check { display: flex; gap: 6px; align-items: flex-start; font-size: 13px; color: var(--ea-success); margin: 6px 0 0; }
+.ea-learn__check.is-failed { color: var(--ea-warning); }
+.ea-learn__sources { margin-top: 8px; font-size: 13px; }
+.ea-learn__sources summary { cursor: pointer; color: var(--brand); font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+.ea-learn__sources ul { list-style: none; padding: 6px 0 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
+
+.ea-learn__composer { position: sticky; bottom: 0; display: flex; flex-direction: column; gap: 8px; padding: 10px; border: 1px solid var(--ea-line); border-radius: var(--ea-radius); background: var(--ea-surface); box-shadow: var(--ea-shadow); }
+.ea-learn__composer textarea { width: 100%; resize: vertical; min-height: 44px; font-size: 16px; }
+.ea-learn__composer-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px; }
+.ea-learn__lang { width: auto; min-width: 0; max-width: 150px; }
+.ea-learn__novoice { margin-right: auto; }
+.ea-learn__voice-status { padding: 8px 12px; border-radius: 10px; background: var(--brand-soft); color: var(--ea-ink); font-size: 14px; }
+.ea-learn__voice-status.is-error { background: #FEF2F2; color: var(--ea-danger); }
+.ea-learn__consent, .ea-learn__history { padding: 14px; border: 1px solid var(--ea-line); border-radius: var(--ea-radius); background: var(--ea-surface); box-shadow: var(--ea-shadow); font-size: 14px; line-height: 1.5; }
+.ea-learn__consent p { margin: 0 0 8px; }
+.ea-learn__history ul { list-style: none; margin: 8px 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.ea-learn__history li { display: flex; align-items: center; gap: 6px; }
+.ea-learn__history-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.ea-learn__history-head .ea-btn { margin-left: auto; }
+.ea-learn__history-item { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 10px; border: 1px solid var(--ea-line); border-radius: 10px; background: none; font: inherit; text-align: left; color: var(--ea-ink); cursor: pointer; }
+.ea-learn__history-item:hover { background: var(--ea-hover); }
+.ea-learn__history-item > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+
+.ea-learn__form { display: flex; flex-direction: column; gap: 12px; }
+.ea-learn__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 10px; }
+.ea-learn__field-block { display: flex; flex-direction: column; gap: 4px; font-size: 13px; font-weight: 600; color: var(--ea-ink); }
+/* The shared inputs grow (flex: 1) for toolbar rows; in a column they must keep their own height. */
+.ea-learn__field-block > .ea-input, .ea-learn__field-block > .ea-select, .ea-learn__composer .ea-select, .ea-learn__toolbar .ea-select { flex: none; }
+.ea-learn__formats { border: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 14px; }
+.ea-learn__formats legend, .ea-learn__topics legend { font-size: 13px; font-weight: 600; color: var(--ea-ink); margin-bottom: 4px; padding: 0; }
+.ea-learn__formats label { display: inline-flex; align-items: center; gap: 6px; }
+.ea-learn__topics { border: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.ea-learn__topic-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto; gap: 6px; }
+.ea-learn__questions { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.ea-learn__q { padding: 14px; border: 1px solid var(--ea-line); border-radius: var(--ea-radius); background: var(--ea-surface); display: flex; flex-direction: column; gap: 8px; }
+.ea-learn__q-head { margin: 0; font-size: 13px; }
+.ea-learn__q-text p { margin: 0; font-size: 15px; line-height: 1.55; color: var(--ea-ink); }
+.ea-learn__options { border: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.ea-learn__option { display: flex; gap: 8px; align-items: flex-start; padding: 10px 12px; border: 1px solid var(--ea-line); border-radius: 10px; cursor: pointer; font-size: 14px; }
+.ea-learn__option.is-on { border-color: var(--brand); background: var(--brand-soft); }
+.ea-learn__option input { margin-top: 3px; accent-color: var(--brand); }
+.ea-learn__verdict { padding: 10px 12px; border-radius: 10px; font-size: 14px; background: var(--ea-hover); }
+.ea-learn__verdict p { margin: 0 0 4px; display: flex; gap: 6px; align-items: flex-start; flex-wrap: wrap; }
+.ea-learn__verdict.is-correct { background: #F0FDF4; color: #14532D; }
+.ea-learn__verdict.is-partly { background: #EFF6FF; color: #1E3A8A; }
+.ea-learn__verdict.is-incorrect { background: #FFFBEB; color: #78350F; }
+.ea-learn__solution p { margin: 4px 0; }
+.ea-learn__summary p { margin: 0 0 6px; }
+.ea-learn__list { list-style: none; padding: 0; margin: 8px 0 0; display: flex; flex-direction: column; gap: 6px; }
+.ea-learn__topic { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: 14px; }
+.ea-learn__topic > span:first-child { flex: 1 1 160px; min-width: 0; }
+.ea-learn__bar { flex: 0 0 90px; height: 6px; border-radius: 999px; background: var(--ea-hover); overflow: hidden; }
+.ea-learn__bar > span { display: block; height: 100%; background: var(--brand); }
+.ea-learn__days { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.ea-learn__day { padding: 12px 14px; }
+.ea-learn__day.is-today { border-color: var(--brand); }
+.ea-learn__day.is-late { border-color: #FDE68A; }
+.ea-learn__day-head { display: flex; align-items: center; gap: 6px; margin: 0 0 6px; font-size: 14px; }
+.ea-learn__day ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
+.ea-learn__task { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; cursor: pointer; }
+.ea-learn__task input { margin-top: 3px; accent-color: var(--brand); }
+.ea-learn__task.is-done > span { text-decoration: line-through; color: var(--ea-muted); }
+@media (min-width: 1024px) {
+  .ea-learn { padding-bottom: 32px; }
+  .ea-learn__panel { padding: 20px 24px; }
+  .ea-learn__bubble.is-user { max-width: 70%; }
+}
+
+/* Tutor diagrams (Diagram.jsx). */
+.ea-diagram { width: fit-content; min-width: min(280px, 100%); max-width: 100%; margin: 8px 0; padding: 10px; border: 1px solid var(--ea-line); border-radius: 10px; background: var(--ea-surface); box-sizing: border-box; }
+.ea-diagram__title { font-size: 13px; font-weight: 700; color: var(--ea-ink); margin-bottom: 6px; }
+.ea-diagram__axis { stroke: var(--ea-muted); stroke-width: 1.5; }
+.ea-diagram__ring { stroke: var(--ea-line); stroke-width: 2; }
+.ea-diagram__line { stroke: var(--brand); stroke-width: 2.5; }
+.ea-diagram__bar, .ea-diagram__point { fill: var(--brand); }
+.ea-diagram__range { fill: var(--brand); opacity: 0.25; }
+.ea-diagram__text { font-size: 10px; fill: var(--ea-muted); }
+.ea-diagram__label { font-size: 11px; font-weight: 700; fill: var(--ea-ink); }
+.ea-diagram__flow { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.ea-diagram__flow li { display: flex; gap: 8px; align-items: flex-start; padding: 8px 10px; border-radius: 8px; background: var(--brand-soft); font-size: 14px; }
+.ea-diagram__flow li + li { position: relative; }
+.ea-diagram__step-no { flex: none; display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--brand); color: #fff; font-size: 12px; font-weight: 700; }
+.ea-diagram__table-wrap { overflow-x: auto; }
+.ea-diagram__table { border-collapse: collapse; font-size: 13px; min-width: 100%; }
+.ea-diagram__table th, .ea-diagram__table td { border: 1px solid var(--ea-line); padding: 6px 8px; text-align: left; }
+
+/* Learning AI in dark mode: the design tokens are light, so the surfaces are set here. */
+[data-theme="dark"] .ea-learn { background: var(--bg); color: var(--subtext2); }
+[data-theme="dark"] .ea-learn__tabs,
+[data-theme="dark"] .ea-learn__bubble.is-ai,
+[data-theme="dark"] .ea-learn__composer,
+[data-theme="dark"] .ea-learn__empty,
+[data-theme="dark"] .ea-learn__history,
+[data-theme="dark"] .ea-learn__consent,
+[data-theme="dark"] .ea-learn__q,
+[data-theme="dark"] .ea-diagram,
+[data-theme="dark"] .ea-learn .ea-card { background: var(--card); border-color: var(--border); color: var(--text); }
+[data-theme="dark"] .ea-learn__muted,
+[data-theme="dark"] .ea-learn__reliability { color: var(--subtext); }
+[data-theme="dark"] .ea-learn__q-text p,
+[data-theme="dark"] .ea-learn__field-block,
+[data-theme="dark"] .ea-learn__history-item { color: var(--text); }
+[data-theme="dark"] .ea-learn__verdict { background: var(--card2); color: var(--text); }
+[data-theme="dark"] .ea-diagram__label { fill: var(--text); }

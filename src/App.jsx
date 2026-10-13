@@ -33,7 +33,7 @@ const StudentFee = lazy(() => import('./pages/student/Fee'))
 const StudentBus = lazy(() => import('./pages/student/Bus'))
 const Timetable = lazy(() => import('./pages/student/Timetable'))
 const Notes = lazy(() => import('./pages/student/Notes'))
-const Revise = lazy(() => import('./pages/student/Revise'))
+const Learn = lazy(() => import('./pages/student/learn/Learn'))
 const StudentApplyLeave = lazy(() => import('./pages/student/ApplyLeave'))
 const StudentNotifications = lazy(() => import('./pages/student/Notifications'))
 const StudentChat = lazy(() => import('./pages/student/Chat'))
@@ -156,7 +156,9 @@ function AppRoutes() {
         <Route path="/student/bus"           element={<Protected role="student"><StudentBus /></Protected>} />
         <Route path="/student/timetable"     element={<Protected role="student"><Timetable /></Protected>} />
         <Route path="/student/notes"         element={<Protected role="student"><Notes /></Protected>} />
-        <Route path="/student/revise"        element={<Protected role="student"><Revise /></Protected>} />
+        <Route path="/student/learn"         element={<Protected role="student"><Learn /></Protected>} />
+        {/* The old "Revise with AI" screen is now the AI Tutor in Learning AI; old links keep working. */}
+        <Route path="/student/revise"        element={<Navigate to="/student/learn" replace />} />
         <Route path="/student/apply-leave"   element={<Protected role="student"><StudentApplyLeave /></Protected>} />
         <Route path="/student/notifications" element={<Protected role="student"><StudentNotifications /></Protected>} />
         <Route path="/student/chat"          element={<Protected role="student"><StudentChat /></Protected>} />

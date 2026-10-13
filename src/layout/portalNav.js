@@ -13,8 +13,8 @@ export const PORTAL_NAV = {
     bottom: [
       { icon: House, label: "Home", path: "/student/home" },
       { icon: Bus, label: "Bus", path: "/student/bus" },
-      // Results is part of Learning (see the sidebar), so the Learn tab is the current one on the results screen.
-      { icon: BookOpen, label: "Learn", path: "/student/notes", also: ["/student/result"] },
+      // Results and Learning AI are part of Learning (see the sidebar), so the Learn tab is the current one on those screens.
+      { icon: BookOpen, label: "Learn", path: "/student/notes", also: ["/student/result", "/student/learn"] },
       { icon: MessageCircle, label: "Chat", path: "/student/chat" },
       { icon: User, label: "Me", path: "/student/profile" },
     ],
@@ -26,7 +26,7 @@ export const PORTAL_NAV = {
       { title: "Learning", items: [
         { icon: Clock, label: "Timetable", path: "/student/timetable" },
         { icon: BookOpen, label: "Notes", path: "/student/notes" },
-        { icon: Sparkles, label: "Revise with AI", path: "/student/revise" },
+        { icon: Sparkles, label: "Learning AI", path: "/student/learn" },
         { icon: BarChart3, label: "Results", path: "/student/result" },
         { icon: CalendarCheck, label: "Attendance", path: "/student/attendance" },
       ] },
