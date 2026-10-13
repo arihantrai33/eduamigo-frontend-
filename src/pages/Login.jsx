@@ -151,6 +151,7 @@ export default function Login() {
         <label htmlFor="login-id" style={s.label}>{current.idLabel}</label>
         {inputBox("id", current.idIcon, (
           <input id="login-id" type={current.type} inputMode={current.mode} value={identifier} onChange={(e) => setIdentifier(e.target.value)}
+            autoCapitalize="none" autoCorrect="off" spellCheck={false}
             onFocus={() => setFocused("id")} onBlur={() => setFocused("")}
             placeholder={current.placeholder} style={s.input} autoComplete="username" />
         ))}

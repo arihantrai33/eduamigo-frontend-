@@ -87,7 +87,8 @@ export default function ForgotPassword() {
             <p style={s.sub}>We will email a 6-digit code to the email address on your account.</p>
             <label style={s.label}>{idLabel}</label>
             <input value={identifier} onChange={(e) => setIdentifier(e.target.value)} onKeyDown={(e) => e.key === "Enter" && requestCode()}
-              placeholder={role === "parent" ? "98765 43210 or name@mail.com" : "yourname@school.edu"} style={s.input} autoFocus />
+              placeholder={role === "parent" ? "98765 43210 or name@mail.com" : "yourname@school.edu"} style={s.input} autoFocus
+              autoCapitalize="none" autoCorrect="off" spellCheck={false} />
             {error && <div style={s.err}><AlertCircle aria-hidden size={16} style={{ flexShrink: 0 }} />{error}</div>}
             <button onClick={requestCode} disabled={busy} style={{ ...s.btn, background: color, opacity: busy ? 0.7 : 1 }}>
               {busy ? "Sending..." : "Send code"}
