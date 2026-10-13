@@ -3,6 +3,7 @@ import axios from "axios";
 import { ChevronLeft, ChevronRight, Plus, X, Trash2, Calendar, Sparkles } from "lucide-react";
 
 import Glyph from "../../components/Glyph";
+import PageHeader from "../../components/ui/PageHeader";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -105,29 +106,15 @@ export default function EventCalendar() {
 
   const inputStyle = { width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", fontFamily:"inherit", boxSizing:"border-box" };
 
-  // BG gradient colors for calendar header based on month
-  const monthColors = [
-    ["#3B82F6","#6366F1"], ["#EC4899","#F43F5E"], ["#10B981","#059669"],
-    ["#F59E0B","#EF4444"], ["#8B5CF6","#6366F1"], ["#06B6D4","#3B82F6"],
-    ["#EF4444","#EC4899"], ["#F97316","#EF4444"], ["#10B981","#06B6D4"],
-    ["#6366F1","#8B5CF6"], ["#F59E0B","#10B981"], ["#EF4444","#8B5CF6"]
-  ];
-  const [c1, c2] = monthColors[currentMonth];
+  // The calendar header and today's date use the school's brand colour (it used to change colour every month).
+  const [c1, c2] = ["var(--brand-dark)", "var(--brand)"];
 
   return (
     <div style={{ fontFamily: "inherit" }}>
       {/* Header */}
-      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"1.25rem" }}>
-        <div>
-          <div style={{ fontSize:22, fontWeight:800, color:"#0F172A", letterSpacing:"-0.3px" }}>Event Calendar</div>
-          <div style={{ fontSize:12, color:"#94A3B8", marginTop:3 }}>{events.length} events this month</div>
-        </div>
-        <button onClick={() => setShowForm(true)}
-          style={{ display:"flex", alignItems:"center", gap:8, background:`linear-gradient(135deg,${c1},${c2})`, color:"white", border:"none", borderRadius:14, padding:"11px 22px", fontSize:13, fontWeight:700, cursor:"pointer", boxShadow:`0 4px 16px ${c1}55`, transition:"all 0.2s" }}
-          onMouseEnter={e => { e.currentTarget.style.transform="translateY(-2px)"; }}
-          onMouseLeave={e => { e.currentTarget.style.transform="translateY(0)"; }}>
-          <Plus size={16} /> Add Event
-        </button>
+      <div style={{ marginBottom:"1.25rem" }}>
+        <PageHeader title="Event Calendar" subtitle={`${events.length} events this month`}
+          actions={<button type="button" className="ea-btn ea-btn--primary" onClick={() => setShowForm(true)}><Plus size={16} aria-hidden="true" /> Add Event</button>} />
       </div>
 
       {/* Legend */}

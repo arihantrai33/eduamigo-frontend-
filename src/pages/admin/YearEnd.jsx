@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast, errorMessage, confirmAction } from "../../utils/toast";
 
 import Glyph from "../../components/Glyph";
+import PageHeader from "../../components/ui/PageHeader";
 // End of the academic year: promote, detain, leave or pass out (backend: /api/academic/year-end),
 // and transfer certificates for students who have left.
 const API = import.meta.env.VITE_API_URL;
@@ -117,8 +118,7 @@ export default function YearEnd() {
   return (
     <div style={{ fontFamily: "inherit", maxWidth: 1050, margin: "0 auto" }}>
       <div style={{ marginBottom: 14 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111827", margin: 0 }}>Year End</h1>
-        <p style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4 }}>Move students to the next session, and issue transfer certificates</p>
+        <PageHeader title="Year End" subtitle="Move students to the next session, and issue transfer certificates" />
       </div>
       <div style={{ display: "flex", gap: 6, marginBottom: 16 }}>
         {[["year", "Promote and detain"], ["former", "Former students and TCs"]].map(([k, l]) => (

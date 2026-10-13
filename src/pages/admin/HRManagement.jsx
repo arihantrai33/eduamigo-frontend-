@@ -3,6 +3,9 @@ import axios from "axios";
 import { toast, confirmAction } from "../../utils/toast";
 
 import Glyph from "../../components/Glyph";
+import PageHeader from "../../components/ui/PageHeader";
+import { StatCard, StatGrid } from "../../components/ui/StatCard";
+import { toneOf } from "../../components/ui/tone";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -130,25 +133,18 @@ export default function HRManagement() {
   return (
     <div style={{ fontFamily: "inherit" }}>
       <div style={{ marginBottom:24 }}>
-        <div style={{ fontSize:22, fontWeight:800, color:"#0F172A", letterSpacing:"-0.3px" }}>HR Management</div>
-        <div style={{ fontSize:12, color:"#94A3B8", marginTop:3 }}>Salary records and staff leave management</div>
+        <PageHeader title="HR Management" subtitle="Salary records and staff leave management" />
       </div>
 
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
-        {[
-          { label:"Total Teachers", value: teachers.length, icon:<Glyph e="👩‍🏫" />, color:"var(--brand)" },
-          { label:"Salary Paid", value: `₹${totalPaid.toLocaleString()}`, icon:<Glyph e="✅" />, color:"#10B981" },
-          { label:"Salary Pending", value: `₹${totalPending.toLocaleString()}`, icon:<Glyph e="⏳" />, color:"#F59E0B" },
-          { label:"Leave Requests", value: pendingLeaves, icon:<Glyph e="📋" />, color:"#EF4444" },
-        ].map((s,i) => (
-          <div key={i} style={{ background:"white", borderRadius:16, padding:"16px 20px", boxShadow:"0 4px 16px rgba(15,23,42,0.06)", border:"1px solid rgba(226,232,240,0.8)" }}>
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
-              <span style={{ fontSize:11, fontWeight:700, color:"#94A3B8", letterSpacing:"0.06em" }}>{s.label.toUpperCase()}</span>
-              <span style={{ fontSize:20 }}>{s.icon}</span>
-            </div>
-            <div style={{ fontSize:22, fontWeight:800, color: s.color }}>{s.value}</div>
-          </div>
-        ))}
+      <div style={{ marginBottom:24 }}>
+        <StatGrid>
+          {[
+            { label:"TOTAL TEACHERS", value: teachers.length, icon:<Glyph e="👩‍🏫" />, color:"var(--brand)" },
+            { label:"SALARY PAID", value: `₹${totalPaid.toLocaleString()}`, icon:<Glyph e="✅" />, color:"#10B981" },
+            { label:"SALARY PENDING", value: `₹${totalPending.toLocaleString()}`, icon:<Glyph e="⏳" />, color:"#F59E0B" },
+            { label:"LEAVE REQUESTS", value: pendingLeaves, icon:<Glyph e="📋" />, color: pendingLeaves ? "#F59E0B" : "var(--brand)" },
+          ].map((s) => <StatCard key={s.label} label={s.label} value={s.value} icon={s.icon} tone={toneOf(s.color)} />)}
+        </StatGrid>
       </div>
 
       <div style={{ display:"flex", gap:6, background:"white", borderRadius:14, padding:5, border:"1px solid #E2E8F0", width:"fit-content", marginBottom:20, boxShadow:"0 2px 8px rgba(0,0,0,0.04)" }}>

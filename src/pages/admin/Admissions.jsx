@@ -2,8 +2,10 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, errorMessage, showCredentials, confirmAction } from "../../utils/toast";
+import { Plus } from "lucide-react";
 import Modal from "../../components/Dialog";
 import Glyph from "../../components/Glyph";
+import PageHeader from "../../components/ui/PageHeader";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -326,14 +328,10 @@ export default function Admissions() {
 
   return (
     <div style={{ padding: 24, fontFamily: "inherit", maxWidth: 1200, margin: "0 auto" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 12, marginBottom: 18 }}>
-        <div>
-          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: "#0F172A" }}>Admissions</h1>
-          <div style={{ fontSize: 13, color: "#64748B", marginTop: 4 }}>
-            Academic year {academicYear || "—"} · {total} total · {open} in progress · {counts.Admitted || 0} admitted
-          </div>
-        </div>
-        <button style={btn()} onClick={() => setForm({})}>+ New enquiry</button>
+      <div style={{ marginBottom: 18 }}>
+        <PageHeader title="Admissions"
+          subtitle={`Academic year ${academicYear || "—"} · ${total} total · ${open} in progress · ${counts.Admitted || 0} admitted`}
+          actions={<button type="button" className="ea-btn ea-btn--primary" onClick={() => setForm({})}><Plus size={16} aria-hidden="true" /> New enquiry</button>} />
       </div>
 
       {/* Pipeline */}

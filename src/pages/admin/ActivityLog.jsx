@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast, errorMessage } from "../../utils/toast";
 import { activityLabel } from "../../utils/activity";
+import PageHeader from "../../components/ui/PageHeader";
 
 // School activity log: who changed what (backend: GET /api/audit).
 const API = import.meta.env.VITE_API_URL;
@@ -56,8 +57,7 @@ export default function ActivityLog() {
   return (
     <div style={{ fontFamily: "inherit", maxWidth: 1000, margin: "0 auto" }}>
       <div style={{ marginBottom: 18 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111827", margin: 0 }}>Activity Log</h1>
-        <p style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4 }}>Who changed marks, fees, students, logins and settings, and when</p>
+        <PageHeader title="Activity Log" subtitle="Who changed marks, fees, students, logins and settings, and when" />
       </div>
 
       <div style={{ ...card, display: "flex", gap: 10, flexWrap: "wrap", alignItems: "flex-end" }}>

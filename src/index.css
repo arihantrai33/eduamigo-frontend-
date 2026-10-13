@@ -596,6 +596,7 @@ input:-webkit-autofill:focus {
 .ea-stats { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
 .ea-stat--row { flex-direction: row; align-items: center; gap: 14px; padding: 16px 18px; min-width: 0; }
 .ea-stat.is-static { cursor: default; }
+.ea-stat.is-selected, .ea-stat.is-selected:hover { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-soft); }
 .ea-stat.is-static:hover { border-color: var(--ea-line); }
 .ea-stat__text { display: flex; flex-direction: column; min-width: 0; }
 .ea-stat__caption { font-size: 12px; font-weight: 650; color: var(--ea-muted); letter-spacing: 0.02em; overflow-wrap: break-word; }

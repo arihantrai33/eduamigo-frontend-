@@ -4,6 +4,7 @@ import { toast, confirmAction } from "../../utils/toast";
 import { todayLocal } from "../../utils/dates";
 
 import Glyph from "../../components/Glyph";
+import PageHeader from "../../components/ui/PageHeader";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -178,8 +179,7 @@ export default function BulkOperations() {
   return (
     <div style={{ fontFamily: "inherit" }}>
       <div style={{ marginBottom:24 }}>
-        <div style={{ fontSize:22, fontWeight:800, color:"#0F172A", letterSpacing:"-0.3px" }}>Bulk Operations</div>
-        <div style={{ fontSize:12, color:"#94A3B8", marginTop:3 }}>Perform mass actions across students and staff</div>
+        <PageHeader title="Bulk Operations" subtitle="Perform mass actions across students and staff" />
       </div>
 
       <ResultBanner result={result} onClose={() => setResult(null)} />

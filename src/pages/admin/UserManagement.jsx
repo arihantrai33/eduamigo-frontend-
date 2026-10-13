@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { Search, Plus, RefreshCw, Shield, GraduationCap, Users, UserCheck, Calculator, X } from "lucide-react";
 import { toast, showCredentials } from "../../utils/toast";
+import PageHeader from "../../components/ui/PageHeader";
+import { StatCard } from "../../components/ui/StatCard";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -79,35 +81,22 @@ export default function UserManagement() {
   return (
     <div style={{ fontFamily: "inherit", maxWidth: 1000 }}>
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
-        <div>
-          <div style={{ fontSize: 22, fontWeight: 700, color: "#0F172A", letterSpacing: "-0.3px" }}>User Management</div>
-          <div style={{ fontSize: 12, color: "#94A3B8", marginTop: 3 }}>Manage system access and roles</div>
-        </div>
-        <div style={{ display: "flex", gap: 8 }}>
-          <button onClick={fetchUsers} style={{ width: 36, height: 36, borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-            <RefreshCw size={14} color="#64748B" />
-          </button>
-          <button onClick={() => setShowModal(true)}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 18px", borderRadius: 10, border: "none", background: "var(--brand-gradient)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
-            <Plus size={14} /> Add User
-          </button>
-        </div>
+      <div style={{ marginBottom: 24 }}>
+        <PageHeader title="User Management" subtitle="Manage system access and roles"
+          actions={<>
+            <button type="button" className="ea-btn ea-btn--ghost" onClick={fetchUsers} aria-label="Refresh"><RefreshCw size={16} aria-hidden="true" /></button>
+            <button type="button" className="ea-btn ea-btn--primary" onClick={() => setShowModal(true)}><Plus size={16} aria-hidden="true" /> Add User</button>
+          </>} />
       </div>
 
-      {/* Role Stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 10, marginBottom: 20 }}>
+      {/* Role Stats (each card filters the list by that role) */}
+      <div className="ea-stats" style={{ marginBottom: 20 }}>
         {Object.entries(ROLE_META).map(([role, meta]) => {
           const Icon = meta.icon;
           return (
-            <div key={role} onClick={() => setFilter(role === filter ? "all" : role)}
-              style={{ background: filter === role ? meta.bg : "#fff", border: `1px solid ${filter === role ? meta.border : "#E2E8F0"}`, borderRadius: 12, padding: "14px 16px", cursor: "pointer", transition: "all 0.15s" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                <Icon size={14} color={meta.color} />
-                <span style={{ fontSize: 11, color: meta.color, fontWeight: 600, textTransform: "capitalize" }}>{role}</span>
-              </div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: meta.color }}>{loading ? "—" : counts[role]}</div>
-            </div>
+            <StatCard key={role} label={role.charAt(0).toUpperCase() + role.slice(1)} value={loading ? "—" : counts[role]}
+              icon={<Icon aria-hidden="true" />} selected={filter === role}
+              onClick={() => setFilter(role === filter ? "all" : role)} />
           );
         })}
       </div>

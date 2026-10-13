@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, errorMessage, confirmAction } from "../../utils/toast";
+import PageHeader from "../../components/ui/PageHeader";
 
 // School setup: onboarding checklist, academic sessions and settings, and the class list
 // (classes, sections, class teachers, subjects). Backed by /api/academic.
@@ -376,8 +377,7 @@ export default function AcademicSetup() {
   return (
     <div style={{ fontFamily: "inherit", maxWidth: 900, margin: "0 auto" }}>
       <div style={{ marginBottom: 18 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111827", margin: 0 }}>School Setup</h1>
-        <p style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4 }}>Sessions, classes, sections, class teachers and subjects</p>
+        <PageHeader title="School Setup" subtitle="Sessions, classes, sections, class teachers and subjects" />
       </div>
       <Checklist status={status} onJump={jump} />
       <Sessions onChanged={loadStatus} />
