@@ -8,6 +8,7 @@ import { showCredentials, toast } from "../../utils/toast";
 
 import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
+import PortalHeader from "../../components/ui/PortalHeader";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -91,10 +92,7 @@ export default function ParentProfile() {
       {/* Toast */}
 
       {/* Top Bar */}
-      <div style={s.topBar}>
-        <button type="button" aria-label="Back" style={s.backBtn} onClick={() => navigate(-1)}><Glyph e="←" /></button>
-        <h2 style={s.title}>My Profile</h2>
-      </div>
+      <PortalHeader title="My Profile" onBack={() => navigate(-1)} />
 
       <div style={s.scroll}>
 

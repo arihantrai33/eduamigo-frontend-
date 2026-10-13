@@ -162,9 +162,9 @@ export default function TeacherLeave() {
           <div style={styles.quotaCard}>
             <p style={styles.quotaTitle}>Annual Leave Balance</p>
             <div style={styles.quotaRow}>
-              <QuotaBox label="Total" value={quota.total} color="var(--brand)" />
-              <QuotaBox label="Used" value={quota.used} color="#E53935" />
-              <QuotaBox label="Available" value={quota.available} color="#2E7D32" />
+              <QuotaBox label="Total" value={quota.total} />
+              <QuotaBox label="Used" value={quota.used} />
+              <QuotaBox label="Available" value={quota.available} />
             </div>
             <div style={styles.progressBarBg}>
               <div style={{
@@ -327,10 +327,11 @@ export default function TeacherLeave() {
   );
 }
 
-function QuotaBox({ label, value, color }) {
+// White numbers on the brand card (coloured numbers were unreadable on it); the label says what each is.
+function QuotaBox({ label, value }) {
   return (
     <div style={styles.quotaBox}>
-      <p style={{ ...styles.quotaValue, color }}>{value}</p>
+      <p style={styles.quotaValue}>{value}</p>
       <p style={styles.quotaLabel}>{label}</p>
     </div>
   );

@@ -36,11 +36,16 @@ export default function TeacherAttendance() {
     setTimeout(() => setToast(null), 3500)
   }
 
-  // Load teacher profile
+  // Load teacher profile. A teacher with a single class starts on that class (no extra tap).
   useEffect(() => {
     fetch(`${API}/teachers/me`, { headers })
       .then(r => r.json())
-      .then(d => { if (d.success) setTeacher(d.data) })
+      .then(d => {
+        if (!d.success) return
+        setTeacher(d.data)
+        const only = d.data?.assignedClasses?.length === 1 ? d.data.assignedClasses[0] : null
+        if (only) { const [c, sec = ""] = only.split("-"); setFilters(f => (f.class ? f : { ...f, class: c, section: sec })) }
+      })
   }, [])
 
   // Load sections when class changes

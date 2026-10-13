@@ -83,6 +83,8 @@ export default function TeacherNotifications() {
           {FILTERS.map(f => (
             <button
               key={f}
+              type="button"
+              aria-pressed={filter === f}
               style={{ ...styles.chip, ...(filter === f ? styles.chipActive : {}) }}
               onClick={() => setFilter(f)}
             >

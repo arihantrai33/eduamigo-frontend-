@@ -368,7 +368,7 @@ export default function AskWidget() {
   return (
     <>
       {!open && (
-        <button type="button" aria-label="Ask EduAmigo" title="Ask EduAmigo" style={fabStyle} onClick={() => setOpen(true)}>
+        <button type="button" className="ea-ask-fab" aria-label="Ask EduAmigo" title="Ask EduAmigo" style={fabStyle} onClick={() => setOpen(true)}>
           <MessageSquareText size={isAdminArea ? 20 : 22} strokeWidth={2} aria-hidden />
           {isAdminArea && <span style={s.fabText}>Ask EduAmigo</span>}
         </button>

@@ -5,6 +5,8 @@ import { useTheme } from '../../context/ThemeContext';
 import axios from 'axios';
 import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
+import PortalHeader from "../../components/ui/PortalHeader";
+import { Plus, Sparkles } from "lucide-react";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -99,14 +101,11 @@ export default function Notes() {
   return (
     <div style={{ minHeight: '100vh', background: dm ? '#0f172a' : '#F8F9FB', fontFamily: 'inherit', display: 'flex', flexDirection: 'column', position: 'relative', paddingBottom: 80 }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '48px 20px 12px', background: dm ? 'var(--brand-gradient)' : '#fff', borderBottom: `1px solid ${dm ? '#334155' : '#F0F0F0'}` }}>
-        <button type="button" aria-label="Back" style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: dm ? '#ffffff' : '#333', padding: '4px 8px' }} onClick={() => navigate('/student/home')}><Glyph e="←" /></button>
-        <h1 style={{ fontSize: 18, fontWeight: 700, color: dm ? '#f1f5f9' : '#1A1A2E', margin: 0 }}><Glyph e="📚" /> Notes & Assignments</h1>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button style={{ background: dm ? '#1e3a5f' : 'var(--brand-soft)', border: 'none', borderRadius: 10, padding: '0 12px', height: 36, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: 'var(--brand)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, whiteSpace: 'nowrap' }} onClick={() => navigate('/student/revise')}><Glyph e="🤖" /> Revise</button>
-          <button style={{ background: dm ? '#1e3a5f' : 'var(--brand-soft)', border: 'none', borderRadius: 10, width: 36, height: 36, fontSize: 22, cursor: 'pointer', color: 'var(--brand)', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setShowModal(true)}>+</button>
-        </div>
-      </div>
+      <PortalHeader title="Notes & Assignments" onBack={() => navigate('/student/home')}
+        actions={<>
+          <button type="button" className="ea-portal-head__btn" onClick={() => navigate('/student/revise')}><Sparkles size={16} aria-hidden="true" /> Revise</button>
+          <button type="button" className="ea-portal-head__btn" aria-label="Add a note" onClick={() => setShowModal(true)}><Plus size={18} aria-hidden="true" /></button>
+        </>} />
       {/* Search */}
       <div style={{ display: 'flex', alignItems: 'center', background: dm ? '#0f172a' : '#F0F2F5', borderRadius: 12, margin: '12px 16px', padding: '10px 14px', gap: 8 }}>
         <span style={{ fontSize: 16, opacity: 0.5 }}><Glyph e="🔍" /></span>
