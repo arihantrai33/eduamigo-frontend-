@@ -16,6 +16,7 @@ test('errorMessage turns each kind of failure into a readable message', async ({
       gateway: errorMessage(http(502, '<html>Bad gateway</html>'), 'Could not save the book'),
       forbidden: errorMessage(http(403, {}), 'Could not delete'),
       unknownRoute: errorMessage(http(404, { message: 'Endpoint not found' }), 'Could not load'),
+      missingRecord: errorMessage(http(404, {}), 'Could not load'),
       tooMany: errorMessage(http(429, {}), 'Could not sign in'),
       axiosOffline: errorMessage(Object.assign(new Error('Network Error'), { request: {}, config: {} }), 'Could not save'),
       fetchOffline: errorMessage(new TypeError('Failed to fetch'), 'Could not load'),
@@ -32,7 +33,10 @@ test('errorMessage turns each kind of failure into a readable message', async ({
   expect(out.exposed500).toBe('AI is busy right now. Reference: feedbeef');
   expect(out.gateway).toBe('Could not save the book. The server had a problem; please try again in a moment.');
   expect(out.forbidden).toMatch(/^You don't have permission/);
-  expect(out.unknownRoute).toMatch(/^This item could not be found/);
+  // An address the server does not have (an older server) is not a missing record: refreshing will not help.
+  expect(out.unknownRoute).toMatch(/^This part of EduAmigo is not available on the server yet/);
+  expect(out.unknownRoute).not.toMatch(/refresh/i);
+  expect(out.missingRecord).toMatch(/^This item could not be found/);
   expect(out.tooMany).toMatch(/^Too many attempts/);
   for (const k of ['axiosOffline', 'fetchOffline', 'safariOffline']) expect(out[k]).toMatch(/^Can't reach EduAmigo right now/);
   expect(out.timeout).toMatch(/took too long/);

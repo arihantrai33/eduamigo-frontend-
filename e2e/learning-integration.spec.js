@@ -5,6 +5,31 @@ import { signIn } from './helpers';
 // the real wiring and the honest "AI unavailable" paths; the AI answers themselves are covered with mocked providers in
 // the backend tests and learning.spec.js. Writes only to the test backend's in-memory database.
 
+test('opening Learning AI loads the student\'s context from the backend (200) and shows the AI Tutor', async ({ page }) => {
+  await signIn(page, 'student');
+  const context = page.waitForResponse((r) => new URL(r.url()).pathname === '/api/learning/context' && r.request().method() === 'GET');
+  await page.goto('/student/learn');
+  const res = await context;
+  expect(res.status()).toBe(200);
+  const body = await res.json();
+  expect(body).toMatchObject({ success: true, data: { class: expect.any(String), section: expect.any(String), subjects: expect.any(Array), exams: expect.any(Array) } });
+  await expect(page.getByText(`Class ${body.data.class}-${body.data.section}`)).toBeVisible();
+  await expect(page.getByRole('tab', { name: 'AI Tutor' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByLabel('Your question')).toBeVisible();
+  await expect(page.getByRole('alert')).toHaveCount(0);
+});
+
+test('a server without the Learning AI routes (an older backend) is reported as such, not as a missing item', async ({ page }) => {
+  await signIn(page, 'student');
+  // What a backend started before /api/learning existed answers (its catch-all for unknown addresses).
+  await page.route('**/api/learning/context', (route) => route.fulfill({ status: 404, json: { success: false, message: 'Endpoint not found' } }));
+  await page.goto('/student/learn');
+  const alert = page.getByRole('alert');
+  await expect(alert).toContainText('not available on the server yet');
+  await expect(alert).toContainText('older version');
+  await expect(alert).not.toContainText(/refresh/i);
+});
+
 test('Learning AI end to end without an AI provider: honest messages, a real revision plan and progress', async ({ page }) => {
   await signIn(page, 'student');
   await page.goto('/student/learn');
@@ -28,6 +53,9 @@ test('Learning AI end to end without an AI provider: honest messages, a real rev
 
   // Planner: works without AI (fixed rules).
   await page.getByRole('tab', { name: 'Revision Planner' }).click();
+  // A backend reused between runs may already hold a plan from an earlier run: start a new one then.
+  await expect(page.getByRole('button', { name: /Make my plan|New plan/ })).toBeVisible();
+  if (await page.getByRole('button', { name: 'New plan' }).isVisible()) await page.getByRole('button', { name: 'New plan' }).click();
   await page.getByLabel('I will enter the date').check();
   const inTen = new Date(Date.now() + 10 * 86400000).toISOString().slice(0, 10);
   await page.getByLabel('Exam date').fill(inTen);

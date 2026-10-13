@@ -36,6 +36,7 @@ const STATUS_MESSAGES = {
   413: 'The file is too large. Choose a smaller file and try again.',
   429: 'Too many attempts. Please wait a minute and try again.',
 };
+const ENDPOINT_MISSING = 'This part of EduAmigo is not available on the server yet. The server may be running an older version than the app; please try again later or tell the school office.';
 const OFFLINE = "You're offline. Check your internet connection and try again.";
 const UNREACHABLE = "Can't reach EduAmigo right now. Check your internet connection and try again.";
 const TECHNICAL = /^(network ?error|failed to fetch|load failed|networkerror when attempting|request failed with status code|timeout of \d+ms exceeded|the network connection was lost)/i;
@@ -63,7 +64,10 @@ export function errorMessage(err, fallback = SERVER_GENERIC) {
         : `${sentence(fallback)} The server had a problem; please try again in a moment.`;
       return ref ? `${base} Reference: ${ref}` : base;
     }
-    if (server && !(status === 404 && server === 'Endpoint not found')) return server;
+    // The server has no such address at all (not a missing record): it does not have this feature, usually because it
+    // runs an older version than the app. Refreshing will not help, so the message does not suggest it.
+    if (status === 404 && server === 'Endpoint not found') return ENDPOINT_MISSING;
+    if (server) return server;
     return STATUS_MESSAGES[status] || sentence(fallback);
   }
   if (err?.code === 'ECONNABORTED') return STATUS_MESSAGES[408];
