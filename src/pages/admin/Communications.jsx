@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { toast, confirmAction } from "../../utils/toast";
+import { toast, confirmAction, errorMessage } from "../../utils/toast";
 
 import { Bell } from "lucide-react";
 import Glyph from "../../components/Glyph";
@@ -100,20 +100,20 @@ export default function Communications() {
   };
 
   const handleTogglePin = async (id) => {
-    try { await axios.patch(`${API}/announcements/${id}/pin`, {}, auth()); fetchAll(); }
-    catch(e) {}
+    try { await axios.patch(`${API}/announcements/${id}/pin`, {}, auth()); toast.success("Pin updated"); fetchAll(); }
+    catch(e) { toast.error(errorMessage(e, "Could not update the pin")); }
   };
 
   const handleDeleteAnn = async (id) => {
     if (!(await confirmAction("Delete this announcement?"))) return;
-    try { await axios.delete(`${API}/announcements/${id}`, auth()); fetchAll(); }
-    catch(e) {}
+    try { await axios.delete(`${API}/announcements/${id}`, auth()); toast.success("Announcement deleted"); fetchAll(); }
+    catch(e) { toast.error(errorMessage(e, "Could not delete the announcement")); }
   };
 
   const handleDeleteNotif = async (id) => {
     if (!(await confirmAction("Delete this notification?"))) return;
-    try { await axios.delete(`${API}/notifications/${id}`, auth()); fetchAll(); }
-    catch(e) {}
+    try { await axios.delete(`${API}/notifications/${id}`, auth()); toast.success("Notification deleted"); fetchAll(); }
+    catch(e) { toast.error(errorMessage(e, "Could not delete the notification")); }
   };
 
   const filteredAnn = announcements.filter(a =>

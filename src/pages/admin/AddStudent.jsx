@@ -3,6 +3,7 @@ import axios from "axios";
 
 import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
+import { hasEntries, useUnsavedChanges } from "../../utils/unsavedChanges";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -26,6 +27,7 @@ export default function AddStudent() {
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [classList, setClassList] = useState([]); // school's class master: [{ name, sections: [{ name }] }]
+  useUnsavedChanges(hasEntries(form) || !!photoFile);
 
   useEffect(() => {
     axios.get(`${API}/academic/classes`, authHeader())

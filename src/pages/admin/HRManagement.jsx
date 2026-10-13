@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { toast, confirmAction } from "../../utils/toast";
+import { toast, confirmAction, errorMessage } from "../../utils/toast";
 
 import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
@@ -109,14 +109,16 @@ export default function HRManagement() {
     try {
       if (tab === "salary") { await axios.delete(`${API}/hr/salaries/${id}`, auth()); fetchSalaries(); }
       else { await axios.delete(`${API}/hr/leaves/${id}`, auth()); fetchLeaves(); }
-    } catch(e) {}
+      toast.success("Record deleted");
+    } catch(e) { toast.error(errorMessage(e, "Could not delete the record")); }
   };
 
   const handleLeaveAction = async (id, status) => {
     try {
       await axios.put(`${API}/hr/leaves/${id}`, { status }, auth());
+      toast.success(`Leave ${String(status).toLowerCase()}`);
       fetchLeaves();
-    } catch(e) {}
+    } catch(e) { toast.error(errorMessage(e, "Could not update the leave")); }
   };
 
   const f = (k, v) => setForm(prev => ({ ...prev, [k]: v }));

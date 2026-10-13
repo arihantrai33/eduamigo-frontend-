@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { toast, confirmAction } from "../../utils/toast";
+import { toast, confirmAction, errorMessage } from "../../utils/toast";
 
 import { Plus } from "lucide-react";
 import Glyph from "../../components/Glyph";
@@ -69,8 +69,8 @@ export default function Library() {
 
   const handleDelete = async (id) => {
     if (!(await confirmAction("Delete this book?"))) return;
-    try { await axios.delete(`${API}/library/${id}`, auth()); fetchBooks(); }
-    catch(e) {}
+    try { await axios.delete(`${API}/library/${id}`, auth()); toast.success("Book deleted"); fetchBooks(); }
+    catch(e) { toast.error(errorMessage(e, "Could not delete the book")); }
   };
 
   const f = (k,v) => setForm(p=>({...p,[k]:v}));

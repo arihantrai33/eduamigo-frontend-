@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { toast, showCredentials } from "../../utils/toast";
+import { toast, showCredentials, errorMessage } from "../../utils/toast";
 import { useAuth } from "../../context/AuthContext";
 import { can } from "../../utils/permissions";
 
@@ -201,8 +201,8 @@ export default function Students() {
   };
 
   const handleDelete = async (id) => {
-    try { await axios.delete(`${API}/students/${id}`, auth()); fetchStudents(); }
-    catch(e) {}
+    try { await axios.delete(`${API}/students/${id}`, auth()); toast.success("Student deleted"); fetchStudents(); }
+    catch(e) { toast.error(errorMessage(e, "Could not delete the student")); }
     setDeleteId(null);
   };
 

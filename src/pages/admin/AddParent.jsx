@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { showCredentials } from "../../utils/toast";
 import PageHeader from "../../components/ui/PageHeader";
+import { hasEntries, useUnsavedChanges } from "../../utils/unsavedChanges";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -25,6 +26,7 @@ const AddParent = () => {
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ msg: "", type: "" });
   const [searchQuery, setSearchQuery] = useState("");
+  useUnsavedChanges(hasEntries(form));
 
   const showToast = (msg, type = "error") => {
     setToast({ msg, type });

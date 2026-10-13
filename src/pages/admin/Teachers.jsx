@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
-import { toast, showCredentials } from "../../utils/toast";
+import { toast, showCredentials, errorMessage } from "../../utils/toast";
 
 import { Plus, Search } from "lucide-react";
 import Glyph from "../../components/Glyph";
@@ -141,8 +141,8 @@ export default function Teachers() {
   };
 
   const handleDelete = async (id) => {
-    try { await axios.delete(`${API}/teachers/${id}`, auth()); fetchTeachers(); }
-    catch(e) {}
+    try { await axios.delete(`${API}/teachers/${id}`, auth()); toast.success("Teacher deleted"); fetchTeachers(); }
+    catch(e) { toast.error(errorMessage(e, "Could not delete the teacher")); }
     setDeleteId(null);
   };
 

@@ -20,6 +20,28 @@ test('teacher profile "Edit Profile" opens the edit form for that teacher', asyn
   await expect(page.getByRole('dialog')).toHaveCount(0);
 });
 
+test('a dialog with typed-in changes asks before it is closed', async ({ page }) => {
+  await signIn(page, 'admin');
+  await page.goto('/admin/library');
+  await page.getByRole('button', { name: 'Add Book' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Add New Book' });
+  await expect(dialog).toBeVisible();
+  // Nothing typed yet: Escape closes straight away.
+  await page.keyboard.press('Escape');
+  await expect(dialog).toHaveCount(0);
+
+  await page.getByRole('button', { name: 'Add Book' }).click();
+  await dialog.locator('input').first().fill('Unsaved title');
+  await dialog.getByRole('button', { name: 'Close' }).click();
+  await expect(page.getByText('Discard the changes you have made?')).toBeVisible();
+  await page.getByRole('button', { name: 'Cancel', exact: true }).last().click();
+  await expect(dialog.locator('input').first()).toHaveValue('Unsaved title');
+
+  await page.keyboard.press('Escape');
+  await page.getByRole('button', { name: 'Discard' }).click();
+  await expect(dialog).toHaveCount(0);
+});
+
 test.describe('on a phone', () => {
   test.use({ viewport: { width: 375, height: 812 } });
 

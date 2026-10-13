@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useAuth } from "../../context/AuthContext"
 import { showCredentials } from "../../utils/toast";
 import PageHeader from "../../components/ui/PageHeader";
+import { hasEntries, useUnsavedChanges } from "../../utils/unsavedChanges";
 
 const API = import.meta.env.VITE_API_URL
 
@@ -24,6 +25,7 @@ const AddTeacher = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(null)
+  useUnsavedChanges(hasEntries(form))
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { toast, errorMessage } from "../../utils/toast";
 
 import { Search } from "lucide-react";
 import Glyph from "../../components/Glyph";
@@ -33,16 +34,19 @@ export default function LeaveRequests() {
     try {
       const r = await axios.get(`${API}/leaves`, auth());
       setLeaves(r.data.data || []);
-    } catch(e) {}
+    } catch (e) { toast.error(errorMessage(e, "Could not load leave requests")); }
     setLoading(false);
   };
 
+  // One review at a time per request (both buttons wait), and the result is always said.
   const handleAction = async (id, status) => {
+    if (actionLoading) return;
     setActionLoading(id + status);
     try {
       await axios.patch(`${API}/leaves/${id}/review`, { status }, auth());
+      toast.success(status === "Approved" ? "Leave approved" : "Leave rejected");
       fetchLeaves();
-    } catch(e) {}
+    } catch (e) { toast.error(errorMessage(e, "Could not update the leave request")); }
     setActionLoading(null);
   };
 
@@ -152,14 +156,14 @@ export default function LeaveRequests() {
                     {status === "Pending" && (
                       <div style={{ display:"flex", gap:8 }}>
                         <button className="act-btn" onClick={e => { e.stopPropagation(); handleAction(l._id, "Approved"); }}
-                          disabled={actionLoading === l._id + "Approved"}
-                          style={{ padding:"8px 18px", borderRadius:10, border:"none", background:"linear-gradient(135deg,#10B981,#059669)", color:"white", fontSize:12, fontWeight:700, cursor:"pointer", boxShadow:"0 2px 8px rgba(16,185,129,0.3)", opacity: actionLoading === l._id + "Approved" ? 0.7 : 1 }}>
-                          {actionLoading === l._id + "Approved" ? "..." : "✓ Approve"}
+                          disabled={!!actionLoading}
+                          style={{ padding:"8px 18px", borderRadius:10, border:"none", background:"linear-gradient(135deg,#10B981,#059669)", color:"white", fontSize:12, fontWeight:700, cursor:"pointer", boxShadow:"0 2px 8px rgba(16,185,129,0.3)", opacity: actionLoading ? 0.7 : 1 }}>
+                          {actionLoading === l._id + "Approved" ? "Approving…" : "✓ Approve"}
                         </button>
                         <button className="act-btn" onClick={e => { e.stopPropagation(); handleAction(l._id, "Rejected"); }}
-                          disabled={actionLoading === l._id + "Rejected"}
-                          style={{ padding:"8px 18px", borderRadius:10, border:"none", background:"linear-gradient(135deg,#EF4444,#DC2626)", color:"white", fontSize:12, fontWeight:700, cursor:"pointer", boxShadow:"0 2px 8px rgba(239,68,68,0.3)", opacity: actionLoading === l._id + "Rejected" ? 0.7 : 1 }}>
-                          {actionLoading === l._id + "Rejected" ? "..." : "✗ Reject"}
+                          disabled={!!actionLoading}
+                          style={{ padding:"8px 18px", borderRadius:10, border:"none", background:"linear-gradient(135deg,#EF4444,#DC2626)", color:"white", fontSize:12, fontWeight:700, cursor:"pointer", boxShadow:"0 2px 8px rgba(239,68,68,0.3)", opacity: actionLoading ? 0.7 : 1 }}>
+                          {actionLoading === l._id + "Rejected" ? "Rejecting…" : "✗ Reject"}
                         </button>
                       </div>
                     )}

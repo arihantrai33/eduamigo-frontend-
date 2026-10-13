@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { toast } from "../../utils/toast";
+import { toast, errorMessage } from "../../utils/toast";
 
 import { Plus, Zap } from "lucide-react";
 import Glyph from "../../components/Glyph";
@@ -75,8 +75,9 @@ export default function SalaryManagement() {
   const handleMarkPaid = async (id) => {
     try {
       await axios.put(`${API}/hr/salaries/${id}`, { status:"Paid", paidOn: new Date() }, auth());
+      toast.success("Salary marked as paid");
       fetchAll();
-    } catch(e) {}
+    } catch(e) { toast.error(errorMessage(e, "Could not mark the salary as paid")); }
   };
 
   const handleGenerate = async () => {
