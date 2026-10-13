@@ -2,8 +2,12 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, confirmAction } from "../../utils/toast";
 
+import { Plus } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import Dialog from "../../components/Dialog";
+import PageHeader from "../../components/ui/PageHeader";
+import { StatCard, StatGrid } from "../../components/ui/StatCard";
+import { toneOf } from "../../components/ui/tone";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -13,147 +17,9 @@ const STATUS_CONFIG = {
   "Completed": { bg:"#EEF2FF", color:"#6366F1", border:"#C7D2FE", dot:"#818CF8" },
 };
 
-function BusAnimation({ onDone }) {
-  return (
-    <div style={{ position:"fixed", inset:0, background:"linear-gradient(180deg,#E0F2FE 0%,#BAE6FD 40%,#7DD3FC 60%,#93C5FD 100%)", zIndex:9999, display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
-      <style>{`
-        @keyframes busRide {
-          0%   { transform: translateX(-30vw); }
-          30%  { transform: translateX(20vw); }
-          70%  { transform: translateX(20vw); }
-          100% { transform: translateX(130vw); }
-        }
-        @keyframes roadLine {
-          0%   { transform: translateX(0); }
-          100% { transform: translateX(-200px); }
-        }
-        @keyframes dust1 {
-          0%   { transform: translateX(0) translateY(0) scale(1); opacity:0.7; }
-          100% { transform: translateX(-60px) translateY(-30px) scale(2.5); opacity:0; }
-        }
-        @keyframes dust2 {
-          0%   { transform: translateX(0) translateY(0) scale(1); opacity:0.5; }
-          100% { transform: translateX(-80px) translateY(-50px) scale(3); opacity:0; }
-        }
-        @keyframes dust3 {
-          0%   { transform: translateX(0) translateY(0) scale(1); opacity:0.6; }
-          100% { transform: translateX(-40px) translateY(-20px) scale(2); opacity:0; }
-        }
-        @keyframes wheelSpin {
-          from { transform: rotate(0deg); }
-          to   { transform: rotate(360deg); }
-        }
-        @keyframes windLine {
-          0%   { transform: translateX(120vw); opacity:0; }
-          20%  { opacity:0.6; }
-          100% { transform: translateX(-20vw); opacity:0; }
-        }
-        @keyframes fadeOut {
-          0%   { opacity:1; }
-          80%  { opacity:1; }
-          100% { opacity:0; }
-        }
-        .bus-wrap { animation: busRide 3s ease-in-out forwards, fadeOut 3s forwards; }
-        .wind-1 { position:absolute; height:3px; border-radius:4px; background:rgba(30,64,175,0.12); animation: windLine 1.4s 0s ease-in forwards; width:180px; top:44%; }
-        .wind-2 { position:absolute; height:2px; border-radius:4px; background:rgba(30,64,175,0.08); animation: windLine 1.4s 0.1s ease-in forwards; width:120px; top:47%; }
-        .wind-3 { position:absolute; height:2px; border-radius:4px; background:rgba(30,64,175,0.06); animation: windLine 1.4s 0.05s ease-in forwards; width:90px; top:42%; }
-      `}</style>
-
-      {/* Sky clouds */}
-      <div style={{ position:"absolute", top:"8%", left:"10%", width:120, height:40, borderRadius:40, background:"rgba(255,255,255,0.7)", boxShadow:"30px 10px 0 20px rgba(255,255,255,0.5), 60px 5px 0 10px rgba(255,255,255,0.4)" }} />
-      <div style={{ position:"absolute", top:"12%", right:"15%", width:90, height:30, borderRadius:30, background:"rgba(255,255,255,0.6)", boxShadow:"25px 8px 0 15px rgba(255,255,255,0.4)" }} />
-
-      {/* Trees left side */}
-      {[5,14,22,30].map((left,i) => (
-        <div key={i} style={{ position:"absolute", bottom:"37%", left:`${left}%` }}>
-          <div style={{ width:18, height: 44+i*6, background:"linear-gradient(180deg,#854d0e,#713f12)", margin:"0 auto", borderRadius:"2px 2px 0 0", width:10 }} />
-          <div style={{ width: 44+i*4, height: 44+i*4, borderRadius:"50% 50% 40% 40%", background:`linear-gradient(135deg,#16a34a,#15803d,#166534)`, marginTop:-30, marginLeft:-(16+i*2), boxShadow:"inset -4px -4px 8px rgba(0,0,0,0.15)" }} />
-        </div>
-      ))}
-      {/* Trees right side */}
-      {[72,80,88,95].map((left,i) => (
-        <div key={i} style={{ position:"absolute", bottom:"37%", left:`${left}%` }}>
-          <div style={{ width:10, height: 38+i*5, background:"linear-gradient(180deg,#854d0e,#713f12)", margin:"0 auto", borderRadius:"2px 2px 0 0" }} />
-          <div style={{ width: 40+i*4, height: 40+i*4, borderRadius:"50% 50% 40% 40%", background:`linear-gradient(135deg,#22c55e,#16a34a,#15803d)`, marginTop:-28, marginLeft:-(14+i*2), boxShadow:"inset -4px -4px 8px rgba(0,0,0,0.15)" }} />
-        </div>
-      ))}
-
-      {/* Road */}
-      <div style={{ position:"absolute", bottom:0, left:0, right:0, height:"38%", background:"linear-gradient(180deg,#6B7280,#4B5563)" }}>
-        <div style={{ position:"absolute", top:"30%", left:0, right:0, height:4, overflow:"hidden" }}>
-          <div style={{ display:"flex", gap:0, animation:"roadLine 0.3s linear infinite" }}>
-            {Array(30).fill(0).map((_,i) => (
-              <div key={i} style={{ width:100, height:4, background: i%2===0 ? "rgba(255,255,255,0.9)" : "transparent", flexShrink:0 }} />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Wind lines */}
-      <div className="wind-1" />
-      <div className="wind-2" />
-      <div className="wind-3" />
-
-      {/* Bus */}
-      <div className="bus-wrap" style={{ position:"absolute", bottom:"34%", left:"50%", transform:"translateX(-120vw)" }}>
-        {/* Dust particles */}
-        <div style={{ position:"absolute", left:-10, bottom:8, width:12, height:12, borderRadius:"50%", background:"rgba(180,140,80,0.6)", animation:"dust1 0.4s ease-out infinite" }} />
-        <div style={{ position:"absolute", left:-5, bottom:4, width:8, height:8, borderRadius:"50%", background:"rgba(160,120,60,0.5)", animation:"dust2 0.5s ease-out 0.1s infinite" }} />
-        <div style={{ position:"absolute", left:-15, bottom:10, width:6, height:6, borderRadius:"50%", background:"rgba(200,160,90,0.4)", animation:"dust3 0.35s ease-out 0.05s infinite" }} />
-
-        {/* Bus SVG */}
-        <svg width="160" height="80" viewBox="0 0 160 80" xmlns="http://www.w3.org/2000/svg">
-          {/* Body */}
-          <rect x="10" y="15" width="135" height="45" rx="8" fill="#F59E0B" />
-          <rect x="10" y="15" width="135" height="12" rx="4" fill="#D97706" />
-          {/* Windows */}
-          <rect x="20" y="20" width="18" height="14" rx="3" fill="#BAE6FD" opacity="0.9" />
-          <rect x="44" y="20" width="18" height="14" rx="3" fill="#BAE6FD" opacity="0.9" />
-          <rect x="68" y="20" width="18" height="14" rx="3" fill="#BAE6FD" opacity="0.9" />
-          <rect x="92" y="20" width="18" height="14" rx="3" fill="#BAE6FD" opacity="0.9" />
-          {/* Door */}
-          <rect x="116" y="28" width="20" height="28" rx="3" fill="#92400E" />
-          <rect x="118" y="30" width="8" height="24" rx="2" fill="#78350F" />
-          <circle cx="127" cy="42" r="2" fill="#FCD34D" />
-          {/* Front */}
-          <rect x="138" y="20" width="10" height="35" rx="4" fill="#D97706" />
-          <rect x="140" y="22" width="6" height="12" rx="2" fill="#FEF3C7" opacity="0.9" />
-          {/* Headlight */}
-          <ellipse cx="148" cy="42" rx="4" ry="3" fill="#FEF08A" opacity="0.9" />
-          {/* Bumper */}
-          <rect x="8" y="52" width="6" height="8" rx="2" fill="#92400E" />
-          {/* Wheels */}
-          <g style={{ animation:"wheelSpin 0.2s linear infinite", transformOrigin:"30px 63px" }}>
-            <circle cx="30" cy="63" r="12" fill="#1E293B" />
-            <circle cx="30" cy="63" r="7" fill="#334155" />
-            <circle cx="30" cy="63" r="3" fill="#94A3B8" />
-            <line x1="30" y1="56" x2="30" y2="70" stroke="#475569" strokeWidth="1.5" />
-            <line x1="23" y1="63" x2="37" y2="63" stroke="#475569" strokeWidth="1.5" />
-          </g>
-          <g style={{ animation:"wheelSpin 0.2s linear infinite", transformOrigin:"110px 63px" }}>
-            <circle cx="110" cy="63" r="12" fill="#1E293B" />
-            <circle cx="110" cy="63" r="7" fill="#334155" />
-            <circle cx="110" cy="63" r="3" fill="#94A3B8" />
-            <line x1="110" y1="56" x2="110" y2="70" stroke="#475569" strokeWidth="1.5" />
-            <line x1="103" y1="63" x2="117" y2="63" stroke="#475569" strokeWidth="1.5" />
-          </g>
-          {/* EduAmigo text */}
-          <text x="52" y="47" fontFamily="Arial" fontSize="9" fontWeight="bold" fill="#7C2D12">EduAmigo</text>
-        </svg>
-      </div>
-
-      <div style={{ position:"absolute", bottom:"12%", fontSize:13, color:"rgba(30,64,175,0.5)", letterSpacing:"3px", fontWeight:600 }}>TRANSPORT</div>
-    </div>
-  );
-}
-
 const Modal = (props) => <Dialog width={560} {...props} />;
 
 export default function Transport() {
-  // The intro animation plays once per browser session, not on every visit.
-  const [showAnim, setShowAnim] = useState(() => {
-    try { return !sessionStorage.getItem("transportIntroSeen"); } catch { return false; }
-  });
   const [buses, setBuses] = useState([]);
   const [allStudents, setAllStudents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -169,16 +35,7 @@ export default function Transport() {
   const [newStop, setNewStop] = useState({ name:"", latitude:"", longitude:"", estimatedTime:"", order:1 });
   const [selectedStudents, setSelectedStudents] = useState([]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setShowAnim(false), 2800);
-    return () => clearTimeout(timer);
-  }, []);
-
   useEffect(() => { fetchAll(); }, []);
-  useEffect(() => {
-    if (!showAnim) return;
-    try { sessionStorage.setItem("transportIntroSeen", "1"); } catch { /* storage unavailable */ }
-  }, [showAnim]);
 
   const fetchAll = async () => {
     setLoading(true);
@@ -249,7 +106,6 @@ export default function Transport() {
   const totalStudents = buses.reduce((a,b) => a + (b.assignedStudents?.length||0), 0);
   const onRoute = buses.filter(b => b.busStatus === "On Route").length;
 
-  if (showAnim) return <BusAnimation />;
 
   return (
     <div style={{ fontFamily: "inherit" }}>
@@ -264,39 +120,21 @@ export default function Transport() {
       `}</style>
 
       {/* Header */}
-      <div style={{ background:"linear-gradient(135deg,#F59E0B,#F97316,#EF4444)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
-        <div style={{ position:"absolute", top:-40, right:-40, width:200, height:200, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
-        <div style={{ position:"absolute", bottom:-30, left:80, width:140, height:140, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", position:"relative" }}>
-          <div>
-            <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}><Glyph e="🚌" /> Transport</div>
-            <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Manage school buses, routes and students</div>
-          </div>
-          <button onClick={() => setShowAddModal(true)}
-            style={{ padding:"12px 24px", borderRadius:14, border:"1px solid rgba(255,255,255,0.3)", background:"rgba(255,255,255,0.2)", color:"white", fontWeight:700, fontSize:14, cursor:"pointer" }}>
-            + New Bus
-          </button>
-        </div>
+      <div style={{ marginBottom:20 }}>
+        <PageHeader title="Transport" subtitle="Manage school buses, routes and students"
+          actions={<button type="button" className="ea-btn ea-btn--primary" onClick={() => setShowAddModal(true)}><Plus size={16} aria-hidden="true" /> New Bus</button>} />
       </div>
 
       {/* Stat Cards */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
-        {[
-          { label:"TOTAL BUSES",      value: buses.length,   icon:<Glyph e="🚌" />, border:"#F59E0B", bg:"#FFFBEB" },
-          { label:"ON ROUTE",         value: onRoute,        icon:<Glyph e="🟢" />, border:"#10B981", bg:"#F0FDF4" },
-          { label:"IDLE",             value: buses.filter(b=>b.busStatus==="Idle").length, icon:<Glyph e="⏸" />, border:"var(--brand)", bg:"var(--brand-soft)" },
-          { label:"STUDENTS ASSIGNED",value: totalStudents,  icon:<Glyph e="👦" />, border:"#EC4899", bg:"#FDF4FF" },
-        ].map((card,i) => (
-          <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
-              <div>
-                <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", letterSpacing:"0.08em", marginBottom:8 }}>{card.label}</div>
-                <div style={{ fontSize:26, fontWeight:900, color:"#0F172A" }}>{card.value}</div>
-              </div>
-              <div style={{ width:42, height:42, borderRadius:12, background:card.bg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>{card.icon}</div>
-            </div>
-          </div>
-        ))}
+      <div style={{ marginBottom:24 }}>
+        <StatGrid>
+          {[
+            { label:"TOTAL BUSES",      value: buses.length,   icon:<Glyph e="🚌" />, border:"var(--brand)" },
+            { label:"ON ROUTE",         value: onRoute,        icon:<Glyph e="🗺" />, border:"#10B981" },
+            { label:"IDLE",             value: buses.filter(b=>b.busStatus==="Idle").length, icon:<Glyph e="⏸" />, border:"neutral" },
+            { label:"STUDENTS ASSIGNED",value: totalStudents,  icon:<Glyph e="👥" />, border:"var(--brand)" },
+          ].map((card) => <StatCard key={card.label} label={card.label} value={card.value} icon={card.icon} tone={toneOf(card.border)} />)}
+        </StatGrid>
       </div>
 
       {/* Bus Cards */}

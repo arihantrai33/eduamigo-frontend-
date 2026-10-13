@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast } from "../../utils/toast";
 
 import Glyph from "../../components/Glyph";
+import PageHeader from "../../components/ui/PageHeader";
 import { plural } from "../../utils/plural";
 import Dialog from "../../components/Dialog";
 const API = import.meta.env.VITE_API_URL;
@@ -122,13 +123,8 @@ export default function Timetable() {
       `}</style>
 
       {/* Header */}
-      <div style={{ background:"var(--brand-gradient)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
-        <div style={{ position:"absolute", top:-40, right:-40, width:180, height:180, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
-        <div style={{ position:"absolute", bottom:-30, left:100, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
-        <div style={{ position:"relative" }}>
-          <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>Timetable</div>
-          <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Create and manage class schedules</div>
-        </div>
+      <div style={{ marginBottom:20 }}>
+        <PageHeader title="Timetable" subtitle="Create and manage class schedules" />
       </div>
 
       {/* Controls */}

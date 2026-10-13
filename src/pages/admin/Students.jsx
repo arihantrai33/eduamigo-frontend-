@@ -5,8 +5,12 @@ import { toast, showCredentials } from "../../utils/toast";
 import { useAuth } from "../../context/AuthContext";
 import { can } from "../../utils/permissions";
 
+import { Plus, Search } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
+import PageHeader from "../../components/ui/PageHeader";
+import { StatCard as SharedStat, StatGrid } from "../../components/ui/StatCard";
+import { toneOf } from "../../components/ui/tone";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -24,39 +28,8 @@ const FEE_BADGE = {
   "Not billed": { bg:"#F1F5F9", color:"#64748B", dot:"#94A3B8" },
 };
 
-function StatCard({ label, value, icon, gradient, delay, border }) {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    if (typeof value !== "number") return;
-    let start = 0;
-    const step = Math.ceil(value / 20);
-    const t = setInterval(() => {
-      start += step;
-      if (start >= value) { setCount(value); clearInterval(t); }
-      else setCount(start);
-    }, 40);
-    return () => clearInterval(t);
-  }, [value]);
-
-  return (
-    <div style={{ background:"white", borderRadius:20, padding:"20px 24px", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid rgba(226,232,240,0.8)", position:"relative", overflow:"hidden", animation:`fadeSlideUp 0.5s ease ${delay}s both`, cursor:"default", border:`2px solid ${border}` }}
-      onMouseEnter={e => e.currentTarget.style.transform = "translateY(-3px)"}
-      onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"} >
-      <div style={{ position:"absolute", top:-20, right:-20, width:90, height:90, borderRadius:"50%", background:gradient, opacity:0.08 }} />
-      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
-        <div>
-          <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", letterSpacing:"0.08em", marginBottom:10 }}>{label}</div>
-          <div style={{ fontSize:32, fontWeight:900, color:"#0F172A", letterSpacing:"-1px" }}>
-            {typeof value === "number" ? count : value}
-          </div>
-        </div>
-        <div style={{ width:44, height:44, borderRadius:14, background:gradient, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, boxShadow:`0 4px 14px ${gradient}44` }}>
-          {icon}
-        </div>
-      </div>
-    </div>
-  );
-}
+// The shared stat card; the border colour this screen passes becomes the card's status tone.
+const StatCard = ({ label, value, icon, border }) => <SharedStat label={label} value={value} icon={icon} tone={toneOf(border)} />;
 
 function Avatar({ name, photo, size=38 }) {
   const colors = ["#6366F1","#8B5CF6","#EC4899","#F43F5E","#F97316","#EAB308","#22C55E","#14B8A6","#06B6D4","#3B82F6"];
@@ -260,48 +233,32 @@ export default function Students() {
         .action-btn { transition: all 0.15s ease; }
       `}</style>
 
-      <div style={{ background:"var(--brand-gradient)", borderRadius:20, padding:"28px 32px", marginBottom:28, position:"relative", overflow:"hidden", animation:"fadeSlideUp 0.4s ease" }}>
-        <div style={{ position:"absolute", top:-40, right:-40, width:180, height:180, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
-        <div style={{ position:"absolute", bottom:-30, left:100, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", position:"relative" }}>
-        <div>
-          <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>Students</div>
-          <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Manage all enrolled students · {students.length} total</div>
-        </div>
-        {canManage && <button onClick={openAdd}
-          style={{ display:"flex", alignItems:"center", gap:8, padding:"12px 24px", borderRadius:14, border:"none", background:"var(--brand-gradient)", color:"white", fontWeight:700, fontSize:14, cursor:"pointer", boxShadow:"0 4px 20px color-mix(in srgb, var(--brand) 40%, transparent)", transition:"all 0.2s" }}
-          onMouseEnter={e=>e.currentTarget.style.transform="translateY(-2px)"}
-          onMouseLeave={e=>e.currentTarget.style.transform="translateY(0)"}>
-          <span style={{ fontSize:18 }}>+</span> Add Student
-        </button>}
-        </div>
-      </div>
+      <div className="ea-page" style={{ marginBottom: 20 }}>
+        <PageHeader title="Students" subtitle={`Manage all enrolled students · ${students.length} total`}
+          actions={canManage && <button type="button" className="ea-btn ea-btn--primary" onClick={openAdd}><Plus size={16} aria-hidden="true" /> Add Student</button>} />
 
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:28 }}>
-        <StatCard label="TOTAL STUDENTS" value={stats.total} icon={<Glyph e="🎒" />} gradient="var(--brand-gradient)" delay={0} border="var(--brand)" />
-        <StatCard label="FEE PAID" value={stats.paid} icon={<Glyph e="✅" />} gradient="linear-gradient(135deg,#10B981,#059669)" delay={0.08} border="#10B981" />
-        <StatCard label="FEE PENDING" value={stats.pending} icon={<Glyph e="⏳" />} gradient="linear-gradient(135deg,#F59E0B,#D97706)" delay={0.16} border="#F59E0B" />
-        <StatCard label="PARTIAL" value={stats.partial} icon={<Glyph e="⚡" />} gradient="linear-gradient(135deg,#F97316,#EA580C)" delay={0.24} border="#F97316" />
-      </div>
+        <StatGrid>
+          <StatCard label="TOTAL STUDENTS" value={stats.total} icon={<Glyph e="🎒" />} border="var(--brand)" />
+          <StatCard label="FEE PAID" value={stats.paid} icon={<Glyph e="✅" />} border="#10B981" />
+          <StatCard label="FEE PENDING" value={stats.pending} icon={<Glyph e="⏳" />} border="#F59E0B" />
+          <StatCard label="PARTIAL" value={stats.partial} icon={<Glyph e="⚡" />} border="#F97316" />
+        </StatGrid>
 
-      <div style={{ display:"flex", gap:12, marginBottom:20, alignItems:"center", animation:"fadeSlideUp 0.5s ease 0.1s both" }}>
-        <div style={{ flex:1, position:"relative" }}>
-          <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:16, color:"#94A3B8" }}><Glyph e="🔍" /></span>
-          <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search by name, email or roll number..."
-            style={{ width:"100%", padding:"11px 14px 11px 40px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", transition:"border 0.2s", background:"white" }}
-            onFocus={e=>e.target.style.borderColor="var(--brand)"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
+        <div className="ea-toolbar">
+          <div className="ea-search">
+            <Search aria-hidden="true" />
+            <input className="ea-input" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search by name, email or roll number..." aria-label="Search students" />
+          </div>
+          <select className="ea-select" value={filterClass} onChange={e=>setFilterClass(e.target.value)} aria-label="Class">
+            <option value="">All Classes</option>
+            {classes.map(c => <option key={c} value={c}>Class {c}</option>)}
+          </select>
+          <select className="ea-select" value={filterFee} onChange={e=>setFilterFee(e.target.value)} aria-label="Fee status">
+            <option value="">All Fee Status</option>
+            {["Paid","Partial","Pending","Not billed"].map(f => <option key={f} value={f}>{f}</option>)}
+          </select>
+          <span className="ea-toolbar__count">{filtered.length} of {students.length}</span>
         </div>
-        <select value={filterClass} onChange={e=>setFilterClass(e.target.value)}
-          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:140 }}>
-          <option value="">All Classes</option>
-          {classes.map(c => <option key={c} value={c}>Class {c}</option>)}
-        </select>
-        <select value={filterFee} onChange={e=>setFilterFee(e.target.value)}
-          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:140 }}>
-          <option value="">All Fee Status</option>
-          {["Paid","Partial","Pending","Not billed"].map(f => <option key={f} value={f}>{f}</option>)}
-        </select>
-        <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600, whiteSpace:"nowrap" }}>{filtered.length} of {students.length}</div>
       </div>
 
       <div style={{ background:"white", borderRadius:20, boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid rgba(226,232,240,0.8)", overflow:"hidden", animation:"fadeSlideUp 0.5s ease 0.15s both" }}>

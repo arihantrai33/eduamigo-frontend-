@@ -2,8 +2,12 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, errorMessage } from "../../utils/toast";
 
+import { Plus } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
+import PageHeader from "../../components/ui/PageHeader";
+import { StatCard, StatGrid } from "../../components/ui/StatCard";
+import { toneOf } from "../../components/ui/tone";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -133,45 +137,25 @@ export default function ExamSchedule() {
       `}</style>
 
       {/* Header */}
-      <div style={{ background:"linear-gradient(135deg,#F97316,#EF4444,#DC2626)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
-        <div style={{ position:"absolute", top:-40, right:-40, width:180, height:180, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
-        <div style={{ position:"absolute", bottom:-30, left:100, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", position:"relative" }}>
-          <div>
-            <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>Exam Schedule</div>
-            <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Create and manage exam timetables</div>
-          </div>
-          <button onClick={openAdd}
-            style={{ display:"flex", alignItems:"center", gap:8, padding:"12px 24px", borderRadius:14, border:"1px solid rgba(255,255,255,0.3)", background:"rgba(255,255,255,0.2)", color:"white", fontWeight:700, fontSize:14, cursor:"pointer", transition:"all 0.2s" }}
-            onMouseEnter={e => e.currentTarget.style.background="rgba(255,255,255,0.3)"}
-            onMouseLeave={e => e.currentTarget.style.background="rgba(255,255,255,0.2)"}>
-            + Schedule Exam
-          </button>
-        </div>
+      <div style={{ marginBottom:20 }}>
+        <PageHeader title="Exam Schedule" subtitle="Create and manage exam timetables"
+          actions={<button type="button" className="ea-btn ea-btn--primary" onClick={openAdd}><Plus size={16} aria-hidden="true" /> Schedule Exam</button>} />
       </div>
 
       {/* Stat Cards */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
-        {[
-          { label:"TOTAL EXAMS",   value: exams.length, icon:<Glyph e="📝" />, border:"var(--brand)", bg:"var(--brand-soft)" },
-          { label:"UPCOMING",      value: upcoming,     icon:<Glyph e="📅" />, border:"#F97316", bg:"#FFF7ED" },
-          { label:"TODAY",         value: today,        icon:<Glyph e="🔔" />, border:"#EF4444", bg:"#FEF2F2" },
-          { label:"EXAM TYPES",    value: [...new Set(exams.map(e=>e.examType))].length, icon:<Glyph e="🗂" />, border:"#10B981", bg:"#F0FDF4" },
-        ].map((card, i) => (
-          <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
-              <div>
-                <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", letterSpacing:"0.08em", marginBottom:8 }}>{card.label}</div>
-                <div style={{ fontSize:28, fontWeight:900, color:"#0F172A" }}>{card.value}</div>
-              </div>
-              <div style={{ width:42, height:42, borderRadius:12, background:card.bg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>{card.icon}</div>
-            </div>
-          </div>
-        ))}
+      <div style={{ marginBottom:24 }}>
+        <StatGrid>
+          {[
+            { label:"TOTAL EXAMS",   value: exams.length, icon:<Glyph e="📝" />, border:"var(--brand)" },
+            { label:"UPCOMING",      value: upcoming,     icon:<Glyph e="📅" />, border:"var(--brand)" },
+            { label:"TODAY",         value: today,        icon:<Glyph e="🔔" />, border: today ? "#F59E0B" : "var(--brand)" },
+            { label:"EXAM TYPES",    value: [...new Set(exams.map(e=>e.examType))].length, icon:<Glyph e="🗂" />, border:"var(--brand)" },
+          ].map((card) => <StatCard key={card.label} label={card.label} value={card.value} icon={card.icon} tone={toneOf(card.border)} />)}
+        </StatGrid>
       </div>
 
       {/* Filters */}
-      <div style={{ display:"flex", gap:12, marginBottom:20, alignItems:"center", animation:"fadeUp 0.4s ease 0.1s both" }}>
+      <div style={{ display:"flex", flexWrap:"wrap", gap:12, marginBottom:20, alignItems:"center", animation:"fadeUp 0.4s ease 0.1s both" }}>
         <select value={filterType} onChange={e => setFilterType(e.target.value)} aria-label="Filter by exam type"
           style={{ ...FILTER_STYLE, minWidth:170 }}>
           <option value="">All Exam Types</option>

@@ -3,8 +3,12 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast, showCredentials } from "../../utils/toast";
 
+import { Plus, Search } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
+import PageHeader from "../../components/ui/PageHeader";
+import { StatCard as SharedStat, StatGrid } from "../../components/ui/StatCard";
+import { toneOf } from "../../components/ui/tone";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -35,32 +39,8 @@ function Avatar({ name, photo, size = 40 }) {
   );
 }
 
-function StatCard({ label, value, icon, color, border, delay }) {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    if (typeof value !== "number") return;
-    let start = 0;
-    const step = Math.ceil(value / 20) || 1;
-    const t = setInterval(() => {
-      start += step;
-      if (start >= value) { setCount(value); clearInterval(t); }
-      else setCount(start);
-    }, 40);
-    return () => clearInterval(t);
-  }, [value]);
-  return (
-    <div style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${border}`, position:"relative", overflow:"hidden", animation:`fadeUp 0.5s ease ${delay}s both` }}>
-      <div style={{ position:"absolute", top:-20, right:-20, width:80, height:80, borderRadius:"50%", background:color, opacity:0.1 }} />
-      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
-        <div>
-          <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", letterSpacing:"0.08em", marginBottom:8 }}>{label}</div>
-          <div style={{ fontSize:28, fontWeight:900, color:"#0F172A" }}>{typeof value === "number" ? count : value}</div>
-        </div>
-        <div style={{ width:42, height:42, borderRadius:12, background:color, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>{icon}</div>
-      </div>
-    </div>
-  );
-}
+// The shared stat card; the border colour this screen passes becomes the card's status tone.
+const StatCard = ({ label, value, icon, border }) => <SharedStat label={label} value={value} icon={icon} tone={toneOf(border)} />;
 
 function TeacherForm({ form, setForm, onSave, loading, onClose }) {
   const f = (k, v) => setForm(p => ({ ...p, [k]: v }));
@@ -187,50 +167,36 @@ export default function Teachers() {
       `}</style>
 
       {/* Header */}
-      <div style={{ background:"linear-gradient(135deg,#10B981,#059669,#047857)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
-        <div style={{ position:"absolute", top:-40, right:-40, width:180, height:180, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
-        <div style={{ position:"absolute", bottom:-30, left:100, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", position:"relative" }}>
-          <div>
-            <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>Teachers</div>
-            <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Manage all teaching staff · {teachers.length} total</div>
-          </div>
-          <button onClick={openAdd}
-            style={{ display:"flex", alignItems:"center", gap:8, padding:"12px 24px", borderRadius:14, border:"none", background:"rgba(255,255,255,0.2)", color:"white", fontWeight:700, fontSize:14, cursor:"pointer", backdropFilter:"blur(8px)", transition:"all 0.2s", border:"1px solid rgba(255,255,255,0.3)" }}
-            onMouseEnter={e => e.currentTarget.style.background="rgba(255,255,255,0.3)"}
-            onMouseLeave={e => e.currentTarget.style.background="rgba(255,255,255,0.2)"}>
-            <span style={{ fontSize:18 }}>+</span> Add Teacher
-          </button>
-        </div>
+      <div style={{ marginBottom:20 }}>
+        <PageHeader title="Teachers" subtitle={`Manage all teaching staff · ${teachers.length} total`}
+          actions={<button type="button" className="ea-btn ea-btn--primary" onClick={openAdd}><Plus size={16} aria-hidden="true" /> Add Teacher</button>} />
       </div>
 
       {/* Stat Cards */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
-        <StatCard label="TOTAL TEACHERS" value={stats.total}    icon={<Glyph e="👩‍🏫" />} color="var(--brand-soft)" border="var(--brand)" delay={0} />
-        <StatCard label="ACTIVE"         value={stats.active}   icon={<Glyph e="✅" />}   color="#F0FDF4" border="#10B981" delay={0.08} />
-        <StatCard label="ON LEAVE"       value={stats.onLeave}  icon={<Glyph e="🌴" />}   color="#FFFBEB" border="#F59E0B" delay={0.16} />
-        <StatCard label="INACTIVE"       value={stats.inactive} icon={<Glyph e="⛔" />}   color="#FEF2F2" border="#EF4444" delay={0.24} />
+      <div style={{ marginBottom:24 }}>
+        <StatGrid>
+          <StatCard label="TOTAL TEACHERS" value={stats.total}    icon={<Glyph e="👩‍🏫" />} border="var(--brand)" />
+          <StatCard label="ACTIVE"         value={stats.active}   icon={<Glyph e="✅" />}   border="#10B981" />
+          <StatCard label="ON LEAVE"       value={stats.onLeave}  icon={<Glyph e="🌴" />}   border="#F59E0B" />
+          <StatCard label="INACTIVE"       value={stats.inactive} icon={<Glyph e="⛔" />}   border="#EF4444" />
+        </StatGrid>
       </div>
 
       {/* Filters */}
-      <div style={{ display:"flex", gap:12, marginBottom:20, alignItems:"center", animation:"fadeUp 0.5s ease 0.1s both" }}>
-        <div style={{ flex:1, position:"relative" }}>
-          <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:16, color:"#94A3B8" }}><Glyph e="🔍" /></span>
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by name, email or employee ID..."
-            style={{ width:"100%", padding:"11px 14px 11px 40px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
-            onFocus={e => e.target.style.borderColor="#10B981"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
+      <div className="ea-toolbar" style={{ marginBottom:20 }}>
+        <div className="ea-search">
+          <Search aria-hidden="true" />
+          <input className="ea-input" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by name, email or employee ID..." aria-label="Search teachers" />
         </div>
-        <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
-          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:140 }}>
+        <select className="ea-select" value={filterStatus} onChange={e => setFilterStatus(e.target.value)} aria-label="Status">
           <option value="">All Status</option>
           {["Active","On Leave","Inactive"].map(s => <option key={s} value={s}>{s}</option>)}
         </select>
-        <select value={filterSubject} onChange={e => setFilterSubject(e.target.value)}
-          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:140 }}>
+        <select className="ea-select" value={filterSubject} onChange={e => setFilterSubject(e.target.value)} aria-label="Subject">
           <option value="">All Subjects</option>
           {allSubjects.map(s => <option key={s} value={s}>{s}</option>)}
         </select>
-        <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600, whiteSpace:"nowrap" }}>{filtered.length} of {teachers.length}</div>
+        <span className="ea-toolbar__count">{filtered.length} of {teachers.length}</span>
       </div>
 
       {/* Table */}

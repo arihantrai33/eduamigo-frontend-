@@ -4,8 +4,12 @@ import { toast, showCredentials } from "../../utils/toast";
 import { useAuth } from "../../context/AuthContext";
 import { can } from "../../utils/permissions";
 
+import { Plus, Search } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
+import PageHeader from "../../components/ui/PageHeader";
+import { StatCard, StatGrid } from "../../components/ui/StatCard";
+import { toneOf } from "../../components/ui/tone";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -78,48 +82,28 @@ export default function ParentsList() {
       `}</style>
 
       {/* Header */}
-      <div style={{ background:"linear-gradient(135deg,#F59E0B,#F97316,#EF4444)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
-        <div style={{ position:"absolute", top:-40, right:-40, width:180, height:180, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
-        <div style={{ position:"absolute", bottom:-30, left:100, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", position:"relative" }}>
-          <div>
-            <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>Parents</div>
-            <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>All registered parent accounts linked to students</div>
-          </div>
-{can(user, "parents.manage") && (
-          <button onClick={() => setShowAddModal(true)}
-            style={{ padding:"12px 24px", borderRadius:14, border:"1px solid rgba(255,255,255,0.3)", background:"rgba(255,255,255,0.2)", color:"white", fontWeight:700, fontSize:14, cursor:"pointer" }}>
-            + Add Parent
-          </button>
-          )}
-        </div>
+      <div style={{ marginBottom:20 }}>
+        <PageHeader title="Parents" subtitle="All registered parent accounts linked to students"
+          actions={can(user, "parents.manage") && <button type="button" className="ea-btn ea-btn--primary" onClick={() => setShowAddModal(true)}><Plus size={16} aria-hidden="true" /> Add Parent</button>} />
       </div>
 
       {/* Stat Cards */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16, marginBottom:24 }}>
-        {[
-          { label:"TOTAL PARENTS",   value: parents.length,  icon:<Glyph e="👨‍👩‍👧" />, border:"#F59E0B", bg:"#FFFBEB" },
-          { label:"WITH STUDENTS",   value: withChildren,    icon:<Glyph e="🔗" />, border:"#10B981", bg:"#F0FDF4" },
-          { label:"ACTIVE",          value: parents.filter(p=>p.isActive).length, icon:<Glyph e="✅" />, border:"var(--brand)", bg:"var(--brand-soft)" },
-        ].map((card, i) => (
-          <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
-              <div>
-                <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", letterSpacing:"0.08em", marginBottom:8 }}>{card.label}</div>
-                <div style={{ fontSize:28, fontWeight:900, color:"#0F172A" }}>{card.value}</div>
-              </div>
-              <div style={{ width:42, height:42, borderRadius:12, background:card.bg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>{card.icon}</div>
-            </div>
-          </div>
-        ))}
+      <div style={{ marginBottom:24 }}>
+        <StatGrid>
+          {[
+            { label:"TOTAL PARENTS",   value: parents.length,  icon:<Glyph e="👨‍👩‍👧" />, border:"var(--brand)" },
+            { label:"WITH STUDENTS",   value: withChildren,    icon:<Glyph e="🔗" />, border:"var(--brand)" },
+            { label:"ACTIVE",          value: parents.filter(p=>p.isActive).length, icon:<Glyph e="✅" />, border:"#10B981" },
+          ].map((card) => <StatCard key={card.label} label={card.label} value={card.value} icon={card.icon} tone={toneOf(card.border)} />)}
+        </StatGrid>
       </div>
 
       {/* Search */}
-      <div style={{ position:"relative", marginBottom:20, animation:"fadeUp 0.4s ease 0.1s both" }}>
-        <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}><Glyph e="🔍" /></span>
-        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by parent name, email, phone or child name..."
-          style={{ width:"100%", padding:"12px 14px 12px 40px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
-          onFocus={e => e.target.style.borderColor="#F59E0B"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
+      <div className="ea-toolbar" style={{ marginBottom:20 }}>
+        <div className="ea-search">
+          <Search aria-hidden="true" />
+          <input className="ea-input" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by parent name, email, phone or child name..." aria-label="Search parents" />
+        </div>
       </div>
 
       {/* Table */}

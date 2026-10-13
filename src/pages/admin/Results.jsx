@@ -4,7 +4,11 @@ import { gradeFor, GRADE_STYLE, PASS_PERCENT } from "../../utils/grades";
 import { useNavigate } from "react-router-dom";
 import { toast, confirmAction, errorMessage } from "../../utils/toast";
 
+import { Search } from "lucide-react";
 import Glyph from "../../components/Glyph";
+import PageHeader from "../../components/ui/PageHeader";
+import { StatCard, StatGrid } from "../../components/ui/StatCard";
+import { toneOf } from "../../components/ui/tone";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -81,60 +85,41 @@ export default function Results() {
       `}</style>
 
       {/* Header */}
-      <div style={{ background:"var(--brand-gradient)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
-        <div style={{ position:"absolute", top:-40, right:-40, width:180, height:180, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
-        <div style={{ position:"absolute", bottom:-30, left:100, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
-        <div style={{ position:"relative" }}>
-          <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>Results & Grades</div>
-          <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>View student exam performance and academic results</div>
-        </div>
+      <div style={{ marginBottom:20 }}>
+        <PageHeader title="Results & Grades" subtitle="View student exam performance and academic results" />
       </div>
 
       {/* Stat Cards */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
-        {[
-          { label:"TOTAL RECORDS", value: filtered.length, icon:<Glyph e="📋" />, border:"var(--brand)", bg:"var(--brand-soft)" },
-          { label:"AVG SCORE",     value: `${avgScore}%`,  icon:<Glyph e="📊" />, border:"#3B82F6", bg:"#EFF6FF" },
-          { label:"PASSED",        value: passed,          icon:<Glyph e="✅" />, border:"#10B981", bg:"#F0FDF4" },
-          { label:"TOPPERS (90%+)",value: toppers,         icon:<Glyph e="🏆" />, border:"#F59E0B", bg:"#FFFBEB" },
-        ].map((card, i) => (
-          <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
-              <div>
-                <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", letterSpacing:"0.08em", marginBottom:8 }}>{card.label}</div>
-                <div style={{ fontSize:26, fontWeight:900, color:"#0F172A" }}>{card.value}</div>
-              </div>
-              <div style={{ width:42, height:42, borderRadius:12, background:card.bg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>{card.icon}</div>
-            </div>
-          </div>
-        ))}
+      <div style={{ marginBottom:24 }}>
+        <StatGrid>
+          {[
+            { label:"TOTAL RECORDS", value: filtered.length, icon:<Glyph e="📋" />, border:"var(--brand)" },
+            { label:"AVG SCORE",     value: `${avgScore}%`,  icon:<Glyph e="📊" />, border:"var(--brand)" },
+            { label:"PASSED",        value: passed,          icon:<Glyph e="✅" />, border:"#10B981" },
+            { label:"TOPPERS (90%+)",value: toppers,         icon:<Glyph e="🏆" />, border:"var(--brand)" },
+          ].map((card) => <StatCard key={card.label} label={card.label} value={card.value} icon={card.icon} tone={toneOf(card.border)} />)}
+        </StatGrid>
       </div>
 
       {/* Filters */}
-      <div style={{ display:"flex", gap:12, marginBottom:20, alignItems:"center", flexWrap:"wrap", animation:"fadeUp 0.4s ease 0.1s both" }}>
-        <div style={{ flex:1, minWidth:200, position:"relative" }}>
-          <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}><Glyph e="🔍" /></span>
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search student name..."
-            style={{ width:"100%", padding:"11px 14px 11px 38px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
-            onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
+      <div className="ea-toolbar" style={{ marginBottom:20 }}>
+        <div className="ea-search">
+          <Search aria-hidden="true" />
+          <input className="ea-input" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search student name..." aria-label="Search results" />
         </div>
-        <select value={filterClass} onChange={e => { setFilterClass(e.target.value); setFilterSection(""); }}
-          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:130 }}>
+        <select className="ea-select" value={filterClass} onChange={e => { setFilterClass(e.target.value); setFilterSection(""); }} aria-label="Class">
           <option value="">All Classes</option>
           {classes.map(c => <option key={c} value={c}>Class {c}</option>)}
         </select>
-        <select value={filterSection} onChange={e => setFilterSection(e.target.value)}
-          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:130 }}>
+        <select className="ea-select" value={filterSection} onChange={e => setFilterSection(e.target.value)} aria-label="Section">
           <option value="">All Sections</option>
           {sections.map(s => <option key={s} value={s}>Section {s}</option>)}
         </select>
-        <select value={filterExam} onChange={e => setFilterExam(e.target.value)}
-          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:160 }}>
+        <select className="ea-select" value={filterExam} onChange={e => setFilterExam(e.target.value)} aria-label="Exam">
           <option value="">All Exams</option>
           {examNames.map(e => <option key={e} value={e}>{e}</option>)}
         </select>
-        <select value={filterTerm} onChange={e => setFilterTerm(e.target.value)}
-          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:120 }}>
+        <select className="ea-select" value={filterTerm} onChange={e => setFilterTerm(e.target.value)} aria-label="Term">
           <option value="">All Terms</option>
           {termNames.map(t => <option key={t} value={t}>{t}</option>)}
         </select>

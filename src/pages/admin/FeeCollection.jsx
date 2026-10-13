@@ -3,8 +3,12 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast, confirmAction, errorMessage } from "../../utils/toast";
 
+import { Search } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
+import PageHeader from "../../components/ui/PageHeader";
+import { StatCard, StatGrid } from "../../components/ui/StatCard";
+import { toneOf } from "../../components/ui/tone";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -102,13 +106,8 @@ export default function FeeCollection() {
       `}</style>
 
       {/* Header */}
-      <div style={{ background:"linear-gradient(135deg,#10B981,#059669,#047857)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
-        <div style={{ position:"absolute", top:-40, right:-40, width:180, height:180, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
-        <div style={{ position:"absolute", bottom:-30, left:100, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
-        <div style={{ position:"relative" }}>
-          <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>Fee Collection</div>
-          <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Track and collect student fee payments</div>
-        </div>
+      <div style={{ marginBottom:20 }}>
+        <PageHeader title="Fee Collection" subtitle="Track and collect student fee payments" />
       </div>
 
       {reviewOrders.length > 0 && (
@@ -124,45 +123,33 @@ export default function FeeCollection() {
       )}
 
       {/* Stat Cards */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:16, marginBottom:24 }}>
-        {[
-          { label:"COLLECTED",    value:`₹${totalCollected.toLocaleString()}`, icon:<Glyph e="✅" />, border:"#10B981", bg:"#F0FDF4" },
-          { label:"AMOUNT DUE",   value:`₹${totalPending.toLocaleString()}`,   icon:<Glyph e="⏳" />, border:"#F59E0B", bg:"#FFFBEB" },
-          { label:"FULLY PAID",   value: paidCount,    icon:"", border:"#22C55E", bg:"#F0FDF4" },
-          { label:"UNPAID FEES",  value: pendingCount, icon:<Glyph e="🟡" />, border:"#F59E0B", bg:"#FFFBEB" },
-          { label:"OVERDUE",      value: overdueCount, icon:<Glyph e="🔴" />, border:"#EF4444", bg:"#FEF2F2" },
-        ].map((card, i) => (
-          <div key={i} style={{ background:"white", borderRadius:16, padding:"16px 20px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.07}s both` }}>
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
-              <div>
-                <div style={{ fontSize:10, fontWeight:700, color:"#94A3B8", letterSpacing:"0.08em", marginBottom:6 }}>{card.label}</div>
-                <div style={{ fontSize:20, fontWeight:900, color:"#0F172A" }}>{card.value}</div>
-              </div>
-              <div style={{ width:38, height:38, borderRadius:10, background:card.bg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}>{card.icon}</div>
-            </div>
-          </div>
-        ))}
+      <div style={{ marginBottom:24 }}>
+        <StatGrid>
+          {[
+            { label:"COLLECTED",    value:`₹${totalCollected.toLocaleString()}`, icon:<Glyph e="💰" />, border:"#10B981" },
+            { label:"AMOUNT DUE",   value:`₹${totalPending.toLocaleString()}`,   icon:<Glyph e="⏳" />, border:"#F59E0B" },
+            { label:"FULLY PAID",   value: paidCount,    icon:<Glyph e="✅" />, border:"#22C55E" },
+            { label:"UNPAID FEES",  value: pendingCount, icon:<Glyph e="💳" />, border:"#F59E0B" },
+            { label:"OVERDUE",      value: overdueCount, icon:<Glyph e="⚠" />, border:"#EF4444" },
+          ].map((card) => <StatCard key={card.label} label={card.label} value={card.value} icon={card.icon} tone={toneOf(card.border)} />)}
+        </StatGrid>
       </div>
 
       {/* Filters */}
-      <div style={{ display:"flex", gap:12, marginBottom:20, alignItems:"center", animation:"fadeUp 0.4s ease 0.1s both" }}>
-        <div style={{ flex:1, position:"relative" }}>
-          <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}><Glyph e="🔍" /></span>
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by student name or fee type..."
-            style={{ width:"100%", padding:"11px 14px 11px 38px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
-            onFocus={e => e.target.style.borderColor="#10B981"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
+      <div className="ea-toolbar" style={{ marginBottom:20 }}>
+        <div className="ea-search">
+          <Search aria-hidden="true" />
+          <input className="ea-input" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by student name or fee type..." aria-label="Search fees" />
         </div>
-        <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
-          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:140 }}>
+        <select className="ea-select" value={filterStatus} onChange={e => setFilterStatus(e.target.value)} aria-label="Status">
           <option value="">All Status</option>
           {["Paid","Partial","Pending","Overdue"].map(s => <option key={s} value={s}>{s}</option>)}
         </select>
-        <select value={filterClass} onChange={e => setFilterClass(e.target.value)}
-          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:140 }}>
+        <select className="ea-select" value={filterClass} onChange={e => setFilterClass(e.target.value)} aria-label="Class">
           <option value="">All Classes</option>
           {classes.map(c => <option key={c} value={c}>Class {c}</option>)}
         </select>
-        <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600, whiteSpace:"nowrap" }}>{filtered.length} records</div>
+        <span className="ea-toolbar__count">{filtered.length} records</span>
       </div>
 
       {/* Table */}

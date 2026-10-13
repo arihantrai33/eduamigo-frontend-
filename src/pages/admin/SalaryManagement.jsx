@@ -2,8 +2,12 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "../../utils/toast";
 
+import { Plus, Zap } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
+import PageHeader from "../../components/ui/PageHeader";
+import { StatCard, StatGrid } from "../../components/ui/StatCard";
+import { toneOf } from "../../components/ui/tone";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -115,49 +119,28 @@ export default function SalaryManagement() {
       `}</style>
 
       {/* Header */}
-      <div style={{ background:"linear-gradient(135deg,#059669,#0D9488,#0891B2)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
-        <div style={{ position:"absolute", top:-40, right:-40, width:180, height:180, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
-        <div style={{ position:"absolute", bottom:-30, left:100, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", position:"relative" }}>
-          <div>
-            <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>Salary Management</div>
-            <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Manage teacher salaries and payroll</div>
-          </div>
-          <div style={{ display:"flex", gap:10 }}>
-            <button onClick={() => setShowGenerateModal(true)}
-              style={{ padding:"11px 20px", borderRadius:12, border:"1px solid rgba(255,255,255,0.3)", background:"rgba(255,255,255,0.15)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer" }}>
-              <Glyph e="⚡" /> Generate Month
-            </button>
-            <button onClick={openAdd}
-              style={{ padding:"11px 20px", borderRadius:12, border:"1px solid rgba(255,255,255,0.3)", background:"rgba(255,255,255,0.2)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer" }}>
-              + Add Salary
-            </button>
-          </div>
-        </div>
+      <div style={{ marginBottom:20 }}>
+        <PageHeader title="Salary Management" subtitle="Manage teacher salaries and payroll"
+          actions={<>
+            <button type="button" className="ea-btn ea-btn--ghost" onClick={() => setShowGenerateModal(true)}><Zap size={16} aria-hidden="true" /> Generate Month</button>
+            <button type="button" className="ea-btn ea-btn--primary" onClick={openAdd}><Plus size={16} aria-hidden="true" /> Add Salary</button>
+          </>} />
       </div>
 
       {/* Stat Cards */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
-        {[
-          { label:"TOTAL RECORDS", value: filtered.length, icon:<Glyph e="📋" />, border:"#0891B2", bg:"#ECFEFF" },
-          { label:"PAID",          value: paidCount,        icon:<Glyph e="✅" />, border:"#10B981", bg:"#F0FDF4" },
-          { label:"PENDING",       value: pendingCount,     icon:<Glyph e="⏳" />, border:"#F59E0B", bg:"#FFFBEB" },
-          { label:"TOTAL PAID",    value: `₹${totalPaid.toLocaleString()}`, icon:<Glyph e="💰" />, border:"#059669", bg:"#F0FDF4" },
-        ].map((card, i) => (
-          <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
-              <div>
-                <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", letterSpacing:"0.08em", marginBottom:8 }}>{card.label}</div>
-                <div style={{ fontSize:24, fontWeight:900, color:"#0F172A" }}>{card.value}</div>
-              </div>
-              <div style={{ width:42, height:42, borderRadius:12, background:card.bg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>{card.icon}</div>
-            </div>
-          </div>
-        ))}
+      <div style={{ marginBottom:24 }}>
+        <StatGrid>
+          {[
+            { label:"TOTAL RECORDS", value: filtered.length, icon:<Glyph e="📋" />, border:"var(--brand)" },
+            { label:"PAID",          value: paidCount,        icon:<Glyph e="✅" />, border:"#10B981" },
+            { label:"PENDING",       value: pendingCount,     icon:<Glyph e="⏳" />, border:"#F59E0B" },
+            { label:"TOTAL PAID",    value: `₹${totalPaid.toLocaleString()}`, icon:<Glyph e="💰" />, border:"var(--brand)" },
+          ].map((card) => <StatCard key={card.label} label={card.label} value={card.value} icon={card.icon} tone={toneOf(card.border)} />)}
+        </StatGrid>
       </div>
 
       {/* Filters */}
-      <div style={{ display:"flex", gap:12, marginBottom:20, animation:"fadeUp 0.4s ease 0.1s both" }}>
+      <div style={{ display:"flex", flexWrap:"wrap", gap:12, marginBottom:20, animation:"fadeUp 0.4s ease 0.1s both" }}>
         <select value={filterMonth} onChange={e => setFilterMonth(e.target.value)}
           style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:150 }}>
           <option value="">All Months</option>

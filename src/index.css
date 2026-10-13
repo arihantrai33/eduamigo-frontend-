@@ -565,6 +565,67 @@ input:-webkit-autofill:focus {
 .ea-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px; border: 1px solid transparent; white-space: nowrap; }
 .ea-badge--success { background: #F0FDF4; color: var(--ea-success); border-color: #BBF7D0; }
 .ea-badge--warning { background: #FFF7ED; color: #C2410C; border-color: #FED7AA; }
+.ea-badge--danger { background: #FEF2F2; color: var(--ea-danger); border-color: #FECACA; }
+.ea-badge--info { background: #EFF6FF; color: var(--ea-info); border-color: #BFDBFE; }
+.ea-badge--neutral { background: var(--ea-hover); color: var(--ea-muted); border-color: var(--ea-line); }
+
+/* ───────────── Shared page building blocks (components/ui) ─────────────
+   Every screen uses the dashboard's look: a plain header on the page background, neutral cards with a thin border,
+   and colour only where it means something (status tones). */
+.ea-page { display: flex; flex-direction: column; gap: 20px; min-width: 0; color: var(--ea-body); }
+.ea-page-head__main { display: flex; align-items: flex-start; gap: 12px; min-width: 0; flex: 1 1 260px; }
+.ea-page-head__text { min-width: 0; }
+.ea-back {
+  display: inline-grid; place-items: center; width: 36px; height: 36px; flex: none; border-radius: 10px;
+  border: 1px solid var(--ea-line); background: var(--ea-surface); color: var(--ea-ink); cursor: pointer;
+}
+.ea-back:hover { background: var(--ea-hover); }
+.ea-btn--primary { background: var(--brand); color: #fff; }
+.ea-btn--primary:hover { background: var(--brand-dark); }
+.ea-btn--danger { background: var(--ea-danger); color: #fff; }
+
+.ea-icon-chip--brand { background: var(--brand-soft); color: var(--brand-dark); }
+.ea-icon-chip--success { background: #F0FDF4; color: var(--ea-success); }
+.ea-icon-chip--warning { background: #FFFBEB; color: var(--ea-warning); }
+.ea-icon-chip--danger { background: #FEF2F2; color: var(--ea-danger); }
+.ea-icon-chip--info { background: #EFF6FF; color: var(--ea-info); }
+.ea-icon-chip--neutral { background: var(--ea-hover); color: var(--ea-muted); }
+.ea-icon-chip svg { width: 20px; height: 20px; }
+
+/* Stat strip: icon chip on the left, caption over the number. Four across on wide screens, two on phones. */
+.ea-stats { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.ea-stat--row { flex-direction: row; align-items: center; gap: 14px; padding: 16px 18px; min-width: 0; }
+.ea-stat.is-static { cursor: default; }
+.ea-stat.is-static:hover { border-color: var(--ea-line); }
+.ea-stat__text { display: flex; flex-direction: column; min-width: 0; }
+.ea-stat__caption { font-size: 12px; font-weight: 650; color: var(--ea-muted); letter-spacing: 0.02em; overflow-wrap: break-word; }
+.ea-stat__number { font-size: 24px; font-weight: 750; color: var(--ea-ink); letter-spacing: -0.02em; line-height: 1.2; overflow-wrap: anywhere; }
+/* Search and filter row above a list. Wraps on narrow screens; the search box keeps a usable width. */
+.ea-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.ea-search { position: relative; flex: 1 1 260px; min-width: 0; }
+.ea-search > svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--ea-faint); pointer-events: none; }
+.ea-input, .ea-select {
+  height: 40px; padding: 0 12px; border: 1px solid var(--ea-line); border-radius: 10px; background: var(--ea-surface);
+  color: var(--ea-ink); font: inherit; font-size: 14px; outline: none; min-width: 0;
+}
+.ea-input:focus, .ea-select:focus { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-soft); }
+.ea-search .ea-input { width: 100%; padding-left: 36px; }
+.ea-select { cursor: pointer; flex: 0 1 170px; }
+.ea-toolbar__count { font-size: 12px; font-weight: 650; color: var(--ea-faint); white-space: nowrap; }
+@media (max-width: 767px) {
+  .ea-search { flex-basis: 100%; }
+  .ea-select { flex: 1 1 140px; }
+}
+
+@media (max-width: 767px) {
+  .ea-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  /* Icon above the caption, so a long caption (ANNOUNCEMENTS) gets the card's full width. */
+  .ea-stat--row { flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px; }
+  .ea-stat__caption { font-size: 11px; letter-spacing: 0.01em; }
+  .ea-stat--row .ea-icon-chip { width: 32px; height: 32px; border-radius: 10px; }
+  .ea-stat--row .ea-icon-chip svg { width: 16px; height: 16px; }
+  .ea-stat__number { font-size: 20px; }
+}
 
 /* Respect the system setting for reduced motion. */
 @media (prefers-reduced-motion: reduce) {
@@ -589,6 +650,11 @@ input:-webkit-autofill:focus {
 @media (max-width: 767px) {
   .ea-admin-main table { min-width: 640px; }
   .ea-admin-main th, .ea-admin-main td { white-space: nowrap; }
+  /* A wide table scrolls sideways inside its card; the first column (the name) stays in view while it does. */
+  .ea-admin-main table th:first-child, .ea-admin-main table td:first-child {
+    position: sticky; left: 0; z-index: 1; background: var(--ea-surface); box-shadow: 1px 0 0 var(--ea-line);
+  }
+  .ea-admin-main table thead th:first-child { background: #F8FAFC; }
   .ea-admin-main [style*="grid-template-columns: 1fr 1fr 1fr"],
   .ea-admin-main [style*="grid-template-columns: repeat(3"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
   /* Filter and toolbar rows wrap instead of pushing selects off screen. */

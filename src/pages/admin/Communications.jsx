@@ -2,8 +2,12 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, confirmAction } from "../../utils/toast";
 
+import { Bell } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
+import PageHeader from "../../components/ui/PageHeader";
+import { StatCard, StatGrid } from "../../components/ui/StatCard";
+import { toneOf } from "../../components/ui/tone";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -141,41 +145,21 @@ export default function Communications() {
       `}</style>
 
       {/* Header */}
-      <div style={{ background:"var(--brand-gradient)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
-        <div style={{ position:"absolute", top:-40, right:-40, width:180, height:180, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
-        <div style={{ position:"absolute", bottom:-30, left:100, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", position:"relative" }}>
-          <div>
-            <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>Communications</div>
-            <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Announcements, Circulars & Notifications — all in one place</div>
-          </div>
-          <div style={{ display:"flex", gap:10 }}>
-            <button onClick={openAddNotification}
-              style={{ padding:"11px 20px", borderRadius:12, border:"1px solid rgba(255,255,255,0.3)", background:"rgba(255,255,255,0.2)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer" }}>
-              <Glyph e="🔔" /> Send Notification
-            </button>
-          </div>
-        </div>
+      <div style={{ marginBottom:20 }}>
+        <PageHeader title="Communications" subtitle="Announcements, Circulars & Notifications — all in one place"
+          actions={<button type="button" className="ea-btn ea-btn--primary" onClick={openAddNotification}><Bell size={16} aria-hidden="true" /> Send Notification</button>} />
       </div>
 
       {/* Stat Cards */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
-        {[
-          { label:"ANNOUNCEMENTS", value: announcements.length,                                    icon:<Glyph e="📢" />, border:"var(--brand)", bg:"var(--brand-soft)" },
-          { label:"PINNED",        value: announcements.filter(a=>a.isPinned).length,              icon:<Glyph e="📌" />, border:"#F59E0B", bg:"#FFFBEB" },
-          { label:"CIRCULARS",     value: circulars.length,                                        icon:<Glyph e="📋" />, border:"#EC4899", bg:"#FDF4FF" },
-          { label:"NOTIFICATIONS", value: notifications.length,                                    icon:<Glyph e="🔔" />, border:"#10B981", bg:"#F0FDF4" },
-        ].map((card, i) => (
-          <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
-              <div>
-                <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", letterSpacing:"0.08em", marginBottom:8 }}>{card.label}</div>
-                <div style={{ fontSize:26, fontWeight:900, color:"#0F172A" }}>{card.value}</div>
-              </div>
-              <div style={{ width:42, height:42, borderRadius:12, background:card.bg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>{card.icon}</div>
-            </div>
-          </div>
-        ))}
+      <div style={{ marginBottom:24 }}>
+        <StatGrid>
+          {[
+            { label:"ANNOUNCEMENTS", value: announcements.length,                       icon:<Glyph e="📢" />, border:"var(--brand)" },
+            { label:"PINNED",        value: announcements.filter(a=>a.isPinned).length, icon:<Glyph e="📌" />, border:"var(--brand)" },
+            { label:"CIRCULARS",     value: circulars.length,                           icon:<Glyph e="📋" />, border:"var(--brand)" },
+            { label:"NOTIFICATIONS", value: notifications.length,                       icon:<Glyph e="🔔" />, border:"var(--brand)" },
+          ].map((card) => <StatCard key={card.label} label={card.label} value={card.value} icon={card.icon} tone={toneOf(card.border)} />)}
+        </StatGrid>
       </div>
 
       {/* Tabs */}

@@ -1,27 +1,19 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 
+import { RefreshCw } from "lucide-react";
 import Glyph from "../../components/Glyph";
+import PageHeader from "../../components/ui/PageHeader";
+import { StatCard as SharedStat } from "../../components/ui/StatCard";
+import { toneOf } from "../../components/ui/tone";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 const fmt = (n) => n >= 1000 ? `₹${(n/1000).toFixed(1)}K` : `₹${n}`;
 const pct = (a, b) => b > 0 ? Math.round((a/b)*100) : 0;
 
-function StatCard({ label, value, icon, border, bg, sub, delay=0 }) {
-  return (
-    <div style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${border}`, animation:`fadeUp 0.5s ease ${delay}s both` }}>
-      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
-        <div>
-          <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", letterSpacing:"0.08em", marginBottom:8 }}>{label}</div>
-          <div style={{ fontSize:26, fontWeight:900, color:"#0F172A" }}>{value}</div>
-          {sub && <div style={{ fontSize:11, color:"#94A3B8", marginTop:4 }}>{sub}</div>}
-        </div>
-        <div style={{ width:44, height:44, borderRadius:12, background:bg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:22 }}>{icon}</div>
-      </div>
-    </div>
-  );
-}
+// The shared stat card; the border colour this screen passes becomes the card's status tone.
+const StatCard = ({ label, value, icon, border, sub }) => <SharedStat label={label} value={value} icon={icon} sub={sub} tone={toneOf(border)} />;
 
 function ProgressBar({ label, value, total, color, bg }) {
   const p = pct(value, total);
@@ -142,34 +134,24 @@ export default function Reports() {
       `}</style>
 
       {/* Header */}
-      <div style={{ background:"linear-gradient(135deg,#1E3A8A,#3B82F6,#06B6D4)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
-        <div style={{ position:"absolute", top:-40, right:-40, width:200, height:200, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
-        <div style={{ position:"absolute", bottom:-30, left:60, width:160, height:160, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", position:"relative" }}>
-          <div>
-            <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}><Glyph e="📊" /> Reports & Analytics</div>
-            <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>
-              School-wide performance overview
-              {lastUpdated && <span style={{ marginLeft:12, fontSize:11, background:"rgba(255,255,255,0.15)", padding:"2px 10px", borderRadius:20 }}>Updated {lastUpdated}</span>}
-            </div>
-          </div>
-          <button onClick={fetchAll} disabled={loading}
-            style={{ padding:"11px 22px", borderRadius:12, border:"1px solid rgba(255,255,255,0.3)", background:"rgba(255,255,255,0.15)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", display:"flex", alignItems:"center", gap:8 }}>
-            <span style={{ display:"inline-block", animation: loading ? "spin 1s linear infinite" : "none" }}><Glyph e="🔄" /></span>
+      <div style={{ marginBottom:20 }}>
+        <PageHeader title="Reports & Analytics"
+          subtitle={`School-wide performance overview${lastUpdated ? ` · Updated ${lastUpdated}` : ""}`}
+          actions={<button type="button" className="ea-btn ea-btn--ghost" onClick={fetchAll} disabled={loading}>
+            <RefreshCw size={16} aria-hidden="true" style={{ animation: loading ? "spin 1s linear infinite" : "none" }} />
             {loading ? "Loading..." : "Refresh"}
-          </button>
-        </div>
+          </button>} />
       </div>
 
       {/* Overview Cards */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:14, marginBottom:24 }}>
+      <div className="ea-stats" style={{ marginBottom:24 }}>
         {[
-          { label:"STUDENTS",  value:overview.students, icon:<Glyph e="🎓" />, border:"#6366F1", bg:"#EEF2FF", sub:"Enrolled" },
-          { label:"TEACHERS",  value:overview.teachers, icon:<Glyph e="👨‍🏫" />, border:"#10B981", bg:"#F0FDF4", sub:"Active Staff" },
-          { label:"PARENTS",   value:overview.parents,  icon:<Glyph e="👨‍👩‍👧" />, border:"#F59E0B", bg:"#FFFBEB", sub:"Registered" },
-          { label:"BUSES",     value:overview.buses,    icon:<Glyph e="🚌" />, border:"#EF4444", bg:"#FEF2F2", sub:"Fleet" },
-          { label:"BOOKS",     value:overview.books,    icon:<Glyph e="📚" />, border:"#8B5CF6", bg:"#F5F3FF", sub:"In Library" },
-        ].map((c,i) => <StatCard key={i} {...c} delay={i*0.06} />)}
+          { label:"STUDENTS",  value:overview.students, icon:<Glyph e="🎓" />, border:"var(--brand)", sub:"Enrolled" },
+          { label:"TEACHERS",  value:overview.teachers, icon:<Glyph e="👨‍🏫" />, border:"var(--brand)", sub:"Active Staff" },
+          { label:"PARENTS",   value:overview.parents,  icon:<Glyph e="👨‍👩‍👧" />, border:"var(--brand)", sub:"Registered" },
+          { label:"BUSES",     value:overview.buses,    icon:<Glyph e="🚌" />, border:"var(--brand)", sub:"Fleet" },
+          { label:"BOOKS",     value:overview.books,    icon:<Glyph e="📚" />, border:"var(--brand)", sub:"In Library" },
+        ].map((c) => <StatCard key={c.label} {...c} />)}
       </div>
 
       {/* Row 1: Fee + Attendance */}

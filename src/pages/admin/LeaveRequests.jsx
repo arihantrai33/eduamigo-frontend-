@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+import { Search } from "lucide-react";
 import Glyph from "../../components/Glyph";
+import PageHeader from "../../components/ui/PageHeader";
+import { StatCard, StatGrid } from "../../components/ui/StatCard";
+import { toneOf } from "../../components/ui/tone";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -71,54 +75,37 @@ export default function LeaveRequests() {
       `}</style>
 
       {/* Header */}
-      <div style={{ background:"linear-gradient(135deg,#F59E0B,#F97316,#EF4444)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
-        <div style={{ position:"absolute", top:-40, right:-40, width:180, height:180, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
-        <div style={{ position:"absolute", bottom:-30, left:100, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
-        <div style={{ position:"relative" }}>
-          <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>Leave Management</div>
-          <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Leave requests from students, parents and teachers</div>
-        </div>
+      <div style={{ marginBottom:20 }}>
+        <PageHeader title="Leave Management" subtitle="Leave requests from students, parents and teachers" />
       </div>
 
       {/* Stat Cards */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
-        {[
-          { label:"TOTAL REQUESTS", value: leaves.length, icon:<Glyph e="📋" />, border:"var(--brand)", bg:"var(--brand-soft)" },
-          { label:"PENDING",        value: pending,        icon:<Glyph e="⏳" />, border:"#F59E0B", bg:"#FFFBEB" },
-          { label:"APPROVED",       value: approved,       icon:<Glyph e="✅" />, border:"#10B981", bg:"#F0FDF4" },
-          { label:"REJECTED",       value: rejected,       icon:<Glyph e="❌" />, border:"#EF4444", bg:"#FEF2F2" },
-        ].map((card, i) => (
-          <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
-              <div>
-                <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", letterSpacing:"0.08em", marginBottom:8 }}>{card.label}</div>
-                <div style={{ fontSize:28, fontWeight:900, color:"#0F172A" }}>{card.value}</div>
-              </div>
-              <div style={{ width:42, height:42, borderRadius:12, background:card.bg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>{card.icon}</div>
-            </div>
-          </div>
-        ))}
+      <div style={{ marginBottom:24 }}>
+        <StatGrid>
+          {[
+            { label:"TOTAL REQUESTS", value: leaves.length, icon:<Glyph e="📋" />, border:"var(--brand)" },
+            { label:"PENDING",        value: pending,        icon:<Glyph e="⏳" />, border:"#F59E0B" },
+            { label:"APPROVED",       value: approved,       icon:<Glyph e="✅" />, border:"#10B981" },
+            { label:"REJECTED",       value: rejected,       icon:<Glyph e="❌" />, border:"#EF4444" },
+          ].map((card) => <StatCard key={card.label} label={card.label} value={card.value} icon={card.icon} tone={toneOf(card.border)} />)}
+        </StatGrid>
       </div>
 
       {/* Filters */}
-      <div style={{ display:"flex", gap:12, marginBottom:20, alignItems:"center", animation:"fadeUp 0.4s ease 0.1s both" }}>
-        <div style={{ flex:1, position:"relative" }}>
-          <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}><Glyph e="🔍" /></span>
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by name or reason..."
-            style={{ width:"100%", padding:"11px 14px 11px 38px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
-            onFocus={e => e.target.style.borderColor="#F59E0B"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
+      <div className="ea-toolbar" style={{ marginBottom:20 }}>
+        <div className="ea-search">
+          <Search aria-hidden="true" />
+          <input className="ea-input" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by name or reason..." aria-label="Search leave requests" />
         </div>
-        <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
-          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:140 }}>
+        <select className="ea-select" value={filterStatus} onChange={e => setFilterStatus(e.target.value)} aria-label="Status">
           <option value="">All Status</option>
           {["Pending","Approved","Rejected"].map(s => <option key={s} value={s}>{s}</option>)}
         </select>
-        <select value={filterType} onChange={e => setFilterType(e.target.value)}
-          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:160 }}>
+        <select className="ea-select" value={filterType} onChange={e => setFilterType(e.target.value)} aria-label="Leave type">
           <option value="">All Types</option>
           {LEAVE_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
         </select>
-        <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600, whiteSpace:"nowrap" }}>{filtered.length} requests</div>
+        <span className="ea-toolbar__count">{filtered.length} requests</span>
       </div>
 
       {/* Leave Cards */}

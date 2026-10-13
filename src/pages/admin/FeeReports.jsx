@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 import Glyph from "../../components/Glyph";
+import PageHeader from "../../components/ui/PageHeader";
+import { StatCard, StatGrid } from "../../components/ui/StatCard";
+import { toneOf } from "../../components/ui/tone";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -75,54 +78,39 @@ export default function FeeReports() {
       `}</style>
 
       {/* Header */}
-      <div style={{ background:"var(--brand-gradient)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
-        <div style={{ position:"absolute", top:-40, right:-40, width:180, height:180, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
-        <div style={{ position:"absolute", bottom:-30, left:100, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
-        <div style={{ position:"relative" }}>
-          <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>Fee Reports</div>
-          <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Fee collection analytics and class-wise breakdown</div>
-        </div>
+      <div style={{ marginBottom:20 }}>
+        <PageHeader title="Fee Reports" subtitle="Fee collection analytics and class-wise breakdown" />
       </div>
 
       {/* Filters */}
-      <div style={{ background:"white", borderRadius:16, padding:"18px 24px", marginBottom:24, boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0", display:"flex", gap:16, alignItems:"end", animation:"fadeUp 0.4s ease 0.05s both" }}>
-        <div style={{ flex:1 }}>
-          <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>CLASS</div>
-          <select value={filterClass} onChange={e => setFilterClass(e.target.value)}
-            style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white" }}>
+      <div style={{ background:"white", borderRadius:16, padding:"18px 24px", marginBottom:24, boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0", display:"flex", flexWrap:"wrap", gap:16, alignItems:"end", animation:"fadeUp 0.4s ease 0.05s both" }}>
+        <label style={{ flex:"1 1 140px" }}>
+          <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>CLASS</span>
+          <select className="ea-select" value={filterClass} onChange={e => setFilterClass(e.target.value)} style={{ width:"100%" }}>
             <option value="">All Classes</option>
             {classes.map(c => <option key={c} value={c}>Class {c}</option>)}
           </select>
-        </div>
-        <div style={{ flex:1 }}>
-          <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>MONTH</div>
-          <select value={filterMonth} onChange={e => setFilterMonth(e.target.value)}
-            style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white" }}>
+        </label>
+        <label style={{ flex:"1 1 140px" }}>
+          <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>MONTH</span>
+          <select className="ea-select" value={filterMonth} onChange={e => setFilterMonth(e.target.value)} style={{ width:"100%" }}>
             <option value="">All Months</option>
             {MONTHS.map((m,i) => <option key={i} value={i+1}>{m}</option>)}
           </select>
-        </div>
-        <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600, alignSelf:"center" }}>{filtered.length} records</div>
+        </label>
+        <div className="ea-toolbar__count" style={{ alignSelf:"center" }}>{filtered.length} records</div>
       </div>
 
       {/* Stat Cards */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
-        {[
-          { label:"TOTAL BILLED",   value: fmtAmt(totalAmount),   icon:<Glyph e="📋" />, border:"var(--brand)", bg:"var(--brand-soft)" },
-          { label:"COLLECTED",      value: fmtAmt(collectedAmt),  icon:<Glyph e="✅" />, border:"#10B981", bg:"#F0FDF4" },
-          { label:"PENDING",        value: fmtAmt(pendingAmt),    icon:<Glyph e="⏳" />, border:"#F59E0B", bg:"#FFFBEB" },
-          { label:"COLLECTION RATE",value: `${collectionPct}%`,   icon:<Glyph e="📊" />, border:"var(--brand)", bg:"var(--brand-soft)" },
-        ].map((card, i) => (
-          <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
-              <div>
-                <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", letterSpacing:"0.08em", marginBottom:8 }}>{card.label}</div>
-                <div style={{ fontSize:22, fontWeight:900, color:"#0F172A" }}>{card.value}</div>
-              </div>
-              <div style={{ width:42, height:42, borderRadius:12, background:card.bg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>{card.icon}</div>
-            </div>
-          </div>
-        ))}
+      <div style={{ marginBottom:24 }}>
+        <StatGrid>
+          {[
+            { label:"TOTAL BILLED",   value: fmtAmt(totalAmount),   icon:<Glyph e="📋" />, border:"var(--brand)" },
+            { label:"COLLECTED",      value: fmtAmt(collectedAmt),  icon:<Glyph e="✅" />, border:"#10B981" },
+            { label:"PENDING",        value: fmtAmt(pendingAmt),    icon:<Glyph e="⏳" />, border:"#F59E0B" },
+            { label:"COLLECTION RATE",value: `${collectionPct}%`,   icon:<Glyph e="📊" />, border:"var(--brand)" },
+          ].map((card) => <StatCard key={card.label} label={card.label} value={card.value} icon={card.icon} tone={toneOf(card.border)} />)}
+        </StatGrid>
       </div>
 
       {/* Overall Progress */}

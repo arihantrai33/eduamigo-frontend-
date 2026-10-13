@@ -3,8 +3,12 @@ import axios from "axios";
 import { toast, confirmAction, errorMessage } from "../../utils/toast";
 import { currentAcademicYear } from "../../utils/academicYear";
 
+import { Plus } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
+import PageHeader from "../../components/ui/PageHeader";
+import { StatCard, StatGrid } from "../../components/ui/StatCard";
+import { toneOf } from "../../components/ui/tone";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -109,48 +113,28 @@ export default function FeeStructure() {
         .act-btn:hover { transform:translateY(-1px); }
       `}</style>
 
-      <div style={{ background:"linear-gradient(135deg,#06B6D4,#0EA5E9,#3B82F6)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
-        <div style={{ position:"absolute", top:-40, right:-40, width:180, height:180, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", position:"relative" }}>
-          <div>
-            <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>Fee Structure</div>
-            <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Define and manage fee categories for each class</div>
-          </div>
-          <button onClick={openAdd}
-            style={{ display:"flex", alignItems:"center", gap:8, padding:"12px 24px", borderRadius:14, border:"1px solid rgba(255,255,255,0.3)", background:"rgba(255,255,255,0.2)", color:"white", fontWeight:700, fontSize:14, cursor:"pointer", transition:"all 0.2s" }}
-            onMouseEnter={e => e.currentTarget.style.background="rgba(255,255,255,0.3)"}
-            onMouseLeave={e => e.currentTarget.style.background="rgba(255,255,255,0.2)"}>
-            + Add Fee
-          </button>
-        </div>
+      <div style={{ marginBottom:20 }}>
+        <PageHeader title="Fee Structure" subtitle="Define and manage fee categories for each class"
+          actions={<button type="button" className="ea-btn ea-btn--primary" onClick={openAdd}><Plus size={16} aria-hidden="true" /> Add Fee</button>} />
       </div>
 
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
-        {[
-          { label:"TOTAL STRUCTURES", value: structures.length,    icon:<Glyph e="📋" />, border:"var(--brand)", bg:"var(--brand-soft)" },
-          { label:"CLASSES COVERED",  value: classes.length,       icon:<Glyph e="🏫" />, border:"#10B981", bg:"#F0FDF4" },
-          { label:"FEE TYPES",        value: [...new Set(structures.map(s=>s.feeType))].length, icon:<Glyph e="🏷" />, border:"#F59E0B", bg:"#FFFBEB" },
-          { label:"TOTAL AMOUNT",     value: `₹${totalAmount.toLocaleString()}`, icon:<Glyph e="💰" />, border:"#06B6D4", bg:"#ECFEFF" },
-        ].map((card, i) => (
-          <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
-              <div>
-                <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", letterSpacing:"0.08em", marginBottom:8 }}>{card.label}</div>
-                <div style={{ fontSize:24, fontWeight:900, color:"#0F172A" }}>{card.value}</div>
-              </div>
-              <div style={{ width:42, height:42, borderRadius:12, background:card.bg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>{card.icon}</div>
-            </div>
-          </div>
-        ))}
+      <div style={{ marginBottom:24 }}>
+        <StatGrid>
+          {[
+            { label:"TOTAL STRUCTURES", value: structures.length,    icon:<Glyph e="📋" />, border:"var(--brand)" },
+            { label:"CLASSES COVERED",  value: classes.length,       icon:<Glyph e="🏫" />, border:"var(--brand)" },
+            { label:"FEE TYPES",        value: [...new Set(structures.map(s=>s.feeType))].length, icon:<Glyph e="🏷" />, border:"var(--brand)" },
+            { label:"TOTAL AMOUNT",     value: `₹${totalAmount.toLocaleString()}`, icon:<Glyph e="💰" />, border:"var(--brand)" },
+          ].map((card) => <StatCard key={card.label} label={card.label} value={card.value} icon={card.icon} tone={toneOf(card.border)} />)}
+        </StatGrid>
       </div>
 
-      <div style={{ display:"flex", gap:12, marginBottom:20, alignItems:"center" }}>
-        <select value={filterClass} onChange={e => setFilterClass(e.target.value)}
-          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:160 }}>
+      <div className="ea-toolbar" style={{ marginBottom:20 }}>
+        <select className="ea-select" value={filterClass} onChange={e => setFilterClass(e.target.value)} aria-label="Class">
           <option value="">All Classes</option>
           {classes.map(c => <option key={c} value={c}>Class {c}</option>)}
         </select>
-        <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600 }}>{filtered.length} structures</div>
+        <span className="ea-toolbar__count">{filtered.length} structures</span>
       </div>
 
       <div style={{ background:"white", borderRadius:20, boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid rgba(226,232,240,0.8)", overflow:"hidden" }}>

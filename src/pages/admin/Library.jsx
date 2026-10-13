@@ -2,8 +2,12 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, confirmAction } from "../../utils/toast";
 
+import { Plus } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
+import PageHeader from "../../components/ui/PageHeader";
+import { StatCard, StatGrid } from "../../components/ui/StatCard";
+import { toneOf } from "../../components/ui/tone";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -96,44 +100,21 @@ export default function Library() {
       `}</style>
 
       {/* Header */}
-      <div style={{ background:"var(--brand-gradient)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
-        <div style={{ position:"absolute", top:-50, right:-50, width:220, height:220, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
-        <div style={{ position:"absolute", bottom:-30, left:60, width:160, height:160, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
-        {/* Floating book emojis */}
-        {[<Glyph e="📚" />,<Glyph e="📖" />,<Glyph e="📕" />,<Glyph e="📗" />].map((e,i) => (
-          <div key={i} style={{ position:"absolute", fontSize:28, opacity:0.15, animation:`shimmer 2s ease ${i*0.5}s infinite`,
-            top: i<2 ? "15%" : "60%", right: `${8+i*8}%` }}>{e}</div>
-        ))}
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", position:"relative" }}>
-          <div>
-            <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}><Glyph e="📚" /> Library</div>
-            <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>Manage books, categories and issue records</div>
-          </div>
-          <button onClick={openAdd}
-            style={{ padding:"12px 24px", borderRadius:14, border:"1px solid rgba(255,255,255,0.3)", background:"rgba(255,255,255,0.2)", color:"white", fontWeight:700, fontSize:14, cursor:"pointer" }}>
-            + Add Book
-          </button>
-        </div>
+      <div style={{ marginBottom:20 }}>
+        <PageHeader title="Library" subtitle="Manage books, categories and issue records"
+          actions={<button type="button" className="ea-btn ea-btn--primary" onClick={openAdd}><Plus size={16} aria-hidden="true" /> Add Book</button>} />
       </div>
 
       {/* Stat Cards */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
-        {[
-          { label:"TOTAL TITLES",  value: books.length,  icon:<Glyph e="📚" />, border:"var(--brand)", bg:"var(--brand-soft)" },
-          { label:"TOTAL COPIES",  value: totalBooks,    icon:<Glyph e="📦" />, border:"var(--brand)", bg:"var(--brand-soft)" },
-          { label:"AVAILABLE",     value: totalAvail,    icon:<Glyph e="✅" />, border:"#10B981", bg:"#F0FDF4" },
-          { label:"ISSUED",        value: totalIssued,   icon:<Glyph e="📤" />, border:"#F59E0B", bg:"#FFFBEB" },
-        ].map((card,i) => (
-          <div key={i} style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${card.border}`, animation:`fadeUp 0.5s ease ${i*0.08}s both` }}>
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
-              <div>
-                <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", letterSpacing:"0.08em", marginBottom:8 }}>{card.label}</div>
-                <div style={{ fontSize:26, fontWeight:900, color:"#0F172A" }}>{card.value}</div>
-              </div>
-              <div style={{ width:42, height:42, borderRadius:12, background:card.bg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>{card.icon}</div>
-            </div>
-          </div>
-        ))}
+      <div style={{ marginBottom:24 }}>
+        <StatGrid>
+          {[
+            { label:"TOTAL TITLES",  value: books.length,  icon:<Glyph e="📚" />, border:"var(--brand)" },
+            { label:"TOTAL COPIES",  value: totalBooks,    icon:<Glyph e="📦" />, border:"var(--brand)" },
+            { label:"AVAILABLE",     value: totalAvail,    icon:<Glyph e="✅" />, border:"#10B981" },
+            { label:"ISSUED",        value: totalIssued,   icon:<Glyph e="📤" />, border:"#F59E0B" },
+          ].map((card) => <StatCard key={card.label} label={card.label} value={card.value} icon={card.icon} tone={toneOf(card.border)} />)}
+        </StatGrid>
       </div>
 
       {/* Category Chips + Search + Add */}

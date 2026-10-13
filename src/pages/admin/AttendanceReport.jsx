@@ -2,25 +2,16 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 import Glyph from "../../components/Glyph";
+import PageHeader from "../../components/ui/PageHeader";
+import { StatCard as SharedStat } from "../../components/ui/StatCard";
+import { toneOf } from "../../components/ui/tone";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
-function StatCard({ label, value, icon, color, border, delay }) {
-  return (
-    <div style={{ background:"white", borderRadius:16, padding:"18px 22px", boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:`2px solid ${border}`, position:"relative", overflow:"hidden", animation:`fadeUp 0.5s ease ${delay}s both` }}>
-      <div style={{ position:"absolute", top:-20, right:-20, width:80, height:80, borderRadius:"50%", background:color, opacity:0.1 }} />
-      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
-        <div>
-          <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", letterSpacing:"0.08em", marginBottom:8 }}>{label}</div>
-          <div style={{ fontSize:28, fontWeight:900, color:"#0F172A" }}>{value}</div>
-        </div>
-        <div style={{ width:42, height:42, borderRadius:12, background:color, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>{icon}</div>
-      </div>
-    </div>
-  );
-}
+// The shared stat card; the border colour this screen passes becomes the card's status tone.
+const StatCard = ({ label, value, icon, border }) => <SharedStat label={label} value={value} icon={icon} tone={toneOf(border)} />;
 
 function ProgressBar({ value, color }) {
   return (
@@ -88,43 +79,35 @@ export default function AttendanceReports() {
       `}</style>
 
       {/* Header */}
-      <div style={{ background:"linear-gradient(135deg,#EC4899,#F43F5E,#EF4444)", borderRadius:20, padding:"28px 32px", marginBottom:24, position:"relative", overflow:"hidden", animation:"fadeUp 0.4s ease" }}>
-        <div style={{ position:"absolute", top:-40, right:-40, width:180, height:180, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
-        <div style={{ position:"absolute", bottom:-30, left:100, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
-        <div style={{ position:"relative" }}>
-          <div style={{ fontSize:26, fontWeight:900, color:"white", letterSpacing:"-0.5px" }}>Attendance Reports</div>
-          <div style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:4 }}>School-wide attendance analytics and insights</div>
-        </div>
+      <div style={{ marginBottom:20 }}>
+        <PageHeader title="Attendance Reports" subtitle="School-wide attendance analytics and insights" />
       </div>
 
       {/* Filters */}
-      <div style={{ background:"white", borderRadius:16, padding:"18px 24px", marginBottom:24, boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0", display:"flex", gap:16, alignItems:"end", animation:"fadeUp 0.4s ease 0.05s both" }}>
-        <div style={{ flex:1 }}>
-          <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>CLASS</div>
-          <select value={filterClass} onChange={e => setFilterClass(e.target.value)}
-            style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white" }}>
+      <div style={{ background:"white", borderRadius:16, padding:"18px 24px", marginBottom:24, boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0", display:"flex", flexWrap:"wrap", gap:16, alignItems:"end", animation:"fadeUp 0.4s ease 0.05s both" }}>
+        <label style={{ flex:"1 1 140px" }}>
+          <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>CLASS</span>
+          <select className="ea-select" value={filterClass} onChange={e => setFilterClass(e.target.value)} style={{ width:"100%" }}>
             <option value="">All Classes</option>
             {classes.map(c => <option key={c} value={c}>Class {c}</option>)}
           </select>
-        </div>
-        <div style={{ flex:1 }}>
-          <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>MONTH</div>
-          <select value={filterMonth} onChange={e => setFilterMonth(Number(e.target.value))}
-            style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white" }}>
+        </label>
+        <label style={{ flex:"1 1 140px" }}>
+          <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>MONTH</span>
+          <select className="ea-select" value={filterMonth} onChange={e => setFilterMonth(Number(e.target.value))} style={{ width:"100%" }}>
             {MONTHS.map((m,i) => <option key={i} value={i+1}>{m}</option>)}
           </select>
-        </div>
-        <div style={{ flex:1 }}>
-          <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>YEAR</div>
-          <select value={filterYear} onChange={e => setFilterYear(Number(e.target.value))}
-            style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white" }}>
+        </label>
+        <label style={{ flex:"1 1 140px" }}>
+          <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>YEAR</span>
+          <select className="ea-select" value={filterYear} onChange={e => setFilterYear(Number(e.target.value))} style={{ width:"100%" }}>
             {[0, 1, 2, 3].map(i => new Date().getFullYear() - 3 + i).map(y => <option key={y} value={y}>{y}</option>)}
           </select>
-        </div>
+        </label>
       </div>
 
       {/* Stat Cards */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:24 }}>
+      <div className="ea-stats" style={{ marginBottom:24 }}>
         <StatCard label="OVERALL RATE" value={pctText(overallPct)} icon={<Glyph e="📊" />} color="var(--brand-soft)" border="var(--brand)" delay={0} />
         <StatCard label="TOTAL PRESENT" value={totalPresent} icon={<Glyph e="✅" />} color="#F0FDF4" border="#10B981" delay={0.08} />
         <StatCard label="TOTAL ABSENT" value={totalAbsent} icon={<Glyph e="❌" />} color="#FEF2F2" border="#EF4444" delay={0.16} />
