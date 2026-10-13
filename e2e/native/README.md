@@ -23,6 +23,21 @@ Both scripts use the demo backend on this computer. Start it from the backend re
 
 The script clears the app's data before it starts.
 
+### A physical Android phone over USB
+
+The computer's Wi-Fi address can change, which breaks a build that has it baked in. Over USB, `adb reverse` makes
+the phone's `localhost:8000` reach this computer, whatever the network:
+
+1. On the phone: Settings > About phone > tap **Build number** seven times, then Settings > System > Developer
+   options > **USB debugging** on. Connect the cable and allow the computer on the phone.
+2. Build with `VITE_API_URL=http://localhost:8000/api` (and `CAP_LOCAL_DEV=true`) as above, then:
+   ```sh
+   adb devices                          # the phone is listed as "device"
+   adb install -r android/app/build/outputs/apk/debug/app-debug.apk
+   adb reverse tcp:8000 tcp:8000        # again after every reconnect
+   ```
+3. Open EduAmigo on the phone. The same build works in the emulator with the same `adb reverse`.
+
 ## iOS (macOS with Xcode)
 
 1. Boot a Simulator. The default is "iPhone 16"; set `IOS_SIMULATOR` to use another one.

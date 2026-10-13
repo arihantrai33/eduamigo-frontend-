@@ -58,7 +58,7 @@ check('app opens on the school search', await waitFor(page, `location.pathname =
 
 await type(page, '#school-query', 'GVPS');
 await clickText(page, 'Continue');
-check('the school is found through the API on this computer (http://10.0.2.2:8000)', await waitFor(page, `!![...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Yes, this is my school')`));
+check('the school is found through the API on this computer', await waitFor(page, `!![...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Yes, this is my school')`));
 await clickText(page, 'Yes, this is my school');
 check('sign-in screen', await waitFor(page, `location.pathname === '/login'`));
 await waitFor(page, `!![...document.querySelectorAll('[role=tab]')].find((t) => t.textContent.trim() === 'Parent')`);
@@ -92,12 +92,17 @@ await page.evaluate(`document.querySelector('[role=button]').click()`);
 await waitFor(page, `!!document.querySelector('[aria-label^="Message to"]')`, 10000);
 await sleep(800);
 const before = await page.evaluate('innerHeight');
-// Where the message box is on the screen: the WebView shows it to Android's accessibility tree as a text field.
+// Where the message box is on the screen: its place in the page, scaled to screen pixels, plus where the WebView
+// starts (below the status bar). The WebView's bounds come from the accessibility tree, which always lists the
+// WebView itself (the fields inside it are listed only sometimes).
+const box = JSON.parse(await page.evaluate(`JSON.stringify((() => { const b = document.querySelector('[aria-label^="Message to"]').getBoundingClientRect();
+  return { x: b.left + b.width / 2, y: b.top + b.height / 2, dpr: devicePixelRatio }; })())`));
 adb('shell uiautomator dump /sdcard/eduamigo-ui.xml');
 const ui = adb('exec-out cat /sdcard/eduamigo-ui.xml');
-const fields = [...ui.matchAll(/class="android\.widget\.EditText"[^>]*?bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"/g)].map((m) => m.slice(1).map(Number));
-const [x1, y1, x2, y2] = fields.sort((a, b) => b[1] - a[1])[0] || [0, 0, 0, 0];
-adb(`shell input tap ${Math.round((x1 + x2) / 2)} ${Math.round((y1 + y2) / 2)}`);
+const web = ui.match(/class="android\.webkit\.WebView"[^>]*?bounds="\[(\d+),(\d+)\]/);
+const webLeft = web ? Number(web[1]) : 0;
+const webTop = web ? Number(web[2]) : 0;
+adb(`shell input tap ${Math.round(webLeft + box.x * box.dpr)} ${Math.round(webTop + box.y * box.dpr)}`);
 await sleep(2000);
 const kb = JSON.parse(await page.evaluate(`JSON.stringify({ focused: document.activeElement?.getAttribute('aria-label') || '', screen: innerHeight,
   box: Math.round(document.querySelector('[aria-label^="Message to"]').getBoundingClientRect().bottom),
