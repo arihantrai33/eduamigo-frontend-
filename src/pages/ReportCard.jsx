@@ -54,7 +54,7 @@ export default function ReportCard() {
   const title = studentId ? "Report Card" : `Report Cards · Class ${cls}-${section}`;
 
   return (
-    <div className="rc-root">
+    <div className="rc-root ea-print-doc">
       <style>{CSS}</style>
       <div className="rc-toolbar no-print">
         <button className="rc-btn ghost" onClick={() => navigate(-1)} aria-label="Back">← Back</button>
@@ -166,6 +166,9 @@ function Card({ card, report, canEditRemarks, onSaved }) {
       <div className="rc-remarks">
         <div className="rc-label">Class Teacher's Remarks</div>
         {editing ? (
+          <>
+          {/* Printing while the remarks are being edited prints the text typed so far. */}
+          <div className="rc-remarks-text print-only">{remarks || <span className="muted">—</span>}</div>
           <div className="no-print">
             <textarea value={remarks} maxLength={600} rows={3} onChange={(e) => setRemarks(e.target.value)} placeholder="Strengths, areas to improve, conduct..." />
             <div className="rc-row">
@@ -174,6 +177,7 @@ function Card({ card, report, canEditRemarks, onSaved }) {
               <button className="rc-btn" onClick={saveRemarks} disabled={saving}>{saving ? "Saving..." : "Save Remarks"}</button>
             </div>
           </div>
+          </>
         ) : (
           <div className="rc-remarks-text">
             {card.remarks || <span className="muted">—</span>}
@@ -237,6 +241,7 @@ const CSS = `
 .rc-signs small { display: block; color: #6B7280; }
 .rc-foot { margin-top: 20px; font-size: 10px; color: #6B7280; display: flex; flex-direction: column; gap: 4px; }
 .rc-scale { display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.print-only { display: none; }
 @media (max-width: 640px) {
   .rc-page { padding: 20px 14px; margin: 10px auto; }
   .rc-info { grid-template-columns: 1fr 1fr; }
@@ -245,14 +250,14 @@ const CSS = `
 @media print {
   @page { size: A4; margin: 12mm; }
   .no-print { display: none !important; }
-  /* The app shell fixes its height for mobile screens; let printed pages flow instead. */
-  html, body, #root, div:has(.rc-root) { height: auto !important; min-height: 0 !important; max-height: none !important; width: auto !important; max-width: none !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; position: static !important; display: block !important; background: #fff !important; box-shadow: none !important; border-radius: 0 !important; }
-  /* Nothing but the cards: hide toasts, dialogs and anything else mounted beside the page. */
-  body * { visibility: hidden; }
-  .rc-root, .rc-root * { visibility: visible; }
+  .print-only { display: block; }
+  /* The app shell around the cards is let out of its fixed height, and left out, by .ea-print-doc (index.css). */
   .rc-root { background: #fff; padding: 0; }
   .rc-page { box-shadow: none; margin: 0; max-width: none; padding: 0; page-break-after: always; break-after: page; }
   .rc-page:last-child { page-break-after: auto; break-after: auto; }
-  .rc-table tr.below td { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  /* A subject row, the result line, the remarks, the signatures and the grade scale are never split across pages. */
+  .rc-head, .rc-info, .rc-table tr, .rc-summary, .rc-remarks, .rc-signs, .rc-foot { break-inside: avoid; }
+  .rc-table thead { display: table-header-group; }
+  .rc-table tr.below td, .rc-table th, .rc-table tfoot td { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
 `;

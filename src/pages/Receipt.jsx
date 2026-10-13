@@ -24,7 +24,7 @@ export default function Receipt() {
   }, [feeId, receiptNo]);
 
   return (
-    <div className="rcpt-root">
+    <div className="rcpt-root ea-print-doc">
       <style>{CSS}</style>
       <div className="rcpt-bar no-print">
         <button className="rcpt-btn ghost" onClick={() => navigate(-1)}>← Back</button>
@@ -93,10 +93,9 @@ const CSS = `
 @media print {
   @page { size: A5; margin: 10mm; }
   .no-print { display: none !important; }
-  html, body, #root, div:has(.rcpt-root) { height: auto !important; min-height: 0 !important; width: auto !important; max-width: none !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; position: static !important; display: block !important; background: #fff !important; }
-  body * { visibility: hidden; }
-  .rcpt-root, .rcpt-root * { visibility: visible; }
+  /* The app shell around the receipt is let out of its fixed height, and left out, by .ea-print-doc (index.css). */
   .rcpt-root { background: #fff; padding: 0; }
-  .rcpt { box-shadow: none; margin: 0; max-width: none; padding: 0; }
+  .rcpt { box-shadow: none; margin: 0; max-width: none; padding: 0; break-inside: avoid; }
+  .rcpt tr.strong td { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
 `;

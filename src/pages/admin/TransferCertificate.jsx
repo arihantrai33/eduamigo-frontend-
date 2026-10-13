@@ -39,9 +39,9 @@ export default function TransferCertificate() {
   ];
 
   return (
-    <div style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
+    <div className="ea-print-doc" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
       {header}
-      <div style={{ background: "#fff", maxWidth: 760, margin: "0 auto", padding: "36px 44px", border: "1px solid #CBD5E1", color: "#0F172A" }}>
+      <div className="tc-sheet" style={{ background: "#fff", maxWidth: 760, margin: "0 auto", padding: "36px 44px", border: "1px solid #CBD5E1", color: "#0F172A" }}>
         <div style={{ textAlign: "center", borderBottom: "2px solid var(--brand)", paddingBottom: 14, marginBottom: 18 }}>
           {tc.school?.branding?.logoUrl && <img src={tc.school.branding.logoUrl} alt="" style={{ height: 64, marginBottom: 6 }} />}
           <div style={{ fontSize: 22, fontWeight: 700 }}>{tc.school?.name}</div>
@@ -69,14 +69,17 @@ export default function TransferCertificate() {
             {tc.history.map((h) => <div key={h.session}>{h.session}: Class {h.class} ({h.result})</div>)}
           </div>
         )}
-        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 70, fontSize: 13 }}>
+        <div className="tc-signs" style={{ display: "flex", justifyContent: "space-between", marginTop: 70, fontSize: 13 }}>
           <div style={{ textAlign: "center" }}><div style={{ borderTop: "1px solid #0F172A", width: 180, paddingTop: 4 }}>Class teacher</div></div>
           <div style={{ textAlign: "center" }}><div style={{ borderTop: "1px solid #0F172A", width: 180, paddingTop: 4 }}>Principal{tc.school?.principal ? ` (${tc.school.principal})` : ""}</div></div>
         </div>
       </div>
-      <style>{`@media print { .no-print { display: none !important; } aside, nav { display: none !important; } body { background: #fff !important; } }`}</style>
+      {/* The shell around the page is left out by the shared .ea-print-doc rule (index.css). */}
+      <style>{`@media print {
+        @page { size: A4; margin: 14mm; }
+        .tc-sheet { border: 0 !important; padding: 0 !important; max-width: none !important; }
+        .tc-sheet tr, .tc-signs { break-inside: avoid; }
+      }`}</style>
     </div>
   );
 }
-
-const btn = { padding: "8px 14px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", color: "#334155", fontSize: 13, fontWeight: 600, cursor: "pointer" };

@@ -263,6 +263,24 @@ input, button, select, textarea {
   }
   .ea-solo--document .ea-solo__stage { max-width: 920px; }
 }
+/* ───────────── Printing a document (report card, fee receipt, transfer certificate) ─────────────
+   The document's root has .ea-print-doc. The app shells around it have a fixed height and scroll inside, which cut a
+   printout after one screen (and a centred grid shrank it to half the paper). While a document is on the page, its
+   wrappers let it flow over as many pages as it needs, and nothing else is printed (sidebar, menu bar, banners, the
+   Ask button, toasts). */
+@media print {
+  html:has(.ea-print-doc), body:has(.ea-print-doc) { background: #fff !important; }
+  body:has(.ea-print-doc) :is(div, main):has(.ea-print-doc) {
+    position: static !important; display: block !important; width: auto !important; max-width: none !important;
+    height: auto !important; min-height: 0 !important; max-height: none !important; overflow: visible !important;
+    transform: none !important; margin: 0 !important; padding: 0 !important; border: 0 !important; border-radius: 0 !important;
+    box-shadow: none !important; background: #fff !important; place-items: normal !important;
+  }
+  body:has(.ea-print-doc) *:not(:has(.ea-print-doc)):not(.ea-print-doc):not(.ea-print-doc *) { display: none !important; }
+  .ea-print-doc { min-height: 0 !important; background: #fff !important; }
+  .ea-print-doc .no-print { display: none !important; }
+}
+
 /* Dark theme: the strip under the status bar (and the canvas around the column) is dark too. */
 [data-theme="dark"] .ea-shell,
 [data-theme="dark"] .ea-solo { background: var(--bg); }
