@@ -520,6 +520,19 @@ input:-webkit-autofill:focus {
 }
 .ea-alert span { flex: 1; }
 .ea-alert--warning { background: #FFFBEB; border-color: #FDE68A; color: #92400E; }
+
+/* Admin sidebar (pages/admin/Home.jsx): links and buttons keep their look, and show a ring when reached by keyboard.
+   currentColor works on the dark and the light sidebar. */
+.ea-side-btn { border: none; background: transparent; font: inherit; text-align: left; cursor: pointer; }
+.ea-side-link:focus-visible, .ea-side-btn:focus-visible { outline: 2px solid currentColor; outline-offset: -2px; }
+/* "Skip to main content": off screen until it has keyboard focus. */
+.ea-skip-link {
+  position: fixed; top: 8px; left: 8px; z-index: 1000; padding: 10px 16px; border-radius: 10px;
+  background: #fff; color: #0F172A; font-size: 14px; font-weight: 600; text-decoration: none;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.2); transform: translateY(-200%);
+}
+.ea-skip-link:focus { transform: none; outline: 2px solid var(--brand); outline-offset: 2px; }
+.ea-admin-main:focus-visible { outline: none; }
 .ea-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; padding: 0 14px;
   border-radius: 10px; font-size: 13px; font-weight: 650; cursor: pointer; border: 1px solid transparent;

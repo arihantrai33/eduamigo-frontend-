@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { useStackedTables } from "../../utils/stackTables";
 import { confirmLeave } from "../../utils/unsavedChanges";
-import { useNavigate, Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { useNavigate, Routes, Route, useLocation, Navigate, Link } from "react-router-dom";
 import {
   LayoutDashboard, Users, School, UserCircle, Bus,
   CalendarCheck, CreditCard, FileBadge, Clock, Notebook, BadgeDollarSign, Layers,
@@ -145,6 +145,29 @@ export default function AdminHome() {
   });
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+  const menuButtonRef = useRef(null);
+  const drawerRef = useRef(null);
+  const wasOpen = useRef(false);
+  const closeMenu = () => setSidebarOpen(false);
+
+  // Phone menu: focus goes to its first control when it opens and back to the menu button when it closes.
+  useEffect(() => {
+    if (sidebarOpen) drawerRef.current?.querySelector("a, button")?.focus();
+    else if (wasOpen.current) menuButtonRef.current?.focus();
+    wasOpen.current = sidebarOpen;
+  }, [sidebarOpen]);
+
+  // Escape closes the phone menu; Tab and Shift+Tab stay inside it while it is open.
+  const onDrawerKey = (e) => {
+    if (e.key === "Escape") { e.stopPropagation(); closeMenu(); return; }
+    if (e.key !== "Tab") return;
+    const items = [...drawerRef.current.querySelectorAll("a[href], button:not([disabled])")];
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  };
 
   useEffect(() => {
     const h = () => setIsMobile(window.innerWidth < 1024);
@@ -152,7 +175,9 @@ export default function AdminHome() {
     return () => window.removeEventListener("resize", h);
   }, []);
 
-  const SidebarContent = () => (
+  // A render helper called as a function, not a component defined during render: a component made here would be new on
+  // every render, so the menu would be rebuilt and keyboard focus lost each time (e.g. right after pressing Enter).
+  const sidebarContent = () => (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <div style={{ padding: "22px 18px 18px", borderBottom: `1px solid ${sb.divider}` }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -169,24 +194,26 @@ export default function AdminHome() {
               <div style={{ fontSize: 10, color: sb.muted, marginTop: 1, textTransform: "capitalize" }}>{user?.role || "admin"} Portal</div>
             </div>
           </div>
-          {isMobile && <div onClick={() => setSidebarOpen(false)} style={{ cursor: "pointer", color: sb.muted, padding: 4 }}><X size={18} /></div>}
+          {isMobile && <button type="button" className="ea-side-btn" aria-label="Close menu" onClick={closeMenu} style={{ color: sb.muted, padding: 4, borderRadius: 8 }}><X size={18} aria-hidden="true" /></button>}
         </div>
       </div>
-      <nav style={{ overflowY: "auto", flex: 1, padding: "8px 0 16px" }}>
+      <nav aria-label="Admin menu" style={{ overflowY: "auto", flex: 1, padding: "8px 0 16px" }}>
         {visibleNav.map((item, i) => {
           if (item.section) return <div key={i} style={{ fontSize: 9, color: sb.faint, padding: "14px 20px 5px", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 700 }}>{item.section}</div>;
           const Icon = item.icon;
           // From the address only: a move that waits for "Leave unsaved changes?" must not light up the new entry early.
           const isActive = location.pathname === item.path || (item.path !== "/admin" && location.pathname.startsWith(item.path));
+          // A real link: Tab reaches it, Enter opens it, it can open in a new tab, and screen readers hear "current page".
           return (
-            <div key={i} onClick={() => { navigate(item.path); if (isMobile) setSidebarOpen(false); }}
-              style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 16px", margin: "1px 10px", fontSize: 13, cursor: "pointer", color: isActive ? sb.activeText : sb.muted, background: isActive ? sb.activeBg : "transparent", fontWeight: isActive ? 700 : 500, borderRadius: 12, transition: "all 0.15s", boxShadow: isActive ? sb.activeShadow : "none" }}
+            <Link key={i} to={item.path} className="ea-side-link" aria-current={isActive ? "page" : undefined}
+              onClick={() => { if (isMobile) closeMenu(); }}
+              style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 16px", margin: "1px 10px", fontSize: 13, textDecoration: "none", color: isActive ? sb.activeText : sb.muted, background: isActive ? sb.activeBg : "transparent", fontWeight: isActive ? 700 : 500, borderRadius: 12, transition: "all 0.15s", boxShadow: isActive ? sb.activeShadow : "none" }}
               onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = sb.hoverBg; e.currentTarget.style.color = sb.hoverText; } }}
               onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = sb.muted; } }}>
-              <Icon size={15} />
+              <Icon size={15} aria-hidden="true" />
               {item.label}
-              {isActive && <div style={{ marginLeft: "auto", width: 6, height: 6, borderRadius: "50%", background: theme.isLight ? "#fff" : theme.accent }} />}
-            </div>
+              {isActive && <div aria-hidden="true" style={{ marginLeft: "auto", width: 6, height: 6, borderRadius: "50%", background: theme.isLight ? "#fff" : theme.accent }} />}
+            </Link>
           );
         })}
       </nav>
@@ -200,37 +227,42 @@ export default function AdminHome() {
             <div style={{ fontSize: 10, color: sb.muted }}>{ROLE_LABELS[user?.role] || "Staff"}</div>
           </div>
         </div>
-        <div onClick={async () => { if (!(await confirmLeave())) return; logout(); navigate("/login"); }}
-          style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", borderRadius: 12, cursor: "pointer", color: "rgba(239,68,68,0.8)", fontSize: 13, fontWeight: 600, transition: "all 0.15s" }}
+        <button type="button" className="ea-side-btn" onClick={async () => { if (!(await confirmLeave())) return; logout(); navigate("/login"); }}
+          style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", padding: "8px 12px", borderRadius: 12, color: "rgba(239,68,68,0.8)", fontSize: 13, fontWeight: 600, transition: "all 0.15s" }}
           onMouseEnter={e => { e.currentTarget.style.background = "rgba(239,68,68,0.1)"; e.currentTarget.style.color = "#EF4444"; }}
           onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "rgba(239,68,68,0.8)"; }}>
-          <LogOut size={15} /> Log Out
-        </div>
+          <LogOut size={15} aria-hidden="true" /> Log Out
+        </button>
       </div>
     </div>
   );
 
   return (
     <div className="ea-admin-shell" style={{ display: "flex", width: "100vw", minHeight: "100vh", background: "#E8ECF4", fontFamily: "inherit", position: "fixed", top: 0, left: 0, overflow: "hidden" }}>
+      {/* First Tab stop: jumps past the menu to the page. Hidden until it has keyboard focus. */}
+      <a href="#admin-main" className="ea-skip-link" onClick={(e) => { e.preventDefault(); mainRef.current?.focus(); }}>Skip to main content</a>
       {!isMobile && (
         <aside style={{ width: 230, flexShrink: 0, background: sb.bg, borderRight: sb.edge, display: "flex", flexDirection: "column", height: "100vh", overflowY: "auto", boxShadow: "4px 0 24px rgba(0,0,0,0.15)" }}>
-          <SidebarContent />
+          {sidebarContent()}
         </aside>
       )}
       {isMobile && sidebarOpen && (
         <>
-          <div onClick={() => setSidebarOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.6)", zIndex: 40, backdropFilter: "blur(4px)" }} />
-          <aside style={{ position: "fixed", top: 0, left: 0, bottom: 0, width: 230, background: sb.bg, zIndex: 50, display: "flex", flexDirection: "column", boxShadow: "8px 0 32px rgba(0,0,0,0.3)" }}>
-            <SidebarContent />
+          <div onClick={closeMenu} style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.6)", zIndex: 40, backdropFilter: "blur(4px)" }} />
+          {/* The phone menu is a dialog: focus moves into it, Tab stays inside, Escape closes it and focus returns to the menu button. */}
+          <aside ref={drawerRef} id="admin-menu" role="dialog" aria-modal="true" aria-label="Menu" onKeyDown={onDrawerKey}
+            style={{ position: "fixed", top: 0, left: 0, bottom: 0, width: 230, background: sb.bg, zIndex: 50, display: "flex", flexDirection: "column", boxShadow: "8px 0 32px rgba(0,0,0,0.3)" }}>
+            {sidebarContent()}
           </aside>
         </>
       )}
-      <main ref={mainRef} className="ea-admin-main" style={{ flex: 1, padding: isMobile ? "1rem" : "1.75rem 2.5rem", overflowY: "auto", height: "100vh", minWidth: 0 }}>
+      <main ref={mainRef} id="admin-main" tabIndex={-1} className="ea-admin-main" style={{ flex: 1, padding: isMobile ? "1rem" : "1.75rem 2.5rem", overflowY: "auto", height: "100vh", minWidth: 0, outline: "none" }}>
         {isMobile && (
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "1rem" }}>
-            <div onClick={() => setSidebarOpen(true)} style={{ width: 38, height: 38, borderRadius: 12, background: "white", border: "1px solid #E2E8F0", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
-              <Menu size={16} color="#64748B" />
-            </div>
+            <button type="button" ref={menuButtonRef} className="ea-side-btn" aria-label="Open menu" aria-expanded={sidebarOpen} aria-controls="admin-menu" onClick={() => setSidebarOpen(true)}
+              style={{ width: 38, height: 38, borderRadius: 12, background: "white", border: "1px solid #E2E8F0", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
+              <Menu size={16} color="#64748B" aria-hidden="true" />
+            </button>
             <div style={{ fontSize: 16, fontWeight: 800, color: "#0F172A" }}>{user?.school || "EduAmigo"}</div>
           </div>
         )}
