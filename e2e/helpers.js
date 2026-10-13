@@ -25,7 +25,8 @@ export async function signIn(page, role, { school = 'GVPS', password = PASSWORD,
   if (expectSuccess) await page.waitForURL((url) => !/\/(login|select-school)/.test(url.pathname));
 }
 
-export const API = 'http://localhost:8000/api';
+// The test backend (see playwright.config.js), not the demo on 8000.
+export const API = `http://localhost:${process.env.E2E_API_PORT || 8100}/api`;
 
 // A signed-in API session, for checking what the database holds after a step done in the UI.
 export async function apiSession(request, role, school = 'GVPS') {
