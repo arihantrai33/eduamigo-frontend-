@@ -116,8 +116,40 @@ Unrouted page files (not reachable): `admin/Attendance.jsx`, `admin/NoticeBoard.
 `/admin/ask`.)
 
 ### Platform (super admin)
-The owner console is a separate application (`eduamigo-console`), not part of this repository's routes. Not yet
-reviewed in this pass.
+The owner console is a separate application (`eduamigo-console`), not part of this repository's routes.
+
+Scope (recorded before the review, 2026-10-13): available locally at `~/Downloads/eduamigo-console`, branch `main`,
+2 commits (6406919, d8e444b), clean working tree, never pushed by this work. React 19 + Vite, no UI library,
+about 1,050 lines in 8 screens plus one stylesheet (69 lines). Used only by the platform owner (superadmin), signs in
+at `/api/platform/login`, token in sessionStorage (closing the tab signs out, 12 h expiry). Runs on port 5180 against
+the same backend (`npm run demo` has `owner@eduamigo.demo`). Desktop tool: phones are a secondary target.
+
+| Route | Purpose |
+|---|---|
+| `/login` | Owner sign-in |
+| `/` | Dashboard: schools by status, active students, logins, invoice totals |
+| `/schools` | School list with search, status filter and usage |
+| `/schools/new` | New school and its first admin (shows the one-time password and school code) |
+| `/schools/:id` | School page: branding with live preview, plan, add-ons, modules, limits, dates, invoices, support sign-in, switch off/on (361 lines, the largest screen) |
+| `/plans` | Plans and prices, add-on prices |
+| `/invoices` | Invoices across schools |
+| `/activity` | Platform activity log |
+
+Review rules: same checks as the school app (screens at 375 and 1440 px, JS errors, sideways scroll, form feedback),
+no change to the platform API or to permissions; the console's own `npm run lint` and `npm run build`.
+
+Review result (console commit 8b35e3a, local only):
+- Desktop: clean and consistent already (dark sidebar, neutral cards, status pills); no change.
+- Phones: the 220 px sidebar never collapsed, so every screen scrolled sideways (57–137 px) and tables were cut off.
+  Now a top bar (name, Sign out, sections in one row that scrolls sideways, current section kept in view); school
+  page tabs scroll in their row. Sweep after: 8 routes × 375/1440 px, **0 sideways scroll, 0 JavaScript errors**.
+  The add-on price table on Plans keeps scrolling inside its card (data-heavy).
+- Navigation: "Schools" was highlighted together with "Add a school"; now only the current entry (checked in the
+  browser on both pages).
+- Forms: already sound (required fields, busy states, a message after every save, support sign-in needs a reason).
+  Added: "Turn school off" asks first (checked in the browser: dismissing sends nothing); "Void" asks first and
+  issue, mark paid and void now report the result. Void was not exercised in the browser: the demo plans have no
+  price, so no invoice can be created without changing the running demo's prices.
 
 ## Forms review (batch 7)
 Every screen that writes data was checked for: checks before sending, a visible result (success or a readable
@@ -141,7 +173,8 @@ blocked for unsaved forms (`BrowserRouter`); per-field inline error text is not 
 1. Admin screens on the old look but working: Reports-type pages keep their own chart colours; Settings and the
    portal heroes (Results, Profile) keep their own design.
 2. Forms: the generic "Error" fallback above; inline per-field error text if wanted.
-3. Owner console (`eduamigo-console`): next.
+3. Owner console: reviewed (see Platform). Open: browser check of Void with a priced plan; the console has no
+   automated tests.
 4. Print views (report card, receipt, TC) need a print check.
 
 ## Verification log
@@ -154,3 +187,4 @@ blocked for unsaved forms (`BrowserRouter`); per-field inline error text is not 
 | 2026-10-13 | Batch 5, owner decisions (2ab6301) | Playwright 22/22 incl. 2 new tests (home header scrolls more than 200 px on a 375 px phone; Results shows the shared bar with Learn current) |
 | 2026-10-13 | Batch 6, five admin screens and phone table cards (409af42, 4a07f74) | Screens reviewed at 375/1440 px; new test: Edit Profile opens the edit dialog and does not reopen after reload; Playwright 22/22; build ok; 0 new lint messages |
 | 2026-10-13 | Batch 7, forms (2fb3287, ab8a986) | Playwright **24/24** incl. new tests: discard question on a dialog with changes (none when empty; Cancel keeps the text); HR checks a missing teacher, the Ask button hides under a dialog, user and event dialogs are real dialogs. Phone screenshots of the HR, event (discard question) and user dialogs reviewed. Build ok; 0 new lint messages |
+| 2026-10-13 | Owner console (console 8b35e3a) | Before: all 6 signed-in routes checked at 375 px scrolled sideways 57–137 px (school page 61 px). After: 16 screenshots (8 routes × 375/1440 px), 0 sideways scroll, 0 JS errors; school-off confirmation and nav highlight checked in the browser; console lint and build clean |
