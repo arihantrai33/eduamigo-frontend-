@@ -740,6 +740,9 @@ input:-webkit-autofill:focus {
   position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center;
   padding: 16px; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px);
 }
+/* The admin frame is its own stacking layer, so the floating Ask button would sit above an open dialog
+   and could cover its buttons; it is hidden until the dialog closes. */
+body:has(.ea-dialog-backdrop) .ea-ask-fab { display: none !important; }
 .ea-dialog {
   max-width: 100%; max-height: calc(var(--ea-vh) - 32px); overflow-y: auto; outline: none;
   background: #fff; border-radius: 20px; padding: 24px; box-shadow: 0 32px 80px rgba(15, 23, 42, 0.25);

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { ChevronLeft, ChevronRight, Plus, X, Trash2, Calendar, Sparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Trash2, Sparkles } from "lucide-react";
 
 import Glyph from "../../components/Glyph";
+import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -268,18 +269,9 @@ export default function EventCalendar() {
       </div>
 
       {/* Day Modal */}
-      {showDayModal && (
-        <div style={{ position:"fixed", inset:0, background:"rgba(15,23,42,0.7)", zIndex:100, display:"flex", alignItems:"center", justifyContent:"center", backdropFilter:"blur(6px)" }}>
-          <div style={{ background:"white", borderRadius:24, padding:"28px", width:"100%", maxWidth:440, boxShadow:"0 32px 80px rgba(0,0,0,0.25)" }}>
-            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:20 }}>
-              <div>
-                <div style={{ fontSize:18, fontWeight:800, color:"#0F172A" }}>{MONTHS[currentMonth]} {selectedDate?.day}, {currentYear}</div>
-                <div style={{ fontSize:12, color:"#94A3B8", marginTop:2 }}>{selectedDayEvents.length} event{selectedDayEvents.length!==1?"s":""}</div>
-              </div>
-              <div onClick={() => setShowDayModal(false)} style={{ cursor:"pointer", color:"#94A3B8", width:32, height:32, borderRadius:8, border:"1px solid #E2E8F0", display:"flex", alignItems:"center", justifyContent:"center" }}>
-                <X size={16} />
-              </div>
-            </div>
+      <Modal show={showDayModal} onClose={() => setShowDayModal(false)} width={440}
+        title={`${MONTHS[currentMonth]} ${selectedDate?.day}, ${currentYear}`}>
+            <div style={{ fontSize:12, color:"#94A3B8", margin:"-12px 0 16px" }}>{selectedDayEvents.length} event{selectedDayEvents.length!==1?"s":""}</div>
             {selectedDayEvents.length===0 ? (
               <div style={{ textAlign:"center", padding:"24px 0", color:"#CBD5E1" }}>
                 <div style={{ fontSize:36, marginBottom:8 }}><Glyph e="📅" /></div>
@@ -295,7 +287,7 @@ export default function EventCalendar() {
                     {ev.description && <div style={{ fontSize:12, color:"#64748B", marginTop:4, lineHeight:1.5 }}>{ev.description}</div>}
                     <div style={{ fontSize:10, fontWeight:700, color:tc.color, marginTop:6, textTransform:"uppercase" }}>{tc.label}</div>
                   </div>
-                  <button onClick={() => handleDelete(ev._id)} style={{ width:30, height:30, borderRadius:8, border:"none", background:"rgba(239,68,68,0.1)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                  <button type="button" aria-label={`Delete ${ev.title}`} onClick={() => handleDelete(ev._id)} style={{ width:30, height:30, borderRadius:8, border:"none", background:"rgba(239,68,68,0.1)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>
                     <Trash2 size={12} color="#EF4444" />
                   </button>
                 </div>
@@ -305,20 +297,10 @@ export default function EventCalendar() {
               style={{ width:"100%", marginTop:14, padding:"12px", borderRadius:12, border:"none", background:`linear-gradient(135deg,${c1},${c2})`, color:"white", fontSize:13, fontWeight:700, cursor:"pointer", boxShadow:`0 4px 12px ${c1}40` }}>
               + Add Event on this day
             </button>
-          </div>
-        </div>
-      )}
+      </Modal>
 
       {/* Add Form Modal */}
-      {showForm && (
-        <div style={{ position:"fixed", inset:0, background:"rgba(15,23,42,0.7)", zIndex:100, display:"flex", alignItems:"center", justifyContent:"center", backdropFilter:"blur(6px)" }}>
-          <div style={{ background:"white", borderRadius:24, padding:"32px", width:"100%", maxWidth:500, boxShadow:"0 32px 80px rgba(0,0,0,0.25)" }}>
-            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:24 }}>
-              <div style={{ fontSize:18, fontWeight:800, color:"#0F172A" }}>Add New Event</div>
-              <div onClick={() => setShowForm(false)} style={{ cursor:"pointer", width:32, height:32, borderRadius:8, border:"1px solid #E2E8F0", display:"flex", alignItems:"center", justifyContent:"center", color:"#94A3B8" }}>
-                <X size={16} />
-              </div>
-            </div>
+      <Modal show={showForm} onClose={() => setShowForm(false)} width={500} title="Add New Event">
 
             <div style={{ marginBottom:16 }}>
               <label style={{ fontSize:12, fontWeight:700, color:"#374151", display:"block", marginBottom:8 }}>Event Type</label>
@@ -369,9 +351,7 @@ export default function EventCalendar() {
                 {saving ? "Saving..." : "Add Event"}
               </button>
             </div>
-          </div>
-        </div>
-      )}
+      </Modal>
     </div>
   );
 }

@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { Search, Plus, RefreshCw, Shield, GraduationCap, Users, UserCheck, Calculator, X } from "lucide-react";
+import { Search, Plus, RefreshCw, Shield, GraduationCap, Users, UserCheck, Calculator } from "lucide-react";
 import { toast, showCredentials } from "../../utils/toast";
+import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
 import { StatCard } from "../../components/ui/StatCard";
 
@@ -163,15 +164,7 @@ export default function UserManagement() {
       </div>
 
       {/* Add User Modal */}
-      {showModal && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, backdropFilter: "blur(4px)" }}>
-          <div style={{ background: "#fff", borderRadius: 16, padding: 28, width: 440, maxWidth: "90vw", boxShadow: "0 24px 60px rgba(0,0,0,0.2)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-              <div style={{ fontSize: 17, fontWeight: 700, color: "#0F172A" }}>Add New User</div>
-              <button onClick={() => setShowModal(false)} style={{ width: 28, height: 28, borderRadius: 8, border: "1px solid #E2E8F0", background: "#F8FAFC", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <X size={14} color="#64748B" />
-              </button>
-            </div>
+      <Modal show={showModal} onClose={() => setShowModal(false)} width={440} title="Add New User">
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               {[{ label: "Full Name", key: "name", type: "text", placeholder: "e.g. John Smith" },
                 { label: "Email Address", key: "email", type: "email", placeholder: "e.g. john@school.com" },
@@ -196,9 +189,7 @@ export default function UserManagement() {
                 {saving ? "Creating..." : "Create User"}
               </button>
             </div>
-          </div>
-        </div>
-      )}
+      </Modal>
     </div>
   );
 }

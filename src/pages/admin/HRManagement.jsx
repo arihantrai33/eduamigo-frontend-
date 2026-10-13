@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast, confirmAction, errorMessage } from "../../utils/toast";
 
 import Glyph from "../../components/Glyph";
+import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import { toneOf } from "../../components/ui/tone";
@@ -88,6 +89,14 @@ export default function HRManagement() {
   };
 
   const handleSave = async () => {
+    if (!form.teacher) return toast.error("Select a teacher");
+    if (tab === "salary") {
+      if (form.basicSalary === undefined || form.basicSalary === "" || Number(form.basicSalary) < 0) return toast.error("Enter the basic salary");
+    } else {
+      if (!form.leaveType) return toast.error("Select the leave type");
+      if (!form.fromDate || !form.toDate) return toast.error("Enter the from and to dates");
+      if (String(form.toDate).slice(0, 10) < String(form.fromDate).slice(0, 10)) return toast.error("The to date cannot be before the from date");
+    }
     setLoading(true);
     try {
       if (tab === "salary") {
@@ -99,8 +108,9 @@ export default function HRManagement() {
         else await axios.post(`${API}/hr/leaves`, form, auth());
         fetchLeaves();
       }
+      toast.success(editItem ? "Changes saved" : tab === "salary" ? "Salary record added" : "Leave record added");
       setShowModal(false);
-    } catch(e) { toast.error(e.response?.data?.message || "Error"); }
+    } catch(e) { toast.error(errorMessage(e, "Could not save the record")); }
     setLoading(false);
   };
 
@@ -269,12 +279,8 @@ export default function HRManagement() {
         </div>
       )}
 
-      {showModal && (
-        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.4)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:1000, backdropFilter:"blur(4px)" }}>
-          <div style={{ background:"white", borderRadius:24, padding:28, width:480, maxHeight:"90vh", overflowY:"auto", boxShadow:"0 24px 64px rgba(0,0,0,0.2)" }}>
-            <div style={{ fontSize:18, fontWeight:800, color:"#0F172A", marginBottom:20 }}>
-              {editItem ? "Edit" : "Add"} {tab === "salary" ? "Salary Record" : "Leave Request"}
-            </div>
+      <Modal show={showModal} onClose={() => setShowModal(false)} width={480}
+        title={`${editItem ? "Edit" : "Add"} ${tab === "salary" ? "Salary Record" : "Leave Request"}`}>
             <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
               <div>
                 <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>TEACHER</div>
@@ -328,9 +334,7 @@ export default function HRManagement() {
                 {loading ? "Saving..." : "Save"}
               </button>
             </div>
-          </div>
-        </div>
-      )}
+      </Modal>
     </div>
   );
 }

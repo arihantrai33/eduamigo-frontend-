@@ -42,6 +42,31 @@ test('a dialog with typed-in changes asks before it is closed', async ({ page })
   await expect(dialog).toHaveCount(0);
 });
 
+test('HR, calendar and user forms open in the shared dialog; HR checks required fields first', async ({ page }) => {
+  await signIn(page, 'admin');
+  await page.goto('/admin/hr-management');
+  await page.getByRole('button', { name: '+ Add Salary' }).click();
+  const hr = page.getByRole('dialog', { name: 'Add Salary Record' });
+  await expect(hr).toBeVisible();
+  // The floating Ask button would otherwise sit above the dialog.
+  await expect(page.locator('.ea-ask-fab')).toBeHidden();
+  await hr.getByRole('button', { name: 'Save' }).click();
+  await expect(page.getByRole('status')).toContainText('Select a teacher');
+  await expect(hr).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(hr).toHaveCount(0);
+  await expect(page.locator('.ea-ask-fab')).toBeVisible();
+
+  await page.goto('/admin/user-management');
+  await page.getByRole('button', { name: 'Add User', exact: true }).click();
+  await expect(page.getByRole('dialog', { name: 'Add New User' })).toBeVisible();
+  await page.keyboard.press('Escape');
+
+  await page.goto('/admin/event-calendar');
+  await page.getByRole('button', { name: 'Add Event', exact: true }).click();
+  await expect(page.getByRole('dialog', { name: 'Add New Event' })).toBeVisible();
+});
+
 test.describe('on a phone', () => {
   test.use({ viewport: { width: 375, height: 812 } });
 
