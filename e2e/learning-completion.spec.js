@@ -17,7 +17,11 @@ async function mockLearning(page, { context = CONTEXT(), chat = () => [{ type: '
     calls.push({ method: req.method(), path, body });
     const ok = (data, status = 200) => route.fulfill({ status, json: { success: true, data } });
     if (path === '/context') return ok(context);
-    if (path === '/chat') return route.fulfill({ status: 200, contentType: 'application/x-ndjson', body: ndjson(await chat(body)) });
+    if (path === '/chat') {
+      const out = await chat(body);
+      if (out.status) return route.fulfill({ status: out.status, json: out.json });
+      return route.fulfill({ status: 200, contentType: 'application/x-ndjson', body: ndjson(out) });
+    }
     if (path === '/practice' && req.method() === 'GET') return ok([]);
     if (path === '/practice' && req.method() === 'POST' && practice) return ok(practice, 201);
     if (/^\/practice\/p1\/answer$/.test(path) && practice) return ok(practice.answerResult);
@@ -148,6 +152,69 @@ test.describe('Voice chosen for the language', () => {
     await page.addInitScript(() => { window.__voices = [{ lang: 'en-US', name: 'Basic US' }]; });
     await ask(page, 'hi', 'देखो, यह एक उदाहरण है।');
     await expect(page.getByText('This device has no Hindi voice installed')).toBeVisible();
+  });
+});
+
+test.describe('Why an answer failed', () => {
+  const failWith = (extra) => () => [{ type: 'meta', conversationId: 'c1' }, { type: 'error', code: 'AI_FAILED', ...extra }];
+  const ask = async (page) => {
+    await page.goto('/student/learn');
+    await page.getByLabel('Your question').fill('What is a fraction?');
+    await page.getByRole('button', { name: 'Send' }).click();
+    return page.getByRole('alert');
+  };
+
+  test('a temporary network problem says so and offers Try again, which asks the same question again', async ({ page }) => {
+    await signIn(page, 'student');
+    let n = 0;
+    const calls = await mockLearning(page, { chat: () => { n += 1; return n === 1 ? failWith({ reason: 'network', retryable: true, message: 'The AI Tutor could not reach the AI service because of a temporary network problem on the server. Please try again in a moment.' })() : [{ type: 'meta', conversationId: 'c1' }, final()]; } });
+    const alert = await ask(page);
+    await expect(alert).toContainText('Temporary network problem');
+    await expect(alert).toContainText('temporary network problem on the server');
+    await alert.getByRole('button', { name: 'Try again' }).click();
+    await expect(page.getByText('Here is the answer.')).toBeVisible();
+    expect(calls.filter((c) => c.path === '/chat').map((c) => c.body.message)).toEqual(['What is a fraction?', 'What is a fraction?']);
+  });
+
+  test('a busy service and a slow one are named differently from a network problem', async ({ page }) => {
+    await signIn(page, 'student');
+    await mockLearning(page, { chat: failWith({ reason: 'busy', retryable: true, message: 'The AI service is busy or temporarily unavailable. Please try again in a minute.' }) });
+    const alert = await ask(page);
+    await expect(alert).toContainText('The AI service is busy');
+    await expect(alert).not.toContainText('network');
+    await expect(alert.getByRole('button', { name: 'Try again' })).toBeVisible();
+  });
+
+  test('an AI that is set up wrongly is not something to retry', async ({ page }) => {
+    await signIn(page, 'student');
+    await mockLearning(page, { chat: failWith({ reason: 'config', retryable: false, message: "The AI Tutor cannot answer because the AI service is not set up correctly on this server. Please tell your school's administrator." }) });
+    const alert = await ask(page);
+    await expect(alert).toContainText('The AI service is not available');
+    await expect(alert).toContainText("tell your school's administrator");
+    await expect(alert.getByRole('button', { name: 'Try again' })).toHaveCount(0);
+  });
+
+  test('a school that used its AI allowance gets no Try again; one answer at a time offers it', async ({ page }) => {
+    await signIn(page, 'student');
+    let code = 'AI_LIMIT';
+    await mockLearning(page, { chat: () => ({ status: 429, json: { success: false, code, message: code === 'AI_LIMIT' ? "Your school's monthly AI allowance has been used." : 'Please wait for the current answer to finish before asking again.' } }) });
+    let alert = await ask(page);
+    await expect(alert).toContainText('AI limit reached');
+    await expect(alert.getByRole('button', { name: 'Try again' })).toHaveCount(0);
+    await page.getByRole('button', { name: 'New chat' }).click();
+    code = 'AI_BUSY';
+    alert = await ask(page);
+    await expect(alert).toContainText('Please wait for the current answer');
+    await expect(alert.getByRole('button', { name: 'Try again' })).toBeVisible();
+  });
+
+  test('a lost connection between the browser and the server is a network problem with Try again', async ({ page }) => {
+    await signIn(page, 'student');
+    await mockLearning(page);
+    await page.route('**/api/learning/chat', (route) => route.abort('connectionfailed'));
+    const alert = await ask(page);
+    await expect(alert).toContainText('Temporary network problem');
+    await expect(alert.getByRole('button', { name: 'Try again' })).toBeVisible();
   });
 });
 

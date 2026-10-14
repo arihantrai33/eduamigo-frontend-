@@ -864,6 +864,11 @@ body:has(.ea-dialog-backdrop) .ea-ask-fab { display: none !important; }
 .ea-learn__composer-actions > .ea-btn[aria-label*="voice"], .ea-learn__composer-actions > .ea-btn[aria-label*="listening"], .ea-learn__composer-actions > .ea-btn[aria-label*="spoken"] { width: 40px; height: 40px; padding: 0; border-radius: 50%; justify-content: center; }
 .ea-learn__hint { margin: 0; font-size: 12px; line-height: 1.4; color: var(--ea-muted); }
 .ea-learn__note { margin: 0; padding: 8px 12px; border-radius: 10px; background: var(--ea-hover); }
+.ea-learn__failure { display: flex; align-items: flex-start; gap: 10px; }
+.ea-learn__failure > svg { flex: none; margin-top: 2px; }
+.ea-learn__failure-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; font-size: 14px; line-height: 1.5; }
+.ea-learn__failure-text strong { font-weight: 700; }
+.ea-learn__failure.is-network, .ea-learn__failure.is-timeout, .ea-learn__failure.is-busy { background: #FFFBEB; border-color: #FDE68A; color: #78350F; }
 @media (max-width: 640px) {
   .ea-learn__panel { padding: 12px; gap: 10px; }
   .ea-learn__hint, .ea-learn__btn-text { display: none; }

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Mic, MicOff, Send, Square, Volume2, VolumeX, Plus, History, Trash2, X, RotateCcw, Compass, Sparkles, Calculator, Lightbulb, Shapes, TrendingUp } from "lucide-react";
+import { Mic, MicOff, Send, Square, Volume2, VolumeX, Plus, History, Trash2, X, RotateCcw, Compass, Sparkles, Calculator, Lightbulb, Shapes, TrendingUp, WifiOff, Clock, AlertTriangle, Wrench } from "lucide-react";
 import { learningApi, streamChat, visibleWhileStreaming } from "./api";
 import AnswerView from "./AnswerView";
 import { useVoice, VOICE_LANGS } from "./useVoice";
@@ -14,6 +14,27 @@ const readConsent = () => { try { return localStorage.getItem(CONSENT_KEY) === "
 const saveConsent = () => { try { localStorage.setItem(CONSENT_KEY, "yes"); } catch { /* private mode: ask again next time */ } };
 let seq = 0;
 const nextId = () => { seq += 1; return `m${seq}`; };
+
+// A failed answer says what kind of failure it was. A temporary one (network, slow, busy) offers "Try again"; a server that is
+// switched off or set up wrongly does not, because trying again cannot help. `reason` comes from the server (llm failure kind).
+const FAILURE = {
+  network: { Icon: WifiOff, title: "Temporary network problem", retry: true },
+  timeout: { Icon: Clock, title: "The AI took too long to answer", retry: true },
+  busy: { Icon: AlertTriangle, title: "The AI service is busy", retry: true },
+  config: { Icon: Wrench, title: "The AI service is not available", retry: false },
+  off: { Icon: Wrench, title: "The AI is switched off", retry: false },
+  no_provider: { Icon: Wrench, title: "The AI is not set up", retry: false },
+  limit: { Icon: AlertTriangle, title: "AI limit reached", retry: false },
+  failed: { Icon: AlertTriangle, title: "Could not answer", retry: true },
+};
+const failureOf = (reason) => FAILURE[reason] || FAILURE.failed;
+// An error from the browser's own request (not from the server): a lost connection is a network problem.
+const reasonOfRequestError = (err) => {
+  const code = err?.response?.data?.code;
+  if (code === "AI_LIMIT") return "limit";
+  if (code === "AI_BUSY") return "busy";
+  return err?.response ? "failed" : "network";
+};
 
 // Starting points on an empty chat. They only fill the box (the student presses Send), so nothing is asked by accident.
 const STARTERS = [
@@ -111,14 +132,17 @@ export default function TutorChat({ context, initialQuestion, onSuggest }) {
               // The rest of what was streamed is spoken (the final text has the hidden blocks removed, so it is not re-read).
               if (spoken) speakNew(true);
             }
-            if (ev.type === "error") patch(answerId, () => ({ streaming: false, error: ev.message, retry: question }));
+            if (ev.type === "error") patch(answerId, () => ({ streaming: false, error: ev.message, errorReason: ev.reason || "failed", retry: failureOf(ev.reason).retry && ev.retryable !== false ? question : null }));
           },
         },
       );
-      patch(answerId, (m) => (m.streaming ? { streaming: false, error: m.text ? null : "The answer did not arrive. Please try again.", retry: question } : {}));
+      patch(answerId, (m) => (m.streaming ? { streaming: false, error: m.text ? null : "The answer did not arrive. Please try again.", errorReason: "network", retry: question } : {}));
     } catch (err) {
       if (err.name === "AbortError") patch(answerId, (m) => ({ streaming: false, stopped: true, text: m.text }));
-      else patch(answerId, () => ({ streaming: false, error: errorMessage(err, "Could not get an answer"), retry: question }));
+      else {
+        const reason = reasonOfRequestError(err);
+        patch(answerId, () => ({ streaming: false, error: errorMessage(err, "Could not get an answer"), errorReason: reason, retry: failureOf(reason).retry ? question : null }));
+      }
     } finally {
       setBusy(false);
       sending.current = false;
@@ -241,12 +265,16 @@ export default function TutorChat({ context, initialQuestion, onSuggest }) {
               )}
               {m.suggest?.action === "planner" && <button type="button" className="ea-btn ea-btn--primary" onClick={() => onSuggest?.(m.suggest)}>Open Revision Planner</button>}
               {m.voiceTiming && <p className="ea-learn__muted" data-testid="voice-timing">Voice timing on this device: first text {m.voiceTiming.text ?? "n/a"} ms, first sound {m.voiceTiming.audio ?? "n/a"} ms after you stopped speaking.</p>}
-              {m.error && (
-                <div className="ea-alert" role="alert">
-                  <span>{m.error}</span>
-                  {m.retry && <button type="button" className="ea-btn ea-btn--ghost" onClick={() => send(m.retry)}><RotateCcw size={14} aria-hidden="true" /> Try again</button>}
-                </div>
-              )}
+              {m.error && (() => {
+                const { Icon, title } = failureOf(m.errorReason);
+                return (
+                  <div className={`ea-alert ea-learn__failure is-${m.errorReason || "failed"}`} role="alert">
+                    <Icon size={18} aria-hidden="true" />
+                    <div className="ea-learn__failure-text"><strong>{title}</strong><span>{m.error}</span></div>
+                    {m.retry && <button type="button" className="ea-btn ea-btn--ghost" onClick={() => send(m.retry)}><RotateCcw size={14} aria-hidden="true" /> Try again</button>}
+                  </div>
+                );
+              })()}
             </div>
             </div>
           )))}
