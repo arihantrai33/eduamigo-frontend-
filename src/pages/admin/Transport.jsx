@@ -187,11 +187,11 @@ export default function Transport() {
                       style={{ padding:"8px 16px", borderRadius:10, border:"1px solid #E2E8F0", background:"white", fontSize:12, fontWeight:700, cursor:"pointer", color:"#10B981" }}>
                       <Glyph e="👦" /> Students ({bus.assignedStudents?.length||0})
                     </button>
-                    <button className="act-btn" onClick={() => setExpandedBus(isExpanded ? null : bus._id)}
+                    <button type="button" className="act-btn" onClick={() => setExpandedBus(isExpanded ? null : bus._id)} aria-expanded={isExpanded} aria-label={isExpanded ? "Hide bus details" : "Show bus details"}
                       style={{ padding:"8px 14px", borderRadius:10, border:"1px solid #E2E8F0", background: isExpanded ? "#F1F5F9" : "white", fontSize:12, fontWeight:700, cursor:"pointer", color:"#64748B" }}>
                       {isExpanded ? "▲" : "▼"}
                     </button>
-                    <button className="act-btn" onClick={() => handleDeleteBus(bus._id)}
+                    <button type="button" className="act-btn" onClick={() => handleDeleteBus(bus._id)} aria-label={`Delete bus ${bus.busNumber}`} title="Delete"
                       style={{ width:34, height:34, borderRadius:10, border:"none", background:"#FEF2F2", cursor:"pointer", fontSize:14 }}>
                       <Glyph e="🗑" />
                     </button>

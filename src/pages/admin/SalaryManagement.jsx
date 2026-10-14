@@ -142,17 +142,17 @@ export default function SalaryManagement() {
 
       {/* Filters */}
       <div style={{ display:"flex", flexWrap:"wrap", gap:12, marginBottom:20, animation:"fadeUp 0.4s ease 0.1s both" }}>
-        <select value={filterMonth} onChange={e => setFilterMonth(e.target.value)}
+        <select aria-label="Filter by month" value={filterMonth} onChange={e => setFilterMonth(e.target.value)}
           style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:150 }}>
           <option value="">All Months</option>
           {MONTHS.map((m,i) => <option key={i} value={i+1}>{m}</option>)}
         </select>
-        <select value={filterYear} onChange={e => setFilterYear(e.target.value)}
+        <select aria-label="Filter by year" value={filterYear} onChange={e => setFilterYear(e.target.value)}
           style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:120 }}>
           <option value="">All Years</option>
           {years.map(y => <option key={y} value={y}>{y}</option>)}
         </select>
-        <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
+        <select aria-label="Filter by status" value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
           style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:130 }}>
           <option value="">All Status</option>
           <option value="Paid">Paid</option>

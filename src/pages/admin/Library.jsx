@@ -200,7 +200,7 @@ export default function Library() {
                         style={{ padding:"6px 14px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", color:"#374151", fontSize:11, fontWeight:700, cursor:"pointer" }}>
                         Edit
                       </button>
-                      <button className="act-btn" onClick={() => handleDelete(b._id)}
+                      <button type="button" className="act-btn" onClick={() => handleDelete(b._id)} aria-label={`Delete ${b.title}`} title="Delete"
                         style={{ width:30, height:30, borderRadius:8, border:"none", background:"#FEF2F2", cursor:"pointer", fontSize:13 }}>
                         <Glyph e="🗑" />
                       </button>

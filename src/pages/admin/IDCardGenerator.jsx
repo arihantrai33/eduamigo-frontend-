@@ -274,12 +274,12 @@ export default function IDCardGenerator() {
         <div style={{ background: "white", borderRadius: 20, padding: "20px", boxShadow: "0 4px 24px rgba(15,23,42,0.08)", border: "1px solid rgba(226,232,240,0.8)", maxHeight: 600, display: "flex", flexDirection: "column", gap: 10 }}>
           {tab === "student" && (
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-              <select value={selectedClass} onChange={e => { setSelectedClass(e.target.value); setSelectedSection(""); setSelected(null); setAnimPhase(0); }}
+              <select aria-label="Class" value={selectedClass} onChange={e => { setSelectedClass(e.target.value); setSelectedSection(""); setSelected(null); setAnimPhase(0); }}
                 style={{ padding: "9px 12px", borderRadius: 10, border: "1.5px solid #E2E8F0", fontSize: 12, fontWeight: 600, outline: "none", background: "white", cursor: "pointer" }}>
                 <option value="">All Classes</option>
                 {classes.map(c => <option key={c} value={c}>Class {c}</option>)}
               </select>
-              <select value={selectedSection} onChange={e => { setSelectedSection(e.target.value); setSelected(null); setAnimPhase(0); }}
+              <select aria-label="Section" value={selectedSection} onChange={e => { setSelectedSection(e.target.value); setSelected(null); setAnimPhase(0); }}
                 style={{ padding: "9px 12px", borderRadius: 10, border: "1.5px solid #E2E8F0", fontSize: 12, fontWeight: 600, outline: "none", background: "white", cursor: "pointer" }}>
                 <option value="">All Sections</option>
                 {sections.map(s => <option key={s} value={s}>Section {s}</option>)}
@@ -287,6 +287,7 @@ export default function IDCardGenerator() {
             </div>
           )}
           <input value={search} onChange={e => setSearch(e.target.value)}
+            aria-label={tab === "student" ? "Search students" : "Search faculty"}
             placeholder={`Search ${tab === "student" ? "students" : "faculty"}...`}
             style={{ padding: "10px 14px", borderRadius: 12, border: "1.5px solid #E2E8F0", fontSize: 13, outline: "none", fontFamily: "inherit", transition: "border 0.2s" }}
             onFocus={e => e.target.style.borderColor = "var(--brand)"} onBlur={e => e.target.style.borderColor = "#E2E8F0"} />

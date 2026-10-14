@@ -267,7 +267,7 @@ export default function Settings() {
         <div style={title}>Subjects</div>
         <div style={{ fontSize: 12, color: "#64748B", marginBottom: 10 }}>Extra subjects your school teaches, shown in teacher and timetable forms.</div>
         <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-          <input style={inputStyle} value={newSubject} onChange={(e) => setNewSubject(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addSubject()} placeholder="e.g. Sanskrit" />
+          <input style={inputStyle} value={newSubject} onChange={(e) => setNewSubject(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addSubject()} placeholder="e.g. Sanskrit" aria-label="New subject name" />
           <button onClick={addSubject} style={{ padding: "0 18px", borderRadius: 8, border: "none", background: "var(--brand-soft)", color: "var(--brand-dark)", fontWeight: 600, cursor: "pointer" }}>Add</button>
         </div>
         {subjects.length === 0 ? (

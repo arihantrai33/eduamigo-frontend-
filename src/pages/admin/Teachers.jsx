@@ -275,7 +275,7 @@ export default function Teachers() {
                         style={{ padding:"6px 14px", borderRadius:8, border:"none", background:"#ECFDF5", color:"#059669", fontSize:12, fontWeight:700, cursor:"pointer" }}>View</button>
                       <button className="act-btn" onClick={() => openEdit(t)}
                         style={{ padding:"6px 14px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", color:"#374151", fontSize:12, fontWeight:700, cursor:"pointer" }}>Edit</button>
-                      <button className="act-btn" onClick={() => setDeleteId(t._id)}
+                      <button type="button" className="act-btn" onClick={() => setDeleteId(t._id)} aria-label={`Delete ${t.name}`} title="Delete"
                         style={{ padding:"6px 12px", borderRadius:8, border:"none", background:"#FEF2F2", color:"#DC2626", fontSize:12, fontWeight:700, cursor:"pointer" }}><Glyph e="🗑" /></button>
                     </div>
                   </td>

@@ -434,7 +434,7 @@ export default function ParentBus() {
     return (
       <div style={styles.fullscreenRoot}>
         <div style={{ width: "100%", height: "100%" }}>{mapContent}</div>
-        <button style={styles.exitFsBtn} onClick={() => setIsFullscreen(false)}>
+        <button type="button" aria-label="Exit full-screen map" style={styles.exitFsBtn} onClick={() => setIsFullscreen(false)}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/>
             <path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
@@ -467,7 +467,7 @@ export default function ParentBus() {
           {mapContent}
         </div>
 
-        <button
+        <button type="button" aria-label="Full-screen map"
           style={{ ...styles.fsBtn, bottom: panelExpanded ? "calc(70vh - 160px)" : "260px" }}
           onClick={() => setIsFullscreen(true)}
         >
@@ -479,7 +479,7 @@ export default function ParentBus() {
 
         <div ref={headerRef} style={styles.header}>
           <div style={styles.navRow}>
-            <button style={styles.backBtn} onClick={() => navigate("/student/home")}>
+            <button type="button" aria-label="Back to home" style={styles.backBtn} onClick={() => navigate("/student/home")}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M19 12H5M12 5l-7 7 7 7"/>
               </svg>

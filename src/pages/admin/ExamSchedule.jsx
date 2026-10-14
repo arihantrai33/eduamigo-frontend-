@@ -206,7 +206,7 @@ export default function ExamSchedule() {
                 <div style={{ display:"flex", gap:8, borderTop:"1px solid #F1F5F9", paddingTop:12 }}>
                   <button className="act-btn" onClick={() => openEdit(exam)}
                     style={{ flex:1, padding:"8px", borderRadius:10, border:"1px solid #E2E8F0", background:"white", color:"#374151", fontSize:12, fontWeight:700, cursor:"pointer" }}>Edit</button>
-                  <button className="act-btn" onClick={() => setDeleteId(exam._id)}
+                  <button type="button" className="act-btn" onClick={() => setDeleteId(exam._id)} aria-label={`Delete ${exam.subject} exam`} title="Delete"
                     style={{ padding:"8px 14px", borderRadius:10, border:"none", background:"#FEF2F2", color:"#DC2626", fontSize:12, fontWeight:700, cursor:"pointer" }}><Glyph e="🗑" /></button>
                 </div>
               </div>

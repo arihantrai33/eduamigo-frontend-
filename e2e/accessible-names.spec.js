@@ -15,9 +15,8 @@ const SCREENS = {
 
 // Screens with known unnamed controls still to fix (icon-only row actions, sibling labels). Their findings are
 // listed in the test's annotations instead of failing it. Remove a screen from here once it is fixed.
-const PENDING = new Set(['/student/bus', '/parent/bus', '/admin/students', '/admin/teachers', '/admin/exams', '/admin/library',
-  '/admin/salaries', '/admin/settings', '/admin/timetable', '/admin/transport', '/admin/event-calendar', '/admin/id-card-generator',
-  '/admin/bulk-operations', '/admin/hr-management']);
+// Empty since 2026-10-15: every screen below is held to the rule.
+const PENDING = new Set([]);
 
 const unnamedControls = () => {
   const visible = (el) => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(el).visibility !== 'hidden'; };

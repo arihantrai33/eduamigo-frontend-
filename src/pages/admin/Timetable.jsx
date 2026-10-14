@@ -132,7 +132,7 @@ export default function Timetable() {
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:16, marginBottom:16 }}>
           <div>
             <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>CLASS</div>
-            <select value={selectedClass} onChange={e => { setSelectedClass(e.target.value); setSelectedSection(""); }}
+            <select aria-label="Class" value={selectedClass} onChange={e => { setSelectedClass(e.target.value); setSelectedSection(""); }}
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white" }}>
               <option value="">Select Class</option>
               {classes.map(c => <option key={c} value={c}>Class {c}</option>)}
@@ -140,7 +140,7 @@ export default function Timetable() {
           </div>
           <div>
             <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>SECTION</div>
-            <select value={selectedSection} onChange={e => setSelectedSection(e.target.value)}
+            <select aria-label="Section" value={selectedSection} onChange={e => setSelectedSection(e.target.value)}
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white" }}>
               <option value="">Select Section</option>
               {sections.map(s => <option key={s} value={s}>Section {s}</option>)}

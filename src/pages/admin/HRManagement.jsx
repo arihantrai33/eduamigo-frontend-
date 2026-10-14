@@ -168,10 +168,10 @@ export default function HRManagement() {
         <div style={{ background:"white", borderRadius:20, padding:24, boxShadow:"0 4px 24px rgba(15,23,42,0.08)", border:"1px solid rgba(226,232,240,0.8)" }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:20 }}>
             <div style={{ display:"flex", gap:10, alignItems:"center" }}>
-              <select value={filterMonth} onChange={e => setFilterMonth(e.target.value)} style={{ padding:"9px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none" }}>
+              <select aria-label="Month" value={filterMonth} onChange={e => setFilterMonth(e.target.value)} style={{ padding:"9px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none" }}>
                 {MONTHS.map((m,i) => <option key={i} value={i+1}>{m}</option>)}
               </select>
-              <select value={filterYear} onChange={e => setFilterYear(e.target.value)} style={{ padding:"9px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none" }}>
+              <select aria-label="Year" value={filterYear} onChange={e => setFilterYear(e.target.value)} style={{ padding:"9px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none" }}>
                 {[0, 1, 2, 3].map(i => new Date().getFullYear() - 3 + i).map(y => <option key={y} value={y}>{y}</option>)}
               </select>
             </div>
@@ -216,8 +216,8 @@ export default function HRManagement() {
                         {s.status === "Pending" && (
                           <button onClick={() => handleLeaveAction(s._id, "Paid")} style={{ padding:"5px 12px", borderRadius:8, border:"none", background:"#F0FDF4", color:"#15803D", fontSize:11, fontWeight:700, cursor:"pointer" }}>Mark Paid</button>
                         )}
-                        <button onClick={() => openModal("salary", s)} style={{ padding:"5px 10px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", fontSize:11, cursor:"pointer" }}><Glyph e="✏" /></button>
-                        <button onClick={() => handleDelete(s._id)} style={{ padding:"5px 10px", borderRadius:8, border:"none", background:"#FEF2F2", color:"#DC2626", fontSize:11, cursor:"pointer" }}><Glyph e="🗑" /></button>
+                        <button type="button" aria-label="Edit salary record" title="Edit" onClick={() => openModal("salary", s)} style={{ padding:"5px 10px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", fontSize:11, cursor:"pointer" }}><Glyph e="✏" /></button>
+                        <button type="button" aria-label="Delete salary record" title="Delete" onClick={() => handleDelete(s._id)} style={{ padding:"5px 10px", borderRadius:8, border:"none", background:"#FEF2F2", color:"#DC2626", fontSize:11, cursor:"pointer" }}><Glyph e="🗑" /></button>
                       </div>
                     </td>
                   </tr>
@@ -231,7 +231,7 @@ export default function HRManagement() {
       {tab === "leaves" && (
         <div style={{ background:"white", borderRadius:20, padding:24, boxShadow:"0 4px 24px rgba(15,23,42,0.08)", border:"1px solid rgba(226,232,240,0.8)" }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:20 }}>
-            <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} style={{ padding:"9px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none" }}>
+            <select aria-label="Filter by status" value={filterStatus} onChange={e => setFilterStatus(e.target.value)} style={{ padding:"9px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none" }}>
               <option value="">All Statuses</option>
               {["Pending","Approved","Rejected"].map(s => <option key={s} value={s}>{s}</option>)}
             </select>
@@ -270,7 +270,7 @@ export default function HRManagement() {
                         <button onClick={() => handleLeaveAction(l._id, "Rejected")} style={{ padding:"6px 14px", borderRadius:8, border:"none", background:"#FEF2F2", color:"#DC2626", fontSize:12, fontWeight:700, cursor:"pointer" }}>✗ Reject</button>
                       </>
                     )}
-                    <button onClick={() => handleDelete(l._id)} style={{ padding:"6px 10px", borderRadius:8, border:"none", background:"#F1F5F9", color:"#64748B", fontSize:12, cursor:"pointer" }}><Glyph e="🗑" /></button>
+                    <button type="button" aria-label="Delete leave request" title="Delete" onClick={() => handleDelete(l._id)} style={{ padding:"6px 10px", borderRadius:8, border:"none", background:"#F1F5F9", color:"#64748B", fontSize:12, cursor:"pointer" }}><Glyph e="🗑" /></button>
                   </div>
                 </div>
               ))}

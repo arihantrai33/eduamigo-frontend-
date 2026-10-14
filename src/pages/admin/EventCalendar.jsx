@@ -135,7 +135,7 @@ export default function EventCalendar() {
             <div style={{ position:"absolute", top:-30, right:-30, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.1)" }} />
             <div style={{ position:"absolute", bottom:-40, left:-10, width:100, height:100, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
             <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:16, position:"relative" }}>
-              <button onClick={() => changeMonth(-1)}
+              <button type="button" aria-label="Previous month" onClick={() => changeMonth(-1)}
                 style={{ width:32, height:32, borderRadius:10, border:"none", background:"rgba(255,255,255,0.2)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", color:"white", backdropFilter:"blur(8px)" }}>
                 <ChevronLeft size={16} />
               </button>
@@ -143,7 +143,7 @@ export default function EventCalendar() {
                 <div style={{ fontSize:20, fontWeight:800, color:"white", letterSpacing:"-0.3px" }}>{MONTHS[currentMonth]}</div>
                 <div style={{ fontSize:12, color:"rgba(255,255,255,0.7)", fontWeight:600 }}>{currentYear}</div>
               </div>
-              <button onClick={() => changeMonth(1)}
+              <button type="button" aria-label="Next month" onClick={() => changeMonth(1)}
                 style={{ width:32, height:32, borderRadius:10, border:"none", background:"rgba(255,255,255,0.2)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", color:"white" }}>
                 <ChevronRight size={16} />
               </button>
@@ -256,7 +256,7 @@ export default function EventCalendar() {
                   </div>
                 </div>
                 {/* Delete */}
-                <button onClick={(e) => { e.stopPropagation(); handleDelete(ev._id); }}
+                <button type="button" aria-label={`Delete ${ev.title}`} title="Delete" onClick={(e) => { e.stopPropagation(); handleDelete(ev._id); }}
                   style={{ width:32, height:32, borderRadius:10, border:"none", background:"rgba(239,68,68,0.08)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, transition:"all 0.15s" }}
                   onMouseEnter={e => e.currentTarget.style.background="rgba(239,68,68,0.18)"}
                   onMouseLeave={e => e.currentTarget.style.background="rgba(239,68,68,0.08)"}>

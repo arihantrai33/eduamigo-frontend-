@@ -161,7 +161,9 @@ export default function BulkOperations() {
     </div>
   );
 
-  const label = (text) => <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{text}</div>;
+  // A field is a <label> wrapping this caption and its control, so the control takes the caption as its name.
+  const label = (text) => <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{text}</span>;
+  const fieldStyle = { display:"block" };
 
   const select = (value, onChange, options, placeholder) => (
     <select value={value} onChange={e => onChange(e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer" }}>
@@ -197,10 +199,10 @@ export default function BulkOperations() {
         <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
           <div style={{ fontSize:15, fontWeight:800, color:"#0F172A" }}><Glyph e="📋" /> Bulk Attendance Mark</div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr", gap:12 }}>
-            <div>{label("CLASS")}{select(attClass, v => { setAttClass(v); setAttSection(""); }, classes, "Select Class")}</div>
-            <div>{label("SECTION")}{select(attSection, setAttSection, sections(attClass), "All Sections")}</div>
-            <div>{label("DATE")}<input type="date" value={attDate} onChange={e => setAttDate(e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", boxSizing:"border-box" }} /></div>
-            <div>{label("STATUS")}{select(attStatus, setAttStatus, ["Present","Absent","Late"], "Status")}</div>
+            <label style={fieldStyle}>{label("CLASS")}{select(attClass, v => { setAttClass(v); setAttSection(""); }, classes, "Select Class")}</label>
+            <label style={fieldStyle}>{label("SECTION")}{select(attSection, setAttSection, sections(attClass), "All Sections")}</label>
+            <label style={fieldStyle}>{label("DATE")}<input type="date" value={attDate} onChange={e => setAttDate(e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", boxSizing:"border-box" }} /></label>
+            <label style={fieldStyle}>{label("STATUS")}{select(attStatus, setAttStatus, ["Present","Absent","Late"], "Status")}</label>
           </div>
           {attClass && (
             <div style={{ padding:"12px 16px", borderRadius:12, background:"var(--brand-soft)", border:"1px solid var(--brand-border)" }}>
@@ -218,11 +220,11 @@ export default function BulkOperations() {
         <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
           <div style={{ fontSize:15, fontWeight:800, color:"#0F172A" }}><Glyph e="🎓" /> Promote Students</div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr auto 1fr 1fr", gap:12, alignItems:"end" }}>
-            <div>{label("FROM CLASS")}{select(fromClass, v => { setFromClass(v); setFromSection(""); }, classes, "From Class")}</div>
-            <div>{label("FROM SECTION")}{select(fromSection, setFromSection, sections(fromClass), "Section")}</div>
-            <div style={{ display:"flex", alignItems:"center", paddingBottom:4, fontSize:22 }}>→</div>
-            <div>{label("TO CLASS")}<input value={toClass} onChange={e => setToClass(e.target.value)} placeholder="e.g. 9" style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", boxSizing:"border-box" }} /></div>
-            <div>{label("TO SECTION")}<input value={toSection} onChange={e => setToSection(e.target.value)} placeholder="e.g. A" style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", boxSizing:"border-box" }} /></div>
+            <label style={fieldStyle}>{label("FROM CLASS")}{select(fromClass, v => { setFromClass(v); setFromSection(""); }, classes, "From Class")}</label>
+            <label style={fieldStyle}>{label("FROM SECTION")}{select(fromSection, setFromSection, sections(fromClass), "Section")}</label>
+            <div aria-hidden="true" style={{ display:"flex", alignItems:"center", paddingBottom:4, fontSize:22 }}>→</div>
+            <label style={fieldStyle}>{label("TO CLASS")}<input value={toClass} onChange={e => setToClass(e.target.value)} placeholder="e.g. 9" style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", boxSizing:"border-box" }} /></label>
+            <label style={fieldStyle}>{label("TO SECTION")}<input value={toSection} onChange={e => setToSection(e.target.value)} placeholder="e.g. A" style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", boxSizing:"border-box" }} /></label>
           </div>
           {fromClass && fromSection && (
             <div style={{ padding:"12px 16px", borderRadius:12, background:"#FFF7ED", border:"1px solid #FED7AA" }}>

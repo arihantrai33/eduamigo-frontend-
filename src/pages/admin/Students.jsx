@@ -334,7 +334,7 @@ export default function Students() {
                       {canManage && <>
                       <button className="action-btn" onClick={() => openEdit(s)}
                         style={{ padding:"6px 14px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", color:"#374151", fontSize:12, fontWeight:700, cursor:"pointer" }}>Edit</button>
-                      <button className="action-btn" onClick={() => setDeleteId(s._id)}
+                      <button type="button" className="action-btn" onClick={() => setDeleteId(s._id)} aria-label={`Delete ${s.name}`} title="Delete"
                         style={{ padding:"6px 12px", borderRadius:8, border:"none", background:"#FEF2F2", color:"#DC2626", fontSize:12, fontWeight:700, cursor:"pointer" }}><Glyph e="🗑" /></button>
                       </>}
                     </div>
