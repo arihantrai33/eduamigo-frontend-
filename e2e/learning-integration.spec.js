@@ -39,7 +39,7 @@ test('Learning AI end to end without an AI provider: honest messages, a real rev
   // Tutor: no provider -> said plainly, nothing invented; the question is kept in history.
   await page.getByLabel('Your question').fill('What is photosynthesis?');
   await page.getByRole('button', { name: 'Send' }).click();
-  await expect(page.getByRole('alert')).toContainText('The AI Tutor is not available right now');
+  await expect(page.getByRole('alert')).toContainText('The AI is switched off on this server');
   await page.getByRole('button', { name: 'History' }).click();
   await expect(page.getByRole('dialog', { name: 'Chat history' })).toContainText('What is photosynthesis?');
   await page.getByRole('button', { name: 'Close history' }).click();

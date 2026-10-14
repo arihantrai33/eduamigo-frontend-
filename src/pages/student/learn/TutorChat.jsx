@@ -91,6 +91,8 @@ export default function TutorChat({ context, initialQuestion, onSuggest }) {
             }
             if (ev.type === "final") {
               patch(answerId, () => ({ streaming: false, text: ev.text, confidence: ev.confidence, sources: ev.used, checks: ev.checks, diagrams: ev.diagrams, timings: ev.timings, suggest: ev.suggest, cached: ev.cached }));
+              // An answer that arrived only as its final text (nothing streamed) is still read aloud.
+              if (!raw && ev.text) { raw = ev.text; if (!timing.current.firstText) timing.current.firstText = performance.now(); }
               // The rest of what was streamed is spoken (the final text has the hidden blocks removed, so it is not re-read).
               if (spoken) speakNew(true);
             }
