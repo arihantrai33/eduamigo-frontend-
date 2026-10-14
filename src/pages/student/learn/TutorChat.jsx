@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Mic, MicOff, Send, Square, Volume2, VolumeX, Plus, History, Trash2, X, RotateCcw, Compass } from "lucide-react";
+import { Mic, MicOff, Send, Square, Volume2, VolumeX, Plus, History, Trash2, X, RotateCcw, Compass, Sparkles, Calculator, Lightbulb, Shapes, TrendingUp } from "lucide-react";
 import { learningApi, streamChat, visibleWhileStreaming } from "./api";
 import AnswerView from "./AnswerView";
 import { useVoice, VOICE_LANGS } from "./useVoice";
@@ -14,6 +14,14 @@ const readConsent = () => { try { return localStorage.getItem(CONSENT_KEY) === "
 const saveConsent = () => { try { localStorage.setItem(CONSENT_KEY, "yes"); } catch { /* private mode: ask again next time */ } };
 let seq = 0;
 const nextId = () => { seq += 1; return `m${seq}`; };
+
+// Starting points on an empty chat. They only fill the box (the student presses Send), so nothing is asked by accident.
+const STARTERS = [
+  { Icon: Lightbulb, title: "Understand a topic", text: "Photosynthesis samjhao" },
+  { Icon: Calculator, title: "Solve step by step", text: "Solve 2x + 5 = 17" },
+  { Icon: Shapes, title: "Learn with an example", text: "Explain fractions with an example" },
+  { Icon: TrendingUp, title: "See it as a picture", text: "Draw the graph of y = 2x + 1" },
+];
 
 export default function TutorChat({ context, initialQuestion, onSuggest }) {
   const [messages, setMessages] = useState([]);
@@ -35,6 +43,13 @@ export default function TutorChat({ context, initialQuestion, onSuggest }) {
 
   useEffect(() => { logRef.current?.scrollTo?.({ top: logRef.current.scrollHeight }); }, [messages]);
   useEffect(() => { if (initialQuestion) inputRef.current?.focus(); }, [initialQuestion]);
+  // The box grows with what is typed, up to a limit, and shrinks again after sending.
+  useEffect(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, 160)}px`;
+  }, [input]);
 
   const patch = (id, fn) => setMessages((list) => list.map((m) => (m.id === id ? { ...m, ...fn(m) } : m)));
 
@@ -197,15 +212,28 @@ export default function TutorChat({ context, initialQuestion, onSuggest }) {
       <div ref={logRef} className="ea-learn__log" role="log" aria-live="polite" aria-busy={busy} aria-label="Conversation">
         {messages.length === 0 && (
           <div className="ea-learn__empty">
-            <p><strong>Ask anything from your subjects.</strong> I explain step by step, check calculations, and use your teachers' notes when they cover the topic.</p>
-            <p className="ea-learn__muted">Try: "Photosynthesis samjhao", "Solve 2x + 5 = 17", "Explain fractions with an example", or switch on Guided Learning to solve a problem one step at a time.</p>
+            <span className="ea-learn__hero-icon" aria-hidden="true"><Sparkles size={24} /></span>
+            <h2 className="ea-learn__empty-title">Ask anything from your subjects</h2>
+            <p className="ea-learn__muted">I explain step by step, check calculations, and use your teachers' notes when they cover the topic. Turn on Guided Learning to solve a problem one step at a time.</p>
+            <ul className="ea-learn__starters">
+              {STARTERS.map(({ Icon, title, text }) => (
+                <li key={text}>
+                  <button type="button" className="ea-learn__starter" onClick={() => { setInput(text); inputRef.current?.focus(); }}>
+                    <Icon size={18} aria-hidden="true" />
+                    <span><strong>{title}</strong><small>{text}</small></span>
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
         {messages.map((m) => (m.role === "user"
           ? <div key={m.id} className="ea-learn__bubble is-user">{m.voice && <Mic size={12} aria-label="Spoken" />} {m.text}</div>
           : (
-            <div key={m.id} className="ea-learn__bubble is-ai">
-              {m.streaming && !m.text && <span className="ea-learn__muted">Thinking…</span>}
+            <div key={m.id} className="ea-learn__msg">
+            <span className="ea-learn__avatar" aria-hidden="true"><Sparkles size={15} /></span>
+            <div className="ea-learn__bubble is-ai">
+              {m.streaming && !m.text && <span className="ea-learn__typing"><i /><i /><i /><span className="ea-sr-only">Thinking…</span></span>}
               {m.text && <AnswerView msg={m} idPrefix={m.id} />}
               {m.stopped && <p className="ea-learn__muted">Stopped.</p>}
               {m.suggest?.action === "practice" && (
@@ -219,6 +247,7 @@ export default function TutorChat({ context, initialQuestion, onSuggest }) {
                   {m.retry && <button type="button" className="ea-btn ea-btn--ghost" onClick={() => send(m.retry)}><RotateCcw size={14} aria-hidden="true" /> Try again</button>}
                 </div>
               )}
+            </div>
             </div>
           )))}
       </div>
@@ -235,16 +264,17 @@ export default function TutorChat({ context, initialQuestion, onSuggest }) {
       )}
 
       {(listening || voice.state === "speaking" || voice.error) && (
-        <div className={`ea-learn__voice-status${voice.error ? " is-error" : ""}`} role="status">
-          {listening && <span>Listening… {voice.interim && <em>“{voice.interim}”</em>}</span>}
-          {voice.state === "speaking" && <span>Speaking… <button type="button" className="ea-btn ea-btn--ghost" onClick={voice.stopSpeaking}>Stop speaking</button></span>}
-          {voice.error && <span>{voice.error} <button type="button" className="ea-btn ea-btn--ghost" onClick={voice.clearError}>OK</button></span>}
+        <div className={`ea-learn__voice-status${voice.error ? " is-error" : ""}${listening ? " is-listening" : ""}`} role="status">
+          {listening && <><span className="ea-learn__pulse" aria-hidden="true"><Mic size={16} /></span><span>Listening… {voice.interim && <em>“{voice.interim}”</em>}</span></>}
+          {voice.state === "speaking" && <><span className="ea-learn__wave" aria-hidden="true"><i /><i /><i /><i /></span><span>Speaking…</span><button type="button" className="ea-btn ea-btn--ghost" onClick={voice.stopSpeaking}>Stop speaking</button></>}
+          {voice.error && <><span>{voice.error}</span><button type="button" className="ea-btn ea-btn--ghost" onClick={voice.clearError}>OK</button></>}
         </div>
       )}
+      {voice.noHindiVoice && <p className="ea-learn__muted ea-learn__note">This device has no Hindi voice installed, so Hindi answers may sound unclear. You can read the written answer, or add a Hindi voice in your device's speech settings.</p>}
 
       <form className="ea-learn__composer" onSubmit={(e) => { e.preventDefault(); send(input); }}>
         <label className="ea-sr-only" htmlFor="ea-learn-input">Your question</label>
-        <textarea id="ea-learn-input" ref={inputRef} className="ea-input" rows={2} maxLength={2000} value={input} placeholder="Type your question…"
+        <textarea id="ea-learn-input" ref={inputRef} className="ea-learn__input" rows={1} maxLength={2000} value={input} placeholder="Type your question…"
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={onComposerKey} />
         <div className="ea-learn__composer-actions">
@@ -265,9 +295,10 @@ export default function TutorChat({ context, initialQuestion, onSuggest }) {
             </button>
           )}
           {busy
-            ? <button type="button" className="ea-btn ea-btn--primary" onClick={stop} aria-label="Stop the answer"><Square size={16} aria-hidden="true" /> Stop</button>
-            : <button type="submit" className="ea-btn ea-btn--primary" disabled={!input.trim()} aria-label="Send"><Send size={16} aria-hidden="true" /> Send</button>}
+            ? <button type="button" className="ea-btn ea-btn--primary" onClick={stop} aria-label="Stop the answer"><Square size={16} aria-hidden="true" /> <span className="ea-learn__btn-text">Stop</span></button>
+            : <button type="submit" className="ea-btn ea-btn--primary" disabled={!input.trim()} aria-label="Send"><Send size={16} aria-hidden="true" /> <span className="ea-learn__btn-text">Send</span></button>}
         </div>
+        <p className="ea-learn__hint">Enter to send, Shift+Enter for a new line, Esc to stop. The tutor can make mistakes: check important answers with your teacher.</p>
       </form>
     </section>
   );

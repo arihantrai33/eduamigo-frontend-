@@ -47,8 +47,8 @@ const fakeSpeech = () => {
   Object.defineProperty(window, 'speechSynthesis', {
     value: {
       speaking: false,
-      getVoices: () => [{ lang: 'en-IN', name: 'Test' }],
-      speak(u) { window.__spoken.push(u.text); setTimeout(() => u.onstart?.(), 5); if (!window.__holdSpeech) setTimeout(() => u.onend?.(), 20); else window.__held = u; },
+      getVoices: () => window.__voices || [{ lang: 'en-IN', name: 'Test' }],
+      speak(u) { window.__spoken.push(u.text); (window.__spokenVoice ||= []).push(u.voice ? u.voice.lang : `none:${u.lang}`); setTimeout(() => u.onstart?.(), 5); if (!window.__holdSpeech) setTimeout(() => u.onend?.(), 20); else window.__held = u; },
       cancel() { window.__cancelled += 1; window.__held?.onend?.(); window.__held = null; },
     },
     configurable: true,
@@ -113,6 +113,41 @@ test.describe('AI Tutor follow-ups', () => {
     await page.getByRole('button', { name: 'Ask with your voice' }).click();
     await expect(page.getByText('Here is the answer.')).toBeVisible();
     await expect(page.getByTestId('voice-timing')).toHaveCount(0);
+  });
+});
+
+test.describe('Voice chosen for the language', () => {
+  const VOICES = [{ lang: 'en-US', name: 'Basic US' }, { lang: 'en-IN', name: 'Rishi' }, { lang: 'hi-IN', name: 'Google हिन्दी' }, { lang: 'hi-IN', name: 'Compact Hindi' }];
+  const ask = async (page, language, text) => {
+    await signIn(page, 'student');
+    await mockLearning(page, { chat: () => [{ type: 'meta', conversationId: 'c1', language }, { type: 'delta', text }, final({ text })] });
+    await page.goto('/student/learn');
+    await page.getByRole('button', { name: 'Ask with your voice' }).click();
+    await page.getByRole('button', { name: 'I understand, use my voice' }).click();
+    await expect.poll(() => page.evaluate(() => (window.__spokenVoice || []).length)).toBeGreaterThan(0);
+  };
+
+  test('a Hinglish or Hindi answer is spoken by the best Hindi voice, never the English one', async ({ page }) => {
+    await page.addInitScript(fakeSpeech);
+    await page.addInitScript((v) => { window.__voices = v; }, VOICES);
+    await ask(page, 'hinglish', 'देखो, photosynthesis में plants sunlight से खाना बनाते हैं।');
+    const used = await page.evaluate(() => window.__spokenVoice);
+    expect(used.every((v) => v === 'hi-IN')).toBe(true);
+    expect(await page.evaluate(() => window.__spoken.join(' '))).toContain('photosynthesis');
+  });
+
+  test('an English answer uses the Indian English voice', async ({ page }) => {
+    await page.addInitScript(fakeSpeech);
+    await page.addInitScript((v) => { window.__voices = v; }, VOICES);
+    await ask(page, 'en', 'A fraction is a part of a whole.');
+    expect(await page.evaluate(() => window.__spokenVoice)).toEqual(['en-IN']);
+  });
+
+  test('with no Hindi voice installed the student is told, instead of hearing an English accent without explanation', async ({ page }) => {
+    await page.addInitScript(fakeSpeech);
+    await page.addInitScript(() => { window.__voices = [{ lang: 'en-US', name: 'Basic US' }]; });
+    await ask(page, 'hi', 'देखो, यह एक उदाहरण है।');
+    await expect(page.getByText('This device has no Hindi voice installed')).toBeVisible();
   });
 });
 

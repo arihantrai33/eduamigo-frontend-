@@ -24,14 +24,32 @@ const ERRORS = {
   "language-not-supported": "This language is not supported for speech here. Choose English or type your question.",
 };
 
-function pickVoice(language) {
+const HINDI_TEXT = /[ऀ-ॿ]/;
+const wantsHindi = (language, text) => language === "hi" || language === "hinglish" || HINDI_TEXT.test(text || "");
+
+// The best voice installed on this device for the language: Hindi (and Hinglish) answers use a Hindi voice, because an English
+// voice reading Hindi words is what gives the "foreign accent". Natural, neural, premium and Google voices rank above the
+// basic ones; robotic novelty voices are never chosen.
+const BAD = /compact|eloquence|novelty|whisper|zarvox|trinoids|albert|bubbles|cellos|boing|bells|bahh|deranged|hysterical|organ|superstar|wobble|jester|junior|fred|ralph/i;
+function voiceScore(v, want) {
+  const lang = String(v.lang || "").replace("_", "-").toLowerCase();
+  const order = want.map((w) => w.toLowerCase());
+  const i = order.findIndex((w) => lang === w || lang.startsWith(`${w}-`) || (w.length === 2 && lang.startsWith(w)));
+  if (i < 0 || BAD.test(v.name || "")) return -1;
+  let score = 1000 - i * 100;
+  if (/neural|natural|online/i.test(v.name)) score += 60;
+  if (/premium|enhanced/i.test(v.name)) score += 45;
+  if (/siri/i.test(v.name)) score += 40;
+  if (/google/i.test(v.name)) score += 35;
+  if (v.localService) score += 5;
+  return score;
+}
+export function pickVoice(language, text = "") {
   const voices = synth?.getVoices?.() || [];
-  const want = language === "hi" ? ["hi-IN", "hi"] : ["en-IN", "en-GB", "en-US", "en"];
-  for (const w of want) {
-    const v = voices.find((x) => x.lang?.toLowerCase().startsWith(w.toLowerCase()));
-    if (v) return v;
-  }
-  return null;
+  const want = wantsHindi(language, text) ? ["hi-IN", "hi"] : ["en-IN", "en-GB", "en-AU", "en-US", "en"];
+  let best = null; let top = -1;
+  for (const v of voices) { const sc = voiceScore(v, want); if (sc > top) { top = sc; best = v; } }
+  return best;
 }
 
 export function useVoice() {
@@ -39,6 +57,7 @@ export function useVoice() {
   const [interim, setInterim] = useState("");
   const [error, setError] = useState(null);
   const [muted, setMuted] = useState(false);
+  const [noHindiVoice, setNoHindiVoice] = useState(false);
   const recRef = useRef(null);
   const pending = useRef(0); // utterances queued or playing
   const firstAudio = useRef(null);
@@ -106,11 +125,15 @@ export function useVoice() {
     if (!synth || mutedRef.current) return;
     const words = speakable(text, language);
     if (!words) return;
+    const hindi = wantsHindi(language, words);
     const u = new SpeechSynthesisUtterance(words);
-    const v = pickVoice(language);
+    const v = pickVoice(language, words);
     if (v) u.voice = v;
-    u.lang = v?.lang || (language === "hi" ? "hi-IN" : "en-IN");
-    u.rate = 1;
+    u.lang = v?.lang || (hindi ? "hi-IN" : "en-IN");
+    // A little slower than the default and steady, so a student can follow an explanation.
+    u.rate = hindi ? 0.92 : 0.97;
+    u.pitch = 1;
+    if (hindi && !v) setNoHindiVoice(true);
     pending.current += 1;
     u.onstart = () => {
       setState("speaking");
@@ -124,11 +147,16 @@ export function useVoice() {
 
   const resetFirstAudio = useCallback(() => { firstAudio.current = null; }, []);
 
+  // Chrome fills the voice list after the page loads; asking for it early makes the later pick see all voices.
+  useEffect(() => {
+    try { synth?.getVoices?.(); synth?.addEventListener?.("voiceschanged", () => synth.getVoices()); } catch { /* no voices */ }
+  }, []);
+
   useEffect(() => () => { try { recRef.current?.abort(); synth?.cancel(); } catch { /* leaving */ } }, []);
 
   return {
     supported: { listen: !!SR, speak: !!synth },
-    state, interim, error, muted,
+    state, interim, error, muted, noHindiVoice,
     setMuted: (m) => { setMuted(m); if (m) stopSpeaking(); },
     listen, stopListening, say, stopSpeaking, resetFirstAudio,
     clearError: () => { setError(null); setState((s) => (s === "error" ? "idle" : s)); },
