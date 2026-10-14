@@ -121,13 +121,14 @@ export default function UserManagement() {
 
       {/* Table */}
       <div style={{ background: "#fff", border: "1px solid #E2E8F0", borderRadius: 16, overflow: "hidden" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 100px", padding: "12px 20px", background: "#F8FAFC", borderBottom: "1px solid #E2E8F0" }}>
+        <div className="ea-um-head" style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 100px", padding: "12px 20px", background: "#F8FAFC", borderBottom: "1px solid #E2E8F0" }}>
           {["User", "Role", "School", "Joined", "Status"].map(h => (
             <span key={h} style={{ fontSize: 11, fontWeight: 600, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.05em" }}>{h}</span>
           ))}
         </div>
 
-        {loading ? (
+        {/* "Loading" only on the first load: a refresh after a change keeps the rows (and keyboard focus) in place. */}
+        {loading && users.length === 0 ? (
           <div style={{ textAlign: "center", padding: "40px 0", color: "#94A3B8", fontSize: 13 }}>Loading users...</div>
         ) : filtered.length === 0 ? (
           <div style={{ textAlign: "center", padding: "40px 0", color: "#94A3B8", fontSize: 13 }}>No users found</div>
@@ -135,7 +136,7 @@ export default function UserManagement() {
           const meta = ROLE_META[u.role] || ROLE_META.student;
           const Icon = meta.icon;
           return (
-            <div key={u._id} style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 100px", padding: "14px 20px", alignItems: "center", borderTop: i === 0 ? "none" : "1px solid #F1F5F9", transition: "background 0.1s" }}
+            <div key={u._id} className="ea-um-row" style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 100px", padding: "14px 20px", alignItems: "center", borderTop: i === 0 ? "none" : "1px solid #F1F5F9", transition: "background 0.1s" }}
               onMouseEnter={e => e.currentTarget.style.background = "#FAFAFA"}
               onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -150,14 +151,15 @@ export default function UserManagement() {
               <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 11, padding: "4px 10px", borderRadius: 20, fontWeight: 600, background: meta.bg, color: meta.color, border: `1px solid ${meta.border}`, width: "fit-content", textTransform: "capitalize" }}>
                 <Icon size={10} /> {u.role}
               </span>
-              <span style={{ fontSize: 12, color: "#64748B" }}>{u.school?.name || u.school || "—"}</span>
-              <span style={{ fontSize: 12, color: "#94A3B8" }}>
+              <span className="ea-um-school" style={{ fontSize: 12, color: "#64748B" }}>{u.school?.name || u.school || "—"}</span>
+              <span className="ea-um-joined" style={{ fontSize: 12, color: "#94A3B8" }}>
                 {new Date(u.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
               </span>
-              <div onClick={() => toggleStatus(u._id)}
-                style={{ width: 40, height: 22, borderRadius: 11, cursor: "pointer", position: "relative", background: u.isActive !== false ? "#22C55E" : "#CBD5E1", transition: "background 0.2s" }}>
-                <div style={{ position: "absolute", top: 3, left: u.isActive !== false ? 20 : 3, width: 16, height: 16, borderRadius: "50%", background: "#fff", transition: "left 0.2s", boxShadow: "0 1px 4px rgba(0,0,0,0.15)" }} />
-              </div>
+              <button type="button" role="switch" aria-checked={u.isActive !== false} aria-label={`Account active: ${u.name}`} className="ea-um-switch"
+                onClick={() => toggleStatus(u._id)}
+                style={{ width: 44, height: 24, padding: 0, border: "none", borderRadius: 12, cursor: "pointer", position: "relative", background: u.isActive !== false ? "#22C55E" : "#CBD5E1", transition: "background 0.2s" }}>
+                <span aria-hidden="true" style={{ position: "absolute", top: 4, left: u.isActive !== false ? 24 : 4, width: 16, height: 16, borderRadius: "50%", background: "#fff", transition: "left 0.2s", boxShadow: "0 1px 4px rgba(0,0,0,0.15)" }} />
+              </button>
             </div>
           );
         })}
@@ -171,13 +173,13 @@ export default function UserManagement() {
                 { label: "Password (optional)", key: "password", type: "password", placeholder: "Leave blank to generate a temporary password" }
               ].map(({ label, key, type, placeholder }) => (
                 <div key={key}>
-                  <label style={{ fontSize: 11, color: "#64748B", fontWeight: 600, display: "block", marginBottom: 5 }}>{label.toUpperCase()}</label>
-                  <input type={type} value={form[key]} onChange={e => setForm({ ...form, [key]: e.target.value })} placeholder={placeholder} style={inp} />
+                  <label htmlFor={`user-${key}`} style={{ fontSize: 11, color: "#64748B", fontWeight: 600, display: "block", marginBottom: 5 }}>{label.toUpperCase()}</label>
+                  <input id={`user-${key}`} type={type} value={form[key]} onChange={e => setForm({ ...form, [key]: e.target.value })} placeholder={placeholder} style={inp} />
                 </div>
               ))}
               <div>
-                <label style={{ fontSize: 11, color: "#64748B", fontWeight: 600, display: "block", marginBottom: 5 }}>ROLE</label>
-                <select value={form.role} onChange={e => setForm({ ...form, role: e.target.value })} style={inp}>
+                <label htmlFor="user-role" style={{ fontSize: 11, color: "#64748B", fontWeight: 600, display: "block", marginBottom: 5 }}>ROLE</label>
+                <select id="user-role" value={form.role} onChange={e => setForm({ ...form, role: e.target.value })} style={inp}>
                   {STAFF_ROLES.map(r => <option key={r} value={r}>{r.charAt(0).toUpperCase() + r.slice(1)}</option>)}
                 </select>
               </div>

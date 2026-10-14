@@ -210,8 +210,8 @@ export default function FeeCollection() {
                       <span style={{ fontSize:12, color:"#94A3B8", fontWeight:600 }}>✓ Done</span>
                     )}
                     {f.payments?.length > 0 && (
-                      <button onClick={() => navigate(`/receipt/${f._id}/${f.payments[f.payments.length - 1].receiptNo}`)} title="Latest receipt"
-                        style={{ display:"block", marginTop:6, border:"none", background:"none", color:"var(--brand)", fontSize:12, fontWeight:700, cursor:"pointer", padding:0 }}>
+                      <button type="button" onClick={() => navigate(`/receipt/${f._id}/${f.payments[f.payments.length - 1].receiptNo}`)} title="Latest receipt"
+                        style={{ display:"block", marginTop:2, border:"none", background:"none", color:"var(--brand)", fontSize:12, fontWeight:700, cursor:"pointer", padding:"6px 0", minHeight:28 }}>
                         Receipt{f.payments.length > 1 ? ` (${f.payments.length})` : ""}
                       </button>
                     )}

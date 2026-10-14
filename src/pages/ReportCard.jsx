@@ -51,7 +51,7 @@ export default function ReportCard() {
   const setParam = (k, v) => { const next = new URLSearchParams(params); next.set(k, v); setParams(next, { replace: true }); };
   const startYear = Number(currentAcademicYear().slice(0, 4));
   const years = [startYear - 1, startYear].map((y) => `${y}-${String((y + 1) % 100).padStart(2, "0")}`);
-  const title = studentId ? "Report Card" : `Report Cards · Class ${cls}-${section}`;
+  const title = studentId ? "Report Card" : cls ? `Report Cards · Class ${cls}${section ? `-${section}` : ""}` : "Report Cards";
 
   return (
     <div className="rc-root ea-print-doc">

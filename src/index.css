@@ -93,6 +93,10 @@ input, button, select, textarea {
   .ea-scroll:has(.ea-bottom-nav) { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
   /* The round Ask button floats above the tab bar: the end of the page scrolls clear of it too. */
   .ea-scroll:has(.ea-bottom-nav):has(.ea-ask-fab) { padding-bottom: calc(140px + env(safe-area-inset-bottom)); }
+  /* A page root that grows with its content (min-height) overflows the routes wrapper, whose height is fixed, and
+     the padding above is then not added after it. Its own end needs the room for the Ask button (72 px on top of
+     the page's own bottom padding, which clears the tab bar). Fixed-height pages scroll inside and are not affected. */
+  .ea-scroll:has(.ea-bottom-nav):has(.ea-ask-fab) > div > [style*="min-height: 100vh"]::after { content: ""; display: block; flex: none; height: 72px; }
 }
 
 .ea-bottom-nav {
@@ -589,7 +593,7 @@ input:-webkit-autofill:focus {
 .ea-text-danger { color: var(--ea-danger); }
 .ea-text-warning { color: var(--ea-warning); }
 .ea-muted { color: var(--ea-faint); }
-.ea-link { background: none; border: none; color: var(--brand); font-size: 12px; font-weight: 700; cursor: pointer; padding: 4px 0; white-space: nowrap; }
+.ea-link { background: none; border: none; color: var(--brand); font-size: 12px; font-weight: 700; cursor: pointer; padding: 4px 2px; min-height: 28px; display: inline-flex; align-items: center; white-space: nowrap; }
 .ea-link:hover { text-decoration: underline; }
 .ea-empty { font-size: 13px; color: var(--ea-faint); text-align: center; padding: 20px 0; }
 
@@ -676,6 +680,18 @@ input:-webkit-autofill:focus {
 .ea-search .ea-input { width: 100%; padding-left: 36px; }
 .ea-select { cursor: pointer; flex: 0 1 170px; }
 .ea-toolbar__count { font-size: 12px; font-weight: 650; color: var(--ea-faint); white-space: nowrap; }
+
+/* Field-level validation (utils/fieldErrors.js, components/ui/FieldError.jsx). !important: many fields set their
+   border inline, and a failed field must look failed whatever its own style. */
+.ea-field-error { display: flex; align-items: flex-start; gap: 6px; margin-top: 6px; color: var(--ea-danger); font-size: 12.5px; font-weight: 550; line-height: 1.4; text-align: left; }
+.ea-field-error > svg { flex-shrink: 0; margin-top: 1px; }
+[data-theme="dark"] .ea-field-error { color: #FCA5A5; }
+input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="true"] { border-color: var(--ea-danger) !important; }
+input[aria-invalid="true"]:focus, select[aria-invalid="true"]:focus, textarea[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ea-danger) 18%, transparent) !important;
+}
+/* A borderless input inside a styled box (sign-in): the box shows the failed state, so no second ring inside it. */
+input.ea-input-bare[aria-invalid="true"], input.ea-input-bare[aria-invalid="true"]:focus { box-shadow: none !important; }
 @media (max-width: 767px) {
   .ea-search { flex-basis: 100%; }
   .ea-select { flex: 1 1 140px; }
@@ -701,6 +717,12 @@ input:-webkit-autofill:focus {
    these rules keep them usable on phones and tablets without touching their logic. They match React's serialised
    inline styles (e.g. "grid-template-columns: repeat(4, 1fr)"). */
 .ea-admin-main { min-width: 0; }
+/* The end of an admin page scrolls clear of the Ask button, at every width (it sits in the corner). */
+.ea-admin-frame:has(.ea-ask-fab) .ea-admin-main { padding-bottom: 88px !important; }
+/* From 1024 px the portals have no tab bar to float above: the round Ask button sits in the corner. */
+@media (min-width: 1024px) {
+  .ea-scroll .ea-ask-fab { bottom: calc(24px + env(safe-area-inset-bottom)) !important; }
+}
 /* Tables scroll sideways inside their card instead of squeezing or clipping columns. */
 .ea-admin-main div:has(> table) { overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
 .ea-admin-main table { min-width: 100%; }
@@ -709,8 +731,17 @@ input:-webkit-autofill:focus {
   .ea-admin-main [style*="grid-template-columns: repeat(5"],
   .ea-admin-main [style*="grid-template-columns: repeat(6"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
   .ea-admin-main [style*="grid-template-columns: 360px"],
-  .ea-admin-main [style*="grid-template-columns: 340px"],
-  .ea-admin-main [style*="grid-template-columns: 2fr 1fr 1fr 1fr"] { grid-template-columns: 1fr !important; }
+  .ea-admin-main [style*="grid-template-columns: 340px"] { grid-template-columns: 1fr !important; }
+  /* User management: each user becomes a card. Name and the active switch on the first line; role, school and the
+     joined date on the second. The column headings are not needed then. */
+  .ea-um-head { display: none !important; }
+  .ea-um-row { display: flex !important; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+  .ea-um-row > :first-child { flex: 1 1 calc(100% - 64px); min-width: 0; }
+  .ea-um-row > .ea-um-switch { order: 1; flex: none; }
+  .ea-um-row > :not(:first-child):not(.ea-um-switch) { order: 2; }
+  .ea-um-row > .ea-um-school { flex: 0 1 auto; min-width: 0; }
+  .ea-um-row > .ea-um-joined::before { content: "Joined "; }
+  .ea-um-row > span:nth-child(2) { margin-left: 48px; } /* line up under the name, past the avatar */
   .ea-admin-main [style*="grid-template-columns: 340px"] > * { min-width: 0; }
 }
 @media (max-width: 767px) {
@@ -740,8 +771,6 @@ input:-webkit-autofill:focus {
   .ea-admin-main table[data-stack] td[data-label=""]::before,
   .ea-admin-main table[data-stack] td[colspan]::before { content: none; }
   .ea-admin-main table[data-stack] td[colspan] { display: block; text-align: center; }
-  /* The end of an admin page scrolls clear of the Ask button. */
-  .ea-admin-frame:has(.ea-ask-fab) .ea-admin-main { padding-bottom: 88px !important; }
   .ea-admin-main [style*="grid-template-columns: 1fr 1fr 1fr"],
   .ea-admin-main [style*="grid-template-columns: repeat(3"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
   /* Filter and toolbar rows wrap instead of pushing selects off screen. */
@@ -749,7 +778,9 @@ input:-webkit-autofill:focus {
   .ea-admin-main [style*="display: flex"]:has(> input),
   .ea-admin-main [style*="display: flex"]:has(> button + button) { flex-wrap: wrap; }
   .ea-admin-main select, .ea-admin-main input:not([type="checkbox"]):not([type="radio"]) { max-width: 100%; min-width: 0; }
-  .ea-admin-main [style*="display: flex"] > select, .ea-admin-main [style*="display: flex"] > input:not([type="checkbox"]):not([type="radio"]) { flex: 1 1 140px; }
+  /* Rows only: in a column (a label above its field) a 140 px basis would make the field 140 px tall. */
+  .ea-admin-main [style*="display: flex"]:not([style*="flex-direction: column"]) > select,
+  .ea-admin-main [style*="display: flex"]:not([style*="flex-direction: column"]) > input:not([type="checkbox"]):not([type="radio"]) { flex: 1 1 140px; }
 }
 
 /* Chat (admin): one pane at a time on phones — the contact list, or the open conversation with a back button. */

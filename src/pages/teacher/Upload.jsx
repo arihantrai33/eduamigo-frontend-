@@ -439,7 +439,7 @@ const styles = {
   dueDateText: { fontSize: 12, color: '#F9A825', fontWeight: 600, margin: '0 0 6px' },
   cardFooter: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   timeText: { fontSize: 11, color: '#BDBDBD', fontWeight: 500 },
-  viewLink: { fontSize: 12, color: 'var(--brand)', fontWeight: 700, textDecoration: 'none' },
+  viewLink: { fontSize: 12, color: 'var(--brand)', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4, minHeight: 28 },
   formCard: {
     background: '#fff',
     borderRadius: 16,

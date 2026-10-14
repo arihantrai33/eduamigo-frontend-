@@ -300,7 +300,7 @@ export default function Students() {
                       <Avatar name={s.name} photo={s.photo} size={40} />
                       <div>
                         <div style={{ fontSize:14, fontWeight:700, color:"#0F172A", cursor:"pointer" }}
-                          onClick={() => navigate(`/admin/student-profile/${s._id}`)}
+                          onClick={() => navigate(`/admin/students/${s._id}`)}
                           onMouseEnter={e=>e.target.style.color="var(--brand)"} onMouseLeave={e=>e.target.style.color="#0F172A"}>
                           {s.name}
                         </div>
@@ -329,7 +329,7 @@ export default function Students() {
                   </td>
                   <td style={{ padding:"14px 18px" }}>
                     <div style={{ display:"flex", gap:6 }}>
-                      <button className="action-btn" onClick={() => navigate(`/admin/student-profile/${s._id}`)}
+                      <button type="button" className="action-btn" onClick={() => navigate(`/admin/students/${s._id}`)}
                         style={{ padding:"6px 14px", borderRadius:8, border:"none", background:"var(--brand-soft)", color:"var(--brand)", fontSize:12, fontWeight:700, cursor:"pointer" }}>View</button>
                       {canManage && <>
                       <button className="action-btn" onClick={() => openEdit(s)}

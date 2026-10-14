@@ -248,6 +248,7 @@ export default function ParentFee() {
         {fees.length > 0 && (
           <div style={styles.card}>
             <button
+              type="button" aria-expanded={showBreakdown}
               onClick={() => setShowBreakdown(!showBreakdown)}
               style={styles.breakdownToggle}
             >
@@ -424,7 +425,7 @@ const styles = {
     width: "100%", background: "none",
     border: "none", cursor: "pointer",
     display: "flex", justifyContent: "space-between",
-    alignItems: "center", padding: 0,
+    alignItems: "center", padding: "6px 0", minHeight: 32,
   },
   breakdownTotal: {
     display: "flex", justifyContent: "space-between",
