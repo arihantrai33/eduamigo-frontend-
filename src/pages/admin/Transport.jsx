@@ -233,12 +233,12 @@ export default function Transport() {
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             {[["BUS NUMBER","busNumber","text"],["DRIVER NAME","driverName","text"],["DRIVER PHONE","driverPhone","tel"],["ROUTE NAME","routeName","text"],["CAPACITY","capacity","number"],["SERVICE AREA","serviceArea","text"]].map(([label,key,type]) => (
-              <div key={key}>
-                <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
+              <label key={key} style={{ display:"block" }}>
+                <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
                 <input type={type} value={form[key]||""} onChange={e => f(key,e.target.value)}
                   style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
                   onFocus={e=>e.target.style.borderColor="#F59E0B"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
-              </div>
+              </label>
             ))}
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
@@ -268,11 +268,11 @@ export default function Transport() {
             <div style={{ fontSize:12, fontWeight:800, color:"#94A3B8", marginBottom:10 }}>ADD NEW STOP</div>
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
               {[["STOP NAME","name","text"],["EST. TIME","estimatedTime","text"],["LATITUDE","latitude","number"],["LONGITUDE","longitude","number"]].map(([label,key,type]) => (
-                <div key={key}>
-                  <div style={{ fontSize:10, fontWeight:700, color:"#94A3B8", marginBottom:4 }}>{label}</div>
+                <label key={key} style={{ display:"block" }}>
+                  <span style={{ display:"block", fontSize:10, fontWeight:700, color:"#94A3B8", marginBottom:4 }}>{label}</span>
                   <input type={type} value={newStop[key]||""} onChange={e => setNewStop(p=>({...p,[key]:e.target.value}))}
                     style={{ width:"100%", padding:"9px 12px", borderRadius:9, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />
-                </div>
+                </label>
               ))}
             </div>
             <button onClick={handleAddStop} style={{ marginTop:12, width:"100%", padding:"10px", borderRadius:10, border:"none", background:"linear-gradient(135deg,#F59E0B,#F97316)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer" }}>

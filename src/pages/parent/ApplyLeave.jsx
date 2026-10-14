@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, errorMessage } from "../../utils/toast";
 import { getSelectedChildId } from "../../utils/selectedChild";
+import FieldError from "../../components/ui/FieldError";
+import { useFieldErrors } from "../../utils/fieldErrors";
+
+const FIELDS = { fromDate: "leave-from", toDate: "leave-to", reason: "leave-reason" };
 
 import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
@@ -22,6 +26,7 @@ export default function ApplyLeave() {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [reason, setReason] = useState("");
+  const v = useFieldErrors(FIELDS);
   const [leaveType, setLeaveType] = useState(LEAVE_TYPES[0].value);
   const [attachedFile, setAttachedFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -43,14 +48,11 @@ export default function ApplyLeave() {
   const { total, used, available } = quota;
 
   const handleSubmit = async () => {
-    if (!fromDate || !toDate || !reason.trim()) {
-      toast.error("Please fill in the dates and the reason.");
-      return;
-    }
-    if (toDate < fromDate) {
-      toast.error("End date cannot be before start date.");
-      return;
-    }
+    if (!v.check({
+      fromDate: !fromDate && "Choose the first day of leave.",
+      toDate: !toDate ? "Choose the last day of leave." : fromDate && toDate < fromDate && "End date cannot be before start date.",
+      reason: !reason.trim() && "Write the reason for the leave.",
+    })) return;
     setLoading(true);
     try {
       let attachment = {};
@@ -202,7 +204,8 @@ export default function ApplyLeave() {
                 id="leave-from"
                 type="date"
                 value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
+                onChange={(e) => { setFromDate(e.target.value); v.clear("fromDate"); }}
+                {...v.invalid("fromDate")}
                 style={{
                   width: "100%", marginTop: "8px", padding: "12px",
                   borderRadius: "10px", border: "1px solid #e0e0e0",
@@ -210,6 +213,7 @@ export default function ApplyLeave() {
                   fontFamily: "inherit", boxSizing: "border-box",
                 }}
               />
+              <FieldError id={v.errorId("fromDate")}>{v.errors.fromDate}</FieldError>
             </div>
             <div>
               <label htmlFor="leave-to" style={{ fontSize: "11px", fontWeight: "700", color: "var(--subtext2)", letterSpacing: "0.5px" }}>
@@ -219,7 +223,8 @@ export default function ApplyLeave() {
                 id="leave-to"
                 type="date"
                 value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
+                onChange={(e) => { setToDate(e.target.value); v.clear("toDate"); }}
+                {...v.invalid("toDate")}
                 style={{
                   width: "100%", marginTop: "8px", padding: "12px",
                   borderRadius: "10px", border: "1px solid #e0e0e0",
@@ -227,6 +232,7 @@ export default function ApplyLeave() {
                   fontFamily: "inherit", boxSizing: "border-box",
                 }}
               />
+              <FieldError id={v.errorId("toDate")}>{v.errors.toDate}</FieldError>
             </div>
           </div>
 
@@ -238,7 +244,8 @@ export default function ApplyLeave() {
             <textarea
               id="leave-reason"
               value={reason}
-              onChange={(e) => setReason(e.target.value)}
+              onChange={(e) => { setReason(e.target.value); v.clear("reason"); }}
+              {...v.invalid("reason")}
               placeholder="Explain the reason for leave..."
               rows={4}
               style={{
@@ -249,6 +256,7 @@ export default function ApplyLeave() {
                 boxSizing: "border-box",
               }}
             />
+            <FieldError id={v.errorId("reason")}>{v.errors.reason}</FieldError>
           </div>
 
           {/* Attach Document */}

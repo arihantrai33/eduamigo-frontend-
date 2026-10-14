@@ -12,6 +12,13 @@ const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+// A <label> around a caption and its field, so the field takes the caption as its name.
+const field = (label, control, key) => (
+  <label key={key} style={{ display:"block" }}>
+    <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
+    {control}
+  </label>
+);
 const STATUS_CONFIG = {
   Paid:    { bg:"#F0FDF4", color:"#15803D", dot:"#22C55E", border:"#BBF7D0" },
   Pending: { bg:"#FFFBEB", color:"#D97706", dot:"#F59E0B", border:"#FDE68A" },
@@ -237,46 +244,34 @@ export default function SalaryManagement() {
       {/* Add/Edit Modal */}
       <Modal show={showModal} onClose={() => setShowModal(false)} title={editSalary ? "Edit Salary" : "Add Salary Record"}>
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
-          <div>
-            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TEACHER</div>
+          {field("TEACHER",
             <select value={form.teacherId} onChange={e => f("teacherId", e.target.value)}
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white" }}>
               <option value="">Select Teacher</option>
               {teachers.map(t => <option key={t._id} value={t._id}>{t.name}{t.employeeId ? ` (${t.employeeId})` : ""}</option>)}
-            </select>
-          </div>
+            </select>)}
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-            <div>
-              <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>MONTH</div>
+            {field("MONTH",
               <select value={form.month} onChange={e => f("month", Number(e.target.value))}
                 style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white" }}>
                 {MONTHS.map((m,i) => <option key={i} value={i+1}>{m}</option>)}
-              </select>
-            </div>
-            <div>
-              <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>YEAR</div>
+              </select>)}
+            {field("YEAR",
               <input type="number" value={form.year} onChange={e => f("year", Number(e.target.value))}
-                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box" }} />
-            </div>
+                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box" }} />)}
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:12 }}>
-            {[["BASIC SALARY","basicSalary"],["ALLOWANCES","allowances"],["DEDUCTIONS","deductions"]].map(([label, key]) => (
-              <div key={key}>
-                <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label} (₹)</div>
-                <input type="number" value={form[key]} onChange={e => f(key, e.target.value)}
-                  style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box" }} />
-              </div>
-            ))}
+            {[["BASIC SALARY","basicSalary"],["ALLOWANCES","allowances"],["DEDUCTIONS","deductions"]].map(([label, key]) => field(`${label} (₹)`,
+              <input type="number" value={form[key]} onChange={e => f(key, e.target.value)}
+                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box" }} />, key))}
           </div>
           <div style={{ background:"#F0FDF4", borderRadius:12, padding:"12px 16px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
             <span style={{ fontSize:13, fontWeight:700, color:"#64748B" }}>Net Salary</span>
             <span style={{ fontSize:20, fontWeight:900, color:"#059669" }}>₹{net.toLocaleString()}</span>
           </div>
-          <div>
-            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>REMARKS</div>
+          {field("REMARKS",
             <input value={form.remarks} onChange={e => f("remarks", e.target.value)} placeholder="Optional remarks..."
-              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />
-          </div>
+              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />)}
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
             <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
             <button onClick={handleSave} disabled={saving} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#059669,#0891B2)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", opacity:saving?0.7:1 }}>
@@ -293,18 +288,14 @@ export default function SalaryManagement() {
             Auto-generate salary records for all active teachers based on their salary in profile.
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-            <div>
-              <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>MONTH</div>
+            {field("MONTH",
               <select value={genForm.month} onChange={e => setGenForm(p => ({ ...p, month: Number(e.target.value) }))}
                 style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white" }}>
                 {MONTHS.map((m,i) => <option key={i} value={i+1}>{m}</option>)}
-              </select>
-            </div>
-            <div>
-              <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>YEAR</div>
+              </select>)}
+            {field("YEAR",
               <input type="number" value={genForm.year} onChange={e => setGenForm(p => ({ ...p, year: Number(e.target.value) }))}
-                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box" }} />
-            </div>
+                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box" }} />)}
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
             <button onClick={() => setShowGenerateModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>

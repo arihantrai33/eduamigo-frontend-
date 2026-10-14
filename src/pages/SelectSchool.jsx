@@ -91,8 +91,9 @@ export default function SelectSchool() {
           onKeyDown={(e) => e.key === "Enter" && lookupCode()}
           placeholder="School code or name" style={s.input}
           autoCapitalize="characters" autoComplete="off"
+          aria-invalid={error ? true : undefined} aria-describedby={error ? "school-query-error" : undefined}
         />
-        {error && <div style={s.err}><AlertCircle aria-hidden size={16} style={{ flexShrink: 0 }} />{error}</div>}
+        {error && <div id="school-query-error" role="alert" style={s.err}><AlertCircle aria-hidden size={16} style={{ flexShrink: 0 }} />{error}</div>}
 
         {searching && <p style={s.muted}>Searching…</p>}
         {!searching && query.trim().length >= 3 && shown.length === 0 && !error && (

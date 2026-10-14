@@ -3,8 +3,12 @@ import { useAuth } from "../../context/AuthContext"
 import { showCredentials, errorMessage } from "../../utils/toast";
 import PageHeader from "../../components/ui/PageHeader";
 import { hasEntries, useUnsavedChanges } from "../../utils/unsavedChanges";
+import FieldError from "../../components/ui/FieldError";
+import { useFieldErrors } from "../../utils/fieldErrors";
 
 const API = import.meta.env.VITE_API_URL
+// Fields checked before saving; each input's id is "add-teacher-<name>".
+const FIELDS = { name: "add-teacher-name", email: "add-teacher-email", phone: "add-teacher-phone", employeeId: "add-teacher-employeeId" }
 
 const inputStyle = {
   padding: "8px 10px", borderRadius: 8, border: "0.5px solid #E8E8E5",
@@ -26,8 +30,9 @@ const AddTeacher = () => {
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(null)
   useUnsavedChanges(hasEntries(form))
+  const v = useFieldErrors(FIELDS)
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
+  const handleChange = (e) => { setForm({ ...form, [e.target.name]: e.target.value }); v.clear(e.target.name) }
 
   const toggleSubject = (subject) => {
     setForm(prev => ({
@@ -41,10 +46,12 @@ const AddTeacher = () => {
   const handleSubmit = async () => {
     setError(null)
     setSuccess(null)
-    if (!form.name || !form.email || !form.phone || !form.employeeId) {
-      setError("Name, Email, Phone and Employee ID are required.")
-      return
-    }
+    if (!v.check({
+      name: !form.name.trim() && "Enter the teacher's full name",
+      email: !form.email.trim() && "Enter the teacher's email",
+      phone: !form.phone.trim() && "Enter the teacher's phone number",
+      employeeId: !form.employeeId.trim() && "Enter the employee ID",
+    })) return
     if (form.subjects.length === 0) {
       setError("Please select at least one subject.")
       return
@@ -75,13 +82,14 @@ const AddTeacher = () => {
     <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
       <span style={{ fontSize: 11, color: "#666", fontWeight: 500 }}>{label}</span>
       {options ? (
-        <select name={name} value={form[name]} onChange={handleChange} style={inputStyle}>
+        <select id={`add-teacher-${name}`} name={name} value={form[name]} onChange={handleChange} style={inputStyle} {...v.invalid(name)}>
           <option value="">Select</option>
           {options.map(o => <option key={o} value={o}>{o}</option>)}
         </select>
       ) : (
-        <input type={type} name={name} value={form[name]} onChange={handleChange} style={inputStyle} />
+        <input id={`add-teacher-${name}`} type={type} name={name} value={form[name]} onChange={handleChange} style={inputStyle} {...v.invalid(name)} />
       )}
+      <FieldError id={`add-teacher-${name}-error`}>{v.errors[name]}</FieldError>
     </label>
   )
 

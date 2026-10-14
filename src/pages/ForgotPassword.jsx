@@ -5,8 +5,11 @@ import { schoolTheme } from "../utils/theme";
 import SchoolHero from "../components/SchoolHero";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { errorMessage } from "../utils/toast";
+import FieldError from "../components/ui/FieldError";
+import { useFieldErrors } from "../utils/fieldErrors";
 
 const API = import.meta.env.VITE_API_URL;
+const FIELDS = { identifier: "fp-id", code: "fp-code", password: "fp-password", confirm: "fp-confirm" };
 
 async function post(path, body) {
   const res = await fetch(`${API}${path}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
@@ -31,6 +34,7 @@ export default function ForgotPassword() {
   const [info, setInfo] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const v = useFieldErrors(FIELDS);
 
   useEffect(() => {
     if (!school) navigate("/select-school", { replace: true });
@@ -41,7 +45,7 @@ export default function ForgotPassword() {
   const credentials = { schoolCode: school.code, identifier: identifier.trim() };
 
   const requestCode = async () => {
-    if (!identifier.trim()) return setError(`Enter your ${idLabel.toLowerCase()}.`);
+    if (!v.check({ identifier: !identifier.trim() && `Enter your ${idLabel.toLowerCase()}.` })) return setError("");
     setBusy(true); setError("");
     try {
       const data = await post("/users/forgot-password", credentials);
@@ -55,9 +59,12 @@ export default function ForgotPassword() {
   };
 
   const resetPassword = async () => {
-    if (!/^\d{6}$/.test(code.trim())) return setError("Enter the 6-digit code from the email.");
-    if (password.length < 8 || !/[A-Za-z]/.test(password) || !/\d/.test(password)) return setError("Password must be at least 8 characters with letters and numbers.");
-    if (password !== confirm) return setError("Passwords do not match.");
+    const weak = password.length < 8 || !/[A-Za-z]/.test(password) || !/\d/.test(password);
+    if (!v.check({
+      code: !/^\d{6}$/.test(code.trim()) && "Enter the 6-digit code from the email.",
+      password: weak && "Password must be at least 8 characters with letters and numbers.",
+      confirm: !weak && password !== confirm && "Passwords do not match.",
+    })) return setError("");
     setBusy(true); setError("");
     try {
       await post("/users/reset-password", { ...credentials, code: code.trim(), newPassword: password });
@@ -86,10 +93,11 @@ export default function ForgotPassword() {
           <>
             <h2 style={s.heading}>Forgot your password?</h2>
             <p style={s.sub}>We will email a 6-digit code to the email address on your account.</p>
-            <label style={s.label}>{idLabel}</label>
-            <input value={identifier} onChange={(e) => setIdentifier(e.target.value)} onKeyDown={(e) => e.key === "Enter" && requestCode()}
+            <label htmlFor={FIELDS.identifier} style={s.label}>{idLabel}</label>
+            <input id={FIELDS.identifier} value={identifier} onChange={(e) => { setIdentifier(e.target.value); v.clear("identifier"); }} onKeyDown={(e) => e.key === "Enter" && requestCode()}
               placeholder={role === "parent" ? "98765 43210 or name@mail.com" : "yourname@school.edu"} style={s.input} autoFocus
-              autoCapitalize="none" autoCorrect="off" spellCheck={false} />
+              autoCapitalize="none" autoCorrect="off" spellCheck={false} {...v.invalid("identifier")} />
+            <FieldError id={v.errorId("identifier")}>{v.errors.identifier}</FieldError>
             {error && <div style={s.err}><AlertCircle aria-hidden size={16} style={{ flexShrink: 0 }} />{error}</div>}
             <button onClick={requestCode} disabled={busy} style={{ ...s.btn, background: color, opacity: busy ? 0.7 : 1 }}>
               {busy ? "Sending..." : "Send code"}
@@ -100,18 +108,23 @@ export default function ForgotPassword() {
           <>
             <h2 style={s.heading}>Enter the code</h2>
             <p style={s.sub}>{info}</p>
-            <label style={s.label}>6-digit code</label>
-            <input value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))} inputMode="numeric"
+            <label htmlFor={FIELDS.code} style={s.label}>6-digit code</label>
+            <input id={FIELDS.code} value={code} onChange={(e) => { setCode(e.target.value.replace(/\D/g, "").slice(0, 6)); v.clear("code"); }} inputMode="numeric" autoComplete="one-time-code"
+              onKeyDown={(e) => e.key === "Enter" && resetPassword()} {...v.invalid("code")}
               placeholder="123456" style={{ ...s.input, letterSpacing: 6, fontSize: 18, textAlign: "center" }} autoFocus />
-            <label style={s.label}>New password</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 8 characters, letters and numbers" style={s.input} autoComplete="new-password" />
-            <label style={s.label}>Confirm new password</label>
-            <input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} onKeyDown={(e) => e.key === "Enter" && resetPassword()} style={s.input} autoComplete="new-password" />
+            <FieldError id={v.errorId("code")}>{v.errors.code}</FieldError>
+            <label htmlFor={FIELDS.password} style={s.label}>New password</label>
+            <input id={FIELDS.password} type="password" value={password} onChange={(e) => { setPassword(e.target.value); v.clear("password"); }} placeholder="At least 8 characters, letters and numbers" style={s.input} autoComplete="new-password"
+              onKeyDown={(e) => e.key === "Enter" && resetPassword()} {...v.invalid("password")} />
+            <FieldError id={v.errorId("password")}>{v.errors.password}</FieldError>
+            <label htmlFor={FIELDS.confirm} style={s.label}>Confirm new password</label>
+            <input id={FIELDS.confirm} type="password" value={confirm} onChange={(e) => { setConfirm(e.target.value); v.clear("confirm"); }} onKeyDown={(e) => e.key === "Enter" && resetPassword()} style={s.input} autoComplete="new-password" {...v.invalid("confirm")} />
+            <FieldError id={v.errorId("confirm")}>{v.errors.confirm}</FieldError>
             {error && <div style={s.err}><AlertCircle aria-hidden size={16} style={{ flexShrink: 0 }} />{error}</div>}
             <button onClick={resetPassword} disabled={busy} style={{ ...s.btn, background: color, opacity: busy ? 0.7 : 1 }}>
               {busy ? "Saving..." : "Set new password"}
             </button>
-            <button onClick={() => { setStep("request"); setCode(""); setError(""); }} style={s.linkBtn}>Didn't get it? Send again</button>
+            <button type="button" onClick={() => { setStep("request"); setCode(""); setError(""); v.setErrors({}); }} style={s.linkBtn}>Didn't get it? Send again</button>
           </>
         ) : (
           <>

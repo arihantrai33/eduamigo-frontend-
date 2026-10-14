@@ -315,29 +315,29 @@ export default function EventCalendar() {
             </div>
 
             <div style={{ marginBottom:14 }}>
-              <label style={{ fontSize:12, fontWeight:700, color:"#374151", display:"block", marginBottom:6 }}>Title *</label>
-              <input value={form.title} onChange={e => setForm({...form,title:e.target.value})} placeholder="Event title..." style={inputStyle} onFocus={e => e.target.style.borderColor=c1} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
+              <label htmlFor="event-title" style={{ fontSize:12, fontWeight:700, color:"#374151", display:"block", marginBottom:6 }}>Title *</label>
+              <input id="event-title" value={form.title} onChange={e => setForm({...form,title:e.target.value})} placeholder="Event title..." style={inputStyle} onFocus={e => e.target.style.borderColor=c1} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
             </div>
 
             <div style={{ marginBottom:14 }}>
-              <label style={{ fontSize:12, fontWeight:700, color:"#374151", display:"block", marginBottom:6 }}>Description</label>
-              <textarea value={form.description} onChange={e => setForm({...form,description:e.target.value})} rows={2} style={{...inputStyle,resize:"none"}} onFocus={e => e.target.style.borderColor=c1} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
+              <label htmlFor="event-description" style={{ fontSize:12, fontWeight:700, color:"#374151", display:"block", marginBottom:6 }}>Description</label>
+              <textarea id="event-description" value={form.description} onChange={e => setForm({...form,description:e.target.value})} rows={2} style={{...inputStyle,resize:"none"}} onFocus={e => e.target.style.borderColor=c1} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
             </div>
 
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:14 }}>
               <div>
-                <label style={{ fontSize:12, fontWeight:700, color:"#374151", display:"block", marginBottom:6 }}>Start Date *</label>
-                <input type="date" value={form.date} onChange={e => setForm({...form,date:e.target.value})} style={inputStyle} />
+                <label htmlFor="event-start" style={{ fontSize:12, fontWeight:700, color:"#374151", display:"block", marginBottom:6 }}>Start Date *</label>
+                <input id="event-start" type="date" value={form.date} onChange={e => setForm({...form,date:e.target.value})} style={inputStyle} />
               </div>
               <div>
-                <label style={{ fontSize:12, fontWeight:700, color:"#374151", display:"block", marginBottom:6 }}>End Date</label>
-                <input type="date" value={form.endDate} onChange={e => setForm({...form,endDate:e.target.value})} style={inputStyle} />
+                <label htmlFor="event-end" style={{ fontSize:12, fontWeight:700, color:"#374151", display:"block", marginBottom:6 }}>End Date</label>
+                <input id="event-end" type="date" value={form.endDate} onChange={e => setForm({...form,endDate:e.target.value})} style={inputStyle} />
               </div>
             </div>
 
             <div style={{ marginBottom:24 }}>
-              <label style={{ fontSize:12, fontWeight:700, color:"#374151", display:"block", marginBottom:6 }}>Visible To</label>
-              <select value={form.targetRole} onChange={e => setForm({...form,targetRole:e.target.value})} style={{...inputStyle,background:"white"}}>
+              <label htmlFor="event-audience" style={{ fontSize:12, fontWeight:700, color:"#374151", display:"block", marginBottom:6 }}>Visible To</label>
+              <select id="event-audience" value={form.targetRole} onChange={e => setForm({...form,targetRole:e.target.value})} style={{...inputStyle,background:"white"}}>
                 <option value="all">Everyone</option>
                 <option value="student">Students Only</option>
                 <option value="teacher">Teachers Only</option>

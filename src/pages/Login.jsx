@@ -7,6 +7,8 @@ import { schoolTheme, alpha } from "../utils/theme";
 import { homeFor } from "../utils/home";
 import SchoolHero from "../components/SchoolHero";
 import { GraduationCap, Backpack, Users, BookOpen, ShieldCheck, IdCard, Smartphone, Mail, Lock, Moon, Sun, AlertCircle } from "lucide-react";
+import FieldError from "../components/ui/FieldError";
+import { useFieldErrors } from "../utils/fieldErrors";
 
 // What each kind of user types as their login ID.
 const ROLES = [
@@ -16,6 +18,9 @@ const ROLES = [
   // Admins and accountants both sign in here.
   { id: "admin", label: "Admin", icon: ShieldCheck, idLabel: "Email address", idIcon: Mail, placeholder: "Enter your ID", type: "email", mode: "email" },
 ];
+// Shown under the ID field when it is left empty.
+const ID_MISSING = { student: "Enter your admission number or email", parent: "Enter your email or mobile number", teacher: "Enter your email address", admin: "Enter your email address" };
+const FIELDS = { identifier: "login-id", password: "login-password" };
 
 export default function Login() {
   const [school, setSchool] = useState(getSavedSchool);
@@ -28,6 +33,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [focused, setFocused] = useState("");
   const [loading, setLoading] = useState(false);
+  const v = useFieldErrors(FIELDS);
   const [error, setError] = useState(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("suspended")) return "Your school's EduAmigo account is paused. Please contact the school office.";
@@ -59,7 +65,7 @@ export default function Login() {
   };
 
   const handleLogin = async () => {
-    if (!identifier.trim() || !password) return setError("Please fill in all fields.");
+    if (!v.check({ identifier: !identifier.trim() && ID_MISSING[role], password: !password && "Enter your password" })) return setError("");
     setLoading(true);
     setError("");
     try {
@@ -91,10 +97,10 @@ export default function Login() {
 
   // Input with a leading icon and a focus ring in the school's colour (a render helper, not a
   // component, so the input keeps focus while typing).
-  const inputBox = (name, Icon, input, trailing) => (
+  const inputBox = (name, Icon, input, trailing, invalid) => (
     <div style={{
       display: "flex", alignItems: "center", gap: 10, padding: "0 12px", height: 50, borderRadius: 14,
-      background: "var(--input)", border: `1.5px solid ${focused === name ? theme.primary : "var(--border)"}`,
+      background: "var(--input)", border: `1.5px solid ${invalid ? "var(--ea-danger)" : focused === name ? theme.primary : "var(--border)"}`,
       boxShadow: focused === name ? `0 0 0 4px ${theme.ring}` : "none", transition: "border-color .15s, box-shadow .15s",
     }}>
       <Icon aria-hidden size={18} strokeWidth={2} style={{ color: focused === name ? theme.primary : "var(--subtext)", flexShrink: 0 }} />
@@ -136,7 +142,7 @@ export default function Login() {
             const active = role === r.id;
             return (
               <button key={r.id} role="tab" aria-selected={active}
-                onClick={() => { setRole(r.id); setError(""); setIdentifier(""); }}
+                onClick={() => { setRole(r.id); setError(""); setIdentifier(""); v.setErrors({}); }}
                 style={{
                   ...s.roleBtn,
                   ...(active ? { background: theme.button, color: "#fff", textShadow: theme.buttonTextShadow, boxShadow: `0 6px 16px ${theme.glow}`, transform: "translateY(-1px)" } : {}),
@@ -150,23 +156,25 @@ export default function Login() {
 
         <label htmlFor="login-id" style={s.label}>{current.idLabel}</label>
         {inputBox("id", current.idIcon, (
-          <input id="login-id" type={current.type} inputMode={current.mode} value={identifier} onChange={(e) => setIdentifier(e.target.value)}
-            autoCapitalize="none" autoCorrect="off" spellCheck={false}
-            onFocus={() => setFocused("id")} onBlur={() => setFocused("")}
-            placeholder={current.placeholder} style={s.input} autoComplete="username" />
-        ))}
+          <input id="login-id" type={current.type} inputMode={current.mode} value={identifier} onChange={(e) => { setIdentifier(e.target.value); v.clear("identifier"); }}
+            autoCapitalize="none" autoCorrect="off" spellCheck={false} {...v.invalid("identifier")}
+            onFocus={() => setFocused("id")} onBlur={() => setFocused("")} onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+            placeholder={current.placeholder} style={s.input} className="ea-input-bare" autoComplete="username" />
+        ), null, !!v.errors.identifier)}
+        <FieldError id={v.errorId("identifier")}>{v.errors.identifier}</FieldError>
 
         <label htmlFor="login-password" style={{ ...s.label, marginTop: 14 }}>Password</label>
         {inputBox("pw", Lock, (
-          <input id="login-password" type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)}
-            onFocus={() => setFocused("pw")} onBlur={() => setFocused("")}
+          <input id="login-password" type={showPassword ? "text" : "password"} value={password} onChange={(e) => { setPassword(e.target.value); v.clear("password"); }}
+            onFocus={() => setFocused("pw")} onBlur={() => setFocused("")} {...v.invalid("password")}
             onKeyDown={(e) => e.key === "Enter" && handleLogin()} placeholder="Enter your password"
-            style={s.input} autoComplete="current-password" />
+            style={s.input} className="ea-input-bare" autoComplete="current-password" />
         ), (
-          <button type="button" onClick={() => setShowPassword((p) => !p)} tabIndex={-1} aria-label={showPassword ? "Hide password" : "Show password"} style={{ ...s.showBtn, color: theme.primary }}>
+          <button type="button" onClick={() => setShowPassword((p) => !p)} aria-label={showPassword ? "Hide password" : "Show password"} style={{ ...s.showBtn, color: theme.primary }}>
             {showPassword ? "Hide" : "Show"}
           </button>
-        ))}
+        ), !!v.errors.password)}
+        <FieldError id={v.errorId("password")}>{v.errors.password}</FieldError>
 
         <div style={{ textAlign: "right", margin: "10px 0 16px" }}>
           <button type="button" style={{ ...s.forgot, color: theme.primary }} onClick={() => navigate(`/forgot-password?role=${role}`)}>Forgot password?</button>
@@ -211,12 +219,12 @@ const s = {
   roleBtn: { padding: "9px 2px 8px", border: "none", borderRadius: 14, background: "var(--input)", color: "var(--subtext)", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, transition: "all .18s ease" },
   label: { fontSize: 12, fontWeight: 700, color: "var(--text)", display: "block", marginBottom: 6, letterSpacing: 0.2 },
   input: { flex: 1, minWidth: 0, height: "100%", border: "none", outline: "none", background: "transparent", fontSize: 15, color: "var(--text)", colorScheme: "dark light" },
-  showBtn: { background: "none", border: "none", fontSize: 12, fontWeight: 800, cursor: "pointer", padding: 4 },
-  forgot: { fontSize: 12.5, cursor: "pointer", fontWeight: 700, background: "none", border: "none", padding: 0, fontFamily: "inherit" },
+  showBtn: { background: "none", border: "none", fontSize: 12, fontWeight: 800, cursor: "pointer", padding: "7px 8px" },
+  forgot: { fontSize: 12.5, cursor: "pointer", fontWeight: 700, background: "none", border: "none", padding: "6px 0", fontFamily: "inherit" },
   err: { display: "flex", gap: 8, alignItems: "flex-start", background: "#fef2f2", border: "1px solid #fecaca", color: "#dc2626", borderRadius: 12, padding: "10px 13px", fontSize: 12.5, marginBottom: 14 },
   btn: { width: "100%", height: 52, display: "flex", alignItems: "center", justifyContent: "center", gap: 10, color: "white", border: "none", borderRadius: 16, fontSize: 15, fontWeight: 800, letterSpacing: 0.3, cursor: "pointer", transition: "transform .12s" },
   spinner: { width: 16, height: 16, borderRadius: "50%", border: "2px solid rgba(255,255,255,0.4)", borderTopColor: "#fff", animation: "spin .8s linear infinite" },
   schoolRow: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 18, padding: "10px 12px", borderRadius: 12, fontSize: 12, color: "var(--subtext)" },
-  changeBtn: { background: "none", border: "none", color: "var(--subtext)", fontSize: 12, fontWeight: 700, cursor: "pointer", textDecoration: "underline" },
+  changeBtn: { background: "none", border: "none", color: "var(--subtext)", fontSize: 12, fontWeight: 700, cursor: "pointer", textDecoration: "underline", padding: "6px 4px" },
   footer: { textAlign: "center", marginTop: 14, fontSize: 11, color: "var(--subtext)" },
 };

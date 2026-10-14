@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import Glyph from "../../components/Glyph";
+import FieldError from "../../components/ui/FieldError";
+import { useFieldErrors } from "../../utils/fieldErrors";
+
+const FIELDS = { fromDate: "leave-from", toDate: "leave-to", reason: "leave-reason" };
 const API = import.meta.env.VITE_API_URL;
 const LEAVE_TYPES = ["Sick", "Family", "Personal", "Other"];
 export default function ApplyLeave() {
@@ -23,6 +27,7 @@ export default function ApplyLeave() {
   const [quotaLoading, setQuotaLoading] = useState(true);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [formError, setFormError] = useState("");
+  const v = useFieldErrors(FIELDS);
   const headers = { Authorization: `Bearer ${token}` };
   useEffect(() => { fetchQuota(); fetchHistory(); }, []);
   const fetchQuota = async () => {
@@ -47,8 +52,11 @@ export default function ApplyLeave() {
   };
   const handleSubmit = async () => {
     setFormError("");
-    if (!fromDate || !toDate || !reason.trim()) { setFormError("Please fill all required fields."); return; }
-    if (new Date(toDate) < new Date(fromDate)) { setFormError("End date cannot be before start date."); return; }
+    if (!v.check({
+      fromDate: !fromDate && "Choose the first day of leave.",
+      toDate: !toDate ? "Choose the last day of leave." : fromDate && new Date(toDate) < new Date(fromDate) && "End date cannot be before start date.",
+      reason: !reason.trim() && "Write the reason for the leave.",
+    })) return;
     setLoading(true);
     try {
       let attachment = {};
@@ -129,11 +137,13 @@ export default function ApplyLeave() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "8px" }}>
             <div>
               <label style={{ fontSize: "11px", fontWeight: "700", color: dm ? "#94a3b8" : "#666", letterSpacing: "0.5px" }} htmlFor="leave-from">FROM DATE</label>
-              <input id="leave-from" type="date" value={fromDate} onChange={(e) => { setFromDate(e.target.value); setFormError(""); }} style={{ ...inputStyle, fontSize: "13px" }} />
+              <input id="leave-from" type="date" value={fromDate} onChange={(e) => { setFromDate(e.target.value); setFormError(""); v.clear("fromDate"); }} style={{ ...inputStyle, fontSize: "13px" }} {...v.invalid("fromDate")} />
+              <FieldError id={v.errorId("fromDate")}>{v.errors.fromDate}</FieldError>
             </div>
             <div>
               <label style={{ fontSize: "11px", fontWeight: "700", color: dm ? "#94a3b8" : "#666", letterSpacing: "0.5px" }} htmlFor="leave-to">TO DATE</label>
-              <input id="leave-to" type="date" value={toDate} onChange={(e) => { setToDate(e.target.value); setFormError(""); }} style={{ ...inputStyle, fontSize: "13px" }} />
+              <input id="leave-to" type="date" value={toDate} onChange={(e) => { setToDate(e.target.value); setFormError(""); v.clear("toDate"); }} style={{ ...inputStyle, fontSize: "13px" }} {...v.invalid("toDate")} />
+              <FieldError id={v.errorId("toDate")}>{v.errors.toDate}</FieldError>
             </div>
           </div>
           {days > 0 && (
@@ -143,7 +153,8 @@ export default function ApplyLeave() {
           )}
           <div style={{ marginBottom: "16px" }}>
             <label style={{ fontSize: "11px", fontWeight: "700", color: dm ? "#94a3b8" : "#666", letterSpacing: "0.5px" }} htmlFor="leave-reason">REASON</label>
-            <textarea id="leave-reason" value={reason} onChange={(e) => { setReason(e.target.value); setFormError(""); }} placeholder="Explain the reason for leave..." rows={4} style={{ ...inputStyle, resize: "none" }} />
+            <textarea id="leave-reason" value={reason} onChange={(e) => { setReason(e.target.value); setFormError(""); v.clear("reason"); }} placeholder="Explain the reason for leave..." rows={4} style={{ ...inputStyle, resize: "none" }} {...v.invalid("reason")} />
+            <FieldError id={v.errorId("reason")}>{v.errors.reason}</FieldError>
           </div>
           <div style={{ marginBottom: "16px" }}>
             <label style={{ fontSize: "11px", fontWeight: "700", color: dm ? "#94a3b8" : "#666", letterSpacing: "0.5px" }}>ATTACH DOCUMENT (Optional)</label>

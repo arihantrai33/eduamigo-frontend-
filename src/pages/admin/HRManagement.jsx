@@ -11,6 +11,13 @@ const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const LEAVE_TYPES = ["Sick","Casual","Earned","Maternity","Other"];
+// A <label> around a caption and its field, so the field takes the caption as its name.
+const field = (label, control) => (
+  <label style={{ display:"block" }}>
+    <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>{label}</span>
+    {control}
+  </label>
+);
 
 function Tab({ label, icon, active, onClick }) {
   return (
@@ -282,50 +289,44 @@ export default function HRManagement() {
       <Modal show={showModal} onClose={() => setShowModal(false)} width={480}
         title={`${editItem ? "Edit" : "Add"} ${tab === "salary" ? "Salary Record" : "Leave Request"}`}>
             <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
-              <div>
-                <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>TEACHER</div>
+              {field("TEACHER",
                 <select value={form.teacher||""} onChange={e => f("teacher", e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none" }}>
                   <option value="">Select Teacher</option>
                   {teachers.map(t => <option key={t._id} value={t._id}>{t.name} — {t.employeeId}</option>)}
-                </select>
-              </div>
+                </select>)}
               {tab === "salary" ? <>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-                  <div><div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>MONTH</div>
+                  {field("MONTH",
                     <select value={form.month||""} onChange={e => f("month", e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none" }}>
                       {MONTHS.map((m,i) => <option key={i} value={i+1}>{m}</option>)}
-                    </select>
-                  </div>
-                  <div><div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>YEAR</div>
+                    </select>)}
+                  {field("YEAR",
                     <select value={form.year||""} onChange={e => f("year", e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none" }}>
                       {[0, 1, 2, 3].map(i => new Date().getFullYear() - 3 + i).map(y => <option key={y} value={y}>{y}</option>)}
-                    </select>
-                  </div>
+                    </select>)}
                 </div>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:12 }}>
-                  <div><div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>BASIC (₹)</div>{inp("Basic Salary","basicSalary","number")}</div>
-                  <div><div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>ALLOWANCES (₹)</div>{inp("Allowances","allowances","number")}</div>
-                  <div><div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>DEDUCTIONS (₹)</div>{inp("Deductions","deductions","number")}</div>
+                  {field("BASIC (₹)", inp("Basic Salary","basicSalary","number"))}
+                  {field("ALLOWANCES (₹)", inp("Allowances","allowances","number"))}
+                  {field("DEDUCTIONS (₹)", inp("Deductions","deductions","number"))}
                 </div>
-                <div><div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>STATUS</div>
+                {field("STATUS",
                   <select value={form.status||"Pending"} onChange={e => f("status", e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none" }}>
                     <option value="Pending">Pending</option>
                     <option value="Paid">Paid</option>
-                  </select>
-                </div>
-                <div><div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>REMARKS</div>{inp("Optional remarks","remarks")}</div>
+                  </select>)}
+                {field("REMARKS", inp("Optional remarks","remarks"))}
               </> : <>
-                <div><div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>LEAVE TYPE</div>
+                {field("LEAVE TYPE",
                   <select value={form.leaveType||""} onChange={e => f("leaveType", e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none" }}>
                     <option value="">Select Type</option>
                     {LEAVE_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                  </select>
-                </div>
+                  </select>)}
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-                  <div><div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>FROM DATE</div>{inp("","fromDate","date")}</div>
-                  <div><div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>TO DATE</div>{inp("","toDate","date")}</div>
+                  {field("FROM DATE", inp("","fromDate","date"))}
+                  {field("TO DATE", inp("","toDate","date"))}
                 </div>
-                <div><div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>REASON</div>{inp("Reason for leave","reason")}</div>
+                {field("REASON", inp("Reason for leave","reason"))}
               </>}
             </div>
             <div style={{ display:"flex", gap:10, marginTop:24, justifyContent:"flex-end" }}>

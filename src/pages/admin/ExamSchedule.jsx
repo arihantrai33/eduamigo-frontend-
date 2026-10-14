@@ -106,22 +106,23 @@ export default function ExamSchedule() {
 
   const fmtDate = (d) => d ? new Date(d).toLocaleDateString("en-IN", { weekday:"short", day:"numeric", month:"short", year:"numeric" }) : "—";
 
+  // A <label> around the caption and the field, so the field takes the caption as its name.
   const inp = (label, key, type="text", placeholder="") => (
-    <div>
-      <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
+    <label style={{ display:"block" }}>
+      <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
       <input type={type} value={form[key]||""} onChange={e => f(key, e.target.value)} placeholder={placeholder}
         style={{ width:"100%", height:42, padding:"0 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white", color:"#0F172A" }}
         onFocus={e => e.target.style.borderColor="#F97316"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
-    </div>
+    </label>
   );
   const sel = (label, key, options) => (
-    <div>
-      <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
+    <label style={{ display:"block" }}>
+      <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
       <select value={form[key]||""} onChange={e => f(key, e.target.value)} style={SELECT_STYLE}>
         <option value="">Select</option>
         {options.map(o => <option key={o} value={o}>{o}</option>)}
       </select>
-    </div>
+    </label>
   );
 
   return (
@@ -221,8 +222,8 @@ export default function ExamSchedule() {
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             {sel("EXAM TYPE","examType",examTypes)}
             <div>
-              <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>SUBJECT</div>
-              <input list="exam-subjects" value={form.subject||""} onChange={e => f("subject", e.target.value)} placeholder="e.g. Mathematics"
+              <label htmlFor="exam-subject" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>SUBJECT</label>
+              <input id="exam-subject" list="exam-subjects" value={form.subject||""} onChange={e => f("subject", e.target.value)} placeholder="e.g. Mathematics"
                 style={{ width:"100%", height:42, padding:"0 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white", color:"#0F172A" }} />
               <datalist id="exam-subjects">{subjectList.map(sub => <option key={sub} value={sub} />)}</datalist>
             </div>
@@ -242,16 +243,16 @@ export default function ExamSchedule() {
             {inp("VENUE","venue","text","e.g. Room 101")}
           </div>
           <div>
-            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TERM</div>
-            <select value={form.term||""} onChange={e => f("term", e.target.value)} style={SELECT_STYLE}>
+            <label htmlFor="exam-term" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TERM</label>
+            <select id="exam-term" value={form.term||""} onChange={e => f("term", e.target.value)} style={SELECT_STYLE}>
               <option value="">Set from the exam date (Apr–Sep: Term 1, Oct–Mar: Term 2)</option>
               {terms.map(t => <option key={t} value={t}>{t}</option>)}
             </select>
             <div style={{ fontSize:11, color:"#94A3B8", marginTop:6 }}>Report cards group results by term.</div>
           </div>
           <div>
-            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>INSTRUCTIONS</div>
-            <textarea value={form.instructions||""} onChange={e => f("instructions", e.target.value)} placeholder="Special instructions..."
+            <label htmlFor="exam-instructions" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>INSTRUCTIONS</label>
+            <textarea id="exam-instructions" value={form.instructions||""} onChange={e => f("instructions", e.target.value)} placeholder="Special instructions..."
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", resize:"vertical", minHeight:70 }} />
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>

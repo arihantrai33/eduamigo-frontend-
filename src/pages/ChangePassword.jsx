@@ -2,8 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { toast, errorMessage } from "../utils/toast";
+import FieldError from "../components/ui/FieldError";
+import { useFieldErrors } from "../utils/fieldErrors";
 
 const API = import.meta.env.VITE_API_URL;
+const FIELDS = { currentPassword: "cp-current", newPassword: "cp-new", confirm: "cp-confirm" };
 
 export default function ChangePassword() {
   const { user, updateUser, logout } = useAuth();
@@ -11,17 +14,20 @@ export default function ChangePassword() {
   const [form, setForm] = useState({ currentPassword: "", newPassword: "", confirm: "" });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const v = useFieldErrors(FIELDS);
 
   const forced = !!user?.mustChangePassword;
-  const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
+  const set = (k) => (e) => { setForm({ ...form, [k]: e.target.value }); v.clear(k); };
 
   const submit = async (e) => {
     e.preventDefault();
     setError("");
-    if (form.newPassword.length < 8 || !/[A-Za-z]/.test(form.newPassword) || !/\d/.test(form.newPassword)) {
-      return setError("Use at least 8 characters with both letters and numbers.");
-    }
-    if (form.newPassword !== form.confirm) return setError("The new passwords do not match.");
+    const weak = form.newPassword.length < 8 || !/[A-Za-z]/.test(form.newPassword) || !/\d/.test(form.newPassword);
+    if (!v.check({
+      currentPassword: !form.currentPassword && (forced ? "Enter the temporary password" : "Enter your current password"),
+      newPassword: weak && "Use at least 8 characters with both letters and numbers.",
+      confirm: !weak && form.newPassword !== form.confirm && "The new passwords do not match.",
+    })) return;
     setSaving(true);
     try {
       const res = await fetch(`${API}/users/password`, {
@@ -46,20 +52,23 @@ export default function ChangePassword() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#F4F5FA", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: "inherit" }}>
-      <form onSubmit={submit} style={{ background: "#fff", borderRadius: 16, padding: 24, width: "100%", maxWidth: 400, boxShadow: "0 10px 30px rgba(15,23,42,0.08)" }}>
+      <form onSubmit={submit} noValidate style={{ background: "#fff", borderRadius: 16, padding: 24, width: "100%", maxWidth: 400, boxShadow: "0 10px 30px rgba(15,23,42,0.08)" }}>
         <h1 style={{ fontSize: 20, margin: "0 0 6px", color: "#0F172A" }}>{forced ? "Set a new password" : "Change password"}</h1>
         <p style={{ fontSize: 13, color: "#64748B", margin: 0, lineHeight: 1.5 }}>
           {forced ? "Your account uses a temporary password. Please choose your own password to continue." : "Choose a strong password you do not use elsewhere."}
         </p>
 
         <label style={label} htmlFor="cp-current">{forced ? "Temporary password" : "Current password"}</label>
-        <input id="cp-current" type="password" autoComplete="current-password" style={input} value={form.currentPassword} onChange={set("currentPassword")} required />
+        <input id="cp-current" type="password" autoComplete="current-password" style={input} value={form.currentPassword} onChange={set("currentPassword")} required {...v.invalid("currentPassword")} />
+        <FieldError id={v.errorId("currentPassword")}>{v.errors.currentPassword}</FieldError>
 
         <label style={label} htmlFor="cp-new">New password</label>
-        <input id="cp-new" type="password" autoComplete="new-password" style={input} value={form.newPassword} onChange={set("newPassword")} required />
+        <input id="cp-new" type="password" autoComplete="new-password" style={input} value={form.newPassword} onChange={set("newPassword")} required {...v.invalid("newPassword")} />
+        <FieldError id={v.errorId("newPassword")}>{v.errors.newPassword}</FieldError>
 
         <label style={label} htmlFor="cp-confirm">Confirm new password</label>
-        <input id="cp-confirm" type="password" autoComplete="new-password" style={input} value={form.confirm} onChange={set("confirm")} required />
+        <input id="cp-confirm" type="password" autoComplete="new-password" style={input} value={form.confirm} onChange={set("confirm")} required {...v.invalid("confirm")} />
+        <FieldError id={v.errorId("confirm")}>{v.errors.confirm}</FieldError>
 
         {error && <div role="alert" style={{ marginTop: 12, fontSize: 13, color: "#B91C1C" }}>{error}</div>}
 

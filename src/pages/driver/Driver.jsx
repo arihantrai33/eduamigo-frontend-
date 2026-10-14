@@ -200,9 +200,10 @@ export default function DriverHome() {
         <div style={{ color: "white", fontSize: "22px", fontWeight: "800", marginBottom: "4px" }}>EduAmigo Driver</div>
         <div style={{ color: "rgba(255,255,255,0.4)", fontSize: "13px", marginBottom: "32px" }}>Enter your driver token to continue</div>
         {error && (
-          <div style={{ background: "rgba(239,68,68,0.15)", border: "1px solid rgba(239,68,68,0.4)", borderRadius: "12px", padding: "12px 20px", color: "#f87171", fontSize: "13px", marginBottom: "16px", width: "100%", maxWidth: "320px" }}>{error}</div>
+          <div id="driver-token-error" role="alert" style={{ background: "rgba(239,68,68,0.15)", border: "1px solid rgba(239,68,68,0.4)", borderRadius: "12px", padding: "12px 20px", color: "#f87171", fontSize: "13px", marginBottom: "16px", width: "100%", maxWidth: "320px" }}>{error}</div>
         )}
         <input
+          aria-label="Driver token" aria-invalid={error ? true : undefined} aria-describedby={error ? "driver-token-error" : undefined}
           value={tokenInput}
           onChange={e => setTokenInput(e.target.value)}
           onKeyDown={e => e.key === "Enter" && handleTokenSubmit()}

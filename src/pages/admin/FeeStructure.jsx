@@ -83,22 +83,23 @@ export default function FeeStructure() {
   const filtered = structures.filter(s => !filterClass || s.class === filterClass);
   const totalAmount = filtered.reduce((sum, s) => sum + Number(s.amount || 0), 0);
 
+  // A <label> around the caption and the field, so the field takes the caption as its name.
   const inp = (label, key, type="text", placeholder="") => (
-    <div>
-      <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
+    <label style={{ display:"block" }}>
+      <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
       <input type={type} value={form[key]||""} onChange={e => f(key, e.target.value)} placeholder={placeholder}
         style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
         onFocus={e => e.target.style.borderColor="#06B6D4"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
-    </div>
+    </label>
   );
   const sel = (label, key, options) => (
-    <div>
-      <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
+    <label style={{ display:"block" }}>
+      <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
       <select value={form[key]||""} onChange={e => f(key, e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
         <option value="">Select</option>
         {options.map(o => <option key={o} value={o}>{o}</option>)}
       </select>
-    </div>
+    </label>
   );
 
   return (
@@ -208,8 +209,8 @@ export default function FeeStructure() {
           </div>
           <div style={{ fontSize:12, color:"#64748B" }}>For monthly or quarterly fees, add one structure per instalment (for example "Tuition Fee - April").</div>
           <div>
-            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>DESCRIPTION</div>
-            <textarea value={form.description||""} onChange={e => f("description", e.target.value)} placeholder="Optional..."
+            <label htmlFor="fee-description" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>DESCRIPTION</label>
+            <textarea id="fee-description" value={form.description||""} onChange={e => f("description", e.target.value)} placeholder="Optional..."
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", resize:"vertical", minHeight:70 }} />
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>

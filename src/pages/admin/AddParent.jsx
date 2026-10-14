@@ -3,8 +3,12 @@ import axios from "axios";
 import { showCredentials } from "../../utils/toast";
 import PageHeader from "../../components/ui/PageHeader";
 import { hasEntries, useUnsavedChanges } from "../../utils/unsavedChanges";
+import FieldError from "../../components/ui/FieldError";
+import { useFieldErrors } from "../../utils/fieldErrors";
 
 const API = import.meta.env.VITE_API_URL;
+// Fields checked before saving; each input's id is "add-parent-<name>".
+const FIELDS = { name: "add-parent-name", email: "add-parent-email", phone: "add-parent-phone" };
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 });
@@ -27,6 +31,7 @@ const AddParent = () => {
   const [toast, setToast] = useState({ msg: "", type: "" });
   const [searchQuery, setSearchQuery] = useState("");
   useUnsavedChanges(hasEntries(form));
+  const v = useFieldErrors(FIELDS);
 
   const showToast = (msg, type = "error") => {
     setToast({ msg, type });
@@ -47,7 +52,7 @@ const AddParent = () => {
     fetchStudents();
   }, []);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => { setForm({ ...form, [e.target.name]: e.target.value }); v.clear(e.target.name); };
 
   const toggleChild = (studentId) => {
     const id = studentId.toString();
@@ -62,10 +67,11 @@ const AddParent = () => {
   const emptyForm = { name: "", email: "", phone: "", gender: "", address: "", occupation: "", children: [] };
 
   const handleSubmit = async () => {
-    if (!form.name || !form.email || !form.phone) {
-      showToast("Name, email and phone are required");
-      return;
-    }
+    if (!v.check({
+      name: !form.name.trim() && "Enter the parent's full name",
+      email: !form.email.trim() && "Enter the parent's email",
+      phone: !form.phone.trim() && "Enter the parent's phone number",
+    })) return;
     setLoading(true);
     try {
       const res = await axios.post(`${API}/parents`, form, authHeader());
@@ -90,13 +96,14 @@ const AddParent = () => {
         {label}{required && <span style={{ color: "#EF4444" }}> *</span>}
       </span>
       {options ? (
-        <select name={name} value={form[name]} onChange={handleChange} style={inputStyle}>
+        <select id={`add-parent-${name}`} name={name} value={form[name]} onChange={handleChange} style={inputStyle} {...v.invalid(name)}>
           <option value="">Select</option>
           {options.map((o) => <option key={o} value={o}>{o}</option>)}
         </select>
       ) : (
-        <input type={type} name={name} value={form[name]} onChange={handleChange} style={inputStyle} />
+        <input id={`add-parent-${name}`} type={type} name={name} value={form[name]} onChange={handleChange} style={inputStyle} {...v.invalid(name)} />
       )}
+      <FieldError id={`add-parent-${name}-error`}>{v.errors[name]}</FieldError>
     </label>
   );
 

@@ -5,6 +5,11 @@ import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
 import { hasEntries, useUnsavedChanges } from "../../utils/unsavedChanges";
 import { todayLocal } from "../../utils/dates";
+import FieldError from "../../components/ui/FieldError";
+import { useFieldErrors } from "../../utils/fieldErrors";
+
+// Fields checked before saving; each input's id is "add-student-<name>".
+const FIELDS = { name: "add-student-name", class: "add-student-class", section: "add-student-section", parentPhone: "add-student-parentPhone" };
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -54,14 +59,19 @@ export default function AddStudent() {
     setTimeout(() => setToast(null), 4000);
   };
 
-  const handleChange = (e) =>
+  const v = useFieldErrors(FIELDS);
+  const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value, ...(e.target.name === "class" ? { section: "" } : {}) }));
+    v.clear(e.target.name === "phone" ? "parentPhone" : e.target.name);
+  };
 
   const handleSubmit = async () => {
-    const required = ["name","class","section"];
-    const missing  = required.find((k) => !form[k]?.trim());
-    if (missing) { showToast("Please fill all required fields", "error"); return; }
-    if (!form.phone.trim() && !form.parentPhone.trim()) { showToast("Enter the student's phone or the parent's mobile number", "error"); return; }
+    if (!v.check({
+      name: !form.name.trim() && "Enter the student's full name",
+      class: !form.class && "Choose the class",
+      section: !form.section && "Choose the section",
+      parentPhone: !form.phone.trim() && !form.parentPhone.trim() && "Enter the student's phone or the parent's mobile number",
+    })) return;
 
     setLoading(true);
     setCredentials(null);
@@ -97,8 +107,8 @@ export default function AddStudent() {
       </span>
       {children || (
         <input
-          type={type} name={name} value={form[name]} max={max}
-          onChange={handleChange}
+          id={`add-student-${name}`} type={type} name={name} value={form[name]} max={max}
+          onChange={handleChange} {...v.invalid(name)}
           style={{
             padding: "9px 12px", borderRadius: 8, border: "1px solid #E5E7EB",
             fontSize: 13, color: "#111827", outline: "none", background: "#F9FAFB",
@@ -110,13 +120,14 @@ export default function AddStudent() {
         />
       )}
       {hint && <span style={{ fontSize: 11, color: "#9CA3AF" }}>{hint}</span>}
+      <FieldError id={`add-student-${name}-error`}>{v.errors[name]}</FieldError>
     </label>
   );
 
   const Select = ({ label, name, options, required = false, hint }) => Field({
     label, name, required, hint, children: (
       <select
-        name={name} value={form[name]} onChange={handleChange}
+        id={`add-student-${name}`} name={name} value={form[name]} onChange={handleChange} {...v.invalid(name)}
         style={{
           padding: "9px 12px", borderRadius: 8, border: "1px solid #E5E7EB",
           fontSize: 13, color: form[name] ? "#111827" : "#9CA3AF",
