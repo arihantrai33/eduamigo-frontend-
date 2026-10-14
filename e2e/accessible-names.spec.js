@@ -18,7 +18,8 @@ const SCREENS = {
 // Empty since 2026-10-15: every screen below is held to the rule.
 const PENDING = new Set([]);
 
-const unnamedControls = () => {
+// `root`: a selector to check inside (the last match, e.g. the dialog on top); the whole page when left out.
+const unnamedControls = (root) => {
   const visible = (el) => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(el).visibility !== 'hidden'; };
   const nameOf = (el) => {
     if (el.getAttribute('aria-label')?.trim() || el.getAttribute('title')?.trim()) return true;
@@ -29,7 +30,8 @@ const unnamedControls = () => {
     return false;
   };
   const sel = 'button, a[href], input:not([type=hidden]):not([type=file]), select, textarea';
-  return [...document.querySelectorAll(sel)].filter((el) => visible(el) && !nameOf(el))
+  const scope = root ? [...document.querySelectorAll(root)].pop() : document;
+  return [...scope.querySelectorAll(sel)].filter((el) => visible(el) && !nameOf(el))
     .map((el) => `${el.tagName.toLowerCase()}${el.type ? `[${el.type}]` : ''}${el.placeholder ? ` placeholder="${el.placeholder}"` : ''}${el.className && typeof el.className === 'string' ? ` .${el.className.split(' ')[0]}` : ''}`);
 };
 
@@ -49,3 +51,45 @@ for (const [role, paths] of Object.entries(SCREENS)) {
     expect(found, found.join('\n')).toEqual([]);
   });
 }
+
+test('sign-in, password and driver pages: every control has an accessible name', async ({ page }) => {
+  const found = [];
+  const check = async (label) => { await page.waitForTimeout(400); for (const c of await page.evaluate(unnamedControls)) found.push(`${label}: ${c}`); };
+  await page.goto('/select-school');
+  await check('/select-school');
+  await page.getByLabel('School code or name').fill('GVPS');
+  await page.getByRole('button', { name: 'Continue' }).click();
+  await page.getByRole('button', { name: 'Yes, this is my school' }).click();
+  await page.waitForURL(/\/login/);
+  await check('/login');
+  for (const role of ['parent', 'teacher', 'student']) { await page.goto(`/forgot-password?role=${role}`); await check(`/forgot-password?role=${role}`); }
+  await page.goto('/driver');
+  await check('/driver');
+  await signIn(page, 'student');
+  await page.goto('/change-password');
+  await check('/change-password');
+  expect(found, found.join('\n')).toEqual([]);
+});
+
+// Each dialog opens as a real dialog, and every field in it has a name.
+const DIALOGS = [
+  ['/admin/library', 'Add Book'], ['/admin/exams', 'Schedule Exam'], ['/admin/fee-structure', 'Add Fee'], ['/admin/transport', 'New Bus'],
+  ['/admin/salaries', 'Add Salary'], ['/admin/hr-management', 'Add Salary'], ['/admin/event-calendar', 'Add Event'],
+  ['/admin/user-management', 'Add User'], ['/admin/admissions', 'New enquiry'], ['/admin/communications', 'Send Notification'],
+];
+test('admin dialogs: each opens as a dialog and every control in it has an accessible name', async ({ page }) => {
+  test.setTimeout(180_000);
+  await signIn(page, 'admin');
+  const found = [];
+  for (const [path, opener] of DIALOGS) {
+    await page.goto(path);
+    await page.waitForTimeout(600);
+    const button = page.getByRole('button', { name: opener }).first();
+    if (!(await button.count())) { found.push(`${path}: no "${opener}" button`); continue; }
+    await button.click();
+    await page.waitForTimeout(500);
+    if (!(await page.locator('[role="dialog"]').count())) { found.push(`${path} "${opener}": opens without role="dialog"`); continue; }
+    for (const c of await page.evaluate(unnamedControls, '[role="dialog"]')) found.push(`${path} "${opener}": ${c}`);
+  }
+  expect(found, found.join('\n')).toEqual([]);
+});
