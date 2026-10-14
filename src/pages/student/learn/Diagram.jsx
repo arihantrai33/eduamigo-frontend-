@@ -4,11 +4,12 @@
 
 const W = 320;
 
-function Frame({ d, children, height }) {
+function Frame({ d, children, height, below }) {
   return (
     <figure className="ea-diagram" role="img" aria-label={d.alt}>
       {d.title && <figcaption className="ea-diagram__title">{d.title}</figcaption>}
       <svg viewBox={`0 0 ${W} ${height}`} style={{ width: "min(400px, 100%)", height: "auto", display: "block" }} aria-hidden="true" focusable="false">{children}</svg>
+      {below}
     </figure>
   );
 }
@@ -134,18 +135,26 @@ function Flow({ d }) {
   );
 }
 
+// Short name for the ring ("Evaporation: water from the sea" -> "Evaporation"); the full steps are listed under the picture.
+const shortName = (s) => { const head = s.split(/[:\-–—(]/)[0].trim() || s; return head.length > 18 ? `${head.slice(0, 17).trimEnd()}…` : head; };
+
 function Cycle({ d }) {
   const n = d.steps.length; const cx = W / 2; const cy = 120; const r = 80;
   const at = (i) => [cx + r * Math.sin((2 * Math.PI * i) / n), cy - r * Math.cos((2 * Math.PI * i) / n)];
+  const longSteps = d.steps.some((s) => shortName(s) !== s);
   return (
-    <Frame d={d} height={250}>
+    <Frame d={d} height={250} below={longSteps && (
+      <ol className="ea-diagram__legend" aria-hidden="true">{d.steps.map((s, i) => <li key={i}>{s}</li>)}</ol>
+    )}>
       <circle cx={cx} cy={cy} r={r} className="ea-diagram__ring" fill="none" />
       {d.steps.map((s, i) => {
         const [x, y] = at(i);
+        const anchor = x < cx - 10 ? "end" : x > cx + 10 ? "start" : "middle";
+        const dx = anchor === "end" ? -12 : anchor === "start" ? 12 : 0;
         return (
           <g key={i}>
             <circle cx={x} cy={y} r={7} className="ea-diagram__point" />
-            <text x={x} y={y + (y < cy ? -12 : 20)} textAnchor="middle" className="ea-diagram__label">{s}</text>
+            <text x={x + dx} y={anchor === "middle" ? y + (y < cy ? -12 : 20) : y + 4} textAnchor={anchor} className="ea-diagram__label">{shortName(s)}</text>
           </g>
         );
       })}

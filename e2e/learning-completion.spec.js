@@ -168,6 +168,23 @@ test.describe('Diagrams and hidden blocks', () => {
   });
 });
 
+test.describe('Cycle diagrams with long step text', () => {
+  test('the ring shows short names and the full steps are listed under the picture', async ({ page }) => {
+    await signIn(page, 'student');
+    await mockLearning(page, {
+      chat: () => [{ type: 'meta', conversationId: 'c1' }, final({ text: 'The water cycle.\n\n[[diagram:0]]', diagrams: [{ type: 'cycle', title: 'Water cycle', alt: 'Water cycle: Evaporation, Condensation, Precipitation.',
+        steps: ['Evaporation: water rises from seas', 'Condensation: vapour cools into clouds', 'Precipitation: rain falls to the ground'] }] })],
+    });
+    await page.goto('/student/learn');
+    await page.getByLabel('Your question').fill('Draw the water cycle');
+    await page.getByRole('button', { name: 'Send' }).click();
+    const fig = page.getByRole('img', { name: /Water cycle: Evaporation/ });
+    await expect(fig).toBeVisible();
+    await expect(fig.locator('svg text', { hasText: 'Evaporation' })).toHaveText('Evaporation');
+    await expect(fig.locator('.ea-diagram__legend li').first()).toHaveText('Evaporation: water rises from seas');
+  });
+});
+
 test.describe('Re-teach after a hard practice set', () => {
   test('"Teach me this again" returns to the tutor with the question typed, not sent', async ({ page }) => {
     await signIn(page, 'student');
