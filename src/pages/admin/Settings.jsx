@@ -16,9 +16,9 @@ const card = { background: "#fff", border: "1px solid #E8E8E5", borderRadius: 12
 const title = { fontSize: 13, fontWeight: 600, color: "var(--brand)", marginBottom: 12 };
 const label = { fontSize: 11, color: "#64748B", fontWeight: 600 };
 
-function Field({ text, children }) {
+function Field({ text, children, full }) {
   return (
-    <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+    <label style={{ display: "flex", flexDirection: "column", gap: 4, gridColumn: full ? "1 / -1" : undefined }}>
       <span style={label}>{text}</span>
       {children}
     </label>
@@ -223,12 +223,12 @@ export default function Settings() {
 
       <div style={card}>
         <div style={title}>School Information</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 12 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: 12 }}>
           <Field text="School name"><input style={inputStyle} value={school.name || ""} onChange={set("name")} /></Field>
           <Field text="Principal"><input style={inputStyle} value={school.principal || ""} onChange={set("principal")} /></Field>
           <Field text="Email"><input type="email" style={inputStyle} value={school.email || ""} onChange={set("email")} /></Field>
           <Field text="Phone"><input type="tel" style={inputStyle} value={school.phone || ""} onChange={set("phone")} /></Field>
-          <Field text="Address"><input style={inputStyle} value={school.address || ""} onChange={set("address")} /></Field>
+          <Field text="Address" full><input style={inputStyle} value={school.address || ""} onChange={set("address")} /></Field>
         </div>
       </div>
 

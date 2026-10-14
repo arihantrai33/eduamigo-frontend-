@@ -10,9 +10,10 @@ const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
 });
 
-const gradeColor = (g) =>
-  g === 'A+' ? '#00897B' : g === 'A' ? '#43A047' : g === 'B' ? '#FB8C00' :
-  g === 'C' ? '#F4511E' : g === 'D' ? '#E53935' : '#B71C1C';
+// By grade band, so both scales work: A+/A/B/C/D and the CBSE A1, A2, B1 ... E. Only E/F get the fail red.
+const gradeColor = (grade) => { const g = String(grade || ''); return (
+  g === 'A+' || g === 'A1' ? '#00897B' : g[0] === 'A' ? '#43A047' : g[0] === 'B' ? '#FB8C00' :
+  g[0] === 'C' ? '#F4511E' : g[0] === 'D' ? '#E53935' : '#B71C1C'); };
 
 export default function StudentResult() {
   const { darkMode } = useTheme();
