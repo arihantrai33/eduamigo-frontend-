@@ -39,7 +39,8 @@ test('the student edit form shows and saves the date of birth and the date of ad
   const made = await api.post('/students', { name: 'Edit Me', phone: '9000001235', class: '9', section: 'A', dateOfBirth: '2012-08-09' });
   await signIn(page, 'admin');
   await page.goto('/admin/students');
-  await page.getByRole('row', { name: /Edit Me/ }).getByRole('button', { name: /Edit/ }).click();
+  // exact: the row's Delete button is named "Delete Edit Me", which also contains "Edit"
+  await page.getByRole('row', { name: /Edit Me/ }).getByRole('button', { name: 'Edit', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: /Edit Student/ });
   const dob = dialog.locator('input[type="date"]').first();
   await expect(dob).toHaveValue('2012-08-09'); // the field used to read a "dob" key the server never sends
