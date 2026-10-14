@@ -106,7 +106,7 @@ export default function UserManagement() {
       <div style={{ display: "flex", gap: 10, marginBottom: 16, alignItems: "center" }}>
         <div style={{ position: "relative", flex: 1, maxWidth: 320 }}>
           <Search size={14} color="#94A3B8" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by name or email..."
+          <input value={search} onChange={e => setSearch(e.target.value)} aria-label="Search users" placeholder="Search by name or email..."
             style={{ ...inp, paddingLeft: 36 }} />
         </div>
         <div style={{ display: "flex", gap: 6 }}>

@@ -182,7 +182,7 @@ export default function Communications() {
           <div style={{ display:"flex", gap:12, marginBottom:20, alignItems:"center" }}>
             <div style={{ flex:1, position:"relative" }}>
               <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}><Glyph e="🔍" /></span>
-              <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search announcements..."
+              <input value={search} onChange={e => setSearch(e.target.value)} aria-label="Search announcements" placeholder="Search announcements..."
                 style={{ width:"100%", padding:"11px 14px 11px 38px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
                 onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
             </div>
@@ -249,15 +249,15 @@ export default function Communications() {
                         </div>
                       </div>
                       <div style={{ display:"flex", gap:6, marginLeft:16 }}>
-                        <button className="act-btn" onClick={() => handleTogglePin(a._id)}
+                        <button type="button" className="act-btn" onClick={() => handleTogglePin(a._id)} aria-label={a.isPinned ? "Unpin announcement" : "Pin announcement"} aria-pressed={!!a.isPinned} title={a.isPinned ? "Unpin" : "Pin"}
                           style={{ width:32, height:32, borderRadius:8, border:"1px solid #E2E8F0", background: a.isPinned ? "#FFFBEB" : "white", cursor:"pointer", fontSize:14 }}>
                           <Glyph e="📌" />
                         </button>
-                        <button className="act-btn" onClick={() => openEditAnnouncement(a)}
+                        <button type="button" className="act-btn" onClick={() => openEditAnnouncement(a)} aria-label="Edit announcement" title="Edit"
                           style={{ width:32, height:32, borderRadius:8, border:"1px solid #E2E8F0", background:"white", cursor:"pointer", fontSize:14 }}>
                           <Glyph e="✏" />
                         </button>
-                        <button className="act-btn" onClick={() => handleDeleteAnn(a._id)}
+                        <button type="button" className="act-btn" onClick={() => handleDeleteAnn(a._id)} aria-label="Delete announcement" title="Delete"
                           style={{ width:32, height:32, borderRadius:8, border:"none", background:"#FEF2F2", cursor:"pointer", fontSize:14 }}>
                           <Glyph e="🗑" />
                         </button>

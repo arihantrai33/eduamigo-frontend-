@@ -85,10 +85,10 @@ const AddParent = () => {
   );
 
   const inp = (label, name, type = "text", options = null, required = false) => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-      <label style={{ fontSize: 11, color: "#666", fontWeight: 500 }}>
+    <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+      <span style={{ fontSize: 11, color: "#666", fontWeight: 500 }}>
         {label}{required && <span style={{ color: "#EF4444" }}> *</span>}
-      </label>
+      </span>
       {options ? (
         <select name={name} value={form[name]} onChange={handleChange} style={inputStyle}>
           <option value="">Select</option>
@@ -97,7 +97,7 @@ const AddParent = () => {
       ) : (
         <input type={type} name={name} value={form[name]} onChange={handleChange} style={inputStyle} />
       )}
-    </div>
+    </label>
   );
 
   return (
@@ -145,6 +145,7 @@ const AddParent = () => {
 
         <input
           style={{ ...inputStyle, marginBottom: 12 }}
+          aria-label="Search students to link"
           placeholder="Search student by name or roll number..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}

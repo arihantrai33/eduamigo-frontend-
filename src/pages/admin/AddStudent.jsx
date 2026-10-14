@@ -91,10 +91,10 @@ export default function AddStudent() {
   // Plain render helpers, called as functions: defining components inside render would remount
   // the inputs on every keystroke and lose focus.
   const Field = ({ label, name, type = "text", required = false, hint, max, children }) => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-      <label style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+    <label style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+      <span style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.05em" }}>
         {label} {required && <span style={{ color: "#EF4444" }}>*</span>}
-      </label>
+      </span>
       {children || (
         <input
           type={type} name={name} value={form[name]} max={max}
@@ -110,7 +110,7 @@ export default function AddStudent() {
         />
       )}
       {hint && <span style={{ fontSize: 11, color: "#9CA3AF" }}>{hint}</span>}
-    </div>
+    </label>
   );
 
   const Select = ({ label, name, options, required = false, hint }) => Field({

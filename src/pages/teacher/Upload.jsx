@@ -201,7 +201,7 @@ export default function TeacherUpload() {
                             rel="noreferrer"
                             style={styles.viewLink}
                           >
-                            View File ↗
+                            View File <Glyph e="↗" />
                           </a>
                         )}
                       </div>

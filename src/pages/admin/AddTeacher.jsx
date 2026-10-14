@@ -72,8 +72,8 @@ const AddTeacher = () => {
   }
 
   const inp = (label, name, type = "text", options = null) => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-      <label style={{ fontSize: 11, color: "#666", fontWeight: 500 }}>{label}</label>
+    <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+      <span style={{ fontSize: 11, color: "#666", fontWeight: 500 }}>{label}</span>
       {options ? (
         <select name={name} value={form[name]} onChange={handleChange} style={inputStyle}>
           <option value="">Select</option>
@@ -82,7 +82,7 @@ const AddTeacher = () => {
       ) : (
         <input type={type} name={name} value={form[name]} onChange={handleChange} style={inputStyle} />
       )}
-    </div>
+    </label>
   )
 
   return (

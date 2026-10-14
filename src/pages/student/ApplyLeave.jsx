@@ -121,19 +121,19 @@ export default function ApplyLeave() {
         <div style={{ background: dm ? "#1e293b" : "white", borderRadius: "16px", padding: "20px", boxShadow: dm ? "0 2px 8px rgba(0,0,0,0.3)" : "0 2px 8px rgba(0,0,0,0.06)" }}>
           <div style={{ fontSize: "12px", fontWeight: "700", color: dm ? "#94a3b8" : "#888", letterSpacing: "1px", marginBottom: "16px" }}>APPLY NEW LEAVE</div>
           <div style={{ marginBottom: "16px" }}>
-            <label style={{ fontSize: "11px", fontWeight: "700", color: dm ? "#94a3b8" : "#666", letterSpacing: "0.5px" }}>LEAVE TYPE</label>
-            <select value={leaveType} onChange={(e) => setLeaveType(e.target.value)} style={inputStyle}>
+            <label style={{ fontSize: "11px", fontWeight: "700", color: dm ? "#94a3b8" : "#666", letterSpacing: "0.5px" }} htmlFor="leave-type">LEAVE TYPE</label>
+            <select id="leave-type" value={leaveType} onChange={(e) => setLeaveType(e.target.value)} style={inputStyle}>
               {LEAVE_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
             </select>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "8px" }}>
             <div>
-              <label style={{ fontSize: "11px", fontWeight: "700", color: dm ? "#94a3b8" : "#666", letterSpacing: "0.5px" }}>FROM DATE</label>
-              <input type="date" value={fromDate} onChange={(e) => { setFromDate(e.target.value); setFormError(""); }} style={{ ...inputStyle, fontSize: "13px" }} />
+              <label style={{ fontSize: "11px", fontWeight: "700", color: dm ? "#94a3b8" : "#666", letterSpacing: "0.5px" }} htmlFor="leave-from">FROM DATE</label>
+              <input id="leave-from" type="date" value={fromDate} onChange={(e) => { setFromDate(e.target.value); setFormError(""); }} style={{ ...inputStyle, fontSize: "13px" }} />
             </div>
             <div>
-              <label style={{ fontSize: "11px", fontWeight: "700", color: dm ? "#94a3b8" : "#666", letterSpacing: "0.5px" }}>TO DATE</label>
-              <input type="date" value={toDate} onChange={(e) => { setToDate(e.target.value); setFormError(""); }} style={{ ...inputStyle, fontSize: "13px" }} />
+              <label style={{ fontSize: "11px", fontWeight: "700", color: dm ? "#94a3b8" : "#666", letterSpacing: "0.5px" }} htmlFor="leave-to">TO DATE</label>
+              <input id="leave-to" type="date" value={toDate} onChange={(e) => { setToDate(e.target.value); setFormError(""); }} style={{ ...inputStyle, fontSize: "13px" }} />
             </div>
           </div>
           {days > 0 && (
@@ -142,8 +142,8 @@ export default function ApplyLeave() {
             </div>
           )}
           <div style={{ marginBottom: "16px" }}>
-            <label style={{ fontSize: "11px", fontWeight: "700", color: dm ? "#94a3b8" : "#666", letterSpacing: "0.5px" }}>REASON</label>
-            <textarea value={reason} onChange={(e) => { setReason(e.target.value); setFormError(""); }} placeholder="Explain the reason for leave..." rows={4} style={{ ...inputStyle, resize: "none" }} />
+            <label style={{ fontSize: "11px", fontWeight: "700", color: dm ? "#94a3b8" : "#666", letterSpacing: "0.5px" }} htmlFor="leave-reason">REASON</label>
+            <textarea id="leave-reason" value={reason} onChange={(e) => { setReason(e.target.value); setFormError(""); }} placeholder="Explain the reason for leave..." rows={4} style={{ ...inputStyle, resize: "none" }} />
           </div>
           <div style={{ marginBottom: "16px" }}>
             <label style={{ fontSize: "11px", fontWeight: "700", color: dm ? "#94a3b8" : "#666", letterSpacing: "0.5px" }}>ATTACH DOCUMENT (Optional)</label>

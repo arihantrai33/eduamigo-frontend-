@@ -254,6 +254,7 @@ export default function TeacherChat() {
               <span style={styles.searchIcon}><Glyph e="🔍" /></span>
               <input
                 style={styles.searchInput}
+                aria-label="Search conversations"
                 placeholder="Search students or parents..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}

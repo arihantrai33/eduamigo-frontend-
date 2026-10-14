@@ -5,7 +5,7 @@ import {
   Clock, AlarmClock, Umbrella, Trophy, Lock, Ban, Bot, Settings, Handshake, Flag, Microscope, CloudSun, KeyRound, Timer, Target,
   Printer, TrafficCone, Radio, LifeBuoy, Ruler, FlaskConical, Globe, ArrowUp, Circle, Pause, Map, Tag, Folder, Link, Briefcase,
   RefreshCw, Landmark, Book, Package, ShieldCheck, Sunrise, HelpCircle, PersonStanding, Siren, Presentation,
-  ArrowLeft, ArrowRight, SendHorizontal, X,
+  ArrowLeft, ArrowRight, SendHorizontal, X, Info, ExternalLink,
 } from "lucide-react";
 
 // Line icons that replace the emojis the app used to show. An icon takes the size and colour of the text
@@ -27,7 +27,7 @@ const ICONS = {
   "🏠": House, "🚪": LogOut, "🌴": TreePalm, "🏖": Umbrella, "☀": Sun, "🌙": Moon, "🌤": CloudSun, "🌅": Sunrise, "🌍": Globe, "🌐": Globe,
   "🤖": Bot, "🔬": Microscope, "⚗": FlaskConical, "📐": Ruler, "🛟": LifeBuoy, "❓": HelpCircle,
   "🟢": Circle, "🟡": Circle, "🔴": Circle,
-  "←": ArrowLeft, "→": ArrowRight, "➤": SendHorizontal, "×": X, "✕": X, "✖": X,
+  "←": ArrowLeft, "→": ArrowRight, "➤": SendHorizontal, "×": X, "✕": X, "✖": X, "ℹ": Info, "↗": ExternalLink,
 };
 // Coloured dots keep their meaning (online / pending / alert) as a filled circle.
 const DOT_COLORS = { "🟢": "#16A34A", "🟡": "#EAB308", "🔴": "#DC2626" };

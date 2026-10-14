@@ -22,7 +22,7 @@ function noticeFor(sub) {
 const TONES = {
   danger: { background: "#FEF2F2", border: "#FECACA", color: "#B91C1C", icon: <Glyph e="⛔" /> },
   warning: { background: "#FFFBEB", border: "#FDE68A", color: "#92400E", icon: <Glyph e="⚠" /> },
-  info: { background: "#EFF6FF", border: "#BFDBFE", color: "#1E40AF", icon: "ℹ️" },
+  info: { background: "#EFF6FF", border: "#BFDBFE", color: "#1E40AF", icon: <Glyph e="ℹ" /> },
 };
 
 const SUPPORT = { tone: "warning", icon: <Glyph e="🛟" />, text: "EduAmigo support session: you are signed in as this school's admin for up to one hour. Every change is recorded in the school's activity log." };

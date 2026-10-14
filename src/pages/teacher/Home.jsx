@@ -160,7 +160,7 @@ export default function TeacherHome() {
           <div style={{ ...styles.headerSub, color: look.muted }}>TEACHER PORTAL</div>
           <div style={{ ...styles.headerName, color: look.text }}>{teacher?.name || '—'}</div>
         </div>
-        <button onClick={() => navigate('/teacher/notifications')} style={{ ...styles.bellBtn, background: look.glass, border: look.border }}>
+        <button type="button" aria-label={unreadCount > 0 ? `Notifications, ${unreadCount} unread` : 'Notifications'} onClick={() => navigate('/teacher/notifications')} style={{ ...styles.bellBtn, background: look.glass, border: look.border }}>
           <Glyph e="🔔" />
           {unreadCount > 0 && <div style={{ position: 'absolute', top: -4, right: -4, minWidth: 18, height: 18, background: '#EF5350', borderRadius: '50%', border: '2px solid white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: 'white', padding: '0 4px' }}>{unreadCount}</div>}
         </button>

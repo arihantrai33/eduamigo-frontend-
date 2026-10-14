@@ -136,7 +136,7 @@ return (
 </div>
 </div>
 <div style={{ display: "flex", gap: 8 }}>
-<button
+<button type="button" aria-label={notices.length > 0 ? `Notifications, ${notices.length} new` : "Notifications"}
 onClick={() => navigate("/student/notifications")}
 style={{ width: 38, height: 38, borderRadius: "50%", background: look.glass, border: look.border, cursor: "pointer", fontSize: 16, position: "relative" }}>
               <Glyph e="🔔" />

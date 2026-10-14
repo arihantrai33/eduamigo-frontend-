@@ -350,7 +350,7 @@ export default function Admissions() {
       </div>
 
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
-        <input style={{ ...input, flex: "1 1 260px" }} placeholder="Search by student, parent, mobile or application no." value={search} onChange={(e) => setSearch(e.target.value)} />
+        <input style={{ ...input, flex: "1 1 260px" }} aria-label="Search enquiries" placeholder="Search by student, parent, mobile or application no." value={search} onChange={(e) => setSearch(e.target.value)} />
         <select style={input} value={klass} onChange={(e) => setKlass(e.target.value)} aria-label="Filter by class">
           <option value="">All classes</option>
           {[...new Set([...classes, ...(klass ? [klass] : [])])].map((c) => <option key={c} value={c}>Class {c}</option>)}

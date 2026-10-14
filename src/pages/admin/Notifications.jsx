@@ -95,7 +95,7 @@ export default function Notifications() {
           <div style={{ fontSize: 12, color: "#94A3B8", marginTop: 3 }}>Broadcast to students, parents, teachers & staff</div>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
-          <button onClick={fetchNotifs} style={{ width: 36, height: 36, borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+          <button type="button" onClick={fetchNotifs} aria-label="Refresh notifications" title="Refresh" style={{ width: 36, height: 36, borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
             <RefreshCw size={14} color="#64748B" />
           </button>
           <button onClick={() => setShowModal(true)}

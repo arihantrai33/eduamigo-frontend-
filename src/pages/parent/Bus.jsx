@@ -484,7 +484,7 @@ export default function ParentBus() {
             {tripActive && (
               <span style={{ ...styles.liveDot, marginRight:"2px" }} />
               )}
-            <button onClick={() => setShowNotifSettings(true)} style={styles.notifBtn}><Glyph e="🔔" /></button>
+            <button type="button" aria-label="Bus alert settings" title="Bus alert settings" onClick={() => setShowNotifSettings(true)} style={styles.notifBtn}><Glyph e="🔔" /></button>
           </div>
 
           <div style={styles.childCard}>

@@ -51,7 +51,7 @@ export default function TeacherStudents() {
 
       <div style={{ padding: 16 }}>
         <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search by name or admission no" style={{ ...s.input, flex: 1 }} />
+          <input value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search students" placeholder="Search by name or admission no" style={{ ...s.input, flex: 1 }} />
           {classes.length > 1 && (
             <select value={cls} onChange={(e) => setCls(e.target.value)} style={s.input}>
               <option value="">All classes</option>
