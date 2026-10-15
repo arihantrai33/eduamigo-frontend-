@@ -110,7 +110,7 @@ Semantic (status only; never decoration). Text tokens are the 700 tones, so they
 
 **Categorical palette** (new; only for *categories*: calendar event types, library genres, subject chips, notice types):
 
-`--ea-cat-1` teal #0F766E · `--ea-cat-2` indigo #4338CA · `--ea-cat-3` amber #B45309 · `--ea-cat-4` rose #BE123C · `--ea-cat-5` sky #0369A1 · `--ea-cat-6` slate #475569.
+`--ea-cat-1` teal #0F766E · `--ea-cat-2` indigo #4338CA · `--ea-cat-3` amber #A14608 (B0: #B45309 reached only 4.39:1 on its tint) · `--ea-cat-4` rose #BE123C · `--ea-cat-5` sky #0369A1 · `--ea-cat-6` slate #475569.
 
 Each is used as text on a 10% tint of itself. These are the only "extra" hues allowed. No purple card borders and no random avatar colours.
 
@@ -504,7 +504,12 @@ P0 work (B0–B3, B10 core) gives the biggest visible gain first.
 6. Append a short entry to `docs/EDUAMIGO_WEB_UX_AUDIT.md`: batch, files, screenshots reviewed, test counts.
 7. Commit (one commit per batch) with a message that states what changed visually.
 
-### 7.3 Owner decisions needed
+### 7.3 Owner decisions (all approved by the owner on 2026-10-15)
+- **D1 approved:** admin uses the same white-sidebar design system as the other portals and keeps its own role-specific navigation (B11).
+- **D2 approved:** the screens before a school is chosen use EduAmigo indigo (B10).
+- **D3 approved:** the sign-in button is the only gradient button; the home hero gradients allowed in §2.1 stay.
+
+The original questions, for reference:
 - **D1** — one shell for admin too (white sidebar, as in the portals)? Recommended: yes. If no, skip B11 and keep the admin sidebar, but still apply the canvas token.
 - **D2** — platform palette before school selection: indigo family (current defaults, recommended) or neutral slate?
 - **D3** — keep the sign-in CTA gradient as the only gradient button (recommended), or make it solid like the rest?

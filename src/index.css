@@ -377,6 +377,7 @@ input, button, select, textarea {
   --ea-on-card-success: #4ADE80;
   --ea-on-card-warning: #FBBF24;
   --ea-on-card-danger: #FCA5A5;
+  --ea-on-card-info: #93C5FD;
   /* Text without a colour of its own inherits the body's dark ink; on dark cards it must be light. */
   color: var(--text);
 }
@@ -498,16 +499,53 @@ body.admin-body #root {
   --ea-on-card-success: #15803D;
   --ea-on-card-warning: #B45309;
   --ea-on-card-danger: #B91C1C;
+  --ea-on-card-info: #1D4ED8;
+  --ea-info-bg: #EFF6FF;
+  --ea-info-border: #BFDBFE;
+  /* Categories only (event types, library genres, subjects, notice types), never status or decoration: text in the
+     colour on a 10% tint of it (--ea-cat-N-bg). On a white card all six reach 4.5:1 on their tint. */
+  --ea-cat-1: #0F766E;
+  --ea-cat-2: #4338CA;
+  --ea-cat-3: #A14608;
+  --ea-cat-4: #BE123C;
+  --ea-cat-5: #0369A1;
+  --ea-cat-6: #475569;
+  --ea-cat-1-bg: color-mix(in srgb, var(--ea-cat-1) 10%, transparent);
+  --ea-cat-2-bg: color-mix(in srgb, var(--ea-cat-2) 10%, transparent);
+  --ea-cat-3-bg: color-mix(in srgb, var(--ea-cat-3) 10%, transparent);
+  --ea-cat-4-bg: color-mix(in srgb, var(--ea-cat-4) 10%, transparent);
+  --ea-cat-5-bg: color-mix(in srgb, var(--ea-cat-5) 10%, transparent);
+  --ea-cat-6-bg: color-mix(in srgb, var(--ea-cat-6) 10%, transparent);
+  /* Type scale (font shorthand: use as `font: var(--ea-text-h1)`). Phones get smaller display and h1 below. */
+  --ea-text-display: 750 32px/40px var(--ea-font);
+  --ea-text-h1: 700 24px/32px var(--ea-font);
+  --ea-text-h2: 650 17px/24px var(--ea-font);
+  --ea-text-h3: 650 15px/22px var(--ea-font);
+  --ea-text-body: 400 14px/22px var(--ea-font);
+  --ea-text-sm: 400 13px/20px var(--ea-font);
+  --ea-text-xs: 500 12px/16px var(--ea-font);
+  --ea-text-overline: 650 11px/16px var(--ea-font); /* with uppercase and --ea-tracking-overline; table headers and sidebar sections only */
+  --ea-tracking-overline: 0.06em;
   --ea-radius-sm: 8px;
   --ea-radius: 12px;
   --ea-radius-lg: 16px;
-  --ea-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.04);
+  --ea-radius-xl: 20px;      /* home hero and auth panels only */
+  --ea-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.04);   /* e1: cards */
+  --ea-shadow-e2: 0 8px 24px rgba(15, 23, 42, 0.10);                                     /* menus, popovers, panels */
+  --ea-shadow-e3: 0 24px 64px rgba(15, 23, 42, 0.24);                                    /* dialogs */
   --ea-space-1: 4px;
   --ea-space-2: 8px;
   --ea-space-3: 12px;
   --ea-space-4: 16px;
   --ea-space-5: 24px;
   --ea-space-6: 32px;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --ea-text-display: 750 28px/36px var(--ea-font);
+    --ea-text-h1: 700 20px/28px var(--ea-font);
+  }
 }
 
 /* Dark mode */
@@ -781,7 +819,8 @@ input:-webkit-autofill:focus {
 .ea-stat.is-static:hover { border-color: var(--ea-line); }
 .ea-stat__text { display: flex; flex-direction: column; min-width: 0; }
 .ea-stat__caption { font-size: 12px; font-weight: 650; color: var(--ea-muted); letter-spacing: 0.02em; overflow-wrap: break-word; }
-.ea-stat__number { font-size: 24px; font-weight: 750; color: var(--ea-ink); letter-spacing: -0.02em; line-height: 1.2; overflow-wrap: anywhere; }
+/* A number never breaks inside itself ("₹31,50" / "0"); it scales down a little on narrower screens instead. */
+.ea-stat__number { font-size: clamp(18px, 2vw, 24px); font-weight: 750; color: var(--ea-ink); letter-spacing: -0.02em; line-height: 1.2; white-space: nowrap; font-variant-numeric: tabular-nums; }
 /* Portal screens (student, teacher, parent): the brand-coloured header bar. */
 .ea-portal-head { display: flex; align-items: center; gap: 12px; padding: 20px 16px 24px; background: var(--brand-gradient); color: #fff; }
 .ea-portal-head__back {
