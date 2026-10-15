@@ -87,14 +87,14 @@ export default function ParentProfile() {
   );
 
   return (
-    <div style={s.wrap}>
+    <div className="ea-pd-narrow" style={s.wrap}>
 
       {/* Toast */}
 
       {/* Top Bar */}
       <PortalHeader title="My Profile" onBack={() => navigate(-1)} />
 
-      <div style={s.scroll}>
+      <div className="ea-pd-body" style={s.scroll}>
 
         {/* Hero */}
         <div style={s.hero}>

@@ -47,8 +47,8 @@ export default function ParentNotifications() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "inherit", paddingBottom: 80 }}>
-      <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white" }}>
+    <div className="ea-pd-narrow" style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "inherit", paddingBottom: 80 }}>
+      <div className="ea-pd-band" style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <button type="button" aria-label="Back" onClick={() => navigate(-1)}
             style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "8px 12px", color: "white", cursor: "pointer", fontSize: 16 }}>
@@ -57,7 +57,7 @@ export default function ParentNotifications() {
           <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800 }}><Glyph e="🔔" /> Notifications</h2>
         </div>
       </div>
-      <div style={{ padding: 16, marginTop: -20 }}>
+      <div className="ea-pd-body" style={{ padding: 16, marginTop: -20 }}>
         {loading && (
           <div style={{ textAlign: "center", padding: 40, color: "var(--subtext)", fontSize: 14 }}>
             Loading notifications...

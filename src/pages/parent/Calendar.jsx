@@ -61,15 +61,15 @@ export default function ParentCalendar() {
   const empty = (text) => <div style={{ padding: "8px 16px 18px", fontSize: 13, color: "var(--subtext)" }}>{text}</div>;
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "sans-serif", paddingBottom: "30px" }}>
-      <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white" }}>
+    <div className="ea-pd-narrow" style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "inherit", paddingBottom: "30px" }}>
+      <div className="ea-pd-band" style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <button onClick={() => navigate(-1)} aria-label="Back" style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}><Glyph e="←" /></button>
           <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>School Calendar</h2>
         </div>
       </div>
 
-      <div style={{ padding: "16px", marginTop: "-20px" }}>
+      <div className="ea-pd-body" style={{ padding: "16px", marginTop: "-20px" }}>
         {loading && <div style={{ ...card, padding: 16, fontSize: 13, color: "var(--subtext)" }}>Loading calendar...</div>}
         {!loading && error && <div style={{ ...card, padding: 16, fontSize: 13, color: "#B91C1C" }}>{error}</div>}
 

@@ -40,8 +40,8 @@ export default function TeacherStudents() {
   };
 
   return (
-    <div style={s.screen}>
-      <div style={s.header}>
+    <div className="ea-pd-narrow" style={s.screen}>
+      <div className="ea-pd-band" style={s.header}>
         <button onClick={() => navigate("/teacher/home")} style={s.back} aria-label="Back"><Glyph e="←" /></button>
         <div>
           <div style={s.headerTitle}>My Students</div>
@@ -49,7 +49,7 @@ export default function TeacherStudents() {
         </div>
       </div>
 
-      <div style={{ padding: 16 }}>
+      <div className="ea-pd-body" style={{ padding: 16 }}>
         <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
           <input value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search students" placeholder="Search by name or admission no" style={{ ...s.input, flex: 1 }} />
           {classes.length > 1 && (

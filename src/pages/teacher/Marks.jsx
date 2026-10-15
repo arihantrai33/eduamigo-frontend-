@@ -253,9 +253,9 @@ function Badge({ status }) {
 
 function Shell({ children, navigate, title = 'Enter Marks', onBack }) {
   return (
-    <div style={styles.screen}>
+    <div className="ea-pd-narrow" style={styles.screen}>
       <PortalHeader title={title} onBack={onBack || (() => navigate('/teacher/home'))} />
-      <div style={styles.scroll}>{children}</div>
+      <div className="ea-pd-body" style={styles.scroll}>{children}</div>
       <BottomNav role="teacher" />
     </div>
   )

@@ -58,10 +58,10 @@ export default function StudentFee() {
   );
 
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "inherit" }}>
+    <div className="ea-pd-narrow" style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "inherit" }}>
 
       {/* Header */}
-      <div style={{ background: "var(--brand-gradient)", padding: "48px 20px 24px", flexShrink: 0 }}>
+      <div className="ea-pd-band" style={{ background: "var(--brand-gradient)", padding: "48px 20px 24px", flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
           <button type="button" aria-label="Back" onClick={() => navigate(-1)} style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(255,255,255,0.2)", border: "none", color: "white", fontSize: 18, cursor: "pointer" }}><Glyph e="←" /></button>
           <div style={{ fontSize: 18, fontWeight: 800, color: "white" }}>Fee Statement</div>
@@ -82,7 +82,7 @@ export default function StudentFee() {
 
       {/* Due Alert */}
       {nearestDue && (
-        <div style={{ margin: "16px 16px 0", background: "#FFF8E1", borderRadius: 14, padding: "14px 16px", borderLeft: "4px solid #f59e0b", display: "flex", gap: 12, alignItems: "center" }}>
+        <div className="ea-pd-bar" style={{ margin: "16px 16px 0", background: "#FFF8E1", borderRadius: 14, padding: "14px 16px", borderLeft: "4px solid #f59e0b", display: "flex", gap: 12, alignItems: "center" }}>
           <div style={{ fontSize: 22 }}><Glyph e="⚠" /></div>
           <div>
             <div style={{ fontSize: 13, fontWeight: 700, color: "#92400e" }}>Payment Due: {formatDate(nearestDue.dueDate)}</div>
@@ -92,12 +92,12 @@ export default function StudentFee() {
       )}
 
       {/* Tabs */}
-      <div style={{ display: "flex", margin: "16px 16px 0", background: "var(--card)", borderRadius: 12, padding: 4, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+      <div className="ea-pd-bar" style={{ display: "flex", margin: "16px 16px 0", background: "var(--card)", borderRadius: 12, padding: 4, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         {[
           { key: "pending", label: `Outstanding (${pendingFees.length})` },
           { key: "paid",    label: `Payments (${paidFees.length})` },
         ].map(tab => (
-          <button key={tab.key} onClick={() => setActiveTab(tab.key)}
+          <button key={tab.key} type="button" aria-pressed={activeTab === tab.key} onClick={() => setActiveTab(tab.key)}
             style={{ flex: 1, padding: "10px 0", border: "none", borderRadius: 10, cursor: "pointer", fontWeight: 700, fontSize: 13,
               background: activeTab === tab.key ? "var(--brand-gradient)" : "transparent",
               color: activeTab === tab.key ? "white" : "#888" }}>
@@ -107,7 +107,7 @@ export default function StudentFee() {
       </div>
 
       {/* Fee List */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 100px" }}>
+      <div className="ea-pd-body" style={{ flex: 1, overflowY: "auto", padding: "16px 16px 100px" }}>
 
         {activeTab === "pending" && (
           <>

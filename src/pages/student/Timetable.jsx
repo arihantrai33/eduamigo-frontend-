@@ -96,10 +96,10 @@ export default function Timetable() {
   const classes = timetableCache[selectedDay] || [];
 
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "sans-serif" }}>
+    <div className="ea-pd-narrow" style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "inherit" }}>
       {/* Header */}
       <PortalHeader title="Timetable" onBack={() => navigate("/student/home")} />
-      <div style={{ background: "var(--card)", padding: "12px 20px 0px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+      <div className="ea-pd-bar" style={{ background: "var(--card)", padding: "12px 20px 0px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "8px" }}>
           {DAYS.map((day) => (
             <button key={day} onClick={() => setSelectedDay(day)}
@@ -130,7 +130,7 @@ export default function Timetable() {
       </div>
 
       {/* Body */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "16px" }}>
+      <div className="ea-pd-body" style={{ flex: 1, overflowY: "auto", padding: "16px" }}>
         <div style={{ fontSize: "11px", fontWeight: "700", color: "var(--subtext)", marginBottom: "12px", letterSpacing: "1px" }}>
           {getDateForDay(selectedDay, weekOffset)}
         </div>

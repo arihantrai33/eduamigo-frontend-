@@ -103,7 +103,7 @@ export default function StudentResult() {
       background: dm ? '#0f172a' : '#F4F6FB', fontFamily: 'inherit',
       display: 'flex', flexDirection: 'column' }}>
 
-      <div style={{ background: 'linear-gradient(145deg,#1C2033,var(--brand-dark),var(--brand))',
+      <div className="ea-pd-band" style={{ background: 'linear-gradient(145deg,#1C2033,var(--brand-dark),var(--brand))',
         paddingBottom: 16, flexShrink: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: '48px 18px 10px' }}>
@@ -159,8 +159,8 @@ export default function StudentResult() {
         </div>
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto', padding: '14px 16px 80px' }}>
-        <div style={{ background: dm ? '#1e293b' : '#fff', borderRadius: 20, padding: 18,
+      <div className="ea-pd-body ea-pd-cols" style={{ flex: 1, overflowY: 'auto', padding: '14px 16px 80px' }}>
+        <div className="ea-pd-main" style={{ background: dm ? '#1e293b' : '#fff', borderRadius: 20, padding: 18,
           marginBottom: 14, boxShadow: dm ? '0 2px 16px rgba(0,0,0,.3)' : '0 2px 16px color-mix(in srgb, var(--brand) 10%, transparent)' }}>
           <div style={{ fontSize: 11, fontWeight: 700,
             color: dm ? '#94a3b8' : '#7B8099',
@@ -207,7 +207,7 @@ export default function StudentResult() {
         </div>
 
         {best && worst && best._id !== worst._id && (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 14 }}>
+          <div className="ea-pd-side ea-pd-onecol" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 14 }}>
             {[
               { label: 'Strength',   emoji: <Glyph e="🏆" />, sub: best.subject,  val: `${best.marksObtained}/${best.totalMarks}`,   bg: dm ? 'linear-gradient(135deg,#0f2a25,#1a3a34)' : 'linear-gradient(135deg,#E0F7F4,#B2DFDB)' },
               { label: 'Focus Area', emoji: <Glyph e="📌" />, sub: worst.subject, val: `${worst.marksObtained}/${worst.totalMarks}`, bg: dm ? 'linear-gradient(135deg,#2a0f0f,#3a1a1a)' : 'linear-gradient(135deg,#FFEBEE,#FFCDD2)' },

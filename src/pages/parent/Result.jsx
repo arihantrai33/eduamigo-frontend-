@@ -59,8 +59,8 @@ export default function ParentResult() {
     </div>
   );
   return (
-    <div style={{ minHeight: "100vh", background: "#F4F6FB", fontFamily: "inherit", paddingBottom: 40 }}>
-      <div style={{ background: "var(--brand-gradient)", padding: "48px 20px 32px", color: "white" }}>
+    <div className="ea-pd-narrow" style={{ minHeight: "100vh", background: "#F4F6FB", fontFamily: "inherit", paddingBottom: 40 }}>
+      <div className="ea-pd-band" style={{ background: "var(--brand-gradient)", padding: "48px 20px 32px", color: "white" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
           <button type="button" aria-label="Back" onClick={() => navigate(-1)}
             style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "8px 12px", color: "white", cursor: "pointer", fontSize: 16 }}>
@@ -94,7 +94,7 @@ export default function ParentResult() {
           </div>
         </div>
       </div>
-      <div style={{ padding: "16px", marginTop: "-16px" }}>
+      <div className="ea-pd-body" style={{ padding: "16px", marginTop: "-16px" }}>
         {exams.length > 1 && (
           <div style={{ display: "flex", gap: 8, marginBottom: 16, overflowX: "auto", paddingBottom: 4 }}>
             {exams.map((e) => (

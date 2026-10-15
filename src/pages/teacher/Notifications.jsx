@@ -65,9 +65,9 @@ export default function TeacherNotifications() {
     : notifications.filter(n => n.type === filter);
 
   return (
-    <div style={styles.container}>
+    <div className="ea-pd-narrow" style={styles.container}>
       {/* Header */}
-      <div style={styles.header}>
+      <div className="ea-pd-band" style={styles.header}>
         <button type="button" aria-label="Back" onClick={() => navigate('/teacher/home')} style={styles.backBtn}><Glyph e="←" /></button>
         <div>
           <p style={styles.portalLabel}>TEACHER PORTAL</p>
@@ -78,7 +78,7 @@ export default function TeacherNotifications() {
         )}
       </div>
 
-      <div style={styles.content}>
+      <div className="ea-pd-body" style={styles.content}>
         {/* Filter Chips */}
         <div style={styles.filterRow}>
           {FILTERS.map(f => (

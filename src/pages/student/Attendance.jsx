@@ -41,11 +41,11 @@ export default function StudentAttendance() {
   );
 
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column",
+    <div className="ea-pd-narrow" style={{ height: "100vh", display: "flex", flexDirection: "column",
       background: "var(--bg)", fontFamily: "inherit" }}>
 
       {/* Header */}
-      <div style={{ background: "var(--brand-gradient)",
+      <div className="ea-pd-band" style={{ background: "var(--brand-gradient)",
         padding: "48px 20px 24px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
           <button type="button" aria-label="Back" onClick={() => navigate(-1)}
@@ -77,7 +77,7 @@ export default function StudentAttendance() {
       </div>
 
       {/* Body */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 80px" }}>
+      <div className="ea-pd-body" style={{ flex: 1, overflowY: "auto", padding: "16px 16px 80px" }}>
 
         {/* Stats Cards */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr",

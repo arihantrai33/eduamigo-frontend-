@@ -55,14 +55,14 @@ export default function Notifications() {
   );
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--bg)", paddingBottom: "80px" }}>
-      <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white" }}>
+    <div className="ea-pd-narrow" style={{ minHeight: "100vh", background: "var(--bg)", paddingBottom: "80px" }}>
+      <div className="ea-pd-band" style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <button type="button" aria-label="Back" onClick={() => navigate(-1)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px", color: "white", cursor: "pointer" }}><Glyph e="←" /></button>
           <h2 style={{ margin: 0, fontSize: "18px" }}>Notifications</h2>
         </div>
       </div>
-      <div style={{ padding: "16px", marginTop: "-20px" }}>
+      <div className="ea-pd-body" style={{ padding: "16px", marginTop: "-20px" }}>
         {notifications.length === 0 ? (
           <div style={{ textAlign: "center", padding: "40px", color: "var(--subtext)" }}>
             <div style={{ fontSize: "48px" }}><Glyph e="🔔" /></div>

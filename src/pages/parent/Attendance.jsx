@@ -98,7 +98,7 @@ export default function ParentAttendance() {
     <div style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "inherit", paddingBottom: 30 }}>
 
       {/* Header */}
-      <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white" }}>
+      <div className="ea-pd-band" style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
           <button type="button" aria-label="Back" onClick={() => navigate(-1)}
             style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "8px 12px", color: "white", cursor: "pointer", fontSize: 16 }}>
@@ -116,10 +116,10 @@ export default function ParentAttendance() {
         </div>
       </div>
 
-      <div style={{ padding: 16, marginTop: -20 }}>
+      <div className="ea-pd-body ea-pd-cols" style={{ padding: 16, marginTop: -20 }}>
 
-        {/* Calendar */}
-        <div style={{ background: "var(--card)", borderRadius: 16, padding: 16, boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: 16 }}>
+        {/* Calendar (desktop: the main column, beside the numbers and the absent days) */}
+        <div className="ea-pd-main ea-pd-tall" style={{ background: "var(--card)", borderRadius: 16, padding: 16, boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: 16 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
             <button onClick={() => shiftMonth(-1)} aria-label="Previous month"
               style={{ border: "none", background: "var(--bg)", borderRadius: 8, width: 32, height: 32, cursor: "pointer", fontSize: 16, color: "var(--text)" }}>‹</button>
@@ -179,7 +179,7 @@ export default function ParentAttendance() {
         </div>
 
         {/* Stats Cards */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10, marginBottom: 16 }}>
+        <div className="ea-pd-side" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10, marginBottom: 16 }}>
           {[
             { label: "Present", value: summary?.present ?? 0, color: "#16a34a", bg: "#dcfce7" },
             { label: "Absent",  value: summary?.absent  ?? 0, color: "#ef4444", bg: "#fee2e2" },
@@ -193,7 +193,7 @@ export default function ParentAttendance() {
         </div>
 
         {/* Absent / Leave Days */}
-        <div style={{ background: "var(--card)", borderRadius: 16, padding: 16, boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}>
+        <div className="ea-pd-side" style={{ background: "var(--card)", borderRadius: 16, padding: 16, boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}>
           <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 12 }}>Absent / Leave Days</div>
           {absentRecords.length === 0 ? (
             <div style={{ textAlign: "center", color: "var(--subtext)", padding: "20px 0", fontSize: 13 }}>

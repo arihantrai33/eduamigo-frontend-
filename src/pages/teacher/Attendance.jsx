@@ -137,7 +137,7 @@ export default function TeacherAttendance() {
   const late    = students.filter(s => attendance[s._id]?.status === "Late").length
 
   return (
-    <div style={{ height: "100vh", overflowY: "auto", background: "#F4F6FB", fontFamily: "inherit", paddingBottom: 90 }}>
+    <div className="ea-pd-narrow" style={{ height: "100vh", overflowY: "auto", background: "#F4F6FB", fontFamily: "inherit", paddingBottom: 90 }}>
 
       {toast && (
         <div style={{
@@ -152,7 +152,7 @@ export default function TeacherAttendance() {
       )}
 
       {/* Header */}
-      <div style={{ background: "var(--brand-gradient)", padding: "48px 18px 20px", display: "flex", alignItems: "center", gap: 12 }}>
+      <div className="ea-pd-band" style={{ background: "var(--brand-gradient)", padding: "48px 18px 20px", display: "flex", alignItems: "center", gap: 12 }}>
         <button type="button" aria-label="Back" onClick={() => navigate('/teacher/home')} style={{ background: "rgba(255,255,255,0.15)", border: "none", borderRadius: 10, width: 36, height: 36, fontSize: 18, cursor: "pointer", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}><Glyph e="←" /></button>
         <div>
           <div style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", fontWeight: 700, letterSpacing: 1 }}>TEACHER PORTAL</div>
@@ -160,7 +160,7 @@ export default function TeacherAttendance() {
         </div>
       </div>
 
-      <div style={{ padding: 16 }}>
+      <div className="ea-pd-body" style={{ padding: 16 }}>
 
         {/* Filters */}
         <div style={{ background: "var(--card)", borderRadius: 20, padding: 16, marginBottom: 16, boxShadow: "0 2px 16px color-mix(in srgb, var(--brand) 8%, transparent)" }}>

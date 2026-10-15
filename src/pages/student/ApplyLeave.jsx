@@ -100,7 +100,7 @@ export default function ApplyLeave() {
   );
   return (
     <div style={{ minHeight: "100vh", background: dm ? "#0f172a" : "#f5f6fa", fontFamily: "inherit", paddingBottom: "32px" }}>
-      <div style={{ background: "var(--brand-gradient)", padding: "48px 20px 24px" }}>
+      <div className="ea-pd-band" style={{ background: "var(--brand-gradient)", padding: "48px 20px 24px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <button type="button" aria-label="Back" onClick={() => navigate(-1)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "50%", width: "36px", height: "36px", color: "white", fontSize: "18px", cursor: "pointer" }}><Glyph e="←" /></button>
           <div>
@@ -125,8 +125,8 @@ export default function ApplyLeave() {
           )}
         </div>
       </div>
-      <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "16px" }}>
-        <div style={{ background: dm ? "#1e293b" : "white", borderRadius: "16px", padding: "20px", boxShadow: dm ? "0 2px 8px rgba(0,0,0,0.3)" : "0 2px 8px rgba(0,0,0,0.06)" }}>
+      <div className="ea-pd-body ea-pd-cols" style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "16px" }}>
+        <div className="ea-pd-main" style={{ background: dm ? "#1e293b" : "white", borderRadius: "16px", padding: "20px", boxShadow: dm ? "0 2px 8px rgba(0,0,0,0.3)" : "0 2px 8px rgba(0,0,0,0.06)" }}>
           <div style={{ fontSize: "12px", fontWeight: "700", color: dm ? "#94a3b8" : "#888", letterSpacing: "1px", marginBottom: "16px" }}>APPLY NEW LEAVE</div>
           <div style={{ marginBottom: "16px" }}>
             <label style={{ fontSize: "11px", fontWeight: "700", color: dm ? "#94a3b8" : "#666", letterSpacing: "0.5px" }} htmlFor="leave-type">LEAVE TYPE</label>
@@ -175,7 +175,7 @@ export default function ApplyLeave() {
             {loading ? "Submitting..." : "Submit Leave Request"}
           </button>
         </div>
-        <div style={{ background: dm ? "#1e293b" : "white", borderRadius: "16px", padding: "20px", boxShadow: dm ? "0 2px 8px rgba(0,0,0,0.3)" : "0 2px 8px rgba(0,0,0,0.06)" }}>
+        <div className="ea-pd-side" style={{ background: dm ? "#1e293b" : "white", borderRadius: "16px", padding: "20px", boxShadow: dm ? "0 2px 8px rgba(0,0,0,0.3)" : "0 2px 8px rgba(0,0,0,0.06)" }}>
           <div style={{ fontSize: "12px", fontWeight: "700", color: dm ? "#94a3b8" : "#888", letterSpacing: "1px", marginBottom: "16px" }}>LEAVE HISTORY</div>
           {historyLoading ? (
             <div style={{ textAlign: "center", color: dm ? "#94a3b8" : "#aaa", fontSize: "13px", padding: "20px 0" }}>Loading history...</div>

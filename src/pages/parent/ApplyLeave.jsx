@@ -111,7 +111,7 @@ export default function ApplyLeave() {
     }}>
 
       {/* Header */}
-      <div style={{
+      <div className="ea-pd-band" style={{
         background: "var(--brand-gradient)",
         padding: "48px 20px 24px",
       }}>
@@ -162,8 +162,8 @@ export default function ApplyLeave() {
       </div>
 
       {/* Form */}
-      <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "16px" }}>
-        <div style={{
+      <div className="ea-pd-body ea-pd-cols" style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "16px" }}>
+        <div className="ea-pd-main" style={{
           background: "var(--card)", borderRadius: "16px", padding: "20px",
           boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
         }}>
@@ -321,7 +321,7 @@ export default function ApplyLeave() {
 
         {/* Leave History */}
         {leaveHistory.length > 0 && (
-          <div style={{
+          <div className="ea-pd-side" style={{
             background: "var(--card)", borderRadius: "16px", padding: "20px",
             boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
           }}>

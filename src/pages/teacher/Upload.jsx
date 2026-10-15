@@ -118,8 +118,8 @@ export default function TeacherUpload() {
   const subjects = teacher?.subjects || [];
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
+    <div className="ea-pd-narrow" style={styles.container}>
+      <div className="ea-pd-band" style={styles.header}>
         <button type="button" aria-label="Back" onClick={() => navigate('/teacher/home')} style={styles.backBtn}><Glyph e="←" /></button>
         <div style={{ flex: 1 }}>
           <p style={styles.portalLabel}>TEACHER PORTAL</p>
@@ -130,7 +130,7 @@ export default function TeacherUpload() {
         )}
       </div>
 
-      <div style={styles.content}>
+      <div className="ea-pd-body" style={styles.content}>
         {successMsg && <div style={styles.successBanner}><Glyph e="✅" /> {successMsg}</div>}
 
         <div style={styles.tabRow}>

@@ -99,7 +99,7 @@ export default function Notes() {
     </div>
   );
   return (
-    <div style={{ minHeight: '100vh', background: dm ? '#0f172a' : '#F8F9FB', fontFamily: 'inherit', display: 'flex', flexDirection: 'column', position: 'relative', paddingBottom: 80 }}>
+    <div className="ea-pd-narrow" style={{ minHeight: '100vh', background: dm ? '#0f172a' : '#F8F9FB', fontFamily: 'inherit', display: 'flex', flexDirection: 'column', position: 'relative', paddingBottom: 80 }}>
       {/* Header */}
       <PortalHeader title="Notes & Assignments" onBack={() => navigate('/student/home')}
         actions={<>
@@ -107,12 +107,12 @@ export default function Notes() {
           <button type="button" className="ea-portal-head__btn" aria-label="Add a note" onClick={() => setShowModal(true)}><Plus size={18} aria-hidden="true" /></button>
         </>} />
       {/* Search */}
-      <div style={{ display: 'flex', alignItems: 'center', background: dm ? '#0f172a' : '#F0F2F5', borderRadius: 12, margin: '12px 16px', padding: '10px 14px', gap: 8 }}>
+      <div className="ea-pd-bar" style={{ display: 'flex', alignItems: 'center', background: dm ? '#0f172a' : '#F0F2F5', borderRadius: 12, margin: '12px 16px', padding: '10px 14px', gap: 8 }}>
         <span style={{ fontSize: 16, opacity: 0.5 }}><Glyph e="🔍" /></span>
         <input style={{ border: 'none', background: 'transparent', fontSize: 14, color: dm ? '#cbd5e1' : '#333', outline: 'none', width: '100%', colorScheme: dm ? 'dark' : 'light' }} aria-label="Search notes" placeholder="Search notes, subjects..." value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 8, padding: '0 16px 12px' }}>
+      <div className="ea-pd-row" style={{ display: 'flex', gap: 8, padding: '0 16px 12px' }}>
         {tabs.map(tab => (
           <button key={tab.key}
             style={{ padding: '8px 16px', borderRadius: 20, border: activeTab === tab.key ? '1.5px solid var(--brand)' : `1.5px solid ${dm ? '#334155' : '#E0E0E0'}`, background: activeTab === tab.key ? (dm ? '#1e3a5f' : 'var(--brand-soft)') : (dm ? '#1e293b' : '#fff'), fontSize: 13, fontWeight: activeTab === tab.key ? 700 : 500, cursor: 'pointer', color: activeTab === tab.key ? 'var(--brand)' : (dm ? '#94a3b8' : '#666') }}
@@ -122,7 +122,7 @@ export default function Notes() {
         ))}
       </div>
       {/* Content */}
-      <div style={{ flex: 1, padding: '0 16px', overflowY: 'auto' }}>
+      <div className="ea-pd-body" style={{ flex: 1, padding: '0 16px', overflowY: 'auto' }}>
         {activeTab === 'Notes' && urgentTask && (
           <div style={{ background: '#FFF7ED', border: '1px solid #FED7AA', borderRadius: 14, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
             <span style={{ fontSize: 20, color: '#C2410C', display: 'flex' }}><Glyph e="⚠" /></span>

@@ -180,8 +180,8 @@ export default function TeacherProfile() {
   ];
 
   return (
-    <div style={{ position: "absolute", inset: 0, background: "var(--bg)", fontFamily: "inherit", overflowY: "auto", paddingBottom: "80px" }}>
-      <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white", textAlign: "center" }}>
+    <div className="ea-pd-narrow" style={{ position: "absolute", inset: 0, background: "var(--bg)", fontFamily: "inherit", overflowY: "auto", paddingBottom: "80px" }}>
+      <div className="ea-pd-band" style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white", textAlign: "center" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
           <button type="button" aria-label="Back" onClick={() => navigate(-1)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}><Glyph e="←" /></button>
           <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>My Profile</h2>
@@ -197,7 +197,7 @@ export default function TeacherProfile() {
         </div>
       </div>
 
-      <div style={{ padding: "16px", marginTop: "-20px" }}>
+      <div className="ea-pd-body" style={{ padding: "16px", marginTop: "-20px" }}>
         <div style={{ background: "var(--card)", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: "16px" }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px", textAlign: "center" }}>
             {[

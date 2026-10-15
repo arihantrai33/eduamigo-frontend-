@@ -87,10 +87,10 @@ export default function ParentFee() {
   );
 
   return (
-    <div style={styles.page}>
+    <div className="ea-pd-narrow" style={styles.page}>
 
       {/* ── Header ── */}
-      <div style={styles.header}>
+      <div className="ea-pd-band" style={styles.header}>
         <div style={styles.headerTop}>
           <button type="button" aria-label="Back" onClick={() => navigate(-1)} style={styles.backBtn}><Glyph e="←" /></button>
           <div>
@@ -142,7 +142,7 @@ export default function ParentFee() {
       </div>
 
       {/* ── Body ── */}
-      <div style={styles.body}>
+      <div className="ea-pd-body" style={styles.body}>
 
         {/* Overdue Alert */}
         {overdueFees.length > 0 && (
