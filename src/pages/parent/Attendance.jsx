@@ -5,6 +5,8 @@ import { pickChild, childQuery } from "../../utils/selectedChild";
 
 import Glyph from "../../components/Glyph";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
+import PortalHeader from "../../components/ui/PortalHeader";
+import SummaryCard from "../../components/ui/SummaryCard";
 import { CheckCircle2, XCircle, CalendarMinus } from "lucide-react";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -99,26 +101,15 @@ export default function ParentAttendance() {
   return (
     <div style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "inherit", paddingBottom: 30 }}>
 
-      {/* Header */}
-      <div className="ea-pd-band" style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-          <button type="button" aria-label="Back" onClick={() => navigate(-1)}
-            style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "8px 12px", color: "white", cursor: "pointer", fontSize: 16 }}>
-            <Glyph e="←" />
-          </button>
-          <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800 }}><Glyph e="✅" /> Attendance Report</h2>
-        </div>
-        <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: 12, opacity: 0.8 }}>{monthLabel} — {child?.name || ""}</div>
-          <div style={{ fontSize: 64, fontWeight: 900, lineHeight: 1.1 }}>{summary?.total ? `${summary.percentage}%` : "—"}</div>
-          {!summary?.total && <div style={{ fontSize: 13, opacity: 0.85, marginBottom: 4 }}>No attendance marked this month</div>}
-          <div style={{ fontSize: 13, opacity: 0.85 }}>
-            {summary?.present ?? 0} Present &nbsp;•&nbsp; {summary?.absent ?? 0} Absent &nbsp;•&nbsp; {summary?.late ?? 0} Late
-          </div>
-        </div>
-      </div>
+      <PortalHeader title="Attendance Report" subtitle={child?.name} onBack={() => navigate(-1)} />
 
-      <div className="ea-pd-body ea-pd-cols" style={{ padding: 16, marginTop: -20 }}>
+      <div className="ea-pd-body ea-pd-cols" style={{ padding: 16 }}>
+        <div className="ea-pd-full" style={{ marginBottom: 16 }}>
+          <SummaryCard title={monthLabel} value={summary?.total ? `${summary.percentage}%` : "—"} ring={summary?.total ? summary.percentage : undefined}
+            caption={summary?.total
+              ? `${summary?.present ?? 0} Present • ${summary?.absent ?? 0} Absent • ${summary?.late ?? 0} Late`
+              : "No attendance marked this month"} />
+        </div>
 
         {/* Calendar (desktop: the main column, beside the numbers and the absent days) */}
         <div className="ea-pd-main ea-pd-tall" style={{ background: "var(--card)", borderRadius: 16, padding: 16, boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: 16 }}>

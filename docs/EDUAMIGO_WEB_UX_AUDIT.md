@@ -676,3 +676,38 @@ Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B6.
 
 **Found, not fixed (fixed in B4):**
 - **Parent Notifications in dark mode:** an unread notice has a hard-coded light-blue background (`#eff6ff`) under light text, about 1:1 contrast. It appeared now because the workflows test left an unread notice. This existed before B6; the page is redone in B4.
+
+### Redesign batch B4: parent page headers (2026-10-15)
+Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B4 (as B3, for the parent portal).
+
+**Header:** every parent inner page uses `PortalHeader`: a brand app bar below 1024 px and the admin-style title from 1024 px. The gradient bands, emoji in the titles and the negative body overlap are gone. The pages are Attendance, Results (Report Card is a header action), Fee, Apply Leave, Calendar, Chat (list and the open conversation as a detail header) and Notifications. Bus gets a solid brand header, as on the student Bus.
+
+**Summaries moved out of the bands into `SummaryCard`** (the B6 adoption for the parent screens):
+- **Attendance:** ring, percentage, "9 Present • 3 Absent • 1 Late".
+- **Results:** percentage, marks and grade; Subjects, Total and Grade as figures.
+- **Fee:** academic year, total, Paid/Due figures and the paid progress bar, now solid brand on a neutral track with `role="progressbar"`.
+- **Apply Leave:** leave balance (Total, Available, Used).
+
+**Controls:**
+- The Fee tabs and the Results exam pills are the shared `Segmented` control (`aria-pressed` kept).
+- Apply Leave "Submit Leave Request" and "Go Back" are primary buttons, no longer gradients.
+- The chat bubbles and the Send button are solid brand.
+- The Bus call/SOS confirm buttons are solid (call: brand; SOS: red). The same two buttons on the student Bus were still gradients after B3 and are fixed here too.
+
+**Fixed:** parent Notifications in dark mode (found in B6). The read and unread cards now use `--ea-surface`, with unread tinted 6% brand; the dates use `--ea-muted` instead of #aaa. The dark-mode contrast probe is back to 0.
+
+**Review (ports 8130/5194):**
+- Before/after at 390 and 1280 for the eight pages.
+- 390, 768 and 1280 full-page captures of Fee, Results, Apply Leave, Attendance, Notifications and the open conversation with Anita Verma.
+- Pixel diff against the B6 sweep: only the parent pages, plus student/teacher Attendance from the B6 three-column fix (made after that sweep).
+
+**Tests:**
+- 53/53 passed: `screens`, `scroll`, `accessible-names`, `workflows` (parent leave → office approval → parent sees it; parent ↔ teacher chat; parent notices), `interactions` and the contrast probe.
+- Sweep 390/1280: 156 screens, 0 findings.
+- Dark-mode contrast (student and parent): 0 spots under 3:1.
+- The build passes, and ESLint counts on all changed files match HEAD.
+
+**Not changed:**
+- Parent Home (B9) and Profile (B12).
+- The Calendar event colours (pink/yellow/green tints) are categories; they move to `--ea-cat-*` with the categorical palette (B8).
+- The Bus map keeps its marker and progress-bar gradients.

@@ -5,6 +5,7 @@ import { errorMessage } from "../../utils/toast";
 import { childQuery } from "../../utils/selectedChild";
 
 import Glyph from "../../components/Glyph";
+import PortalHeader from "../../components/ui/PortalHeader";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -62,14 +63,9 @@ export default function ParentCalendar() {
 
   return (
     <div className="ea-pd-narrow" style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "inherit", paddingBottom: "30px" }}>
-      <div className="ea-pd-band" style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <button onClick={() => navigate(-1)} aria-label="Back" style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}><Glyph e="←" /></button>
-          <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>School Calendar</h2>
-        </div>
-      </div>
+      <PortalHeader title="School Calendar" onBack={() => navigate(-1)} />
 
-      <div className="ea-pd-body" style={{ padding: "16px", marginTop: "-20px" }}>
+      <div className="ea-pd-body" style={{ padding: "16px" }}>
         {loading && <div style={{ ...card, padding: 16, fontSize: 13, color: "var(--subtext)" }}>Loading calendar...</div>}
         {!loading && error && <div style={{ ...card, padding: 16, fontSize: 13, color: "#B91C1C" }}>{error}</div>}
 

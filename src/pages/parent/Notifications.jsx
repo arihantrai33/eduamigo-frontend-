@@ -6,6 +6,7 @@ import { Bell } from "lucide-react";
 
 import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
+import PortalHeader from "../../components/ui/PortalHeader";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -50,16 +51,8 @@ export default function ParentNotifications() {
 
   return (
     <div className="ea-pd-narrow" style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "inherit", paddingBottom: 80 }}>
-      <div className="ea-pd-band" style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <button type="button" aria-label="Back" onClick={() => navigate(-1)}
-            style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "8px 12px", color: "white", cursor: "pointer", fontSize: 16 }}>
-            <Glyph e="←" />
-          </button>
-          <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800 }}><Glyph e="🔔" /> Notifications</h2>
-        </div>
-      </div>
-      <div className="ea-pd-body" style={{ padding: 16, marginTop: -20 }}>
+      <PortalHeader title="Notifications" onBack={() => navigate(-1)} />
+      <div className="ea-pd-body" style={{ padding: 16 }}>
         {loading && (
           <div style={{ textAlign: "center", padding: 40, color: "var(--subtext)", fontSize: 14 }}>
             Loading notifications...
@@ -79,7 +72,8 @@ export default function ParentNotifications() {
             <div key={n._id}
               onClick={() => !isRead && markRead(n._id)}
               style={{
-                background:  isRead ? "white" : "#eff6ff",
+                // Theme tokens, so the card and its text also read in dark mode; unread carries a light brand tint.
+                background:  isRead ? "var(--ea-surface)" : "color-mix(in srgb, var(--brand) 6%, var(--ea-surface))",
                 borderRadius: 12, padding: 14, marginBottom: 10,
                 boxShadow:   "0 1px 4px rgba(0,0,0,0.08)",
                 borderLeft:  isRead ? "3px solid transparent" : "3px solid var(--brand)",
@@ -94,7 +88,7 @@ export default function ParentNotifications() {
                   <div style={{ fontSize: 12, color: "var(--subtext2)", marginTop: 4 }}>
                     {n.message}
                   </div>
-                  <div style={{ fontSize: 11, color: "#aaa", marginTop: 6 }}>
+                  <div style={{ fontSize: 11, color: "var(--ea-muted)", marginTop: 6 }}>
                     {n.createdAt ? new Date(n.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : ""}
                   </div>
                 </div>

@@ -716,6 +716,6 @@ const styles = {
   modalSub:   { fontSize: "13px", color: "#64748B", lineHeight: 1.6, marginBottom: "20px" },
   modalBtns:  { display: "flex", gap: "10px" },
   cancelBtn: { flex: 1, padding: "12px", borderRadius: "14px", fontSize: "14px", fontWeight: 600, background: "var(--card2)", color: "var(--subtext)", border: "none", cursor: "pointer" },
-  confirmSosBtn: { flex: 1, padding: "12px", borderRadius: "14px", fontSize: "14px", fontWeight: 700, background: "linear-gradient(135deg,#DC2626,#EF4444)", color: "white", border: "none", cursor: "pointer" },
-  callConfirmBtn: { flex: 1, padding: "12px", borderRadius: "14px", fontSize: "14px", fontWeight: 700, background: "var(--brand-gradient)", color: "white", border: "none", cursor: "pointer", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center" },
+  confirmSosBtn: { flex: 1, padding: "12px", borderRadius: "14px", fontSize: "14px", fontWeight: 700, background: "#DC2626", color: "white", border: "none", cursor: "pointer" },
+  callConfirmBtn: { flex: 1, padding: "12px", borderRadius: "14px", fontSize: "14px", fontWeight: 700, background: "var(--brand)", color: "white", border: "none", cursor: "pointer", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center" },
 };

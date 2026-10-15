@@ -8,6 +8,9 @@ import { PayFeeButton, ReceiptLinks, PaymentInfo } from "../../components/FeePay
 
 import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
+import PortalHeader from "../../components/ui/PortalHeader";
+import SummaryCard from "../../components/ui/SummaryCard";
+import Segmented from "../../components/ui/Segmented";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -90,59 +93,30 @@ export default function ParentFee() {
     <div className="ea-pd-narrow" style={styles.page}>
 
       {/* ── Header ── */}
-      <div className="ea-pd-band" style={styles.header}>
-        <div style={styles.headerTop}>
-          <button type="button" aria-label="Back" onClick={() => navigate(-1)} style={styles.backBtn}><Glyph e="←" /></button>
-          <div>
-            <div style={{ fontWeight: 800, fontSize: 18, color: "white" }}>Fee Overview</div>
-            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.75)", marginTop: 2 }}>
-              {child?.name ?? "—"} &nbsp;·&nbsp; Class {child?.class ?? "—"}-{child?.section ?? "—"}
-            </div>
-          </div>
-        </div>
-
-        {/* Summary Card */}
-        <div style={styles.summaryCard}>
-          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", marginBottom: 4 }}>
-            Academic Year {currentAcademicYear()}
-          </div>
-          <div style={{ fontSize: 34, fontWeight: 900, color: "white", letterSpacing: -1 }}>
-            ₹{summary.total.toLocaleString("en-IN")}
-          </div>
-          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.6)", marginTop: 2 }}>
-            Total Annual Fee
-          </div>
-
-          {/* Progress Bar */}
-          <div style={styles.progressWrap}>
-            <div style={{ ...styles.progressFill, width: `${paidPct}%` }} />
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "rgba(255,255,255,0.7)" }}>
-            <span>{paidPct}% paid</span>
-            <span>{100 - paidPct}% remaining</span>
-          </div>
-
-          {/* Paid / Due chips */}
-          <div style={styles.chipRow}>
-            <div style={styles.chip}>
-              <div style={{ fontSize: 10, color: "rgba(255,255,255,0.65)", marginBottom: 3 }}>PAID</div>
-              <div style={{ fontSize: 18, fontWeight: 800, color: "#4ade80" }}>
-                ₹{summary.totalPaid.toLocaleString("en-IN")}
-              </div>
-            </div>
-            <div style={{ width: 1, background: "rgba(255,255,255,0.15)" }} />
-            <div style={styles.chip}>
-              <div style={{ fontSize: 10, color: "rgba(255,255,255,0.65)", marginBottom: 3 }}>DUE</div>
-              <div style={{ fontSize: 18, fontWeight: 800, color: summary.totalDue > 0 ? "#f87171" : "#4ade80" }}>
-                ₹{summary.totalDue.toLocaleString("en-IN")}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PortalHeader title="Fee Overview" onBack={() => navigate(-1)}
+        subtitle={`${child?.name ?? "—"} · Class ${child?.class ?? "—"}-${child?.section ?? "—"}`} />
 
       {/* ── Body ── */}
       <div className="ea-pd-body" style={styles.body}>
+
+        {/* Summary */}
+        <div style={{ marginBottom: 16 }}>
+          <SummaryCard title={`Academic Year ${currentAcademicYear()}`} value={`₹${summary.total.toLocaleString("en-IN")}`} caption="Total Annual Fee"
+            items={[
+              { label: "Paid", value: `₹${summary.totalPaid.toLocaleString("en-IN")}`, tone: "success" },
+              { label: "Due", value: `₹${summary.totalDue.toLocaleString("en-IN")}`, tone: summary.totalDue > 0 ? "danger" : "success" },
+            ]}>
+            <div>
+              <div style={styles.progressWrap} role="progressbar" aria-label="Fee paid" aria-valuenow={paidPct} aria-valuemin={0} aria-valuemax={100}>
+                <div style={{ ...styles.progressFill, width: `${paidPct}%` }} />
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "var(--ea-muted)" }}>
+                <span>{paidPct}% paid</span>
+                <span>{100 - paidPct}% remaining</span>
+              </div>
+            </div>
+          </SummaryCard>
+        </div>
 
         {/* Overdue Alert */}
         {overdueFees.length > 0 && (
@@ -171,21 +145,12 @@ export default function ParentFee() {
         )}
 
         {/* Tabs */}
-        <div style={styles.tabRow}>
-          {[
-            { key: "all",     label: `All (${fees.length})` },
-            { key: "paid",    label: `Paid (${fees.filter(f => f.status === "Paid").length})` },
-            { key: "pending", label: `Pending (${fees.filter(f => f.status !== "Paid").length})` },
-          ].map((t) => (
-            <button
-              key={t.key}
-              type="button" aria-pressed={activeTab === t.key}
-              onClick={() => setActiveTab(t.key)}
-              style={{ ...styles.tab, ...(activeTab === t.key ? styles.tabActive : {}) }}
-            >
-              {t.label}
-            </button>
-          ))}
+        <div style={{ marginBottom: 14 }}>
+          <Segmented label="Fee records" value={activeTab} onChange={setActiveTab} options={[
+            { value: "all",     label: `All (${fees.length})` },
+            { value: "paid",    label: `Paid (${fees.filter(f => f.status === "Paid").length})` },
+            { value: "pending", label: `Pending (${fees.filter(f => f.status !== "Paid").length})` },
+          ]} />
         </div>
 
         {/* Fee Records */}
@@ -333,45 +298,16 @@ const styles = {
     border: "none", borderRadius: 10,
     fontWeight: 600, fontSize: 13, cursor: "pointer",
   },
-  header: {
-    background: "var(--brand-gradient)",
-    padding: "48px 20px 28px",
-  },
-  headerTop: {
-    display: "flex", alignItems: "center",
-    gap: 14, marginBottom: 20,
-  },
-  backBtn: {
-    background: "rgba(255,255,255,0.15)",
-    border: "none", borderRadius: 10,
-    padding: "8px 14px", color: "white",
-    cursor: "pointer", fontSize: 18, fontWeight: 700,
-  },
-  summaryCard: {
-    background: "rgba(255,255,255,0.12)",
-    borderRadius: 20, padding: 20,
-    backdropFilter: "blur(12px)",
-    border: "1px solid rgba(255,255,255,0.2)",
-  },
   progressWrap: {
-    background: "rgba(255,255,255,0.2)",
+    background: "var(--ea-hover)",
     borderRadius: 99, height: 8,
-    margin: "14px 0 6px",
+    margin: "0 0 6px",
   },
   progressFill: {
-    background: "#4ade80",
+    background: "var(--brand)",
     borderRadius: 99, height: 8,
     transition: "width 0.8s ease",
   },
-  chipRow: {
-    display: "grid",
-    gridTemplateColumns: "1fr 1px 1fr",
-    gap: 0,
-    background: "rgba(255,255,255,0.1)",
-    borderRadius: 14, padding: "12px 16px",
-    marginTop: 16, alignItems: "center",
-  },
-  chip: { textAlign: "center" },
   body: { padding: "16px 16px 0" },
   alert: {
     background: "#fffbeb",
@@ -386,22 +322,6 @@ const styles = {
     borderRadius: 14, padding: "14px 16px",
     display: "flex", alignItems: "center",
     gap: 12, marginBottom: 14,
-  },
-  tabRow: {
-    display: "flex", gap: 8,
-    marginBottom: 14,
-  },
-  tab: {
-    flex: 1, padding: "9px 4px",
-    border: "1px solid var(--border)",
-    borderRadius: 10, background: "var(--card)",
-    fontSize: 12, fontWeight: 600,
-    color: "#6b7280", cursor: "pointer",
-  },
-  tabActive: {
-    background: "var(--brand)",
-    color: "white",
-    border: "1px solid var(--brand)",
   },
   card: {
     background: "var(--card)", borderRadius: 16,

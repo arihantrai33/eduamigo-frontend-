@@ -6,6 +6,7 @@ import EmptyState from "../../components/ui/EmptyState";
 import { Users } from "lucide-react";
 
 import Glyph from "../../components/Glyph";
+import PortalHeader from "../../components/ui/PortalHeader";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -110,14 +111,8 @@ export default function ParentChat() {
   // ─── Chat Window ────────────────────────────────────────────────────────────
   if (activeChat) return (
     <div style={S.screen}>
-      <div style={S.chatHeader}>
-        <button type="button" aria-label="Back to contacts" style={S.backBtn} onClick={() => { setActiveChat(null); clearInterval(pollRef.current); }}><Glyph e="←" /></button>
-        <div style={{ ...S.avatar, background: avatarColor(activeChat.name) }}>{activeChat.name[0]}</div>
-        <div>
-          <div style={S.chatName}>{activeChat.name}</div>
-          <div style={S.chatSub}>{activeChat.sub}</div>
-        </div>
-      </div>
+      <PortalHeader detail title={activeChat.name} subtitle={activeChat.sub} backLabel="Back to contacts"
+        onBack={() => { setActiveChat(null); clearInterval(pollRef.current); }} />
 
       <div style={S.msgList}>
         {messages.length === 0 && (
@@ -173,18 +168,8 @@ export default function ParentChat() {
   // ─── Main List Screen ────────────────────────────────────────────────────────
   return (
     <div className="ea-pd-narrow" style={S.screen}>
-      <div className="ea-pd-band" style={S.header}>
-        <button type="button" aria-label="Back" style={S.headerBack} onClick={() => navigate('/parent/home')}><Glyph e="←" /></button>
-        <div>
-          <h2 style={S.headerTitle}><Glyph e="💬" /> Messages</h2>
-          {data.child && (
-            <div style={S.childBadge}>
-              <Glyph e="👦" /> {data.child.name} · Class {data.child.class}
-              {data.child.section ? `-${data.child.section}` : ''}
-            </div>
-          )}
-        </div>
-      </div>
+      <PortalHeader title="Messages" onBack={() => navigate('/parent/home')}
+        subtitle={data.child ? `${data.child.name} · Class ${data.child.class}${data.child.section ? `-${data.child.section}` : ''}` : undefined} />
 
       {loading ? (
         <div style={S.center}><div style={{ color: 'var(--brand)', fontWeight: 600 }}>Loading...</div></div>
@@ -239,10 +224,6 @@ export default function ParentChat() {
 
 const S = {
   screen:      { minHeight: '100vh', background: 'var(--app-bg, #f5f6fa)', fontFamily: 'inherit', display: 'flex', flexDirection: 'column' },
-  header:      { background: 'var(--brand-gradient)', padding: '48px 20px 16px', display: 'flex', alignItems: 'center', gap: 12 },
-  headerBack:  { background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: '8px 12px', color: 'white', cursor: 'pointer', fontSize: 18 },
-  headerTitle: { color: 'white', fontSize: 20, fontWeight: 800, margin: 0 },
-  childBadge:  { color: 'rgba(255,255,255,0.8)', fontSize: 12, marginTop: 4 },
   list:        { flex: 1, overflowY: 'auto', padding: '16px 16px 80px' },
   sectionLabel:{ fontSize: 11, fontWeight: 700, color: 'var(--ea-muted)', letterSpacing: 1, marginBottom: 8 },
   chatRow:     { background: 'var(--ea-surface)', borderRadius: 14, padding: '14px', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10, boxShadow: '0 1px 6px rgba(0,0,0,0.06)', cursor: 'pointer' },
@@ -252,20 +233,16 @@ const S = {
   chevron:     { fontSize: 22, color: 'var(--ea-faint)' },
   emptyBox:    { textAlign: 'center', padding: '32px 0', color: 'var(--ea-muted)', fontSize: 13 },
   center:      { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  chatHeader:  { background: 'var(--brand-gradient)', padding: '48px 16px 16px', display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 },
-  backBtn:     { background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: '8px 12px', color: 'white', cursor: 'pointer', fontSize: 18 },
-  chatName:    { color: 'white', fontSize: 16, fontWeight: 700 },
-  chatSub:     { color: 'rgba(255,255,255,0.7)', fontSize: 11, marginTop: 2 },
   msgList:     { flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column' },
   emptyChat:   { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 0' },
   dateDivider: { textAlign: 'center', fontSize: 11, color: '#aaa', background: '#eee', borderRadius: 20, padding: '3px 12px', margin: '10px auto', width: 'fit-content' },
   miniAvatar:  { width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 12, marginRight: 8, flexShrink: 0, alignSelf: 'flex-end' },
   bubble:      { maxWidth: '75%', padding: '10px 14px', borderRadius: 18, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' },
-  bubbleMe:    { background: 'var(--brand-gradient)', color: 'white', borderBottomRightRadius: 4 },
+  bubbleMe:    { background: 'var(--brand)', color: 'white', borderBottomRightRadius: 4 },
   bubbleThem:  { background: 'var(--ea-surface)', color: 'var(--ea-ink)', borderBottomLeftRadius: 4 },
   timeRow:     { display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4, marginTop: 4 },
   timeText:    { fontSize: 10, opacity: 0.7 },
   inputRow:    { padding: '12px 16px', background: 'var(--ea-surface)', display: 'flex', gap: 10, alignItems: 'center', boxShadow: '0 -2px 8px rgba(0,0,0,0.06)', flexShrink: 0 },
   input:       { flex: 1, border: '1.5px solid var(--ea-line)', borderRadius: 24, padding: '10px 16px', fontSize: 14, outline: 'none', fontFamily: 'inherit' },
-  sendBtn:     { background: 'var(--brand-gradient)', color: 'white', border: 'none', borderRadius: '50%', width: 44, height: 44, fontSize: 18, cursor: 'pointer', flexShrink: 0 },
+  sendBtn:     { background: 'var(--brand)', color: 'white', border: 'none', borderRadius: '50%', width: 44, height: 44, fontSize: 18, cursor: 'pointer', flexShrink: 0 },
 };

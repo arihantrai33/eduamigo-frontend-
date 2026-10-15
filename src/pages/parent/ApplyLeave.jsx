@@ -9,6 +9,8 @@ import { useFieldErrors } from "../../utils/fieldErrors";
 const FIELDS = { fromDate: "leave-from", toDate: "leave-to", reason: "leave-reason" };
 
 import Glyph from "../../components/Glyph";
+import PortalHeader from "../../components/ui/PortalHeader";
+import SummaryCard from "../../components/ui/SummaryCard";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -91,12 +93,8 @@ export default function ApplyLeave() {
         </div>
         <button
           onClick={() => navigate(-1)}
-          style={{
-            marginTop: "32px", padding: "14px 32px", borderRadius: "12px",
-            background: "var(--brand-gradient)",
-            color: "white", border: "none", fontWeight: "700",
-            fontSize: "15px", cursor: "pointer",
-          }}
+          className="ea-btn ea-btn--primary"
+          style={{ marginTop: 32, minHeight: 48, padding: "0 32px", fontSize: 15 }}
         >
           Go Back
         </button>
@@ -110,59 +108,17 @@ export default function ApplyLeave() {
       fontFamily: "inherit", paddingBottom: "32px",
     }}>
 
-      {/* Header */}
-      <div className="ea-pd-band" style={{
-        background: "var(--brand-gradient)",
-        padding: "48px 20px 24px",
-      }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <button
-            type="button"
-            aria-label="Back"
-            onClick={() => navigate(-1)}
-            style={{
-              background: "rgba(255,255,255,0.2)", border: "none",
-              borderRadius: "50%", width: "36px", height: "36px",
-              color: "white", fontSize: "18px", cursor: "pointer",
-            }}
-          ><Glyph e="←" /></button>
-          <div>
-            <div style={{ color: "white", fontWeight: "800", fontSize: "18px" }}>
-              <Glyph e="📝" /> Leave Application
-            </div>
-            <div style={{ color: "rgba(255,255,255,0.8)", fontSize: "12px" }}>
-              Apply leave for your child
-            </div>
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div style={{
-          display: "grid", gridTemplateColumns: "1fr 1fr 1fr",
-          gap: "12px", marginTop: "20px",
-        }}>
-          {[
-            { label: "TOTAL", value: total, color: "var(--brand)" },
-            { label: "AVAILABLE", value: available, color: "#22c55e" },
-            { label: "USED", value: used, color: "#ef4444" },
-          ].map((stat) => (
-            <div key={stat.label} style={{
-              background: "var(--card)", borderRadius: "12px",
-              padding: "12px", textAlign: "center",
-            }}>
-              <div style={{ fontSize: "24px", fontWeight: "800", color: stat.color }}>
-                {stat.value}
-              </div>
-              <div style={{ fontSize: "10px", color: "var(--subtext)", fontWeight: "700", letterSpacing: "0.5px" }}>
-                {stat.label}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <PortalHeader title="Leave Application" subtitle="Apply leave for your child" onBack={() => navigate(-1)} />
 
       {/* Form */}
       <div className="ea-pd-body ea-pd-cols" style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "16px" }}>
+        <div className="ea-pd-full">
+          <SummaryCard title="Leave balance" items={[
+            { label: "Total", value: total },
+            { label: "Available", value: available, tone: "success" },
+            { label: "Used", value: used },
+          ]} />
+        </div>
         <div className="ea-pd-main" style={{
           background: "var(--card)", borderRadius: "16px", padding: "20px",
           boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
@@ -306,14 +262,8 @@ export default function ApplyLeave() {
           <button
             onClick={handleSubmit}
             disabled={loading}
-            style={{
-              width: "100%", padding: "16px",
-              borderRadius: "12px", border: "none",
-              background: loading ? "#aaa" : "var(--brand-gradient)",
-              color: "white", fontSize: "15px", fontWeight: "700",
-              cursor: loading ? "not-allowed" : "pointer",
-              fontFamily: "inherit",
-            }}
+            className="ea-btn ea-btn--primary"
+            style={{ width: "100%", minHeight: 48, fontSize: 15 }}
           >
             {loading ? "Submitting..." : "Submit Leave Request"}
           </button>

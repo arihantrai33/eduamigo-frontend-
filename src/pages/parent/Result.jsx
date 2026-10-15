@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { pickChild } from "../../utils/selectedChild";
-import Glyph from "../../components/Glyph";
 import EmptyState from "../../components/ui/EmptyState";
+import PortalHeader from "../../components/ui/PortalHeader";
+import SummaryCard from "../../components/ui/SummaryCard";
+import Segmented from "../../components/ui/Segmented";
 import { Trophy } from "lucide-react";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
@@ -62,56 +64,24 @@ export default function ParentResult() {
   );
   return (
     <div className="ea-pd-narrow" style={{ minHeight: "100vh", background: "var(--app-bg, #F4F6FB)", fontFamily: "inherit", paddingBottom: 40 }}>
-      <div className="ea-pd-band" style={{ background: "var(--brand-gradient)", padding: "48px 20px 32px", color: "white" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-          <button type="button" aria-label="Back" onClick={() => navigate(-1)}
-            style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "8px 12px", color: "white", cursor: "pointer", fontSize: 16 }}>
-            <Glyph e="←" />
-          </button>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 800, fontSize: 18 }}><Glyph e="📊" /> Results</div>
-            <div style={{ fontSize: 12, opacity: 0.8 }}>{child?.name ?? "—"}</div>
-          </div>
-          {child?._id && (
-            <button onClick={() => navigate(`/report-card?studentId=${child._id}`)}
-              style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "8px 12px", color: "white", cursor: "pointer", fontSize: 12, fontWeight: 700 }}>
-              Report Card
-            </button>
-          )}
-        </div>
-        <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: 20, padding: 20, backdropFilter: "blur(10px)", textAlign: "center" }}>
-          <div style={{ fontSize: 48, fontWeight: 900 }}>{pct}%</div>
-          <div style={{ fontSize: 13, opacity: 0.85, marginTop: 4 }}>{total}/{max} marks • Grade {topGrade}</div>
-          <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 16 }}>
-            {[
-              { label: "Subjects", val: filtered.length },
-              { label: "Total",    val: `${total}/${max}` },
-              { label: "Grade",    val: topGrade },
-            ].map((s) => (
-              <div key={s.label} style={{ background: "rgba(255,255,255,0.15)", borderRadius: 12, padding: "10px 20px", textAlign: "center" }}>
-                <div style={{ fontSize: 18, fontWeight: 800 }}>{s.val}</div>
-                <div style={{ fontSize: 10, opacity: 0.8 }}>{s.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-      <div className="ea-pd-body" style={{ padding: "16px", marginTop: "-16px" }}>
+      <PortalHeader title="Results" subtitle={child?.name ?? "—"} onBack={() => navigate(-1)}
+        actions={child?._id && (
+          <button type="button" className="ea-portal-head__btn" onClick={() => navigate(`/report-card?studentId=${child._id}`)}>Report Card</button>
+        )} />
+      <div className="ea-pd-body" style={{ padding: "16px" }}>
         {exams.length > 1 && (
-          <div style={{ display: "flex", gap: 8, marginBottom: 16, overflowX: "auto", paddingBottom: 4 }}>
-            {exams.map((e) => (
-              <button key={e} onClick={() => setSelExam(e)}
-                style={{
-                  padding: "6px 16px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 600, whiteSpace: "nowrap",
-                  background: selExam === e ? "var(--brand)" : "var(--ea-surface)",
-                  color:      selExam === e ? "#fff"    : "var(--ea-muted)",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-                }}>
-                {e}
-              </button>
-            ))}
+          <div style={{ marginBottom: 12, overflowX: "auto" }}>
+            <Segmented label="Exam" value={selExam} onChange={setSelExam} options={exams.map((e) => ({ value: e, label: e }))} />
           </div>
         )}
+        <div style={{ marginBottom: 16 }}>
+          <SummaryCard title="Overall result" value={`${pct}%`} caption={`${total}/${max} marks • Grade ${topGrade}`}
+            items={[
+              { label: "Subjects", value: filtered.length },
+              { label: "Total", value: `${total}/${max}` },
+              { label: "Grade", value: topGrade },
+            ]} />
+        </div>
         {filtered.length === 0 ? (
           <EmptyState icon={Trophy} title="No results yet" text="Results appear here once teachers publish marks." />
         ) : (
