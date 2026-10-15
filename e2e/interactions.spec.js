@@ -242,3 +242,16 @@ test('admin dialogs name the missing field under it and move focus there (event,
     await page.keyboard.press('Escape');
   }
 });
+
+test('student timetable: a week view on desktop, one day at a time on a phone', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 860 });
+  await signIn(page, 'student');
+  await page.goto('/student/timetable');
+  for (const day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']) {
+    await expect(page.getByRole('region', { name: new RegExp(`^${day}`) })).toBeVisible();
+  }
+  await expect(page.getByRole('button', { name: 'Mon', exact: true })).toHaveCount(0);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(page.getByRole('button', { name: 'Mon', exact: true })).toBeVisible();
+  await expect(page.locator('.ea-week')).toHaveCount(0);
+});

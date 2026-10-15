@@ -596,6 +596,27 @@ input:-webkit-autofill:focus {
 }
 .ea-alert span { flex: 1; }
 .ea-alert--warning { background: #FFFBEB; border-color: #FDE68A; color: #92400E; }
+/* Week view of a timetable (desktop): one column per day, today outlined, the current class highlighted. */
+.ea-week { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; align-items: start; }
+.ea-week__day { background: var(--card, #fff); border: 1px solid var(--ea-line); border-radius: 14px; padding: 12px; min-width: 0; }
+.ea-week__day.is-today { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand); }
+.ea-week__head { display: flex; flex-direction: column; gap: 2px; margin: 0 0 10px; font-size: 14px; font-weight: 700; color: var(--ea-ink); }
+.ea-week__head small { font-size: 12px; font-weight: 600; color: var(--ea-muted); }
+.ea-week__day.is-today .ea-week__head small { color: var(--brand); }
+.ea-week__slot { display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; margin-bottom: 8px; border-radius: 10px; background: var(--ea-canvas, #F4F6FB); border-left: 3px solid var(--brand-soft); }
+.ea-week__slot:last-child { margin-bottom: 0; }
+.ea-week__slot.is-now { background: var(--brand-soft); border-left-color: var(--brand); }
+.ea-week__slot.is-done { opacity: 0.6; }
+.ea-week__slot.is-break { border-left-color: #E9D5FF; }
+.ea-week__time { font-size: 11px; font-weight: 700; color: var(--brand); }
+.ea-week__subject { font-size: 13px; color: var(--ea-ink); overflow-wrap: anywhere; }
+.ea-week__slot.is-break .ea-week__subject { color: #6B21A8; font-weight: 600; }
+.ea-week__meta { font-size: 11px; color: var(--ea-muted); overflow-wrap: anywhere; }
+.ea-week__now { align-self: flex-start; margin-top: 4px; font-size: 10px; font-weight: 700; color: #fff; background: var(--brand); border-radius: 6px; padding: 2px 6px; }
+.ea-week__empty { margin: 0; font-size: 12px; color: var(--ea-muted); }
+[data-theme="dark"] .ea-week__day { background: var(--card); }
+[data-theme="dark"] .ea-week__slot { background: rgba(255, 255, 255, 0.04); }
+
 /* Empty and unavailable states (components/ui/EmptyState.jsx) */
 .ea-empty {
   display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px;

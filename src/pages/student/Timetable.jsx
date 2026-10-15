@@ -4,6 +4,7 @@ import axios from "axios";
 
 import Glyph from "../../components/Glyph";
 import PortalHeader from "../../components/ui/PortalHeader";
+import { useMediaQuery } from "../../utils/useMediaQuery";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -33,6 +34,14 @@ const getDateForDay = (day, weekOffset = 0) => {
   const date = new Date(monday);
   date.setDate(monday.getDate() + targetIndex);
   return `${WEEKDAYS[date.getDay()]}, ${date.getDate()} ${MONTHS[date.getMonth()]} ${date.getFullYear()}`.toUpperCase();
+};
+// "16 Oct" for a column heading of the week view.
+const shortDateForDay = (day, weekOffset = 0) => {
+  const today = new Date();
+  const todayIndex = today.getDay() === 0 ? 6 : today.getDay() - 1;
+  const date = new Date(today);
+  date.setDate(today.getDate() - todayIndex + weekOffset * 7 + DAYS.indexOf(day));
+  return `${date.getDate()} ${MONTHS[date.getMonth()].slice(0, 3)}`;
 };
 
 // time format: "09:00 - 09:45" — school hours assumed 07:00–18:00
@@ -75,10 +84,15 @@ export default function Timetable() {
   const [weekOffset, setWeekOffset] = useState(0); // 0 = current week, 1 = next week, -1 = last week
   const [timetableCache, setTimetableCache] = useState({});
   const [loading, setLoading] = useState(false);
+  // Desktop shows the whole week side by side; phones and tablets keep one day at a time.
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  // "Now / Done / Upcoming" only means something for today's classes (it used the clock for any day shown).
+  const isToday = (day) => weekOffset === 0 && new Date().getDay() !== 0 && day === getTodayKey();
 
   useEffect(() => {
-    fetchTimetable(selectedDay);
-  }, [selectedDay]);
+    if (isDesktop) DAYS.forEach((day) => fetchTimetable(day));
+    else fetchTimetable(selectedDay);
+  }, [selectedDay, isDesktop]);
 
   const fetchTimetable = async (day) => {
     if (timetableCache[day] !== undefined) return;
@@ -96,11 +110,11 @@ export default function Timetable() {
   const classes = timetableCache[selectedDay] || [];
 
   return (
-    <div className="ea-pd-narrow" style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "inherit" }}>
+    <div className={isDesktop ? undefined : "ea-pd-narrow"} style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "inherit" }}>
       {/* Header */}
       <PortalHeader title="Timetable" onBack={() => navigate("/student/home")} />
       <div className="ea-pd-bar" style={{ background: "var(--card)", padding: "12px 20px 0px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-        <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "8px" }}>
+        {!isDesktop && <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "8px" }}>
           {DAYS.map((day) => (
             <button key={day} type="button" aria-pressed={selectedDay === day} onClick={() => setSelectedDay(day)}
               style={{
@@ -112,7 +126,7 @@ export default function Timetable() {
               {day}
             </button>
           ))}
-        </div>
+        </div>}
         {/* Week navigation */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingBottom: "12px", paddingTop: "4px" }}>
           <button onClick={() => { setWeekOffset(w => w - 1); setSelectedDay("Mon"); }}
@@ -131,6 +145,36 @@ export default function Timetable() {
 
       {/* Body */}
       <div className="ea-pd-body" style={{ flex: 1, overflowY: "auto", padding: "16px" }}>
+        {isDesktop ? (
+          <div className="ea-week">
+            {DAYS.map((day) => {
+              const list = timetableCache[day];
+              const today = isToday(day);
+              return (
+                <section key={day} className={today ? "ea-week__day is-today" : "ea-week__day"} aria-label={`${DAY_FULL[day]}${today ? ", today" : ""}`}>
+                  <h2 className="ea-week__head">
+                    <span>{DAY_FULL[day]}</span>
+                    <small>{shortDateForDay(day, weekOffset)}{today ? " · Today" : ""}</small>
+                  </h2>
+                  {list === undefined ? <p className="ea-week__empty">Loading…</p>
+                    : list.length === 0 ? <p className="ea-week__empty">No classes</p>
+                    : list.map((cls, i) => {
+                      const isBreak = cls.subject === "Break" || cls.subject?.toLowerCase().includes("lunch");
+                      const status = today && !isBreak ? getStatus(cls.time, false) : null;
+                      return (
+                        <div key={i} className={`ea-week__slot${isBreak ? " is-break" : ""}${status === "Now" ? " is-now" : ""}${status === "Done" ? " is-done" : ""}`}>
+                          <span className="ea-week__time">{cls.time || "—"}</span>
+                          <strong className="ea-week__subject">{cls.subject || "—"}</strong>
+                          {!isBreak && <span className="ea-week__meta">{cls.teacher?.name || cls.teacherName || "—"}{cls.room ? ` · Room ${cls.room}` : ""}</span>}
+                          {status === "Now" && <span className="ea-week__now">Now</span>}
+                        </div>
+                      );
+                    })}
+                </section>
+              );
+            })}
+          </div>
+        ) : <>
         <div style={{ fontSize: "11px", fontWeight: "700", color: "var(--subtext)", marginBottom: "12px", letterSpacing: "1px" }}>
           {getDateForDay(selectedDay, weekOffset)}
         </div>
@@ -147,7 +191,7 @@ export default function Timetable() {
           <div style={{ background: "var(--card)", borderRadius: "16px", padding: "4px 16px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
             {classes.map((cls, i) => {
               const isBreak = cls.subject === "Break" || cls.subject?.toLowerCase().includes("lunch");
-              const status = getStatus(cls.time, isBreak);
+              const status = isBreak ? "Break" : isToday(selectedDay) ? getStatus(cls.time, false) : null;
               const statusStyle = STATUS_STYLE[status] || STATUS_STYLE.default;
               const timeHighlight = status === "Now";
               return (
@@ -181,19 +225,20 @@ export default function Timetable() {
                       </div>
                     )}
                   </div>
-                  {/* Status badge */}
-                  <span style={{
+                  {/* Status badge (today only) */}
+                  {status && <span style={{
                     fontSize: "11px", fontWeight: "700",
                     background: statusStyle.bg, color: statusStyle.color,
                     padding: "4px 10px", borderRadius: "8px", flexShrink: 0,
                   }}>
                     {status}
-                  </span>
+                  </span>}
                 </div>
               );
             })}
           </div>
         )}
+        </>}
       </div>
     </div>
   );
