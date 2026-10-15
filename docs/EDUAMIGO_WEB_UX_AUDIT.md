@@ -425,7 +425,7 @@ library, admissions, communications, user management, teacher attendance class a
 grid for timetables (they stay a day list in the reading column); real devices and Safari/Firefox not checked.
 
 ## Phase 3 (2026-10-15, in progress): product-wide pass — tracker
-Batch 1: 71f005a … 55649f9. Batch 2: 26acc96, 27930ce, 9654743, 0cd27e8, 783f641, 29a17eb and the crawl/checklist commit after them (all local, not pushed).
+Batch 1: 71f005a … 55649f9. Batch 2: 26acc96 … 77c39df. Final verification: 8de6770 and the docs commit after it (all local, not pushed).
 | Area | Done (verified by e2e and/or screenshots) | Pending |
 |---|---|---|
 | Shared confirm dialog | alertdialog, Escape, Cancel focused for destructive, focus return | — |
@@ -434,18 +434,29 @@ Batch 1: 71f005a … 55649f9. Batch 2: 26acc96, 27930ce, 9654743, 0cd27e8, 783f6
 | Admin dialogs and forms | field-level messages everywhere: events, users, exams, fees, library, bus, HR, salaries, timetable period, bus stops, settings, bulk operations | — |
 | AI Tutor | streamed answer, network error with Try again, voice listening/speaking with Stop speaking, reviewed at 1280 and 390. AI off: no "ask this" starters, the empty chat points at the Revision Planner (e2e). Phone tab row fades at the edge to show it scrolls | real-device voice (see AI docs) |
 | Admin reports | `/admin/reports` reviewed at 1280: stat cards and progress bars read clearly; no chart library, nothing broken | real charts would be a product decision |
-| Dark mode | student and parent portals: sidebar and the --ea-* tokens follow the theme (only in those portals, `.ea-shell--themed`); text that was dark on dark fixed on calendar, attendance, results, profile, chat, bus, leave history, AI Tutor toolbar. A contrast probe over all 23 student/parent screens went from ~90 spots under 3:1 to 3 marginal ones (grade pill, partial-fee amount, "At Home" on the parent bus) | teacher portal has a "Dark Mode" switch that only darkens its own help cards (decision: remove it or build teacher dark mode); admin has no dark theme (no switch) |
-| Contrast (light) | section labels token --ea-faint now 4.5:1 (was 2.6:1); amber status text (UNPAID, PARTIAL, Pending, Leave) moved to amber-700 | remaining grey-on-white captions on bus/fee rows (pre-existing) |
+| Dark mode | student and parent portals: sidebar and the --ea-* tokens follow the theme (only in those portals, `.ea-shell--themed`); text that was dark on dark fixed everywhere. Contrast probe over all 23 student/parent screens in dark mode: 0 text spots under 3:1 (was ~90). Fee amounts use `--ea-on-card-*` tokens; the dark `--ea-danger` override was reverted because the token is also a button fill and sits on pale red | teacher and admin portals are light-only by design (no switch) |
+| Contrast (light) | --ea-faint 4.5:1; amber/green/red status text at 700 tones; grade badge colours 4.4:1+; bus and fee captions (stop subtitles, completed stops, chevrons, due dates, "At Home") on --ea-muted or darkened; admin timetable "Add Period", times and dialog labels darkened | light-mode probe still lists 32 spots outside bus/fee: parent attendance unmarked day numbers (#ccc), student profile chevrons, chat section labels (#999), leave-balance "12" green, "Pending" amber on grey, "RECENT NOTES" |
 | Empty states | `components/ui/EmptyState` (+ `plain` variant) on 22 admin and 13 student/parent/teacher empty states: notifications (both), notes/tasks/resources, attendance, timetable day, leave history (student, teacher), chat teachers and broadcasts (student, parent), parent results. One frame, icon tile and readable text everywhere (old subtitles were #CBD5E1/#bbb on white, about 1.5:1). The `.ea-empty` name clash that stripped its padding fixed (`.ea-empty-line`). Library and Notes tell "no match for the search" from "nothing yet". Checked at 390 in light and dark | student result "No Results Published" full-page state kept as is (has its own Home button) |
 | School setup | checklist "Go" buttons named per step and move focus to the section they scroll to | — |
 | Search pills | student notes and teacher messages: 24 px field, visible focus ring (was outline: none) | — |
+| Teacher profile | the "Dark Mode" switch only darkened its own help cards; removed. Settings keeps Account › Change password; its menu subtitle now says "Password and account" | — |
 | Add teacher/parent | centred 760 px column | — |
 | Select school | full-viewport split like sign-in | code-link state still a card |
-| Bus tracking | stops panel beside the map on desktop | fullscreen mode on desktop not reviewed |
-| Timetables | week view on desktop (student, teacher); status only for today | admin timetable editor |
+| Bus tracking | stops panel beside the map on desktop; full-screen map reviewed at 1280 and 390 (student and parent): stays inside the content area beside the sidebar, Exit and Escape both leave it | the live-map state was not seen (no trip running in the demo data) |
+| Timetables | week view on desktop (student, teacher); admin editor reviewed at 1280 and 390: period cards were divs with onClick only, now buttons named "Add period N" / "Edit period N: subject", Enter opens the dialog (e2e) | — |
 
 Evidence for batch 2:
 - Full e2e suite on isolated ports 8130/5194: 101 passed, 19 skipped (opt-in sweep/crawl and conditional specs), 0 failed, run twice: after 9654743 and again after the last empty-state commit. Targeted re-runs in between: interactions + screens + accessible names 29/29, learning 34/34.
 - 1024 px sweep (78 screens, all portals and public pages): no sideways scroll, cut-off, covered or clipped text, page errors or failed API calls; two small touch targets (the search pills), fixed in 29a17eb.
 - Dead-click crawl (all four portals, 63 screens, 206 clicks): no failed actions. The only "no change" left is School setup "Go to: Assign class teachers", whose section is already on screen; it moves focus there (checked), which the crawl does not watch. The earlier run also flagged re-choosing an already-selected option (21 of them); the crawl now skips those.
 - Build passes; ESLint reports nothing on changed lines (the pages still carry older lint findings on untouched lines).
+
+Final verification (2026-10-15, on 8de6770, isolated ports 8130/5194):
+- Targeted specs (accessible names, admin keyboard, auth and navigation, interactions, print, screens, scroll, UX regressions, workflows): 55 passed, 0 failed.
+- Responsive sweep, run explicitly at 390, 768, 1024 and 1280: 312 screens (78 routes × 4 widths), 0 findings (no sideways scroll, cut-off, covered or clipped text, small targets, page errors or failed API calls).
+- Dead-click crawl, run explicitly: 63 screens, 206 clicks, no failed actions; the one "no change" is School setup "Go to: Assign class teachers" (scrolls to a section already on screen and moves focus there, checked).
+- Contrast probe (temporary script, not committed): dark mode 0 spots under 3:1 on 23 student/parent screens; light mode 32, none on bus or fee screens.
+- Build passes; ESLint reports nothing on changed lines.
+- Full suite on 8de6770: 102 passed, 19 skipped (the opt-in sweep/crawl specs, run separately above, and conditional specs), 0 failed.
+- Not covered: real-device voice and the live bus map (no trip in the demo data).
+
