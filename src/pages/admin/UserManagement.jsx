@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { Search, Plus, RefreshCw, Shield, GraduationCap, Users, UserCheck, Calculator } from "lucide-react";
-import { toast, showCredentials } from "../../utils/toast";
+import { toast, showCredentials, confirmAction, errorMessage } from "../../utils/toast";
 import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
 import { StatCard } from "../../components/ui/StatCard";
@@ -47,11 +47,13 @@ export default function UserManagement() {
 
   useEffect(() => { fetchUsers(); }, [fetchUsers]);
 
-  const toggleStatus = async (id) => {
+  // Deactivating stops the person from signing in, so it asks first; switching back on does not.
+  const toggleStatus = async (u) => {
+    if (u.isActive !== false && !(await confirmAction(`Deactivate ${u.name}? They will not be able to sign in until the account is switched on again.`, { confirmLabel: "Deactivate" }))) return;
     try {
-      await axios.patch(`${API}/users/${id}/toggle`, {}, auth());
+      await axios.patch(`${API}/users/${u._id}/toggle`, {}, auth());
       fetchUsers();
-    } catch (e) { toast.error("Failed to update status"); }
+    } catch (e) { toast.error(errorMessage(e, "Could not update the account")); }
   };
 
   const handleAdd = async () => {
@@ -156,7 +158,7 @@ export default function UserManagement() {
                 {new Date(u.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
               </span>
               <button type="button" role="switch" aria-checked={u.isActive !== false} aria-label={`Account active: ${u.name}`} className="ea-um-switch"
-                onClick={() => toggleStatus(u._id)}
+                onClick={() => toggleStatus(u)}
                 style={{ width: 44, height: 24, padding: 0, border: "none", borderRadius: 12, cursor: "pointer", position: "relative", background: u.isActive !== false ? "#22C55E" : "#CBD5E1", transition: "background 0.2s" }}>
                 <span aria-hidden="true" style={{ position: "absolute", top: 4, left: u.isActive !== false ? 24 : 4, width: 16, height: 16, borderRadius: "50%", background: "#fff", transition: "left 0.2s", boxShadow: "0 1px 4px rgba(0,0,0,0.15)" }} />
               </button>

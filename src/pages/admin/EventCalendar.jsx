@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, Plus, Trash2, Sparkles } from "lucide-react"
 import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
+import { toast, errorMessage, confirmAction } from "../../utils/toast";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -59,11 +60,14 @@ export default function EventCalendar() {
   };
 
   const handleDelete = async (id) => {
+    const title = events.find((e) => e._id === id)?.title;
+    if (!(await confirmAction(`Delete ${title ? `"${title}"` : "this event"} from the school calendar?`, { confirmLabel: "Delete event" }))) return;
     try {
       await axios.delete(`${API}/events/${id}`, authHeader());
+      toast.success("Event deleted");
       fetchEvents();
       setSelectedDayEvents(prev => prev.filter(e => e._id !== id));
-    } catch (e) { console.error(e); }
+    } catch (e) { toast.error(errorMessage(e, "Could not delete the event")); }
   };
 
   const changeMonth = (dir) => {

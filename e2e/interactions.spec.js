@@ -29,11 +29,36 @@ test('admin: an account switch is a real switch, works by keyboard and keeps foc
   const sw = page.getByRole('switch', { name: 'Account active: Rohit Gupta' });
   await expect(sw).toHaveAttribute('aria-checked', 'true');
   await sw.focus();
+  // Deactivating asks first; Escape cancels and focus comes back to the switch.
   await page.keyboard.press('Space');
+  const ask = page.getByRole('alertdialog', { name: /Deactivate Rohit Gupta\?/ });
+  await expect(ask).toBeVisible();
+  await expect(ask.getByRole('button', { name: 'Cancel' })).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(ask).toHaveCount(0);
+  await expect(sw).toHaveAttribute('aria-checked', 'true');
+  await expect(sw).toBeFocused();
+  // Confirmed: switched off, focus back on the switch.
+  await page.keyboard.press('Space');
+  await page.keyboard.press('Tab');
+  await expect(ask.getByRole('button', { name: 'Deactivate' })).toBeFocused();
+  await page.keyboard.press('Enter');
   await expect(sw).toHaveAttribute('aria-checked', 'false');
   await expect(sw).toBeFocused();
-  await page.keyboard.press('Space'); // back to active, as the demo had it
+  await page.keyboard.press('Space'); // switching back on does not ask
   await expect(sw).toHaveAttribute('aria-checked', 'true');
+});
+
+test('admin: deleting a calendar event asks first, and Cancel keeps it', async ({ page }) => {
+  await signIn(page, 'admin');
+  await page.goto('/admin/event-calendar');
+  const del = page.getByRole('button', { name: /^Delete / }).first();
+  const name = await del.getAttribute('aria-label');
+  await del.click();
+  const ask = page.getByRole('alertdialog');
+  await expect(ask).toContainText('from the school calendar?');
+  await ask.getByRole('button', { name: 'Cancel' }).click();
+  await expect(page.getByRole('button', { name })).not.toHaveCount(0);
 });
 
 test('admin: on a tablet, user management shows each user as a card without the column headings', async ({ page }) => {

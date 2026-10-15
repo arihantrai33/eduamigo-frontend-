@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { TOAST_EVENT, CONFIRM_EVENT, CREDENTIALS_EVENT } from "../utils/toast";
 
 const COLORS = {
@@ -12,6 +12,9 @@ export default function Toast() {
   const [confirm, setConfirm] = useState(null);
   const [creds, setCreds] = useState(null);
   const [copied, setCopied] = useState(false);
+  const returnFocus = useRef(null);
+  const confirmBox = useRef(null);
+  const confirmRef = useRef(null); // the open question (its resolve), read by answer()
 
   const dismiss = useCallback((id) => setToasts((t) => t.filter((x) => x.id !== id)), []);
 
@@ -21,7 +24,7 @@ export default function Toast() {
       setToasts((t) => [...t.slice(-3), { id, ...e.detail }]);
       setTimeout(() => dismiss(id), e.detail.type === "error" ? 6000 : 3500);
     };
-    const onConfirm = (e) => setConfirm(e.detail);
+    const onConfirm = (e) => { returnFocus.current = document.activeElement; confirmRef.current = e.detail; setConfirm(e.detail); };
     const onCreds = (e) => { setCopied(false); setCreds(e.detail); };
     window.addEventListener(TOAST_EVENT, onToast);
     window.addEventListener(CONFIRM_EVENT, onConfirm);
@@ -33,10 +36,31 @@ export default function Toast() {
     };
   }, [dismiss]);
 
-  const answer = (value) => {
-    confirm?.resolve(value);
+  const answer = useCallback((value) => {
+    confirmRef.current?.resolve(value);
+    confirmRef.current = null;
     setConfirm(null);
-  };
+    // Back to the control that asked (when it is still on the page).
+    const el = returnFocus.current;
+    setTimeout(() => { if (el?.isConnected) el.focus(); }, 0);
+  }, []);
+
+  // The confirmation is a modal alert dialog: Escape cancels, Tab stays on its two buttons.
+  useEffect(() => {
+    if (!confirm) return undefined;
+    const onKey = (e) => {
+      if (e.key === "Escape") { e.preventDefault(); answer(false); return; }
+      if (e.key !== "Tab") return;
+      const buttons = [...(confirmBox.current?.querySelectorAll("button") || [])];
+      if (!buttons.length) return;
+      const i = buttons.indexOf(document.activeElement);
+      const next = e.shiftKey ? (i <= 0 ? buttons.length - 1 : i - 1) : (i === buttons.length - 1 ? 0 : i + 1);
+      e.preventDefault();
+      buttons[next].focus();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [confirm, answer]);
 
   const copyCreds = async () => {
     const text = creds.entries.map((c) => `${c.label ? `${c.label}: ` : ""}${c.schoolCode ? `school ${c.schoolCode}, ` : ""}login ${c.loginId || c.email} / ${c.password}`).join("\n");
@@ -58,12 +82,13 @@ export default function Toast() {
       </div>
 
       {confirm && (
-        <div role="dialog" aria-modal="true" onClick={() => answer(false)} style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.45)", zIndex: 10001, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 14, padding: 20, width: "100%", maxWidth: 380, boxShadow: "0 20px 50px rgba(15,23,42,0.3)", fontFamily: "inherit" }}>
-            <p style={{ margin: "0 0 18px", fontSize: 15, color: "#0F172A", lineHeight: 1.5 }}>{confirm.message}</p>
+        <div onClick={() => answer(false)} style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.45)", zIndex: 10001, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+          {/* A destructive question starts on Cancel, so an accidental Enter does not delete. */}
+          <div ref={confirmBox} role="alertdialog" aria-modal="true" aria-labelledby="ea-confirm-message" onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 14, padding: 20, width: "100%", maxWidth: 380, boxShadow: "0 20px 50px rgba(15,23,42,0.3)", fontFamily: "inherit" }}>
+            <p id="ea-confirm-message" style={{ margin: "0 0 18px", fontSize: 15, color: "#0F172A", lineHeight: 1.5 }}>{confirm.message}</p>
             <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
-              <button onClick={() => answer(false)} style={{ padding: "9px 16px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", color: "#334155", fontWeight: 600, cursor: "pointer" }}>Cancel</button>
-              <button autoFocus onClick={() => answer(true)} style={{ padding: "9px 16px", borderRadius: 8, border: "none", background: confirm.danger ? "#DC2626" : "var(--brand)", color: "#fff", fontWeight: 600, cursor: "pointer" }}>{confirm.confirmLabel}</button>
+              <button type="button" autoFocus={confirm.danger} onClick={() => answer(false)} style={{ padding: "9px 16px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", color: "#334155", fontWeight: 600, cursor: "pointer" }}>Cancel</button>
+              <button type="button" autoFocus={!confirm.danger} onClick={() => answer(true)} style={{ padding: "9px 16px", borderRadius: 8, border: "none", background: confirm.danger ? "#DC2626" : "var(--brand)", color: "#fff", fontWeight: 600, cursor: "pointer" }}>{confirm.confirmLabel}</button>
             </div>
           </div>
         </div>
