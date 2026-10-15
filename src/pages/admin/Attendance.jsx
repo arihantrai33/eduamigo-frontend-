@@ -3,7 +3,8 @@ import axios from "axios";
 import { toast } from "../../utils/toast";
 import { todayLocal } from "../../utils/dates";
 import EmptyState from "../../components/ui/EmptyState";
-import { SearchX } from "lucide-react";
+import { SearchX, Users, CheckCircle2, XCircle, Clock } from "lucide-react";
+import { StatCard, StatGrid } from "../../components/ui/StatCard";
 
 import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
@@ -22,21 +23,6 @@ function Avatar({ name, size = 38 }) {
   return (
     <div style={{ width: size, height: size, borderRadius: "50%", background: `linear-gradient(135deg,${color},color-mix(in srgb, ${color} 73%, transparent))`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: size * 0.32, fontWeight: 800, color: "white", flexShrink: 0, boxShadow: `0 2px 8px color-mix(in srgb, ${color} 27%, transparent)` }}>
       {initials}
-    </div>
-  );
-}
-
-function StatCard({ label, value, icon, color, bg, delay }) {
-  return (
-    <div style={{ background: "white", borderRadius: 16, padding: "18px 22px", boxShadow: "0 4px 20px rgba(15,23,42,0.07)", border: `2px solid ${color}`, animation: `fadeUp 0.5s ease ${delay}s both`, position: "relative", overflow: "hidden" }}>
-      <div style={{ position: "absolute", top: -20, right: -20, width: 80, height: 80, borderRadius: "50%", background: bg, opacity: 0.15 }} />
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-        <div>
-          <div style={{ fontSize: 11, fontWeight: 700, color: "#94A3B8", letterSpacing: "0.08em", marginBottom: 8 }}>{label}</div>
-          <div style={{ fontSize: 28, fontWeight: 900, color: "#0F172A" }}>{value}</div>
-        </div>
-        <div style={{ width: 42, height: 42, borderRadius: 12, background: bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>{icon}</div>
-      </div>
     </div>
   );
 }
@@ -189,12 +175,12 @@ export default function Attendance() {
 
       {/* Stats */}
       {students.length > 0 && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 24 }}>
-          <StatCard label="TOTAL STUDENTS" value={stats.total} icon={<Glyph e="👥" />} color="var(--brand)" bg="var(--brand-soft)" delay={0} />
-          <StatCard label="PRESENT" value={stats.present} icon={<Glyph e="✅" />} color="#10B981" bg="#F0FDF4" delay={0.05} />
-          <StatCard label="ABSENT" value={stats.absent} icon={<Glyph e="❌" />} color="#EF4444" bg="#FEF2F2" delay={0.1} />
-          <StatCard label="LATE" value={stats.late} icon={<Glyph e="⏰" />} color="#F59E0B" bg="#FFFBEB" delay={0.15} />
-        </div>
+        <StatGrid label="Attendance summary" style={{ marginBottom: 24 }}>
+          <StatCard label="TOTAL STUDENTS" value={stats.total} icon={<Users />} />
+          <StatCard label="PRESENT" value={stats.present} icon={<CheckCircle2 />} tone="success" />
+          <StatCard label="ABSENT" value={stats.absent} icon={<XCircle />} tone="danger" />
+          <StatCard label="LATE" value={stats.late} icon={<Clock />} tone="warning" />
+        </StatGrid>
       )}
 
       {/* Progress Bar */}

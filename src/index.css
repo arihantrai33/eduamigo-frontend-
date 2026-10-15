@@ -1019,7 +1019,22 @@ input.ea-input-bare[aria-invalid="true"], input.ea-input-bare[aria-invalid="true
   .ea-stat--row .ea-icon-chip { width: 32px; height: 32px; border-radius: 10px; }
   .ea-stat--row .ea-icon-chip svg { width: 16px; height: 16px; }
   .ea-stat__number { font-size: 20px; }
+  /* Five or more cards (StatGrid): one row that scrolls sideways, so the list or table below starts high on the
+     screen. About two and a half cards show; the cut card at the edge says there is more. */
+  .ea-stats--many {
+    grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(136px, 42%);
+    overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; padding: 3px; margin: -3px;
+  }
+  .ea-stats--many::-webkit-scrollbar { display: none; }
+  .ea-stats--many > * { scroll-snap-align: start; scroll-margin-left: 3px; }
+  .ea-stats--many:focus-visible { outline-offset: -1px; border-radius: var(--ea-radius); }
 }
+/* Three small cards (StatGrid columns={3}) stay side by side at every width, also in a narrow side column: the icon
+   sits above the caption so each card needs little width. */
+.ea-stats--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.ea-stats--3 .ea-stat--row { flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px 10px 12px 12px; }
+.ea-stats--3 .ea-stat--row .ea-icon-chip { width: 32px; height: 32px; border-radius: 10px; }
+.ea-stats--3 .ea-stat--row .ea-icon-chip svg { width: 16px; height: 16px; }
 
 /* Respect the system setting for reduced motion. */
 @media (prefers-reduced-motion: reduce) {

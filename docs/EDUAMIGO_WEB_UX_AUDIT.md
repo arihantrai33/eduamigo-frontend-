@@ -641,3 +641,38 @@ Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B10, §2.1, D2.
 **Not changed (later batches):**
 - The inputs on Find your school and Change password still remove the browser focus outline; their field style belongs to B7 (forms).
 - The driver trip screen keeps its dark look and green/red trip buttons; it is outside B10.
+
+### Redesign batch B6: stat tiles and summary card (2026-10-15)
+Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B6.
+
+**`StatGrid`** (`components/ui/StatCard.jsx`) now counts its cards:
+- **Five or more on a phone (<768 px):** one row that scrolls sideways. About two and a half cards show, and the cut card at the edge says there is more. While the row actually overflows, it is a focusable `role="region"` with a label, so it can be scrolled with the arrow keys. From 768 px it is the usual grid, with no extra tab stop.
+- **`columns={3}`:** three small cards stay side by side at every width, with the icon above the caption. This avoids an orphan card on a second line, on a phone and in the narrow desktop side column of parent Attendance (seen 2 + 1 in review and fixed).
+- **`style`** is passed through, for spacing.
+
+**Pastel tiles replaced by StatCard** (neutral card, toned icon chip; colour for meaning only):
+- student Attendance (Total days, Present, Absent);
+- parent Attendance (Present, Absent, Leave);
+- teacher Attendance (Present, Absent, Late; the counter only, the roster is B14);
+- admin Attendance: its own emoji/coloured-border card is gone, and it uses the shared StatCard.
+
+**Now on `StatGrid`, so they get the phone row:** admin Reports (5 cards) and User Management (one card per role). Fee Collection, Leave Requests and the other admin pages already used it.
+
+**Acceptance:** on admin Fee Collection at 390 px, the first fee row now starts at 392 px (was about 600). The five KPI cards take one 110 px row instead of three.
+
+**Scope notes:**
+- The `SummaryCard` was built and adopted on the student screens in B3. On the parent screens (leave balance, results, fee) and the teacher leave balance, the summary sits inside the gradient header band, so it moves to a `SummaryCard` together with the header in B4 (parent) and B5 (teacher), as on the student screens.
+- The admin dashboard KPI row (large clickable `.ea-stat` cards with a sub-line) stays as it is for B9 (homes), where the plan lists it.
+
+**Review (ports 8130/5194):**
+- Before/after at 390 and 1280: student, parent and teacher Attendance (teacher with Class 9-A open), admin Fee Collection, Reports and User Management; parent and student Attendance also at 768.
+- Fee Collection keyboard check: Tab reaches the KPI row, the focus ring shows, and the arrow keys scroll it (scrollLeft 122 after three presses). At 768 and 1280 the row has no tabindex or role.
+- Pixel diff of the sweep against B10 (156 screens): only the B6 screens changed. The other differences are row order (salaries, communications, library, the student's results) and activity rows written by tests.
+
+**Tests:**
+- 59/59 passed: `screens`, `scroll`, `accessible-names`, `workflows` (including the teacher attendance workflow), `interactions`, `ux-regressions`, `admin-keyboard` and the dark-mode contrast probe.
+- Sweep 390/1280: 156 screens, 0 layout findings.
+- The build passes, and ESLint counts on all changed files match HEAD.
+
+**Found, not fixed (fixed in B4):**
+- **Parent Notifications in dark mode:** an unread notice has a hard-coded light-blue background (`#eff6ff`) under light text, about 1:1 contrast. It appeared now because the workflows test left an unread notice. This existed before B6; the page is redone in B4.

@@ -4,7 +4,7 @@ import axios from "axios";
 import { RefreshCw } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
-import { StatCard as SharedStat } from "../../components/ui/StatCard";
+import { StatCard as SharedStat, StatGrid } from "../../components/ui/StatCard";
 import { toneOf } from "../../components/ui/tone";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -144,7 +144,7 @@ export default function Reports() {
       </div>
 
       {/* Overview Cards */}
-      <div className="ea-stats" style={{ marginBottom:24 }}>
+      <StatGrid label="School overview" style={{ marginBottom:24 }}>
         {[
           { label:"STUDENTS",  value:overview.students, icon:<Glyph e="🎓" />, border:"var(--brand)", sub:"Enrolled" },
           { label:"TEACHERS",  value:overview.teachers, icon:<Glyph e="👨‍🏫" />, border:"var(--brand)", sub:"Active Staff" },
@@ -152,7 +152,7 @@ export default function Reports() {
           { label:"BUSES",     value:overview.buses,    icon:<Glyph e="🚌" />, border:"var(--brand)", sub:"Fleet" },
           { label:"BOOKS",     value:overview.books,    icon:<Glyph e="📚" />, border:"var(--brand)", sub:"In Library" },
         ].map((c) => <StatCard key={c.label} {...c} />)}
-      </div>
+      </StatGrid>
 
       {/* Row 1: Fee + Attendance */}
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:20, marginBottom:20 }}>

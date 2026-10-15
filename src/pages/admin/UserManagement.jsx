@@ -4,7 +4,7 @@ import { Calculator, GraduationCap, Plus, RefreshCw, Search, SearchX, Shield, Us
 import { toast, showCredentials, confirmAction, errorMessage } from "../../utils/toast";
 import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
-import { StatCard } from "../../components/ui/StatCard";
+import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import FieldError from "../../components/ui/FieldError";
 import { useFieldErrors } from "../../utils/fieldErrors";
 import EmptyState from "../../components/ui/EmptyState";
@@ -99,7 +99,7 @@ export default function UserManagement() {
       </div>
 
       {/* Role Stats (each card filters the list by that role) */}
-      <div className="ea-stats" style={{ marginBottom: 20 }}>
+      <StatGrid label="Users by role" style={{ marginBottom: 20 }}>
         {Object.entries(ROLE_META).map(([role, meta]) => {
           const Icon = meta.icon;
           return (
@@ -108,7 +108,7 @@ export default function UserManagement() {
               onClick={() => setFilter(role === filter ? "all" : role)} />
           );
         })}
-      </div>
+      </StatGrid>
 
       {/* Search + Filter */}
       <div style={{ display: "flex", gap: 10, marginBottom: 16, alignItems: "center" }}>

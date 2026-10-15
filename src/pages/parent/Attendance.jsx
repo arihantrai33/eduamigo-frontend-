@@ -4,6 +4,8 @@ import axios from "axios";
 import { pickChild, childQuery } from "../../utils/selectedChild";
 
 import Glyph from "../../components/Glyph";
+import { StatCard, StatGrid } from "../../components/ui/StatCard";
+import { CheckCircle2, XCircle, CalendarMinus } from "lucide-react";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -179,17 +181,12 @@ export default function ParentAttendance() {
         </div>
 
         {/* Stats Cards */}
-        <div className="ea-pd-side" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10, marginBottom: 16 }}>
-          {[
-            { label: "Present", value: summary?.present ?? 0, color: "#16a34a", bg: "#dcfce7" },
-            { label: "Absent",  value: summary?.absent  ?? 0, color: "#ef4444", bg: "#fee2e2" },
-            { label: "Leave",   value: summary?.leave   ?? 0, color: "#A16207", bg: "#fef9c3" },
-          ].map((s) => (
-            <div key={s.label} style={{ background: s.bg, borderRadius: 14, padding: "14px 10px", textAlign: "center" }}>
-              <div style={{ fontSize: 24, fontWeight: 900, color: s.color }}>{s.value}</div>
-              <div style={{ fontSize: 11, fontWeight: 600, color: s.color, marginTop: 2 }}>{s.label}</div>
-            </div>
-          ))}
+        <div className="ea-pd-side" style={{ marginBottom: 16 }}>
+          <StatGrid columns={3} label="Attendance days">
+            <StatCard label="Present" value={summary?.present ?? 0} icon={<CheckCircle2 />} tone="success" />
+            <StatCard label="Absent" value={summary?.absent ?? 0} icon={<XCircle />} tone="danger" />
+            <StatCard label="Leave" value={summary?.leave ?? 0} icon={<CalendarMinus />} tone="warning" />
+          </StatGrid>
         </div>
 
         {/* Absent / Leave Days */}

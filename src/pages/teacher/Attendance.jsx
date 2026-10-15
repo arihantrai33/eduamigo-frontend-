@@ -4,6 +4,8 @@ import { useAuth } from '../../context/AuthContext'
 import { todayLocal } from "../../utils/dates";
 
 import Glyph from "../../components/Glyph";
+import { StatCard, StatGrid } from "../../components/ui/StatCard";
+import { CheckCircle2, XCircle, Clock } from "lucide-react";
 import BottomNav from "../../layout/BottomNav";
 import { plural } from "../../utils/plural";
 import { errorMessage } from "../../utils/toast";
@@ -206,18 +208,11 @@ export default function TeacherAttendance() {
 
         {/* Stats */}
         {students.length > 0 && (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginBottom: 16 }}>
-            {[
-              { label: "Present", val: present, color: "#15803D", bg: "#DCFCE7" },
-              { label: "Absent",  val: absent,  color: "#DC2626", bg: "#FEE2E2" },
-              { label: "Late",    val: late,    color: "#CA8A04", bg: "#FEF9C3" },
-            ].map(s => (
-              <div key={s.label} style={{ background: s.bg, borderRadius: 16, padding: "12px", textAlign: "center" }}>
-                <div style={{ fontSize: 22, fontWeight: 800, color: s.color }}>{s.val}</div>
-                <div style={{ fontSize: 11, fontWeight: 600, color: s.color, opacity: 0.8 }}>{s.label}</div>
-              </div>
-            ))}
-          </div>
+          <StatGrid columns={3} label="Today's count" style={{ marginBottom: 16 }}>
+            <StatCard label="Present" value={present} icon={<CheckCircle2 />} tone="success" />
+            <StatCard label="Absent" value={absent} icon={<XCircle />} tone="danger" />
+            <StatCard label="Late" value={late} icon={<Clock />} tone="warning" />
+          </StatGrid>
         )}
 
         {/* Mark All */}
