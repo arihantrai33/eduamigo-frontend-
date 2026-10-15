@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext'
 import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
 import { errorMessage } from "../../utils/toast";
+import { useMediaQuery } from "../../utils/useMediaQuery";
 const API = import.meta.env.VITE_API_URL
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
@@ -22,6 +23,7 @@ export default function TeacherTimetable() {
   const [selectedDay, setSelectedDay] = useState(getTodayName())
   const [loading,     setLoading]     = useState(true)
   const [error,       setError]       = useState(null)
+  const isDesktop = useMediaQuery("(min-width: 1024px)")
 
   const headers = { Authorization: `Bearer ${user.token}` }
   const today   = getTodayName()
@@ -60,8 +62,8 @@ export default function TeacherTimetable() {
     return dayData?.periods || []
   }
 
-  const getPeriodStatus = (period) => {
-    if (selectedDay !== today) return 'other'
+  const getPeriodStatus = (period, day = selectedDay) => {
+    if (day !== today) return 'other'
     const now = new Date()
     const cur = now.getHours() * 60 + now.getMinutes()
     const [sh, sm] = (period.startTime || '00:00').split(':').map(Number)
@@ -100,7 +102,7 @@ export default function TeacherTimetable() {
   )
 
   return (
-    <div className="ea-pd-narrow" style={{ minHeight: '100vh', background: '#F4F6FB', fontFamily: "inherit", paddingBottom: 90 }}>
+    <div className={isDesktop ? undefined : "ea-pd-narrow"} style={{ minHeight: '100vh', background: '#F4F6FB', fontFamily: "inherit", paddingBottom: 90 }}>
 
       {/* Header */}
       <div className="ea-pd-band" style={{ background: 'var(--brand-gradient)', padding: '48px 18px 20px', display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -131,6 +133,34 @@ export default function TeacherTimetable() {
           </div>
         </div>
 
+        {/* Desktop: the whole week side by side (same view as the student timetable). */}
+        {isDesktop ? (
+          <div className="ea-week">
+            {DAYS.map((day) => {
+              const periods = getPeriodsForDay(day)
+              const isToday = day === today
+              return (
+                <section key={day} className={isToday ? 'ea-week__day is-today' : 'ea-week__day'} aria-label={`${day}${isToday ? ', today' : ''}`}>
+                  <h2 className="ea-week__head">
+                    <span>{day}</span>
+                    <small>{periods.length} {periods.length === 1 ? 'period' : 'periods'}{isToday ? ' · Today' : ''}</small>
+                  </h2>
+                  {periods.length === 0 ? <p className="ea-week__empty">No classes</p> : periods.map((period, i) => {
+                    const status = getPeriodStatus(period, day)
+                    return (
+                      <div key={i} className={`ea-week__slot${status === 'now' ? ' is-now' : ''}${status === 'done' ? ' is-done' : ''}`}>
+                        <span className="ea-week__time">{period.startTime || '—'} – {period.endTime || '—'}</span>
+                        <strong className="ea-week__subject">{period.subject || '—'}</strong>
+                        <span className="ea-week__meta">Class {period.class}{period.section ? ` - ${period.section}` : ''}{period.room ? ` · Room ${period.room}` : ''}</span>
+                        {status === 'now' && <span className="ea-week__now">Now</span>}
+                      </div>
+                    )
+                  })}
+                </section>
+              )
+            })}
+          </div>
+        ) : <>
         {/* Day Tabs */}
         <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 4, marginBottom: 16, scrollbarWidth: 'none' }}>
           {DAYS.map(day => {
@@ -208,6 +238,7 @@ export default function TeacherTimetable() {
             )
           })
         )}
+        </>}
 
         {timetable.length === 0 && !loading && (
           <div style={{ background: '#FEF9C3', border: '1px solid #FDE047', borderRadius: 16, padding: '14px 16px', marginTop: 8, fontSize: 13, color: '#CA8A04', fontWeight: 500 }}>
