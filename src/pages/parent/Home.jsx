@@ -97,7 +97,7 @@ export default function ParentHome() {
     <div className="ea-home" style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "inherit" }}>
 
       {/* Header */}
-      <div style={{ background: look.header, padding: "20px 20px 20px", flexShrink: 0 }}>
+      <div className="ea-pd-band" style={{ background: look.header, padding: "20px 20px 20px", flexShrink: 0 }}>
         <SchoolStrip user={user} theme={theme} look={look} />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
@@ -121,7 +121,7 @@ export default function ParentHome() {
         <ChildSwitcher children={children} current={child} theme={theme} onChange={() => { setLoading(true); fetchAll(); }} />
 
         {/* Child Card */}
-        <div style={{ background: look.glass, border: look.border, borderRadius: 16, padding: 16, marginTop: 16, backdropFilter: "blur(10px)" }}>
+        <div className="ea-pd-childcard" style={{ background: look.glass, border: look.border, borderRadius: 16, padding: 16, marginTop: 16, backdropFilter: "blur(10px)" }}>
           <div style={{ fontSize: 11, color: look.muted, marginBottom: 4 }}>Monitoring</div>
 
           {loading ? (
@@ -141,7 +141,7 @@ export default function ParentHome() {
               </div>
 
               {/* Clickable Stats */}
-              <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
+              <div className="ea-pd-idstats" style={{ display: "flex", gap: 10, marginTop: 14 }}>
                 {[
                   { val: attendance ? `${attendance.percentage}%` : "—", label: "Attendance", path: "/parent/attendance" },
                   { val: results?.percentage    ? `${results.percentage}%`    : "—", label: "Marks",      path: "/parent/result"     },
@@ -171,7 +171,7 @@ export default function ParentHome() {
       </div>
 
       {/* Body */}
-      <div className="ea-home__body" style={{ flex: 1, overflowY: "auto", padding: "16px 16px 80px" }}>
+      <div className="ea-home__body ea-pd-body ea-pd-dash" style={{ flex: 1, overflowY: "auto", padding: "16px 16px 80px" }}>
 
         {/* Quick Tiles */}
         <div className="ea-tile-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
@@ -185,10 +185,13 @@ export default function ParentHome() {
           ))}
         </div>
 
-        {/* Upcoming Exams for the selected child */}
-        {child && <UpcomingExams query={childQuery()} reloadKey={child._id} />}
+        {/* Upcoming Exams for the selected child (desktop: the main column) */}
+        <section className="ea-pd-main">
+          {child && <UpcomingExams query={childQuery()} reloadKey={child._id} />}
+        </section>
 
-        {/* Notices */}
+        {/* Notices (desktop: the side column) */}
+        <section className="ea-pd-side">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
           <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--text)", margin: 0 }}><Glyph e="🔔" /> Notices</h3>
           <span onClick={() => navigate("/parent/notifications")}
@@ -214,6 +217,7 @@ export default function ParentHome() {
             ))
           )}
         </div>
+        </section>
       </div>
 
       <BottomNav role="parent" />

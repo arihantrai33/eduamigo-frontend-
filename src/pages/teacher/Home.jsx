@@ -153,7 +153,7 @@ export default function TeacherHome() {
     <div style={styles.screen}>
 
       {/* Header */}
-      <div style={{ ...styles.header, background: look.header, flexDirection: 'column', alignItems: 'stretch', paddingTop: 20 }}>
+      <div className="ea-pd-band" style={{ ...styles.header, background: look.header, flexDirection: 'column', alignItems: 'stretch', paddingTop: 20 }}>
         <SchoolStrip user={user} theme={theme} look={look} />
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
@@ -167,10 +167,10 @@ export default function TeacherHome() {
         </div>
       </div>
 
-      <div style={styles.scroll}>
+      <div className="ea-pd-body ea-pd-dash" style={styles.scroll}>
 
-        {/* Hero Card */}
-        <div style={{ ...styles.heroCard, ...heroCard }}>
+        {/* Hero Card (desktop: the side column) */}
+        <div className="ea-pd-side" style={{ ...styles.heroCard, ...heroCard }}>
           <div style={styles.heroSub}>
             {teacher?.subjects?.join(', ') || 'No subjects assigned'}
           </div>
@@ -203,7 +203,8 @@ export default function TeacherHome() {
           ))}
         </div>
 
-        {/* Today's Schedule */}
+        {/* Today's Schedule (desktop: the main column) */}
+        <section className="ea-pd-main">
         <div style={styles.sectionHeader}>
           <span style={styles.sectionTitle}>Today's Schedule</span>
           <span style={{ ...styles.sectionDay, color: theme.primary }}>{today}</span>
@@ -235,8 +236,9 @@ export default function TeacherHome() {
             )
           })
         )}
+        </section>
 
-        <div style={{ height: 90 }} />
+        <div className="ea-pd-hide" style={{ height: 90 }} />
       </div>
 
       <BottomNav role="teacher" />

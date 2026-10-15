@@ -124,7 +124,7 @@ return (
 return (
 <div className="ea-home" style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "inherit" }}>
 {/* ── Header ── */}
-<div style={{ background: look.header, padding: "20px 20px 20px", flexShrink: 0 }}>
+<div className="ea-pd-band" style={{ background: look.header, padding: "20px 20px 20px", flexShrink: 0 }}>
 <SchoolStrip user={user} theme={theme} look={look} />
 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
 <div>
@@ -154,7 +154,7 @@ getInitials(profile?.name ?? user?.name)
 </div>
 </div>
 {/* Student ID Card */}
-<div style={{ background: look.glass, border: look.border, borderRadius: 16, padding: 16, backdropFilter: "blur(10px)" }}>
+<div className="ea-pd-idcard" style={{ background: look.glass, border: look.border, borderRadius: 16, padding: 16, backdropFilter: "blur(10px)" }}>
 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
 <div>
 <div style={{ fontSize: 10, color: look.muted, fontWeight: 700 }}>STUDENT ID</div>
@@ -177,7 +177,7 @@ getInitials(profile?.name ?? user?.name)
 </div>
 </div>
 {/* Stats Row */}
-<div style={{ display: "flex", gap: 8, marginTop: 14 }}>
+<div className="ea-pd-idstats" style={{ display: "flex", gap: 8, marginTop: 14 }}>
 {[
               { val: attendancePct,    label: "Attendance", path: "/student/attendance" },
               { val: grade,            label: "Grade",      path: null, feature: "exams" },
@@ -195,7 +195,7 @@ style={{ flex: 1, background: look.tile, border: look.border, borderRadius: 10, 
 </div>
 </div>
 {/* ── Body ── */}
-<div className="ea-home__body" style={{ flex: 1, overflowY: "auto", padding: "16px 16px 80px" }}>
+<div className="ea-home__body ea-pd-body ea-pd-dash" style={{ flex: 1, overflowY: "auto", padding: "16px 16px 80px" }}>
 {/* Quick Tiles */}
 <div className="ea-tile-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
 {quickTiles.filter(visibleFor(user)).map((tile) => (
@@ -207,7 +207,8 @@ style={{ background: "var(--card)", borderRadius: 14, padding: 14, border: "none
 </button>
           ))}
 </div>
-{/* Today's Classes */}
+{/* Today's Classes (desktop: the main column) */}
+<section className="ea-pd-main">
 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
 <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--text)", margin: 0 }}>Today's Classes</h3>
 <span style={{ fontSize: 13, color: theme.primary, fontWeight: 700, cursor: "pointer" }} onClick={() => navigate("/student/timetable")}>
@@ -233,9 +234,12 @@ timetable.slice(0, 4).map((c, i) => (
             ))
           )}
 </div>
-{/* Upcoming Exams */}
+</section>
+{/* Upcoming Exams and Notices (desktop: the side column) */}
+<section className="ea-pd-side">
 <UpcomingExams />
-{/* Notices */}
+</section>
+<section className="ea-pd-side">
 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
 <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--text)", margin: 0 }}>Notices</h3>
 <span style={{ fontSize: 13, color: theme.primary, fontWeight: 700, cursor: "pointer" }} onClick={() => navigate("/student/notifications")}>
@@ -261,6 +265,7 @@ notices.map((n, i) => (
             ))
           )}
 </div>
+</section>
 </div>
 <BottomNav role="student" />
 </div>
