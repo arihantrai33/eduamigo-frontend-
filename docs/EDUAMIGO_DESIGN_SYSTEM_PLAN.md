@@ -9,7 +9,7 @@ Audience: the engineer (Claude Sonnet) who will implement it in small batches, a
 ## 0. How this audit was done
 
 - **Screens.** The responsive sweep was run on 8de6770 (`SWEEP_WIDTHS=390,768,1024,1280`, isolated ports 8130/5194). It took one screenshot per route per width: 78 routes × 4 widths = 312 screenshots.
-- **Review.** I built contact sheets from them (four screens per sheet) and looked at every route at 1280. At 390 I looked at the public, admin, student, parent and teacher sheets.
+- **Review.** I built contact sheets from them (four screens per sheet) and looked at every route at 1280. At 390 I looked at 8 of the 20 phone sheets: 32 routes covering every role (public; admin dashboard, setup, activity, admissions, chat, communications, calendar, exams, fees, fee reports, fee structure, HR; student home, learn, notes, notifications, report card, change password, leave; parent chat, fee, home, notifications; teacher attendance, chat, home, leave). The other phone screens are covered only by the sweep's automated checks (0 findings), and the first batch that touches them must review them.
 - **Earlier reviews.** Dark mode, the AI Tutor states, dialogs and empty states were reviewed in earlier passes (see `EDUAMIGO_WEB_UX_AUDIT.md`, Phase 3).
 - **Code.** I also read the tokens and components in `src/index.css`, `src/components/ui/*` (PageHeader, PortalHeader, StatCard, EmptyState, FieldError, tone.js), `src/layout/*`, `components/Dialog.jsx` and the routing in `App.jsx`.
 - **Size of the style debt.** The pages carry about 3,050 inline `style={{…}}` objects, 2,700 hard-coded hex colours and 120 `linear-gradient`s. That is why this plan works through **shared components and tokens first**, and only then page by page.
