@@ -894,3 +894,39 @@ Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B9.
 - Sweep 390/1280: 156 screens, 0 findings.
 - Dark-mode contrast: 0 spots under 3:1.
 - The build passes, and ESLint counts on the changed files match HEAD.
+
+### Redesign batch B12: profiles and sub-views (2026-10-16)
+Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B12.
+
+**New `components/ui/Profile.jsx`** (CSS `.ea-profile-card`, `.ea-info-list`, `.ea-menu-list`, `.ea-switch`, `.ea-note`, `.ea-idcard`):
+- **`ProfileCard`:** the header card on the surface (shared `Avatar` lg, name, one meta line, role badge). It replaces the gradient hero.
+- **`InfoList`:** label/value rows (`dl`).
+- **`MenuList`:** each row is a real button (keyboard and screen reader), with a neutral icon chip and a chevron. Sign-out rows are `danger`; a row can carry `aria-pressed` and a switch.
+
+**Student, teacher and parent profiles now use the same parts:**
+- **Main view:**
+  - `PortalHeader` "My Profile", then the profile card.
+  - The figures as `StatCard`s: student Attendance, Marks, Grade, Roll; teacher Classes, Subjects, Experience. They were 9 px capital labels in a gradient card.
+  - The menu, then the sign-out menu.
+- **Sub-views** (My Information, Settings, ID card, Help & Support) open with the detail `PortalHeader` and a back button. Each had its own gradient band.
+- **Fixed:**
+  - Menu rows, "Sign out on all devices", "Logout" and the dark-mode switch were clickable `div`s; they are buttons now. The switch is a pressed button.
+  - Random tinted icon tiles (green, yellow, purple, orange) are one neutral brand chip.
+  - The gradient avatars are the shared `Avatar`.
+  - The ID card header is solid brand (not a gradient).
+  - The teacher ID card no longer says the hard-coded "EDUAMIGO SCHOOL"; both ID cards show the school's own name (`branding.appName` / `user.school`, as on the home header).
+- **No change to data, routes or actions:** same requests, same targets (notifications, change password, reset child's password, help, sign out everywhere, logout).
+- **Copy:**
+  - Field labels in sentence case ("Roll number", was "ROLL NUMBER" through CSS).
+  - The info note is the alerts style. Its wording is now "Only the school office can change these details. Ask your class teacher if something is wrong.", where it was "…can only be changed by school admin. Contact your class teacher for any corrections."
+
+**Review (ports 8130/5194):**
+- Student, teacher and parent: the main view and every sub-view at 390, 768 and 1280.
+- Keyboard focus on a menu row (all three).
+- Dark mode (student, parent).
+
+**Tests:**
+- 34/34 passed: `screens`, `scroll`, `accessible-names`, `auth-and-navigation`, the sweep, the contrast probe and the capture spec, which opens every sub-view through its button and comes back.
+- Sweep 390/1280: 156 screens, 0 findings.
+- Dark-mode contrast: 0 spots under 3:1.
+- The build passes, and ESLint counts match HEAD (one existing fetch-on-mount warning in each of the student and teacher profiles).

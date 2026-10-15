@@ -6,14 +6,18 @@ import axios from "axios";
 import { currentAcademicYear } from "../../utils/academicYear";
 import SupportContent from "../../components/SupportContent";
 import { signOutEverywhere } from "../../utils/account";
-
-import Glyph from "../../components/Glyph";
+import { User, Bell, Settings, IdCard, LifeBuoy, Moon, KeyRound, MonitorOff, LogOut } from "lucide-react";
+import PortalHeader from "../../components/ui/PortalHeader";
+import { ProfileCard, InfoList, MenuList } from "../../components/ui/Profile";
+import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import BottomNav from "../../layout/BottomNav";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 });
 
+// Student profile: a profile card, the school record and a menu (design plan §2.6, B12). Its sub-views (details,
+// settings, ID card, help) open in place with a back button.
 export default function Profile() {
   const { user, logout } = useAuth();
   const { darkMode, setDarkMode } = useTheme();
@@ -24,12 +28,7 @@ export default function Profile() {
   const [avgMarks,     setAvgMarks]     = useState(null);
   const [overallGrade, setOverallGrade] = useState(null);
   const [loading,      setLoading]      = useState(true);
-
-  const [showProfile,  setShowProfile]  = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const [showHelp,     setShowHelp]     = useState(false);
-  const [showIdCard,   setShowIdCard]   = useState(false);
-
+  const [view,         setView]         = useState(null); // null | "profile" | "settings" | "idcard" | "help"
 
   useEffect(() => { fetchAll(); }, []);
 
@@ -56,224 +55,94 @@ export default function Profile() {
   };
 
   const handleLogout = () => { logout(); navigate("/login"); };
+  const name = profile?.name || user?.name || "Student";
+  const classText = profile?.class ? `Class ${profile.class}-${profile.section}` : null;
 
-  const getInitial = () => (profile?.name || user?.name || "S")[0].toUpperCase();
+  const page = (title, children) => (
+    <div className="ea-pd-narrow" style={{ minHeight: "100vh", background: "var(--app-bg, #F4F6FB)", fontFamily: "inherit", paddingBottom: 80 }}>
+      <PortalHeader detail title={title} onBack={() => setView(null)} />
+      <div className="ea-pd-body" style={{ padding: 16, display: "flex", flexDirection: "column", gap: 14 }}>{children}</div>
+      <BottomNav role="student" />
+    </div>
+  );
 
   if (loading) return (
-    <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: darkMode ? "#1a1a2e" : "#f5f6fa" }}>
-      <div style={{ fontSize: 14, color: "var(--subtext)" }}>Loading...</div>
+    <div className="ea-pd-narrow" style={{ minHeight: "100vh", background: "var(--app-bg, #F4F6FB)" }}>
+      <PortalHeader title="My Profile" onBack={() => navigate(-1)} />
+      <div style={{ padding: 16, fontSize: 14, color: "var(--ea-muted)" }}>Loading…</div>
     </div>
   );
 
-  // ── View Profile ──
-  if (showProfile) return (
-    <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "inherit", display: "flex", flexDirection: "column" }}>
-      <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
-        <button type="button" aria-label="Back" onClick={() => setShowProfile(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}><Glyph e="←" /></button>
-        <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>My Information</h2>
-      </div>
-      <div style={{ flex: 1, overflowY: "auto", padding: "20px 16px" }}>
-        <div style={{ textAlign: "center", marginBottom: "24px" }}>
-          <div style={{ width: "84px", height: "84px", borderRadius: "50%", background: "var(--brand-gradient)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto", fontSize: "32px", fontWeight: "700", color: "white", border: "3px solid #e5e7eb" }}>
-            {getInitial()}
-          </div>
-          <div style={{ fontSize: "12px", color: darkMode ? "#aaa" : "#888", marginTop: "8px" }}>Profile photo is managed by school admin</div>
-        </div>
-        {[
-          { label: "Full Name",    value: profile?.name        || "—" },
-          { label: "Email",        value: profile?.email       || "—" },
-          { label: "Class",        value: profile?.class ? `${profile.class}-${profile.section}` : "—" },
-          { label: "Roll Number",  value: profile?.rollNumber  || "—" },
-          { label: "Phone",        value: profile?.phone       || "—" },
-          { label: "Parent Name",  value: profile?.parentName  || "—" },
-          { label: "Address",      value: profile?.address     || "—" },
-        ].map(f => (
-          <div key={f.label} style={{ marginBottom: "14px" }}>
-            <label style={{ fontSize: "11px", fontWeight: "700", color: darkMode ? "#aaa" : "#888", textTransform: "uppercase", letterSpacing: "1px" }}>{f.label}</label>
-            <div style={{ padding: "13px 15px", borderRadius: "12px", background: darkMode ? "#1a1a2e" : "#f5f6fa", border: "1.5px solid var(--border)", fontSize: "14px", marginTop: "6px", color: darkMode ? "#ccc" : "#444" }}>{f.value}</div>
-          </div>
-        ))}
-        <div style={{ background: "#FFF9C4", borderRadius: "12px", padding: "12px 16px", marginTop: "8px", display: "flex", gap: "10px", alignItems: "flex-start" }}>
-          <span style={{ fontSize: "18px" }}><Glyph e="⚠" /></span>
-          <div style={{ fontSize: "13px", color: "#F57F17", fontWeight: "600", lineHeight: 1.5 }}>
-            Profile details can only be changed by school admin. Contact your class teacher for any corrections.
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  if (view === "profile") return page("My Information", <>
+    <InfoList title="School record" rows={[
+      { label: "Full name",   value: profile?.name },
+      { label: "Email",       value: profile?.email },
+      { label: "Class",       value: profile?.class ? `${profile.class}-${profile.section}` : null },
+      { label: "Roll number", value: profile?.rollNumber },
+      { label: "Phone",       value: profile?.phone },
+      { label: "Parent name", value: profile?.parentName },
+      { label: "Address",     value: profile?.address },
+    ]} />
+    <div className="ea-note">Only the school office can change these details. Ask your class teacher if something is wrong.</div>
+  </>);
 
-  // ── Settings ──
-  if (showSettings) return (
-    <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "inherit", display: "flex", flexDirection: "column" }}>
-      <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
-        <button type="button" aria-label="Back" onClick={() => setShowSettings(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}><Glyph e="←" /></button>
-        <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Settings</h2>
+  if (view === "settings") return page("Settings", <>
+    <MenuList label="Appearance" items={[
+      { icon: <Moon size={18} />, label: "Dark mode", sub: "Switch to the dark theme", pressed: !!darkMode, onClick: () => setDarkMode(!darkMode),
+        right: <span className={`ea-switch${darkMode ? " is-on" : ""}`} aria-hidden="true" /> },
+    ]} />
+    <MenuList label="Account" items={[
+      { icon: <KeyRound size={18} />, label: "Change Password", sub: "Choose a new password", onClick: () => navigate("/change-password") },
+    ]} />
+  </>);
+
+  if (view === "idcard") return page("Student ID Card", (
+    <div className="ea-card ea-idcard">
+      <div className="ea-idcard__head">
+        <div className="ea-idcard__school">{user?.branding?.appName || user?.school || profile?.school || "School"}</div>
+        <div className="ea-idcard__year">Student identity card · {currentAcademicYear()}</div>
       </div>
-      <div style={{ flex: 1, overflowY: "auto", padding: "16px" }}>
-        <div style={{ background: darkMode ? "#16213e" : "white", borderRadius: "16px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}>
+      <div style={{ padding: 20, display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+        <ProfileCard name={name} photo={profile?.photo} meta={`${classText || "Class —"} • Roll #${profile?.rollNumber || "—"}`} />
+        <dl className="ea-idcard__grid">
           {[
-            { label: "Dark Mode",           sub: "Switch to dark theme",                     value: darkMode,       setter: setDarkMode       },
-          ].map((s, i, arr) => (
-            <div key={s.label} style={{ padding: "16px", borderBottom: i < arr.length - 1 ? "1px solid var(--ea-line)" : "none", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <div>
-                <div style={{ fontWeight: "600", fontSize: "14px", color: darkMode ? "#f1f5f9" : "#111" }}>{s.label}</div>
-                <div style={{ fontSize: "12px", color: darkMode ? "#aaa" : "#888", marginTop: "2px" }}>{s.sub}</div>
-              </div>
-              <div onClick={() => s.setter(!s.value)} style={{ width: "46px", height: "26px", borderRadius: "13px", background: s.value ? "var(--brand)" : "#e5e7eb", cursor: "pointer", position: "relative", transition: "background .2s", flexShrink: 0 }}>
-                <div style={{ position: "absolute", top: "3px", left: s.value ? "23px" : "3px", width: "20px", height: "20px", borderRadius: "50%", background: darkMode ? "#16213e" : "white", transition: "left .2s", boxShadow: "0 1px 4px rgba(0,0,0,0.2)" }} />
-              </div>
-            </div>
+            ["Student ID",  profile?._id?.slice(-8).toUpperCase()],
+            ["Email",       profile?.email],
+            ["Blood group", profile?.bloodGroup],
+            ["Session",     currentAcademicYear()],
+          ].map(([l, v]) => (
+            <div key={l}><dt>{l}</dt><dd>{v || "—"}</dd></div>
           ))}
-        </div>
-        <div style={{ background: darkMode ? "#16213e" : "white", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginTop: "12px" }}>
-          <div style={{ fontWeight: "700", fontSize: "13px", color: darkMode ? "#aaa" : "#888", marginBottom: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>Account</div>
-          {["Change Password"].map((item, i, arr) => (
-            <div key={item} onClick={() => navigate("/change-password")} style={{ padding: "14px 0", borderBottom: i < arr.length - 1 ? "1px solid var(--ea-line)" : "none", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
-              <span style={{ fontSize: "14px", fontWeight: "600", color: darkMode ? "#f1f5f9" : "#111" }}>{item}</span>
-              <span style={{ color: "#ccc" }}>›</span>
-            </div>
-          ))}
-        </div>
+        </dl>
       </div>
+      <div className="ea-idcard__foot">If found, please return to the school office.</div>
     </div>
-  );
+  ));
 
-  // ── ID Card ──
-  if (showIdCard) return (
-    <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "inherit", display: "flex", flexDirection: "column" }}>
-      <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
-        <button type="button" aria-label="Back" onClick={() => setShowIdCard(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}><Glyph e="←" /></button>
-        <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Student ID Card</h2>
-      </div>
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "24px" }}>
-        <div style={{ width: "100%", maxWidth: "320px", background: darkMode ? "#16213e" : "white", borderRadius: "20px", overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.15)" }}>
-          <div style={{ background: "var(--brand-gradient)", padding: "20px", color: "white", textAlign: "center" }}>
-            <div style={{ fontSize: "13px", fontWeight: "700", letterSpacing: "2px", opacity: .8 }}>
-              {profile?.school || "SCHOOL"}
-            </div>
-            <div style={{ fontSize: "11px", opacity: .7 }}>Student Identity Card {currentAcademicYear()}</div>
-          </div>
-          <div style={{ padding: "20px", textAlign: "center" }}>
-            <div style={{ width: "72px", height: "72px", borderRadius: "50%", background: "var(--brand-gradient)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px", fontSize: "28px", fontWeight: "700", color: "white", border: "3px solid #e5e7eb" }}>
-              {getInitial()}
-            </div>
-            <div style={{ fontWeight: "800", fontSize: "18px", color: darkMode ? "#f1f1f1" : "#111" }}>{profile?.name || "—"}</div>
-            <div style={{ fontSize: "13px", color: darkMode ? "#bbb" : "#666", marginTop: "4px" }}>
-              Class {profile?.class || "—"}-{profile?.section || "—"} • Roll #{profile?.rollNumber || "—"}
-            </div>
-            <div style={{ marginTop: "16px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", textAlign: "left" }}>
-              {[
-                ["Student ID",  profile?._id?.slice(-8).toUpperCase() || "—"],
-                ["Email",       profile?.email    || "—"],
-                ["Blood Group", profile?.bloodGroup || "—"],
-                ["Session",     currentAcademicYear()],
-              ].map(([l, v]) => (
-                <div key={l} style={{ background: darkMode ? "#1a1a2e" : "#f5f6fa", borderRadius: "10px", padding: "10px" }}>
-                  <div style={{ fontSize: "10px", color: darkMode ? "#aaa" : "#888", fontWeight: "700", textTransform: "uppercase" }}>{l}</div>
-                  <div style={{ fontSize: "12px", fontWeight: "700", color: darkMode ? "#f1f1f1" : "#111", marginTop: "2px" }}>{v}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div style={{ background: darkMode ? "#1a1a2e" : "#f5f6fa", padding: "12px 20px", textAlign: "center" }}>
-            <div style={{ fontSize: "11px", color: darkMode ? "#aaa" : "#888" }}>If found, please return to school administration</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  // ── Help ──
-  if (showHelp) return (
-    <div style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "inherit", display: "flex", flexDirection: "column" }}>
-      <div style={{ background: "var(--brand-gradient)", padding: "48px 16px 24px", color: "white", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
-        <button type="button" aria-label="Back" onClick={() => setShowHelp(false)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}><Glyph e="←" /></button>
-        <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Help & Support</h2>
-      </div>
-      <div style={{ flex: 1, overflowY: "auto", padding: "16px" }}>
-        <SupportContent role="student" dark={darkMode} />
-      </div>
-    </div>
-  );
-
-  // ── Main Profile ──
-  const menuItems = [
-    { icon: <Glyph e="👤" />, label: "View Profile",     sub: "Your school information",      action: () => setShowProfile(true)  },
-    { icon: <Glyph e="🔔" />, label: "Notifications",    sub: "View all notifications",       action: () => navigate("/student/notifications") },
-    { icon: <Glyph e="⚙" />, label: "Settings",         sub: "App preferences",              action: () => setShowSettings(true) },
-    { icon: <Glyph e="🪪" />, label: "Student ID Card",  sub: "View your school ID",          action: () => setShowIdCard(true)   },
-    { icon: <Glyph e="🤝" />, label: "Help & Support",   sub: "FAQs and contact",             action: () => setShowHelp(true)     },
-  ];
+  if (view === "help") return page("Help & Support", <SupportContent role="student" dark={darkMode} />);
 
   return (
-    <div className="ea-pd-narrow" style={{ position: "absolute", inset: 0, background: darkMode ? "#1a1a2e" : "#f5f6fa", fontFamily: "inherit", overflowY: "auto", paddingBottom: "80px" }}>
-      {/* Header */}
-      <div className="ea-pd-band" style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white", textAlign: "center" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-          <button type="button" aria-label="Back" onClick={() => navigate(-1)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px 12px", color: "white", cursor: "pointer", fontSize: "16px" }}><Glyph e="←" /></button>
-          <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>My Profile</h2>
-          <div style={{ width: "36px" }} />
-        </div>
-        <div style={{ width: "84px", height: "84px", borderRadius: "50%", background: "rgba(255,255,255,0.25)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "32px", fontWeight: "700", border: "3px solid rgba(255,255,255,0.5)", margin: "0 auto 12px" }}>
-          {getInitial()}
-        </div>
-        <div style={{ fontWeight: "700", fontSize: "22px" }}>{profile?.name || user?.name || "—"}</div>
-        <div style={{ fontSize: "13px", opacity: 0.8, marginTop: "4px" }}>
-          Class {profile?.class || "—"}-{profile?.section || "—"} • {profile?.email || "—"}
-        </div>
-        <div style={{ marginTop: "10px" }}>
-          <span style={{ background: "rgba(255,255,255,0.2)", padding: "4px 12px", borderRadius: "20px", fontSize: "12px", fontWeight: "600" }}><Glyph e="🎒" /> Student</span>
-        </div>
-      </div>
-
-      <div className="ea-pd-body" style={{ padding: "16px", marginTop: "-20px" }}>
-        {/* Stats */}
-        <div style={{ background: darkMode ? "#16213e" : "white", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: "16px" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "8px", textAlign: "center" }}>
-            {[
-              { label: "ATTENDANCE", value: attendance?.percentage ? `${attendance.percentage}%` : "—" },
-              { label: "MARKS",      value: avgMarks ? `${avgMarks}%` : "—" },
-              { label: "GRADE",      value: overallGrade || "—" },
-              { label: "ROLL",       value: profile?.rollNumber || "—" },
-            ].map(s => (
-              <div key={s.label}>
-                <div style={{ fontWeight: "700", fontSize: "18px", color: "var(--brand)" }}>{s.value}</div>
-                <div style={{ fontSize: "9px", color: darkMode ? "#aaa" : "#888", marginTop: "2px" }}>{s.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Menu */}
-        <div style={{ background: darkMode ? "#16213e" : "white", borderRadius: "16px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: "16px" }}>
-          {menuItems.map((item, i) => (
-            <div key={item.label} onClick={item.action}
-              style={{ padding: "16px", borderBottom: i < menuItems.length - 1 ? "1px solid var(--ea-line)" : "none", display: "flex", alignItems: "center", gap: "14px", cursor: "pointer" }}>
-              <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: darkMode ? "#1e293b" : "#f5f6ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>
-                {item.icon}
-              </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: "600", fontSize: "14px", color: darkMode ? "#f1f1f1" : "#111" }}>{item.label}</div>
-                <div style={{ fontSize: "12px", color: darkMode ? "#aaa" : "#888", marginTop: "2px" }}>{item.sub}</div>
-              </div>
-              <div style={{ color: "#ccc", fontSize: "18px" }}>›</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Logout */}
-        <div onClick={() => signOutEverywhere(logout, navigate)} style={{ background: darkMode ? "#16213e" : "white", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", display: "flex", alignItems: "center", gap: "14px", cursor: "pointer", marginBottom: "12px" }}>
-          <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: "#FFF7ED", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}><Glyph e="📵" /></div>
-          <div style={{ flex: 1, fontWeight: "600", fontSize: "14px", color: "#C2410C" }}>Sign out on all devices</div>
-          <div style={{ color: "#C2410C", fontSize: "18px" }}>›</div>
-        </div>
-
-        <div onClick={handleLogout} style={{ background: darkMode ? "#16213e" : "white", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", display: "flex", alignItems: "center", gap: "14px", cursor: "pointer" }}>
-          <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: darkMode ? "#2d1515" : "#fff5f5", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}><Glyph e="🚪" /></div>
-          <div style={{ flex: 1, fontWeight: "600", fontSize: "14px", color: "#ef4444" }}>Logout</div>
-          <div style={{ color: "#ef4444", fontSize: "18px" }}>›</div>
-        </div>
+    <div className="ea-pd-narrow" style={{ minHeight: "100vh", background: "var(--app-bg, #F4F6FB)", fontFamily: "inherit", paddingBottom: 80 }}>
+      <PortalHeader title="My Profile" onBack={() => navigate(-1)} />
+      <div className="ea-pd-body" style={{ padding: 16, display: "flex", flexDirection: "column", gap: 14 }}>
+        <ProfileCard name={name} photo={profile?.photo} meta={[classText, profile?.email].filter(Boolean).join(" • ")} role="Student" />
+        <StatGrid label="My figures">
+          <StatCard label="Attendance" value={attendance?.percentage ? `${attendance.percentage}%` : "—"} />
+          <StatCard label="Marks" value={avgMarks ? `${avgMarks}%` : "—"} />
+          <StatCard label="Grade" value={overallGrade || "—"} />
+          <StatCard label="Roll" value={profile?.rollNumber || "—"} />
+        </StatGrid>
+        <MenuList label="Profile" items={[
+          { icon: <User size={18} />,     label: "View Profile",    sub: "Your school information", onClick: () => setView("profile") },
+          { icon: <Bell size={18} />,     label: "Notifications",   sub: "View all notifications",  onClick: () => navigate("/student/notifications") },
+          { icon: <Settings size={18} />, label: "Settings",        sub: "App preferences",         onClick: () => setView("settings") },
+          { icon: <IdCard size={18} />,   label: "Student ID Card", sub: "View your school ID",     onClick: () => setView("idcard") },
+          { icon: <LifeBuoy size={18} />, label: "Help & Support",  sub: "FAQs and contact",        onClick: () => setView("help") },
+        ]} />
+        <MenuList label="Sign out" items={[
+          { icon: <MonitorOff size={18} />, label: "Sign out on all devices", danger: true, onClick: () => signOutEverywhere(logout, navigate) },
+          { icon: <LogOut size={18} />,     label: "Logout", danger: true, onClick: handleLogout },
+        ]} />
       </div>
       <BottomNav role="student" />
     </div>
