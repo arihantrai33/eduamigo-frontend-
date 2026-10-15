@@ -11,6 +11,7 @@ import { useFieldErrors } from "../../utils/fieldErrors";
 
 // Checked fields of the bus form; each input's id is "bus-<key>".
 const FIELDS = Object.fromEntries(["busNumber", "driverName", "driverPhone", "routeName"].map((k) => [k, `bus-${k}`]));
+const STOP_FIELDS = { name: "stop-name", latitude: "stop-latitude", longitude: "stop-longitude" };
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import { toneOf } from "../../components/ui/tone";
 const API = import.meta.env.VITE_API_URL;
@@ -39,6 +40,7 @@ export default function Transport() {
   const fe = useFieldErrors(FIELDS);
   const [stops, setStops] = useState([]);
   const [newStop, setNewStop] = useState({ name:"", latitude:"", longitude:"", estimatedTime:"", order:1 });
+  const stopErrors = useFieldErrors(STOP_FIELDS);
   const [selectedStudents, setSelectedStudents] = useState([]);
 
   useEffect(() => { fetchAll(); }, []);
@@ -87,7 +89,11 @@ export default function Transport() {
   };
 
   const handleAddStop = async () => {
-    if (!newStop.name || !newStop.latitude || !newStop.longitude) return toast.error("Enter the stop name, latitude and longitude");
+    if (!stopErrors.check({
+      name: !String(newStop.name || "").trim() && "Enter the stop name",
+      latitude: newStop.latitude === "" && "Enter the latitude",
+      longitude: newStop.longitude === "" && "Enter the longitude",
+    })) return;
     const updated = [...stops, { ...newStop, latitude: Number(newStop.latitude), longitude: Number(newStop.longitude), order: stops.length+1 }];
     try {
       await axios.put(`${API}/transport/${selectedBus._id}/stops`, { stops: updated }, auth());
@@ -263,7 +269,7 @@ export default function Transport() {
       </Modal>
 
       {/* Stops Modal */}
-      <Modal show={showStopsModal} onClose={() => setShowStopsModal(false)} title={`Stops — ${selectedBus?.busNumber}`}>
+      <Modal show={showStopsModal} onClose={() => { setShowStopsModal(false); stopErrors.setErrors({}); }} title={`Stops — ${selectedBus?.busNumber}`}>
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
           {stops.length > 0 && (
             <div style={{ display:"flex", flexDirection:"column", gap:8, maxHeight:180, overflowY:"auto", marginBottom:4 }}>
@@ -282,8 +288,9 @@ export default function Transport() {
               {[["STOP NAME","name","text"],["EST. TIME","estimatedTime","text"],["LATITUDE","latitude","number"],["LONGITUDE","longitude","number"]].map(([label,key,type]) => (
                 <label key={key} style={{ display:"block" }}>
                   <span style={{ display:"block", fontSize:10, fontWeight:700, color:"#94A3B8", marginBottom:4 }}>{label}</span>
-                  <input type={type} value={newStop[key]||""} onChange={e => setNewStop(p=>({...p,[key]:e.target.value}))}
+                  <input id={`stop-${key}`} type={type} value={newStop[key]||""} onChange={e => { setNewStop(p=>({...p,[key]:e.target.value})); stopErrors.clear(key); }} {...stopErrors.invalid(key)}
                     style={{ width:"100%", padding:"9px 12px", borderRadius:9, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />
+                  <FieldError id={`stop-${key}-error`}>{stopErrors.errors[key]}</FieldError>
                 </label>
               ))}
             </div>

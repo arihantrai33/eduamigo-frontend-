@@ -6,6 +6,10 @@ import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
 import { plural } from "../../utils/plural";
 import Dialog from "../../components/Dialog";
+import FieldError from "../../components/ui/FieldError";
+import { useFieldErrors } from "../../utils/fieldErrors";
+
+const FIELDS = { subject: "period-subject", startTime: "period-start", endTime: "period-end" };
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -27,6 +31,7 @@ export default function Timetable() {
   const [showModal, setShowModal] = useState(false);
   const [editPeriod, setEditPeriod] = useState(null);
   const [periodForm, setPeriodForm] = useState({ no:1, subject:"", teacherId:"", startTime:"", endTime:"" });
+  const fe = useFieldErrors(FIELDS);
 
   useEffect(() => { fetchAll(); }, []);
 
@@ -74,7 +79,10 @@ export default function Timetable() {
 
   const handleSavePeriod = async () => {
     if (!selectedClass || !selectedSection) return toast.error("Select class and section first");
-    if (!periodForm.subject) return toast.error("Subject is required");
+    if (!fe.check({
+      subject: !String(periodForm.subject || "").trim() && "Enter the subject",
+      endTime: periodForm.startTime && periodForm.endTime && periodForm.endTime <= periodForm.startTime && "End time must be after the start time",
+    })) return;
     setSaving(true);
     try {
       const payload = {
@@ -108,7 +116,8 @@ export default function Timetable() {
     return found?.name || null;
   };
 
-  const f = (k, v) => setPeriodForm(p => ({ ...p, [k]: v }));
+  const f = (k, v) => { setPeriodForm(p => ({ ...p, [k]: v })); fe.clear(k); };
+  const closePeriod = () => { setShowModal(false); fe.setErrors({}); };
 
   return (
     <div style={{ fontFamily: "inherit" }}>
@@ -225,20 +234,21 @@ export default function Timetable() {
         </div>
       )}
 
-      <Modal show={showModal} onClose={() => setShowModal(false)} title={editPeriod ? `Edit Period ${periodForm.no}` : `Add Period ${periodForm.no}`}>
+      <Modal show={showModal} onClose={closePeriod} title={editPeriod ? `Edit Period ${periodForm.no}` : `Add Period ${periodForm.no}`}>
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
           <div style={{ background:"#F8FAFC", borderRadius:12, padding:"12px 16px", fontSize:13, color:"#64748B", fontWeight:600 }}>
             Class {selectedClass}-{selectedSection} · {selectedDay} · Period {periodForm.no}
           </div>
           <div>
-            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>SUBJECT</div>
-            <input value={periodForm.subject} onChange={e => f("subject", e.target.value)} placeholder="e.g. Mathematics"
+            <label htmlFor="period-subject" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>SUBJECT</label>
+            <input id="period-subject" value={periodForm.subject} onChange={e => f("subject", e.target.value)} placeholder="e.g. Mathematics" {...fe.invalid("subject")}
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
               onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
+            <FieldError id="period-subject-error">{fe.errors.subject}</FieldError>
           </div>
           <div>
-            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TEACHER</div>
-            <select value={periodForm.teacherId} onChange={e => f("teacherId", e.target.value)}
+            <label htmlFor="period-teacher" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TEACHER</label>
+            <select id="period-teacher" value={periodForm.teacherId} onChange={e => f("teacherId", e.target.value)}
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
               <option value="">Select Teacher (optional)</option>
               {teachers.map(t => <option key={t._id} value={t._id}>{t.name}{t.subjects ? ` — ${Array.isArray(t.subjects) ? t.subjects.join(", ") : t.subjects}` : ""}</option>)}
@@ -246,19 +256,20 @@ export default function Timetable() {
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             <div>
-              <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>START TIME</div>
-              <input type="time" value={periodForm.startTime} onChange={e => f("startTime", e.target.value)}
+              <label htmlFor="period-start" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>START TIME</label>
+              <input id="period-start" type="time" value={periodForm.startTime} onChange={e => f("startTime", e.target.value)}
                 style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box" }} />
             </div>
             <div>
-              <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>END TIME</div>
-              <input type="time" value={periodForm.endTime} onChange={e => f("endTime", e.target.value)}
+              <label htmlFor="period-end" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>END TIME</label>
+              <input id="period-end" type="time" value={periodForm.endTime} onChange={e => f("endTime", e.target.value)} {...fe.invalid("endTime")}
                 style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box" }} />
+              <FieldError id="period-end-error">{fe.errors.endTime}</FieldError>
             </div>
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end", marginTop:4 }}>
-            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
-            <button onClick={handleSavePeriod} disabled={saving}
+            <button type="button" onClick={closePeriod} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
+            <button type="button" onClick={handleSavePeriod} disabled={saving}
               style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"var(--brand-gradient)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 14px color-mix(in srgb, var(--brand) 40%, transparent)", opacity:saving?0.7:1 }}>
               {saving ? "Saving..." : "Save Period"}
             </button>

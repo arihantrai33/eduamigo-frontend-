@@ -3,6 +3,10 @@ import axios from "axios";
 import { toast, errorMessage, confirmAction } from "../../utils/toast";
 import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
+import FieldError from "../../components/ui/FieldError";
+import { useFieldErrors } from "../../utils/fieldErrors";
+
+const FIELDS = { name: "school-name" };
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -144,6 +148,7 @@ export default function Settings() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+  const fe = useFieldErrors(FIELDS);
 
   useEffect(() => {
     (async () => {
@@ -163,10 +168,10 @@ export default function Settings() {
     })();
   }, []);
 
-  const set = (key) => (e) => setSchool({ ...school, [key]: e.target.value });
+  const set = (key) => (e) => { setSchool({ ...school, [key]: e.target.value }); fe.clear(key); };
 
   const save = async () => {
-    if (!school.name?.trim()) return toast.error("School name is required");
+    if (!fe.check({ name: !school.name?.trim() && "Enter the school name" })) return;
     const hasLocation = school.lat !== "" && school.lng !== "";
     setSaving(true);
     try {
@@ -224,7 +229,7 @@ export default function Settings() {
       <div style={card}>
         <div style={title}>School Information</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: 12 }}>
-          <Field text="School name"><input style={inputStyle} value={school.name || ""} onChange={set("name")} /></Field>
+          <Field text="School name"><input id="school-name" style={inputStyle} value={school.name || ""} onChange={set("name")} {...fe.invalid("name")} /><FieldError id="school-name-error">{fe.errors.name}</FieldError></Field>
           <Field text="Principal"><input style={inputStyle} value={school.principal || ""} onChange={set("principal")} /></Field>
           <Field text="Email"><input type="email" style={inputStyle} value={school.email || ""} onChange={set("email")} /></Field>
           <Field text="Phone"><input type="tel" style={inputStyle} value={school.phone || ""} onChange={set("phone")} /></Field>

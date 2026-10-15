@@ -255,3 +255,19 @@ test('student timetable: a week view on desktop, one day at a time on a phone', 
   await expect(page.getByRole('button', { name: 'Mon', exact: true })).toBeVisible();
   await expect(page.locator('.ea-week')).toHaveCount(0);
 });
+
+test('settings and bulk operations name the missing field under it', async ({ page }) => {
+  await signIn(page, 'admin');
+  await page.goto('/admin/settings');
+  const name = page.getByRole('textbox', { name: /School name/ });
+  const original = await name.inputValue();
+  await name.fill('');
+  await page.getByRole('button', { name: 'Save Changes' }).click();
+  await expect(name).toHaveAccessibleDescription('Enter the school name');
+  await expect(name).toBeFocused();
+  await name.fill(original); // nothing was saved
+  await page.goto('/admin/bulk-operations');
+  await page.getByRole('button', { name: 'Mark Attendance' }).click();
+  const cls = page.getByRole('combobox', { name: /CLASS/ }).first();
+  await expect(cls).toHaveAccessibleDescription('Choose the class');
+});

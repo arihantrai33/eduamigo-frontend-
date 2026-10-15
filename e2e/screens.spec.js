@@ -15,6 +15,7 @@ const SCREENS = {
 
 for (const [role, paths] of Object.entries(SCREENS)) {
   test(`every ${role} screen opens without an error`, async ({ page }) => {
+    test.setTimeout(120_000); // up to 32 screens in one test; 45 s was too tight on a busy machine
     const errors = [];
     page.on('pageerror', (err) => errors.push(`${page.url()}: ${err.message}`));
     await signIn(page, role);
