@@ -306,14 +306,30 @@ input, button, select, textarea {
   }
   .ea-solo--document .ea-solo__stage { max-width: 920px; }
 }
-/* Sign-in and forgot password on a desktop: the school's brand panel on the left, the form on the right, instead
-   of a phone-sized card. The page roots carry .ea-auth, the shared hero .ea-school-hero. */
+/* Sign-in and forgot password (page roots .ea-auth, shared hero .ea-school-hero) use the whole viewport from 768 px,
+   not the centred card above: no outer padding, no max-width, no fixed card height, no frame. The stage keeps the
+   viewport height and scrolls (.ea-scroll); the page root grows with its content, so a short window scrolls instead
+   of clipping the form. */
+@media (min-width: 768px) {
+  .ea-solo:has(.ea-auth) { display: block; padding: env(safe-area-inset-top) 0 0; }
+  .ea-solo:has(.ea-auth) .ea-solo__stage {
+    max-width: none; height: calc(var(--ea-vh) - env(safe-area-inset-top));
+    border: 0; border-radius: 0; box-shadow: none;
+  }
+  /* The inline "height: 100vh" of the root is turned into a fixed 100% by the rule near .ea-scroll; here it may grow. */
+  .ea-solo .ea-scroll > div > .ea-auth { width: 100%; height: auto !important; min-height: 100% !important; overflow: visible !important; }
+  /* Tablet: the brand panel on top, the form below in a comfortable centred column. */
+  .ea-auth > div:not(.ea-school-hero) { width: 100%; max-width: 520px; margin: 0 auto; padding-top: 28px !important; }
+}
+/* Desktop: a balanced split over the full viewport, the brand panel on the left, the form centred on the right. */
 @media (min-width: 1024px) {
-  .ea-solo__stage:has(.ea-auth) { max-width: 980px; height: min(680px, calc(var(--ea-vh) - 64px)); }
-  .ea-auth { display: grid !important; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); overflow: hidden !important; }
-  .ea-auth > .ea-school-hero { height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 48px 40px !important; }
+  .ea-solo .ea-scroll > div > .ea-auth { display: grid !important; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .ea-auth > .ea-school-hero { display: flex; flex-direction: column; justify-content: center; padding: 48px 40px !important; }
   .ea-auth > .ea-school-hero .ea-school-hero__wave { display: none !important; }
-  .ea-auth > div:not(.ea-school-hero) { overflow-y: auto; display: flex; flex-direction: column; justify-content: center; padding: 40px 48px !important; }
+  .ea-auth > div:not(.ea-school-hero) {
+    max-width: none; margin: 0; display: flex; flex-direction: column; justify-content: center;
+    padding: 48px max(48px, calc((100% - 440px) / 2)) !important;
+  }
 }
 /* ───────────── Printing a document (report card, fee receipt, transfer certificate) ─────────────
    The document's root has .ea-print-doc. The app shells around it have a fixed height and scroll inside, which cut a
