@@ -382,3 +382,44 @@ Pending:
   real microphone and voice.
 - Owner decisions: stale test servers (item 9); the account switch deactivates a user with one click and no
   confirmation (a confirmation would change behaviour, so it was not added).
+
+## Phase 2 (2026-10-15): desktop redesign of the portals and sign-in
+Commits 9304ac9, 6de1ed1, 27fc4a6, 6cfbc1f (local).
+
+Design system addition, `index.css` (from 1024 px only, phone and tablet layouts unchanged):
+| Class | Use |
+|---|---|
+| `.ea-pd-band` | The page's coloured header becomes a rounded header card lined up with the content (also applied to the shared `PortalHeader`) |
+| `.ea-pd-body` | Page body: desktop padding, centred on the content column |
+| `.ea-pd-narrow` (page root) | Content column of 820 px for lists and forms (`--pd-w`); without it the column is the whole 1080 px stage |
+| `.ea-pd-bar` / `.ea-pd-row` | Tabs, search, alerts and filter rows between header and body, lined up with the column |
+| `.ea-pd-dash` | Home dashboards: tiles in one row, a main column and a side column |
+| `.ea-pd-cols` + `.ea-pd-main` / `.ea-pd-side` / `.ea-pd-tall` | Two-column pages |
+| `.ea-pd-idcard`, `.ea-pd-childcard`, `.ea-pd-idstats` | Home identity cards put their numbers beside the name |
+| `.ea-auth`, `.ea-school-hero` | Sign-in and forgot password: brand panel beside the form |
+
+Redesigned on desktop (all seen in screenshots at 1280 and 1440):
+- Dashboards: student (tiles; today's classes beside upcoming exams and notices), parent (tiles; upcoming exams
+  beside notices; child numbers beside the name), teacher (7 tiles in a row; today's schedule beside the summary).
+- Two columns: student results (subjects beside strength/focus), both Apply Leave screens (form beside history),
+  parent attendance (calendar beside the numbers and absent days).
+- Reading column with header card: student attendance, fees, timetable, notes, notifications, profile, chat;
+  parent fees, results, calendar, notifications, profile, chat; teacher attendance, marks, students, timetable,
+  upload, leave, notifications, profile, chat.
+- Sign-in and forgot password: two-panel card.
+- Fixes found on the way: timetable and school calendar used the browser's default font; student chat contacts
+  could not be opened by keyboard (now the shared `utils/pressable.js`); fee and chat tabs announce the selected
+  one; dashboard tile icons line up when a label wraps.
+
+Not changed: admin screens (already on the shared design; reviewed at 1440), Learning AI (own layout), bus
+tracking (map), the open chat conversation, select school. The admin sidebar is dark while the portal sidebars are
+light: a brand decision, left as it is.
+
+Verification: sweep at 390, 768, 1280 and 1440 (312 screens): **0 hard findings**; tiny targets on phones: only
+2 search fields inside a larger box, so the account switch, admin receipt links and fee breakdown toggle from the
+previous pass are confirmed at 24 px or more. Before/after screenshots: dashboards, parent attendance, timetable,
+sign-in. Full Playwright on fresh servers 8130/5194: **95 passed, 0 failed** (19 opt-in skipped). Build ok; 0 lint messages on lines changed in this phase.
+
+Remaining: per-field messages in admin dialog forms; selected state on the remaining filter groups (admin chat,
+library, admissions, communications, user management, teacher attendance class and status chips); a desktop week
+grid for timetables (they stay a day list in the reading column); real devices and Safari/Firefox not checked.
