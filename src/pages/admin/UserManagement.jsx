@@ -1,12 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { Search, Plus, RefreshCw, Shield, GraduationCap, Users, UserCheck, Calculator } from "lucide-react";
+import { Calculator, GraduationCap, Plus, RefreshCw, Search, SearchX, Shield, UserCheck, Users } from "lucide-react";
 import { toast, showCredentials, confirmAction, errorMessage } from "../../utils/toast";
 import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
 import { StatCard } from "../../components/ui/StatCard";
 import FieldError from "../../components/ui/FieldError";
 import { useFieldErrors } from "../../utils/fieldErrors";
+import EmptyState from "../../components/ui/EmptyState";
 
 const FIELDS = { name: "user-name", email: "user-email" };
 
@@ -138,7 +139,7 @@ export default function UserManagement() {
         {loading && users.length === 0 ? (
           <div style={{ textAlign: "center", padding: "40px 0", color: "#94A3B8", fontSize: 13 }}>Loading users...</div>
         ) : filtered.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "40px 0", color: "#94A3B8", fontSize: 13 }}>No users found</div>
+          <EmptyState plain icon={SearchX} title="No users found" text="Try a different search or role." />
         ) : filtered.map((u, i) => {
           const meta = ROLE_META[u.role] || ROLE_META.student;
           const Icon = meta.icon;

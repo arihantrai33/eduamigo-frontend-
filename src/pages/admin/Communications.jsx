@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, confirmAction, errorMessage } from "../../utils/toast";
+import EmptyState from "../../components/ui/EmptyState";
 
-import { Bell } from "lucide-react";
+import { Bell, ClipboardList, Megaphone } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
@@ -223,9 +224,8 @@ export default function Communications() {
               <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid var(--brand)", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
             </div>
           ) : filteredAnn.length === 0 ? (
-            <div style={{ background:"white", borderRadius:20, padding:"80px 0", textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
-              <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="📢" /></div>
-              <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No announcements yet</div>
+            <div style={{ background:"white", borderRadius:20, padding: 16, textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
+              <EmptyState plain icon={Megaphone} title="No announcements yet" />
             </div>
           ) : (
             <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
@@ -281,10 +281,8 @@ export default function Communications() {
             </button>
           </div>
           {circulars.length === 0 ? (
-            <div style={{ background:"white", borderRadius:20, padding:"80px 0", textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
-              <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="📋" /></div>
-              <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No circulars yet</div>
-              <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Important/Urgent announcements appear here as circulars</div>
+            <div style={{ background:"white", borderRadius:20, padding: 16, textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
+              <EmptyState plain icon={ClipboardList} title="No circulars yet" text="Important/Urgent announcements appear here as circulars" />
             </div>
           ) : (
             <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
@@ -328,9 +326,8 @@ export default function Communications() {
             </button>
           </div>
           {notifications.length === 0 ? (
-            <div style={{ background:"white", borderRadius:20, padding:"80px 0", textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
-              <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="🔔" /></div>
-              <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No notifications sent yet</div>
+            <div style={{ background:"white", borderRadius:20, padding: 16, textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
+              <EmptyState plain icon={Bell} title="No notifications sent yet" />
             </div>
           ) : (
             <div style={{ display:"flex", flexDirection:"column", gap:10 }}>

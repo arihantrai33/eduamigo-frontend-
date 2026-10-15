@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, errorMessage } from "../../utils/toast";
+import EmptyState from "../../components/ui/EmptyState";
 
-import { Search } from "lucide-react";
+import { Search, CalendarOff } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
@@ -119,10 +120,8 @@ export default function LeaveRequests() {
           <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading leave requests...</div>
         </div>
       ) : filtered.length === 0 ? (
-        <div style={{ background:"white", borderRadius:20, padding:"80px 0", textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
-          <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="🌴" /></div>
-          <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No leave requests found</div>
-          <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Leave requests from students, parents and teachers will appear here</div>
+        <div style={{ background:"white", borderRadius:20, padding: 16, textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
+          <EmptyState plain icon={CalendarOff} title="No leave requests found" text="Leave requests from students, parents and teachers will appear here" />
         </div>
       ) : (
         <div style={{ display:"flex", flexDirection:"column", gap:12 }}>

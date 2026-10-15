@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, confirmAction, errorMessage } from "../../utils/toast";
+import EmptyState from "../../components/ui/EmptyState";
 
-import { Plus } from "lucide-react";
+import { Plus, BookOpen, SearchX } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
 import FieldError from "../../components/ui/FieldError";
@@ -166,10 +167,10 @@ export default function Library() {
                 <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading books...</div>
               </td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={8} style={{ padding:"80px 0", textAlign:"center" }}>
-                <div style={{ fontSize:52, marginBottom:12 }}><Glyph e="📚" /></div>
-                <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No books found</div>
-                <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Add your first book using the button above</div>
+              <tr><td colSpan={8} style={{ padding: 16 }}>
+                {books.length
+                  ? <EmptyState plain icon={SearchX} title="No books match" text="Try a different search or category." />
+                  : <EmptyState plain icon={BookOpen} title="No books yet" text="Add your first book using the button above." />}
               </td></tr>
             ) : filtered.map((b,i) => {
               const cfg = CAT_CONFIG[b.category] || CAT_CONFIG.Other;

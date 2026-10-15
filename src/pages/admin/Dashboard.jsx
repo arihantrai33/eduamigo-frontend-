@@ -219,7 +219,7 @@ export default function Dashboard({ navigate, user }) {
         <div className="ea-grid ea-grid--2">
           <Card title="Students by Class" subtitle="Distribution across grades"
             action={<button type="button" className="ea-link" onClick={() => navigate("/admin/students")}>View all</button>}>
-            {data.classes.length === 0 ? <p className="ea-empty">No students yet</p> : data.classes.map((c) => {
+            {data.classes.length === 0 ? <p className="ea-empty-line">No students yet</p> : data.classes.map((c) => {
               const share = pct(c.count, totalInClasses);
               return (
                 <div key={`${c.class}-${c.section}`} className="ea-row-bar">
@@ -231,7 +231,7 @@ export default function Dashboard({ navigate, user }) {
           </Card>
           <Card title="Recently Enrolled" subtitle="Latest student additions"
             action={<button type="button" className="ea-link" onClick={() => navigate("/admin/students")}>View all</button>}>
-            {data.recentStudents.length === 0 ? <p className="ea-empty">No students yet</p> : (
+            {data.recentStudents.length === 0 ? <p className="ea-empty-line">No students yet</p> : (
               <ul className="ea-list">
                 {data.recentStudents.map((s) => (
                   <li key={s._id}>
@@ -251,7 +251,7 @@ export default function Dashboard({ navigate, user }) {
       {data?.activity && (
         <Card title="Recent Activity" subtitle="Who changed what in the school"
           action={<button type="button" className="ea-link" onClick={() => navigate("/admin/activity")}>View all</button>}>
-          {data.activity.length === 0 ? <p className="ea-empty">No activity yet</p> : (
+          {data.activity.length === 0 ? <p className="ea-empty-line">No activity yet</p> : (
             <ul className="ea-list">
               {data.activity.map((a, i) => (
                 <li key={i} className="ea-list__item ea-list__item--static">

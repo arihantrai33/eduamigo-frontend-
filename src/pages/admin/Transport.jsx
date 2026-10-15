@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, confirmAction, errorMessage } from "../../utils/toast";
+import EmptyState from "../../components/ui/EmptyState";
 
-import { Plus } from "lucide-react";
+import { Bus, Plus } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import Dialog from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
@@ -161,11 +162,7 @@ export default function Transport() {
           <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading buses...</div>
         </div>
       ) : buses.length === 0 ? (
-        <div style={{ background:"white", borderRadius:20, padding:"80px 0", textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
-          <div style={{ fontSize:56, marginBottom:12 }}><Glyph e="🚌" /></div>
-          <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No buses added yet</div>
-          <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Add your first bus to get started</div>
-        </div>
+        <EmptyState icon={Bus} title="No buses added yet" text="Add your first bus to get started." />
       ) : (
         <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
           {buses.map((bus, i) => {

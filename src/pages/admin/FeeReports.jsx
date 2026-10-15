@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import EmptyState from "../../components/ui/EmptyState";
+import { BarChart3 } from "lucide-react";
 
 import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
@@ -137,10 +139,8 @@ export default function FeeReports() {
             <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading reports...</div>
           </div>
         ) : classStats.length === 0 ? (
-          <div style={{ padding:"80px 0", textAlign:"center" }}>
-            <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="📊" /></div>
-            <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No fee data available</div>
-            <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Fee records will appear here once generated</div>
+          <div style={{ padding: 16, textAlign:"center" }}>
+            <EmptyState plain icon={BarChart3} title="No fee data available" text="Fee records will appear here once generated" />
           </div>
         ) : (
           <table style={{ width:"100%", borderCollapse:"collapse" }}>

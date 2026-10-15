@@ -3,8 +3,9 @@ import axios from "axios";
 import { toast, showCredentials, errorMessage } from "../../utils/toast";
 import { useAuth } from "../../context/AuthContext";
 import { can } from "../../utils/permissions";
+import EmptyState from "../../components/ui/EmptyState";
 
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Users } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
@@ -123,10 +124,8 @@ export default function ParentsList() {
                 <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading parents...</div>
               </td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={6} style={{ padding:"80px 0", textAlign:"center" }}>
-                <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="👨‍👩‍👧" /></div>
-                <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No parents found</div>
-                <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Add parents and link them to students</div>
+              <tr><td colSpan={6} style={{ padding: 16 }}>
+                <EmptyState plain icon={Users} title="No parents found" text="Add parents and link them to students" />
               </td></tr>
             ) : filtered.map((p, i) => (
               <tr key={p._id} className="parent-row" onClick={() => setSelectedParent(p)}

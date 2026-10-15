@@ -3,8 +3,9 @@ import axios from "axios";
 import { gradeFor, GRADE_STYLE, PASS_PERCENT } from "../../utils/grades";
 import { useNavigate } from "react-router-dom";
 import { toast, confirmAction, errorMessage } from "../../utils/toast";
+import EmptyState from "../../components/ui/EmptyState";
 
-import { Search } from "lucide-react";
+import { Search, Trophy } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
@@ -149,10 +150,8 @@ export default function Results() {
                 <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading results...</div>
               </td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={9} style={{ padding:"80px 0", textAlign:"center" }}>
-                <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="🏆" /></div>
-                <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No results found</div>
-                <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Results will appear once teachers publish marks</div>
+              <tr><td colSpan={9} style={{ padding: 16 }}>
+                <EmptyState plain icon={Trophy} title="No results found" text="Results will appear once teachers publish marks" />
               </td></tr>
             ) : filtered.map((r, i) => {
               const gcfg = GRADE_CONFIG[r.grade] || GRADE_CONFIG["C"];

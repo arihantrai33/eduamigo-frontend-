@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "../../utils/toast";
 import { todayLocal } from "../../utils/dates";
+import EmptyState from "../../components/ui/EmptyState";
+import { SearchX } from "lucide-react";
 
 import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
@@ -221,11 +223,7 @@ export default function Attendance() {
           <div style={{ color: "#94A3B8", fontSize: 13, fontWeight: 600 }}>Loading students...</div>
         </div>
       ) : students.length === 0 ? (
-        <div style={{ background: "white", borderRadius: 20, padding: "80px 40px", textAlign: "center", boxShadow: "0 4px 20px rgba(15,23,42,0.07)", border: "1px solid #E2E8F0" }}>
-          <div style={{ fontSize: 56, marginBottom: 16 }}><Glyph e="🔍" /></div>
-          <div style={{ fontSize: 18, fontWeight: 700, color: "#94A3B8" }}>No students found</div>
-          <div style={{ fontSize: 13, color: "#CBD5E1", marginTop: 4 }}>No students enrolled in Class {selectedClass}-{selectedSection}</div>
-        </div>
+        <EmptyState icon={SearchX} title="No students found" text={`No students enrolled in Class ${selectedClass}-${selectedSection}`} />
       ) : (
         <div style={{ background: "white", borderRadius: 20, boxShadow: "0 4px 24px rgba(15,23,42,0.07)", border: "1px solid rgba(226,232,240,0.8)", overflow: "hidden", animation: "fadeUp 0.4s ease 0.25s both" }}>
           <div style={{ padding: "16px 24px", borderBottom: "1px solid #F1F5F9", display: "flex", justifyContent: "space-between", alignItems: "center", background: "linear-gradient(90deg,#F8FAFC,#F1F5F9)" }}>

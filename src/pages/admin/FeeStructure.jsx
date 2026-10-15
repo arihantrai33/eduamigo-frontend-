@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, confirmAction, errorMessage } from "../../utils/toast";
 import { currentAcademicYear } from "../../utils/academicYear";
+import EmptyState from "../../components/ui/EmptyState";
 
-import { Plus } from "lucide-react";
+import { Plus, Wallet } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
@@ -168,10 +169,8 @@ export default function FeeStructure() {
                 <div style={{ color:"#94A3B8", fontSize:13 }}>Loading...</div>
               </td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={7} style={{ padding:"80px 0", textAlign:"center" }}>
-                <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="💰" /></div>
-                <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No fee structures found</div>
-                <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Click "Add Fee" to get started</div>
+              <tr><td colSpan={7} style={{ padding: 16 }}>
+                <EmptyState plain icon={Wallet} title="No fee structures found" text={`Click "Add Fee" to get started`} />
               </td></tr>
             ) : filtered.map((s, i) => {
               const clsColor = CLASS_COLORS[parseInt(s.class) % CLASS_COLORS.length] || "var(--brand)";

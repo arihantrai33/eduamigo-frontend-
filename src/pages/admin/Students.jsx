@@ -5,8 +5,9 @@ import { toast, showCredentials, errorMessage } from "../../utils/toast";
 import { useAuth } from "../../context/AuthContext";
 import { can } from "../../utils/permissions";
 import { todayLocal } from "../../utils/dates";
+import EmptyState from "../../components/ui/EmptyState";
 
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, SearchX } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
@@ -285,10 +286,8 @@ export default function Students() {
                 </div>
               </td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={7} style={{ padding:"80px 0", textAlign:"center" }}>
-                <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="🔍" /></div>
-                <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No students found</div>
-                <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Try adjusting your filters</div>
+              <tr><td colSpan={7} style={{ padding: 16 }}>
+                <EmptyState plain icon={SearchX} title="No students found" text="Try adjusting your filters" />
               </td></tr>
             ) : filtered.map((s, i) => {
               const fee = FEE_BADGE[s.feeStatus] || FEE_BADGE["Not billed"];

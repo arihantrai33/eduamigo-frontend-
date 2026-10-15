@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast, showCredentials, errorMessage } from "../../utils/toast";
+import EmptyState from "../../components/ui/EmptyState";
 
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, SearchX } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
@@ -226,10 +227,8 @@ export default function Teachers() {
                 </div>
               </td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={7} style={{ padding:"80px 0", textAlign:"center" }}>
-                <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="🔍" /></div>
-                <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No teachers found</div>
-                <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Try adjusting your filters</div>
+              <tr><td colSpan={7} style={{ padding: 16 }}>
+                <EmptyState plain icon={SearchX} title="No teachers found" text="Try adjusting your filters" />
               </td></tr>
             ) : filtered.map((t, i) => {
               const status = t.status || "Active";

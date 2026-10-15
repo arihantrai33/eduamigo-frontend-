@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, confirmAction, errorMessage } from "../../utils/toast";
+import EmptyState from "../../components/ui/EmptyState";
+import { Banknote, CalendarOff } from "lucide-react";
 
 import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
@@ -203,10 +205,8 @@ export default function HRManagement() {
 
           {loading ? <div style={{ textAlign:"center", padding:"40px 0", color:"#94A3B8" }}>Loading...</div>
           : salaries.length === 0 ? (
-            <div style={{ textAlign:"center", padding:"60px 0" }}>
-              <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="💵" /></div>
-              <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No salary records for {MONTHS[filterMonth-1]} {filterYear}</div>
-              <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Click "Auto Generate" to create records for all teachers</div>
+            <div style={{ textAlign:"center", padding: 16 }}>
+              <EmptyState plain icon={Banknote} title={`No salary records for ${MONTHS[filterMonth-1]} ${filterYear}`} text={`Click "Auto Generate" to create records for all teachers`} />
             </div>
           ) : (
             <table data-stack style={{ width:"100%", borderCollapse:"collapse" }}>
@@ -258,9 +258,8 @@ export default function HRManagement() {
 
           {loading ? <div style={{ textAlign:"center", padding:"40px 0", color:"#94A3B8" }}>Loading...</div>
           : leaves.length === 0 ? (
-            <div style={{ textAlign:"center", padding:"60px 0" }}>
-              <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="🌴" /></div>
-              <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No leave requests found</div>
+            <div style={{ textAlign:"center", padding: 16 }}>
+              <EmptyState plain icon={CalendarOff} title="No leave requests found" />
             </div>
           ) : (
             <div style={{ display:"flex", flexDirection:"column", gap:10 }}>

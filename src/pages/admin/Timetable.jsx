@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "../../utils/toast";
+import EmptyState from "../../components/ui/EmptyState";
+import { CalendarDays } from "lucide-react";
 
 import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
@@ -178,10 +180,8 @@ export default function Timetable() {
 
       {/* Timetable Grid */}
       {!selectedClass || !selectedSection ? (
-        <div style={{ background:"white", borderRadius:20, padding:"80px 0", textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
-          <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="🗓" /></div>
-          <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>Select a class and section</div>
-          <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>to view or edit the timetable</div>
+        <div style={{ background:"white", borderRadius:20, padding: 16, textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
+          <EmptyState plain icon={CalendarDays} title="Select a class and section" text="Choose them above to view or edit the timetable." />
         </div>
       ) : (
         <div style={{ animation:"fadeUp 0.4s ease" }}>

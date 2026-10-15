@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { Send, Trash2, RefreshCw, Filter, Bell, Users, GraduationCap, UserCheck, Bus, Globe } from "lucide-react";
 import { toast, confirmAction } from "../../utils/toast";
+import EmptyState from "../../components/ui/EmptyState";
 
 import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
@@ -141,11 +142,7 @@ export default function Notifications() {
         {loading ? (
           <div style={{ textAlign: "center", padding: "40px 0", color: "#94A3B8", fontSize: 13 }}>Loading notifications...</div>
         ) : filtered.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "40px 0" }}>
-            <div style={{ fontSize: 36, marginBottom: 8 }}><Glyph e="🔔" /></div>
-            <div style={{ fontSize: 14, color: "#64748B", fontWeight: 600 }}>No notifications yet</div>
-            <div style={{ fontSize: 12, color: "#94A3B8", marginTop: 4 }}>Send your first notification using the button above</div>
-          </div>
+          <EmptyState plain icon={Bell} title="No notifications yet" text="Send your first notification using the button above." />
         ) : filtered.map(n => {
           const roleMeta = ROLE_META[n.targetRole] || ROLE_META.all;
           const RoleIcon = roleMeta.icon;

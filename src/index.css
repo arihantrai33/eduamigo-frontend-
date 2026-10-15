@@ -650,6 +650,8 @@ input:-webkit-autofill:focus {
 .ea-empty__title { margin: 0; font-size: 17px; font-weight: 700; color: var(--ea-ink); }
 .ea-empty__text { margin: 0; max-width: 460px; font-size: 14px; line-height: 1.5; color: var(--ea-muted); }
 .ea-empty__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px; }
+/* Inside a card or table that already has its own frame. */
+.ea-empty--plain { background: none; border: 0; border-radius: 0; }
 
 /* Admin sidebar (pages/admin/Home.jsx): links and buttons keep their look, and show a ring when reached by keyboard.
    currentColor works on the dark and the light sidebar. */
@@ -717,7 +719,8 @@ input:-webkit-autofill:focus {
 .ea-muted { color: var(--ea-faint); }
 .ea-link { background: none; border: none; color: var(--brand); font-size: 12px; font-weight: 700; cursor: pointer; padding: 4px 2px; min-height: 28px; display: inline-flex; align-items: center; white-space: nowrap; }
 .ea-link:hover { text-decoration: underline; }
-.ea-empty { font-size: 13px; color: var(--ea-faint); text-align: center; padding: 20px 0; }
+/* A one-line "nothing here" inside a card (the full empty state is .ea-empty, components/ui/EmptyState). */
+.ea-empty-line { font-size: 13px; color: var(--ea-faint); text-align: center; padding: 20px 0; }
 
 .ea-row-bar + .ea-row-bar { margin-top: 14px; }
 .ea-row-bar__label { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; font-weight: 650; color: var(--ea-body); margin-bottom: 6px; }

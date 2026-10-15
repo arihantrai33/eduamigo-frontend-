@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast, confirmAction, errorMessage } from "../../utils/toast";
+import EmptyState from "../../components/ui/EmptyState";
 
-import { Search } from "lucide-react";
+import { Search, CreditCard } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
@@ -169,10 +170,8 @@ export default function FeeCollection() {
                 <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading fee records...</div>
               </td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={8} style={{ padding:"80px 0", textAlign:"center" }}>
-                <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="💳" /></div>
-                <div style={{ fontSize:16, fontWeight:700, color:"#94A3B8" }}>No fee records found</div>
-                <div style={{ fontSize:13, color:"#CBD5E1", marginTop:4 }}>Fee records will appear here once generated</div>
+              <tr><td colSpan={8} style={{ padding: 16 }}>
+                <EmptyState plain icon={CreditCard} title="No fee records found" text="Fee records will appear here once generated" />
               </td></tr>
             ) : filtered.map((f, i) => {
               const status = f.displayStatus;
