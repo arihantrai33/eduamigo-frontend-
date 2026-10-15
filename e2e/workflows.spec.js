@@ -69,6 +69,32 @@ test('the office records a fee payment and gets the next receipt number of the s
   expect(new Set(all).size).toBe(all.length);
 });
 
+test('HR marks a pending salary as paid (it used to call the leave endpoint and fail)', async ({ page, request }) => {
+  const adminApi = await apiSession(request, 'admin');
+  // Its own record: January three years back (the oldest year the HR filter offers), set to Pending on every run.
+  const month = 1;
+  const year = new Date().getFullYear() - 3;
+  const teacher = (await adminApi.get('/teachers')).data[0];
+  const existing = ((await adminApi.get(`/hr/salaries?month=${month}&year=${year}`)).data || []).find((s) => (s.teacher?._id || s.teacher) === teacher._id);
+  const record = existing
+    ? (await adminApi.put(`/hr/salaries/${existing._id}`, { status: 'Pending', paidOn: null })).data
+    : (await adminApi.post('/hr/salaries', { teacher: teacher._id, month, year, basicSalary: 1000, status: 'Pending' })).data;
+  expect(record?.status).toBe('Pending');
+
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await signIn(page, 'admin');
+  await page.goto('/admin/hr-management');
+  await page.getByRole('combobox', { name: 'Month' }).selectOption(String(month));
+  await page.getByRole('combobox', { name: 'Year' }).selectOption(String(year));
+  const put = page.waitForRequest((r) => r.method() === 'PUT' && /\/hr\/(salaries|leaves)\//.test(r.url()));
+  await page.getByRole('button', { name: 'Mark Paid' }).click();
+  expect((await put).url()).toContain(`/hr/salaries/${record._id}`);
+  await expect(page.getByText('Salary marked as paid')).toBeVisible();
+  const after = ((await adminApi.get(`/hr/salaries?month=${month}&year=${year}`)).data || []).find((s) => s._id === record._id);
+  expect(after.status).toBe('Paid');
+  await expect(page.getByRole('button', { name: 'Mark Paid' })).toHaveCount(0);
+});
+
 test('a parent asks for leave, the office approves it, and the parent sees the decision', async ({ page, request }) => {
   const reason = `Family function (e2e ${Date.now()})`;
   const day = new Date(Date.now() + 3 * 86400000).toISOString().slice(0, 10);

@@ -133,6 +133,15 @@ export default function HRManagement() {
     } catch(e) { toast.error(errorMessage(e, "Could not delete the record")); }
   };
 
+  // A salary row's "Mark Paid" updates the salary record (it used to call the leave endpoint with the salary's id).
+  const handleMarkSalaryPaid = async (id) => {
+    try {
+      await axios.put(`${API}/hr/salaries/${id}`, { status: "Paid" }, auth());
+      toast.success("Salary marked as paid");
+      fetchSalaries();
+    } catch(e) { toast.error(errorMessage(e, "Could not mark the salary as paid")); }
+  };
+
   const handleLeaveAction = async (id, status) => {
     try {
       await axios.put(`${API}/hr/leaves/${id}`, { status }, auth());
@@ -223,7 +232,7 @@ export default function HRManagement() {
                     <td style={{ padding:"12px 14px" }}>
                       <div style={{ display:"flex", gap:6 }}>
                         {s.status === "Pending" && (
-                          <button type="button" className="ea-btn ea-btn--primary ea-btn--sm" onClick={() => handleLeaveAction(s._id, "Paid")}>Mark Paid</button>
+                          <button type="button" className="ea-btn ea-btn--primary ea-btn--sm" onClick={() => handleMarkSalaryPaid(s._id)}>Mark Paid</button>
                         )}
                         <button type="button" aria-label="Edit salary record" title="Edit" onClick={() => openModal("salary", s)} className="ea-btn ea-btn--ghost ea-btn--sm ea-btn--icon"><Glyph e="✏" /></button>
                         <button type="button" aria-label="Delete salary record" title="Delete" onClick={() => handleDelete(s._id)} className="ea-btn ea-btn--danger-ghost ea-btn--sm ea-btn--icon"><Glyph e="🗑" /></button>
