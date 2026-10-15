@@ -107,7 +107,7 @@ export default function Notes() {
           <button type="button" className="ea-portal-head__btn" aria-label="Add a note" onClick={() => setShowModal(true)}><Plus size={18} aria-hidden="true" /></button>
         </>} />
       {/* Search */}
-      <div className="ea-pd-bar" style={{ display: 'flex', alignItems: 'center', background: dm ? '#0f172a' : '#F0F2F5', borderRadius: 12, margin: '12px 16px', padding: '10px 14px', gap: 8 }}>
+      <div className="ea-pd-bar ea-search-pill" style={{ display: 'flex', alignItems: 'center', background: dm ? '#0f172a' : '#F0F2F5', borderRadius: 12, margin: '12px 16px', padding: '8px 14px', gap: 8 }}>
         <span style={{ fontSize: 16, opacity: 0.5 }}><Glyph e="🔍" /></span>
         <input style={{ border: 'none', background: 'transparent', fontSize: 14, color: dm ? '#cbd5e1' : '#333', outline: 'none', width: '100%', colorScheme: dm ? 'dark' : 'light' }} aria-label="Search notes" placeholder="Search notes, subjects..." value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>

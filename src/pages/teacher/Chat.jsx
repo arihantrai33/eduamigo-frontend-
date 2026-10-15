@@ -250,7 +250,7 @@ export default function TeacherChat() {
 
           <div className="ea-pd-body" style={styles.content}>
             {/* Search */}
-            <div style={styles.searchBox}>
+            <div className="ea-search-pill" style={styles.searchBox}>
               <span style={styles.searchIcon}><Glyph e="🔍" /></span>
               <input
                 style={styles.searchInput}
@@ -410,7 +410,7 @@ const styles = {
     alignItems: 'center',
     background: '#fff',
     borderRadius: 12,
-    padding: '10px 14px',
+    padding: '8px 14px',
     marginBottom: 16,
     boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
     gap: 8,
