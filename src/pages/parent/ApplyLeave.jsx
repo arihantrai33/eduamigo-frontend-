@@ -270,12 +270,12 @@ export default function ApplyLeave() {
                 marginTop: "8px", padding: "12px 16px",
                 borderRadius: "10px", border: "1.5px dashed #c0c0c0",
                 cursor: "pointer", display: "flex", alignItems: "center",
-                gap: "10px", background: "#fafafa",
+                gap: "10px", background: "var(--ea-hover)",
               }}
             >
               <span style={{ fontSize: "20px" }}><Glyph e="📎" /></span>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: "13px", fontWeight: "600", color: "#444" }}>
+                <div style={{ fontSize: "13px", fontWeight: "600", color: "var(--ea-body)" }}>
                   {attachedFile ? attachedFile.name : "Attach Medical Report or Document"}
                 </div>
                 <div style={{ fontSize: "11px", color: "var(--subtext)", marginTop: "2px" }}>
@@ -330,16 +330,16 @@ export default function ApplyLeave() {
             </div>
             {leaveHistory.map((leave, i) => {
               const statusColor =
-                leave.status === "Approved" ? "#22c55e" :
-                leave.status === "Rejected" ? "#ef4444" : "#f59e0b";
+                leave.status === "Approved" ? "#16A34A" :
+                leave.status === "Rejected" ? "#DC2626" : "#D97706";
               const days = leave.days || 1;
               const fmtDay = (d) => new Date(d).toLocaleDateString("en-IN", { timeZone: "UTC", day: "numeric", month: "short", year: "numeric" });
               return (
                 <div key={i} style={{
                   padding: "14px", borderRadius: "12px",
-                  background: leave.status === "Rejected" ? "#fff5f5" : "#f9fafb",
+                  background: leave.status === "Rejected" ? "color-mix(in srgb, #EF4444 10%, var(--ea-surface))" : "var(--ea-hover)",
                   marginBottom: "10px",
-                  border: `1px solid ${leave.status === "Rejected" ? "#fee2e2" : "#f0f0f0"}`,
+                  border: `1px solid ${leave.status === "Rejected" ? "rgba(239, 68, 68, 0.25)" : "var(--ea-line)"}`,
                 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div style={{ fontWeight: "700", fontSize: "14px", color: "var(--text)" }}>
@@ -354,7 +354,7 @@ export default function ApplyLeave() {
                     {fmtDay(leave.fromDate)} — {fmtDay(leave.toDate)} • {days} day{days > 1 ? "s" : ""}
                   </div>
                   {leave.reason && (
-                    <div style={{ fontSize: "12px", color: "#aaa", marginTop: "4px" }}>
+                    <div style={{ fontSize: "12px", color: "var(--ea-muted)", marginTop: "4px" }}>
                       {leave.reason}
                     </div>
                   )}

@@ -599,7 +599,7 @@ export default function ParentBus() {
                       {isCompleted ? <span style={{ fontSize: "9px", color: "#059669" }}>✓</span>
                        : isCurrent ? <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--card)", display: "block" }} />
                        : isSchool  ? <span style={{ fontSize: "10px" }}><Glyph e="🏫" /></span>
-                       : <span style={{ fontSize: "9px", color: "#9CA3AF" }}>{i + 1}</span>}
+                       : <span style={{ fontSize: "9px", color: "#64748B" }}>{i + 1}</span>}
                     </div>
                     {!isLast && (
                       <div style={{
@@ -617,7 +617,7 @@ export default function ParentBus() {
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{
                           ...styles.stopName,
-                          color: isCompleted ? "#9CA3AF" : isCurrent ? "var(--brand)" : isSchool ? "#D97706" : "#111827",
+                          color: isCompleted ? "#9CA3AF" : isCurrent ? "var(--brand)" : isSchool ? "#D97706" : "var(--ea-ink)",
                           textDecoration: isCompleted ? "line-through" : "none",
                           fontWeight: isCurrent || isSchool ? 600 : 400,
                         }}>{stop.name}</p>
@@ -654,9 +654,9 @@ const styles = {
   // The shell fills the screen (the app layout maps 100dvh on a page root to the screen area); the map card fills the shell.
   pageShell: { minHeight: "100dvh", height: "100dvh", background: "#E5E7EB", display: "flex", justifyContent: "center", alignItems: "flex-start", fontFamily: "inherit" },
   phoneCard: { position: "relative", width: "100%", height: "100%", overflow: "hidden", background: "#F1F5F9" },
-  mapPlaceholder: { height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "10px", background: "#F8FAFC" },
-  busEmptyTitle: { fontSize: "17px", fontWeight: 600, color: "#1E293B" },
-  busEmptySub:   { fontSize: "13px", color: "#94A3B8" },
+  mapPlaceholder: { height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "10px", background: "var(--ea-hover)" },
+  busEmptyTitle: { fontSize: "17px", fontWeight: 600, color: "var(--ea-ink)" },
+  busEmptySub:   { fontSize: "13px", color: "var(--ea-muted)" },
   fullscreenRoot: { position: "fixed", inset: 0, zIndex: 9999, background: "black" },
   // The app layout already keeps the page below the status bar, so these need no safe-area offset at the top.
   exitFsBtn: { position: "fixed", top: "20px", right: "16px", zIndex: 10000, display: "flex", alignItems: "center", gap: "6px", padding: "8px 14px", borderRadius: "20px", background: "rgba(0,0,0,0.55)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.2)", color: "white", cursor: "pointer" },
@@ -688,15 +688,15 @@ const styles = {
   fsBtn: { position: "absolute", right: "14px", zIndex: 200, width: "40px", height: "40px", borderRadius: "12px", background: "color-mix(in srgb, var(--brand) 85%, transparent)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 2px 12px color-mix(in srgb, var(--brand) 35%, transparent)", transition: "bottom 0.35s cubic-bezier(0.4,0,0.2,1)" },
   stopsPanel: { position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 100, background: "var(--card)", borderRadius: "24px 24px 0 0", boxShadow: "0 -4px 30px rgba(0,0,0,0.10)", overflowY: "auto", transition: "max-height 0.35s cubic-bezier(0.4,0,0.2,1)", paddingBottom: "env(safe-area-inset-bottom, 0px)", WebkitOverflowScrolling: "touch" },
   stopsHeader: { position: "sticky", top: 0, background: "var(--card)", borderBottom: "1px solid var(--border)", paddingBottom: "10px", zIndex: 10, cursor: "pointer", userSelect: "none" },
-  dragHandle: { width: "36px", height: "4px", borderRadius: "2px", background: "#E2E8F0", margin: "10px auto 8px" },
+  dragHandle: { width: "36px", height: "4px", borderRadius: "2px", background: "var(--ea-line)", margin: "10px auto 8px" },
   stopsHeaderRow: { display: "flex", alignItems: "center", justifyContent: "space-between", paddingLeft: "20px", paddingRight: "20px" },
   stopsTitle: { fontSize: "14px", fontWeight: 700, color: "var(--text)" },
   stopsBadge: { fontSize: "11px", color: "#64748B", background: "var(--card2)", border: "1px solid var(--border)", padding: "3px 10px", borderRadius: "20px", fontWeight: 500 },
   progressPill: { position: "relative", width: "68px", height: "18px", background: "var(--card2)", borderRadius: "10px", overflow: "hidden", display: "flex", alignItems: "center" },
   progressFill: { position: "absolute", left: 0, top: 0, bottom: 0, background: "var(--brand-gradient)", borderRadius: "10px", transition: "width 0.5s ease" },
-  progressText: { position: "relative", zIndex: 1, fontSize: "9px", fontWeight: 700, color: "#1E3A5F", width: "100%", textAlign: "center" },
+  progressText: { position: "relative", zIndex: 1, fontSize: "9px", fontWeight: 700, color: "var(--ea-ink)", width: "100%", textAlign: "center" },
   chevron: { fontSize: "10px", color: "#94A3B8", transition: "transform 0.3s ease", display: "inline-block" },
-  routeBar:     { height: "3px", background: "#F1F5F9" },
+  routeBar:     { height: "3px", background: "var(--ea-line)" },
   routeBarFill: { height: "100%", background: "var(--brand-gradient)", transition: "width 0.5s ease" },
   panelActionRow: { display: "flex", gap: "10px", padding: "10px 20px 2px" },
   panelCallBtn: { flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", padding: "9px 12px", borderRadius: "12px", fontSize: "12px", fontWeight: 600, background: "var(--card2)", color: "var(--brand)", border: "1px solid var(--brand-border)", cursor: "pointer" },

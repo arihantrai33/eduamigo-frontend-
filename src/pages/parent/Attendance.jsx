@@ -183,7 +183,7 @@ export default function ParentAttendance() {
           {[
             { label: "Present", value: summary?.present ?? 0, color: "#16a34a", bg: "#dcfce7" },
             { label: "Absent",  value: summary?.absent  ?? 0, color: "#ef4444", bg: "#fee2e2" },
-            { label: "Leave",   value: summary?.leave   ?? 0, color: "#ca8a04", bg: "#fef9c3" },
+            { label: "Leave",   value: summary?.leave   ?? 0, color: "#A16207", bg: "#fef9c3" },
           ].map((s) => (
             <div key={s.label} style={{ background: s.bg, borderRadius: 14, padding: "14px 10px", textAlign: "center" }}>
               <div style={{ fontSize: 24, fontWeight: 900, color: s.color }}>{s.value}</div>
@@ -205,7 +205,7 @@ export default function ParentAttendance() {
               return (
                 <div key={i} style={{
                   display: "flex", alignItems: "center", gap: 12, padding: "12px 0",
-                  borderBottom: i < absentRecords.length - 1 ? "1px solid #f3f4f6" : "none",
+                  borderBottom: i < absentRecords.length - 1 ? "1px solid var(--ea-line)" : "none",
                 }}>
                   <span style={{ fontSize: 20 }}>{isLeave ? <Glyph e="✅" /> : <Glyph e="❌" />}</span>
                   <div style={{ flex: 1 }}>

@@ -360,6 +360,30 @@ input, button, select, textarea {
 /* Dark theme: the strip under the status bar (and the canvas around the column) is dark too. */
 [data-theme="dark"] .ea-shell,
 [data-theme="dark"] .ea-solo { background: var(--bg); }
+/* Dark values of the neutral tokens, only inside a portal whose pages are dark-themed (PortalShell DARK_THEMED): the
+   admin layout and the teacher pages have no dark theme, so overriding them on :root would darken some cards there
+   and not their inline-styled siblings. */
+[data-theme="dark"] .ea-shell--themed {
+  --app-bg: #0f172a;
+  --ea-canvas: #0f172a;
+  --ea-surface: #1e293b;
+  --ea-hover: #26354b;
+  --ea-line: #2d3f55;
+  --ea-ink: #f1f5f9;
+  --ea-body: #cbd5e1;
+  --ea-muted: #94a3b8;
+  --ea-faint: #8b9ab0;
+  --ea-danger: #FCA5A5;
+  --ea-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  /* Text without a colour of its own inherits the body's dark ink; on dark cards it must be light. */
+  color: var(--text);
+}
+[data-theme="dark"] .ea-shell--themed .ea-sidebar__link.is-active,
+[data-theme="dark"] .ea-shell--themed .ea-sidebar .ea-avatar { background: color-mix(in srgb, var(--brand) 24%, transparent); color: var(--brand-light); }
+[data-theme="dark"] .ea-shell--themed .ea-sidebar__signout { background: transparent; }
+/* Form fields without a background of their own. Zero specificity: any component class or inline style wins. */
+:where([data-theme="dark"] .ea-shell--themed) :where(input:not([type="checkbox"], [type="radio"], [type="range"]), textarea, select) { background-color: var(--input); color: var(--text); border-color: var(--border); }
+[data-theme="dark"] .ea-shell--themed .ea-sidebar__signout:hover { background: rgba(185, 28, 28, 0.15); border-color: rgba(252, 165, 165, 0.35); }
 
 /* Admin: one frame inside the safe area (below the status bar, above the iPhone home indicator). Its pages,
    dialogs and messages are placed inside it, because the frame is their containing block (transform). */
@@ -462,7 +486,7 @@ body.admin-body #root {
   --ea-ink: #0F172A;         /* headings */
   --ea-body: #334155;        /* body text */
   --ea-muted: #64748B;       /* secondary text (4.6:1 on white) */
-  --ea-faint: #94A3B8;       /* section labels */
+  --ea-faint: #68778C;       /* section labels (4.5:1 on white: they are small text) */
   --ea-success: #15803D;
   --ea-warning: #B45309;
   --ea-danger: #B91C1C;
@@ -643,7 +667,7 @@ input:-webkit-autofill:focus {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; padding: 0 14px;
   border-radius: 10px; font-size: 13px; font-weight: 650; cursor: pointer; border: 1px solid transparent;
 }
-.ea-btn--ghost { background: #fff; border-color: var(--ea-line); color: var(--ea-ink); }
+.ea-btn--ghost { background: var(--ea-surface); border-color: var(--ea-line); color: var(--ea-ink); }
 
 .ea-grid { display: grid; gap: 16px; }
 .ea-grid--2, .ea-grid--3 { grid-template-columns: 1fr; }
@@ -1110,7 +1134,6 @@ body:has(.ea-dialog-backdrop) .ea-ask-fab { display: none !important; }
 [data-theme="dark"] .ea-learn__tabs,
 [data-theme="dark"] .ea-learn__bubble.is-ai,
 [data-theme="dark"] .ea-learn__composer,
-[data-theme="dark"] .ea-learn__empty,
 [data-theme="dark"] .ea-learn__history,
 [data-theme="dark"] .ea-learn__consent,
 [data-theme="dark"] .ea-learn__q,

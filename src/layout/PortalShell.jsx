@@ -9,6 +9,10 @@ import { PORTAL_NAV } from "./portalNav";
 //   Desktop (1024 px and up): a sidebar with every screen of the portal, and the page in a wide content area.
 // The content area (.ea-stage) is the containing block for the pages' position: fixed elements (bottom bars,
 // sheets, EduAmigo Ask), so they stay inside it instead of covering the sidebar.
+// Portals whose pages have a dark theme; the shell (sidebar) follows the theme only there, so a teacher on a device
+// left in dark mode does not get a dark sidebar beside light pages.
+const DARK_THEMED = new Set(["student", "parent"]);
+
 export default function PortalShell({ role, children }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -22,7 +26,7 @@ export default function PortalShell({ role, children }) {
   };
 
   return (
-    <div className="ea-shell">
+    <div className={DARK_THEMED.has(role) ? "ea-shell ea-shell--themed" : "ea-shell"}>
       <aside className="ea-sidebar" aria-label={`${nav.label} navigation`}>
         <div className="ea-sidebar__brand">
           {logo

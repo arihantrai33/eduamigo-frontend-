@@ -57,7 +57,7 @@ export default function ParentCalendar() {
   }, []);
 
   const card = { background: "var(--card)", borderRadius: "16px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: "16px" };
-  const heading = { padding: "16px 16px 8px", fontWeight: "700", fontSize: "14px", color: "#444" };
+  const heading = { padding: "16px 16px 8px", fontWeight: "700", fontSize: "14px", color: "var(--ea-body)" };
   const empty = (text) => <div style={{ padding: "8px 16px 18px", fontSize: 13, color: "var(--subtext)" }}>{text}</div>;
 
   return (
@@ -78,8 +78,8 @@ export default function ParentCalendar() {
             <div style={card}>
               <div style={heading}>Upcoming Events</div>
               {items.length === 0 ? empty("No upcoming events.") : items.map((e, i) => (
-                <div key={e.key} style={{ padding: "12px 16px", borderBottom: i < items.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", alignItems: "center", gap: "12px" }}>
-                  <div style={{ width: "44px", height: "44px", borderRadius: "12px", background: e.style.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "22px", flexShrink: 0 }} aria-hidden="true">{e.style.icon}</div>
+                <div key={e.key} style={{ padding: "12px 16px", borderBottom: i < items.length - 1 ? "1px solid var(--ea-line)" : "none", display: "flex", alignItems: "center", gap: "12px" }}>
+                  <div style={{ width: "44px", height: "44px", borderRadius: "12px", background: e.style.bg, color: e.style.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "22px", flexShrink: 0 }} aria-hidden="true">{e.style.icon}</div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontWeight: "600", fontSize: "14px" }}>{e.title}</div>
                     <div style={{ fontSize: "12px", color: "var(--subtext)", marginTop: "2px" }}>{e.sub}</div>
@@ -92,7 +92,7 @@ export default function ParentCalendar() {
             <div style={card}>
               <div style={heading}>Exam Schedule</div>
               {exams.length === 0 ? empty("No upcoming exams.") : exams.map((e, i) => (
-                <div key={e._id} style={{ padding: "12px 16px", borderBottom: i < exams.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                <div key={e._id} style={{ padding: "12px 16px", borderBottom: i < exams.length - 1 ? "1px solid var(--ea-line)" : "none", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
                   <div>
                     <div style={{ fontWeight: "600", fontSize: "14px" }}>{e.title}</div>
                     <div style={{ fontSize: "12px", color: "var(--subtext)", marginTop: "2px" }}>

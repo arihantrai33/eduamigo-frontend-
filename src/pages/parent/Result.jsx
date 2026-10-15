@@ -59,7 +59,7 @@ export default function ParentResult() {
     </div>
   );
   return (
-    <div className="ea-pd-narrow" style={{ minHeight: "100vh", background: "#F4F6FB", fontFamily: "inherit", paddingBottom: 40 }}>
+    <div className="ea-pd-narrow" style={{ minHeight: "100vh", background: "var(--app-bg, #F4F6FB)", fontFamily: "inherit", paddingBottom: 40 }}>
       <div className="ea-pd-band" style={{ background: "var(--brand-gradient)", padding: "48px 20px 32px", color: "white" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
           <button type="button" aria-label="Back" onClick={() => navigate(-1)}
@@ -101,8 +101,8 @@ export default function ParentResult() {
               <button key={e} onClick={() => setSelExam(e)}
                 style={{
                   padding: "6px 16px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 600, whiteSpace: "nowrap",
-                  background: selExam === e ? "var(--brand)" : "#fff",
-                  color:      selExam === e ? "#fff"    : "#666",
+                  background: selExam === e ? "var(--brand)" : "var(--ea-surface)",
+                  color:      selExam === e ? "#fff"    : "var(--ea-muted)",
                   boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
                 }}>
                 {e}
@@ -125,14 +125,14 @@ export default function ParentResult() {
                     {r.grade ?? "—"}
                   </div>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 700, fontSize: 14, color: "#1C2033" }}>{r.subject}</div>
-                    <div style={{ fontSize: 11, color: "#7B8099", marginTop: 2 }}>{r.examName}</div>
+                    <div style={{ fontWeight: 700, fontSize: 14, color: "var(--ea-ink)" }}>{r.subject}</div>
+                    <div style={{ fontSize: 11, color: "var(--ea-muted)", marginTop: 2 }}>{r.examName}</div>
                   </div>
                   <div style={{ textAlign: "right" }}>
-                    <div style={{ fontWeight: 800, fontSize: 16, color: "#1C2033" }}>
+                    <div style={{ fontWeight: 800, fontSize: 16, color: "var(--ea-ink)" }}>
                       {r.absent ? "Absent" : <>{r.marksObtained}<span style={{ fontSize: 11, color: "var(--subtext)" }}>/{r.totalMarks}</span></>}
                     </div>
-                    <div style={{ fontSize: 11, color: "#7B8099" }}>{pct}%</div>
+                    <div style={{ fontSize: 11, color: "var(--ea-muted)" }}>{pct}%</div>
                   </div>
                 </div>
               );

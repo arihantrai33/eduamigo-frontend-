@@ -130,7 +130,7 @@ export default function StudentFee() {
                       <div style={{ textAlign: "right" }}>
                         <div style={{ fontSize: 17, fontWeight: 800, color: "var(--text)" }}>{formatAmount(balanceOf(f))}</div>
                         {f.paidAmount > 0 && <div style={{ fontSize: 11, color: "var(--subtext)", marginTop: 2 }}>of {formatAmount(f.amount)}</div>}
-                        <div style={{ fontSize: 11, fontWeight: 700, color: "#f59e0b", background: "#fef3c7", padding: "3px 10px", borderRadius: 20, marginTop: 4 }}>{f.paidAmount > 0 ? "PART PAID" : "UNPAID"}</div>
+                        <div style={{ fontSize: 11, fontWeight: 700, color: "#B45309", background: "#fef3c7", padding: "3px 10px", borderRadius: 20, marginTop: 4 }}>{f.paidAmount > 0 ? "PART PAID" : "UNPAID"}</div>
                         <PayFeeButton fee={f} enabled={onlineEnabled} onPaid={fetchFees} />
                       </div>
                     </div>

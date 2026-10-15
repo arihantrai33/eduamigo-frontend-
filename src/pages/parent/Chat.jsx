@@ -121,7 +121,7 @@ export default function ParentChat() {
         {messages.length === 0 && (
           <div style={S.emptyChat}>
             <div style={{ fontSize: 40, marginBottom: 8 }}><Glyph e="💬" /></div>
-            <div style={{ color: '#999', fontSize: 13 }}>Start a conversation</div>
+            <div style={{ color: 'var(--ea-muted)', fontSize: 13 }}>Start a conversation</div>
           </div>
         )}
         {messages.map((m, i) => {
@@ -240,19 +240,19 @@ export default function ParentChat() {
 }
 
 const S = {
-  screen:      { minHeight: '100vh', background: '#f5f6fa', fontFamily: 'inherit', display: 'flex', flexDirection: 'column' },
+  screen:      { minHeight: '100vh', background: 'var(--app-bg, #f5f6fa)', fontFamily: 'inherit', display: 'flex', flexDirection: 'column' },
   header:      { background: 'var(--brand-gradient)', padding: '48px 20px 16px', display: 'flex', alignItems: 'center', gap: 12 },
   headerBack:  { background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: '8px 12px', color: 'white', cursor: 'pointer', fontSize: 18 },
   headerTitle: { color: 'white', fontSize: 20, fontWeight: 800, margin: 0 },
   childBadge:  { color: 'rgba(255,255,255,0.8)', fontSize: 12, marginTop: 4 },
   list:        { flex: 1, overflowY: 'auto', padding: '16px 16px 80px' },
-  sectionLabel:{ fontSize: 11, fontWeight: 700, color: '#999', letterSpacing: 1, marginBottom: 8 },
-  chatRow:     { background: 'white', borderRadius: 14, padding: '14px', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10, boxShadow: '0 1px 6px rgba(0,0,0,0.06)', cursor: 'pointer' },
+  sectionLabel:{ fontSize: 11, fontWeight: 700, color: 'var(--ea-muted)', letterSpacing: 1, marginBottom: 8 },
+  chatRow:     { background: 'var(--ea-surface)', borderRadius: 14, padding: '14px', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10, boxShadow: '0 1px 6px rgba(0,0,0,0.06)', cursor: 'pointer' },
   avatar:      { width: 46, height: 46, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 18, flexShrink: 0 },
-  rowName:     { fontSize: 14, fontWeight: 700, color: '#111', marginBottom: 3 },
-  rowSub:      { fontSize: 12, color: '#888' },
-  chevron:     { fontSize: 22, color: '#ccc' },
-  emptyBox:    { textAlign: 'center', padding: '32px 0', color: '#999', fontSize: 13 },
+  rowName:     { fontSize: 14, fontWeight: 700, color: 'var(--ea-ink)', marginBottom: 3 },
+  rowSub:      { fontSize: 12, color: 'var(--ea-muted)' },
+  chevron:     { fontSize: 22, color: 'var(--ea-faint)' },
+  emptyBox:    { textAlign: 'center', padding: '32px 0', color: 'var(--ea-muted)', fontSize: 13 },
   center:      { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' },
   chatHeader:  { background: 'var(--brand-gradient)', padding: '48px 16px 16px', display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 },
   backBtn:     { background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: '8px 12px', color: 'white', cursor: 'pointer', fontSize: 18 },
@@ -264,10 +264,10 @@ const S = {
   miniAvatar:  { width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 12, marginRight: 8, flexShrink: 0, alignSelf: 'flex-end' },
   bubble:      { maxWidth: '75%', padding: '10px 14px', borderRadius: 18, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' },
   bubbleMe:    { background: 'var(--brand-gradient)', color: 'white', borderBottomRightRadius: 4 },
-  bubbleThem:  { background: 'white', color: '#111', borderBottomLeftRadius: 4 },
+  bubbleThem:  { background: 'var(--ea-surface)', color: 'var(--ea-ink)', borderBottomLeftRadius: 4 },
   timeRow:     { display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4, marginTop: 4 },
   timeText:    { fontSize: 10, opacity: 0.7 },
-  inputRow:    { padding: '12px 16px', background: 'white', display: 'flex', gap: 10, alignItems: 'center', boxShadow: '0 -2px 8px rgba(0,0,0,0.06)', flexShrink: 0 },
-  input:       { flex: 1, border: '1.5px solid #e5e7eb', borderRadius: 24, padding: '10px 16px', fontSize: 14, outline: 'none', fontFamily: 'inherit' },
+  inputRow:    { padding: '12px 16px', background: 'var(--ea-surface)', display: 'flex', gap: 10, alignItems: 'center', boxShadow: '0 -2px 8px rgba(0,0,0,0.06)', flexShrink: 0 },
+  input:       { flex: 1, border: '1.5px solid var(--ea-line)', borderRadius: 24, padding: '10px 16px', fontSize: 14, outline: 'none', fontFamily: 'inherit' },
   sendBtn:     { background: 'var(--brand-gradient)', color: 'white', border: 'none', borderRadius: '50%', width: 44, height: 44, fontSize: 18, cursor: 'pointer', flexShrink: 0 },
 };

@@ -16,7 +16,7 @@ const authHeader = () => ({
 const STATUS_CONFIG = {
   Paid:    { color: "#16a34a", bg: "#dcfce7", icon: "✓" },
   Unpaid:  { color: "#dc2626", bg: "#fee2e2", icon: "!" },
-  Partial: { color: "#d97706", bg: "#fef3c7", icon: "~" },
+  Partial: { color: "#B45309", bg: "#fef3c7", icon: "~" },
 };
 
 export default function ParentFee() {
@@ -204,7 +204,7 @@ export default function ParentFee() {
               return (
                 <div key={i} style={{
                   ...styles.feeRow,
-                  borderBottom: i < filteredFees.length - 1 ? "1px solid #f3f4f6" : "none"
+                  borderBottom: i < filteredFees.length - 1 ? "1px solid var(--ea-line)" : "none"
                 }}>
                   <div style={{ ...styles.feeIcon, background: cfg.bg, color: cfg.color }}>
                     {cfg.icon}

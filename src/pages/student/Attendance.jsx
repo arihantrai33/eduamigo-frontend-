@@ -84,13 +84,13 @@ export default function StudentAttendance() {
           gap: 10, marginBottom: 20 }}>
           {[
             { label: "Total Days", val: total,   bg: "#f0f4ff", color: "var(--brand)" },
-            { label: "Present",    val: present, bg: "#f0fdf4", color: "#22c55e" },
+            { label: "Present",    val: present, bg: "#f0fdf4", color: "#15803D" },
             { label: "Absent",     val: absent,  bg: "#fff5f5", color: "#ef4444" },
           ].map((s) => (
             <div key={s.label} style={{ background: s.bg, borderRadius: 14,
               padding: "14px 8px", textAlign: "center" }}>
               <div style={{ fontSize: 24, fontWeight: 900, color: s.color }}>{s.val}</div>
-              <div style={{ fontSize: 11, color: "var(--subtext2)", marginTop: 2 }}>{s.label}</div>
+              <div style={{ fontSize: 11, color: "#475569", marginTop: 2 }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -104,7 +104,7 @@ export default function StudentAttendance() {
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{ width: 10, height: 10, borderRadius: "50%", background: color }} />
-              <div style={{ fontSize: 13, color: "#444" }}>
+              <div style={{ fontSize: 13, color: "var(--ea-body)" }}>
                 {pct >= 75
                   ? "Good standing — Keep it up!"
                   : pct >= 50

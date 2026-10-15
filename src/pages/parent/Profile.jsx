@@ -16,9 +16,9 @@ const authHeader = () => ({
 
 function InfoRow({ label, value, last }) {
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: last ? 0 : 12, marginBottom: last ? 0 : 12, borderBottom: last ? "none" : "1px solid #F0F2F8" }}>
-      <span style={{ fontSize: 12, color: "#7B8099" }}>{label}</span>
-      <span style={{ fontSize: 13, fontWeight: 600, color: "#1C2033" }}>{value}</span>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: last ? 0 : 12, marginBottom: last ? 0 : 12, borderBottom: last ? "none" : "1px solid var(--ea-line)" }}>
+      <span style={{ fontSize: 12, color: "var(--ea-muted)" }}>{label}</span>
+      <span style={{ fontSize: 13, fontWeight: 600, color: "var(--ea-ink)" }}>{value}</span>
     </div>
   );
 }
@@ -118,14 +118,14 @@ export default function ParentProfile() {
 
         {showReset && (
           <div style={{ ...s.infoCard, padding: "12px 16px" }}>
-            <div style={{ fontSize: 12, color: "#7B8099", marginBottom: 8, lineHeight: 1.5 }}>
+            <div style={{ fontSize: 12, color: "var(--ea-muted)", marginBottom: 8, lineHeight: 1.5 }}>
               Your child logs in with the school code and their admission number. Choose a child to give them a new temporary password.
             </div>
             {children.map((c) => (
               <div key={c._id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0" }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text, #1C2033)" }}>{c.name}</div>
-                  <div style={{ fontSize: 12, color: "#7B8099" }}>Class {c.class}-{c.section}{c.admissionNo ? ` · Admission No ${c.admissionNo}` : ""}</div>
+                  <div style={{ fontSize: 12, color: "var(--ea-muted)" }}>Class {c.class}-{c.section}{c.admissionNo ? ` · Admission No ${c.admissionNo}` : ""}</div>
                 </div>
                 <button onClick={() => resetChild(c)} style={{ padding: "8px 12px", borderRadius: 10, border: "none", background: "var(--brand)", color: "white", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Reset password</button>
               </div>
@@ -140,8 +140,8 @@ export default function ParentProfile() {
               style={{ ...s.menuRow, ...(i === menu.length - 1 ? { borderBottom: "none" } : {}) }}
               onClick={item.action}>
               <div style={{ ...s.menuIcon, background: item.bg }}>{item.icon}</div>
-              <div style={{ flex: 1, fontSize: 14, fontWeight: 700, color: item.danger ? "#EF5350" : "#1C2033" }}>{item.label}</div>
-              <span style={{ color: item.danger ? "#EF5350" : "#7B8099", fontSize: 18 }}>›</span>
+              <div style={{ flex: 1, fontSize: 14, fontWeight: 700, color: item.danger ? "#EF5350" : "var(--ea-ink)" }}>{item.label}</div>
+              <span style={{ color: item.danger ? "#EF5350" : "var(--ea-muted)", fontSize: 18 }}>›</span>
             </button>
           ))}
         </div>
@@ -155,19 +155,19 @@ export default function ParentProfile() {
 }
 
 const s = {
-  wrap:     { minHeight: "100vh", background: "#F4F6FB", display: "flex", flexDirection: "column", fontFamily: "inherit" },
-  topBar:   { background: "var(--card)", padding: "48px 20px 16px", display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid #E8EAF0" },
-  backBtn:  { background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#1C2033", fontWeight: 700 },
-  title:    { fontSize: 17, fontWeight: 700, color: "#1C2033" },
+  wrap:     { minHeight: "100vh", background: "var(--app-bg, #F4F6FB)", display: "flex", flexDirection: "column", fontFamily: "inherit" },
+  topBar:   { background: "var(--card)", padding: "48px 20px 16px", display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid var(--ea-line)" },
+  backBtn:  { background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "var(--ea-ink)", fontWeight: 700 },
+  title:    { fontSize: 17, fontWeight: 700, color: "var(--ea-ink)" },
   scroll:   { flex: 1, overflowY: "auto", padding: "16px 16px 80px", display: "flex", flexDirection: "column", gap: 14 },
   hero:     { background: "var(--card)", borderRadius: 20, padding: "24px 16px", display: "flex", flexDirection: "column", alignItems: "center", gap: 6, boxShadow: "0 2px 12px color-mix(in srgb, var(--brand) 8%, transparent)" },
   avatar:   { width: 72, height: 72, borderRadius: 24, background: "var(--brand-gradient)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, fontWeight: 800, marginBottom: 4 },
-  name:     { fontSize: 20, fontWeight: 800, color: "#1C2033" },
-  sub:      { fontSize: 13, color: "#7B8099" },
+  name:     { fontSize: 20, fontWeight: 800, color: "var(--ea-ink)" },
+  sub:      { fontSize: 13, color: "var(--ea-muted)" },
   badge:    { fontSize: 12, fontWeight: 700, background: "#E3F2FD", color: "#1565C0", padding: "4px 12px", borderRadius: 20, marginTop: 4 },
   infoCard: { background: "var(--card)", borderRadius: 16, padding: "14px 16px", boxShadow: "0 2px 12px color-mix(in srgb, var(--brand) 8%, transparent)" },
   menuCard: { background: "var(--card)", borderRadius: 16, overflow: "hidden", boxShadow: "0 2px 12px color-mix(in srgb, var(--brand) 8%, transparent)" },
-  menuRow:  { width: "100%", background: "none", border: "none", borderBottom: "1px solid #F0F2F8", padding: "14px 16px", display: "flex", alignItems: "center", gap: 12, cursor: "pointer", textAlign: "left" },
+  menuRow:  { width: "100%", background: "none", border: "none", borderBottom: "1px solid var(--ea-line)", padding: "14px 16px", display: "flex", alignItems: "center", gap: 12, cursor: "pointer", textAlign: "left" },
   menuIcon: { width: 36, height: 36, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 },
-  version:  { textAlign: "center", fontSize: 11, color: "#B0B8CC", paddingBottom: 8 },
+  version:  { textAlign: "center", fontSize: 11, color: "var(--ea-faint)", paddingBottom: 8 },
 };

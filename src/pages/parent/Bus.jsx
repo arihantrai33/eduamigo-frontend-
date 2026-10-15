@@ -205,7 +205,7 @@ function NotificationSettingsModal({ onClose, prefs, onChange }) {
           >
             <div style={{ display:"flex", alignItems:"center", gap:"10px" }}>
               <span style={{ fontSize:"20px" }}>{item.icon}</span>
-              <span style={{ fontSize:"13px", fontWeight:500, color:"#1E293B" }}>{item.label}</span>
+              <span style={{ fontSize:"13px", fontWeight:500, color:"var(--ea-ink)" }}>{item.label}</span>
             </div>
             <div style={{ width:"44px", height:"24px", borderRadius:"12px", background: prefs[item.key] ? "var(--brand)" : "#E2E8F0", position:"relative", transition:"background 0.2s", flexShrink:0 }}>
               <div style={{ position:"absolute", top:"3px", left: prefs[item.key] ? "23px" : "3px", width:"18px", height:"18px", borderRadius:"50%", background:"white", boxShadow:"0 1px 4px rgba(0,0,0,0.2)", transition:"left 0.2s" }} />
@@ -591,14 +591,14 @@ export default function ParentBus() {
                       {isCompleted ? <span style={{ fontSize:"9px", color:"#059669" }}>✓</span>
                         : isCurrent ? <span style={{ width:"6px", height:"6px", borderRadius:"50%", background:"white", display:"block" }} />
                         : isSchool  ? <span style={{ fontSize:"10px" }}><Glyph e="🏫" /></span>
-                        : <span style={{ fontSize:"9px", color:"#9CA3AF" }}>{i + 1}</span>}
+                        : <span style={{ fontSize:"9px", color:"#64748B" }}>{i + 1}</span>}
                     </div>
                     {!isLast && <div style={{ ...styles.connector, background: isCompleted ? "linear-gradient(to bottom, #6EE7B7, #D1FAE5)" : isCurrent ? `linear-gradient(to bottom, ${COLOR.primary}, #E5E7EB)` : "#E5E7EB" }} />}
                   </div>
                   <div style={{ flex:1, minWidth:0, paddingBottom: isLast ? 4 : "18px" }}>
                     <div style={styles.stopContent}>
                       <div style={{ flex:1, minWidth:0 }}>
-                        <p style={{ ...styles.stopName, color: isCompleted ? "#9CA3AF" : isCurrent ? COLOR.primary : isSchool ? "#D97706" : "#111827", textDecoration: isCompleted ? "line-through" : "none", fontWeight: isCurrent || isSchool ? 600 : 400 }}>{stop.name}</p>
+                        <p style={{ ...styles.stopName, color: isCompleted ? "#9CA3AF" : isCurrent ? COLOR.primary : isSchool ? "#D97706" : "var(--ea-ink)", textDecoration: isCompleted ? "line-through" : "none", fontWeight: isCurrent || isSchool ? 600 : 400 }}>{stop.name}</p>
                         <p style={styles.stopSub}>
                           {isCompleted ? `Departed at ${getDepartureTime(i)}`
                             : isCurrent ? "Bus is here now"
@@ -610,7 +610,7 @@ export default function ParentBus() {
                         {isCompleted        && <span style={{ ...styles.badge, background:"#F0FDF4", color:"#16A34A", border:"0.5px solid #BBF7D0" }}>Done</span>}
                         {isCurrent          && <span style={{ ...styles.badge, background:COLOR.primaryLight, color:COLOR.primary, border:`0.5px solid var(--brand-border)` }}>Live</span>}
                         {isSchool           && <span style={{ ...styles.badge, background:"#FFF7ED", color:"#C2410C", border:"0.5px solid #FED7AA" }}>{eta}</span>}
-                        {type === "upcoming" && <span style={{ fontSize:"10px", color:"#D1D5DB" }}>—</span>}
+                        {type === "upcoming" && <span style={{ fontSize:"10px", color:"var(--ea-faint)" }}>—</span>}
                       </div>
                     </div>
                   </div>
@@ -634,8 +634,8 @@ const styles = {
   pageShell:      { minHeight:"100dvh", height:"100dvh", background:"var(--brand-soft)", display:"flex", justifyContent:"center", alignItems:"flex-start", fontFamily: "inherit" },
   phoneCard:      { position:"relative", width:"100%", height:"100%", overflow:"hidden", background:"var(--bg)" },
   mapPlaceholder: { height:"100%", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:"10px", background:"var(--bg)" },
-  busEmptyTitle:  { fontSize:"17px", fontWeight:600, color:"#1E293B" },
-  busEmptySub:    { fontSize:"13px", color:"#94A3B8" },
+  busEmptyTitle:  { fontSize:"17px", fontWeight:600, color:"var(--ea-ink)" },
+  busEmptySub:    { fontSize:"13px", color:"var(--ea-muted)" },
   fullscreenRoot: { position:"fixed", inset:0, zIndex:9999, background:"black" },
   // The app layout already keeps the page below the status bar, so these need no safe-area offset at the top.
   exitFsBtn:      { position:"fixed", top:"20px", right:"16px", zIndex:10000, display:"flex", alignItems:"center", gap:"6px", padding:"8px 14px", borderRadius:"20px", background:"rgba(0,0,0,0.55)", backdropFilter:"blur(10px)", border:"1px solid rgba(255,255,255,0.2)", color:"white", cursor:"pointer" },
@@ -668,17 +668,17 @@ const styles = {
   trafficLabel:   { color:"rgba(255,255,255,0.85)", fontSize:"12px", flex:1, fontWeight:500 },
   trafficRight:   { color:"rgba(255,255,255,0.45)", fontSize:"11px" },
   fsBtn:          { position:"absolute", right:"14px", zIndex:200, width:"40px", height:"40px", borderRadius:"12px", background:"color-mix(in srgb, var(--brand-dark) 85%, transparent)", backdropFilter:"blur(8px)", border:"1px solid rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", boxShadow:"0 2px 12px color-mix(in srgb, var(--brand-dark) 35%, transparent)", transition:"bottom 0.35s cubic-bezier(0.4,0,0.2,1)" },
-  stopsPanel:     { position:"absolute", bottom:0, left:0, right:0, zIndex:100, background:"white", borderRadius:"24px 24px 0 0", boxShadow:"0 -4px 30px rgba(0,0,0,0.10)", overflowY:"auto", transition:"max-height 0.35s cubic-bezier(0.4,0,0.2,1)", paddingBottom:"env(safe-area-inset-bottom, 0px)", WebkitOverflowScrolling:"touch" },
-  stopsHeader:    { position:"sticky", top:0, background:"white", borderBottom:"1px solid #F1F5F9", paddingBottom:"10px", zIndex:1, cursor:"pointer", userSelect:"none" },
-  dragHandle:     { width:"36px", height:"4px", borderRadius:"2px", background:"#E2E8F0", margin:"10px auto 8px" },
+  stopsPanel:     { position:"absolute", bottom:0, left:0, right:0, zIndex:100, background:"var(--ea-surface)", borderRadius:"24px 24px 0 0", boxShadow:"0 -4px 30px rgba(0,0,0,0.10)", overflowY:"auto", transition:"max-height 0.35s cubic-bezier(0.4,0,0.2,1)", paddingBottom:"env(safe-area-inset-bottom, 0px)", WebkitOverflowScrolling:"touch" },
+  stopsHeader:    { position:"sticky", top:0, background:"var(--ea-surface)", borderBottom:"1px solid var(--ea-line)", paddingBottom:"10px", zIndex:1, cursor:"pointer", userSelect:"none" },
+  dragHandle:     { width:"36px", height:"4px", borderRadius:"2px", background:"var(--ea-line)", margin:"10px auto 8px" },
   stopsHeaderRow: { display:"flex", alignItems:"center", justifyContent:"space-between", paddingLeft:"20px", paddingRight:"20px" },
-  stopsTitle:     { fontSize:"14px", fontWeight:700, color:"#0F172A" },
-  stopsBadge:     { fontSize:"11px", color:"#64748B", background:"#F8FAFC", border:"1px solid #E2E8F0", padding:"3px 10px", borderRadius:"20px", fontWeight:500 },
-  progressPill:   { position:"relative", width:"68px", height:"18px", background:"#F1F5F9", borderRadius:"10px", overflow:"hidden", display:"flex", alignItems:"center" },
+  stopsTitle:     { fontSize:"14px", fontWeight:700, color:"var(--ea-ink)" },
+  stopsBadge:     { fontSize:"11px", color:"var(--ea-muted)", background:"var(--ea-hover)", border:"1px solid var(--ea-line)", padding:"3px 10px", borderRadius:"20px", fontWeight:500 },
+  progressPill:   { position:"relative", width:"68px", height:"18px", background:"var(--ea-hover)", borderRadius:"10px", overflow:"hidden", display:"flex", alignItems:"center" },
   progressFill:   { position:"absolute", left:0, top:0, bottom:0, background:"linear-gradient(90deg, var(--brand-light), var(--brand))", borderRadius:"10px", transition:"width 0.5s ease" },
-  progressText:   { position:"relative", zIndex:1, fontSize:"9px", fontWeight:700, color:"#1E3A5F", width:"100%", textAlign:"center", letterSpacing:"0.2px" },
+  progressText:   { position:"relative", zIndex:1, fontSize:"9px", fontWeight:700, color:"var(--ea-ink)", width:"100%", textAlign:"center", letterSpacing:"0.2px" },
   chevron:        { fontSize:"10px", color:"#94A3B8", transition:"transform 0.3s ease", display:"inline-block" },
-  routeBar:       { height:"3px", background:"#F1F5F9" },
+  routeBar:       { height:"3px", background:"var(--ea-line)" },
   routeBarFill:   { height:"100%", background:"linear-gradient(90deg, var(--brand-light), var(--brand))", transition:"width 0.5s ease" },
   panelActionRow: { display:"flex", gap:"8px", padding:"10px 16px 4px" },
   panelCallBtn:   { flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", padding:"9px 8px", borderRadius:"12px", fontSize:"11px", fontWeight:600, background:"var(--brand-soft)", color:"var(--brand-dark)", border:"1px solid var(--brand-border)", cursor:"pointer" },
@@ -688,8 +688,8 @@ const styles = {
   notifTitle:     { fontSize:"11px", fontWeight:700, color:"#64748B", textTransform:"uppercase", letterSpacing:"0.5px", marginBottom:"8px" },
   notifRow:       { display:"flex", alignItems:"flex-start", gap:"10px", marginBottom:"8px" },
   notifIcon:      { fontSize:"16px", flexShrink:0, marginTop:"1px" },
-  notifText:      { fontSize:"12px", color:"#374151", lineHeight:1.4 },
-  notifTime:      { fontSize:"10px", color:"#94A3B8", marginTop:"2px" },
+  notifText:      { fontSize:"12px", color:"var(--ea-body)", lineHeight:1.4 },
+  notifTime:      { fontSize:"10px", color:"var(--ea-muted)", marginTop:"2px" },
   stopsList:      { padding:"12px 20px 20px" },
   stopRow:        { display:"flex", alignItems:"flex-start", gap:"14px" },
   timeline:       { display:"flex", flexDirection:"column", alignItems:"center", flexShrink:0, width:"20px" },
@@ -697,14 +697,14 @@ const styles = {
   connector:      { width:"2px", flex:1, minHeight:"22px", borderRadius:"2px", marginTop:"3px" },
   stopContent:    { display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:"8px", paddingTop:"4px" },
   stopName:       { fontSize:"13px", lineHeight:"1.3" },
-  stopSub:        { fontSize:"11px", color:"#94A3B8", marginTop:"3px" },
+  stopSub:        { fontSize:"11px", color:"var(--ea-muted)", marginTop:"3px" },
   badge:          { flexShrink:0, fontSize:"10px", fontWeight:600, padding:"3px 9px", borderRadius:"8px", letterSpacing:"0.2px", whiteSpace:"nowrap" },
   modalOverlay:   { position:"fixed", inset:0, zIndex:99999, background:"rgba(0,0,0,0.55)", backdropFilter:"blur(6px)", display:"flex", alignItems:"center", justifyContent:"center", padding:"20px" },
-  modalCard:      { background:"white", borderRadius:"24px", padding:"28px 24px", width:"100%", maxWidth:"340px", textAlign:"center", boxShadow:"0 20px 60px rgba(0,0,0,0.25)" },
-  modalTitle:     { fontSize:"18px", fontWeight:700, color:"#0F172A", marginBottom:"8px" },
-  modalSub:       { fontSize:"13px", color:"#64748B", lineHeight:1.6, marginBottom:"20px" },
+  modalCard:      { background:"var(--ea-surface)", borderRadius:"24px", padding:"28px 24px", width:"100%", maxWidth:"340px", textAlign:"center", boxShadow:"0 20px 60px rgba(0,0,0,0.25)" },
+  modalTitle:     { fontSize:"18px", fontWeight:700, color:"var(--ea-ink)", marginBottom:"8px" },
+  modalSub:       { fontSize:"13px", color:"var(--ea-muted)", lineHeight:1.6, marginBottom:"20px" },
   modalBtns:      { display:"flex", gap:"10px" },
-  cancelBtn:      { flex:1, padding:"12px", borderRadius:"14px", fontSize:"14px", fontWeight:600, background:"#F1F5F9", color:"#475569", border:"none", cursor:"pointer" },
+  cancelBtn:      { flex:1, padding:"12px", borderRadius:"14px", fontSize:"14px", fontWeight:600, background:"var(--ea-hover)", color:"var(--ea-body)", border:"none", cursor:"pointer" },
   confirmSosBtn:  { flex:1, padding:"12px", borderRadius:"14px", fontSize:"14px", fontWeight:700, background:"linear-gradient(135deg,#DC2626,#EF4444)", color:"white", border:"none", cursor:"pointer", boxShadow:"0 4px 16px rgba(220,38,38,0.4)" },
   callConfirmBtn: { flex:1, padding:"12px", borderRadius:"14px", fontSize:"14px", fontWeight:700, background:"linear-gradient(135deg,var(--brand-dark),var(--brand))", color:"white", border:"none", cursor:"pointer", textDecoration:"none", display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 4px 16px color-mix(in srgb, var(--brand-dark) 40%, transparent)" },
 };

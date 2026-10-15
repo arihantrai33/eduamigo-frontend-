@@ -115,7 +115,7 @@ export default function Profile() {
           {[
             { label: "Dark Mode",           sub: "Switch to dark theme",                     value: darkMode,       setter: setDarkMode       },
           ].map((s, i, arr) => (
-            <div key={s.label} style={{ padding: "16px", borderBottom: i < arr.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div key={s.label} style={{ padding: "16px", borderBottom: i < arr.length - 1 ? "1px solid var(--ea-line)" : "none", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div>
                 <div style={{ fontWeight: "600", fontSize: "14px", color: darkMode ? "#f1f5f9" : "#111" }}>{s.label}</div>
                 <div style={{ fontSize: "12px", color: darkMode ? "#aaa" : "#888", marginTop: "2px" }}>{s.sub}</div>
@@ -129,7 +129,7 @@ export default function Profile() {
         <div style={{ background: darkMode ? "#16213e" : "white", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginTop: "12px" }}>
           <div style={{ fontWeight: "700", fontSize: "13px", color: darkMode ? "#aaa" : "#888", marginBottom: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>Account</div>
           {["Change Password"].map((item, i, arr) => (
-            <div key={item} onClick={() => navigate("/change-password")} style={{ padding: "14px 0", borderBottom: i < arr.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
+            <div key={item} onClick={() => navigate("/change-password")} style={{ padding: "14px 0", borderBottom: i < arr.length - 1 ? "1px solid var(--ea-line)" : "none", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
               <span style={{ fontSize: "14px", fontWeight: "600", color: darkMode ? "#f1f5f9" : "#111" }}>{item}</span>
               <span style={{ color: "#ccc" }}>›</span>
             </div>
@@ -249,7 +249,7 @@ export default function Profile() {
         <div style={{ background: darkMode ? "#16213e" : "white", borderRadius: "16px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: "16px" }}>
           {menuItems.map((item, i) => (
             <div key={item.label} onClick={item.action}
-              style={{ padding: "16px", borderBottom: i < menuItems.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", alignItems: "center", gap: "14px", cursor: "pointer" }}>
+              style={{ padding: "16px", borderBottom: i < menuItems.length - 1 ? "1px solid var(--ea-line)" : "none", display: "flex", alignItems: "center", gap: "14px", cursor: "pointer" }}>
               <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: darkMode ? "#1e293b" : "#f5f6ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>
                 {item.icon}
               </div>

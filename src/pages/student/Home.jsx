@@ -222,7 +222,7 @@ style={{ background: "var(--card)", borderRadius: 14, padding: 14, border: "none
 </div>
           ) : (
 timetable.slice(0, 4).map((c, i) => (
-<div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 0", borderBottom: i < 3 ? "1px solid #f0f0f0" : "none" }}>
+<div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 0", borderBottom: i < 3 ? "1px solid var(--ea-line)" : "none" }}>
 <div style={{ minWidth: 44, background: "var(--bg)", borderRadius: 8, padding: 4, textAlign: "center", fontSize: 11, fontWeight: 700, color: "var(--subtext)" }}>
 {c.time ?? "—"}
 </div>
@@ -253,7 +253,7 @@ timetable.slice(0, 4).map((c, i) => (
 </div>
           ) : (
 notices.map((n, i) => (
-<div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "12px 0", borderBottom: i < notices.length - 1 ? "1px solid #f0f0f0" : "none" }}>
+<div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "12px 0", borderBottom: i < notices.length - 1 ? "1px solid var(--ea-line)" : "none" }}>
 <div style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--brand)", marginTop: 5, flexShrink: 0 }} />
 <div>
 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text)" }}>{n.title}</div>
