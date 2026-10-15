@@ -8,17 +8,22 @@ import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import { toneOf } from "../../components/ui/tone";
+import FieldError from "../../components/ui/FieldError";
+import { useFieldErrors } from "../../utils/fieldErrors";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-// A <label> around a caption and its field, so the field takes the caption as its name.
-const field = (label, control, key) => (
+// A <label> around a caption and its field, so the field takes the caption as its name; `after` is the field's
+// message when a check failed.
+const field = (label, control, key, after = null) => (
   <label key={key} style={{ display:"block" }}>
     <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
     {control}
+    {after}
   </label>
 );
+const FIELDS = { teacherId: "salary-teacherId", basicSalary: "salary-basicSalary" };
 const STATUS_CONFIG = {
   Paid:    { bg:"#F0FDF4", color:"#15803D", dot:"#22C55E", border:"#BBF7D0" },
   Pending: { bg:"#FFFBEB", color:"#D97706", dot:"#F59E0B", border:"#FDE68A" },
@@ -37,6 +42,7 @@ export default function SalaryManagement() {
   const [filterYear, setFilterYear] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [form, setForm] = useState({ teacherId:"", month: new Date().getMonth()+1, year: new Date().getFullYear(), basicSalary:"", allowances:"0", deductions:"0", remarks:"" });
+  const fe = useFieldErrors(FIELDS);
   const [genForm, setGenForm] = useState({ month: new Date().getMonth()+1, year: new Date().getFullYear() });
 
   useEffect(() => { fetchAll(); }, []);
@@ -67,7 +73,7 @@ export default function SalaryManagement() {
   };
 
   const handleSave = async () => {
-    if (!form.teacherId || !form.basicSalary) return toast.error("Select a teacher and enter the basic salary");
+    if (!fe.check({ teacherId: !form.teacherId && "Select a teacher", basicSalary: !form.basicSalary && "Enter the basic salary" })) return;
     setSaving(true);
     try {
       const payload = { teacher: form.teacherId, month: form.month, year: form.year, basicSalary: Number(form.basicSalary), allowances: Number(form.allowances||0), deductions: Number(form.deductions||0), remarks: form.remarks };
@@ -98,7 +104,7 @@ export default function SalaryManagement() {
     setGenerating(false);
   };
 
-  const f = (k, v) => setForm(p => ({ ...p, [k]: v }));
+  const f = (k, v) => { setForm(p => ({ ...p, [k]: v })); fe.clear(k); };
   const net = (Number(form.basicSalary||0) + Number(form.allowances||0) - Number(form.deductions||0));
 
   const filtered = salaries.filter(s =>
@@ -242,14 +248,14 @@ export default function SalaryManagement() {
       </div>
 
       {/* Add/Edit Modal */}
-      <Modal show={showModal} onClose={() => setShowModal(false)} title={editSalary ? "Edit Salary" : "Add Salary Record"}>
+      <Modal show={showModal} onClose={() => { setShowModal(false); fe.setErrors({}); }} title={editSalary ? "Edit Salary" : "Add Salary Record"}>
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
           {field("TEACHER",
-            <select value={form.teacherId} onChange={e => f("teacherId", e.target.value)}
+            <select id="salary-teacherId" value={form.teacherId} onChange={e => f("teacherId", e.target.value)} {...fe.invalid("teacherId")}
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white" }}>
               <option value="">Select Teacher</option>
               {teachers.map(t => <option key={t._id} value={t._id}>{t.name}{t.employeeId ? ` (${t.employeeId})` : ""}</option>)}
-            </select>)}
+            </select>, undefined, <FieldError id="salary-teacherId-error">{fe.errors.teacherId}</FieldError>)}
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             {field("MONTH",
               <select value={form.month} onChange={e => f("month", Number(e.target.value))}
@@ -262,8 +268,9 @@ export default function SalaryManagement() {
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:12 }}>
             {[["BASIC SALARY","basicSalary"],["ALLOWANCES","allowances"],["DEDUCTIONS","deductions"]].map(([label, key]) => field(`${label} (₹)`,
-              <input type="number" value={form[key]} onChange={e => f(key, e.target.value)}
-                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box" }} />, key))}
+              <input id={`salary-${key}`} type="number" value={form[key]} onChange={e => f(key, e.target.value)} {...fe.invalid(key)}
+                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box" }} />, key,
+              <FieldError id={`salary-${key}-error`}>{fe.errors[key]}</FieldError>))}
           </div>
           <div style={{ background:"#F0FDF4", borderRadius:12, padding:"12px 16px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
             <span style={{ fontSize:13, fontWeight:700, color:"#64748B" }}>Net Salary</span>

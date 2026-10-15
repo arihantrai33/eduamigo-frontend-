@@ -5,6 +5,10 @@ import { toast, showCredentials, confirmAction, errorMessage } from "../../utils
 import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
 import { StatCard } from "../../components/ui/StatCard";
+import FieldError from "../../components/ui/FieldError";
+import { useFieldErrors } from "../../utils/fieldErrors";
+
+const FIELDS = { name: "user-name", email: "user-email" };
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -35,6 +39,7 @@ export default function UserManagement() {
   const [showModal, setShowModal] = useState(false);
   const [saving, setSaving]     = useState(false);
   const [form, setForm]         = useState({ name: "", email: "", password: "", role: "accountant" });
+  const v = useFieldErrors(FIELDS);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -57,7 +62,7 @@ export default function UserManagement() {
   };
 
   const handleAdd = async () => {
-    if (!form.name || !form.email) return toast.error("Name and email are required");
+    if (!v.check({ name: !form.name.trim() && "Enter the person's full name", email: !form.email.trim() && "Enter their email address" })) return;
     setSaving(true);
     try {
       const res = await axios.post(`${API}/users/register`, form, auth());
@@ -168,7 +173,7 @@ export default function UserManagement() {
       </div>
 
       {/* Add User Modal */}
-      <Modal show={showModal} onClose={() => setShowModal(false)} width={440} title="Add New User">
+      <Modal show={showModal} onClose={() => { setShowModal(false); v.setErrors({}); }} width={440} title="Add New User">
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               {[{ label: "Full Name", key: "name", type: "text", placeholder: "e.g. John Smith" },
                 { label: "Email Address", key: "email", type: "email", placeholder: "e.g. john@school.com" },
@@ -176,7 +181,8 @@ export default function UserManagement() {
               ].map(({ label, key, type, placeholder }) => (
                 <div key={key}>
                   <label htmlFor={`user-${key}`} style={{ fontSize: 11, color: "#64748B", fontWeight: 600, display: "block", marginBottom: 5 }}>{label.toUpperCase()}</label>
-                  <input id={`user-${key}`} type={type} value={form[key]} onChange={e => setForm({ ...form, [key]: e.target.value })} placeholder={placeholder} style={inp} />
+                  <input id={`user-${key}`} type={type} value={form[key]} onChange={e => { setForm({ ...form, [key]: e.target.value }); v.clear(key); }} placeholder={placeholder} style={inp} {...v.invalid(key)} />
+                  <FieldError id={`user-${key}-error`}>{v.errors[key]}</FieldError>
                 </div>
               ))}
               <div>

@@ -7,17 +7,23 @@ import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import { toneOf } from "../../components/ui/tone";
+import FieldError from "../../components/ui/FieldError";
+import { useFieldErrors } from "../../utils/fieldErrors";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const LEAVE_TYPES = ["Sick","Casual","Earned","Maternity","Other"];
-// A <label> around a caption and its field, so the field takes the caption as its name.
-const field = (label, control) => (
+// A <label> around a caption and its field, so the field takes the caption as its name; `after` is the field's
+// message when a check failed.
+const field = (label, control, after = null) => (
   <label style={{ display:"block" }}>
     <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>{label}</span>
     {control}
+    {after}
   </label>
 );
+// Checked fields; each control's id is "hr-<key>".
+const FIELDS = Object.fromEntries(["teacher", "basicSalary", "leaveType", "fromDate", "toDate"].map((k) => [k, `hr-${k}`]));
 
 function Tab({ label, icon, active, onClick }) {
   return (
@@ -49,6 +55,7 @@ export default function HRManagement() {
   const [filterStatus, setFilterStatus] = useState("");
 
   const [form, setForm] = useState({});
+  const fe = useFieldErrors(FIELDS);
 
   useEffect(() => { fetchTeachers(); }, []);
   useEffect(() => { if (tab === "salary") fetchSalaries(); else fetchLeaves(); }, [tab, filterMonth, filterYear, filterStatus]);
@@ -96,14 +103,15 @@ export default function HRManagement() {
   };
 
   const handleSave = async () => {
-    if (!form.teacher) return toast.error("Select a teacher");
-    if (tab === "salary") {
-      if (form.basicSalary === undefined || form.basicSalary === "" || Number(form.basicSalary) < 0) return toast.error("Enter the basic salary");
-    } else {
-      if (!form.leaveType) return toast.error("Select the leave type");
-      if (!form.fromDate || !form.toDate) return toast.error("Enter the from and to dates");
-      if (String(form.toDate).slice(0, 10) < String(form.fromDate).slice(0, 10)) return toast.error("The to date cannot be before the from date");
-    }
+    const salary = tab === "salary";
+    if (!fe.check({
+      teacher: !form.teacher && "Select a teacher",
+      basicSalary: salary && (form.basicSalary === undefined || form.basicSalary === "" || Number(form.basicSalary) < 0) && "Enter the basic salary",
+      leaveType: !salary && !form.leaveType && "Select the leave type",
+      fromDate: !salary && !form.fromDate && "Choose the from date",
+      toDate: !salary && (!form.toDate ? "Choose the to date"
+        : form.fromDate && String(form.toDate).slice(0, 10) < String(form.fromDate).slice(0, 10) && "The to date cannot be before the from date"),
+    })) return;
     setLoading(true);
     try {
       if (tab === "salary") {
@@ -138,14 +146,15 @@ export default function HRManagement() {
     } catch(e) { toast.error(errorMessage(e, "Could not update the leave")); }
   };
 
-  const f = (k, v) => setForm(prev => ({ ...prev, [k]: v }));
+  const f = (k, v) => { setForm(prev => ({ ...prev, [k]: v })); fe.clear(k); };
+  const err = (key) => <FieldError id={`hr-${key}-error`}>{fe.errors[key]}</FieldError>;
 
   const totalPaid = salaries.filter(s => s.status === "Paid").reduce((a, s) => a + (s.netSalary || 0), 0);
   const totalPending = salaries.filter(s => s.status === "Pending").reduce((a, s) => a + (s.netSalary || 0), 0);
   const pendingLeaves = leaves.filter(l => l.status === "Pending").length;
 
   const inp = (placeholder, key, type="text") => (
-    <input type={type} placeholder={placeholder} value={form[key]||""} onChange={e => f(key, e.target.value)}
+    <input id={`hr-${key}`} type={type} placeholder={placeholder} value={form[key]||""} onChange={e => f(key, e.target.value)} {...fe.invalid(key)}
       style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />
   );
 
@@ -286,14 +295,14 @@ export default function HRManagement() {
         </div>
       )}
 
-      <Modal show={showModal} onClose={() => setShowModal(false)} width={480}
+      <Modal show={showModal} onClose={() => { setShowModal(false); fe.setErrors({}); }} width={480}
         title={`${editItem ? "Edit" : "Add"} ${tab === "salary" ? "Salary Record" : "Leave Request"}`}>
             <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
               {field("TEACHER",
-                <select value={form.teacher||""} onChange={e => f("teacher", e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none" }}>
+                <select id="hr-teacher" value={form.teacher||""} onChange={e => f("teacher", e.target.value)} {...fe.invalid("teacher")} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none" }}>
                   <option value="">Select Teacher</option>
                   {teachers.map(t => <option key={t._id} value={t._id}>{t.name} — {t.employeeId}</option>)}
-                </select>)}
+                </select>, err("teacher"))}
               {tab === "salary" ? <>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
                   {field("MONTH",
@@ -306,7 +315,7 @@ export default function HRManagement() {
                     </select>)}
                 </div>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:12 }}>
-                  {field("BASIC (₹)", inp("Basic Salary","basicSalary","number"))}
+                  {field("BASIC (₹)", inp("Basic Salary","basicSalary","number"), err("basicSalary"))}
                   {field("ALLOWANCES (₹)", inp("Allowances","allowances","number"))}
                   {field("DEDUCTIONS (₹)", inp("Deductions","deductions","number"))}
                 </div>
@@ -318,13 +327,13 @@ export default function HRManagement() {
                 {field("REMARKS", inp("Optional remarks","remarks"))}
               </> : <>
                 {field("LEAVE TYPE",
-                  <select value={form.leaveType||""} onChange={e => f("leaveType", e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none" }}>
+                  <select id="hr-leaveType" value={form.leaveType||""} onChange={e => f("leaveType", e.target.value)} {...fe.invalid("leaveType")} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none" }}>
                     <option value="">Select Type</option>
                     {LEAVE_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                  </select>)}
+                  </select>, err("leaveType"))}
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-                  {field("FROM DATE", inp("","fromDate","date"))}
-                  {field("TO DATE", inp("","toDate","date"))}
+                  {field("FROM DATE", inp("","fromDate","date"), err("fromDate"))}
+                  {field("TO DATE", inp("","toDate","date"), err("toDate"))}
                 </div>
                 {field("REASON", inp("Reason for leave","reason"))}
               </>}

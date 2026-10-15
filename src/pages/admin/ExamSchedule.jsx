@@ -8,6 +8,11 @@ import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import { toneOf } from "../../components/ui/tone";
+import FieldError from "../../components/ui/FieldError";
+import { useFieldErrors } from "../../utils/fieldErrors";
+
+// Checked fields; each input's id is "exam-<key>".
+const FIELDS = Object.fromEntries(["title", "subject", "class", "date", "totalMarks", "startTime", "endTime"].map((k) => [k, `exam-${k}`]));
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -39,6 +44,7 @@ export default function ExamSchedule() {
   const [filterType, setFilterType] = useState("");
   const [filterClass, setFilterClass] = useState("");
   const [form, setForm] = useState(EMPTY_FORM);
+  const fe = useFieldErrors(FIELDS);
   const [examTypes, setExamTypes] = useState(DEFAULT_EXAM_TYPES);
   const [terms, setTerms] = useState(["Term 1", "Term 2"]);
   const [subjectList, setSubjectList] = useState([]);
@@ -72,10 +78,15 @@ export default function ExamSchedule() {
   const openEdit = (e) => { setEditExam(e); setForm({...e, date: e.date ? new Date(e.date).toISOString().split("T")[0] : ""}); setShowModal(true); };
 
   const handleSave = async () => {
-    if (!form.title || !form.subject || !form.class || !form.date) return toast.error("Title, subject, class and date are required");
-    if (!(Number(form.totalMarks) > 0)) return toast.error("Total marks are required so that teachers can enter marks");
-    if (!form.startTime || !form.endTime) return toast.error("Choose the start and end time of the exam");
-    if (form.endTime <= form.startTime) return toast.error("End time must be after the start time");
+    if (!fe.check({
+      title: !form.title?.trim() && "Enter the exam title",
+      subject: !form.subject?.trim() && "Enter the subject",
+      class: !String(form.class || "").trim() && "Enter the class",
+      date: !form.date && "Choose the exam date",
+      totalMarks: !(Number(form.totalMarks) > 0) && "Enter the total marks, so that teachers can enter marks",
+      startTime: !form.startTime && "Choose the start time",
+      endTime: !form.endTime ? "Choose the end time" : form.startTime && form.endTime <= form.startTime && "End time must be after the start time",
+    })) return;
     setSaving(true);
     try {
       if (editExam) await axios.put(`${API}/exams/${editExam._id}`, form, auth());
@@ -93,7 +104,7 @@ export default function ExamSchedule() {
     setDeleteId(null);
   };
 
-  const f = (k, v) => setForm(p => ({ ...p, [k]: v }));
+  const f = (k, v) => { setForm(p => ({ ...p, [k]: v })); fe.clear(k); };
   const classes = [...new Set(exams.map(e => e.class))].filter(Boolean).sort();
 
   const filtered = exams.filter(e =>
@@ -110,9 +121,10 @@ export default function ExamSchedule() {
   const inp = (label, key, type="text", placeholder="") => (
     <label style={{ display:"block" }}>
       <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
-      <input type={type} value={form[key]||""} onChange={e => f(key, e.target.value)} placeholder={placeholder}
+      <input id={`exam-${key}`} type={type} value={form[key]||""} onChange={e => f(key, e.target.value)} placeholder={placeholder} {...fe.invalid(key)}
         style={{ width:"100%", height:42, padding:"0 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white", color:"#0F172A" }}
         onFocus={e => e.target.style.borderColor="#F97316"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
+      <FieldError id={`exam-${key}-error`}>{fe.errors[key]}</FieldError>
     </label>
   );
   const sel = (label, key, options) => (
@@ -216,15 +228,16 @@ export default function ExamSchedule() {
         </div>
       )}
 
-      <Modal show={showModal} onClose={() => setShowModal(false)} title={editExam ? "Edit Exam" : "Schedule New Exam"}>
+      <Modal show={showModal} onClose={() => { setShowModal(false); fe.setErrors({}); }} title={editExam ? "Edit Exam" : "Schedule New Exam"}>
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
           {inp("EXAM TITLE","title","text","e.g. Mathematics Mid Term")}
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             {sel("EXAM TYPE","examType",examTypes)}
             <div>
               <label htmlFor="exam-subject" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>SUBJECT</label>
-              <input id="exam-subject" list="exam-subjects" value={form.subject||""} onChange={e => f("subject", e.target.value)} placeholder="e.g. Mathematics"
+              <input id="exam-subject" list="exam-subjects" value={form.subject||""} onChange={e => f("subject", e.target.value)} placeholder="e.g. Mathematics" {...fe.invalid("subject")}
                 style={{ width:"100%", height:42, padding:"0 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white", color:"#0F172A" }} />
+              <FieldError id="exam-subject-error">{fe.errors.subject}</FieldError>
               <datalist id="exam-subjects">{subjectList.map(sub => <option key={sub} value={sub} />)}</datalist>
             </div>
           </div>

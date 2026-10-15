@@ -6,6 +6,11 @@ import { Plus } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import Dialog from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
+import FieldError from "../../components/ui/FieldError";
+import { useFieldErrors } from "../../utils/fieldErrors";
+
+// Checked fields of the bus form; each input's id is "bus-<key>".
+const FIELDS = Object.fromEntries(["busNumber", "driverName", "driverPhone", "routeName"].map((k) => [k, `bus-${k}`]));
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import { toneOf } from "../../components/ui/tone";
 const API = import.meta.env.VITE_API_URL;
@@ -31,6 +36,7 @@ export default function Transport() {
   const [expandedBus, setExpandedBus] = useState(null);
 
   const [form, setForm] = useState({ busNumber:"", driverName:"", driverPhone:"", routeName:"", capacity:40, serviceArea:"" });
+  const fe = useFieldErrors(FIELDS);
   const [stops, setStops] = useState([]);
   const [newStop, setNewStop] = useState({ name:"", latitude:"", longitude:"", estimatedTime:"", order:1 });
   const [selectedStudents, setSelectedStudents] = useState([]);
@@ -51,7 +57,12 @@ export default function Transport() {
   };
 
   const handleAddBus = async () => {
-    if (!form.busNumber || !form.driverName || !form.driverPhone || !form.routeName) return toast.error("Fill in the bus number, driver name, driver phone and route name");
+    if (!fe.check({
+      busNumber: !String(form.busNumber || "").trim() && "Enter the bus number",
+      driverName: !String(form.driverName || "").trim() && "Enter the driver's name",
+      driverPhone: !String(form.driverPhone || "").trim() && "Enter the driver's phone number",
+      routeName: !String(form.routeName || "").trim() && "Enter the route name",
+    })) return;
     setSaving(true);
     try {
       await axios.post(`${API}/transport`, form, auth());
@@ -101,7 +112,7 @@ export default function Transport() {
   };
 
   const toggleStudent = (id) => setSelectedStudents(p => p.includes(id) ? p.filter(s=>s!==id) : [...p,id]);
-  const f = (k,v) => setForm(p=>({...p,[k]:v}));
+  const f = (k,v) => { setForm(p=>({...p,[k]:v})); fe.clear(k); };
 
   const totalStudents = buses.reduce((a,b) => a + (b.assignedStudents?.length||0), 0);
   const onRoute = buses.filter(b => b.busStatus === "On Route").length;
@@ -229,15 +240,16 @@ export default function Transport() {
       )}
 
       {/* Add Bus Modal */}
-      <Modal show={showAddModal} onClose={() => setShowAddModal(false)} title="Add New Bus">
+      <Modal show={showAddModal} onClose={() => { setShowAddModal(false); fe.setErrors({}); }} title="Add New Bus">
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             {[["BUS NUMBER","busNumber","text"],["DRIVER NAME","driverName","text"],["DRIVER PHONE","driverPhone","tel"],["ROUTE NAME","routeName","text"],["CAPACITY","capacity","number"],["SERVICE AREA","serviceArea","text"]].map(([label,key,type]) => (
               <label key={key} style={{ display:"block" }}>
                 <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
-                <input type={type} value={form[key]||""} onChange={e => f(key,e.target.value)}
+                <input id={`bus-${key}`} type={type} value={form[key]||""} onChange={e => f(key,e.target.value)} {...fe.invalid(key)}
                   style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
                   onFocus={e=>e.target.style.borderColor="#F59E0B"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
+                <FieldError id={`bus-${key}-error`}>{fe.errors[key]}</FieldError>
               </label>
             ))}
           </div>

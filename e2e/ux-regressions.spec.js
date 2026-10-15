@@ -51,7 +51,10 @@ test('HR, calendar and user forms open in the shared dialog; HR checks required 
   // The floating Ask button would otherwise sit above the dialog.
   await expect(page.locator('.ea-ask-fab')).toBeHidden();
   await hr.getByRole('button', { name: 'Save' }).click();
-  await expect(page.getByRole('status')).toContainText('Select a teacher');
+  // The message is under the field it is about (it used to be a toast), and focus goes there.
+  const teacher = hr.getByRole('combobox', { name: /TEACHER/ });
+  await expect(teacher).toHaveAccessibleDescription('Select a teacher');
+  await expect(teacher).toBeFocused();
   await expect(hr).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(hr).toHaveCount(0);

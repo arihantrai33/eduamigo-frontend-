@@ -9,6 +9,11 @@ import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import { toneOf } from "../../components/ui/tone";
+import FieldError from "../../components/ui/FieldError";
+import { useFieldErrors } from "../../utils/fieldErrors";
+
+// Checked fields; each control's id is "fee-<key>".
+const FIELDS = Object.fromEntries(["class", "feeType", "academicYear", "amount", "dueDate"].map((k) => [k, `fee-${k}`]));
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -25,6 +30,7 @@ export default function FeeStructure() {
   const [filterClass, setFilterClass] = useState("");
   const emptyForm = () => ({ class:"", section:"All", academicYear: currentAcademicYear(), feeType:"Tuition Fee", amount:"", dueDate:"", description:"" });
   const [form, setForm] = useState(emptyForm);
+  const fe = useFieldErrors(FIELDS);
   const [applyingId, setApplyingId] = useState(null);
 
   useEffect(() => { fetchStructures(); }, []);
@@ -42,7 +48,13 @@ export default function FeeStructure() {
   const openEdit = (s) => { setEditItem(s); setForm({ ...s, dueDate: s.dueDate ? new Date(s.dueDate).toISOString().slice(0, 10) : "" }); setShowModal(true); };
 
   const handleSave = async () => {
-    if (!form.class || !form.feeType || !form.amount || !form.dueDate || !form.academicYear) return toast.error("Class, fee type, amount, due date and academic year are required");
+    if (!fe.check({
+      class: !String(form.class || "").trim() && "Enter the class",
+      feeType: !form.feeType && "Choose the fee type",
+      academicYear: !form.academicYear && "Choose the academic year",
+      amount: !form.amount && "Enter the amount",
+      dueDate: !form.dueDate && "Choose the due date",
+    })) return;
     setSaving(true);
     try {
       const payload = { class: form.class, section: form.section || "All", academicYear: form.academicYear, feeType: form.feeType, amount: Number(form.amount), dueDate: form.dueDate, description: form.description };
@@ -78,7 +90,7 @@ export default function FeeStructure() {
     setApplyingId(null);
   };
 
-  const f = (k, v) => setForm(p => ({ ...p, [k]: v }));
+  const f = (k, v) => { setForm(p => ({ ...p, [k]: v })); fe.clear(k); };
   const classes = [...new Set(structures.map(s => s.class))].sort();
   const filtered = structures.filter(s => !filterClass || s.class === filterClass);
   const totalAmount = filtered.reduce((sum, s) => sum + Number(s.amount || 0), 0);
@@ -87,18 +99,20 @@ export default function FeeStructure() {
   const inp = (label, key, type="text", placeholder="") => (
     <label style={{ display:"block" }}>
       <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
-      <input type={type} value={form[key]||""} onChange={e => f(key, e.target.value)} placeholder={placeholder}
+      <input id={`fee-${key}`} type={type} value={form[key]||""} onChange={e => f(key, e.target.value)} placeholder={placeholder} {...fe.invalid(key)}
         style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
         onFocus={e => e.target.style.borderColor="#06B6D4"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
+      <FieldError id={`fee-${key}-error`}>{fe.errors[key]}</FieldError>
     </label>
   );
   const sel = (label, key, options) => (
     <label style={{ display:"block" }}>
       <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
-      <select value={form[key]||""} onChange={e => f(key, e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
+      <select id={`fee-${key}`} value={form[key]||""} onChange={e => f(key, e.target.value)} {...fe.invalid(key)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
         <option value="">Select</option>
         {options.map(o => <option key={o} value={o}>{o}</option>)}
       </select>
+      <FieldError id={`fee-${key}-error`}>{fe.errors[key]}</FieldError>
     </label>
   );
 
@@ -193,7 +207,7 @@ export default function FeeStructure() {
         </table>
       </div>
 
-      <Modal show={showModal} onClose={() => setShowModal(false)} title={editItem ? "Edit Fee Structure" : "Add Fee Structure"}>
+      <Modal show={showModal} onClose={() => { setShowModal(false); fe.setErrors({}); }} title={editItem ? "Edit Fee Structure" : "Add Fee Structure"}>
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             {inp("CLASS","class","text","e.g. 10")}

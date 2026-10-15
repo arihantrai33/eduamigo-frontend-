@@ -222,3 +222,23 @@ test('teacher upload and leave tabs announce the selected tab', async ({ page })
   await page.goto('/teacher/leave');
   await expect(page.locator('button[aria-pressed="true"]')).toHaveCount(1);
 });
+
+test('admin dialogs name the missing field under it and move focus there (event, book, exam, fee)', async ({ page }) => {
+  await signIn(page, 'admin');
+  const cases = [
+    ['/admin/event-calendar', 'Add Event', 'Add Event', /Title/, 'Enter the event title'],
+    ['/admin/library', 'Add Book', /Add Book|Save/, /TITLE/, 'Enter the book title'],
+    ['/admin/exams', 'Schedule Exam', 'Save Exam', /EXAM TITLE/, 'Enter the exam title'],
+    ['/admin/fee-structure', 'Add Fee', 'Save', /CLASS/, 'Enter the class'],
+  ];
+  for (const [path, opener, save, label, message] of cases) {
+    await page.goto(path);
+    await page.getByRole('button', { name: opener }).first().click();
+    const dialog = page.getByRole('dialog');
+    await dialog.getByRole('button', { name: save }).last().click();
+    const field = dialog.getByRole('textbox', { name: label }).first();
+    await expect(field, `${path}: message under the field`).toHaveAccessibleDescription(message);
+    await expect(field).toBeFocused();
+    await page.keyboard.press('Escape');
+  }
+});

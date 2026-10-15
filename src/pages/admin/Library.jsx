@@ -5,6 +5,10 @@ import { toast, confirmAction, errorMessage } from "../../utils/toast";
 import { Plus } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
+import FieldError from "../../components/ui/FieldError";
+import { useFieldErrors } from "../../utils/fieldErrors";
+
+const FIELDS = { title: "book-title", totalCopies: "book-totalCopies" };
 import PageHeader from "../../components/ui/PageHeader";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import { toneOf } from "../../components/ui/tone";
@@ -31,6 +35,7 @@ export default function Library() {
   const [editBook, setEditBook] = useState(null);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({ title:"", author:"", isbn:"", category:"Textbook", totalCopies:"1", publisher:"", year:"" });
+  const fe = useFieldErrors(FIELDS);
 
   useEffect(() => { fetchBooks(); }, []);
 
@@ -56,7 +61,10 @@ export default function Library() {
   };
 
   const handleSave = async () => {
-    if (!form.title || !form.totalCopies) return toast.error("Title and copies required");
+    if (!fe.check({
+      title: !String(form.title || "").trim() && "Enter the book title",
+      totalCopies: !(Number(form.totalCopies) > 0) && "Enter how many copies the library has",
+    })) return;
     setSaving(true);
     try {
       if (editBook) await axios.patch(`${API}/library/${editBook._id}`, form, auth());
@@ -73,7 +81,7 @@ export default function Library() {
     catch(e) { toast.error(errorMessage(e, "Could not delete the book")); }
   };
 
-  const f = (k,v) => setForm(p=>({...p,[k]:v}));
+  const f = (k,v) => { setForm(p=>({...p,[k]:v})); fe.clear(k); };
 
   const filtered = books.filter(b =>
     (!filterCat || b.category === filterCat) &&
@@ -214,14 +222,15 @@ export default function Library() {
       </div>
 
       {/* Add/Edit Modal */}
-      <Modal show={showModal} onClose={() => setShowModal(false)} title={editBook ? "Edit Book" : "Add New Book"}>
+      <Modal show={showModal} onClose={() => { setShowModal(false); fe.setErrors({}); }} title={editBook ? "Edit Book" : "Add New Book"}>
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
           {/* Each field is a <label> around its caption, so the field takes the caption as its name. */}
           <label style={{ display:"block" }}>
             <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TITLE *</span>
-            <input value={form.title} onChange={e=>f("title",e.target.value)} placeholder="Book title..."
+            <input id="book-title" value={form.title} onChange={e=>f("title",e.target.value)} placeholder="Book title..." {...fe.invalid("title")}
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
               onFocus={e=>e.target.style.borderColor="var(--brand)"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
+            <FieldError id="book-title-error">{fe.errors.title}</FieldError>
           </label>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             {[["AUTHOR","author"],["ISBN","isbn"],["PUBLISHER","publisher"],["YEAR","year"]].map(([label,key]) => (
@@ -244,8 +253,9 @@ export default function Library() {
             </label>
             <label style={{ display:"block" }}>
               <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TOTAL COPIES *</span>
-              <input type="number" value={form.totalCopies} onChange={e=>f("totalCopies",e.target.value)} min="1"
+              <input id="book-totalCopies" type="number" value={form.totalCopies} onChange={e=>f("totalCopies",e.target.value)} min="1" {...fe.invalid("totalCopies")}
                 style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />
+              <FieldError id="book-totalCopies-error">{fe.errors.totalCopies}</FieldError>
             </label>
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>

@@ -6,6 +6,10 @@ import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
 import { toast, errorMessage, confirmAction } from "../../utils/toast";
+import FieldError from "../../components/ui/FieldError";
+import { useFieldErrors } from "../../utils/fieldErrors";
+
+const FIELDS = { title: "event-title", date: "event-start" };
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -32,6 +36,7 @@ export default function EventCalendar() {
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
   const [showDayModal, setShowDayModal] = useState(false);
   const [form, setForm] = useState({ title: "", description: "", date: "", endDate: "", type: "event", targetRole: "all" });
+  const v = useFieldErrors(FIELDS);
   const [saving, setSaving] = useState(false);
   const [animDir, setAnimDir] = useState(0);
   const [visible, setVisible] = useState(true);
@@ -48,7 +53,8 @@ export default function EventCalendar() {
   };
 
   const handleSubmit = async () => {
-    if (!form.title.trim() || !form.date) return;
+    // Saving with a missing field used to do nothing at all; now each missing field says so.
+    if (!v.check({ title: !form.title.trim() && "Enter the event title", date: !form.date && "Choose the start date" })) return;
     setSaving(true);
     try {
       await axios.post(`${API}/events`, form, authHeader());
@@ -304,7 +310,7 @@ export default function EventCalendar() {
       </Modal>
 
       {/* Add Form Modal */}
-      <Modal show={showForm} onClose={() => setShowForm(false)} width={500} title="Add New Event">
+      <Modal show={showForm} onClose={() => { setShowForm(false); v.setErrors({}); }} width={500} title="Add New Event">
 
             <div style={{ marginBottom:16 }}>
               <label style={{ fontSize:12, fontWeight:700, color:"#374151", display:"block", marginBottom:8 }}>Event Type</label>
@@ -320,7 +326,8 @@ export default function EventCalendar() {
 
             <div style={{ marginBottom:14 }}>
               <label htmlFor="event-title" style={{ fontSize:12, fontWeight:700, color:"#374151", display:"block", marginBottom:6 }}>Title *</label>
-              <input id="event-title" value={form.title} onChange={e => setForm({...form,title:e.target.value})} placeholder="Event title..." style={inputStyle} onFocus={e => e.target.style.borderColor=c1} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
+              <input id="event-title" value={form.title} onChange={e => { setForm({...form,title:e.target.value}); v.clear("title"); }} placeholder="Event title..." style={inputStyle} onFocus={e => e.target.style.borderColor=c1} onBlur={e => e.target.style.borderColor="#E2E8F0"} {...v.invalid("title")} />
+              <FieldError id={v.errorId("title")}>{v.errors.title}</FieldError>
             </div>
 
             <div style={{ marginBottom:14 }}>
@@ -331,7 +338,8 @@ export default function EventCalendar() {
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:14 }}>
               <div>
                 <label htmlFor="event-start" style={{ fontSize:12, fontWeight:700, color:"#374151", display:"block", marginBottom:6 }}>Start Date *</label>
-                <input id="event-start" type="date" value={form.date} onChange={e => setForm({...form,date:e.target.value})} style={inputStyle} />
+                <input id="event-start" type="date" value={form.date} onChange={e => { setForm({...form,date:e.target.value}); v.clear("date"); }} style={inputStyle} {...v.invalid("date")} />
+                <FieldError id={v.errorId("date")}>{v.errors.date}</FieldError>
               </div>
               <div>
                 <label htmlFor="event-end" style={{ fontSize:12, fontWeight:700, color:"#374151", display:"block", marginBottom:6 }}>End Date</label>
@@ -350,7 +358,7 @@ export default function EventCalendar() {
             </div>
 
             <div style={{ display:"flex", gap:10 }}>
-              <button onClick={() => setShowForm(false)} style={{ flex:1, padding:"12px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontSize:13, fontWeight:600, cursor:"pointer", color:"#64748B" }}>Cancel</button>
+              <button type="button" onClick={() => { setShowForm(false); v.setErrors({}); }} style={{ flex:1, padding:"12px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontSize:13, fontWeight:600, cursor:"pointer", color:"#64748B" }}>Cancel</button>
               <button onClick={handleSubmit} disabled={saving} style={{ flex:2, padding:"12px", borderRadius:12, border:"none", background:`linear-gradient(135deg,${c1},${c2})`, color:"white", fontSize:13, fontWeight:700, cursor:"pointer", boxShadow:`0 4px 12px ${c1}40` }}>
                 {saving ? "Saving..." : "Add Event"}
               </button>
