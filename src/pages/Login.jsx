@@ -110,7 +110,7 @@ export default function Login() {
   );
 
   return (
-    <div style={s.page}>
+    <div className="ea-auth" style={s.page}>
       <SchoolHero school={school} theme={theme}>
         <button onClick={() => setDarkMode(!darkMode)} aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"} title={darkMode ? "Light mode" : "Dark mode"}
           style={{

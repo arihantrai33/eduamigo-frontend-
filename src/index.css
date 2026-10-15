@@ -304,6 +304,15 @@ input, button, select, textarea {
   }
   .ea-solo--document .ea-solo__stage { max-width: 920px; }
 }
+/* Sign-in and forgot password on a desktop: the school's brand panel on the left, the form on the right, instead
+   of a phone-sized card. The page roots carry .ea-auth, the shared hero .ea-school-hero. */
+@media (min-width: 1024px) {
+  .ea-solo__stage:has(.ea-auth) { max-width: 980px; height: min(680px, calc(var(--ea-vh) - 64px)); }
+  .ea-auth { display: grid !important; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); overflow: hidden !important; }
+  .ea-auth > .ea-school-hero { height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 48px 40px !important; }
+  .ea-auth > .ea-school-hero .ea-school-hero__wave { display: none !important; }
+  .ea-auth > div:not(.ea-school-hero) { overflow-y: auto; display: flex; flex-direction: column; justify-content: center; padding: 40px 48px !important; }
+}
 /* ───────────── Printing a document (report card, fee receipt, transfer certificate) ─────────────
    The document's root has .ea-print-doc. The app shells around it have a fixed height and scroll inside, which cut a
    printout after one screen (and a centred grid shrank it to half the paper). While a document is on the page, its

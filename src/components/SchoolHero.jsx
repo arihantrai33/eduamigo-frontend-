@@ -41,7 +41,7 @@ export default function SchoolHero({ school, theme, compact = false, children })
   const look = heroLook(theme, theme.isLight);
 
   return (
-    <div style={{
+    <div className="ea-school-hero" style={{
       position: "relative", overflow: "hidden", flexShrink: 0,
       padding: compact ? "26px 24px 46px" : "34px 24px 58px",
       background: look.background,
@@ -95,7 +95,7 @@ export default function SchoolHero({ school, theme, compact = false, children })
       </div>
 
       {/* Curved bottom edge that the card below slides into */}
-      <svg aria-hidden viewBox="0 0 390 40" preserveAspectRatio="none" style={{ position: "absolute", left: 0, right: 0, bottom: -1, width: "100%", height: 34, display: "block" }}>
+      <svg className="ea-school-hero__wave" aria-hidden viewBox="0 0 390 40" preserveAspectRatio="none" style={{ position: "absolute", left: 0, right: 0, bottom: -1, width: "100%", height: 34, display: "block" }}>
         <path d="M0,40 L0,22 C90,2 160,0 195,0 C230,0 300,2 390,22 L390,40 Z" fill="var(--card, #fff)" />
       </svg>
 

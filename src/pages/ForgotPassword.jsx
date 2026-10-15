@@ -77,7 +77,7 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div style={s.page}>
+    <div className="ea-auth" style={s.page}>
       <SchoolHero school={school} theme={theme} compact />
       <div style={s.card}>
         {role === "student" ? (
