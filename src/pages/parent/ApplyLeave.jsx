@@ -119,30 +119,19 @@ export default function ApplyLeave() {
             { label: "Used", value: used },
           ]} />
         </div>
-        <div className="ea-pd-main" style={{
-          background: "var(--card)", borderRadius: "16px", padding: "20px",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-        }}>
-          <div style={{ fontSize: "12px", fontWeight: "700", color: "var(--subtext)", letterSpacing: "1px", marginBottom: "16px" }}>
-            APPLY NEW LEAVE
-          </div>
+        <div className="ea-pd-main ea-card" style={{ padding: 20 }}>
+          <h2 className="ea-form-section__title">Apply new leave</h2>
 
           {/* Leave Type */}
           <div style={{ marginBottom: "16px" }}>
-            <label htmlFor="leave-type" style={{ fontSize: "11px", fontWeight: "700", color: "var(--subtext2)", letterSpacing: "0.5px" }}>
-              LEAVE TYPE
+            <label htmlFor="leave-type" className="ea-label">
+              Leave type
             </label>
             <select
               id="leave-type"
               value={leaveType}
               onChange={(e) => setLeaveType(e.target.value)}
-              style={{
-                width: "100%", marginTop: "8px", padding: "12px",
-                borderRadius: "10px", border: "1px solid #e0e0e0",
-                fontSize: "14px", color: "var(--text)", outline: "none",
-                fontFamily: "inherit",
-                background: "var(--card)", boxSizing: "border-box",
-              }}
+              className="ea-select" style={{ width: "100%", marginTop: 6 }}
             >
               {LEAVE_TYPES.map((t) => (
                 <option key={t.value} value={t.value}>{t.label}</option>
@@ -153,8 +142,8 @@ export default function ApplyLeave() {
           {/* From / To Date */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "16px" }}>
             <div>
-              <label htmlFor="leave-from" style={{ fontSize: "11px", fontWeight: "700", color: "var(--subtext2)", letterSpacing: "0.5px" }}>
-                FROM DATE
+              <label htmlFor="leave-from" className="ea-label">
+                From date
               </label>
               <input
                 id="leave-from"
@@ -162,18 +151,13 @@ export default function ApplyLeave() {
                 value={fromDate}
                 onChange={(e) => { setFromDate(e.target.value); v.clear("fromDate"); }}
                 {...v.invalid("fromDate")}
-                style={{
-                  width: "100%", marginTop: "8px", padding: "12px",
-                  borderRadius: "10px", border: "1px solid #e0e0e0",
-                  fontSize: "13px", outline: "none", color: "var(--text)",
-                  fontFamily: "inherit", boxSizing: "border-box",
-                }}
+                className="ea-input" style={{ width: "100%", marginTop: 6 }}
               />
               <FieldError id={v.errorId("fromDate")}>{v.errors.fromDate}</FieldError>
             </div>
             <div>
-              <label htmlFor="leave-to" style={{ fontSize: "11px", fontWeight: "700", color: "var(--subtext2)", letterSpacing: "0.5px" }}>
-                TO DATE
+              <label htmlFor="leave-to" className="ea-label">
+                To date
               </label>
               <input
                 id="leave-to"
@@ -181,12 +165,7 @@ export default function ApplyLeave() {
                 value={toDate}
                 onChange={(e) => { setToDate(e.target.value); v.clear("toDate"); }}
                 {...v.invalid("toDate")}
-                style={{
-                  width: "100%", marginTop: "8px", padding: "12px",
-                  borderRadius: "10px", border: "1px solid #e0e0e0",
-                  fontSize: "13px", outline: "none", color: "var(--text)",
-                  fontFamily: "inherit", boxSizing: "border-box",
-                }}
+                className="ea-input" style={{ width: "100%", marginTop: 6 }}
               />
               <FieldError id={v.errorId("toDate")}>{v.errors.toDate}</FieldError>
             </div>
@@ -194,8 +173,8 @@ export default function ApplyLeave() {
 
           {/* Reason */}
           <div style={{ marginBottom: "16px" }}>
-            <label htmlFor="leave-reason" style={{ fontSize: "11px", fontWeight: "700", color: "var(--subtext2)", letterSpacing: "0.5px" }}>
-              REASON
+            <label htmlFor="leave-reason" className="ea-label">
+              Reason
             </label>
             <textarea
               id="leave-reason"
@@ -204,22 +183,16 @@ export default function ApplyLeave() {
               {...v.invalid("reason")}
               placeholder="Explain the reason for leave..."
               rows={4}
-              style={{
-                width: "100%", marginTop: "8px", padding: "12px",
-                borderRadius: "10px", border: "1px solid #e0e0e0",
-                fontSize: "14px", outline: "none", color: "var(--text)",
-                resize: "none", fontFamily: "inherit",
-                boxSizing: "border-box",
-              }}
+              className="ea-input" style={{ width: "100%", marginTop: 6 }}
             />
             <FieldError id={v.errorId("reason")}>{v.errors.reason}</FieldError>
           </div>
 
           {/* Attach Document */}
           <div style={{ marginBottom: "16px" }}>
-            <label style={{ fontSize: "11px", fontWeight: "700", color: "var(--subtext2)", letterSpacing: "0.5px" }}>
-              ATTACH DOCUMENT (Optional)
-            </label>
+            <span className="ea-label">
+              Attach document (optional)
+            </span>
             <div
               onClick={() => document.getElementById("fileInputParent").click()}
               style={{
@@ -271,13 +244,8 @@ export default function ApplyLeave() {
 
         {/* Leave History */}
         {leaveHistory.length > 0 && (
-          <div className="ea-pd-side" style={{
-            background: "var(--card)", borderRadius: "16px", padding: "20px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-          }}>
-            <div style={{ fontSize: "12px", fontWeight: "700", color: "var(--subtext)", letterSpacing: "1px", marginBottom: "16px" }}>
-              LEAVE HISTORY
-            </div>
+          <div className="ea-pd-side ea-card" style={{ padding: 20 }}>
+            <h2 className="ea-form-section__title">Leave history</h2>
             {leaveHistory.map((leave, i) => {
               const statusColor =
                 leave.status === "Approved" ? "#16A34A" :

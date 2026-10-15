@@ -84,14 +84,8 @@ export default function ApplyLeave() {
     finally { setLoading(false); }
   };
   const days = calcDays();
-  const inputStyle = {
-    width: "100%", marginTop: "8px", padding: "12px",
-    borderRadius: "10px", border: dm ? "1px solid #334155" : "1px solid #e0e0e0",
-    fontSize: "14px", outline: "none",
-    color: dm ? "#f1f5f9" : "#111",
-    background: dm ? "#0f172a" : "#fff",
-    fontFamily: "inherit", boxSizing: "border-box", appearance: "none", WebkitAppearance: "none", colorScheme: dm ? "dark" : "light",
-  };
+  // Shared field style (.ea-input): white, bordered, 40 px; its colours follow the portal's light or dark theme.
+  const inputStyle = { width: "100%", marginTop: 6, colorScheme: dm ? "dark" : "light" };
   if (success) return (
     <div style={{ height: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "inherit", background: dm ? "#0f172a" : "#f5f6fa" }}>
       <div style={{ fontSize: "64px" }}><Glyph e="✅" /></div>
@@ -114,23 +108,23 @@ export default function ApplyLeave() {
               { label: "Used", value: quota.used },
             ]} />
         </div>
-        <div className="ea-pd-main" style={{ background: dm ? "#1e293b" : "white", borderRadius: "16px", padding: "20px", boxShadow: dm ? "0 2px 8px rgba(0,0,0,0.3)" : "0 2px 8px rgba(0,0,0,0.06)" }}>
-          <div style={{ fontSize: "12px", fontWeight: "700", color: dm ? "#94a3b8" : "#888", letterSpacing: "1px", marginBottom: "16px" }}>APPLY NEW LEAVE</div>
+        <div className="ea-pd-main ea-card" style={{ padding: 20 }}>
+          <h2 className="ea-form-section__title">Apply new leave</h2>
           <div style={{ marginBottom: "16px" }}>
-            <label style={{ fontSize: "11px", fontWeight: "700", color: dm ? "#94a3b8" : "#666", letterSpacing: "0.5px" }} htmlFor="leave-type">LEAVE TYPE</label>
-            <select id="leave-type" value={leaveType} onChange={(e) => setLeaveType(e.target.value)} style={inputStyle}>
+            <label className="ea-label" htmlFor="leave-type">Leave type</label>
+            <select id="leave-type" value={leaveType} onChange={(e) => setLeaveType(e.target.value)} className="ea-select" style={inputStyle}>
               {LEAVE_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
             </select>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "8px" }}>
             <div>
-              <label style={{ fontSize: "11px", fontWeight: "700", color: dm ? "#94a3b8" : "#666", letterSpacing: "0.5px" }} htmlFor="leave-from">FROM DATE</label>
-              <input id="leave-from" type="date" value={fromDate} onChange={(e) => { setFromDate(e.target.value); setFormError(""); v.clear("fromDate"); }} style={{ ...inputStyle, fontSize: "13px" }} {...v.invalid("fromDate")} />
+              <label className="ea-label" htmlFor="leave-from">From date</label>
+              <input id="leave-from" type="date" value={fromDate} onChange={(e) => { setFromDate(e.target.value); setFormError(""); v.clear("fromDate"); }} className="ea-input" style={inputStyle} {...v.invalid("fromDate")} />
               <FieldError id={v.errorId("fromDate")}>{v.errors.fromDate}</FieldError>
             </div>
             <div>
-              <label style={{ fontSize: "11px", fontWeight: "700", color: dm ? "#94a3b8" : "#666", letterSpacing: "0.5px" }} htmlFor="leave-to">TO DATE</label>
-              <input id="leave-to" type="date" value={toDate} onChange={(e) => { setToDate(e.target.value); setFormError(""); v.clear("toDate"); }} style={{ ...inputStyle, fontSize: "13px" }} {...v.invalid("toDate")} />
+              <label className="ea-label" htmlFor="leave-to">To date</label>
+              <input id="leave-to" type="date" value={toDate} onChange={(e) => { setToDate(e.target.value); setFormError(""); v.clear("toDate"); }} className="ea-input" style={inputStyle} {...v.invalid("toDate")} />
               <FieldError id={v.errorId("toDate")}>{v.errors.toDate}</FieldError>
             </div>
           </div>
@@ -140,12 +134,12 @@ export default function ApplyLeave() {
             </div>
           )}
           <div style={{ marginBottom: "16px" }}>
-            <label style={{ fontSize: "11px", fontWeight: "700", color: dm ? "#94a3b8" : "#666", letterSpacing: "0.5px" }} htmlFor="leave-reason">REASON</label>
-            <textarea id="leave-reason" value={reason} onChange={(e) => { setReason(e.target.value); setFormError(""); v.clear("reason"); }} placeholder="Explain the reason for leave..." rows={4} style={{ ...inputStyle, resize: "none" }} {...v.invalid("reason")} />
+            <label className="ea-label" htmlFor="leave-reason">Reason</label>
+            <textarea id="leave-reason" value={reason} onChange={(e) => { setReason(e.target.value); setFormError(""); v.clear("reason"); }} placeholder="Explain the reason for leave..." rows={4} className="ea-input" style={inputStyle} {...v.invalid("reason")} />
             <FieldError id={v.errorId("reason")}>{v.errors.reason}</FieldError>
           </div>
           <div style={{ marginBottom: "16px" }}>
-            <label style={{ fontSize: "11px", fontWeight: "700", color: dm ? "#94a3b8" : "#666", letterSpacing: "0.5px" }}>ATTACH DOCUMENT (Optional)</label>
+            <span className="ea-label">Attach document (optional)</span>
             <div onClick={() => document.getElementById("fileInputStudent").click()} style={{ marginTop: "8px", padding: "12px 16px", borderRadius: "10px", border: dm ? "1.5px dashed #334155" : "1.5px dashed #c0c0c0", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px", background: dm ? "#0f172a" : "#fafafa" }}>
               <span style={{ fontSize: "20px" }}><Glyph e="📎" /></span>
               <div style={{ flex: 1 }}>
@@ -163,8 +157,8 @@ export default function ApplyLeave() {
             {loading ? "Submitting..." : "Submit Leave Request"}
           </button>
         </div>
-        <div className="ea-pd-side" style={{ background: dm ? "#1e293b" : "white", borderRadius: "16px", padding: "20px", boxShadow: dm ? "0 2px 8px rgba(0,0,0,0.3)" : "0 2px 8px rgba(0,0,0,0.06)" }}>
-          <div style={{ fontSize: "12px", fontWeight: "700", color: dm ? "#94a3b8" : "#888", letterSpacing: "1px", marginBottom: "16px" }}>LEAVE HISTORY</div>
+        <div className="ea-pd-side ea-card" style={{ padding: 20 }}>
+          <h2 className="ea-form-section__title">Leave history</h2>
           {historyLoading ? (
             <div style={{ textAlign: "center", color: dm ? "#94a3b8" : "#aaa", fontSize: "13px", padding: "20px 0" }}>Loading history...</div>
           ) : leaveHistory.length === 0 ? (

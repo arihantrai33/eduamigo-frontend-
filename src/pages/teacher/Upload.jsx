@@ -199,30 +199,30 @@ export default function TeacherUpload() {
         )}
 
         {tab === 'upload' && (
-          <div style={styles.formCard}>
-            <h3 style={styles.formTitle}>New Material Upload</h3>
+          <div className="ea-card" style={styles.formCard}>
+            <h3 className="ea-form-section__title">New Material Upload</h3>
             {formError && <div style={styles.errorBox}><Glyph e="⚠" /> {formError}</div>}
 
-            <label style={styles.label}>Title</label>
+            <label className="ea-label" style={styles.label}>Title</label>
             <input
-              style={styles.input}
+              className="ea-input" style={styles.input}
               placeholder="e.g. Chapter 5 Notes"
               value={form.title}
               onChange={e => setForm({ ...form, title: e.target.value })}
             />
 
-            <label style={styles.label}>Type</label>
+            <label className="ea-label" style={styles.label}>Type</label>
             <select
-              style={styles.select}
+              className="ea-select" style={styles.select}
               value={form.type}
               onChange={e => setForm({ ...form, type: e.target.value })}
             >
               {NOTE_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
             </select>
 
-            <label style={styles.label}>Subject</label>
+            <label className="ea-label" style={styles.label}>Subject</label>
             <select
-              style={styles.select}
+              className="ea-select" style={styles.select}
               value={form.subject}
               onChange={e => setForm({ ...form, subject: e.target.value })}
             >
@@ -233,9 +233,9 @@ export default function TeacherUpload() {
               }
             </select>
 
-            <label style={styles.label}>Class</label>
+            <label className="ea-label" style={styles.label}>Class</label>
             <select
-              style={styles.select}
+              className="ea-select" style={styles.select}
               value={form.class}
               onChange={e => setForm({ ...form, class: e.target.value })}
             >
@@ -246,19 +246,19 @@ export default function TeacherUpload() {
               }
             </select>
 
-            <label style={styles.label}>Section (Optional)</label>
+            <label className="ea-label" style={styles.label}>Section (Optional)</label>
             <input
-              style={styles.input}
+              className="ea-input" style={styles.input}
               placeholder="e.g. A, B, C"
               value={form.section}
               onChange={e => setForm({ ...form, section: e.target.value })}
             />
 
-            <label style={styles.label}>PDF File</label>
+            <label className="ea-label" style={styles.label}>PDF File</label>
             <input
               type="file"
               accept="application/pdf"
-              style={styles.input}
+              className="ea-input" style={styles.input}
               onChange={e => setFile(e.target.files[0] || null)}
             />
             {file && (
@@ -267,10 +267,10 @@ export default function TeacherUpload() {
 
             {form.type === 'Assignment' && (
               <>
-                <label style={styles.label}>Due Date</label>
+                <label className="ea-label" style={styles.label}>Due Date</label>
                 <input
                   type="date"
-                  style={styles.input}
+                  className="ea-input" style={styles.input}
                   value={form.dueDate}
                   onChange={e => setForm({ ...form, dueDate: e.target.value })}
                 />
@@ -362,47 +362,10 @@ const styles = {
   cardFooter: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   timeText: { fontSize: 11, color: '#BDBDBD', fontWeight: 500 },
   viewLink: { fontSize: 12, color: 'var(--brand)', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4, minHeight: 28 },
-  formCard: {
-    background: '#fff',
-    borderRadius: 16,
-    padding: '20px 16px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-  },
-  formTitle: { fontSize: 16, fontWeight: 700, color: '#1A1A2E', margin: '0 0 16px' },
-  label: {
-    fontSize: 12,
-    fontWeight: 600,
-    color: 'var(--brand)',
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
-    display: 'block',
-    marginBottom: 6,
-  },
-  input: {
-    width: '100%',
-    padding: '12px',
-    border: '1.5px solid #E0E0E0',
-    borderRadius: 10,
-    fontSize: 14,
-    fontFamily: "inherit",
-    marginBottom: 14,
-    boxSizing: 'border-box',
-    color: '#1A1A2E',
-    outline: 'none',
-  },
-  select: {
-    width: '100%',
-    padding: '12px',
-    border: '1.5px solid #E0E0E0',
-    borderRadius: 10,
-    fontSize: 14,
-    fontFamily: "inherit",
-    marginBottom: 14,
-    boxSizing: 'border-box',
-    color: '#1A1A2E',
-    outline: 'none',
-    background: '#fff',
-  },
+  formCard: { padding: '20px 16px' },
+  label: { display: 'block', marginBottom: 6 },
+  input: { width: '100%', marginBottom: 14 },
+  select: { width: '100%', marginBottom: 14 },
   hintText: { fontSize: 11, color: '#9E9E9E', margin: '-10px 0 14px', lineHeight: 1.5 },
   centered: { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 0' },
   spinner: {

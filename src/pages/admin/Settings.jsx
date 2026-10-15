@@ -11,19 +11,12 @@ const FIELDS = { name: "school-name" };
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
-const inputStyle = {
-  padding: "9px 11px", borderRadius: 8, border: "1px solid #E2E8F0",
-  fontSize: 13, color: "#0F172A", outline: "none", background: "#F8FAFC",
-  fontFamily: "inherit", width: "100%", boxSizing: "border-box",
-};
-const card = { background: "#fff", border: "1px solid #E8E8E5", borderRadius: 12, padding: "1.5rem", marginBottom: 16 };
-const title = { fontSize: 13, fontWeight: 600, color: "var(--brand)", marginBottom: 12 };
-const label = { fontSize: 11, color: "#64748B", fontWeight: 600 };
+const card = { padding: 24, marginBottom: 16 };
 
 function Field({ text, children, full }) {
   return (
-    <label style={{ display: "flex", flexDirection: "column", gap: 4, gridColumn: full ? "1 / -1" : undefined }}>
-      <span style={label}>{text}</span>
+    <label className={full ? "ea-field ea-form-full" : "ea-field"}>
+      <span className="ea-label">{text}</span>
       {children}
     </label>
   );
@@ -67,32 +60,32 @@ function OnlinePayments() {
     }
   };
 
-  if (!cfg) return <div style={card}><div style={title}>Online Fee Payments</div><div style={{ fontSize: 13, color: "#94A3B8" }}>Loading...</div></div>;
-  if (cfg.error) return <div style={card}><div style={title}>Online Fee Payments</div><div style={{ fontSize: 13, color: "#B91C1C" }}>{cfg.error}</div></div>;
+  if (!cfg) return <div className="ea-card" style={card}><h2 className="ea-form-section__title">Online Fee Payments</h2><div style={{ fontSize: 13, color: "#94A3B8" }}>Loading...</div></div>;
+  if (cfg.error) return <div className="ea-card" style={card}><h2 className="ea-form-section__title">Online Fee Payments</h2><div style={{ fontSize: 13, color: "#B91C1C" }}>{cfg.error}</div></div>;
   const url = webhookUrl(cfg.webhookPath);
   return (
-    <div style={card}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={title}>Online Fee Payments (Razorpay)</div>
+    <div className="ea-card" style={card}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 14, paddingBottom: 8, borderBottom: "1px solid var(--ea-line)" }}>
+        <h2 className="ea-form-section__title" style={{ margin: 0, padding: 0, border: 0 }}>Online Fee Payments (Razorpay)</h2>
         <span style={{ fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 20, background: cfg.enabled ? "#DCFCE7" : "#F1F5F9", color: cfg.enabled ? "#15803D" : "#64748B" }}>{cfg.enabled ? "On" : "Off"}</span>
       </div>
       <div style={{ fontSize: 12, color: "#64748B", marginBottom: 12, lineHeight: 1.6 }}>
         Parents and students pay fees from the app with UPI, cards or net banking. Money goes straight to your school's Razorpay account and receipts are issued automatically.
         Get the keys from Razorpay Dashboard → Account &amp; Settings → API Keys. Use Test Mode keys (rzp_test_…) first.
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
-        <Field text="Key ID"><input style={inputStyle} value={form.keyId} onChange={e => setForm({ ...form, keyId: e.target.value })} placeholder="rzp_test_..." autoComplete="off" /></Field>
-        <Field text="Key Secret"><input style={inputStyle} type="password" value={form.keySecret} onChange={e => setForm({ ...form, keySecret: e.target.value })} placeholder={cfg.hasKeySecret ? "Saved. Type to replace" : "Paste the key secret"} autoComplete="new-password" /></Field>
-        <Field text="Webhook Secret"><input style={inputStyle} type="password" value={form.webhookSecret} onChange={e => setForm({ ...form, webhookSecret: e.target.value })} placeholder={cfg.hasWebhookSecret ? "Saved. Type to replace" : "Secret you set on the webhook"} autoComplete="new-password" /></Field>
+      <div className="ea-form-grid">
+        <Field text="Key ID"><input className="ea-input" value={form.keyId} onChange={e => setForm({ ...form, keyId: e.target.value })} placeholder="rzp_test_..." autoComplete="off" /></Field>
+        <Field text="Key Secret"><input className="ea-input" type="password" value={form.keySecret} onChange={e => setForm({ ...form, keySecret: e.target.value })} placeholder={cfg.hasKeySecret ? "Saved. Type to replace" : "Paste the key secret"} autoComplete="new-password" /></Field>
+        <Field text="Webhook Secret"><input className="ea-input" type="password" value={form.webhookSecret} onChange={e => setForm({ ...form, webhookSecret: e.target.value })} placeholder={cfg.hasWebhookSecret ? "Saved. Type to replace" : "Secret you set on the webhook"} autoComplete="new-password" /></Field>
       </div>
       <div style={{ marginTop: 12, fontSize: 12, color: "#475569", background: "#F8FAFC", border: "1px solid #E2E8F0", borderRadius: 8, padding: "10px 12px", lineHeight: 1.6 }}>
         In Razorpay Dashboard → Webhooks, add this URL with the events <b>payment.captured</b>, <b>order.paid</b> and <b>payment.failed</b>, and use the same webhook secret as above:
         <div style={{ fontFamily: "monospace", fontSize: 12, marginTop: 4, wordBreak: "break-all", color: "#0F172A" }}>{url}</div>
       </div>
-      <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 14 }}>
-        {cfg.enabled && <button onClick={() => save(false)} disabled={saving} style={{ padding: "9px 18px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", color: "#B91C1C", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Turn off</button>}
-        <button onClick={() => save(cfg.enabled)} disabled={saving} style={{ padding: "9px 18px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", color: "#334155", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Save keys</button>
-        {!cfg.enabled && <button onClick={() => save(true)} disabled={saving} style={{ padding: "9px 18px", borderRadius: 8, border: "none", background: "var(--brand)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Save and turn on</button>}
+      <div className="ea-form-actions" style={{ marginTop: 14 }}>
+        {cfg.enabled && <button type="button" onClick={() => save(false)} disabled={saving} className="ea-btn ea-btn--danger-ghost">Turn off</button>}
+        <button type="button" onClick={() => save(cfg.enabled)} disabled={saving} className="ea-btn ea-btn--ghost">Save keys</button>
+        {!cfg.enabled && <button type="button" onClick={() => save(true)} disabled={saving} className="ea-btn ea-btn--primary">Save and turn on</button>}
       </div>
     </div>
   );
@@ -109,8 +102,8 @@ function PlanAndBills({ school }) {
   }, []);
   const sub = school?.subscription;
   return (
-    <div style={card}>
-      <div style={title}>EduAmigo plan and bills</div>
+    <div className="ea-card" style={card}>
+      <h2 className="ea-form-section__title">EduAmigo plan and bills</h2>
       <div style={{ display: "flex", gap: 24, flexWrap: "wrap", fontSize: 13, color: "#334155", marginBottom: 12 }}>
         <span>Plan: <strong>{school?.plan?.name || "—"}</strong></span>
         <span>Status: <strong style={{ textTransform: "capitalize" }}>{(sub?.status || "—").replace("_", " ")}</strong></span>
@@ -219,30 +212,30 @@ export default function Settings() {
     </div>
   );
 
-  if (loading) return <div style={{ fontFamily: "inherit" }}>{header}<div style={{ ...card, color: "#94A3B8", fontSize: 13 }}>Loading settings...</div></div>;
-  if (error) return <div style={{ fontFamily: "inherit" }}>{header}<div style={{ ...card, color: "#B91C1C", fontSize: 13 }}>{error}</div></div>;
+  if (loading) return <div style={{ fontFamily: "inherit" }}>{header}<div className="ea-card" style={{ ...card, color: "var(--ea-muted)", fontSize: 13 }}>Loading settings...</div></div>;
+  if (error) return <div style={{ fontFamily: "inherit" }}>{header}<div className="ea-card" style={{ ...card, color: "#B91C1C", fontSize: 13 }}>{error}</div></div>;
 
   return (
     <div style={{ fontFamily: "inherit" }}>
       {header}
 
-      <div style={card}>
-        <div style={title}>School Information</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: 12 }}>
-          <Field text="School name"><input id="school-name" style={inputStyle} value={school.name || ""} onChange={set("name")} {...fe.invalid("name")} /><FieldError id="school-name-error">{fe.errors.name}</FieldError></Field>
-          <Field text="Principal"><input style={inputStyle} value={school.principal || ""} onChange={set("principal")} /></Field>
-          <Field text="Email"><input type="email" style={inputStyle} value={school.email || ""} onChange={set("email")} /></Field>
-          <Field text="Phone"><input type="tel" style={inputStyle} value={school.phone || ""} onChange={set("phone")} /></Field>
-          <Field text="Address" full><input style={inputStyle} value={school.address || ""} onChange={set("address")} /></Field>
+      <div className="ea-card" style={card}>
+        <h2 className="ea-form-section__title">School Information</h2>
+        <div className="ea-form-grid">
+          <Field text="School name"><input id="school-name" className="ea-input" value={school.name || ""} onChange={set("name")} {...fe.invalid("name")} /><FieldError id="school-name-error">{fe.errors.name}</FieldError></Field>
+          <Field text="Principal"><input className="ea-input" value={school.principal || ""} onChange={set("principal")} /></Field>
+          <Field text="Email"><input type="email" className="ea-input" value={school.email || ""} onChange={set("email")} /></Field>
+          <Field text="Phone"><input type="tel" className="ea-input" value={school.phone || ""} onChange={set("phone")} /></Field>
+          <Field text="Address" full><input className="ea-input" value={school.address || ""} onChange={set("address")} /></Field>
         </div>
       </div>
 
-      <div style={card}>
-        <div style={title}>Academic Year</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 12 }}>
-          <Field text="Current session (April to March)"><input style={{ ...inputStyle, color: "#64748B" }} value={school.academicYear} readOnly /></Field>
+      <div className="ea-card" style={card}>
+        <h2 className="ea-form-section__title">Academic Year</h2>
+        <div className="ea-form-grid">
+          <Field text="Current session (April to March)"><input className="ea-input" style={{ color: "var(--ea-muted)", background: "var(--ea-hover)" }} value={school.academicYear} readOnly /></Field>
           <Field text="Working days">
-            <select style={inputStyle} value={school.workingDays} onChange={set("workingDays")}>
+            <select className="ea-select" value={school.workingDays} onChange={set("workingDays")}>
               <option>Monday - Saturday</option>
               <option>Monday - Friday</option>
             </select>
@@ -250,17 +243,17 @@ export default function Settings() {
         </div>
       </div>
 
-      <div style={card}>
-        <div style={title}>School Location</div>
+      <div className="ea-card" style={card}>
+        <h2 className="ea-form-section__title">School Location</h2>
         <div style={{ fontSize: 12, color: "#64748B", marginBottom: 10 }}>Used as the destination on parents' bus tracking map. Copy the coordinates from Google Maps (right-click on the school gate).</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
-          <Field text="Latitude"><input type="number" step="any" style={inputStyle} value={school.lat} onChange={set("lat")} placeholder="e.g. 28.6280" /></Field>
-          <Field text="Longitude"><input type="number" step="any" style={inputStyle} value={school.lng} onChange={set("lng")} placeholder="e.g. 77.3649" /></Field>
+        <div className="ea-form-grid">
+          <Field text="Latitude"><input type="number" step="any" className="ea-input" value={school.lat} onChange={set("lat")} placeholder="e.g. 28.6280" /></Field>
+          <Field text="Longitude"><input type="number" step="any" className="ea-input" value={school.lng} onChange={set("lng")} placeholder="e.g. 77.3649" /></Field>
         </div>
       </div>
 
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 24 }}>
-        <button onClick={save} disabled={saving} style={{ padding: "9px 24px", borderRadius: 8, border: "none", background: "var(--brand)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", opacity: saving ? 0.7 : 1 }}>
+      <div className="ea-form-actions" style={{ borderTop: 0, marginTop: 0, paddingTop: 0, marginBottom: 24 }}>
+        <button type="button" onClick={save} disabled={saving} className="ea-btn ea-btn--primary">
           {saving ? "Saving..." : "Save Changes"}
         </button>
       </div>
@@ -268,12 +261,12 @@ export default function Settings() {
       <PlanAndBills school={school} />
       <OnlinePayments />
 
-      <div style={card}>
-        <div style={title}>Subjects</div>
+      <div className="ea-card" style={card}>
+        <h2 className="ea-form-section__title">Subjects</h2>
         <div style={{ fontSize: 12, color: "#64748B", marginBottom: 10 }}>Extra subjects your school teaches, shown in teacher and timetable forms.</div>
         <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-          <input style={inputStyle} value={newSubject} onChange={(e) => setNewSubject(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addSubject()} placeholder="e.g. Sanskrit" aria-label="New subject name" />
-          <button onClick={addSubject} style={{ padding: "0 18px", borderRadius: 8, border: "none", background: "var(--brand-soft)", color: "var(--brand-dark)", fontWeight: 600, cursor: "pointer" }}>Add</button>
+          <input className="ea-input" style={{ flex: 1 }} value={newSubject} onChange={(e) => setNewSubject(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addSubject()} placeholder="e.g. Sanskrit" aria-label="New subject name" />
+          <button type="button" onClick={addSubject} className="ea-btn ea-btn--ghost">Add</button>
         </div>
         {subjects.length === 0 ? (
           <div style={{ fontSize: 12, color: "#94A3B8" }}>No custom subjects yet.</div>

@@ -22,11 +22,6 @@ const ui = {
   card: { background: "#fff", border: "1px solid #E8E8E5", borderRadius: 12, padding: "1.25rem 1.5rem", marginBottom: 16 },
   title: { fontSize: 14, fontWeight: 700, color: "#0F172A", margin: "0 0 4px" },
   hint: { fontSize: 12, color: "#64748B", margin: "0 0 14px", lineHeight: 1.5 },
-  label: { fontSize: 11, color: "#64748B", fontWeight: 600, display: "flex", flexDirection: "column", gap: 4 },
-  input: { padding: "8px 10px", borderRadius: 8, border: "1px solid #E2E8F0", fontSize: 13, color: "#0F172A", outline: "none", background: "#F8FAFC", fontFamily: "inherit", boxSizing: "border-box" },
-  btn: { padding: "8px 14px", borderRadius: 8, border: "none", background: "var(--brand)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer" },
-  ghost: { padding: "7px 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", color: "#334155", fontSize: 12, fontWeight: 600, cursor: "pointer" },
-  danger: { padding: "7px 12px", borderRadius: 8, border: "1px solid #FECACA", background: "#FEF2F2", color: "#B91C1C", fontSize: 12, fontWeight: 600, cursor: "pointer" },
   chip: { display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 10px", borderRadius: 999, background: "var(--brand-soft)", color: "#3730A3", fontSize: 12, fontWeight: 600 },
   row: { display: "flex", gap: 10, flexWrap: "wrap", alignItems: "flex-end" },
 };
@@ -67,7 +62,7 @@ function Checklist({ status, onJump }) {
               </span>
               <span style={{ flex: 1, textDecoration: step.done ? "line-through" : "none" }}>{step.label}</span>
               {!step.done && (
-                <button type="button" style={ui.ghost} aria-label={`Go to: ${step.label}`} onClick={() => (link.path ? navigate(link.path) : onJump(link.anchor))}>Go</button>
+                <button type="button" className="ea-btn ea-btn--ghost" aria-label={`Go to: ${step.label}`} onClick={() => (link.path ? navigate(link.path) : onJump(link.anchor))}>Go</button>
               )}
             </div>
           );
@@ -142,36 +137,36 @@ function Sessions({ onChanged }) {
               <strong style={{ minWidth: 70 }}>{s.name}</strong>
               <span style={{ color: "#64748B", flex: 1 }}>{fmtDate(s.startDate)} – {fmtDate(s.endDate)}</span>
               <span style={badge(s.status)}>{s.status}</span>
-              {s.status !== "current" && <button style={ui.ghost} disabled={busy} onClick={() => makeCurrent(s)}>Make current</button>}
+              {s.status !== "current" && <button className="ea-btn ea-btn--ghost" disabled={busy} onClick={() => makeCurrent(s)}>Make current</button>}
             </div>
           ))}
         </div>
       )}
       <div style={ui.row}>
-        <label style={ui.label}>Session
-          <input style={{ ...ui.input, width: 110 }} value={form.name} placeholder="2026-27" onChange={(e) => setForm({ ...form, name: e.target.value })} />
+        <label className="ea-field ea-label">Session
+          <input className="ea-input" style={{ width: 110 }} value={form.name} placeholder="2026-27" onChange={(e) => setForm({ ...form, name: e.target.value })} />
         </label>
-        <label style={ui.label}>Starts (optional)
-          <input type="date" style={ui.input} value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} />
+        <label className="ea-field ea-label">Starts (optional)
+          <input type="date" className="ea-input" value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} />
         </label>
-        <label style={ui.label}>Ends (optional)
-          <input type="date" style={ui.input} value={form.endDate} onChange={(e) => setForm({ ...form, endDate: e.target.value })} />
+        <label className="ea-field ea-label">Ends (optional)
+          <input type="date" className="ea-input" value={form.endDate} onChange={(e) => setForm({ ...form, endDate: e.target.value })} />
         </label>
-        <button style={ui.btn} disabled={busy || !form.name.trim()} onClick={create}>Add session</button>
+        <button className="ea-btn ea-btn--primary" disabled={busy || !form.name.trim()} onClick={create}>Add session</button>
       </div>
 
       <div style={{ borderTop: "1px solid #F1F5F9", margin: "18px 0 14px" }} />
       <div style={ui.row}>
-        <label style={ui.label}>Session starts in
-          <select style={ui.input} value={settings.sessionStartMonth} onChange={(e) => setSettings({ ...settings, sessionStartMonth: Number(e.target.value) })}>
+        <label className="ea-field ea-label">Session starts in
+          <select className="ea-select" value={settings.sessionStartMonth} onChange={(e) => setSettings({ ...settings, sessionStartMonth: Number(e.target.value) })}>
             {MONTHS.map((m, i) => <option key={m} value={i + 1}>{m}</option>)}
           </select>
         </label>
-        <label style={ui.label}>Admission number prefix
-          <input style={{ ...ui.input, width: 140 }} value={settings.admissionNoPrefix} placeholder="e.g. GV/" maxLength={12}
+        <label className="ea-field ea-label">Admission number prefix
+          <input className="ea-input" style={{ width: 140 }} value={settings.admissionNoPrefix} placeholder="e.g. GV/" maxLength={12}
             onChange={(e) => setSettings({ ...settings, admissionNoPrefix: e.target.value })} />
         </label>
-        <button style={ui.ghost} disabled={busy} onClick={saveSettings}>Save settings</button>
+        <button className="ea-btn ea-btn--ghost" disabled={busy} onClick={saveSettings}>Save settings</button>
       </div>
       <p style={{ ...ui.hint, margin: "8px 0 0" }}>
         New students get the next admission number automatically, for example <strong>{settings.admissionNoPrefix || ""}1025</strong>.
@@ -210,12 +205,12 @@ function ClassEditor({ initial, teachers, onSave, onCancel, busy }) {
   return (
     <div style={{ border: "1px solid var(--brand-border)", background: "#F8FAFF", borderRadius: 10, padding: 14, marginBottom: 12 }}>
       <div style={ui.row}>
-        <label style={ui.label}>Class
-          <input style={{ ...ui.input, width: 120 }} value={form.name} disabled={hasStudents} placeholder="10, LKG, 11 Science"
+        <label className="ea-field ea-label">Class
+          <input className="ea-input" style={{ width: 120 }} value={form.name} disabled={hasStudents} placeholder="10, LKG, 11 Science"
             onChange={(e) => setForm({ ...form, name: e.target.value })} />
         </label>
-        <label style={ui.label}>Display name
-          <input style={{ ...ui.input, width: 180 }} value={form.displayName} placeholder={form.name ? `Class ${form.name}` : "Class 10"}
+        <label className="ea-field ea-label">Display name
+          <input className="ea-input" style={{ width: 180 }} value={form.displayName} placeholder={form.name ? `Class ${form.name}` : "Class 10"}
             onChange={(e) => setForm({ ...form, displayName: e.target.value })} />
         </label>
       </div>
@@ -226,30 +221,30 @@ function ClassEditor({ initial, teachers, onSave, onCancel, busy }) {
         {form.sections.map((s) => (
           <div key={s.name} style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
             <span style={{ ...ui.chip, minWidth: 34, justifyContent: "center" }}>{s.name}</span>
-            <select style={{ ...ui.input, minWidth: 200 }} value={s.classTeacher} onChange={(e) => setTeacher(s.name, e.target.value)}>
+            <select className="ea-select" style={{ minWidth: 200 }} value={s.classTeacher} onChange={(e) => setTeacher(s.name, e.target.value)}>
               <option value="">No class teacher</option>
               {teachers.map((t) => <option key={t._id} value={t._id}>{t.name}</option>)}
             </select>
             {s.students > 0
               ? <span style={{ fontSize: 11, color: "#64748B" }}>{s.students} students</span>
-              : <button style={ui.ghost} onClick={() => removeSection(s.name)}>Remove</button>}
+              : <button className="ea-btn ea-btn--ghost" onClick={() => removeSection(s.name)}>Remove</button>}
           </div>
         ))}
       </div>
       <div style={{ ...ui.row, marginTop: 8 }}>
-        <input style={{ ...ui.input, width: 90 }} value={newSection} placeholder="e.g. B" maxLength={10}
+        <input className="ea-input" style={{ width: 90 }} value={newSection} placeholder="e.g. B" maxLength={10}
           onChange={(e) => setNewSection(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addSection()} />
-        <button style={ui.ghost} onClick={addSection}>+ Add section</button>
+        <button className="ea-btn ea-btn--ghost" onClick={addSection}>+ Add section</button>
       </div>
 
-      <label style={{ ...ui.label, marginTop: 14 }}>Subjects (separate with commas)
-        <input style={ui.input} value={form.subjects} placeholder="English, Hindi, Mathematics, Science, Social Science"
+      <label className="ea-field ea-label" style={{ marginTop: 14 }}>Subjects (separate with commas)
+        <input className="ea-input" value={form.subjects} placeholder="English, Hindi, Mathematics, Science, Social Science"
           onChange={(e) => setForm({ ...form, subjects: e.target.value })} />
       </label>
 
       <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 14 }}>
-        <button style={ui.ghost} onClick={onCancel}>Cancel</button>
-        <button style={ui.btn} disabled={busy || !form.name.trim()} onClick={submit}>{initial ? "Save class" : "Add class"}</button>
+        <button className="ea-btn ea-btn--ghost" onClick={onCancel}>Cancel</button>
+        <button className="ea-btn ea-btn--primary" disabled={busy || !form.name.trim()} onClick={submit}>{initial ? "Save class" : "Add class"}</button>
       </div>
     </div>
   );
@@ -316,8 +311,8 @@ function Classes({ onChanged }) {
           <p style={ui.hint}>Once classes are listed here, students and teachers can only be placed in these classes and sections.</p>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
-          {classes.length === 0 && <button style={ui.ghost} disabled={busy} onClick={importFromStudents}>Import from existing students</button>}
-          <button style={ui.btn} disabled={busy || editing === "new"} onClick={() => setEditing("new")}>+ Add class</button>
+          {classes.length === 0 && <button className="ea-btn ea-btn--ghost" disabled={busy} onClick={importFromStudents}>Import from existing students</button>}
+          <button className="ea-btn ea-btn--primary" disabled={busy || editing === "new"} onClick={() => setEditing("new")}>+ Add class</button>
         </div>
       </div>
 
@@ -339,9 +334,9 @@ function Classes({ onChanged }) {
               <span style={{ fontSize: 12, color: "#64748B" }}>{cls.students} students</span>
               {!cls.isActive && <span style={badge("closed")}>inactive</span>}
               <span style={{ flex: 1 }} />
-              <button style={ui.ghost} onClick={() => setEditing(cls._id)}>Edit</button>
-              {cls.students === 0 && <button style={ui.ghost} disabled={busy} onClick={() => toggleActive(cls)}>{cls.isActive ? "Deactivate" : "Activate"}</button>}
-              {cls.students === 0 && <button style={ui.danger} disabled={busy} onClick={() => remove(cls)}>Delete</button>}
+              <button className="ea-btn ea-btn--ghost" onClick={() => setEditing(cls._id)}>Edit</button>
+              {cls.students === 0 && <button className="ea-btn ea-btn--ghost" disabled={busy} onClick={() => toggleActive(cls)}>{cls.isActive ? "Deactivate" : "Activate"}</button>}
+              {cls.students === 0 && <button className="ea-btn ea-btn--danger-ghost" disabled={busy} onClick={() => remove(cls)}>Delete</button>}
             </div>
             <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
               {cls.sections.length === 0 && <span style={{ fontSize: 12, color: "#B45309" }}>No sections yet</span>}

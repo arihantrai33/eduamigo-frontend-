@@ -101,25 +101,17 @@ export default function AddStudent() {
   // Plain render helpers, called as functions: defining components inside render would remount
   // the inputs on every keystroke and lose focus.
   const Field = ({ label, name, type = "text", required = false, hint, max, children }) => (
-    <label style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-      <span style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-        {label} {required && <span style={{ color: "#EF4444" }}>*</span>}
+    <label className="ea-field">
+      <span className="ea-label">
+        {label}{required && <span className="ea-label__req" aria-hidden="true">*</span>}
       </span>
       {children || (
         <input
           id={`add-student-${name}`} type={type} name={name} value={form[name]} max={max}
-          onChange={handleChange} {...v.invalid(name)}
-          style={{
-            padding: "9px 12px", borderRadius: 8, border: "1px solid #E5E7EB",
-            fontSize: 13, color: "#111827", outline: "none", background: "#F9FAFB",
-            fontFamily: "inherit", width: "100%", boxSizing: "border-box",
-            transition: "border 0.2s",
-          }}
-          onFocus={e => e.target.style.borderColor = "var(--brand)"}
-          onBlur={e  => e.target.style.borderColor = "#E5E7EB"}
+          onChange={handleChange} {...v.invalid(name)} className="ea-input" aria-required={required || undefined}
         />
       )}
-      {hint && <span style={{ fontSize: 11, color: "#9CA3AF" }}>{hint}</span>}
+      {hint && <span className="ea-hint">{hint}</span>}
       <FieldError id={`add-student-${name}-error`}>{v.errors[name]}</FieldError>
     </label>
   );
@@ -127,13 +119,7 @@ export default function AddStudent() {
   const Select = ({ label, name, options, required = false, hint }) => Field({
     label, name, required, hint, children: (
       <select
-        id={`add-student-${name}`} name={name} value={form[name]} onChange={handleChange} {...v.invalid(name)}
-        style={{
-          padding: "9px 12px", borderRadius: 8, border: "1px solid #E5E7EB",
-          fontSize: 13, color: form[name] ? "#111827" : "#9CA3AF",
-          outline: "none", background: "#F9FAFB",
-          fontFamily: "inherit", width: "100%", boxSizing: "border-box",
-        }}>
+        id={`add-student-${name}`} name={name} value={form[name]} onChange={handleChange} {...v.invalid(name)} className="ea-select" aria-required={required || undefined}>
         <option value="">Select {label}</option>
         {options.map(o => (
           <option key={o.value ?? o} value={o.value ?? o}>
@@ -195,10 +181,7 @@ export default function AddStudent() {
       )}
 
       {/* Form Card */}
-      <div style={{
-        background: "#fff", border: "1px solid #E5E7EB",
-        borderRadius: 14, padding: "24px", boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-      }}>
+      <div className="ea-card" style={{ padding: 24 }}>
 
         {/* Photo Upload */}
         <SectionTitle>Student Photo</SectionTitle>
@@ -230,7 +213,7 @@ export default function AddStudent() {
 
         {/* Personal Info */}
         <SectionTitle>Personal Information</SectionTitle>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 24 }}>
+        <div className="ea-form-grid" style={{ marginBottom: 24 }}>
           {Field({ label: "Full Name", name: "name", required: true })}
           {Field({ label: "Phone Number", name: "phone", type: "tel", hint: "Leave empty to use the parent's mobile" })}
           {Field({ label: "Email Address", name: "email", type: "email", hint: "Optional. Students log in with their admission number" })}
@@ -241,7 +224,7 @@ export default function AddStudent() {
 
         {/* Academic Info */}
         <SectionTitle>Academic Information</SectionTitle>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 24 }}>
+        <div className="ea-form-grid" style={{ marginBottom: 24 }}>
           {Field({ label: "Admission Number", name: "admissionNo", hint: "Leave empty to assign the next number" })}
           {Field({ label: "Roll Number", name: "rollNumber", hint: "Leave empty for the next roll number" })}
           {Field({ label: "Date of Admission", name: "admittedOn", type: "date", max: todayLocal(), hint: "The day the school admitted the student. Leave empty if not known; it is printed on the transfer certificate" })}
@@ -252,7 +235,7 @@ export default function AddStudent() {
 
         {/* Parent Info */}
         <SectionTitle>Parent / Guardian Information</SectionTitle>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 24 }}>
+        <div className="ea-form-grid" style={{ marginBottom: 24 }}>
           {Field({ label: "Parent Name", name: "parentName" })}
           {Field({ label: "Parent Mobile", name: "parentPhone", type: "tel", hint: "Parents log in with this number" })}
           {Field({ label: "Parent Email", name: "parentEmail", type: "email", hint: "Optional. Needed for password reset by email" })}
@@ -268,24 +251,11 @@ export default function AddStudent() {
         </div>
 
         {/* Actions */}
-        <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
-          <button
-            onClick={() => { setForm(emptyForm); setCredentials(null); }}
-            style={{
-              padding: "10px 22px", borderRadius: 8,
-              border: "1px solid #E5E7EB", background: "#F9FAFB",
-              fontSize: 13, color: "#374151", cursor: "pointer", fontWeight: 500,
-            }}>
+        <div className="ea-form-actions">
+          <button type="button" className="ea-btn ea-btn--ghost" onClick={() => { setForm(emptyForm); setCredentials(null); }}>
             Clear
           </button>
-          <button
-            onClick={handleSubmit} disabled={loading}
-            style={{
-              padding: "10px 24px", borderRadius: 8, border: "none",
-              background: loading ? "#A5B4FC" : "var(--brand)",
-              fontSize: 13, color: "#fff", cursor: loading ? "not-allowed" : "pointer",
-              fontWeight: 600, letterSpacing: "0.02em",
-            }}>
+          <button type="button" className="ea-btn ea-btn--primary" onClick={handleSubmit} disabled={loading}>
             {loading ? "Adding..." : "Add Student"}
           </button>
         </div>
@@ -297,14 +267,5 @@ export default function AddStudent() {
 
 // Section title helper
 function SectionTitle({ children }) {
-  return (
-    <div style={{
-      fontSize: 11, fontWeight: 700, color: "var(--brand)",
-      textTransform: "uppercase", letterSpacing: "0.08em",
-      marginBottom: 14, paddingBottom: 8,
-      borderBottom: "1px solid var(--brand-soft)",
-    }}>
-      {children}
-    </div>
-  );
+  return <h2 className="ea-form-section__title">{children}</h2>;
 }

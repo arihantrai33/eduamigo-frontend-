@@ -50,8 +50,9 @@ export default function ChangePassword() {
     }
   };
 
-  const input = { width: "100%", padding: "11px 13px", borderRadius: 10, border: "1.5px solid var(--border)", fontSize: 14, color: "var(--text)", background: "var(--input)", boxSizing: "border-box", fontFamily: "inherit" };
-  const label = { display: "block", fontSize: 12, fontWeight: 600, color: "var(--text)", margin: "14px 0 5px" };
+  // Shared field style (.ea-input / .ea-label).
+  const input = { width: "100%" };
+  const label = { display: "block", margin: "14px 0 6px" };
 
   // The sign-in split in the school's colours, like "Forgot password".
   return (
@@ -64,16 +65,16 @@ export default function ChangePassword() {
           {forced ? "Your account uses a temporary password. Please choose your own password to continue." : "Choose a strong password you do not use elsewhere."}
         </p>
 
-        <label style={label} htmlFor="cp-current">{forced ? "Temporary password" : "Current password"}</label>
-        <input id="cp-current" type="password" autoComplete="current-password" style={input} value={form.currentPassword} onChange={set("currentPassword")} required {...v.invalid("currentPassword")} />
+        <label className="ea-label" style={label} htmlFor="cp-current">{forced ? "Temporary password" : "Current password"}</label>
+        <input id="cp-current" type="password" autoComplete="current-password" className="ea-input" style={input} value={form.currentPassword} onChange={set("currentPassword")} required {...v.invalid("currentPassword")} />
         <FieldError id={v.errorId("currentPassword")}>{v.errors.currentPassword}</FieldError>
 
-        <label style={label} htmlFor="cp-new">New password</label>
-        <input id="cp-new" type="password" autoComplete="new-password" style={input} value={form.newPassword} onChange={set("newPassword")} required {...v.invalid("newPassword")} />
+        <label className="ea-label" style={label} htmlFor="cp-new">New password</label>
+        <input id="cp-new" type="password" autoComplete="new-password" className="ea-input" style={input} value={form.newPassword} onChange={set("newPassword")} required {...v.invalid("newPassword")} />
         <FieldError id={v.errorId("newPassword")}>{v.errors.newPassword}</FieldError>
 
-        <label style={label} htmlFor="cp-confirm">Confirm new password</label>
-        <input id="cp-confirm" type="password" autoComplete="new-password" style={input} value={form.confirm} onChange={set("confirm")} required {...v.invalid("confirm")} />
+        <label className="ea-label" style={label} htmlFor="cp-confirm">Confirm new password</label>
+        <input id="cp-confirm" type="password" autoComplete="new-password" className="ea-input" style={input} value={form.confirm} onChange={set("confirm")} required {...v.invalid("confirm")} />
         <FieldError id={v.errorId("confirm")}>{v.errors.confirm}</FieldError>
 
         {error && <div role="alert" style={{ marginTop: 12, fontSize: 13, color: "#B91C1C" }}>{error}</div>}

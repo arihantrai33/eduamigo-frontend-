@@ -743,3 +743,50 @@ Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B5 (as B3, for the teacher porta
 **Left for later:**
 - The Attendance "Save/Update Attendance" button is still a gradient; it changes with the roster in B14.
 - Teacher Profile is B12.
+
+### Redesign batch B7: forms (2026-10-15)
+Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B7.
+
+**Shared form CSS** (`src/index.css`; field, label and section only):
+- `.ea-form-section__title`: a 15 px heading with a line under it.
+- `.ea-form-grid`: one column on phones, two from 768 px; `.ea-form-full` spans both.
+- `.ea-field`: label, input, hint and error stacked.
+- `.ea-label`: 13 px, 600 weight, sentence case, no text transform. `.ea-label__req` is the red star, hidden from screen readers; required inputs carry `aria-required` instead.
+- `.ea-hint`: 12 px muted.
+- `textarea.ea-input`: grows and resizes vertically.
+- `.ea-form-actions`: the action bar at the end of the form, with a top line; buttons are full width on phones.
+- Inputs and selects use the existing `.ea-input` / `.ea-select` (white, 1 px border, 40 px, brand focus ring). Inside a field the select no longer takes `flex-basis: 170px` (it would have become 170 px tall in a column).
+
+**Forms converted:**
+- Admin: Add Student, Add Parent, Add Teacher, Settings and School setup (AcademicSetup).
+- Leave forms: student, parent and teacher, plus Upload Materials.
+- Change password, and the Find your school field (left over from B10: its focus outline is no longer removed).
+- `id`, `htmlFor`, `aria-*` and field names are unchanged. Title Case strings stay as written ("Full Name", "Leave Type"); a test reads "Full Name" by case.
+- ALL-CAPS label strings now say the same in sentence case: Leave type, From date, To date, Reason, Attach document (optional), Apply new leave and Leave history, on the student and parent leave forms. Playwright's `getByLabel` matches without case, so the tests that read "FROM DATE", "TO DATE" and "REASON" still pass unchanged.
+- **Buttons:** Add/Save are primary, Clear/Cancel/Save keys/Add subject are secondary, and Settings "Turn off" is danger-ghost. They were per-page grey/brand fills.
+
+**Accessibility fixes found while converting:**
+- **Add Parent:** the "link children" rows were clickable `div`s a keyboard could not reach. They are now toggle buttons (`aria-pressed`) in brand colours (were sky blue).
+- **Add Teacher:** the subject toggles are the shared chip (`aria-pressed`, in a labelled group); before, they had no pressed state.
+
+**Acceptance, measured on Add Student:**
+- Input: 40 px, white (rgb 255,255,255), 1 px border (#E3E7EE).
+- Label: 13 px, `text-transform: none`.
+- Grid: two columns at 768 (335 px + 335 px), one at 390 (308 px).
+- The action bar is at the end of Add Student, Add Parent, Add Teacher and Settings, at 390 and 1280.
+
+**Review (ports 8130/5194, from the completed run):**
+- Before/after at 390 and 1280: Add Student, Add Parent, Add Teacher, Settings, School setup, student and parent Apply Leave, Change password and Find your school.
+- 390/768/1280 captures of every form (teacher Leave with its Apply tab open), Add Student with the empty-submit errors, and keyboard focus.
+- The admin pages scroll inside their own panel, so the run's full-page captures stopped before the action bars. One extra screenshot-only capture (no test suite) took the action bars at 390 and 1280, the input and button focus rings, and the measurements above.
+- **Pixel diff against the B5 sweep (156 screens):** the B7 forms changed. The other differences are test data written during this run: the specs added students "Edit Me" and "Imported Pupil", which change counts, lists, the class roster, chat contacts, the activity log and the reports. No `ea-label`/`ea-field`/`ea-hint` class existed before; the only similar name is `ea-field-error`, a different class.
+
+**Tests (one run):**
+- 65/65 passed, 0 failed, 0 skipped, exit 0. Specs: `interactions` (field errors on Add Student, student Apply Leave, change password and the teacher tabs), `workflows`, `unsaved-changes`, `admission-date`, `error-feedback`, `accessible-names`, `screens`, the sweep and the contrast probe.
+- Sweep 390/1280: 156 screens, 0 findings.
+- Dark-mode contrast: 0 spots under 3:1 (13 student routes, 10 parent routes).
+- The build passes, and ESLint counts on all changed files match HEAD.
+
+**Left for later:**
+- The leave forms' attachment drop zone is a clickable `div` with a nested remove button, so it is not reachable by keyboard. This existed before B7; restructuring it is outside a CSS-only batch (candidate for B13).
+- Add Student's "Upload Photo" control is a styled `label` around a hidden file input; unchanged.

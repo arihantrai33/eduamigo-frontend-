@@ -13,12 +13,6 @@ const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 });
 
-const inputStyle = {
-  padding: "8px 10px", borderRadius: 8, border: "0.5px solid #E8E8E5",
-  fontSize: 12, color: "#1a1a1a", outline: "none", background: "#F5F5F3",
-  fontFamily: "inherit", width: "100%", boxSizing: "border-box",
-};
-
 const AddParent = () => {
   const [form, setForm] = useState({
     name: "", email: "", phone: "",
@@ -91,17 +85,17 @@ const AddParent = () => {
   );
 
   const inp = (label, name, type = "text", options = null, required = false) => (
-    <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-      <span style={{ fontSize: 11, color: "#666", fontWeight: 500 }}>
-        {label}{required && <span style={{ color: "#EF4444" }}> *</span>}
+    <label className="ea-field">
+      <span className="ea-label">
+        {label}{required && <span className="ea-label__req" aria-hidden="true">*</span>}
       </span>
       {options ? (
-        <select id={`add-parent-${name}`} name={name} value={form[name]} onChange={handleChange} style={inputStyle} {...v.invalid(name)}>
+        <select id={`add-parent-${name}`} name={name} value={form[name]} onChange={handleChange} className="ea-select" aria-required={required || undefined} {...v.invalid(name)}>
           <option value="">Select</option>
           {options.map((o) => <option key={o} value={o}>{o}</option>)}
         </select>
       ) : (
-        <input id={`add-parent-${name}`} type={type} name={name} value={form[name]} onChange={handleChange} style={inputStyle} {...v.invalid(name)} />
+        <input id={`add-parent-${name}`} type={type} name={name} value={form[name]} onChange={handleChange} className="ea-input" aria-required={required || undefined} {...v.invalid(name)} />
       )}
       <FieldError id={`add-parent-${name}-error`}>{v.errors[name]}</FieldError>
     </label>
@@ -129,9 +123,9 @@ const AddParent = () => {
       </div>
 
       {/* Parent Info */}
-      <div style={{ background: "#fff", border: "0.5px solid #E8E8E5", borderRadius: 12, padding: "1.5rem", marginBottom: 16 }}>
-        <div style={{ fontSize: 12, fontWeight: 500, color: "var(--brand)", marginBottom: 12 }}>Parent Info</div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
+      <div className="ea-card" style={{ padding: 24, marginBottom: 16 }}>
+        <h2 className="ea-form-section__title">Parent Info</h2>
+        <div className="ea-form-grid" style={{ marginBottom: 16 }}>
           {inp("Full Name", "name", "text", null, true)}
           {inp("Email", "email", "email", null, true)}
           {inp("Phone", "phone", "tel", null, true)}
@@ -145,13 +139,13 @@ const AddParent = () => {
       </div>
 
       {/* Link Children */}
-      <div style={{ background: "#fff", border: "0.5px solid #E8E8E5", borderRadius: 12, padding: "1.5rem", marginBottom: 16 }}>
-        <div style={{ fontSize: 12, fontWeight: 500, color: "var(--brand)", marginBottom: 12 }}>
+      <div className="ea-card" style={{ padding: 24, marginBottom: 16 }}>
+        <h2 className="ea-form-section__title">
           Link Children ({form.children.length} selected)
-        </div>
+        </h2>
 
         <input
-          style={{ ...inputStyle, marginBottom: 12 }}
+          className="ea-input" style={{ width: "100%", marginBottom: 12 }}
           aria-label="Search students to link"
           placeholder="Search student by name or roll number..."
           value={searchQuery}
@@ -178,56 +172,45 @@ const AddParent = () => {
           {!studentsLoading && filteredStudents.map((student) => {
             const isSelected = form.children.includes(student._id.toString());
             return (
-              <div
+              <button
+                type="button"
                 key={student._id}
+                aria-pressed={isSelected}
                 onClick={() => toggleChild(student._id)}
                 style={{
-                  display: "flex", alignItems: "center", gap: 12,
+                  display: "flex", alignItems: "center", gap: 12, width: "100%", textAlign: "left", font: "inherit",
                   padding: "10px 12px", borderRadius: 10, cursor: "pointer",
-                  background: isSelected ? "#EFF6FF" : "#F8FAFC",
-                  border: `1.5px solid ${isSelected ? "#0EA5E9" : "#E8E8E5"}`,
+                  background: isSelected ? "var(--brand-soft)" : "var(--ea-surface)",
+                  border: `1.5px solid ${isSelected ? "var(--brand)" : "var(--ea-line)"}`,
                   transition: "all 0.15s ease",
                 }}
               >
-                <div style={{
+                <div aria-hidden="true" style={{
                   width: 20, height: 20, borderRadius: 6, flexShrink: 0,
-                  background: isSelected ? "#0EA5E9" : "#F5F5F3",
-                  border: `2px solid ${isSelected ? "#0EA5E9" : "#D1D5DB"}`,
+                  background: isSelected ? "var(--brand)" : "var(--ea-surface)",
+                  border: `2px solid ${isSelected ? "var(--brand)" : "#94A3B8"}`,
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
                   {isSelected && <span style={{ color: "white", fontSize: 12, fontWeight: 700 }}>✓</span>}
                 </div>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a" }}>{student.name}</div>
-                  <div style={{ fontSize: 11, color: "#888" }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "var(--ea-ink)" }}>{student.name}</div>
+                  <div style={{ fontSize: 12, color: "var(--ea-muted)" }}>
                     Roll: {student.rollNumber} • Class {student.class}-{student.section}
                   </div>
                 </div>
-              </div>
+              </button>
             );
           })}
         </div>
       </div>
 
       {/* Actions */}
-      <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
-        <button
-          onClick={() => { setForm(emptyForm); setSearchQuery(""); }}
-          style={{
-            padding: "8px 20px", borderRadius: 8, border: "0.5px solid #E8E8E5",
-            background: "#F5F5F3", fontSize: 12, color: "#666", cursor: "pointer",
-          }}>
+      <div className="ea-form-actions" style={{ borderTop: 0, marginTop: 0 }}>
+        <button type="button" className="ea-btn ea-btn--ghost" onClick={() => { setForm(emptyForm); setSearchQuery(""); }}>
           Clear
         </button>
-        <button
-          onClick={handleSubmit}
-          disabled={loading}
-          style={{
-            padding: "8px 20px", borderRadius: 8, border: "none",
-            background: loading ? "#9CA3AF" : "var(--brand)",
-            fontSize: 12, color: "#fff",
-            cursor: loading ? "not-allowed" : "pointer", fontWeight: 500,
-          }}>
+        <button type="button" className="ea-btn ea-btn--primary" onClick={handleSubmit} disabled={loading}>
           {loading ? "Adding..." : "Add Parent"}
         </button>
       </div>

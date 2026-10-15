@@ -80,11 +80,11 @@ export default function SelectSchool() {
       <div style={s.card}>
         <h2 style={s.heading}>Which school are you from?</h2>
         <p style={s.sub}>Enter the school code given by your school, or search by the school's name.</p>
-        <label htmlFor="school-query" style={s.label}>School code or name</label>
+        <label htmlFor="school-query" className="ea-label" style={s.label}>School code or name</label>
         <input
           id="school-query" autoFocus value={query} onChange={(e) => { setQuery(e.target.value); setError(""); }}
           onKeyDown={(e) => e.key === "Enter" && lookupCode()}
-          placeholder="School code or name" style={s.input}
+          placeholder="School code or name" className="ea-input" style={s.input}
           autoCapitalize="characters" autoComplete="off"
           aria-invalid={error ? true : undefined} aria-describedby={error ? "school-query-error" : undefined}
         />
@@ -159,8 +159,8 @@ const s = {
   card: { flex: 1, background: "var(--card)", padding: "8px 22px 40px" },
   heading: { fontSize: 20, fontWeight: 700, color: "var(--text)", margin: "0 0 4px" },
   sub: { fontSize: 13, color: "var(--subtext)", margin: "0 0 20px", lineHeight: 1.5 },
-  label: { fontSize: 12, fontWeight: 600, color: "var(--text)", display: "block", marginBottom: 5 },
-  input: { width: "100%", padding: "12px 13px", border: "1.5px solid var(--border)", borderRadius: 10, fontSize: 15, color: "var(--text)", outline: "none", boxSizing: "border-box", background: "var(--input)", marginBottom: 12 },
+  label: { display: "block", marginBottom: 6 },
+  input: { width: "100%", height: 44, fontSize: 15, marginBottom: 12 },
   muted: { fontSize: 12, color: "var(--subtext)", margin: "0 0 6px", lineHeight: 1.5, textAlign: "center" },
   err: { display: "flex", gap: 8, alignItems: "flex-start", background: "#fef2f2", border: "1px solid #fecaca", color: "#dc2626", borderRadius: 10, padding: "9px 13px", fontSize: 12, marginBottom: 12 },
   result: { display: "flex", alignItems: "center", gap: 12, width: "100%", padding: "10px 12px", border: "1.5px solid var(--border)", borderRadius: 12, background: "var(--input)", cursor: "pointer" },

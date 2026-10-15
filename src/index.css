@@ -996,6 +996,25 @@ input:-webkit-autofill:focus {
 .ea-search-pill > input { min-height: 24px; }
 .ea-toolbar__count { font-size: 12px; font-weight: 650; color: var(--ea-faint); white-space: nowrap; }
 
+/* Forms (design plan §2.6, B7): a section title, a grid of fields (one column on phones, two from 768 px), each field
+   a 13 px sentence-case label over a white 40 px input (.ea-input / .ea-select above), an optional hint, and the
+   actions in a bar at the end. */
+.ea-form-section { margin: 0 0 24px; }
+.ea-form-section__title { margin: 0 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--ea-line); font-size: 15px; font-weight: 700; color: var(--ea-ink); }
+.ea-form-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px 16px; }
+@media (min-width: 768px) {
+  .ea-form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ea-form-grid > .ea-form-full { grid-column: 1 / -1; }
+}
+.ea-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.ea-label { font-size: 13px; font-weight: 600; color: var(--ea-body); text-transform: none; letter-spacing: normal; }
+.ea-label__req { color: var(--ea-danger); margin-left: 2px; }
+.ea-hint { font-size: 12px; line-height: 1.4; color: var(--ea-muted); }
+.ea-field .ea-input, .ea-field .ea-select { width: 100%; flex: none; box-sizing: border-box; }
+textarea.ea-input { height: auto; min-height: 96px; padding: 10px 12px; line-height: 1.5; resize: vertical; }
+.ea-form-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 8px; padding-top: 16px; border-top: 1px solid var(--ea-line); }
+@media (max-width: 599px) { .ea-form-actions > .ea-btn { flex: 1 1 140px; min-height: 44px; } }
+
 /* Field-level validation (utils/fieldErrors.js, components/ui/FieldError.jsx). !important: many fields set their
    border inline, and a failed field must look failed whatever its own style. */
 .ea-field-error { display: flex; align-items: flex-start; gap: 6px; margin-top: 6px; color: var(--ea-danger); font-size: 12.5px; font-weight: 550; line-height: 1.4; text-align: left; }

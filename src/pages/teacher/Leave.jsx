@@ -246,14 +246,14 @@ export default function TeacherLeave() {
 
         {/* Apply Tab */}
         {tab === 'apply' && (
-          <div style={styles.formCard}>
-            <h3 style={styles.formTitle}>New Leave Request</h3>
+          <div className="ea-card" style={styles.formCard}>
+            <h3 className="ea-form-section__title">New Leave Request</h3>
 
             {formError && <div style={styles.errorBox}><Glyph e="⚠" /> {formError}</div>}
 
-            <label style={styles.label}>Leave Type</label>
+            <label className="ea-label" style={styles.label}>Leave Type</label>
             <select
-              style={styles.select}
+              className="ea-select" style={styles.select}
               value={form.leaveType}
               onChange={e => setForm({ ...form, leaveType: e.target.value })}
             >
@@ -261,25 +261,25 @@ export default function TeacherLeave() {
               {LEAVE_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
             </select>
 
-            <label style={styles.label}>From Date</label>
+            <label className="ea-label" style={styles.label}>From Date</label>
             <input
               type="date"
-              style={styles.input}
+              className="ea-input" style={styles.input}
               value={form.fromDate}
               onChange={e => setForm({ ...form, fromDate: e.target.value })}
             />
 
-            <label style={styles.label}>To Date</label>
+            <label className="ea-label" style={styles.label}>To Date</label>
             <input
               type="date"
-              style={styles.input}
+              className="ea-input" style={styles.input}
               value={form.toDate}
               onChange={e => setForm({ ...form, toDate: e.target.value })}
             />
 
-            <label style={styles.label}>Reason</label>
+            <label className="ea-label" style={styles.label}>Reason</label>
             <textarea
-              style={styles.textarea}
+              className="ea-input" style={styles.textarea}
               placeholder="Describe the reason for your leave..."
               value={form.reason}
               onChange={e => setForm({ ...form, reason: e.target.value })}
@@ -399,65 +399,11 @@ const styles = {
     color: '#BDBDBD',
     margin: 0,
   },
-  formCard: {
-    background: '#fff',
-    borderRadius: 16,
-    padding: '20px 16px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-  },
-  formTitle: {
-    fontSize: 16,
-    fontWeight: 700,
-    color: '#1A1A2E',
-    margin: '0 0 16px',
-  },
-  label: {
-    fontSize: 12,
-    fontWeight: 600,
-    color: 'var(--brand)',
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
-    display: 'block',
-    marginBottom: 6,
-  },
-  input: {
-    width: '100%',
-    padding: '12px',
-    border: '1.5px solid #E0E0E0',
-    borderRadius: 10,
-    fontSize: 14,
-    fontFamily: "inherit",
-    marginBottom: 14,
-    boxSizing: 'border-box',
-    color: '#1A1A2E',
-    outline: 'none',
-  },
-  select: {
-    width: '100%',
-    padding: '12px',
-    border: '1.5px solid #E0E0E0',
-    borderRadius: 10,
-    fontSize: 14,
-    fontFamily: "inherit",
-    marginBottom: 14,
-    boxSizing: 'border-box',
-    color: '#1A1A2E',
-    outline: 'none',
-    background: '#fff',
-  },
-  textarea: {
-    width: '100%',
-    padding: '12px',
-    border: '1.5px solid #E0E0E0',
-    borderRadius: 10,
-    fontSize: 14,
-    fontFamily: "inherit",
-    marginBottom: 14,
-    boxSizing: 'border-box',
-    color: '#1A1A2E',
-    outline: 'none',
-    resize: 'vertical',
-  },
+  formCard: { padding: '20px 16px' },
+  label: { display: 'block', marginBottom: 6 },
+  input: { width: '100%', marginBottom: 14 },
+  select: { width: '100%', marginBottom: 14 },
+  textarea: { width: '100%', marginBottom: 14 },
   durationPreview: {
     background: '#EEF0FF',
     color: 'var(--brand-dark)',
