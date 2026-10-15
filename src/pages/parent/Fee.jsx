@@ -179,6 +179,7 @@ export default function ParentFee() {
           ].map((t) => (
             <button
               key={t.key}
+              type="button" aria-pressed={activeTab === t.key}
               onClick={() => setActiveTab(t.key)}
               style={{ ...styles.tab, ...(activeTab === t.key ? styles.tabActive : {}) }}
             >

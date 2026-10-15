@@ -178,19 +178,19 @@ export default function TeacherLeave() {
 
         {/* Tabs */}
         <div style={styles.tabRow}>
-          <button
+          <button type="button" aria-pressed={tab === 'history'}
             style={{ ...styles.tab, ...(tab === 'history' ? styles.tabActive : {}) }}
             onClick={() => setTab('history')}
           >
             Leave History
           </button>
-          <button
+          <button type="button" aria-pressed={tab === 'apply'}
             style={{ ...styles.tab, ...(tab === 'apply' ? styles.tabActive : {}) }}
             onClick={() => setTab('apply')}
           >
             + Apply Leave
           </button>
-          <button
+          <button type="button" aria-pressed={tab === 'students'}
             style={{ ...styles.tab, ...(tab === 'students' ? styles.tabActive : {}) }}
             onClick={() => setTab('students')}
           >

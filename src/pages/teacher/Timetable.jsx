@@ -138,7 +138,7 @@ export default function TeacherTimetable() {
             const isToday   = day === today
             const count     = getPeriodsForDay(day).length
             return (
-              <button key={day} onClick={() => setSelectedDay(day)} style={{
+              <button key={day} type="button" aria-pressed={selectedDay === day} onClick={() => setSelectedDay(day)} style={{
                 flexShrink: 0, padding: '8px 14px', borderRadius: 14, border: 'none', cursor: 'pointer',
                 background: isActive ? 'var(--brand)' : '#fff',
                 color: isActive ? '#fff' : isToday ? 'var(--brand)' : '#7B8099',

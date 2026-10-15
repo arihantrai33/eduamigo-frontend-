@@ -134,13 +134,13 @@ export default function TeacherUpload() {
         {successMsg && <div style={styles.successBanner}><Glyph e="✅" /> {successMsg}</div>}
 
         <div style={styles.tabRow}>
-          <button
+          <button type="button" aria-pressed={tab === 'uploads'}
             style={{ ...styles.tab, ...(tab === 'uploads' ? styles.tabActive : {}) }}
             onClick={() => setTab('uploads')}
           >
             My Uploads
           </button>
-          <button
+          <button type="button" aria-pressed={tab === 'upload'}
             style={{ ...styles.tab, ...(tab === 'upload' ? styles.tabActive : {}) }}
             onClick={() => setTab('upload')}
           >

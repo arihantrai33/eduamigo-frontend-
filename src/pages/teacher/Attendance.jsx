@@ -170,7 +170,7 @@ export default function TeacherAttendance() {
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
             {teacher?.assignedClasses?.length > 0 ? teacher.assignedClasses.map(cls => (
               // Assigned classes are stored as "7-A", so one tap selects both class and section.
-              <button key={cls} onClick={() => { const [c, sec = ""] = cls.split("-"); setFilters(f => ({ ...f, class: c, section: sec })); }}
+              <button key={cls} type="button" aria-pressed={`${filters.class}-${filters.section}` === cls} onClick={() => { const [c, sec = ""] = cls.split("-"); setFilters(f => ({ ...f, class: c, section: sec })); }}
                 style={{
                   padding: "6px 16px", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer", border: "none",
                   background: `${filters.class}-${filters.section}` === cls ? "var(--brand)" : "var(--brand-soft)",
@@ -187,7 +187,7 @@ export default function TeacherAttendance() {
               <div style={{ fontSize: 13, fontWeight: 700, color: "#1C2033", marginBottom: 8 }}>Section</div>
               <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
                 {sections.map(sec => (
-                  <button key={sec} onClick={() => setFilters(f => ({ ...f, section: sec }))}
+                  <button key={sec} type="button" aria-pressed={filters.section === sec} onClick={() => setFilters(f => ({ ...f, section: sec }))}
                     style={{
                       padding: "6px 16px", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer", border: "none",
                       background: filters.section === sec ? "var(--brand)" : "var(--brand-soft)",

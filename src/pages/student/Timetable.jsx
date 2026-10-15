@@ -102,7 +102,7 @@ export default function Timetable() {
       <div className="ea-pd-bar" style={{ background: "var(--card)", padding: "12px 20px 0px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "8px" }}>
           {DAYS.map((day) => (
-            <button key={day} onClick={() => setSelectedDay(day)}
+            <button key={day} type="button" aria-pressed={selectedDay === day} onClick={() => setSelectedDay(day)}
               style={{
                 padding: "8px 16px", borderRadius: "20px", border: "none",
                 background: selectedDay === day ? "var(--brand)" : "#f0f0f0",

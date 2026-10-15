@@ -94,7 +94,7 @@ const AddTeacher = () => {
   )
 
   return (
-    <div style={{ fontFamily: "inherit" }}>
+    <div style={{ fontFamily: "inherit", maxWidth: 760, margin: "0 auto" }}>
       <div style={{ marginBottom: "1.5rem" }}>
         <PageHeader title="Add Teacher" subtitle="Fill in the details to register a new teacher" />
       </div>

@@ -21,7 +21,7 @@ const field = (label, control) => (
 
 function Tab({ label, icon, active, onClick }) {
   return (
-    <button onClick={onClick} style={{ display:"flex", alignItems:"center", gap:8, padding:"10px 20px", borderRadius:12, border:"none", cursor:"pointer", fontWeight:700, fontSize:13, transition:"all 0.2s", background: active ? "linear-gradient(135deg,#0F172A,#1E3A5F)" : "white", color: active ? "white" : "#94A3B8", boxShadow: active ? "0 4px 12px rgba(15,23,42,0.3)" : "none" }}>
+    <button type="button" aria-pressed={active} onClick={onClick} style={{ display:"flex", alignItems:"center", gap:8, padding:"10px 20px", borderRadius:12, border:"none", cursor:"pointer", fontWeight:700, fontSize:13, transition:"all 0.2s", background: active ? "linear-gradient(135deg,#0F172A,#1E3A5F)" : "white", color: active ? "white" : "#94A3B8", boxShadow: active ? "0 4px 12px rgba(15,23,42,0.3)" : "none" }}>
       <span>{icon}</span>{label}
     </button>
   );

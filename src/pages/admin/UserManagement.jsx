@@ -113,7 +113,7 @@ export default function UserManagement() {
         </div>
         <div style={{ display: "flex", gap: 6 }}>
           {["all", ...Object.keys(ROLE_META)].map(r => (
-            <button key={r} onClick={() => setFilter(r)}
+            <button key={r} type="button" aria-pressed={filter === r} onClick={() => setFilter(r)}
               style={{ padding: "6px 14px", borderRadius: 20, fontSize: 11, cursor: "pointer", border: `1px solid ${filter === r ? "var(--brand)" : "#E2E8F0"}`, background: filter === r ? "var(--brand-soft)" : "#fff", color: filter === r ? "var(--brand)" : "#64748B", fontWeight: filter === r ? 600 : 400, textTransform: "capitalize" }}>
               {r}
             </button>

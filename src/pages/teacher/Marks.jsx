@@ -205,7 +205,7 @@ export default function TeacherMarks() {
         <div style={styles.label}>Class</div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
           {classes.map(c => (
-            <button key={c} onClick={() => { if (c !== classKey) { setExam(null); setSheet(null); setExams([]) } setClassKey(c) }} style={{
+            <button key={c} type="button" aria-pressed={c === classKey} onClick={() => { if (c !== classKey) { setExam(null); setSheet(null); setExams([]) } setClassKey(c) }} style={{
               padding: '6px 16px', borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: 'none',
               background: classKey === c ? 'var(--brand)' : 'var(--brand-soft)', color: classKey === c ? '#fff' : 'var(--brand)',
             }}>Class {c}</button>

@@ -215,7 +215,7 @@ function Requests({ user }) {
       {staff && (
         <div style={s.segment}>
           {[["assigned", "Sent to me"], ...(seesAll ? [["all", "All"]] : []), ["mine", "Raised by me"]].map(([k, l]) => (
-            <button key={k} type="button" onClick={() => setScope(k)} style={scope === k ? s.segOn : s.segOff}>{l}</button>
+            <button key={k} type="button" aria-pressed={scope === k} onClick={() => setScope(k)} style={scope === k ? s.segOn : s.segOff}>{l}</button>
           ))}
         </div>
       )}
@@ -392,7 +392,7 @@ export default function AskWidget() {
           </div>
           <div style={s.tabs}>
             {[["chat", "Chat"], ["requests", "Requests"]].map(([k, l]) => (
-              <button key={k} type="button" onClick={() => setTab(k)} style={tab === k ? s.tabOn : s.tabOff}>{l}</button>
+              <button key={k} type="button" aria-pressed={tab === k} onClick={() => setTab(k)} style={tab === k ? s.tabOn : s.tabOff}>{l}</button>
             ))}
             {tab === "chat" && turns.length > 0 && <button type="button" style={s.newChat} onClick={newChat}>New chat</button>}
           </div>

@@ -182,7 +182,7 @@ export default function AskInsights() {
           <h2 style={{ ...s.h2, margin: 0 }}>Hand-off tickets</h2>
           <div style={{ display: "flex", gap: 6 }}>
             {[["open", "Open"], ["in_progress", "In progress"], ["resolved", "Resolved"], ["", "All"]].map(([k, l]) => (
-              <button key={k || "all"} type="button" onClick={() => setStatus(k)} style={status === k ? s.segOn : s.segOff}>{l}</button>
+              <button key={k || "all"} type="button" aria-pressed={status === k} onClick={() => setStatus(k)} style={status === k ? s.segOn : s.segOff}>{l}</button>
             ))}
           </div>
         </div>

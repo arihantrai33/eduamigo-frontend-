@@ -165,7 +165,7 @@ export default function Communications() {
       {/* Tabs */}
       <div style={{ display:"flex", gap:8, marginBottom:20, background:"white", padding:"6px", borderRadius:14, boxShadow:"0 2px 12px rgba(15,23,42,0.06)", border:"1px solid #E2E8F0", width:"fit-content" }}>
         {TABS.map(tab => (
-          <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+          <button key={tab.id} type="button" aria-pressed={activeTab === tab.id} onClick={() => setActiveTab(tab.id)}
             style={{ padding:"10px 20px", borderRadius:10, border:"none", cursor:"pointer", fontWeight:700, fontSize:13, transition:"all 0.2s",
               background: activeTab === tab.id ? "var(--brand-gradient)" : "transparent",
               color: activeTab === tab.id ? "white" : "#64748B",
@@ -187,7 +187,7 @@ export default function Communications() {
                 onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
             </div>
             {[["","All"],["student","Students"],["teacher","Teachers"],["parent","Parents"],["admin","Admin"]].map(([val,lbl]) => (
-              <button key={val} onClick={() => setFilterTarget(filterTarget===val?"":val)}
+              <button key={val} type="button" aria-pressed={filterTarget === val} onClick={() => setFilterTarget(filterTarget===val?"":val)}
                 style={{ padding:"9px 16px", borderRadius:10, border:"none", cursor:"pointer", fontWeight:700, fontSize:12, background: filterTarget===val ? "var(--brand)" : "#F1F5F9", color: filterTarget===val ? "white" : "#64748B" }}>
                 {lbl}
               </button>
@@ -201,7 +201,7 @@ export default function Communications() {
               ].map(({val,lbl,dot}) => {
                 const isActive = filterPriority===val;
                 return (
-                  <button key={val} onClick={() => setFilterPriority(filterPriority===val?"":val)}
+                  <button key={val} type="button" aria-pressed={filterPriority === val} onClick={() => setFilterPriority(filterPriority===val?"":val)}
                     style={{ display:"flex", alignItems:"center", gap:5, padding:"7px 13px", borderRadius:9, border:"none", cursor:"pointer", fontWeight:700, fontSize:12, transition:"all 0.2s",
                       background: isActive ? "white" : "transparent",
                       color: isActive ? (dot ? PRIORITY_CONFIG[val]?.color : "var(--brand)") : "#94A3B8",

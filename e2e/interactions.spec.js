@@ -202,3 +202,23 @@ test('student chat: a contact can be opened with the keyboard and the tabs say w
   await page.keyboard.press('Enter');
   await expect(page.getByRole('button', { name: 'Back to contacts' })).toBeVisible();
 });
+
+test('filters and tabs say which option is selected (library, users, teacher upload)', async ({ page }) => {
+  await signIn(page, 'admin');
+  await page.goto('/admin/library');
+  await expect(page.getByRole('button', { name: 'All', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  const fiction = page.getByRole('button', { name: 'Fiction' }).first();
+  await fiction.click();
+  await expect(fiction).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByRole('button', { name: 'All', exact: true })).toHaveAttribute('aria-pressed', 'false');
+  await page.goto('/admin/user-management');
+  await expect(page.locator('button[aria-pressed="true"]').first()).toBeVisible();
+});
+
+test('teacher upload and leave tabs announce the selected tab', async ({ page }) => {
+  await signIn(page, 'teacher');
+  await page.goto('/teacher/upload');
+  await expect(page.locator('button[aria-pressed="true"]')).toHaveCount(1);
+  await page.goto('/teacher/leave');
+  await expect(page.locator('button[aria-pressed="true"]')).toHaveCount(1);
+});

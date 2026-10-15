@@ -125,7 +125,7 @@ export default function Library() {
             style={{ width:"100%", padding:"11px 14px 11px 38px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
             onFocus={e=>e.target.style.borderColor="var(--brand)"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
         </div>
-        <button className="cat-chip" onClick={() => setFilterCat("")}
+        <button type="button" className="cat-chip" aria-pressed={!filterCat} onClick={() => setFilterCat("")}
           style={{ padding:"9px 16px", borderRadius:10, border:"none", background: !filterCat ? "var(--brand)" : "#F1F5F9", color: !filterCat ? "white" : "#64748B", fontWeight:700, fontSize:12 }}>
           All
         </button>
@@ -133,7 +133,7 @@ export default function Library() {
           const cfg = CAT_CONFIG[cat];
           const active = filterCat === cat;
           return (
-            <button key={cat} className="cat-chip" onClick={() => setFilterCat(active ? "" : cat)}
+            <button key={cat} type="button" className="cat-chip" aria-pressed={active} onClick={() => setFilterCat(active ? "" : cat)}
               style={{ padding:"9px 14px", borderRadius:10, border:`1.5px solid ${active ? cfg.color : "#E2E8F0"}`, background: active ? cfg.bg : "white", color: active ? cfg.color : "#64748B", fontWeight:700, fontSize:12, display:"flex", alignItems:"center", gap:5 }}>
               {cfg.icon} {cat}
             </button>

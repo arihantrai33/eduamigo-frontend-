@@ -2,8 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { toast, errorMessage } from "../../utils/toast";
-import { Printer } from "lucide-react";
+import { Printer, FileText } from "lucide-react";
 import PageHeader from "../../components/ui/PageHeader";
+import EmptyState from "../../components/ui/EmptyState";
 import { todayLocal } from "../../utils/dates";
 
 // Printable transfer certificate (backend: GET /api/students/:id/transfer-certificate).
@@ -49,7 +50,16 @@ export default function TransferCertificate() {
         actions={tc && <button type="button" className="ea-btn ea-btn--primary" onClick={() => window.print()}><Printer size={16} aria-hidden="true" /> Print</button>} />
     </div>
   );
-  if (error) return <div>{header}<div className="ea-alert" role="alert"><span>{error}</span></div></div>;
+  // Usually "the student has not left yet": say so, and offer where a TC is started.
+  if (error) return (
+    <div>{header}
+      <EmptyState icon={FileText} role="alert" title="Transfer certificate not available" text={error}
+        actions={<>
+          <button type="button" className="ea-btn ea-btn--primary" onClick={() => navigate("/admin/year-end")}>Go to Year End &amp; TC</button>
+          <button type="button" className="ea-btn ea-btn--ghost" onClick={() => navigate(`/admin/students/${id}`)}>Back to the student</button>
+        </>} />
+    </div>
+  );
   if (!tc) return <div>{header}<div role="status" style={{ padding: 24, color: "var(--ea-muted)" }}>Loading…</div></div>;
   const s = tc.student;
   const missing = (tc.missing || []).filter((k) => MISSING_LABELS[k]);

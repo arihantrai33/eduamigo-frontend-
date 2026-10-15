@@ -156,7 +156,7 @@ export default function Timetable() {
         {/* Day Selector */}
         <div style={{ display:"flex", gap:8 }}>
           {DAYS.map(day => (
-            <button key={day} className="day-btn" onClick={() => setSelectedDay(day)}
+            <button key={day} type="button" className="day-btn" aria-pressed={selectedDay === day} onClick={() => setSelectedDay(day)}
               style={{ flex:1, padding:"10px 8px", borderRadius:12, border:"none", cursor:"pointer", fontWeight:700, fontSize:12,
                 background: selectedDay === day ? DAY_COLORS[day] : "#F8FAFC",
                 color: selectedDay === day ? "white" : "#64748B",

@@ -592,6 +592,15 @@ input:-webkit-autofill:focus {
 }
 .ea-alert span { flex: 1; }
 .ea-alert--warning { background: #FFFBEB; border-color: #FDE68A; color: #92400E; }
+/* Empty and unavailable states (components/ui/EmptyState.jsx) */
+.ea-empty {
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px;
+  padding: 40px 24px; background: var(--ea-surface); border: 1px solid var(--ea-line); border-radius: var(--ea-radius);
+}
+.ea-empty__icon { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; background: var(--brand-soft); color: var(--brand-dark); margin-bottom: 4px; }
+.ea-empty__title { margin: 0; font-size: 17px; font-weight: 700; color: var(--ea-ink); }
+.ea-empty__text { margin: 0; max-width: 460px; font-size: 14px; line-height: 1.5; color: var(--ea-muted); }
+.ea-empty__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px; }
 
 /* Admin sidebar (pages/admin/Home.jsx): links and buttons keep their look, and show a ring when reached by keyboard.
    currentColor works on the dark and the light sidebar. */

@@ -12,7 +12,7 @@ const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov
 
 function Tab({ label, icon, active, onClick }) {
   return (
-    <button onClick={onClick} style={{ display:"flex", alignItems:"center", gap:8, padding:"10px 20px", borderRadius:12, border:"none", cursor:"pointer", fontWeight:700, fontSize:13, transition:"all 0.2s", background: active ? "var(--brand-gradient)" : "white", color: active ? "white" : "#94A3B8", boxShadow: active ? "0 4px 12px color-mix(in srgb, var(--brand) 30%, transparent)" : "none" }}>
+    <button type="button" aria-pressed={active} onClick={onClick} style={{ display:"flex", alignItems:"center", gap:8, padding:"10px 20px", borderRadius:12, border:"none", cursor:"pointer", fontWeight:700, fontSize:13, transition:"all 0.2s", background: active ? "var(--brand-gradient)" : "white", color: active ? "white" : "#94A3B8", boxShadow: active ? "0 4px 12px color-mix(in srgb, var(--brand) 30%, transparent)" : "none" }}>
       <span>{icon}</span>{label}
     </button>
   );

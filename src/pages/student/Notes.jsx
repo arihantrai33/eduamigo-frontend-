@@ -114,7 +114,7 @@ export default function Notes() {
       {/* Tabs */}
       <div className="ea-pd-row" style={{ display: 'flex', gap: 8, padding: '0 16px 12px' }}>
         {tabs.map(tab => (
-          <button key={tab.key}
+          <button key={tab.key} type="button" aria-pressed={activeTab === tab.key}
             style={{ padding: '8px 16px', borderRadius: 20, border: activeTab === tab.key ? '1.5px solid var(--brand)' : `1.5px solid ${dm ? '#334155' : '#E0E0E0'}`, background: activeTab === tab.key ? (dm ? '#1e3a5f' : 'var(--brand-soft)') : (dm ? '#1e293b' : '#fff'), fontSize: 13, fontWeight: activeTab === tab.key ? 700 : 500, cursor: 'pointer', color: activeTab === tab.key ? 'var(--brand)' : (dm ? '#94a3b8' : '#666') }}
             onClick={() => setActiveTab(tab.key)}>
             {tab.label}

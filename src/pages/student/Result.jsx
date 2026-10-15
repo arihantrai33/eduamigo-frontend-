@@ -123,7 +123,7 @@ export default function StudentResult() {
         <div style={{ display: 'flex', background: 'rgba(255,255,255,.12)', borderRadius: 12,
           padding: 4, margin: '0 16px 12px', gap: 3, flexWrap: 'wrap' }}>
           {examTypes.map(e => (
-            <button key={e} onClick={() => setActiveExam(e)}
+            <button key={e} type="button" aria-pressed={activeExam === e} onClick={() => setActiveExam(e)}
               style={{ flex: 1, padding: '8px 4px', borderRadius: 9, fontSize: 11,
                 fontWeight: 700, border: 'none', cursor: 'pointer', whiteSpace: 'nowrap',
                 background: activeExam === e ? 'rgba(255,255,255,.22)' : 'none',
