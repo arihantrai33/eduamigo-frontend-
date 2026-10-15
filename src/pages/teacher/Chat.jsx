@@ -160,7 +160,7 @@ export default function TeacherChat() {
   const parents  = filtered.filter(c => c.type === 'parent');
 
   return (
-    <div style={styles.container}>
+    <div className="ea-pd-narrow" style={styles.container}>
       {/* CHAT WINDOW */}
       {tab === 'chat' && activeChat ? (
         <>
@@ -237,7 +237,7 @@ export default function TeacherChat() {
       ) : (
         <>
           {/* CONTACTS LIST */}
-          <div style={styles.header}>
+          <div className="ea-pd-band" style={styles.header}>
             <button type="button" aria-label="Back" onClick={() => navigate('/teacher/home')} style={styles.backBtn}><Glyph e="←" /></button>
             <div style={{ flex: 1 }}>
               <p style={styles.portalLabel}>TEACHER PORTAL</p>
@@ -248,7 +248,7 @@ export default function TeacherChat() {
             )}
           </div>
 
-          <div style={styles.content}>
+          <div className="ea-pd-body" style={styles.content}>
             {/* Search */}
             <div style={styles.searchBox}>
               <span style={styles.searchIcon}><Glyph e="🔍" /></span>

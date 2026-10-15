@@ -163,6 +163,8 @@ input, button, select, textarea {
   .ea-pd-dash { display: grid !important; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); grid-auto-flow: row dense; gap: 4px 24px; align-content: start; }
   .ea-pd-dash > .ea-tile-grid { order: -1; grid-column: 1 / -1; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important; }
   .ea-pd-hide { display: none !important; }
+  /* Tiles start at the top, so icons line up across a row even when a label wraps to two lines. */
+  .ea-pd-dash > .ea-tile-grid > * { display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; }
   .ea-pd-dash > .ea-pd-main { grid-column: 1; grid-row: span 3; min-width: 0; }
   .ea-pd-dash > .ea-pd-side { grid-column: 2; min-width: 0; }
   .ea-pd-cols { display: grid !important; grid-template-columns: minmax(0, 1.5fr) minmax(300px, 1fr); grid-auto-flow: row dense; gap: 0 24px; align-items: start; }

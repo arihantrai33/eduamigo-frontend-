@@ -12,8 +12,9 @@ import { signIn, apiSession } from './helpers';
 const DIR = process.env.SWEEP_DIR;
 test.skip(!DIR, 'set SWEEP_DIR to run the responsive sweep');
 
-const WIDTHS = [390, 768, 1280];
-const HEIGHT = { 390: 844, 768: 1024, 1280: 860 };
+// SWEEP_WIDTHS=390,768,1280,1440 to choose the widths (default the three below).
+const WIDTHS = (process.env.SWEEP_WIDTHS || '390,768,1280').split(',').map(Number);
+const HEIGHT = { 375: 812, 390: 844, 768: 1024, 1280: 860, 1440: 900 };
 const ROUTES = {
   public: ['/', '/select-school', '/s/GVPS', '/login', '/forgot-password', '/support', '/driver'],
   student: ['home', 'attendance', 'result', 'fee', 'bus', 'timetable', 'notes', 'learn', 'revise', 'apply-leave', 'notifications', 'chat', 'profile']

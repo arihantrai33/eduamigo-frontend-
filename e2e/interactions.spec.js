@@ -167,3 +167,13 @@ test('change password: a weak, then a mismatched new password is named under its
   await page.getByRole('button', { name: 'Update password' }).click();
   await expect(page.getByLabel('Confirm new password')).toHaveAccessibleDescription('The new passwords do not match.');
 });
+
+test('student chat: a contact can be opened with the keyboard and the tabs say which is selected', async ({ page }) => {
+  await signIn(page, 'student');
+  await page.goto('/student/chat');
+  await expect(page.getByRole('button', { name: 'Chats', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  const contact = page.getByRole('button', { name: /Anita Verma/ }).first();
+  await contact.focus();
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('button', { name: 'Back to contacts' })).toBeVisible();
+});

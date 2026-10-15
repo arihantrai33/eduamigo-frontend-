@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { childQuery } from "../../utils/selectedChild";
+import { pressable } from "../../utils/pressable";
 
 import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
@@ -33,14 +34,6 @@ const formatDate = (d) => {
     return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
   } catch { return ''; }
 };
-
-// A list row that opens something: reachable with Tab and opened with Enter or Space, like a button.
-const pressable = (onPress) => ({
-  role: 'button',
-  tabIndex: 0,
-  onClick: onPress,
-  onKeyDown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onPress(); } },
-});
 
 export default function ParentChat() {
   const navigate = useNavigate();
@@ -177,8 +170,8 @@ export default function ParentChat() {
 
   // ─── Main List Screen ────────────────────────────────────────────────────────
   return (
-    <div style={S.screen}>
-      <div style={S.header}>
+    <div className="ea-pd-narrow" style={S.screen}>
+      <div className="ea-pd-band" style={S.header}>
         <button type="button" aria-label="Back" style={S.headerBack} onClick={() => navigate('/parent/home')}><Glyph e="←" /></button>
         <div>
           <h2 style={S.headerTitle}><Glyph e="💬" /> Messages</h2>
@@ -194,7 +187,7 @@ export default function ParentChat() {
       {loading ? (
         <div style={S.center}><div style={{ color: 'var(--brand)', fontWeight: 600 }}>Loading...</div></div>
       ) : (
-        <div style={S.list}>
+        <div className="ea-pd-body" style={S.list}>
 
           {/* Admin Section */}
           <div style={S.sectionLabel}><Glyph e="🏫" /> SCHOOL ADMINISTRATION</div>

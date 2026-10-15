@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../context/ThemeContext";
 import Glyph from "../../components/Glyph";
+import { pressable } from "../../utils/pressable";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
 const avatarColor = (name = '') => {
@@ -186,23 +187,23 @@ export default function Chat() {
     </div>
   );
   return (
-    <div style={S.screen}>
-      <div style={S.header}>
+    <div className="ea-pd-narrow" style={S.screen}>
+      <div className="ea-pd-band" style={S.header}>
         <button type="button" aria-label="Back" style={S.headerBack} onClick={() => navigate('/student/home')}><Glyph e="←" /></button>
         <h2 style={S.headerTitle}><Glyph e="💬" /> Messages</h2>
       </div>
-      <div style={S.tabRow}>
+      <div className="ea-pd-bar" style={S.tabRow}>
         {[['chats','Chats'],['broadcasts','Broadcasts']].map(([key, label]) => (
-          <button key={key} style={{ ...S.tabBtn, ...(tab === key ? S.tabActive : {}) }} onClick={() => setTab(key)}>{label}</button>
+          <button key={key} type="button" aria-pressed={tab === key} style={{ ...S.tabBtn, ...(tab === key ? S.tabActive : {}) }} onClick={() => setTab(key)}>{label}</button>
         ))}
       </div>
       {loading ? (
         <div style={S.center}><div style={{ color: 'var(--brand)', fontWeight: 600 }}>Loading...</div></div>
       ) : tab === 'chats' ? (
-        <div style={S.list}>
+        <div className="ea-pd-body" style={S.list}>
           <div style={S.sectionLabel}><Glyph e="🏫" /> SCHOOL ADMINISTRATION</div>
           {adminContact && (
-            <div style={S.chatRow} onClick={() => setActiveChat({ name: adminContact.name, sub: 'Admin · Complaints & Queries', receiverId: adminContact.userId, roomId: adminContact.roomId })}>
+            <div style={S.chatRow} {...pressable(() => setActiveChat({ name: adminContact.name, sub: 'Admin · Complaints & Queries', receiverId: adminContact.userId, roomId: adminContact.roomId }))}>
               <div style={{ ...S.avatar, background: '#dc2626' }}>A</div>
               <div style={{ flex: 1 }}>
                 <div style={S.rowName}>{adminContact.name}</div>
@@ -215,7 +216,7 @@ export default function Chat() {
           {teachers.length === 0 ? (
             <div style={S.emptyBox}>No teachers found</div>
           ) : teachers.map((t) => (
-            <div key={t._id} style={S.chatRow} onClick={() => setActiveChat({ name: t.name, sub: t.subject, receiverId: t.userId, roomId: t.roomId })}>
+            <div key={t._id} style={S.chatRow} {...pressable(() => setActiveChat({ name: t.name, sub: t.subject, receiverId: t.userId, roomId: t.roomId }))}>
               <div style={{ ...S.avatar, background: avatarColor(t.name) }}>{t.name[0]}</div>
               <div style={{ flex: 1 }}>
                 <div style={S.rowName}>{t.name}</div>
@@ -226,7 +227,7 @@ export default function Chat() {
           ))}
         </div>
       ) : (
-        <div style={S.list}>
+        <div className="ea-pd-body" style={S.list}>
           <div style={S.sectionLabel}><Glyph e="📢" /> CLASS BROADCASTS</div>
           {broadcasts.length === 0 ? (
             <div style={S.emptyBox}>
