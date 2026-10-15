@@ -292,17 +292,24 @@ same specificity) kept the body grey. Fixed in 7cae7d3. The print tests now read
 moment print media applies, and fail on the old rule.
 
 ## Known defects and open items
-1. Admin screens on the old look but working: Reports-type pages keep their own chart colours; Settings and the
-   portal heroes (Results, Profile) keep their own design.
-2. Forms: no per-field inline error text.
+1. Admin screens on the old look but working: Reports-type pages keep their own chart colours; the portal heroes
+   (Results, Profile) keep their own design. Settings and Results had their visible defects fixed (da0f251); on
+   desktop the student/teacher/parent screens are the phone layouts at full width (consistent, but wide lists).
+2. Forms: field-level messages (`utils/fieldErrors.js`, `components/ui/FieldError.jsx`) on sign-in, select school,
+   forgot and change password, both Apply Leave screens and Add Student/Teacher/Parent. The dialog forms (HR,
+   Salaries, Transport, Library, Exams, Fee Structure, Events, Users, Timetable) still name a missing field in one
+   toast; their fields are labelled now, so moving them to `useFieldErrors` is the next step.
 3. Printing not verified in Safari or Firefox (see D).
 4. Back/Forward guard verified in Chrome only; the admission-date migration has not been run on real data.
 5. Owner console: tests run locally (`npm run test:e2e`); its CI workflow still runs lint and build only.
-6. Portal (student/teacher/parent) navigation was not part of the keyboard pass; only the admin menu was.
+6. Portal navigation by keyboard: tested on a phone (Tab reaches the tab bar, Enter opens the screen, the current
+   tab is announced, visible focus ring) and on a desktop (sidebar link by Enter, current page marked) in
+   `e2e/interactions.spec.js`. Not covered: a full Tab-order review of every portal screen.
 7. Voice Learning: real microphone, Hindi/Hinglish recognition and phones are untested (scripted speech only). The admin AI usage page was checked with mocked data and a real local backend, not on a phone.
-8. Accessible names: done on page level (21aac87). `e2e/accessible-names.spec.js` holds all 65 portal screens to
-   the rule; its `PENDING` list is empty. Not covered: controls inside dialogs (closed when a screen loads), e.g.
-   the Salary, HR and Timetable period dialogs, and the sign-in pages.
+8. Accessible names: `e2e/accessible-names.spec.js` holds all 65 portal screens, the sign-in, password and driver
+   pages and 10 admin dialogs (Library, Exams, Fee Structure, Transport, Salaries, HR, Events, Users, Admissions,
+   Communications) to the rule. Not covered: the Timetable period dialog (needs a class chosen first), the
+   Transport stops dialog, row edit dialogs.
 9. **Stale test servers (owner decision).** `node src/scripts/demo.js` started 2026-10-14 04:48 still listens on
    8100 (pid 55014), plus leftovers on 5174, 8110 and 5184. `reuseExistingServer: true` makes every
    `npm run test:e2e` reuse that old backend: it answers with an older tutor message, so the AI-off end-to-end
@@ -329,15 +336,49 @@ moment print media applies, and fail on the old rule.
 | 2026-10-15 | Accessible names and last emoji | New `e2e/accessible-names.spec.js` (4 tests, one per portal, 65 screens). Before: about 100 unnamed controls on 25 screens; after: 50 on the 14 screens listed in open item 8 (teacher portal fully clean). Fixed: notification bells on all three portal homes (name includes the unread count), admin Notifications refresh, Communications pin/edit/delete, Add Student/Teacher/Parent fields (wrapping `<label>`), Apply Leave fields, 8 search boxes, parent Bus alert settings; raw ℹ️ in the billing banner and ↗ on teacher Upload now line icons. Frontend Playwright **79/80** (the one failure was later traced to a stale backend on the test port, see item 9; not flakiness); build ok; 0 lint messages on changed lines; Add Student screenshot at 1280 px unchanged in layout. |
 | 2026-10-15 | Accessible names, remaining 14 screens; e2e failure root cause (21aac87, 62f067e) | Delete/edit row buttons name their record, filter selects and Bulk Operations fields labelled, bus map and calendar buttons named; `PENDING` emptied: accessible-names spec 4/4 strict. My Delete label "Delete Edit Me" broke a `/Edit/` regex in admission-date.spec.js (fixed: exact match). Full run on the stale 8100 backend: 78/80 (that test + the AI-off test, see item 9). Full run on fresh servers 8130/5194: **80/80**. Build ok. |
 | 2026-10-15 | Older screens, first visual fixes (da0f251) | Screenshots of admin Settings (1280, 390) and student Results (1280, 390) and Profile (390) reviewed: 0 sideways scroll. Fixed: Results grade chips coloured CBSE A1/A2 in the fail red (colour now by grade band, null-safe); Settings school information left a third of a row empty next to Address (now name, principal, email, phone in one row on desktop, address full width). Full Playwright on fresh servers 8130/5194: **80/80**; build ok; 0 lint messages on changed lines. |
+| 2026-10-15 | Responsive sweep 390/768/1280, interactions, field-level messages, dialog labels (second pass) | Sweep before: 234 screens (78 routes x 3 widths), 0 sideways scroll, 0 cut off, 0 JS errors, 0 server errors, 10 controls covered by the Ask button; all 234 screenshots seen on 12 contact sheets; found also: 140 px tall fields on phone forms, the user list broken below 1024 px, 22 touch targets under 24 px. Sweep after: **234 screens, 0 hard findings**; touch targets under 24 px down from 22 to 14, of which the account switch, the admin receipt links and the parent fee breakdown toggle were enlarged after the sweep (not swept again) and 2 are search fields inside a larger box (one sign-in in the sweep failed once with the school field empty after typing, before any click had an effect; it passed when run again; not reproduced, noted as a possible start-up race). New `e2e/interactions.spec.js` (12 tests; 3 failed on the old code: student "View" link, switch focus, and a test-timing issue fixed in the test) and 2 new accessible-name tests (sign-in pages, 10 dialogs; found the driver token field and 58 dialog fields unlabelled, all fixed). Targeted runs: 39/39. Full Playwright on fresh servers 8130/5194 after the last change: **94 passed, 0 failed** (19 opt-in sweep/crawl tests skipped). Before/after screenshots: Add Parent at 390, user management at 768, sign-in and Add Student error states, parent profile end. Build ok; 0 lint messages on changed lines. |
 
-## Handoff (2026-10-15): what the full-frontend request still needs
+## Handoff (2026-10-15, second pass): status of the full-frontend request
 Status words: **implemented** (code changed), **automated** (an e2e test covers it), **seen** (screenshot reviewed), **pending**.
-- Accessible names on all 65 portal screens: implemented, automated (strict). Dialog contents and sign-in pages: pending.
-- Stale test servers on 8100/5174/8110/5184 (item 9): owner to stop them; until then run e2e with `E2E_API_PORT=8130 E2E_WEB_PORT=5194`.
-- Visual redesign of older screens: Settings and Results seen and partly fixed; student Profile seen at 390 only (no fix needed found yet);
-  parent Results/Profile, teacher Profile, admin Reports (own chart colours): pending.
-- Responsive at 375/390/768/1280/1440: earlier sweeps cover 375 and 1440 for all 75 routes; **390, 768 and 1280 are pending** as a sweep
-  (only the screens above were seen at 390/1280).
-- Interaction audit button by button: covered only where the 80 e2e tests reach; the rest is pending.
-- Keyboard pass for portal (student/teacher/parent) navigation: pending. Per-field validation messages (item 2): pending.
-- Printing in Safari/Firefox, real microphone and phone voice: unverified (no such device/browser used).
+
+Tools added (both opt-in, they take minutes):
+- `SWEEP_DIR=<dir> npx playwright test e2e/responsive-sweep.spec.js`: 78 routes x 390/768/1280 px. Fails on sideways
+  scroll, an element cut off at the screen edge, a control left under the tab bar or Ask button at the end of the
+  page, a JavaScript error. Writes screenshots and `report-<role>-<width>.json` (also tiny targets, clipped text, gaps).
+- `CRAWL_DIR=<dir> npx playwright test e2e/dead-click-crawl.spec.js` (about 6 minutes): clicks up to 12
+  non-destructive buttons per screen at 1280 px and lists clicks after which nothing changed (saved per screen).
+  It does not see scrolling, so a same-page jump shows up as "no effect".
+
+Done in this pass:
+- Responsive sweep, all 78 routes at 390, 768 and 1280 (234 screens): automated checks and every screenshot seen on
+  contact sheets. Before: 0 sideways scroll, 0 cut off, 0 JS errors, 10 controls covered by the Ask button.
+- Ask button covering the end of pages (admin at 768/1280, portals on desktop, parent profile on phones):
+  implemented in shared CSS (index.css), seen. Cause and limits: see the comments at `.ea-scroll` in index.css.
+- Form fields 140 px tall on phones wherever a label sits above its field in a flex column (Add Parent, Add
+  Teacher, Add Student ...): implemented (one CSS rule), seen.
+- User management below 1024 px: the list stacked its column headings; now one card per user. The account switch
+  was a clickable div: now a real switch (keyboard, announced state) that keeps focus while the list refreshes.
+  Implemented, automated.
+- Students list: "View" and the student name opened `/admin/student-profile/:id`, a route that does not exist
+  (empty screen). Now `/admin/students/:id`. Implemented, automated. Static check of every literal navigation
+  target against the routes: no other dead link.
+- Touch targets under 24 px (receipt chips and links, "View all", sign-in small buttons, "View File", the account
+  switch, the fee breakdown toggle): implemented; the last three not swept again.
+- Library "Add Book" category list showed "[object Object] Textbook" (an icon inside `<option>`): fixed.
+- Field-level messages (item 2), sign-in keyboard (show-password button reachable, Enter in the ID field), labels
+  on Forgot password, the driver token field and 10 admin dialogs: implemented, automated.
+- Dead-click crawl, all four roles: 63 screens, 233 clicks, 0 errors, **0 dead buttons**. The 21 clicks without a
+  visible effect were all on the option already chosen (an "All" filter, the current tab, today's day, the class
+  already selected, a student already marked Present) and one School Setup "Go" that scrolls to its section.
+
+Pending:
+- Dialog forms to `useFieldErrors` (item 2); Timetable period, Transport stops and row edit dialogs not in the
+  dialog check (item 8).
+- Tab and filter groups do not say which option is chosen (no `aria-selected` / `aria-pressed`), found by the
+  crawl on about 15 screens (fee and notice filters, day tabs, class chips, attendance status buttons, the HR, ID
+  card and Bulk Operations tabs). A screen reader user cannot tell the current filter.
+- Full Tab-order review of every screen; 375 and 1440 px were not swept again in this pass (earlier sweeps).
+- Unverified: real phones and tablets (all checks are Chrome with phone-sized windows), Safari/Firefox printing,
+  real microphone and voice.
+- Owner decisions: stale test servers (item 9); the account switch deactivates a user with one click and no
+  confirmation (a confirmation would change behaviour, so it was not added).

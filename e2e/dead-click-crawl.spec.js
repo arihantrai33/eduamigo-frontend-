@@ -47,7 +47,7 @@ for (const [role, routes] of Object.entries(ROUTES)) {
     }
     const open = async (url) => {
       await page.goto(url);
-      await page.locator('.ea-spinner, [aria-busy="true"]').first().waitFor({ state: 'detached', timeout: 4000 }).catch(() => {});
+      await page.locator('.ea-spinner, [aria-busy="true"]').first().waitFor({ state: 'detached', timeout: 1500 }).catch(() => {});
       await page.waitForTimeout(400);
     };
     const candidates = () => page.evaluate((skip) => {
@@ -71,7 +71,8 @@ for (const [role, routes] of Object.entries(ROUTES)) {
       const dead = [], failed = [];
       for (const { i, name } of list) {
         const el = page.locator('button, [role=button], [role=tab]').nth(i);
-        const attrs = () => el.evaluate((e) => ['aria-pressed', 'aria-expanded', 'aria-selected', 'aria-checked', 'class'].map((a) => e.getAttribute(a)).join('|')).catch(() => 'gone');
+        // With a timeout: after a click that left the page the element is gone, and evaluate() would wait forever.
+        const attrs = () => el.evaluate((e) => ['aria-pressed', 'aria-expanded', 'aria-selected', 'aria-checked', 'class'].map((a) => e.getAttribute(a)).join('|'), undefined, { timeout: 1000 }).catch(() => 'gone');
         const before = await page.evaluate(snapshot), a0 = await attrs();
         errors.length = 0;
         const clicked = await el.click({ timeout: 2000 }).then(() => true, () => false);
@@ -83,8 +84,9 @@ for (const [role, routes] of Object.entries(ROUTES)) {
         else await open(url);
       }
       report.push({ route, tried: list.length, dead, failed });
+      // Saved after every screen, so a run that is stopped early still leaves its results.
+      fs.writeFileSync(path.join(DIR, `crawl-${role}.json`), JSON.stringify(report, null, 1));
     }
-    fs.writeFileSync(path.join(DIR, `crawl-${role}.json`), JSON.stringify(report, null, 1));
     await context.close();
   });
 }
