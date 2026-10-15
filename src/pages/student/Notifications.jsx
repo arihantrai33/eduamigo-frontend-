@@ -3,6 +3,8 @@ import { useTheme } from "../../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
+import EmptyState from "../../components/ui/EmptyState";
+import { Bell } from "lucide-react";
 
 import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
@@ -64,10 +66,7 @@ export default function Notifications() {
       </div>
       <div className="ea-pd-body" style={{ padding: "16px", marginTop: "-20px" }}>
         {notifications.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "40px", color: "var(--subtext)" }}>
-            <div style={{ fontSize: "48px" }}><Glyph e="🔔" /></div>
-            <p>No notifications yet</p>
-          </div>
+          <EmptyState icon={Bell} title="No notifications yet" text="Notices and alerts from your school will appear here." />
         ) : (
           notifications.map(n => (
             <div key={n._id} onClick={() => markRead(n._id)}

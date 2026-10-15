@@ -6,7 +6,8 @@ import axios from 'axios';
 import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
 import PortalHeader from "../../components/ui/PortalHeader";
-import { Plus, Sparkles } from "lucide-react";
+import { Inbox, Plus, SearchX, Sparkles } from "lucide-react";
+import EmptyState from "../../components/ui/EmptyState";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -137,11 +138,9 @@ export default function Notes() {
           <>
             <div style={{ fontSize: 11, fontWeight: 700, color: dm ? '#64748b' : '#999', letterSpacing: 1, marginBottom: 10, marginTop: 4 }}>RECENT NOTES</div>
             {filtered.length === 0 ? (
-              <div style={{ background: dm ? '#1e293b' : '#fff', borderRadius: 14, padding: 24, textAlign: 'center', boxShadow: '0 1px 6px rgba(0,0,0,0.05)', marginTop: 8 }}>
-                <div style={{ fontSize: 36, marginBottom: 8 }}><Glyph e="📭" /></div>
-                <div style={{ fontSize: 14, color: dm ? '#94a3b8' : '#999' }}>No notes available yet</div>
-                <div style={{ fontSize: 12, color: dm ? '#64748b' : '#bbb', marginTop: 4 }}>Notes will appear here once uploaded by your teacher.</div>
-              </div>
+              search
+                ? <EmptyState icon={SearchX} title="Nothing matches your search" text="Try a different word, or clear the search." />
+                : <EmptyState icon={Inbox} title="No notes available yet" text="Notes will appear here once uploaded by your teacher." />
             ) : filtered.map(note => {
               const { icon, color } = subjectIcon(note.subject);
               return (
@@ -165,11 +164,7 @@ export default function Notes() {
           <>
             <div style={{ fontSize: 11, fontWeight: 700, color: dm ? '#64748b' : '#999', letterSpacing: 1, marginBottom: 10, marginTop: 4 }}>MY ASSIGNMENTS</div>
             {assignments.length === 0 ? (
-              <div style={{ background: dm ? '#1e293b' : '#fff', borderRadius: 14, padding: 24, textAlign: 'center', boxShadow: '0 1px 6px rgba(0,0,0,0.05)', marginTop: 8 }}>
-                <div style={{ fontSize: 36, marginBottom: 8 }}><Glyph e="📭" /></div>
-                <div style={{ fontSize: 14, color: dm ? '#94a3b8' : '#999' }}>No assignments yet</div>
-                <div style={{ fontSize: 12, color: dm ? '#64748b' : '#bbb', marginTop: 4 }}>Assignments will appear here once assigned by your teacher.</div>
-              </div>
+              <EmptyState icon={Inbox} title="No assignments yet" text="Assignments will appear here once assigned by your teacher." />
             ) : assignments.map(task => {
               const isUrgent = task.status === 'Urgent' || (task.dueDate && new Date(task.dueDate) - new Date() < 86400000);
               const isDone = task.status === 'Submitted';
@@ -199,11 +194,9 @@ export default function Notes() {
           <>
             <div style={{ fontSize: 11, fontWeight: 700, color: dm ? '#64748b' : '#999', letterSpacing: 1, marginBottom: 10, marginTop: 4 }}>STUDY RESOURCES</div>
             {filtered.length === 0 ? (
-              <div style={{ background: dm ? '#1e293b' : '#fff', borderRadius: 14, padding: 24, textAlign: 'center', boxShadow: '0 1px 6px rgba(0,0,0,0.05)', marginTop: 8 }}>
-                <div style={{ fontSize: 36, marginBottom: 8 }}><Glyph e="📭" /></div>
-                <div style={{ fontSize: 14, color: dm ? '#94a3b8' : '#999' }}>No resources available yet</div>
-                <div style={{ fontSize: 12, color: dm ? '#64748b' : '#bbb', marginTop: 4 }}>Study resources will appear here once uploaded by your teacher.</div>
-              </div>
+              search
+                ? <EmptyState icon={SearchX} title="Nothing matches your search" text="Try a different word, or clear the search." />
+                : <EmptyState icon={Inbox} title="No resources available yet" text="Study resources will appear here once uploaded by your teacher." />
             ) : filtered.map(res => {
               const { icon, color } = subjectIcon(res.subject);
               return (

@@ -5,6 +5,8 @@ import { useTheme } from "../../context/ThemeContext";
 import Glyph from "../../components/Glyph";
 import FieldError from "../../components/ui/FieldError";
 import { useFieldErrors } from "../../utils/fieldErrors";
+import EmptyState from "../../components/ui/EmptyState";
+import { CalendarDays } from "lucide-react";
 
 const FIELDS = { fromDate: "leave-from", toDate: "leave-to", reason: "leave-reason" };
 const API = import.meta.env.VITE_API_URL;
@@ -180,7 +182,7 @@ export default function ApplyLeave() {
           {historyLoading ? (
             <div style={{ textAlign: "center", color: dm ? "#94a3b8" : "#aaa", fontSize: "13px", padding: "20px 0" }}>Loading history...</div>
           ) : leaveHistory.length === 0 ? (
-            <div style={{ textAlign: "center", color: dm ? "#94a3b8" : "#aaa", fontSize: "13px", padding: "20px 0" }}>No leave requests found.</div>
+            <EmptyState plain icon={CalendarDays} title="No leave requests yet" text="Requests you send appear here with their status." />
           ) : leaveHistory.map((leave, i) => {
             const statusColor = leave.status === "Approved" ? "#22c55e" : leave.status === "Rejected" ? "#ef4444" : "#f59e0b";
             const leaveDays = leave.fromDate && leave.toDate ? Math.max(1, Math.round((new Date(leave.toDate) - new Date(leave.fromDate)) / (1000 * 60 * 60 * 24) + 1)) : 1;

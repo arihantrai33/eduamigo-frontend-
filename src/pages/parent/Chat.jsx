@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { childQuery } from "../../utils/selectedChild";
 import { pressable } from "../../utils/pressable";
+import EmptyState from "../../components/ui/EmptyState";
+import { Users } from "lucide-react";
 
 import Glyph from "../../components/Glyph";
 const API = import.meta.env.VITE_API_URL;
@@ -212,11 +214,7 @@ export default function ParentChat() {
           {/* Teachers Section */}
           <div style={{ ...S.sectionLabel, marginTop: 20 }}><Glyph e="👨‍🏫" /> YOUR CHILD'S TEACHERS</div>
           {data.teachers.length === 0 ? (
-            <div style={S.emptyBox}>
-              <div style={{ fontSize: 36, marginBottom: 8 }}><Glyph e="📚" /></div>
-              <div>No teachers assigned yet</div>
-              <div style={{ fontSize: 11, marginTop: 4, color: '#bbb' }}>Teachers will appear here once they are assigned in the timetable.</div>
-            </div>
+            <EmptyState plain icon={Users} title="No teachers assigned yet" text="Teachers will appear here once they are assigned in the timetable." />
           ) : data.teachers.map((t) => (
             <div key={t._id} style={S.chatRow} {...pressable(() => setActiveChat({
               name:       t.name,

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import EmptyState from "../../components/ui/EmptyState";
+import { Bell } from "lucide-react";
 
 import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
@@ -69,10 +71,7 @@ export default function ParentNotifications() {
           </div>
         )}
         {!loading && !error && notifications.length === 0 && (
-          <div style={{ textAlign: "center", padding: 40, color: "var(--subtext)" }}>
-            <div style={{ fontSize: 48 }}><Glyph e="🔔" /></div>
-            <p style={{ fontSize: 14, marginTop: 12 }}>No notifications yet</p>
-          </div>
+          <EmptyState icon={Bell} title="No notifications yet" text="Notices and alerts about your child will appear here." />
         )}
         {!loading && notifications.map((n) => {
           const isRead = n.isRead ?? false;

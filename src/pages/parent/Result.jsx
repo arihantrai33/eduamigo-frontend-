@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { pickChild } from "../../utils/selectedChild";
 import Glyph from "../../components/Glyph";
+import EmptyState from "../../components/ui/EmptyState";
+import { Trophy } from "lucide-react";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -111,9 +113,7 @@ export default function ParentResult() {
           </div>
         )}
         {filtered.length === 0 ? (
-          <div style={{ background: "var(--card)", borderRadius: 16, padding: "40px 20px", textAlign: "center", color: "var(--subtext)", fontSize: 13 }}>
-            No results found
-          </div>
+          <EmptyState icon={Trophy} title="No results yet" text="Results appear here once teachers publish marks." />
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {filtered.map((r, i) => {

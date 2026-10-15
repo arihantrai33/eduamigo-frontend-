@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../context/ThemeContext";
 import Glyph from "../../components/Glyph";
 import { pressable } from "../../utils/pressable";
+import EmptyState from "../../components/ui/EmptyState";
+import { Megaphone, Users } from "lucide-react";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
 const avatarColor = (name = '') => {
@@ -214,7 +216,7 @@ export default function Chat() {
           )}
           <div style={{ ...S.sectionLabel, marginTop: 16 }}><Glyph e="👨‍🏫" /> YOUR TEACHERS</div>
           {teachers.length === 0 ? (
-            <div style={S.emptyBox}>No teachers found</div>
+            <EmptyState plain icon={Users} title="No teachers yet" text="Your teachers appear here once they are assigned in the timetable." />
           ) : teachers.map((t) => (
             <div key={t._id} style={S.chatRow} {...pressable(() => setActiveChat({ name: t.name, sub: t.subject, receiverId: t.userId, roomId: t.roomId }))}>
               <div style={{ ...S.avatar, background: avatarColor(t.name) }}>{t.name[0]}</div>
@@ -230,10 +232,7 @@ export default function Chat() {
         <div className="ea-pd-body" style={S.list}>
           <div style={S.sectionLabel}><Glyph e="📢" /> CLASS BROADCASTS</div>
           {broadcasts.length === 0 ? (
-            <div style={S.emptyBox}>
-              <div style={{ fontSize: 36, marginBottom: 8 }}><Glyph e="📢" /></div>
-              <div style={{ color: dm ? '#94a3b8' : '#999', fontSize: 13 }}>No broadcasts yet</div>
-            </div>
+            <EmptyState plain icon={Megaphone} title="No broadcasts yet" text="Messages your teachers send to the whole class appear here." />
           ) : broadcasts.map((b, i) => (
             <div key={b._id || i} style={S.broadcastCard}>
               <div style={S.broadcastTop}>

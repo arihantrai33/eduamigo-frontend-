@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import EmptyState from "../../components/ui/EmptyState";
+import { CalendarCheck } from "lucide-react";
 
 import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
@@ -124,14 +126,7 @@ export default function StudentAttendance() {
 
         {/* No data */}
         {total === 0 && (
-          <div style={{ background: "var(--card)", borderRadius: 14, padding: 24,
-            textAlign: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-            <div style={{ fontSize: 32, marginBottom: 8 }}><Glyph e="📭" /></div>
-            <div style={{ fontSize: 14, color: "var(--subtext)" }}>No attendance records yet</div>
-            <div style={{ fontSize: 12, color: "#bbb", marginTop: 4 }}>
-              Attendance will appear here once it is marked by your teacher.
-            </div>
-          </div>
+          <EmptyState icon={CalendarCheck} title="No attendance records yet" text="Attendance will appear here once it is marked by your teacher." />
         )}
       </div>
 

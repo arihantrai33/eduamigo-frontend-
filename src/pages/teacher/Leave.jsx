@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import EmptyState from "../../components/ui/EmptyState";
+import { ClipboardList } from "lucide-react";
 
 import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
@@ -226,11 +228,7 @@ export default function TeacherLeave() {
             ) : error ? (
               <div style={styles.errorBox}><Glyph e="⚠" /> {error}</div>
             ) : leaves.length === 0 ? (
-              <div style={styles.emptyBox}>
-                <p style={styles.emptyIcon}><Glyph e="📋" /></p>
-                <p style={styles.emptyText}>No leave requests found.</p>
-                <p style={styles.emptySubText}>Tap "Apply Leave" to submit a new request.</p>
-              </div>
+              <EmptyState plain icon={ClipboardList} title="No leave requests yet" text={'Use "Apply Leave" to submit a new request.'} />
             ) : (
               leaves.map(leave => {
                 const s = STATUS_STYLES[leave.status] || STATUS_STYLES.Pending;
