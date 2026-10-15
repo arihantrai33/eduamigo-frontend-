@@ -423,3 +423,19 @@ sign-in. Full Playwright on fresh servers 8130/5194: **95 passed, 0 failed** (19
 Remaining: per-field messages in admin dialog forms; selected state on the remaining filter groups (admin chat,
 library, admissions, communications, user management, teacher attendance class and status chips); a desktop week
 grid for timetables (they stay a day list in the reading column); real devices and Safari/Firefox not checked.
+
+## Phase 3 (2026-10-15, in progress): product-wide pass — tracker
+Commits 71f005a, a74587f, 0b3d276, 4c55df9, bb6d39b, 83bf26e (local).
+| Area | Done (verified by e2e and/or screenshots) | Pending |
+|---|---|---|
+| Shared confirm dialog | alertdialog, Escape, Cancel focused for destructive, focus return | — |
+| Destructive actions | event delete and account deactivation now ask | review every other delete for wording |
+| Selected state | aria-pressed on all tab/filter groups found by crawl and scan | re-run crawl to confirm |
+| Empty states | `components/ui/EmptyState` (used on transfer certificate) | adopt on remaining custom empty states |
+| Admin dialogs | field-level messages: events (was silent), users, exams, fees, library, bus, HR, salaries | timetable period, transport stops, settings, bulk operations |
+| Add teacher/parent | centred 760 px column | — |
+| Select school | full-viewport split like sign-in | code-link state still a card |
+| Bus tracking | stops panel beside the map on desktop | fullscreen mode on desktop not reviewed |
+| Timetables | week view on desktop (student, teacher); status only for today | admin timetable editor |
+| Not yet reviewed in this phase | | AI tutor states (streaming/voice/errors), admin reports charts, notifications pages' empty states, dark mode across portals, 1024 px width sweep, full suite run |
+Tests at the end of this batch: targeted runs all passing (latest 22/22); full suite not re-run after the last two commits.
