@@ -5,6 +5,7 @@ import EmptyState from "../../components/ui/EmptyState";
 import { Banknote, CalendarOff } from "lucide-react";
 
 import Glyph from "../../components/Glyph";
+import Segmented from "../../components/ui/Segmented";
 import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
@@ -26,14 +27,6 @@ const field = (label, control, after = null) => (
 );
 // Checked fields; each control's id is "hr-<key>".
 const FIELDS = Object.fromEntries(["teacher", "basicSalary", "leaveType", "fromDate", "toDate"].map((k) => [k, `hr-${k}`]));
-
-function Tab({ label, icon, active, onClick }) {
-  return (
-    <button type="button" aria-pressed={active} onClick={onClick} style={{ display:"flex", alignItems:"center", gap:8, padding:"10px 20px", borderRadius:12, border:"none", cursor:"pointer", fontWeight:700, fontSize:13, transition:"all 0.2s", background: active ? "linear-gradient(135deg,#0F172A,#1E3A5F)" : "white", color: active ? "white" : "#94A3B8", boxShadow: active ? "0 4px 12px rgba(15,23,42,0.3)" : "none" }}>
-      <span>{icon}</span>{label}
-    </button>
-  );
-}
 
 function StatusBadge({ status }) {
   const map = { Paid:"#10B981", Pending:"#F59E0B", Approved:"#10B981", Rejected:"#EF4444" };
@@ -177,9 +170,9 @@ export default function HRManagement() {
         </StatGrid>
       </div>
 
-      <div style={{ display:"flex", gap:6, background:"white", borderRadius:14, padding:5, border:"1px solid #E2E8F0", width:"fit-content", marginBottom:20, boxShadow:"0 2px 8px rgba(0,0,0,0.04)" }}>
-        <Tab label="Salary" icon={<Glyph e="💵" />} active={tab==="salary"} onClick={() => setTab("salary")} />
-        <Tab label="Staff Leaves" icon={<Glyph e="🌴" />} active={tab==="leaves"} onClick={() => setTab("leaves")} />
+      <div style={{ marginBottom:20 }}>
+        <Segmented label="HR section" value={tab} onChange={setTab}
+          options={[{ value:"salary", label:"Salary", icon:<Glyph e="💵" /> }, { value:"leaves", label:"Staff Leaves", icon:<Glyph e="🌴" /> }]} />
       </div>
 
       {tab === "salary" && (

@@ -492,3 +492,42 @@ Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B0. The owner approved decisions
 - **Tests:** `screens` + `ux-regressions` 9/9 passed. Sweep spec 15/15. Build passes.
 
 **Seen, but outside B0 (left for B8):** at 1024 the admin Students table wraps the "9-A" class chip and the names, and the Actions column runs past the card edge ("Edit" is cut off).
+
+### Redesign batch B1: primitives and pilots (2026-10-15)
+Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B1.
+
+**Shared pieces:**
+- New in `src/components/ui/`: `Badge.jsx`, `Avatar.jsx`, `Segmented.jsx`, `Chips.jsx`, `Skeleton.jsx`. Skeleton is not used by any page yet; it is adopted in B13.
+- CSS in `src/index.css`:
+  - `.ea-badge` now follows the spec: 22 px, 12/600, sentence case, warning tone #B45309 on #FFFBEB, a neutral tone, a brand tone and an optional dot;
+  - `.ea-avatar--sm/md/lg`;
+  - `.ea-seg`: unselected text is `--ea-body`, because `--ea-muted` is 4.36:1 on the track;
+  - `.ea-chips`/`.ea-chip`: one line, scrolling sideways below 768;
+  - `.ea-skeleton`: the shimmer stops under reduced motion.
+
+**Pilots:**
+- **HR:** Salary/Staff Leaves is a Segmented control (the navy filled tab is gone).
+- **Admissions:** the status pipeline uses Chips.
+- **Students:** the shared Avatar (brand tint; the random gradient colours are gone).
+- **Fee Collection:** status uses Badge (Paid success, Pending warning, Overdue danger, Partial info) with a dot.
+- The dashboard's "Recently enrolled" badges change too, because they use `.ea-badge`: the orange #C2410C becomes the standard amber warning.
+
+**Acceptance:**
+- **Segmented:** no filled navy, and `aria-pressed` is kept. Tab then Space chooses "Staff Leaves", and the focus ring is visible.
+- **Admissions chips at 390:** one line (before: 4 rows) and scrollable (831 px in 310). Focusing "Withdrawn" scrolls it into view and Enter selects it. The results start about 125 px higher.
+- **Avatars:** brand tint.
+- **Badges:** sentence case.
+
+**Review (ports 8130/5194):**
+- Before/after captures, each viewed side by side at 390 and 1280:
+  - HR (both tabs), Admissions (All and Enquiry selected), Students, Fee Collection;
+  - the dashboard badges (before taken with HEAD's `index.css` swapped in);
+  - the Planner and student home (no change).
+- Pixel diff of the B1 sweep against the B0 sweep (156 screens): only the pilots changed. Library, Reports, Transport, parent results and the splash differ only by data, time or animation.
+
+**Tests:** 53/53 passed: `interactions`, `accessible-names`, `admin-keyboard`, `workflows`, `screens`, `ux-regressions`, `unsaved-changes`, `admission-date`. Sweep at 390/1280: 10/10 passed, 156 screens, 0 findings. Dark-mode contrast probe: 0 text spots under 3:1. Build passes. ESLint counts on the four pages are the same as at HEAD (0/3/9/4); the new components have none.
+
+**Not done in B1 (out of scope):**
+- The student fee page still shows "UNPAID" and "PART PAID" in capitals; that page is not a B1 file. It moves to Badge when the student fee page is redesigned (B3/B6).
+- The 43 CSS uppercase rules outside badges are untouched; they belong to B7 and B8.
+- "+ Add Salary", "+ Add Leave" and "Collect" keep their navy/green fills; buttons are B2.

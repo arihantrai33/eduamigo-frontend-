@@ -13,6 +13,7 @@ import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
 import { StatCard as SharedStat, StatGrid } from "../../components/ui/StatCard";
 import { toneOf } from "../../components/ui/tone";
+import Avatar from "../../components/ui/Avatar";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -33,17 +34,6 @@ const FEE_BADGE = {
 // The shared stat card; the border colour this screen passes becomes the card's status tone.
 const StatCard = ({ label, value, icon, border }) => <SharedStat label={label} value={value} icon={icon} tone={toneOf(border)} />;
 
-function Avatar({ name, photo, size=38 }) {
-  const colors = ["#6366F1","#8B5CF6","#EC4899","#F43F5E","#F97316","#EAB308","#22C55E","#14B8A6","#06B6D4","#3B82F6"];
-  const color = colors[(name?.charCodeAt(0) || 0) % colors.length];
-  const initials = name ? name.split(" ").map(n=>n[0]).join("").slice(0,2).toUpperCase() : "?";
-  if (photo) return <img src={photo} alt={name} style={{ width:size, height:size, borderRadius:"50%", objectFit:"cover", border:"2px solid white", boxShadow:"0 2px 8px rgba(0,0,0,0.1)" }} />;
-  return (
-    <div style={{ width:size, height:size, borderRadius:"50%", background:`linear-gradient(135deg,${color},color-mix(in srgb, ${color} 73%, transparent))`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:size*0.32, fontWeight:800, color:"white", border:"2px solid white", boxShadow:`0 2px 8px color-mix(in srgb, ${color} 27%, transparent)`, flexShrink:0 }}>
-      {initials}
-    </div>
-  );
-}
 
 function StudentForm({ form, setForm, onSave, loading, onClose }) {
   const f = (k,v) => setForm(p => ({ ...p, [k]:v }));
@@ -296,7 +286,7 @@ export default function Students() {
                 <tr key={s._id} className="row-hover" style={{ borderBottom:"1px solid #F1F5F9", animation:`fadeSlideUp 0.3s ease ${i*0.04}s both` }}>
                   <td style={{ padding:"14px 18px" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-                      <Avatar name={s.name} photo={s.photo} size={40} />
+                      <Avatar name={s.name} photo={s.photo} alt={s.name} size="md" />
                       <div>
                         <div style={{ fontSize:14, fontWeight:700, color:"#0F172A", cursor:"pointer" }}
                           onClick={() => navigate(`/admin/students/${s._id}`)}

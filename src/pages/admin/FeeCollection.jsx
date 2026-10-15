@@ -10,15 +10,12 @@ import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import { toneOf } from "../../components/ui/tone";
+import Badge from "../../components/ui/Badge";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
-const STATUS_CONFIG = {
-  Paid:    { bg:"#F0FDF4", color:"#15803D", dot:"#22C55E", border:"#BBF7D0" },
-  Pending: { bg:"#FFFBEB", color:"#D97706", dot:"#F59E0B", border:"#FDE68A" },
-  Overdue: { bg:"#FEF2F2", color:"#DC2626", dot:"#EF4444", border:"#FECACA" },
-  Partial: { bg:"#EFF6FF", color:"#2563EB", dot:"#3B82F6", border:"#BFDBFE" },
-};
+// Fee status → badge tone (components/ui/Badge).
+const STATUS_TONE = { Paid: "success", Pending: "warning", Overdue: "danger", Partial: "info" };
 
 export default function FeeCollection() {
   const navigate = useNavigate();
@@ -175,7 +172,6 @@ export default function FeeCollection() {
               </td></tr>
             ) : filtered.map((f, i) => {
               const status = f.displayStatus;
-              const cfg = STATUS_CONFIG[status] || STATUS_CONFIG.Pending;
               return (
                 <tr key={f._id} className="fee-row" style={{ borderBottom:"1px solid #F1F5F9", animation:`fadeUp 0.3s ease ${i*0.03}s both` }}>
                   <td style={{ padding:"14px 18px" }}>
@@ -194,10 +190,7 @@ export default function FeeCollection() {
                   <td style={{ padding:"14px 18px", fontSize:13, color:"#374151" }}>{fmtDate(f.dueDate)}</td>
                   <td style={{ padding:"14px 18px", fontSize:13, color:"#374151" }}>{fmtDate(f.paidDate)}</td>
                   <td style={{ padding:"14px 18px" }}>
-                    <div style={{ display:"flex", alignItems:"center", gap:6, padding:"5px 12px", borderRadius:20, background:cfg.bg, border:`1px solid ${cfg.border}`, width:"fit-content" }}>
-                      <div style={{ width:6, height:6, borderRadius:"50%", background:cfg.dot }} />
-                      <span style={{ fontSize:12, fontWeight:700, color:cfg.color }}>{status}</span>
-                    </div>
+                    <Badge tone={STATUS_TONE[status] || "warning"} dot>{status}</Badge>
                   </td>
                   <td style={{ padding:"14px 18px" }}>
                     {status !== "Paid" ? (

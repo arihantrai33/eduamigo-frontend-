@@ -781,12 +781,65 @@ input:-webkit-autofill:focus {
 .ea-list__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .ea-list__text strong { font-size: 13px; color: var(--ea-ink); font-weight: 650; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ea-list__text small { font-size: 12px; color: var(--ea-muted); }
-.ea-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px; border: 1px solid transparent; white-space: nowrap; }
+/* Status badge (components/ui/Badge): one size and shape, sentence case, tone tint + tone text (all 4.5:1 or more). */
+.ea-badge {
+  display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border-radius: 999px;
+  border: 1px solid transparent; font-size: 12px; line-height: 16px; font-weight: 600; white-space: nowrap; text-transform: none;
+}
+.ea-badge__dot { width: 6px; height: 6px; flex: none; border-radius: 50%; background: currentColor; }
 .ea-badge--success { background: #F0FDF4; color: var(--ea-success); border-color: #BBF7D0; }
-.ea-badge--warning { background: #FFF7ED; color: #C2410C; border-color: #FED7AA; }
+.ea-badge--warning { background: #FFFBEB; color: var(--ea-warning); border-color: #FDE68A; }
 .ea-badge--danger { background: #FEF2F2; color: var(--ea-danger); border-color: #FECACA; }
-.ea-badge--info { background: #EFF6FF; color: var(--ea-info); border-color: #BFDBFE; }
-.ea-badge--neutral { background: var(--ea-hover); color: var(--ea-muted); border-color: var(--ea-line); }
+.ea-badge--info { background: var(--ea-info-bg); color: var(--ea-info); border-color: var(--ea-info-border); }
+.ea-badge--neutral { background: #F1F5F9; color: #475569; border-color: #E2E8F0; }
+.ea-badge--brand { background: var(--brand-soft); color: var(--brand-dark); border-color: var(--brand-border); }
+
+/* Avatar sizes (components/ui/Avatar): initials on the brand tint for everyone; role is a badge, never a colour. */
+.ea-avatar--sm { width: 32px; height: 32px; font-size: 12px; }
+.ea-avatar--md { width: 40px; height: 40px; font-size: 14px; }
+.ea-avatar--lg { width: 72px; height: 72px; font-size: 24px; }
+
+/* Segmented control (components/ui/Segmented): 2–4 views inside a card or page section. The chosen option is a raised
+   surface, not a filled colour. Unselected text is --ea-body: --ea-muted would be 4.4:1 on the track. */
+.ea-seg { display: inline-flex; gap: 4px; padding: 4px; max-width: 100%; overflow-x: auto; scrollbar-width: none; background: var(--ea-hover); border: 1px solid var(--ea-line); border-radius: var(--ea-radius); }
+.ea-seg__opt {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 32px; padding: 0 14px; flex: none;
+  border: 1px solid transparent; border-radius: var(--ea-radius-sm); background: transparent; color: var(--ea-body);
+  font: inherit; font-size: 13px; font-weight: 600; white-space: nowrap; cursor: pointer;
+}
+.ea-seg__icon { display: inline-flex; }
+.ea-seg__opt:hover { color: var(--ea-ink); }
+.ea-seg__opt[aria-pressed="true"] { background: var(--ea-surface); color: var(--ea-ink); border-color: var(--ea-line); box-shadow: var(--ea-shadow); }
+.ea-seg__opt:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
+
+/* Filter chips (components/ui/Chips): one line; on phones the row scrolls sideways instead of wrapping. */
+.ea-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.ea-chip {
+  display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; flex: none; border-radius: 999px;
+  border: 1px solid var(--ea-line); background: var(--ea-surface); color: var(--ea-body);
+  font: inherit; font-size: 13px; font-weight: 600; white-space: nowrap; cursor: pointer;
+}
+.ea-chip:hover { border-color: var(--ea-muted); color: var(--ea-ink); }
+.ea-chip[aria-pressed="true"] { background: var(--brand-soft); border-color: var(--brand); color: var(--brand-dark); }
+.ea-chip:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.ea-chip__count { font-size: 12px; font-weight: 700; color: var(--ea-muted); font-variant-numeric: tabular-nums; }
+.ea-chip[aria-pressed="true"] .ea-chip__count { color: var(--brand-dark); }
+@media (max-width: 767px) {
+  .ea-chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding: 2px 2px 4px; scroll-padding-inline: 2px; }
+  .ea-chips::-webkit-scrollbar, .ea-seg::-webkit-scrollbar { display: none; }
+}
+
+/* Loading placeholder rows (components/ui/Skeleton). The shimmer stops under reduced motion (rule further down). */
+.ea-skeleton { display: flex; flex-direction: column; gap: 10px; }
+.ea-skeleton__row {
+  display: block; height: 14px; border-radius: 6px;
+  background: linear-gradient(90deg, var(--ea-hover) 25%, var(--ea-line) 37%, var(--ea-hover) 63%); background-size: 400% 100%;
+  animation: ea-shimmer 1.4s ease infinite;
+}
+.ea-skeleton__row:nth-child(3n + 2) { width: 82%; }
+.ea-skeleton__row:nth-child(3n) { width: 64%; }
+@keyframes ea-shimmer { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+@media (prefers-reduced-motion: reduce) { .ea-skeleton__row { animation: none; } }
 
 /* ───────────── Shared page building blocks (components/ui) ─────────────
    Every screen uses the dashboard's look: a plain header on the page background, neutral cards with a thin border,

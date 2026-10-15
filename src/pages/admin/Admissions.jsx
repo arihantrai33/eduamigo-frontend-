@@ -6,6 +6,7 @@ import { Plus } from "lucide-react";
 import Modal from "../../components/Dialog";
 import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
+import Chips from "../../components/ui/Chips";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -335,18 +336,9 @@ export default function Admissions() {
       </div>
 
       {/* Pipeline */}
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
-        {[{ key: "", label: "All", n: total }, ...options.statuses.map((s) => ({ key: s, label: s, n: counts[s] || 0 }))].map((c) => {
-          const active = status === c.key;
-          const st = STATUS_STYLE[c.key] || { color: "#334155" };
-          return (
-            <button key={c.label} onClick={() => setStatus(c.key)} aria-pressed={active}
-              style={{ padding: "8px 14px", borderRadius: 10, border: `1px solid ${active ? st.color : "#E2E8F0"}`, background: active ? (st.bg || "#F1F5F9") : "#fff", cursor: "pointer", fontFamily: "inherit", display: "flex", gap: 8, alignItems: "center" }}>
-              <span style={{ fontSize: 13, fontWeight: 600, color: active ? st.color : "#334155" }}>{c.label}</span>
-              <span style={{ fontSize: 12, fontWeight: 800, color: st.color }}>{c.n}</span>
-            </button>
-          );
-        })}
+      <div style={{ marginBottom: 16 }}>
+        <Chips label="Filter by admission status" value={status} onChange={setStatus}
+          items={[{ value: "", label: "All", count: total }, ...options.statuses.map((s) => ({ value: s, label: s, count: counts[s] || 0 }))]} />
       </div>
 
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
