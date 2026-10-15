@@ -96,17 +96,8 @@ export default function TeacherProfile() {
     return name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
   };
 
-  const avatarColors = [
-    { bg: "var(--brand-soft)", text: "var(--brand)" },
-    { bg: "#F0FDF4", text: "#16A34A" },
-    { bg: "#FFF7ED", text: "#EA580C" },
-    { bg: "#F0F9FF", text: "#0284C7" },
-    { bg: "#FDF4FF", text: "#9333EA" },
-  ];
-  const colorIdx = teacher?.name
-    ? teacher.name.charCodeAt(0) % avatarColors.length
-    : 0;
-  const avatarColor = avatarColors[colorIdx];
+  // One avatar colour for everyone (design plan §2.6).
+  const avatarColor = { bg: "var(--brand-soft)", text: "var(--brand-dark)" };
 
   return (
     <>
@@ -300,9 +291,9 @@ export default function TeacherProfile() {
                 <SectionHeader title="Personal Information" subtitle="Contact and personal details" />
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   <InfoField icon={Mail}    label="Email Address"  value={teacher.email}              accent="var(--brand)" />
-                  <InfoField icon={Phone}   label="Phone Number"   value={teacher.phone}              accent="#16A34A" />
-                  <InfoField icon={Users}   label="Gender"         value={teacher.gender}             accent="#0284C7" />
-                  <InfoField icon={MapPin}  label="Address"        value={teacher.address}            accent="#EA580C" />
+                  <InfoField icon={Phone}   label="Phone Number"   value={teacher.phone}              accent="var(--brand)" />
+                  <InfoField icon={Users}   label="Gender"         value={teacher.gender}             accent="var(--brand)" />
+                  <InfoField icon={MapPin}  label="Address"        value={teacher.address}            accent="var(--brand)" />
                 </div>
               </div>
 
@@ -314,10 +305,10 @@ export default function TeacherProfile() {
               }}>
                 <SectionHeader title="Professional Information" subtitle="Qualifications and employment details" />
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  <InfoField icon={GraduationCap} label="Qualification"  value={teacher.qualification}          accent="#9333EA" />
-                  <InfoField icon={Briefcase}     label="Experience"      value={teacher.experience ? `${teacher.experience} ${teacher.experience === 1 ? "year" : "years"}` : null} accent="#D97706" />
-                  <InfoField icon={Calendar}      label="Joining Date"    value={formatDate(teacher.joiningDate)} accent="#0284C7" />
-                  <InfoField icon={IndianRupee}   label="Monthly Salary"  value={formatSalary(teacher.salary)}   accent="#16A34A" />
+                  <InfoField icon={GraduationCap} label="Qualification"  value={teacher.qualification}          accent="var(--brand)" />
+                  <InfoField icon={Briefcase}     label="Experience"      value={teacher.experience ? `${teacher.experience} ${teacher.experience === 1 ? "year" : "years"}` : null} accent="var(--brand)" />
+                  <InfoField icon={Calendar}      label="Joining Date"    value={formatDate(teacher.joiningDate)} accent="var(--brand)" />
+                  <InfoField icon={IndianRupee}   label="Monthly Salary"  value={formatSalary(teacher.salary)}   accent="var(--brand)" />
                 </div>
               </div>
 

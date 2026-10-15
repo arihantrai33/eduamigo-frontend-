@@ -17,7 +17,8 @@ const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 const DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-const DAY_COLORS = { Monday:"var(--brand)", Tuesday:"#10B981", Wednesday:"#F59E0B", Thursday:"#EC4899", Friday:"#3B82F6", Saturday:"var(--brand)" };
+// Every day uses the brand colour: a day is not a category, so it gets no colour of its own.
+const DAY_COLORS = { Monday:"var(--brand)", Tuesday:"var(--brand)", Wednesday:"var(--brand)", Thursday:"var(--brand)", Friday:"var(--brand)", Saturday:"var(--brand)" };
 const PERIODS = [1,2,3,4,5,6,7,8];
 
 const Modal = (props) => <Dialog width={560} {...props} />;
@@ -272,7 +273,7 @@ export default function Timetable() {
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end", marginTop:4 }}>
             <button type="button" onClick={closePeriod} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
             <button type="button" onClick={handleSavePeriod} disabled={saving}
-              style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"var(--brand-gradient)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 14px color-mix(in srgb, var(--brand) 40%, transparent)", opacity:saving?0.7:1 }}>
+              className="ea-btn ea-btn--primary">
               {saving ? "Saving..." : "Save Period"}
             </button>
           </div>

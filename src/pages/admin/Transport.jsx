@@ -21,7 +21,7 @@ const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("
 const STATUS_CONFIG = {
   "On Route":  { bg:"#F0FDF4", color:"#15803D", border:"#BBF7D0", dot:"#22C55E" },
   "Idle":      { bg:"#F8FAFC", color:"#64748B", border:"#E2E8F0", dot:"#94A3B8" },
-  "Completed": { bg:"#EEF2FF", color:"#6366F1", border:"#C7D2FE", dot:"#818CF8" },
+  "Completed": { bg:"#F1F5F9", color:"#475569", border:"#E2E8F0", dot:"#94A3B8" },
 };
 
 const Modal = (props) => <Dialog width={560} {...props} />;
@@ -156,7 +156,7 @@ export default function Transport() {
       {/* Bus Cards */}
       {loading ? (
         <div style={{ padding:"60px 0", textAlign:"center" }}>
-          <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid #F59E0B", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
+          <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid var(--brand)", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
           <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading buses...</div>
         </div>
       ) : buses.length === 0 ? (
@@ -170,19 +170,19 @@ export default function Transport() {
               <div key={bus._id} className="bus-card"
                 style={{ background:"white", borderRadius:20, boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0", overflow:"hidden", animation:`fadeUp 0.4s ease ${i*0.1}s both` }}>
                 {/* Bus Header */}
-                <div style={{ padding:"20px 24px", display:"flex", alignItems:"center", gap:16 }}>
+                <div className="ea-row-wrap" style={{ padding:"20px 24px", display:"flex", alignItems:"center", gap:16 }}>
                   {/* Bus Icon */}
-                  <div style={{ width:56, height:56, borderRadius:16, background:"linear-gradient(135deg,#F59E0B,#F97316)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:26, flexShrink:0 }}>
+                  <div style={{ width:56, height:56, borderRadius:16, background:"var(--brand-soft)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:26, flexShrink:0 }}>
                     <Glyph e="🚌" />
                   </div>
-                  <div style={{ flex:1 }}>
-                    <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:4 }}>
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ display:"flex", alignItems:"center", flexWrap:"wrap", gap:"6px 10px", marginBottom:4 }}>
                       <span style={{ fontSize:17, fontWeight:800, color:"#0F172A" }}>{bus.busNumber}</span>
                       <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:scfg.bg, color:scfg.color, border:`1px solid ${scfg.border}`, display:"flex", alignItems:"center", gap:4 }}>
                         <span style={{ width:6, height:6, borderRadius:"50%", background:scfg.dot }} />{bus.busStatus}
                       </span>
                     </div>
-                    <div style={{ display:"flex", gap:16, fontSize:12, color:"#64748B", fontWeight:500 }}>
+                    <div style={{ display:"flex", flexWrap:"wrap", gap:"4px 16px", fontSize:12, color:"#64748B", fontWeight:500 }}>
                       <span><Glyph e="👤" /> {bus.driverName}</span>
                       <span><Glyph e="📞" /> {bus.driverPhone}</span>
                       <span><Glyph e="🗺" /> {bus.routeName}</span>
@@ -190,7 +190,7 @@ export default function Transport() {
                       <span><Glyph e="👦" /> {bus.assignedStudents?.length||0} students</span>
                     </div>
                   </div>
-                  <div style={{ display:"flex", gap:8, alignItems:"center" }}>
+                  <div className="ea-row-wrap__end" style={{ display:"flex", gap:8, alignItems:"center" }}>
                     <button type="button" className="ea-btn ea-btn--ghost ea-btn--sm" onClick={() => openStops(bus)}>
                       <Glyph e="📍" /> Stops ({bus.stops?.length||0})
                     </button>
@@ -207,9 +207,13 @@ export default function Transport() {
                 </div>
 
                 {/* Driver Token */}
-                <div style={{ margin:"0 24px 16px", padding:"10px 16px", background:"#FFFBEB", borderRadius:12, border:"1px solid #FDE68A", display:"flex", alignItems:"center", gap:8 }}>
-                  <span style={{ fontSize:12, color:"#92400E" }}><Glyph e="🔑" /> Driver Token:</span>
-                  <code style={{ fontSize:12, fontWeight:800, color:"#D97706", letterSpacing:"1px" }}>{bus.driverToken}</code>
+                <div style={{ margin:"0 24px 16px", padding:"8px 8px 8px 14px", background:"var(--ea-hover)", borderRadius:10, border:"1px solid var(--ea-line)", display:"flex", alignItems:"center", flexWrap:"wrap", gap:8 }}>
+                  <span style={{ fontSize:12, fontWeight:600, color:"var(--ea-muted)" }}>Driver token</span>
+                  <code style={{ fontSize:13, fontWeight:700, color:"var(--ea-ink)", letterSpacing:"0.5px", fontFamily:"ui-monospace, SFMono-Regular, Menlo, monospace", flex:"1 1 auto", minWidth:0, overflowWrap:"anywhere" }}>{bus.driverToken}</code>
+                  <button type="button" className="ea-btn ea-btn--ghost ea-btn--sm" aria-label={`Copy driver token for bus ${bus.busNumber}`}
+                    onClick={() => navigator.clipboard?.writeText(bus.driverToken).then(() => toast.success("Driver token copied"), () => toast.error("Could not copy the token"))}>
+                    Copy
+                  </button>
                 </div>
 
                 {/* Expanded — Stops */}
@@ -219,7 +223,7 @@ export default function Transport() {
                     <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
                       {bus.stops.sort((a,b)=>a.order-b.order).map((stop, si) => (
                         <div key={si} style={{ display:"flex", alignItems:"center", gap:10 }}>
-                          <div style={{ width:24, height:24, borderRadius:"50%", background:"linear-gradient(135deg,#F59E0B,#F97316)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:10, fontWeight:800, color:"white", flexShrink:0 }}>{si+1}</div>
+                          <div style={{ width:24, height:24, borderRadius:"50%", background:"var(--brand-soft)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:10, fontWeight:800, color:"var(--brand-dark)", flexShrink:0 }}>{si+1}</div>
                           <div style={{ flex:1 }}>
                             <span style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>{stop.name}</span>
                             {stop.estimatedTime && <span style={{ fontSize:11, color:"#94A3B8", marginLeft:8 }}><Glyph e="⏱" /> {stop.estimatedTime}</span>}

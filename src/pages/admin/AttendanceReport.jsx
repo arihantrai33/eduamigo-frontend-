@@ -122,7 +122,7 @@ export default function AttendanceReports() {
           <div style={{ fontSize:14, fontWeight:800, color:"#0F172A" }}>Overall Attendance Rate — {MONTHS[filterMonth-1]} {filterYear}</div>
           <div style={{ fontSize:24, fontWeight:900, color: !hasData ? "#94A3B8" : overallPct >= 75 ? "#10B981" : "#EF4444" }}>{pctText(overallPct)}</div>
         </div>
-        <ProgressBar value={overallPct || 0} color={overallPct >= 75 ? "linear-gradient(90deg,#10B981,#059669)" : "linear-gradient(90deg,#EF4444,#DC2626)"} />
+        <ProgressBar value={overallPct || 0} color={overallPct >= 75 ? "var(--ea-success)" : "var(--ea-danger)"} />
         <div style={{ display:"flex", gap:16, marginTop:10 }}>
           <span style={{ fontSize:12, color:"#10B981", fontWeight:700 }}>✓ {totalPresent} Present</span>
           <span style={{ fontSize:12, color:"#EF4444", fontWeight:700 }}>✗ {totalAbsent} Absent</span>
@@ -147,13 +147,13 @@ export default function AttendanceReports() {
 
       {/* Class-wise Table */}
       <div style={{ background:"white", borderRadius:20, boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid rgba(226,232,240,0.8)", overflow:"hidden", animation:"fadeUp 0.4s ease 0.4s both" }}>
-        <div style={{ padding:"16px 24px", borderBottom:"1px solid #F1F5F9", background:"linear-gradient(90deg,#F8FAFC,#F1F5F9)" }}>
+        <div style={{ padding:"16px 24px", borderBottom:"1px solid #F1F5F9", background:"var(--ea-hover)" }}>
           <div style={{ fontSize:14, fontWeight:800, color:"#0F172A" }}>Class-wise Attendance Breakdown</div>
           <div style={{ fontSize:12, color:"#94A3B8", marginTop:2 }}>{MONTHS[filterMonth-1]} {filterYear}</div>
         </div>
         {loading ? (
           <div style={{ padding:"60px 0", textAlign:"center" }}>
-            <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid #EC4899", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
+            <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid var(--brand)", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
             <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading attendance data...</div>
           </div>
         ) : classStats.length === 0 ? (
@@ -163,7 +163,7 @@ export default function AttendanceReports() {
         ) : (
           <table style={{ width:"100%", borderCollapse:"collapse" }}>
             <thead>
-              <tr style={{ background:"linear-gradient(90deg,#F8FAFC,#F1F5F9)" }}>
+              <tr style={{ background:"var(--ea-hover)" }}>
                 {["Class","Students","Present","Absent","Late","Attendance Rate","Status"].map(h => (
                   <th key={h} style={{ padding:"12px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#64748B", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
                 ))}
@@ -191,7 +191,7 @@ export default function AttendanceReports() {
                     <td style={{ padding:"14px 18px", width:200 }}>
                       <div style={{ display:"flex", alignItems:"center", gap:10 }}>
                         <div style={{ flex:1 }}>
-                          <ProgressBar value={c.pct || 0} color={good ? "linear-gradient(90deg,#10B981,#059669)" : "linear-gradient(90deg,#EF4444,#DC2626)"} />
+                          <ProgressBar value={c.pct || 0} color={good ? "var(--ea-success)" : "var(--ea-danger)"} />
                         </div>
                         <span style={{ fontSize:13, fontWeight:800, color: noData ? "#94A3B8" : good ? "#10B981" : "#EF4444", minWidth:40 }}>{pctText(c.pct)}</span>
                       </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { ChevronLeft, ChevronRight, Plus, Trash2, Sparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Trash2, CalendarDays } from "lucide-react";
+import EmptyState from "../../components/ui/EmptyState";
 
 import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
@@ -13,13 +14,14 @@ const FIELDS = { title: "event-title", date: "event-start" };
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
+// Event types are categories: the six fixed category colours (--ea-cat-*).
 const EVENT_TYPES = {
-  holiday: { label: "Holiday", color: "#EF4444", light: "#FEF2F2", grad: "linear-gradient(135deg,#EF4444,#EC4899)", icon: <Glyph e="🏖" /> },
-  exam:    { label: "Exam",    color: "#F59E0B", light: "#FFFBEB", grad: "linear-gradient(135deg,#F59E0B,#EF4444)", icon: <Glyph e="📝" /> },
-  ptm:     { label: "PTM",     color: "#8B5CF6", light: "#F5F3FF", grad: "linear-gradient(135deg,#8B5CF6,#6366F1)", icon: <Glyph e="👨‍👩‍👧" /> },
-  event:   { label: "Event",   color: "#6366F1", light: "#EEF2FF", grad: "linear-gradient(135deg,#6366F1,#3B82F6)", icon: "" },
-  sports:  { label: "Sports",  color: "#10B981", light: "#F0FDF4", grad: "linear-gradient(135deg,#10B981,#06B6D4)", icon: <Glyph e="🏆" /> },
-  other:   { label: "Other",   color: "#64748B", light: "#F8FAFC", grad: "linear-gradient(135deg,#64748B,#475569)", icon: <Glyph e="📌" /> },
+  holiday: { label: "Holiday", color: "var(--ea-cat-4)", light: "var(--ea-cat-4-bg)", grad: "var(--ea-cat-4)", icon: <Glyph e="🏖" /> },
+  exam:    { label: "Exam",    color: "var(--ea-cat-3)", light: "var(--ea-cat-3-bg)", grad: "var(--ea-cat-3)", icon: <Glyph e="📝" /> },
+  ptm:     { label: "PTM",     color: "var(--ea-cat-2)", light: "var(--ea-cat-2-bg)", grad: "var(--ea-cat-2)", icon: <Glyph e="👨‍👩‍👧" /> },
+  event:   { label: "Event",   color: "var(--ea-cat-1)", light: "var(--ea-cat-1-bg)", grad: "var(--ea-cat-1)", icon: "" },
+  sports:  { label: "Sports",  color: "var(--ea-cat-5)", light: "var(--ea-cat-5-bg)", grad: "var(--ea-cat-5)", icon: <Glyph e="🏆" /> },
+  other:   { label: "Other",   color: "var(--ea-cat-6)", light: "var(--ea-cat-6-bg)", grad: "var(--ea-cat-6)", icon: <Glyph e="📌" /> },
 };
 
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -118,7 +120,6 @@ export default function EventCalendar() {
   const inputStyle = { width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", fontFamily:"inherit", boxSizing:"border-box" };
 
   // The calendar header and today's date use the school's brand colour (it used to change colour every month).
-  const [c1, c2] = ["var(--brand-dark)", "var(--brand)"];
 
   return (
     <div style={{ fontFamily: "inherit" }}>
@@ -139,22 +140,20 @@ export default function EventCalendar() {
 
       <div style={{ display:"grid", gridTemplateColumns:"360px 1fr", gap:20 }}>
         {/* LEFT: Compact Calendar */}
-        <div style={{ borderRadius:24, overflow:"hidden", boxShadow:"0 8px 32px rgba(15,23,42,0.12)", flexShrink:0 }}>
-          {/* Calendar Header - Colorful gradient */}
-          <div style={{ background:`linear-gradient(135deg,${c1},${c2})`, padding:"24px 20px 20px", position:"relative", overflow:"hidden" }}>
-            <div style={{ position:"absolute", top:-30, right:-30, width:120, height:120, borderRadius:"50%", background:"rgba(255,255,255,0.1)" }} />
-            <div style={{ position:"absolute", bottom:-40, left:-10, width:100, height:100, borderRadius:"50%", background:"rgba(255,255,255,0.07)" }} />
+        <div style={{ borderRadius:16, overflow:"hidden", boxShadow:"var(--ea-shadow)", border:"1px solid var(--ea-line)", background:"var(--ea-surface)", flexShrink:0 }}>
+          {/* Calendar header: month, year and the month arrows on the card */}
+          <div style={{ background:"var(--ea-surface)", padding:"18px 16px 8px", borderBottom:"1px solid var(--ea-line)", position:"relative" }}>
             <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:16, position:"relative" }}>
               <button type="button" aria-label="Previous month" onClick={() => changeMonth(-1)}
-                style={{ width:32, height:32, borderRadius:10, border:"none", background:"rgba(255,255,255,0.2)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", color:"white", backdropFilter:"blur(8px)" }}>
+                style={{ width:32, height:32, borderRadius:10, border:"1px solid var(--ea-line)", background:"var(--ea-surface)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", color:"var(--ea-ink)" }}>
                 <ChevronLeft size={16} />
               </button>
               <div style={{ textAlign:"center", opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : `translateY(${animDir * 10}px)`, transition:"all 0.2s" }}>
-                <div style={{ fontSize:20, fontWeight:800, color:"white", letterSpacing:"-0.3px" }}>{MONTHS[currentMonth]}</div>
-                <div style={{ fontSize:12, color:"rgba(255,255,255,0.7)", fontWeight:600 }}>{currentYear}</div>
+                <div style={{ fontSize:18, fontWeight:750, color:"var(--ea-ink)", letterSpacing:"-0.2px" }}>{MONTHS[currentMonth]}</div>
+                <div style={{ fontSize:12, color:"var(--ea-muted)", fontWeight:600 }}>{currentYear}</div>
               </div>
               <button type="button" aria-label="Next month" onClick={() => changeMonth(1)}
-                style={{ width:32, height:32, borderRadius:10, border:"none", background:"rgba(255,255,255,0.2)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", color:"white" }}>
+                style={{ width:32, height:32, borderRadius:10, border:"1px solid var(--ea-line)", background:"var(--ea-surface)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", color:"var(--ea-ink)" }}>
                 <ChevronRight size={16} />
               </button>
             </div>
@@ -162,20 +161,19 @@ export default function EventCalendar() {
             {/* Day headers */}
             <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:2 }}>
               {DAYS.map((d,i) => (
-                <div key={i} style={{ textAlign:"center", fontSize:11, fontWeight:700, color: i===0||i===6 ? "rgba(255,255,255,0.5)" : "rgba(255,255,255,0.7)", padding:"4px 0" }}>{d}</div>
+                <div key={i} style={{ textAlign:"center", fontSize:11, fontWeight:700, color:"var(--ea-muted)", padding:"4px 0" }}>{d}</div>
               ))}
             </div>
           </div>
 
           {/* Calendar Grid */}
-          <div style={{ background:"white", padding:"12px 16px 16px" }}>
+          <div style={{ background:"var(--ea-surface)", padding:"12px 16px 16px" }}>
             <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:3, opacity: visible ? 1 : 0, transition:"opacity 0.2s" }}>
               {Array.from({ length: totalCells }).map((_,i) => {
                 const day = i - firstDay + 1;
                 const isValid = day >= 1 && day <= daysInMonth;
                 const isToday = isValid && day===today.getDate() && currentMonth===today.getMonth() && currentYear===today.getFullYear();
                 const isSun = i%7===0;
-                const isSat = i%7===6;
                 const dayEvs = isValid ? getEventsForDay(day) : [];
                 const hasEvs = dayEvs.length > 0;
                 const firstEv = hasEvs ? EVENT_TYPES[dayEvs[0].type] : null;
@@ -185,8 +183,7 @@ export default function EventCalendar() {
                     style={{
                       height:40, borderRadius:10, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
                       cursor: isValid ? "pointer" : "default",
-                      background: isToday ? `linear-gradient(135deg,${c1},${c2})` : "transparent",
-                      boxShadow: isToday ? `0 4px 12px ${c1}55` : "none",
+                      background: isToday ? "var(--brand)" : "transparent",
                       transition:"all 0.2s cubic-bezier(0.34,1.56,0.64,1)",
                       position:"relative",
                     }}
@@ -194,7 +191,7 @@ export default function EventCalendar() {
                     onMouseLeave={e => { if(isValid&&!isToday) { e.currentTarget.style.background="transparent"; e.currentTarget.style.transform="scale(1)"; }}}>
                     {isValid && (
                       <>
-                        <div style={{ fontSize:12, fontWeight: isToday ? 800 : hasEvs ? 700 : 500, color: isToday ? "white" : isSun ? "#EF4444" : isSat ? c1 : "#374151", lineHeight:1 }}>
+                        <div style={{ fontSize:12, fontWeight: isToday ? 800 : hasEvs ? 700 : 500, color: isToday ? "white" : isSun ? "var(--ea-danger)" : "var(--ea-ink)", lineHeight:1 }}>
                           {day}
                         </div>
                         {hasEvs && (
@@ -212,8 +209,8 @@ export default function EventCalendar() {
             </div>
 
             {/* Today info */}
-            <div style={{ marginTop:14, padding:"12px 14px", borderRadius:14, background:`linear-gradient(135deg,${c1}15,${c2}10)`, border:`1px solid ${c1}25` }}>
-              <div style={{ fontSize:11, fontWeight:700, color:c1, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:2 }}>Today</div>
+            <div style={{ marginTop:14, padding:"12px 14px", borderRadius:12, background:"var(--brand-soft)", border:"1px solid var(--brand-border)" }}>
+              <div style={{ fontSize:12, fontWeight:700, color:"var(--brand-dark)", marginBottom:2 }}>Today</div>
               <div style={{ fontSize:16, fontWeight:800, color:"#0F172A" }}>
                 {today.toLocaleDateString("en-IN", { weekday:"long", day:"numeric", month:"long" })}
               </div>
@@ -222,10 +219,10 @@ export default function EventCalendar() {
         </div>
 
         {/* RIGHT: Events List */}
-        <div style={{ background:"white", borderRadius:24, padding:"24px", boxShadow:"0 4px 24px rgba(15,23,42,0.08)", border:"1px solid rgba(226,232,240,0.8)", overflowY:"auto", maxHeight:560 }}>
+        <div style={{ background:"var(--ea-surface)", borderRadius:16, padding:"20px", boxShadow:"var(--ea-shadow)", border:"1px solid var(--ea-line)", overflowY:"auto", maxHeight:560 }}>
           <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:20 }}>
             <div style={{ fontSize:15, fontWeight:800, color:"#0F172A", display:"flex", alignItems:"center", gap:8 }}>
-              <Sparkles size={16} color={c1} /> Upcoming Events — {MONTHS[currentMonth]}
+              Upcoming events in {MONTHS[currentMonth]}
             </div>
             <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600 }}>{allUpcoming.length} events</div>
           </div>
@@ -237,11 +234,7 @@ export default function EventCalendar() {
               ))}
             </div>
           ) : allUpcoming.length === 0 ? (
-            <div style={{ textAlign:"center", padding:"48px 0", color:"#CBD5E1" }}>
-              <div style={{ fontSize:48, marginBottom:12 }}><Glyph e="📅" /></div>
-              <div style={{ fontSize:15, fontWeight:700, color:"#94A3B8" }}>No upcoming events</div>
-              <div style={{ fontSize:12, color:"#CBD5E1", marginTop:4 }}>Add your first event!</div>
-            </div>
+            <EmptyState plain icon={CalendarDays} title="No upcoming events" text="Holidays, exams, PTMs and events you add for this month appear here." />
           ) : allUpcoming.map((ev, i) => {
             const tc = EVENT_TYPES[ev.type] || EVENT_TYPES.event;
             const d = new Date(ev.date);
@@ -262,7 +255,7 @@ export default function EventCalendar() {
                   {ev.description && <div style={{ fontSize:11, color:"#94A3B8", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{ev.description}</div>}
                   <div style={{ display:"flex", alignItems:"center", gap:6, marginTop:4 }}>
                     <span style={{ fontSize:10, fontWeight:700, color:tc.color, background:tc.light, padding:"2px 8px", borderRadius:6 }}>{tc.icon} {tc.label}</span>
-                    {isEventToday && <span style={{ fontSize:10, fontWeight:700, color:"white", background:`linear-gradient(135deg,${c1},${c2})`, padding:"2px 8px", borderRadius:6 }}>Today</span>}
+                    {isEventToday && <span className="ea-badge ea-badge--brand">Today</span>}
                   </div>
                 </div>
                 {/* Delete */}
@@ -304,7 +297,7 @@ export default function EventCalendar() {
               );
             })}
             <button onClick={() => { setShowDayModal(false); setShowForm(true); setForm(f => ({...f, date: selectedDate?.dateStr||""})); }}
-              style={{ width:"100%", marginTop:14, padding:"12px", borderRadius:12, border:"none", background:`linear-gradient(135deg,${c1},${c2})`, color:"white", fontSize:13, fontWeight:700, cursor:"pointer", boxShadow:`0 4px 12px ${c1}40` }}>
+              className="ea-btn ea-btn--primary" style={{ width:"100%", marginTop:14 }}>
               + Add Event on this day
             </button>
       </Modal>
@@ -326,13 +319,13 @@ export default function EventCalendar() {
 
             <div style={{ marginBottom:14 }}>
               <label htmlFor="event-title" style={{ fontSize:12, fontWeight:700, color:"#374151", display:"block", marginBottom:6 }}>Title *</label>
-              <input id="event-title" value={form.title} onChange={e => { setForm({...form,title:e.target.value}); v.clear("title"); }} placeholder="Event title..." style={inputStyle} onFocus={e => e.target.style.borderColor=c1} onBlur={e => e.target.style.borderColor="#E2E8F0"} {...v.invalid("title")} />
+              <input id="event-title" value={form.title} onChange={e => { setForm({...form,title:e.target.value}); v.clear("title"); }} placeholder="Event title..." style={inputStyle} onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} {...v.invalid("title")} />
               <FieldError id={v.errorId("title")}>{v.errors.title}</FieldError>
             </div>
 
             <div style={{ marginBottom:14 }}>
               <label htmlFor="event-description" style={{ fontSize:12, fontWeight:700, color:"#374151", display:"block", marginBottom:6 }}>Description</label>
-              <textarea id="event-description" value={form.description} onChange={e => setForm({...form,description:e.target.value})} rows={2} style={{...inputStyle,resize:"none"}} onFocus={e => e.target.style.borderColor=c1} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
+              <textarea id="event-description" value={form.description} onChange={e => setForm({...form,description:e.target.value})} rows={2} style={{...inputStyle,resize:"none"}} onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
             </div>
 
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:14 }}>
@@ -358,8 +351,8 @@ export default function EventCalendar() {
             </div>
 
             <div style={{ display:"flex", gap:10 }}>
-              <button type="button" onClick={() => { setShowForm(false); v.setErrors({}); }} style={{ flex:1, padding:"12px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontSize:13, fontWeight:600, cursor:"pointer", color:"#64748B" }}>Cancel</button>
-              <button onClick={handleSubmit} disabled={saving} style={{ flex:2, padding:"12px", borderRadius:12, border:"none", background:`linear-gradient(135deg,${c1},${c2})`, color:"white", fontSize:13, fontWeight:700, cursor:"pointer", boxShadow:`0 4px 12px ${c1}40` }}>
+              <button type="button" onClick={() => { setShowForm(false); v.setErrors({}); }} className="ea-btn ea-btn--ghost" style={{ flex:1 }}>Cancel</button>
+              <button type="button" onClick={handleSubmit} disabled={saving} className="ea-btn ea-btn--primary" style={{ flex:2 }}>
                 {saving ? "Saving..." : "Add Event"}
               </button>
             </div>

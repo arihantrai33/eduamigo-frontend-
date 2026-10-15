@@ -19,7 +19,6 @@ const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 const FEE_TYPES = ["Tuition Fee","Admission Fee","Exam Fee","Library Fee","Sports Fee","Transport Fee","Hostel Fee","Miscellaneous"];
-const CLASS_COLORS = ["#6366F1","#8B5CF6","#EC4899","#F43F5E","#F97316","#EAB308","#22C55E","#14B8A6","#06B6D4","#3B82F6","#10B981","#F43F5E"];
 
 export default function FeeStructure() {
   const [structures, setStructures] = useState([]);
@@ -102,7 +101,7 @@ export default function FeeStructure() {
       <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
       <input id={`fee-${key}`} type={type} value={form[key]||""} onChange={e => f(key, e.target.value)} placeholder={placeholder} {...fe.invalid(key)}
         style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
-        onFocus={e => e.target.style.borderColor="#06B6D4"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
+        onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
       <FieldError id={`fee-${key}-error`}>{fe.errors[key]}</FieldError>
     </label>
   );
@@ -156,7 +155,7 @@ export default function FeeStructure() {
       <div style={{ background:"white", borderRadius:20, boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid rgba(226,232,240,0.8)", overflow:"hidden" }}>
         <table data-stack style={{ width:"100%", borderCollapse:"collapse" }}>
           <thead>
-            <tr style={{ background:"linear-gradient(90deg,#F8FAFC,#F1F5F9)" }}>
+            <tr style={{ background:"var(--ea-hover)" }}>
               {["Class","Fee Type","Amount","Academic Year","Due Date","Description","Actions"].map(h => (
                 <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#64748B", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
               ))}
@@ -165,7 +164,7 @@ export default function FeeStructure() {
           <tbody>
             {loading ? (
               <tr><td colSpan={7} style={{ padding:"60px 0", textAlign:"center" }}>
-                <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid #06B6D4", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
+                <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid var(--brand)", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
                 <div style={{ color:"#94A3B8", fontSize:13 }}>Loading...</div>
               </td></tr>
             ) : filtered.length === 0 ? (
@@ -173,15 +172,14 @@ export default function FeeStructure() {
                 <EmptyState plain icon={Wallet} title="No fee structures found" text={`Click "Add Fee" to get started`} />
               </td></tr>
             ) : filtered.map((s, i) => {
-              const clsColor = CLASS_COLORS[parseInt(s.class) % CLASS_COLORS.length] || "var(--brand)";
               return (
                 <tr key={s._id} className="fee-row" style={{ borderBottom:"1px solid #F1F5F9" }}>
                   <td style={{ padding:"14px 18px" }}>
-                    <span style={{ fontSize:12, fontWeight:800, padding:"5px 12px", borderRadius:20, background:`color-mix(in srgb, ${clsColor} 8%, transparent)`, color:clsColor, border:`1px solid color-mix(in srgb, ${clsColor} 19%, transparent)` }}>Class {s.class}{s.section && s.section !== "All" ? `-${s.section}` : ""}</span>
+                    <span className="ea-badge ea-badge--neutral">Class {s.class}{s.section && s.section !== "All" ? `-${s.section}` : ""}</span>
                   </td>
                   <td style={{ padding:"14px 18px", fontSize:13, fontWeight:700, color:"#0F172A" }}>{s.feeType}</td>
                   <td style={{ padding:"14px 18px" }}>
-                    <span style={{ fontSize:15, fontWeight:800, color:"#059669" }}>Rs.{Number(s.amount||0).toLocaleString()}</span>
+                    <span style={{ fontSize:15, fontWeight:800, color:"var(--ea-ink)", fontVariantNumeric:"tabular-nums" }}>₹{Number(s.amount||0).toLocaleString("en-IN")}</span>
                   </td>
                   <td style={{ padding:"14px 18px" }}>
                     <span style={{ fontSize:12, fontWeight:700, padding:"4px 10px", borderRadius:8, background:"var(--brand-soft)", color:"var(--brand)" }}>{s.academicYear}</span>
@@ -228,7 +226,7 @@ export default function FeeStructure() {
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
             <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
-            <button onClick={handleSave} disabled={saving} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#06B6D4,#0EA5E9)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", opacity:saving?0.7:1 }}>
+            <button onClick={handleSave} disabled={saving} className="ea-btn ea-btn--primary">
               {saving ? "Saving..." : "Save"}
             </button>
           </div>
@@ -242,7 +240,7 @@ export default function FeeStructure() {
           <div style={{ fontSize:13, color:"#94A3B8", marginBottom:24 }}>This fee structure will be permanently deleted.</div>
           <div style={{ display:"flex", gap:10, justifyContent:"center" }}>
             <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
-            <button onClick={() => handleDelete(deleteId)} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#EF4444,#DC2626)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer" }}>Delete</button>
+            <button onClick={() => handleDelete(deleteId)} className="ea-btn ea-btn--danger">Delete</button>
           </div>
         </div>
       </Modal>

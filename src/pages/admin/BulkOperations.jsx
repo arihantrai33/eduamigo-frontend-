@@ -16,7 +16,7 @@ const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov
 
 function Tab({ label, icon, active, onClick }) {
   return (
-    <button type="button" aria-pressed={active} onClick={onClick} style={{ display:"flex", alignItems:"center", gap:8, padding:"10px 20px", borderRadius:12, border:"none", cursor:"pointer", fontWeight:700, fontSize:13, transition:"all 0.2s", background: active ? "var(--brand-gradient)" : "white", color: active ? "white" : "#94A3B8", boxShadow: active ? "0 4px 12px color-mix(in srgb, var(--brand) 30%, transparent)" : "none" }}>
+    <button type="button" aria-pressed={active} onClick={onClick} style={{ display:"flex", flexShrink:0, alignItems:"center", gap:8, padding:"8px 16px", borderRadius:9, border:"none", cursor:"pointer", fontWeight:650, fontSize:13, whiteSpace:"nowrap", transition:"all 0.2s", background: active ? "var(--ea-surface)" : "transparent", color: active ? "var(--ea-ink)" : "var(--ea-body)", boxShadow: active ? "var(--ea-shadow)" : "none" }}>
       <span>{icon}</span>{label}
     </button>
   );
@@ -184,8 +184,8 @@ export default function BulkOperations() {
     </select>
   );
 
-  const btn = (text, onClick, color="var(--brand)") => (
-    <button onClick={onClick} disabled={loading} style={{ padding:"11px 28px", borderRadius:12, border:"none", background:`linear-gradient(135deg,${color},color-mix(in srgb, ${color} 87%, transparent))`, color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:`0 4px 16px color-mix(in srgb, ${color} 27%, transparent)`, opacity: loading ? 0.7 : 1 }}>
+  const btn = (text, onClick) => (
+    <button type="button" onClick={onClick} disabled={loading} className="ea-btn ea-btn--primary">
       {loading ? "Processing..." : text}
     </button>
   );
@@ -198,7 +198,7 @@ export default function BulkOperations() {
 
       <ResultBanner result={result} onClose={() => setResult(null)} />
 
-      <div style={{ display:"flex", gap:6, background:"white", borderRadius:14, padding:5, border:"1px solid #E2E8F0", width:"fit-content", marginBottom:24, boxShadow:"0 2px 8px rgba(0,0,0,0.04)", flexWrap:"wrap" }}>
+      <div style={{ display:"flex", flexWrap:"nowrap", gap:4, background:"var(--ea-hover)", borderRadius:12, padding:4, border:"1px solid var(--ea-line)", width:"fit-content", maxWidth:"100%", marginBottom:24, overflowX:"auto", scrollbarWidth:"none" }}>
         {[
           { key:"attendance", icon:<Glyph e="📋" />, label:"Bulk Attendance" },
           { key:"promote",    icon:<Glyph e="🎓" />, label:"Promote Students" },

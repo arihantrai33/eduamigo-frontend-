@@ -7,6 +7,7 @@ import { SearchX, Users, CheckCircle2, XCircle, Clock } from "lucide-react";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
 
 import Glyph from "../../components/Glyph";
+import Avatar from "../../components/ui/Avatar";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -16,16 +17,6 @@ const STATUS_CONFIG = {
   Late:    { bg: "#FFFBEB", color: "#D97706", dot: "#F59E0B", hover: "#FEF3C7" },
 };
 
-function Avatar({ name, size = 38 }) {
-  const colors = ["#6366F1","#8B5CF6","#EC4899","#F43F5E","#F97316","#22C55E","#14B8A6","#06B6D4","#3B82F6"];
-  const color = colors[(name?.charCodeAt(0) || 0) % colors.length];
-  const initials = name ? name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase() : "?";
-  return (
-    <div style={{ width: size, height: size, borderRadius: "50%", background: `linear-gradient(135deg,${color},color-mix(in srgb, ${color} 73%, transparent))`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: size * 0.32, fontWeight: 800, color: "white", flexShrink: 0, boxShadow: `0 2px 8px color-mix(in srgb, ${color} 27%, transparent)` }}>
-      {initials}
-    </div>
-  );
-}
 
 export default function Attendance() {
   const [students, setStudents] = useState([]);
@@ -191,7 +182,7 @@ export default function Attendance() {
             <div style={{ fontSize: 22, fontWeight: 900, color: pct >= 75 ? "#10B981" : "#EF4444" }}>{pct}%</div>
           </div>
           <div style={{ height: 10, borderRadius: 999, background: "#F1F5F9", overflow: "hidden" }}>
-            <div style={{ height: "100%", borderRadius: 999, width: `${pct}%`, background: pct >= 75 ? "linear-gradient(90deg,#10B981,#059669)" : "linear-gradient(90deg,#EF4444,#DC2626)", transition: "width 0.8s ease" }} />
+            <div style={{ height: "100%", borderRadius: 999, width: `${pct}%`, background: pct >= 75 ? "var(--ea-success)" : "var(--ea-danger)", transition: "width 0.8s ease" }} />
           </div>
         </div>
       )}
@@ -212,7 +203,7 @@ export default function Attendance() {
         <EmptyState icon={SearchX} title="No students found" text={`No students enrolled in Class ${selectedClass}-${selectedSection}`} />
       ) : (
         <div style={{ background: "white", borderRadius: 20, boxShadow: "0 4px 24px rgba(15,23,42,0.07)", border: "1px solid rgba(226,232,240,0.8)", overflow: "hidden", animation: "fadeUp 0.4s ease 0.25s both" }}>
-          <div style={{ padding: "16px 24px", borderBottom: "1px solid #F1F5F9", display: "flex", justifyContent: "space-between", alignItems: "center", background: "linear-gradient(90deg,#F8FAFC,#F1F5F9)" }}>
+          <div style={{ padding: "16px 24px", borderBottom: "1px solid #F1F5F9", display: "flex", justifyContent: "space-between", alignItems: "center", background:"var(--ea-hover)" }}>
             <div style={{ fontSize: 14, fontWeight: 800, color: "#0F172A" }}>
               Class {selectedClass}-{selectedSection} · {students.length} Students
             </div>
@@ -225,7 +216,7 @@ export default function Attendance() {
               return (
                 <div key={s._id} className="student-row" style={{ display: "flex", alignItems: "center", padding: "14px 24px", borderBottom: "1px solid #F8FAFC", background: "white", animation: `fadeUp 0.3s ease ${i * 0.03}s both` }}>
                   <div style={{ width: 36, fontSize: 13, fontWeight: 700, color: "#94A3B8", marginRight: 12 }}>#{i + 1}</div>
-                  <Avatar name={s.name} size={40} />
+                  <Avatar name={s.name} size="md" />
                   <div style={{ flex: 1, marginLeft: 14 }}>
                     <div style={{ fontSize: 14, fontWeight: 700, color: "#0F172A" }}>{s.name}</div>
                     <div style={{ fontSize: 12, color: "#94A3B8", marginTop: 2 }}>Roll #{s.rollNumber} · {s.email}</div>

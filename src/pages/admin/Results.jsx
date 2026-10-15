@@ -81,7 +81,7 @@ export default function Results() {
       <style>{`
         @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
         @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
-        .res-row:hover { background:linear-gradient(90deg,#F8FAFF,#F0F4FF) !important; transform:translateX(2px); }
+        .res-row:hover { background:var(--ea-hover) !important; }
         .res-row { transition: all 0.15s ease; }
       `}</style>
 
@@ -137,7 +137,7 @@ export default function Results() {
       <div style={{ background:"white", borderRadius:20, boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid rgba(226,232,240,0.8)", overflow:"hidden", animation:"fadeUp 0.5s ease 0.15s both" }}>
         <table data-stack style={{ width:"100%", borderCollapse:"collapse" }}>
           <thead>
-            <tr style={{ background:"linear-gradient(90deg,#F8FAFC,#F1F5F9)" }}>
+            <tr style={{ background:"var(--ea-hover)" }}>
               {["Student","Class","Exam","Subject","Marks","Percentage","Grade","Status",""].map(h => (
                 <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#64748B", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
               ))}
@@ -160,7 +160,7 @@ export default function Results() {
                 <tr key={r._id} className="res-row" style={{ borderBottom:"1px solid #F1F5F9", animation:`fadeUp 0.3s ease ${i*0.03}s both` }}>
                   <td style={{ padding:"14px 18px" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                      <div style={{ width:36, height:36, borderRadius:10, background:"var(--brand-gradient)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, fontWeight:800, color:"white", flexShrink:0 }}>
+                      <div style={{ width:36, height:36, borderRadius:10, background:"var(--brand-soft)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, fontWeight:800, color:"var(--brand-dark)", flexShrink:0 }}>
                         {r.studentName?.[0]?.toUpperCase()}
                       </div>
                       <div style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>{r.studentName}</div>
@@ -183,7 +183,7 @@ export default function Results() {
                   <td style={{ padding:"14px 18px" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                       <div style={{ width:60, height:6, borderRadius:999, background:"#F1F5F9", overflow:"hidden" }}>
-                        <div style={{ width:`${r.pct}%`, height:"100%", background: r.pct >= 60 ? "linear-gradient(90deg,#10B981,#059669)" : "linear-gradient(90deg,#F59E0B,#EF4444)", borderRadius:999 }} />
+                        <div style={{ width:`${r.pct}%`, height:"100%", background: r.pct >= 60 ? "var(--ea-success)" : "var(--ea-warning)", borderRadius:999 }} />
                       </div>
                       <span style={{ fontSize:13, fontWeight:700, color: r.pct >= 60 ? "#10B981" : "#F59E0B" }}>{r.pct}%</span>
                     </div>

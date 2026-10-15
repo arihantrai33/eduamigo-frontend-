@@ -121,7 +121,7 @@ export default function FeeReports() {
           <div style={{ fontSize:14, fontWeight:800, color:"#0F172A" }}>Overall Collection Rate</div>
           <div style={{ fontSize:24, fontWeight:900, color: collectionPct >= 75 ? "#10B981" : "#EF4444" }}>{collectionPct}%</div>
         </div>
-        <ProgressBar value={collectionPct} color={collectionPct >= 75 ? "linear-gradient(90deg,#10B981,#059669)" : "linear-gradient(90deg,#F59E0B,#EF4444)"} />
+        <ProgressBar value={collectionPct} color={collectionPct >= 75 ? "var(--ea-success)" : "var(--ea-warning)"} />
         <div style={{ display:"flex", gap:20, marginTop:10 }}>
           <span style={{ fontSize:12, color:"#10B981", fontWeight:700 }}>✓ Collected: {fmtAmt(collectedAmt)}</span>
           <span style={{ fontSize:12, color:"#F59E0B", fontWeight:700 }}><Glyph e="⏳" /> Pending: {fmtAmt(pendingAmt)}</span>
@@ -130,7 +130,7 @@ export default function FeeReports() {
 
       {/* Class-wise Table */}
       <div style={{ background:"white", borderRadius:20, boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid rgba(226,232,240,0.8)", overflow:"hidden", animation:"fadeUp 0.4s ease 0.4s both" }}>
-        <div style={{ padding:"16px 24px", borderBottom:"1px solid #F1F5F9", background:"linear-gradient(90deg,#F8FAFC,#F1F5F9)" }}>
+        <div style={{ padding:"16px 24px", borderBottom:"1px solid #F1F5F9", background:"var(--ea-hover)" }}>
           <div style={{ fontSize:14, fontWeight:800, color:"#0F172A" }}>Class-wise Fee Collection</div>
         </div>
         {loading ? (
@@ -145,7 +145,7 @@ export default function FeeReports() {
         ) : (
           <table style={{ width:"100%", borderCollapse:"collapse" }}>
             <thead>
-              <tr style={{ background:"linear-gradient(90deg,#F8FAFC,#F1F5F9)" }}>
+              <tr style={{ background:"var(--ea-hover)" }}>
                 {["Class","Records","Total Billed","Collected","Pending","Collection Rate","Status"].map(h => (
                   <th key={h} style={{ padding:"12px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#64748B", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
                 ))}
@@ -170,7 +170,7 @@ export default function FeeReports() {
                     <td style={{ padding:"14px 18px", minWidth:180 }}>
                       <div style={{ display:"flex", alignItems:"center", gap:10 }}>
                         <div style={{ flex:1 }}>
-                          <ProgressBar value={c.pct} color={good ? "linear-gradient(90deg,#10B981,#059669)" : "linear-gradient(90deg,#F59E0B,#EF4444)"} />
+                          <ProgressBar value={c.pct} color={good ? "var(--ea-success)" : "var(--ea-warning)"} />
                         </div>
                         <span style={{ fontSize:13, fontWeight:800, color: good ? "#10B981" : "#F59E0B", minWidth:40 }}>{c.pct}%</span>
                       </div>

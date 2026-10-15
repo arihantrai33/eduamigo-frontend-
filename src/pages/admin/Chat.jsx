@@ -7,10 +7,12 @@ import { ArrowLeft, RefreshCw, Search } from "lucide-react";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
+// One avatar colour for everyone (brand tint); the role is told by a neutral badge, not by colour.
+const ROLE_BADGE = { bg: "#F1F5F9", color: "#475569" };
 const ROLE_CONFIG = {
-  student: { bg: "linear-gradient(135deg,#6366F1,#8B5CF6)", label: "Student", badge: { bg: "#EEF2FF", color: "#6366F1" } },
-  teacher: { bg: "linear-gradient(135deg,#10B981,#059669)", label: "Teacher", badge: { bg: "#F0FDF4", color: "#16A34A" } },
-  parent:  { bg: "linear-gradient(135deg,#F59E0B,#D97706)", label: "Parent",  badge: { bg: "#FFFBEB", color: "#D97706" } },
+  student: { bg: "var(--brand-soft)", label: "Student", badge: ROLE_BADGE },
+  teacher: { bg: "var(--brand-soft)", label: "Teacher", badge: ROLE_BADGE },
+  parent:  { bg: "var(--brand-soft)", label: "Parent",  badge: ROLE_BADGE },
 };
 
 function getInitials(name) {
@@ -47,10 +49,9 @@ function groupByDate(msgs) {
 function Avatar({ name, type, size = 40 }) {
   const cfg = ROLE_CONFIG[type] || ROLE_CONFIG.student;
   return (
-    <div style={{ width: size, height: size, borderRadius: size * 0.28, background: cfg.bg,
+    <div aria-hidden="true" style={{ width: size, height: size, borderRadius: "50%", background: cfg.bg,
       display: "flex", alignItems: "center", justifyContent: "center",
-      fontSize: size * 0.32, fontWeight: 700, color: "white", flexShrink: 0,
-      boxShadow: "0 2px 8px rgba(0,0,0,0.18)" }}>
+      fontSize: size * 0.32, fontWeight: 700, color: "var(--brand-dark)", flexShrink: 0 }}>
       {getInitials(name)}
     </div>
   );
@@ -341,7 +342,7 @@ export default function Chat() {
         </div>
 
         <div style={{ padding: "12px 16px", borderTop: "1px solid #F1F5F9", display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 34, height: 34, borderRadius: 10, background: "var(--brand-gradient)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: "white" }}>A</div>
+          <div style={{ width: 34, height: 34, borderRadius: 10, background: "var(--brand-soft)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: "var(--brand-dark)" }}>A</div>
           <div>
             <div style={{ fontSize: 12, fontWeight: 700, color: "#0F172A" }}>Admin</div>
             <div style={{ fontSize: 10, color: "#22C55E", fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
@@ -462,7 +463,7 @@ export default function Chat() {
               <div style={{ fontSize: 13, color: "#94A3B8" }}>Select a contact from the sidebar to start a conversation</div>
             </div>
             <div style={{ display: "flex", gap: 12, marginTop: 4 }}>
-              {[[<Glyph e="🎓" />,"Students","#6366F1","#EEF2FF"],[<Glyph e="👨‍🏫" />,"Teachers","#16A34A","#F0FDF4"],[<Glyph e="👨‍👩‍👧" />,"Parents","#D97706","#FFFBEB"]].map(([icon,label,color,bg]) => (
+              {[[<Glyph e="🎓" />,"Students"],[<Glyph e="👨‍🏫" />,"Teachers"],[<Glyph e="👨‍👩‍👧" />,"Parents"]].map(([icon,label,color = "var(--ea-body)",bg = "var(--ea-hover)"]) => (
                 <div key={label} style={{ padding: "12px 18px", borderRadius: 14, background: bg, border: `1px solid color-mix(in srgb, ${color} 13%, transparent)`, textAlign: "center" }}>
                   <div style={{ fontSize: 22, marginBottom: 4 }}>{icon}</div>
                   <div style={{ fontSize: 11, fontWeight: 600, color }}>{label}</div>

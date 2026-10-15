@@ -14,7 +14,7 @@ const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("
 const CLASS_SUGGESTIONS = ["Nursery", "LKG", "UKG", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 const STATUS_STYLE = {
   Enquiry:          { bg: "#EFF6FF", color: "#1D4ED8", border: "#BFDBFE" },
-  Applied:          { bg: "#F5F3FF", color: "#6D28D9", border: "#DDD6FE" },
+  Applied:          { bg: "var(--brand-soft)", color: "var(--brand-dark)", border: "var(--brand-border)" },
   "Test Scheduled": { bg: "#FFFBEB", color: "#B45309", border: "#FDE68A" },
   Approved:         { bg: "#ECFDF5", color: "#047857", border: "#A7F3D0" },
   Admitted:         { bg: "#DCFCE7", color: "#15803D", border: "#86EFAC" },

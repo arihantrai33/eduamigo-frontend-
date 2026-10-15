@@ -790,3 +790,77 @@ Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B7.
 **Left for later:**
 - The leave forms' attachment drop zone is a clickable `div` with a nested remove button, so it is not reachable by keyboard. This existed before B7; restructuring it is outside a CSS-only batch (candidate for B13).
 - Add Student's "Upload Photo" control is a styled `label` around a hidden file input; unchanged.
+
+### Redesign batch B8: admin tables, lists, filters and badges (2026-10-16)
+Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B8, §3.2.
+
+**New shared pieces:**
+- **`CategoryBadge`** (`components/ui/Badge.jsx`) and **`catOf(name)`** (`tone.js`): a category (genre, exam type, event type, subject, audience) gets one of the six `--ea-cat-*` colours. Known names have a fixed colour; others are hashed, so the same name always gets the same colour.
+- **`.ea-badge--cat1..6`**: text in the category colour on its 10% tint.
+- **`.ea-row-wrap`**: a list card's header row moves its status and actions under the title on phones.
+
+**Across the admin pages (scripted, then reviewed):**
+- **Table header rows and card header bars:** the grey gradient strip becomes `--ea-hover` (Students, Teachers, Fee Collection, Fee Structure, Library, Parents, Results, Salaries, Fee Reports, Attendance Reports).
+- **Row hovers:** no gradient and no sideways slide (Students, Teachers, Results).
+- **Status progress fills:** solid success/warning/danger, no green→green or orange→red gradient (Fee Reports, Attendance Reports, Results, Reports).
+- **Dialog buttons:** Save/Add/Schedule are `ea-btn--primary`; Delete inside its confirm dialog is `ea-btn--danger`. They were brand, orange, cyan, green and amber gradients (Communications, Exams, Fee Structure, Library, Parents, Students, Teachers, Timetable, Bulk Operations).
+- **Initials and icon tiles:** brand tint with brand-dark text for everyone. They were random or per-role colours (Teachers, Chat, Leave Requests, HR, Salaries, Results, Parents, Transport, Teacher Profile).
+- **Loading spinners and input focus borders:** brand. They were orange, cyan or pink on some pages.
+
+**Page by page:**
+- **Students:** the class chip is a neutral badge (was a random colour per class, e.g. purple for 9).
+- **Teachers:** the shared `Avatar`; subjects are category badges.
+- **Exams:** cards lose the purple top border; the exam type is a category badge; "Upcoming" is a success badge.
+- **Library:**
+  - Genres use the category palette (were purple/indigo/orange…).
+  - The genre filters are shared chips: one line that scrolls on a phone (was three rows).
+- **Admissions:** the "Applied" stage is brand instead of purple.
+- **Communications:**
+  - The audience is a category colour; priority labels are sentence case ("Important", was "IMPORTANT").
+  - Cards lose the coloured left border, since the priority badge says it.
+  - The tabs are a segmented control (no gradient) on one scrolling line.
+  - Search, Add, the audience chips (scrolling on phones) and priority are laid out as toolbars.
+- **Event Calendar:**
+  - A plain calendar card: no gradient header or circles; today is solid brand.
+  - Event types use the category palette.
+  - The list has the shared empty state ("No upcoming events…", was "Add your first event!").
+  - Buttons use the shared roles.
+  - Fixed a hidden bug: `${c1}55` appended hex alpha to a CSS variable, so that style was invalid.
+- **User Management:**
+  - Roles are neutral badges (role ≠ status).
+  - The on/off switch is brand when on and `--ea-muted` when off (was green / #CBD5E1 at about 1.5:1).
+  - Search and role chips form a toolbar; on a phone the chips scroll on one line and the search keeps its width (it shrank to an icon).
+- **Leave Requests:**
+  - The phone overflow found in B2 is fixed: status, Approve and Reject wrap under the name inside the card.
+  - Role badges are neutral; the expanded border is brand (was amber).
+- **Transport:**
+  - The same phone fix for the bus card header; the meta line wraps.
+  - The yellow monospace token strip is a neutral code row with a **Copy** button ("Driver token copied").
+  - "Completed" status is neutral (was indigo).
+- **Fee Collection, Salaries, HR:**
+  - Amounts are ink with Indian digit grouping (were green).
+  - Allowances and deductions keep their +/− colour but use the readable on-card success/danger tokens (#10B981 on white was 2.5:1).
+  - A partial-fee balance is warning (was blue).
+  - Fee Structure shows "₹" (was "Rs.").
+- **Timetable:** the day picker no longer gives each day its own colour.
+- **Chat:** one avatar colour; neutral role badges; neutral welcome tiles.
+- **Teacher Profile:** neutral icon chips (were purple, orange, green, blue); one avatar colour.
+- **Bulk Operations:** segmented-style tabs on one scrolling line. All three actions are primary; "Fetch Pending Students" was red, but it is not destructive.
+
+**Acceptance:**
+- No purple borders, chips or tiles remain on any routed admin page. The only gradients left are the two loading shimmers (B13) and the ID card print designs (rated R in §3.2).
+- Category colours come only from `--ea-cat-*`.
+- Phone filters stay on one scrollable line (Library, Communications, User Management, Admissions); select filters use the toolbar's two-column phone grid.
+
+**Unreachable files (not changed further; for the owner to decide):** `pages/admin/Attendance.jsx`, `pages/admin/NoticeBoard.jsx` and `pages/admin/Notifications.jsx` are never imported or routed (`/admin/attendance` renders nothing). The B6 StatCard change to `admin/Attendance.jsx` therefore had no visible effect. Removing these files is a separate decision.
+
+**Review (ports 8130/5194):**
+- Before/after at 1280 and 390 for the 19 changed admin routes.
+- Extra 390/1280 captures after the last fixes (Library, Communications, User Management, Bulk Operations).
+- Pixel diff against the B7 sweep: the admin pages changed as intended. Student, parent and teacher screens also differ, but only by the date (the run crossed into 16 Oct: greeting, today's column, due dates) and seed data. Crops were checked.
+
+**Tests:**
+- Main run: 65/65 passed. Specs: `screens`, `accessible-names`, `workflows`, `interactions`, `ux-regressions`, `admin-keyboard`, `error-feedback`, `unsaved-changes` and the sweep.
+- After the last fixes: `interactions` + `workflows` 28/28, then `interactions` + `accessible-names` 27/27.
+- Sweep 390/1280: 156 screens, 0 findings.
+- The build passes, and ESLint counts on all 27 changed files match HEAD.

@@ -17,14 +17,15 @@ const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 const CATEGORIES = ["Textbook","Fiction","Biography","Reference","Science","History","Other"];
+// Genres are categories: the six fixed category colours (--ea-cat-*), never status colours.
 const CAT_CONFIG = {
-  Textbook:  { bg:"#EEF2FF", color:"#6366F1", icon:<Glyph e="📚" /> },
-  Fiction:   { bg:"#FDF4FF", color:"#9333EA", icon:<Glyph e="📖" /> },
-  Biography: { bg:"#FFF7ED", color:"#EA580C", icon:<Glyph e="👤" /> },
-  Reference: { bg:"#F0FDF4", color:"#15803D", icon:<Glyph e="🔍" /> },
-  Science:   { bg:"#ECFEFF", color:"#0891B2", icon:<Glyph e="🔬" /> },
-  History:   { bg:"#FFFBEB", color:"#D97706", icon:<Glyph e="🏛" /> },
-  Other:     { bg:"#F8FAFC", color:"#64748B", icon:<Glyph e="📄" /> },
+  Textbook:  { bg:"var(--ea-cat-1-bg)", color:"var(--ea-cat-1)", icon:<Glyph e="📚" /> },
+  Fiction:   { bg:"var(--ea-cat-2-bg)", color:"var(--ea-cat-2)", icon:<Glyph e="📖" /> },
+  Biography: { bg:"var(--ea-cat-3-bg)", color:"var(--ea-cat-3)", icon:<Glyph e="👤" /> },
+  Reference: { bg:"var(--ea-cat-6-bg)", color:"var(--ea-cat-6)", icon:<Glyph e="🔍" /> },
+  Science:   { bg:"var(--ea-cat-5-bg)", color:"var(--ea-cat-5)", icon:<Glyph e="🔬" /> },
+  History:   { bg:"var(--ea-cat-4-bg)", color:"var(--ea-cat-4)", icon:<Glyph e="🏛" /> },
+  Other:     { bg:"var(--ea-cat-6-bg)", color:"var(--ea-cat-6)", icon:<Glyph e="📄" /> },
 };
 
 export default function Library() {
@@ -134,27 +135,24 @@ export default function Library() {
             style={{ width:"100%", padding:"11px 14px 11px 38px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
             onFocus={e=>e.target.style.borderColor="var(--brand)"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
         </div>
-        <button type="button" className="cat-chip" aria-pressed={!filterCat} onClick={() => setFilterCat("")}
-          style={{ padding:"9px 16px", borderRadius:10, border:"none", background: !filterCat ? "var(--brand)" : "#F1F5F9", color: !filterCat ? "white" : "#64748B", fontWeight:700, fontSize:12 }}>
-          All
-        </button>
-        {CATEGORIES.map(cat => {
-          const cfg = CAT_CONFIG[cat];
-          const active = filterCat === cat;
-          return (
-            <button key={cat} type="button" className="cat-chip" aria-pressed={active} onClick={() => setFilterCat(active ? "" : cat)}
-              style={{ padding:"9px 14px", borderRadius:10, border:`1.5px solid ${active ? cfg.color : "#E2E8F0"}`, background: active ? cfg.bg : "white", color: active ? cfg.color : "#64748B", fontWeight:700, fontSize:12, display:"flex", alignItems:"center", gap:5 }}>
-              {cfg.icon} {cat}
-            </button>
-          );
-        })}
+        <div className="ea-chips" role="group" aria-label="Filter by category" style={{ flex:"1 1 100%", minWidth:0 }}>
+          <button type="button" className="ea-chip" aria-pressed={!filterCat} onClick={() => setFilterCat("")}>All</button>
+          {CATEGORIES.map(cat => {
+            const active = filterCat === cat;
+            return (
+              <button key={cat} type="button" className="ea-chip" aria-pressed={active} onClick={() => setFilterCat(active ? "" : cat)}>
+                {CAT_CONFIG[cat].icon} {cat}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Books Table */}
       <div style={{ background:"white", borderRadius:20, boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid rgba(226,232,240,0.8)", overflow:"hidden", animation:"fadeUp 0.5s ease 0.15s both" }}>
         <table data-stack style={{ width:"100%", borderCollapse:"collapse" }}>
           <thead>
-            <tr style={{ background:"linear-gradient(90deg,#F8FAFC,#F1F5F9)" }}>
+            <tr style={{ background:"var(--ea-hover)" }}>
               {["Book","Author","ISBN","Category","Copies","Available","Issued","Action"].map(h => (
                 <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#64748B", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
               ))}
@@ -261,7 +259,7 @@ export default function Library() {
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
             <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
-            <button onClick={handleSave} disabled={saving} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"var(--brand-gradient)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", opacity:saving?0.7:1 }}>
+            <button onClick={handleSave} disabled={saving} className="ea-btn ea-btn--primary">
               {saving ? "Saving..." : editBook ? "Update" : "Add Book"}
             </button>
           </div>

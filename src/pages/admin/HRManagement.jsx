@@ -224,10 +224,10 @@ export default function HRManagement() {
                   <tr key={i} style={{ borderBottom:"1px solid #F1F5F9" }}>
                     <td style={{ padding:"12px 14px", fontSize:13, fontWeight:700, color:"#0F172A" }}>{s.teacher?.name || "—"}</td>
                     <td style={{ padding:"12px 14px", fontSize:12, color:"#64748B" }}>{s.teacher?.employeeId || "—"}</td>
-                    <td style={{ padding:"12px 14px", fontSize:13, fontWeight:600, color:"#0F172A" }}>₹{(s.basicSalary||0).toLocaleString()}</td>
-                    <td style={{ padding:"12px 14px", fontSize:13, color:"#10B981" }}>+₹{(s.allowances||0).toLocaleString()}</td>
-                    <td style={{ padding:"12px 14px", fontSize:13, color:"#EF4444" }}>-₹{(s.deductions||0).toLocaleString()}</td>
-                    <td style={{ padding:"12px 14px", fontSize:14, fontWeight:800, color:"#0F172A" }}>₹{(s.netSalary||0).toLocaleString()}</td>
+                    <td style={{ padding:"12px 14px", fontSize:13, fontWeight:600, color:"#0F172A" }}>₹{(s.basicSalary||0).toLocaleString("en-IN")}</td>
+                    <td style={{ padding:"12px 14px", fontSize:13, color:"var(--ea-on-card-success)" }}>+₹{(s.allowances||0).toLocaleString("en-IN")}</td>
+                    <td style={{ padding:"12px 14px", fontSize:13, color:"var(--ea-on-card-danger)" }}>-₹{(s.deductions||0).toLocaleString("en-IN")}</td>
+                    <td style={{ padding:"12px 14px", fontSize:14, fontWeight:800, color:"#0F172A" }}>₹{(s.netSalary||0).toLocaleString("en-IN")}</td>
                     <td style={{ padding:"12px 14px" }}><StatusBadge status={s.status} /></td>
                     <td style={{ padding:"12px 14px" }}>
                       <div style={{ display:"flex", gap:6 }}>
@@ -268,7 +268,7 @@ export default function HRManagement() {
               {leaves.map((l,i) => (
                 <div key={i} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"14px 18px", borderRadius:14, background:"#F8FAFC", border:"1px solid #E2E8F0" }}>
                   <div style={{ display:"flex", gap:16, alignItems:"center" }}>
-                    <div style={{ width:40, height:40, borderRadius:"50%", background:"linear-gradient(135deg,#0F172A,#1E3A5F)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, color:"white", fontWeight:800 }}>
+                    <div style={{ width:40, height:40, borderRadius:"50%", background:"var(--brand-soft)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, color:"var(--brand-dark)", fontWeight:800 }}>
                       {l.teacher?.name?.[0] || "?"}
                     </div>
                     <div>

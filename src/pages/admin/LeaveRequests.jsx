@@ -114,7 +114,7 @@ export default function LeaveRequests() {
       {/* Leave Cards */}
       {loading ? (
         <div style={{ padding:"60px 0", textAlign:"center" }}>
-          <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid #F59E0B", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
+          <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid var(--brand)", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
           <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading leave requests...</div>
         </div>
       ) : filtered.length === 0 ? (
@@ -129,23 +129,23 @@ export default function LeaveRequests() {
             const isExpanded = expandedId === l._id;
             return (
               <div key={l._id} className="leave-card"
-                style={{ background:"white", borderRadius:16, boxShadow:"0 2px 16px rgba(15,23,42,0.06)", border:`1px solid ${isExpanded ? "#F59E0B" : "#E2E8F0"}`, overflow:"hidden", animation:`fadeUp 0.3s ease ${i*0.05}s both` }}>
-                <div style={{ padding:"18px 24px", display:"flex", alignItems:"center", gap:16, cursor:"pointer" }} onClick={() => setExpandedId(isExpanded ? null : l._id)}>
+                style={{ background:"white", borderRadius:16, boxShadow:"0 2px 16px rgba(15,23,42,0.06)", border:`1px solid ${isExpanded ? "var(--brand-border)" : "var(--ea-line)"}`, overflow:"hidden", animation:`fadeUp 0.3s ease ${i*0.05}s both` }}>
+                <div className="ea-row-wrap" style={{ padding:"18px 24px", display:"flex", alignItems:"center", gap:16, cursor:"pointer" }} onClick={() => setExpandedId(isExpanded ? null : l._id)}>
                   {/* Avatar */}
-                  <div style={{ width:44, height:44, borderRadius:14, background:"linear-gradient(135deg,#F59E0B,#F97316)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, fontWeight:800, color:"white", flexShrink:0 }}>
+                  <div style={{ width:44, height:44, borderRadius:14, background:"var(--brand-soft)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, fontWeight:800, color:"var(--brand-dark)", flexShrink:0 }}>
                     {l.name?.[0]?.toUpperCase() || "?"}
                   </div>
-                  <div style={{ flex:1 }}>
-                    <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:4 }}>
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ display:"flex", alignItems:"center", flexWrap:"wrap", gap:"6px 10px", marginBottom:4 }}>
                       <span style={{ fontSize:14, fontWeight:800, color:"#0F172A" }}>{l.name || "Unknown"}</span>
-                      <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background: l.role==="teacher" ? "#F0FDF4" : l.role==="student" ? "var(--brand-soft)" : "#FFF7ED", color: l.role==="teacher" ? "#15803D" : l.role==="student" ? "var(--brand-dark)" : "#C2410C" }}>{l.role?.charAt(0).toUpperCase() + l.role?.slice(1) || "User"}</span>
+                      <span className="ea-badge ea-badge--neutral" style={{ textTransform:"capitalize" }}>{l.role?.charAt(0).toUpperCase() + l.role?.slice(1) || "User"}</span>
                       <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:"#F1F5F9", color:"#64748B" }}>{l.leaveType || "Leave"}</span>
                     </div>
                     <div style={{ fontSize:12, color:"#94A3B8" }}>
                       {fmtDate(l.fromDate)} → {fmtDate(l.toDate)} · {daysDiff(l.fromDate, l.toDate)}{l.class ? ` · Class ${l.class}${l.section ? `-${l.section}` : ""}` : ""}
                     </div>
                   </div>
-                  <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+                  <div className="ea-row-wrap__end" style={{ display:"flex", alignItems:"center", gap:12 }}>
                     <div style={{ display:"flex", alignItems:"center", gap:6, padding:"5px 14px", borderRadius:20, background:cfg.bg, border:`1px solid ${cfg.border}` }}>
                       <div style={{ width:6, height:6, borderRadius:"50%", background:cfg.dot }} />
                       <span style={{ fontSize:12, fontWeight:700, color:cfg.color }}>{status}</span>

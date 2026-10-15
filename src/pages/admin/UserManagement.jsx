@@ -18,12 +18,13 @@ const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("
 // their school records (class, children, subjects) are created together with the login.
 const STAFF_ROLES = ["accountant", "admin"];
 
+// A role is a label, not a status: every role has the same neutral badge; the icon tells them apart.
 const ROLE_META = {
-  admin:   { color: "#DC2626", bg: "#FEF2F2", border: "#FECACA", icon: Shield },
-  teacher: { color: "#D97706", bg: "#FFFBEB", border: "#FDE68A", icon: UserCheck },
-  student: { color: "#4F46E5", bg: "#EEF2FF", border: "#C7D2FE", icon: GraduationCap },
-  parent:  { color: "#0284C7", bg: "#F0F9FF", border: "#BAE6FD", icon: Users },
-  accountant: { color: "#059669", bg: "#ECFDF5", border: "#A7F3D0", icon: Calculator },
+  admin:   { color: "#475569", bg: "#F1F5F9", border: "#E2E8F0", icon: Shield },
+  teacher: { color: "#475569", bg: "#F1F5F9", border: "#E2E8F0", icon: UserCheck },
+  student: { color: "#475569", bg: "#F1F5F9", border: "#E2E8F0", icon: GraduationCap },
+  parent:  { color: "#475569", bg: "#F1F5F9", border: "#E2E8F0", icon: Users },
+  accountant: { color: "#475569", bg: "#F1F5F9", border: "#E2E8F0", icon: Calculator },
 };
 
 const inp = {
@@ -111,16 +112,15 @@ export default function UserManagement() {
       </StatGrid>
 
       {/* Search + Filter */}
-      <div style={{ display: "flex", gap: 10, marginBottom: 16, alignItems: "center" }}>
-        <div style={{ position: "relative", flex: 1, maxWidth: 320 }}>
+      <div className="ea-toolbar" style={{ marginBottom: 16 }}>
+        <div style={{ position: "relative", flex: "1 1 240px", maxWidth: 360, minWidth: 0 }}>
           <Search size={14} color="#94A3B8" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
           <input value={search} onChange={e => setSearch(e.target.value)} aria-label="Search users" placeholder="Search by name or email..."
             style={{ ...inp, paddingLeft: 36 }} />
         </div>
-        <div style={{ display: "flex", gap: 6 }}>
+        <div className="ea-chips" role="group" aria-label="Filter by role" style={{ minWidth: 0 }}>
           {["all", ...Object.keys(ROLE_META)].map(r => (
-            <button key={r} type="button" aria-pressed={filter === r} onClick={() => setFilter(r)}
-              style={{ padding: "6px 14px", borderRadius: 20, fontSize: 11, cursor: "pointer", border: `1px solid ${filter === r ? "var(--brand)" : "#E2E8F0"}`, background: filter === r ? "var(--brand-soft)" : "#fff", color: filter === r ? "var(--brand)" : "#64748B", fontWeight: filter === r ? 600 : 400, textTransform: "capitalize" }}>
+            <button key={r} type="button" className="ea-chip" aria-pressed={filter === r} onClick={() => setFilter(r)} style={{ textTransform: "capitalize" }}>
               {r}
             </button>
           ))}
@@ -165,7 +165,7 @@ export default function UserManagement() {
               </span>
               <button type="button" role="switch" aria-checked={u.isActive !== false} aria-label={`Account active: ${u.name}`} className="ea-um-switch"
                 onClick={() => toggleStatus(u)}
-                style={{ width: 44, height: 24, padding: 0, border: "none", borderRadius: 12, cursor: "pointer", position: "relative", background: u.isActive !== false ? "#22C55E" : "#CBD5E1", transition: "background 0.2s" }}>
+                style={{ width: 44, height: 24, padding: 0, border: "none", borderRadius: 12, cursor: "pointer", position: "relative", background: u.isActive !== false ? "var(--brand)" : "var(--ea-muted)", transition: "background 0.2s" }}>
                 <span aria-hidden="true" style={{ position: "absolute", top: 4, left: u.isActive !== false ? 24 : 4, width: 16, height: 16, borderRadius: "50%", background: "#fff", transition: "left 0.2s", boxShadow: "0 1px 4px rgba(0,0,0,0.15)" }} />
               </button>
             </div>

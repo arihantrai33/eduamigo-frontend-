@@ -179,7 +179,7 @@ export default function Reports() {
               <span style={{ fontSize:13, fontWeight:800, color:"#15803D" }}>{collectionPct}%</span>
             </div>
             <div style={{ height:12, borderRadius:8, background:"#F1F5F9", overflow:"hidden" }}>
-              <div style={{ width:`${collectionPct}%`, height:"100%", borderRadius:8, background:`linear-gradient(90deg,#10B981,#059669)`, transition:"width 1s ease" }} />
+              <div style={{ width:`${collectionPct}%`, height:"100%", borderRadius:8, background:"var(--ea-success)", transition:"width 1s ease" }} />
             </div>
           </div>
           <div style={{ fontSize:12, color:"#94A3B8", marginTop:8 }}>{fees.paidCount} of {fees.count} fee records paid</div>
@@ -261,7 +261,7 @@ export default function Reports() {
               </div>
             ))}
           </div>
-          <div style={{ background:"linear-gradient(135deg,var(--brand-soft),var(--brand-soft))", borderRadius:12, padding:"14px 16px", textAlign:"center" }}>
+          <div style={{ background:"var(--brand-soft)", borderRadius:12, padding:"14px 16px", textAlign:"center" }}>
             <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:4 }}>AVERAGE SCORE</div>
             <div style={{ fontSize:32, fontWeight:900, color:"var(--brand)" }}>{marks.avgScore}%</div>
           </div>

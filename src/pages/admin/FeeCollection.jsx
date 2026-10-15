@@ -153,7 +153,7 @@ export default function FeeCollection() {
       <div style={{ background:"white", borderRadius:20, boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid rgba(226,232,240,0.8)", overflow:"hidden", animation:"fadeUp 0.5s ease 0.15s both" }}>
         <table data-stack style={{ width:"100%", borderCollapse:"collapse" }}>
           <thead>
-            <tr style={{ background:"linear-gradient(90deg,#F8FAFC,#F1F5F9)" }}>
+            <tr style={{ background:"var(--ea-hover)" }}>
               {["Student","Class","Fee Type","Amount","Due Date","Paid Date","Status","Action"].map(h => (
                 <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#64748B", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
               ))}
@@ -162,7 +162,7 @@ export default function FeeCollection() {
           <tbody>
             {loading ? (
               <tr><td colSpan={8} style={{ padding:"60px 0", textAlign:"center" }}>
-                <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid #10B981", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
+                <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid var(--brand)", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
                 <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading fee records...</div>
               </td></tr>
             ) : filtered.length === 0 ? (
@@ -183,8 +183,8 @@ export default function FeeCollection() {
                   </td>
                   <td style={{ padding:"14px 18px", fontSize:13, color:"#374151", fontWeight:600 }}>{f.feeType || "—"}</td>
                   <td style={{ padding:"14px 18px" }}>
-                    <span style={{ fontSize:14, fontWeight:800, color:"#059669" }}>₹{Number(f.amount||0).toLocaleString()}</span>
-                    {f.status === "Partial" && <div style={{ fontSize:11, color:"#2563EB", fontWeight:600, marginTop:2 }}>Balance ₹{f.balance.toLocaleString()}</div>}
+                    <span style={{ fontSize:14, fontWeight:800, color:"var(--ea-ink)", fontVariantNumeric:"tabular-nums" }}>₹{Number(f.amount||0).toLocaleString("en-IN")}</span>
+                    {f.status === "Partial" && <div style={{ fontSize:12, color:"var(--ea-on-card-warning)", fontWeight:600, marginTop:2 }}>Balance ₹{f.balance.toLocaleString("en-IN")}</div>}
                   </td>
                   <td style={{ padding:"14px 18px", fontSize:13, color:"#374151" }}>{fmtDate(f.dueDate)}</td>
                   <td style={{ padding:"14px 18px", fontSize:13, color:"#374151" }}>{fmtDate(f.paidDate)}</td>
@@ -225,7 +225,7 @@ export default function FeeCollection() {
               <label htmlFor="collect-amount" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>AMOUNT (₹)</label>
               <input id="collect-amount" type="number" inputMode="decimal" value={payAmount} onChange={e => setPayAmount(e.target.value)}
                 style={{ width:"100%", padding:"12px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:15, fontWeight:700, outline:"none", boxSizing:"border-box" }}
-                onFocus={e => e.target.style.borderColor="#10B981"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
+                onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
             </div>
             <div>
               <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>PAYMENT METHOD</div>

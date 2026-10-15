@@ -17,12 +17,6 @@ import Avatar from "../../components/ui/Avatar";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
-const CLASS_COLORS = {
-  "1":"#F43F5E","2":"#F97316","3":"#EAB308","4":"#22C55E","5":"#14B8A6",
-  "6":"#06B6D4","7":"#3B82F6","8":"#6366F1","9":"#8B5CF6","10":"#EC4899",
-  "11":"#F43F5E","12":"#0EA5E9"
-};
-const getClassColor = (cls) => CLASS_COLORS[String(cls)] || "var(--brand)";
 
 const FEE_BADGE = {
   Paid:    { bg:"#F0FDF4", color:"#15803D", dot:"#22C55E" },
@@ -117,7 +111,7 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
       </div>
       <div style={{ display:"flex", gap:10, marginTop:8, justifyContent:"flex-end" }}>
         <button onClick={onClose} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
-        <button onClick={onSave} disabled={loading} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"var(--brand-gradient)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 14px color-mix(in srgb, var(--brand) 40%, transparent)", opacity:loading?0.7:1 }}>
+        <button onClick={onSave} disabled={loading} className="ea-btn ea-btn--primary">
           {loading ? "Saving..." : "Save Student"}
         </button>
       </div>
@@ -224,7 +218,7 @@ export default function Students() {
         @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
         @keyframes slideUp { from { opacity:0; transform:translateY(24px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
         @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
-        .row-hover:hover { background: linear-gradient(90deg,#F8FAFF,var(--brand-soft)) !important; transform: translateX(2px); }
+        .row-hover:hover { background: var(--ea-hover) !important; }
         .row-hover { transition: all 0.15s ease; }
         .action-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .action-btn { transition: all 0.15s ease; }
@@ -261,7 +255,7 @@ export default function Students() {
       <div style={{ background:"white", borderRadius:20, boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid rgba(226,232,240,0.8)", overflow:"hidden", animation:"fadeSlideUp 0.5s ease 0.15s both" }}>
         <table data-stack style={{ width:"100%", borderCollapse:"collapse" }}>
           <thead>
-            <tr style={{ background:"linear-gradient(90deg,#F8FAFC,#F1F5F9)" }}>
+            <tr style={{ background:"var(--ea-hover)" }}>
               {["Student","Roll No","Class","Parent","Phone","Fee Status","Actions"].map(h => (
                 <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#64748B", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
               ))}
@@ -281,7 +275,6 @@ export default function Students() {
               </td></tr>
             ) : filtered.map((s, i) => {
               const fee = FEE_BADGE[s.feeStatus] || FEE_BADGE["Not billed"];
-              const clsColor = getClassColor(s.class);
               return (
                 <tr key={s._id} className="row-hover" style={{ borderBottom:"1px solid #F1F5F9", animation:`fadeSlideUp 0.3s ease ${i*0.04}s both` }}>
                   <td style={{ padding:"14px 18px" }}>
@@ -301,7 +294,7 @@ export default function Students() {
                     <span style={{ fontSize:13, fontWeight:700, color:"#374151", background:"#F8FAFC", padding:"4px 10px", borderRadius:8, border:"1px solid #E2E8F0" }}>#{s.rollNumber}</span>
                   </td>
                   <td style={{ padding:"14px 18px" }}>
-                    <span style={{ fontSize:12, fontWeight:800, padding:"5px 12px", borderRadius:20, background:`color-mix(in srgb, ${clsColor} 8%, transparent)`, color:clsColor, border:`1px solid color-mix(in srgb, ${clsColor} 19%, transparent)` }}>
+                    <span className="ea-badge ea-badge--neutral">
                       {s.class}-{s.section}
                     </span>
                   </td>
@@ -346,7 +339,7 @@ export default function Students() {
           <div style={{ fontSize:13, color:"#94A3B8", marginBottom:24 }}>This action cannot be undone.</div>
           <div style={{ display:"flex", gap:10, justifyContent:"center" }}>
             <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
-            <button onClick={() => handleDelete(deleteId)} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#EF4444,#DC2626)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 14px rgba(239,68,68,0.4)" }}>Delete</button>
+            <button onClick={() => handleDelete(deleteId)} className="ea-btn ea-btn--danger">Delete</button>
           </div>
         </div>
       </Modal>

@@ -12,3 +12,20 @@ export function toneOf(color = "") {
   if (/64748b|94a3b8|gray|slate/.test(c)) return "neutral";
   return "brand";
 }
+
+// Categories (event types, library genres, exam types, notice types, subjects) take one of six fixed colours,
+// --ea-cat-1..6 in index.css, never a status colour. Known names keep a stable colour; other names are hashed, so a
+// name always gets the same colour.
+const KNOWN_CATS = {
+  holiday: 4, exam: 3, ptm: 2, event: 1, sports: 5, other: 6,
+  fiction: 2, "non-fiction": 1, science: 5, textbook: 1, biography: 3, history: 4, reference: 6,
+  "unit test": 2, "mid term": 3, "half yearly": 3, final: 4, annual: 4, quarterly: 5, practical: 1,
+  general: 6, academic: 2, event_notice: 1, urgent: 4,
+};
+export function catOf(name = "") {
+  const key = String(name).trim().toLowerCase();
+  if (KNOWN_CATS[key]) return KNOWN_CATS[key];
+  let h = 0;
+  for (const ch of key) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return (h % 6) + 1;
+}

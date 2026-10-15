@@ -111,7 +111,7 @@ export default function ParentsList() {
       <div style={{ background:"white", borderRadius:20, boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid rgba(226,232,240,0.8)", overflow:"hidden", animation:"fadeUp 0.5s ease 0.15s both" }}>
         <table data-stack style={{ width:"100%", borderCollapse:"collapse" }}>
           <thead>
-            <tr style={{ background:"linear-gradient(90deg,#F8FAFC,#F1F5F9)" }}>
+            <tr style={{ background:"var(--ea-hover)" }}>
               {["Parent","Phone","Email","Occupation","Linked Students","Status"].map(h => (
                 <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#64748B", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
               ))}
@@ -120,7 +120,7 @@ export default function ParentsList() {
           <tbody>
             {loading ? (
               <tr><td colSpan={6} style={{ padding:"60px 0", textAlign:"center" }}>
-                <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid #F59E0B", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
+                <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid var(--brand)", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
                 <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading parents...</div>
               </td></tr>
             ) : filtered.length === 0 ? (
@@ -132,7 +132,7 @@ export default function ParentsList() {
                 style={{ borderBottom:"1px solid #F1F5F9", animation:`fadeUp 0.3s ease ${i*0.03}s both` }}>
                 <td style={{ padding:"14px 18px" }}>
                   <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                    <div style={{ width:40, height:40, borderRadius:12, background:"linear-gradient(135deg,#F59E0B,#F97316)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, fontWeight:800, color:"white", flexShrink:0 }}>
+                    <div style={{ width:40, height:40, borderRadius:12, background:"var(--brand-soft)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, fontWeight:800, color:"var(--brand-dark)", flexShrink:0 }}>
                       {p.name?.[0]?.toUpperCase()}
                     </div>
                     <div>
@@ -173,8 +173,8 @@ export default function ParentsList() {
         {selectedParent && (
           <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
             {/* Parent Info */}
-            <div style={{ display:"flex", alignItems:"center", gap:16, padding:"16px", background:"linear-gradient(135deg,#FFF7ED,#FFFBEB)", borderRadius:14 }}>
-              <div style={{ width:56, height:56, borderRadius:16, background:"linear-gradient(135deg,#F59E0B,#F97316)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, fontWeight:800, color:"white" }}>
+            <div style={{ display:"flex", alignItems:"center", gap:16, padding:"16px", background:"var(--ea-hover)", borderRadius:14 }}>
+              <div style={{ width:56, height:56, borderRadius:16, background:"var(--brand-soft)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, fontWeight:800, color:"var(--brand-dark)" }}>
                 {selectedParent.name?.[0]?.toUpperCase()}
               </div>
               <div>
@@ -205,7 +205,7 @@ export default function ParentsList() {
                 <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
                   {selectedParent.children.map(child => (
                     <div key={child._id} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 16px", background:"var(--brand-soft)", borderRadius:12, border:"1px solid var(--brand-border)" }}>
-                      <div style={{ width:36, height:36, borderRadius:10, background:"var(--brand-gradient)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, fontWeight:800, color:"white" }}>
+                      <div style={{ width:36, height:36, borderRadius:10, background:"var(--brand-soft)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, fontWeight:800, color:"var(--brand-dark)" }}>
                         {child.name?.[0]?.toUpperCase()}
                       </div>
                       <div>
@@ -270,7 +270,7 @@ export default function ParentsList() {
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
             <button onClick={() => setShowAddModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
-            <button onClick={handleAddParent} disabled={saving} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#F59E0B,#F97316)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", opacity:saving?0.7:1 }}>
+            <button onClick={handleAddParent} disabled={saving} className="ea-btn ea-btn--primary">
               {saving ? "Saving..." : "Add Parent"}
             </button>
           </div>

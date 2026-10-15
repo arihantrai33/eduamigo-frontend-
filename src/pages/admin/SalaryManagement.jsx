@@ -177,7 +177,7 @@ export default function SalaryManagement() {
       <div style={{ background:"white", borderRadius:20, boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid rgba(226,232,240,0.8)", overflow:"hidden", animation:"fadeUp 0.5s ease 0.15s both" }}>
         <table data-stack style={{ width:"100%", borderCollapse:"collapse" }}>
           <thead>
-            <tr style={{ background:"linear-gradient(90deg,#F8FAFC,#F1F5F9)" }}>
+            <tr style={{ background:"var(--ea-hover)" }}>
               {["Teacher","Month/Year","Basic Salary","Allowances","Deductions","Net Salary","Status","Action"].map(h => (
                 <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#64748B", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
               ))}
@@ -186,7 +186,7 @@ export default function SalaryManagement() {
           <tbody>
             {loading ? (
               <tr><td colSpan={8} style={{ padding:"60px 0", textAlign:"center" }}>
-                <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid #059669", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
+                <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid var(--brand)", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
                 <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading salaries...</div>
               </td></tr>
             ) : filtered.length === 0 ? (
@@ -199,7 +199,7 @@ export default function SalaryManagement() {
                 <tr key={s._id} className="sal-row" style={{ borderBottom:"1px solid #F1F5F9", animation:`fadeUp 0.3s ease ${i*0.03}s both` }}>
                   <td style={{ padding:"14px 18px" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                      <div style={{ width:36, height:36, borderRadius:10, background:"linear-gradient(135deg,#059669,#0891B2)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, fontWeight:800, color:"white" }}>
+                      <div style={{ width:36, height:36, borderRadius:10, background:"var(--brand-soft)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, fontWeight:800, color:"var(--brand-dark)" }}>
                         {s.teacher?.name?.[0]?.toUpperCase() || "T"}
                       </div>
                       <div>
@@ -211,11 +211,11 @@ export default function SalaryManagement() {
                   <td style={{ padding:"14px 18px" }}>
                     <span style={{ fontSize:13, fontWeight:700, color:"#374151" }}>{MONTHS[s.month-1]} {s.year}</span>
                   </td>
-                  <td style={{ padding:"14px 18px", fontSize:13, fontWeight:700, color:"#0F172A" }}>₹{(s.basicSalary||0).toLocaleString()}</td>
-                  <td style={{ padding:"14px 18px", fontSize:13, fontWeight:600, color:"#10B981" }}>+₹{(s.allowances||0).toLocaleString()}</td>
-                  <td style={{ padding:"14px 18px", fontSize:13, fontWeight:600, color:"#EF4444" }}>-₹{(s.deductions||0).toLocaleString()}</td>
+                  <td style={{ padding:"14px 18px", fontSize:13, fontWeight:700, color:"#0F172A" }}>₹{(s.basicSalary||0).toLocaleString("en-IN")}</td>
+                  <td style={{ padding:"14px 18px", fontSize:13, fontWeight:600, color:"var(--ea-on-card-success)" }}>+₹{(s.allowances||0).toLocaleString("en-IN")}</td>
+                  <td style={{ padding:"14px 18px", fontSize:13, fontWeight:600, color:"var(--ea-on-card-danger)" }}>-₹{(s.deductions||0).toLocaleString("en-IN")}</td>
                   <td style={{ padding:"14px 18px" }}>
-                    <span style={{ fontSize:14, fontWeight:900, color:"#059669" }}>₹{(s.netSalary||0).toLocaleString()}</span>
+                    <span style={{ fontSize:14, fontWeight:800, color:"var(--ea-ink)", fontVariantNumeric:"tabular-nums" }}>₹{(s.netSalary||0).toLocaleString("en-IN")}</span>
                   </td>
                   <td style={{ padding:"14px 18px" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:6, padding:"5px 12px", borderRadius:20, background:cfg.bg, border:`1px solid ${cfg.border}`, width:"fit-content" }}>
@@ -269,7 +269,7 @@ export default function SalaryManagement() {
           </div>
           <div style={{ background:"#F0FDF4", borderRadius:12, padding:"12px 16px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
             <span style={{ fontSize:13, fontWeight:700, color:"#64748B" }}>Net Salary</span>
-            <span style={{ fontSize:20, fontWeight:900, color:"#059669" }}>₹{net.toLocaleString()}</span>
+            <span style={{ fontSize:20, fontWeight:800, color:"var(--ea-ink)", fontVariantNumeric:"tabular-nums" }}>₹{net.toLocaleString("en-IN")}</span>
           </div>
           {field("REMARKS",
             <input value={form.remarks} onChange={e => f("remarks", e.target.value)} placeholder="Optional remarks..."

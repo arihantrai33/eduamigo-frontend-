@@ -13,17 +13,18 @@ const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 const PRIORITY_CONFIG = {
-  urgent:    { bg:"#FEF2F2", color:"#DC2626", border:"#FECACA", label:"URGENT" },
-  important: { bg:"#FFFBEB", color:"#D97706", border:"#FDE68A", label:"IMPORTANT" },
-  normal:    { bg:"#F0FDF4", color:"#15803D", border:"#BBF7D0", label:"NORMAL" },
+  urgent:    { bg:"#FEF2F2", color:"#DC2626", border:"#FECACA", label:"Urgent" },
+  important: { bg:"#FFFBEB", color:"#D97706", border:"#FDE68A", label:"Important" },
+  normal:    { bg:"#F0FDF4", color:"#15803D", border:"#BBF7D0", label:"Normal" },
 };
 
+// The audience is a category: one of the six category colours.
 const TARGET_CONFIG = {
-  all:     { bg:"#EEF2FF", color:"#6366F1", label:"Everyone" },
-  student: { bg:"#F0FDF4", color:"#15803D", label:"Students" },
-  teacher: { bg:"#FFF7ED", color:"#EA580C", label:"Teachers" },
-  parent:  { bg:"#FDF4FF", color:"#9333EA", label:"Parents" },
-  admin:   { bg:"#F1F5F9", color:"#475569", label:"Admin" },
+  all:     { bg:"var(--ea-cat-1-bg)", color:"var(--ea-cat-1)", label:"Everyone" },
+  student: { bg:"var(--ea-cat-5-bg)", color:"var(--ea-cat-5)", label:"Students" },
+  teacher: { bg:"var(--ea-cat-3-bg)", color:"var(--ea-cat-3)", label:"Teachers" },
+  parent:  { bg:"var(--ea-cat-2-bg)", color:"var(--ea-cat-2)", label:"Parents" },
+  admin:   { bg:"var(--ea-cat-6-bg)", color:"var(--ea-cat-6)", label:"Admin" },
 };
 
 export default function Communications() {
@@ -164,13 +165,13 @@ export default function Communications() {
       </div>
 
       {/* Tabs */}
-      <div style={{ display:"flex", gap:8, marginBottom:20, background:"white", padding:"6px", borderRadius:14, boxShadow:"0 2px 12px rgba(15,23,42,0.06)", border:"1px solid #E2E8F0", width:"fit-content" }}>
+      <div style={{ display:"flex", flexWrap:"nowrap", gap:4, marginBottom:20, background:"var(--ea-hover)", padding:4, borderRadius:12, border:"1px solid var(--ea-line)", width:"fit-content", maxWidth:"100%", overflowX:"auto", scrollbarWidth:"none" }}>
         {TABS.map(tab => (
           <button key={tab.id} type="button" aria-pressed={activeTab === tab.id} onClick={() => setActiveTab(tab.id)}
-            style={{ padding:"10px 20px", borderRadius:10, border:"none", cursor:"pointer", fontWeight:700, fontSize:13, transition:"all 0.2s",
-              background: activeTab === tab.id ? "var(--brand-gradient)" : "transparent",
-              color: activeTab === tab.id ? "white" : "#64748B",
-              boxShadow: activeTab === tab.id ? "0 4px 12px color-mix(in srgb, var(--brand) 30%, transparent)" : "none" }}>
+            style={{ flexShrink:0, padding:"8px 16px", borderRadius:9, border:"none", cursor:"pointer", fontWeight:650, fontSize:13, whiteSpace:"nowrap", transition:"all 0.2s",
+              background: activeTab === tab.id ? "var(--ea-surface)" : "transparent",
+              color: activeTab === tab.id ? "var(--ea-ink)" : "var(--ea-body)",
+              boxShadow: activeTab === tab.id ? "var(--ea-shadow)" : "none" }}>
             {tab.label} <span style={{ fontSize:11, opacity:0.8 }}>({tab.count})</span>
           </button>
         ))}
@@ -180,19 +181,25 @@ export default function Communications() {
       {activeTab === "announcements" && (
         <div style={{ animation:"fadeUp 0.3s ease" }}>
           {/* Filters + Add Button */}
-          <div style={{ display:"flex", gap:12, marginBottom:20, alignItems:"center" }}>
-            <div style={{ flex:1, position:"relative" }}>
+          <div className="ea-toolbar" style={{ marginBottom:12 }}>
+            <div style={{ flex:"1 1 240px", position:"relative", minWidth:0 }}>
               <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}><Glyph e="🔍" /></span>
               <input value={search} onChange={e => setSearch(e.target.value)} aria-label="Search announcements" placeholder="Search announcements..."
                 style={{ width:"100%", padding:"11px 14px 11px 38px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
                 onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
             </div>
-            {[["","All"],["student","Students"],["teacher","Teachers"],["parent","Parents"],["admin","Admin"]].map(([val,lbl]) => (
-              <button key={val} type="button" aria-pressed={filterTarget === val} onClick={() => setFilterTarget(filterTarget===val?"":val)}
-                style={{ padding:"9px 16px", borderRadius:10, border:"none", cursor:"pointer", fontWeight:700, fontSize:12, background: filterTarget===val ? "var(--brand)" : "#F1F5F9", color: filterTarget===val ? "white" : "#64748B" }}>
-                {lbl}
-              </button>
-            ))}
+            <button type="button" onClick={openAddAnnouncement} className="ea-btn ea-btn--primary" style={{ whiteSpace:"nowrap" }}>
+              + Add
+            </button>
+          </div>
+          <div className="ea-toolbar" style={{ marginBottom:20 }}>
+            <div className="ea-chips" role="group" aria-label="Filter by audience" style={{ flex:"1 1 auto", minWidth:0 }}>
+              {[["","All"],["student","Students"],["teacher","Teachers"],["parent","Parents"],["admin","Admin"]].map(([val,lbl]) => (
+                <button key={val} type="button" className="ea-chip" aria-pressed={filterTarget === val} onClick={() => setFilterTarget(filterTarget===val?"":val)}>
+                  {lbl}
+                </button>
+              ))}
+            </div>
             <div style={{ display:"flex", gap:6, background:"#F8FAFC", padding:"4px", borderRadius:12, border:"1px solid #E2E8F0" }}>
               {[
                 { val:"", lbl:"All", icon:"▤", active:"var(--brand)", dot:null },
@@ -213,10 +220,6 @@ export default function Communications() {
                 );
               })}
             </div>
-            <button onClick={openAddAnnouncement}
-              style={{ padding:"10px 20px", borderRadius:12, border:"none", background:"var(--brand-gradient)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", whiteSpace:"nowrap", boxShadow:"0 4px 14px color-mix(in srgb, var(--brand) 30%, transparent)" }}>
-              + Add
-            </button>
           </div>
 
           {loading ? (
@@ -234,7 +237,7 @@ export default function Communications() {
                 const tcfg = TARGET_CONFIG[a.targetRole] || TARGET_CONFIG.all;
                 return (
                   <div key={a._id} className="comm-card"
-                    style={{ background:"white", borderRadius:16, padding:"20px 24px", boxShadow:"0 2px 16px rgba(15,23,42,0.06)", border:`1px solid #E2E8F0`, borderLeft:`4px solid ${pcfg.color}`, animation:`fadeUp 0.3s ease ${i*0.04}s both` }}>
+                    style={{ background:"white", borderRadius:16, padding:"20px 24px", boxShadow:"0 2px 16px rgba(15,23,42,0.06)", border:"1px solid var(--ea-line)", animation:`fadeUp 0.3s ease ${i*0.04}s both` }}>
                     <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                       <div style={{ flex:1 }}>
                         <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
@@ -276,7 +279,7 @@ export default function Communications() {
         <div style={{ animation:"fadeUp 0.3s ease" }}>
           <div style={{ display:"flex", justifyContent:"flex-end", marginBottom:16 }}>
             <button onClick={() => { setEditItem(null); setAnnForm({ title:"", message:"", targetRole:"all", priority:"important", isPinned:false }); setModalType("announcement"); setShowModal(true); }}
-              style={{ padding:"11px 24px", borderRadius:12, border:"none", background:"var(--brand-gradient)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 14px rgba(236,72,153,0.3)" }}>
+              className="ea-btn ea-btn--primary">
               + Add Circular
             </button>
           </div>
@@ -291,13 +294,13 @@ export default function Communications() {
                 const tcfg = TARGET_CONFIG[a.targetRole] || TARGET_CONFIG.all;
                 return (
                   <div key={a._id} className="comm-card"
-                    style={{ background:"white", borderRadius:16, padding:"20px 24px", boxShadow:"0 2px 16px rgba(15,23,42,0.06)", border:`2px solid ${pcfg.border}`, animation:`fadeUp 0.3s ease ${i*0.04}s both` }}>
+                    style={{ background:"white", borderRadius:16, padding:"20px 24px", boxShadow:"0 2px 16px rgba(15,23,42,0.06)", border:"1px solid var(--ea-line)", animation:`fadeUp 0.3s ease ${i*0.04}s both` }}>
                     <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                       <div style={{ flex:1 }}>
                         <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
                           <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:pcfg.bg, color:pcfg.color, border:`1px solid ${pcfg.border}` }}>{pcfg.label}</span>
                           <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:tcfg.bg, color:tcfg.color }}><Glyph e="📣" /> {tcfg.label}</span>
-                          <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:"#F1F5F9", color:"#64748B" }}>CIRCULAR</span>
+                          <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:"#F1F5F9", color:"#475569" }}>Circular</span>
                         </div>
                         <div style={{ fontSize:15, fontWeight:800, color:"#0F172A", marginBottom:6 }}>{a.title}</div>
                         <div style={{ fontSize:13, color:"#64748B", lineHeight:1.6 }}>{a.message}</div>
@@ -321,7 +324,7 @@ export default function Communications() {
         <div style={{ animation:"fadeUp 0.3s ease" }}>
           <div style={{ display:"flex", justifyContent:"flex-end", marginBottom:16 }}>
             <button onClick={openAddNotification}
-              style={{ padding:"11px 24px", borderRadius:12, border:"none", background:"var(--brand-gradient)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 14px color-mix(in srgb, var(--brand) 30%, transparent)" }}>
+              className="ea-btn ea-btn--primary">
               <Glyph e="🔔" /> Send New Notification
             </button>
           </div>
@@ -337,7 +340,7 @@ export default function Communications() {
                   <div key={n._id} className="comm-card"
                     style={{ background:"white", borderRadius:14, padding:"16px 20px", boxShadow:"0 2px 12px rgba(15,23,42,0.06)", border:"1px solid #E2E8F0", display:"flex", justifyContent:"space-between", alignItems:"center", animation:`fadeUp 0.3s ease ${i*0.03}s both` }}>
                     <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-                      <div style={{ width:40, height:40, borderRadius:12, background:"var(--brand-gradient)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}><Glyph e="🔔" /></div>
+                      <div style={{ width:40, height:40, borderRadius:12, background:"var(--brand-soft)", color:"var(--brand-dark)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}><Glyph e="🔔" /></div>
                       <div>
                         <div style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>{n.title}</div>
                         <div style={{ fontSize:12, color:"#64748B", marginTop:2 }}>{n.message}</div>
@@ -395,7 +398,7 @@ export default function Communications() {
           </label>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
             <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
-            <button onClick={handleSaveAnnouncement} disabled={saving} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"var(--brand-gradient)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", opacity:saving?0.7:1 }}>
+            <button onClick={handleSaveAnnouncement} disabled={saving} className="ea-btn ea-btn--primary">
               {saving ? "Saving..." : editItem ? "Update" : "Post"}
             </button>
           </div>
@@ -431,7 +434,7 @@ export default function Communications() {
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
             <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
-            <button onClick={handleSendNotification} disabled={saving} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"var(--brand-gradient)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", opacity:saving?0.7:1 }}>
+            <button onClick={handleSendNotification} disabled={saving} className="ea-btn ea-btn--primary">
               {saving ? "Sending..." : "Send Now"}
             </button>
           </div>
