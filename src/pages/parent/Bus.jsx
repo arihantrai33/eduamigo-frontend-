@@ -495,8 +495,8 @@ export default function ParentBus() {
             </div>
             <div style={{ textAlign:"right" }}>
               <div style={{ ...styles.statusBadge, background:"rgba(255,255,255,0.95)", border:`1px solid color-mix(in srgb, ${childStatus.color} 33%, transparent)` }}>
-                <span style={{ color:childStatus.color, display:"flex" }}>{childStatus.emoji}</span>
-                <span style={{ color:childStatus.color, fontSize:"11px", fontWeight:700 }}>{childStatus.label}</span>
+                <span style={{ color:`color-mix(in srgb, ${childStatus.color} 65%, black)`, display:"flex" }}>{childStatus.emoji}</span>
+                <span style={{ color:`color-mix(in srgb, ${childStatus.color} 65%, black)`, fontSize:"11px", fontWeight:700 }}>{childStatus.label}</span>
               </div>
               <p style={{ color:"rgba(255,255,255,0.5)", fontSize:"10px", marginTop:"4px" }}>{childStatus.sub}</p>
             </div>
@@ -598,7 +598,7 @@ export default function ParentBus() {
                   <div style={{ flex:1, minWidth:0, paddingBottom: isLast ? 4 : "18px" }}>
                     <div style={styles.stopContent}>
                       <div style={{ flex:1, minWidth:0 }}>
-                        <p style={{ ...styles.stopName, color: isCompleted ? "#9CA3AF" : isCurrent ? COLOR.primary : isSchool ? "#D97706" : "var(--ea-ink)", textDecoration: isCompleted ? "line-through" : "none", fontWeight: isCurrent || isSchool ? 600 : 400 }}>{stop.name}</p>
+                        <p style={{ ...styles.stopName, color: isCompleted ? "var(--ea-muted)" : isCurrent ? COLOR.primary : isSchool ? "#D97706" : "var(--ea-ink)", textDecoration: isCompleted ? "line-through" : "none", fontWeight: isCurrent || isSchool ? 600 : 400 }}>{stop.name}</p>
                         <p style={styles.stopSub}>
                           {isCompleted ? `Departed at ${getDepartureTime(i)}`
                             : isCurrent ? "Bus is here now"
@@ -677,7 +677,7 @@ const styles = {
   progressPill:   { position:"relative", width:"68px", height:"18px", background:"var(--ea-hover)", borderRadius:"10px", overflow:"hidden", display:"flex", alignItems:"center" },
   progressFill:   { position:"absolute", left:0, top:0, bottom:0, background:"linear-gradient(90deg, var(--brand-light), var(--brand))", borderRadius:"10px", transition:"width 0.5s ease" },
   progressText:   { position:"relative", zIndex:1, fontSize:"9px", fontWeight:700, color:"var(--ea-ink)", width:"100%", textAlign:"center", letterSpacing:"0.2px" },
-  chevron:        { fontSize:"10px", color:"#94A3B8", transition:"transform 0.3s ease", display:"inline-block" },
+  chevron:        { fontSize:"10px", color:"var(--ea-muted)", transition:"transform 0.3s ease", display:"inline-block" },
   routeBar:       { height:"3px", background:"var(--ea-line)" },
   routeBarFill:   { height:"100%", background:"linear-gradient(90deg, var(--brand-light), var(--brand))", transition:"width 0.5s ease" },
   panelActionRow: { display:"flex", gap:"8px", padding:"10px 16px 4px" },

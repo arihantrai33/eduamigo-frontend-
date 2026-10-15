@@ -363,7 +363,7 @@ export default function ParentBus() {
         <div style={{ textAlign: "center", padding: "20px" }}>
           <div style={{ fontSize: "48px", marginBottom: "12px" }}><Glyph e="⚠" /></div>
           <p style={{ color: "#EF4444", fontWeight: 600, marginBottom: "8px" }}>No bus assigned</p>
-          <p style={{ color: "#94A3B8", fontSize: "13px", marginBottom: "20px" }}>
+          <p style={{ color: "var(--ea-muted)", fontSize: "13px", marginBottom: "20px" }}>
             {apiError || "No bus found for your child"}
           </p>
           <button
@@ -580,7 +580,7 @@ export default function ParentBus() {
 
           <div style={styles.stopsList}>
             {stops.length === 0 ? (
-              <p style={{ textAlign: "center", color: "#94A3B8", fontSize: "13px", padding: "20px" }}>
+              <p style={{ textAlign: "center", color: "var(--ea-muted)", fontSize: "13px", padding: "20px" }}>
                 No stops configured for this bus
               </p>
             ) : stops.map((stop, i) => {
@@ -617,7 +617,7 @@ export default function ParentBus() {
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{
                           ...styles.stopName,
-                          color: isCompleted ? "#9CA3AF" : isCurrent ? "var(--brand)" : isSchool ? "#D97706" : "var(--ea-ink)",
+                          color: isCompleted ? "var(--ea-muted)" : isCurrent ? "var(--brand)" : isSchool ? "#D97706" : "var(--ea-ink)",
                           textDecoration: isCompleted ? "line-through" : "none",
                           fontWeight: isCurrent || isSchool ? 600 : 400,
                         }}>{stop.name}</p>
@@ -632,7 +632,7 @@ export default function ParentBus() {
                         {isCompleted && <span style={{ ...styles.badge, background: "#F0FDF4", color: "#16A34A", border: "0.5px solid #BBF7D0" }}>Done</span>}
                         {isCurrent   && <span style={{ ...styles.badge, background: "var(--brand-soft)", color: "var(--brand)", border: "0.5px solid var(--brand-border)" }}>Live</span>}
                         {isSchool    && <span style={{ ...styles.badge, background: "#FFF7ED", color: "#C2410C", border: "0.5px solid #FED7AA" }}>{eta}</span>}
-                        {type === "upcoming" && <span style={{ fontSize: "10px", color: "#D1D5DB" }}>—</span>}
+                        {type === "upcoming" && <span style={{ fontSize: "10px", color: "var(--ea-faint)" }}>—</span>}
                       </div>
                     </div>
                   </div>
@@ -695,7 +695,7 @@ const styles = {
   progressPill: { position: "relative", width: "68px", height: "18px", background: "var(--card2)", borderRadius: "10px", overflow: "hidden", display: "flex", alignItems: "center" },
   progressFill: { position: "absolute", left: 0, top: 0, bottom: 0, background: "var(--brand-gradient)", borderRadius: "10px", transition: "width 0.5s ease" },
   progressText: { position: "relative", zIndex: 1, fontSize: "9px", fontWeight: 700, color: "var(--ea-ink)", width: "100%", textAlign: "center" },
-  chevron: { fontSize: "10px", color: "#94A3B8", transition: "transform 0.3s ease", display: "inline-block" },
+  chevron: { fontSize: "10px", color: "var(--ea-muted)", transition: "transform 0.3s ease", display: "inline-block" },
   routeBar:     { height: "3px", background: "var(--ea-line)" },
   routeBarFill: { height: "100%", background: "var(--brand-gradient)", transition: "width 0.5s ease" },
   panelActionRow: { display: "flex", gap: "10px", padding: "10px 20px 2px" },
@@ -708,7 +708,7 @@ const styles = {
   connector:  { width: "2px", flex: 1, minHeight: "22px", borderRadius: "2px", marginTop: "3px" },
   stopContent: { display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "8px", paddingTop: "4px" },
   stopName: { fontSize: "13px", lineHeight: "1.3" },
-  stopSub:  { fontSize: "11px", color: "#94A3B8", marginTop: "3px" },
+  stopSub:  { fontSize: "11px", color: "var(--ea-muted)", marginTop: "3px" },
   badge: { flexShrink: 0, fontSize: "10px", fontWeight: 600, padding: "3px 9px", borderRadius: "8px", letterSpacing: "0.2px", whiteSpace: "nowrap" },
   modalOverlay: { position: "fixed", inset: 0, zIndex: 99999, background: "rgba(0,0,0,0.55)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" },
   modalCard: { background: "var(--card)", borderRadius: "24px", padding: "28px 24px", width: "100%", maxWidth: "340px", textAlign: "center", boxShadow: "0 20px 60px rgba(0,0,0,0.25)" },

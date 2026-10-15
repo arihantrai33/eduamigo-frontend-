@@ -14,9 +14,9 @@ const authHeader = () => ({
 });
 
 const STATUS_CONFIG = {
-  Paid:    { color: "#16a34a", bg: "#dcfce7", icon: "✓" },
-  Unpaid:  { color: "#dc2626", bg: "#fee2e2", icon: "!" },
-  Partial: { color: "#B45309", bg: "#fef3c7", icon: "~" },
+  Paid:    { color: "#15803D", bg: "#dcfce7", icon: "✓", amount: "var(--ea-on-card-success)" },
+  Unpaid:  { color: "#B91C1C", bg: "#fee2e2", icon: "!", amount: "var(--ea-on-card-danger)" },
+  Partial: { color: "#B45309", bg: "#fef3c7", icon: "~", amount: "var(--ea-on-card-warning)" },
 };
 
 export default function ParentFee() {
@@ -194,7 +194,7 @@ export default function ParentFee() {
             <div style={styles.empty}>
               <div style={{ fontSize: 36, marginBottom: 8 }}><Glyph e="📭" /></div>
               <div style={{ fontWeight: 600, color: "#374151" }}>No records found</div>
-              <div style={{ fontSize: 12, color: "#9ca3af", marginTop: 4 }}>
+              <div style={{ fontSize: 12, color: "var(--ea-muted)", marginTop: 4 }}>
                 {activeTab === "paid" ? "No payments made yet." : "No pending fees."}
               </div>
             </div>
@@ -213,7 +213,7 @@ export default function ParentFee() {
                     <div style={{ fontWeight: 700, fontSize: 14, color: "var(--text)" }}>
                       {f.feeType ?? "Fee"}
                     </div>
-                    <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 3 }}>
+                    <div style={{ fontSize: 11, color: "var(--ea-muted)", marginTop: 3 }}>
                       {[
                         f.academicYear,
                         f.status === "Paid"
@@ -224,7 +224,7 @@ export default function ParentFee() {
                     <ReceiptLinks fee={f} />
                   </div>
                   <div style={{ textAlign: "right", flexShrink: 0 }}>
-                    <div style={{ fontWeight: 800, fontSize: 15, color: cfg.color }}>
+                    <div style={{ fontWeight: 800, fontSize: 15, color: cfg.amount }}>
                       ₹{(f.amount ?? 0).toLocaleString("en-IN")}
                     </div>
                     {f.status === "Partial" && (
@@ -274,7 +274,7 @@ export default function ParentFee() {
                       <div style={{ fontSize: 13, color: "#374151", fontWeight: 600 }}>
                         {f.feeType ?? "Fee"}
                       </div>
-                      <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>
+                      <div style={{ fontSize: 11, color: "var(--ea-muted)", marginTop: 2 }}>
                         {f.month} {f.year}
                       </div>
                     </div>

@@ -271,3 +271,17 @@ test('settings and bulk operations name the missing field under it', async ({ pa
   const cls = page.getByRole('combobox', { name: /CLASS/ }).first();
   await expect(cls).toHaveAccessibleDescription('Choose the class');
 });
+
+test('admin timetable periods open from the keyboard', async ({ page }) => {
+  await signIn(page, 'admin');
+  await page.goto('/admin/timetable');
+  await page.getByLabel('Class', { exact: true }).selectOption({ index: 1 });
+  await page.getByLabel('Section', { exact: true }).selectOption({ index: 1 });
+  const empty = page.getByRole('button', { name: /^Add period \d+$/ }).first();
+  await empty.focus();
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('dialog', { name: /Add Period/ })).toBeVisible();
+  await page.keyboard.press('Escape'); // nothing is saved
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: /^Edit period 1: / })).toBeVisible();
+});

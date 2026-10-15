@@ -12,8 +12,8 @@ const authHeader = () => ({
 
 // By grade band, so both scales work: A+/A/B/C/D and the CBSE A1, A2, B1 ... E. Only E/F get the fail red.
 const gradeColor = (grade) => { const g = String(grade || ''); return (
-  g === 'A+' || g === 'A1' ? '#00897B' : g[0] === 'A' ? '#43A047' : g[0] === 'B' ? '#FB8C00' :
-  g[0] === 'C' ? '#F4511E' : g[0] === 'D' ? '#E53935' : '#B71C1C'); };
+  g === 'A+' || g === 'A1' ? '#00695C' : g[0] === 'A' ? '#2E7D32' : g[0] === 'B' ? '#B45309' :
+  g[0] === 'C' ? '#C2410C' : g[0] === 'D' ? '#C62828' : '#B71C1C'); };
 
 export default function StudentResult() {
   const { darkMode } = useTheme();
@@ -182,7 +182,7 @@ export default function StudentResult() {
                       <Glyph e="📚" /> {r.subject}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span style={{ background: dm ? '#1e3a5f' : 'var(--brand-soft)',
+                      <span style={{ background: 'var(--brand-soft)',
                         color: gradeColor(r.grade),
                         borderRadius: 10, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>
                         {r.grade}

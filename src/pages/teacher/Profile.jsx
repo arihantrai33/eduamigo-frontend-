@@ -22,7 +22,6 @@ export default function TeacherProfile() {
   const [showSettings, setShowSettings] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [showIdCard, setShowIdCard] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => { fetchProfile(); }, []);
 
@@ -91,22 +90,7 @@ export default function TeacherProfile() {
         <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Settings</h2>
       </div>
       <div style={{ flex: 1, overflowY: "auto", padding: "16px" }}>
-        <div style={{ background: "var(--card)", borderRadius: "16px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}>
-          {[
-            { label: "Dark Mode",           sub: "Switch to dark theme",                          value: darkMode,       setter: setDarkMode },
-          ].map((s, i, arr) => (
-            <div key={s.label} style={{ padding: "16px", borderBottom: i < arr.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <div>
-                <div style={{ fontWeight: "600", fontSize: "14px" }}>{s.label}</div>
-                <div style={{ fontSize: "12px", color: "var(--subtext)", marginTop: "2px" }}>{s.sub}</div>
-              </div>
-              <div onClick={() => s.setter(!s.value)} style={{ width: "46px", height: "26px", borderRadius: "13px", background: s.value ? "var(--brand)" : "#e5e7eb", cursor: "pointer", position: "relative", transition: "background .2s", flexShrink: 0 }}>
-                <div style={{ position: "absolute", top: "3px", left: s.value ? "23px" : "3px", width: "20px", height: "20px", borderRadius: "50%", background: "var(--card)", transition: "left .2s", boxShadow: "0 1px 4px rgba(0,0,0,0.2)" }} />
-              </div>
-            </div>
-          ))}
-        </div>
-        <div style={{ background: "var(--card)", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginTop: "12px" }}>
+        <div style={{ background: "var(--card)", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}>
           <div style={{ fontWeight: "700", fontSize: "13px", color: "var(--subtext)", marginBottom: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>Account</div>
           {["Change Password"].map((item, i, arr) => (
             <div key={item} onClick={() => navigate("/change-password")} style={{ padding: "14px 0", borderBottom: i < arr.length - 1 ? "1px solid #f3f4f6" : "none", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
@@ -166,7 +150,7 @@ export default function TeacherProfile() {
         <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "800" }}>Help & Support</h2>
       </div>
       <div style={{ flex: 1, overflowY: "auto", padding: "16px" }}>
-        <SupportContent role="teacher" dark={darkMode} />
+        <SupportContent role="teacher" />
       </div>
     </div>
   );
@@ -174,7 +158,7 @@ export default function TeacherProfile() {
   const menuItems = [
     { icon: <Glyph e="👤" />, label: "View Profile",    sub: "Your school information",  action: () => setShowProfile(true) },
     { icon: <Glyph e="🔔" />, label: "Notifications",   sub: "View all notifications",   action: () => navigate("/teacher/notifications") },
-    { icon: <Glyph e="⚙" />, label: "Settings",        sub: "App preferences",          action: () => setShowSettings(true) },
+    { icon: <Glyph e="⚙" />, label: "Settings",        sub: "Password and account",          action: () => setShowSettings(true) },
     { icon: <Glyph e="🪪" />, label: "Teacher ID Card", sub: "View your faculty ID",     action: () => setShowIdCard(true) },
     { icon: <Glyph e="🤝" />, label: "Help & Support",  sub: "FAQs and contact",         action: () => setShowHelp(true) },
   ];

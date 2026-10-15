@@ -7,6 +7,7 @@ import { CalendarDays } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
 import { plural } from "../../utils/plural";
+import { pressable } from "../../utils/pressable";
 import Dialog from "../../components/Dialog";
 import FieldError from "../../components/ui/FieldError";
 import { useFieldErrors } from "../../utils/fieldErrors";
@@ -142,7 +143,7 @@ export default function Timetable() {
       <div style={{ background:"white", borderRadius:16, padding:"20px 24px", marginBottom:24, boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0", animation:"fadeUp 0.4s ease 0.05s both" }}>
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:16, marginBottom:16 }}>
           <div>
-            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>CLASS</div>
+            <div style={{ fontSize:11, fontWeight:700, color:"#64748B", marginBottom:6, letterSpacing:"0.06em" }}>CLASS</div>
             <select aria-label="Class" value={selectedClass} onChange={e => { setSelectedClass(e.target.value); setSelectedSection(""); }}
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white" }}>
               <option value="">Select Class</option>
@@ -150,7 +151,7 @@ export default function Timetable() {
             </select>
           </div>
           <div>
-            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>SECTION</div>
+            <div style={{ fontSize:11, fontWeight:700, color:"#64748B", marginBottom:6, letterSpacing:"0.06em" }}>SECTION</div>
             <select aria-label="Section" value={selectedSection} onChange={e => setSelectedSection(e.target.value)}
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white" }}>
               <option value="">Select Section</option>
@@ -201,7 +202,8 @@ export default function Timetable() {
               return (
                 <div key={pNo} className="period-cell"
                   style={{ background:"white", borderRadius:16, padding:"18px", boxShadow:"0 2px 12px rgba(15,23,42,0.06)", border: period ? `2px solid color-mix(in srgb, ${color} 19%, transparent)` : "2px dashed #E2E8F0", cursor:"pointer", minHeight:120 }}
-                  onClick={() => period ? openEditPeriod(period) : openAddPeriod(pNo)}>
+                  aria-label={period ? `Edit period ${pNo}: ${period.subject}` : `Add period ${pNo}`}
+                  {...pressable(() => period ? openEditPeriod(period) : openAddPeriod(pNo))}>
                   <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
                     <div style={{ width:28, height:28, borderRadius:8, background: period ? color : "#F1F5F9", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:800, color: period ? "white" : "#94A3B8" }}>
                       {pNo}
@@ -217,14 +219,14 @@ export default function Timetable() {
                         <div style={{ fontSize:11, color:"#64748B", fontWeight:600 }}><Glyph e="👩‍🏫" /> {getTeacherName(period.teacher)}</div>
                       )}
                       {(period.startTime || period.endTime) && (
-                        <div style={{ fontSize:11, color:"#94A3B8", marginTop:4 }}><Glyph e="🕐" /> {period.startTime} - {period.endTime}</div>
+                        <div style={{ fontSize:11, color:"#64748B", marginTop:4 }}><Glyph e="🕐" /> {period.startTime} - {period.endTime}</div>
                       )}
                       <div style={{ marginTop:8, fontSize:11, color, fontWeight:700 }}>Click to edit →</div>
                     </>
                   ) : (
                     <div style={{ textAlign:"center", paddingTop:8 }}>
                       <div style={{ fontSize:24, marginBottom:4 }}>+</div>
-                      <div style={{ fontSize:12, color:"#CBD5E1", fontWeight:600 }}>Add Period</div>
+                      <div style={{ fontSize:12, color:"#64748B", fontWeight:600 }}>Add Period</div>
                     </div>
                   )}
                 </div>
@@ -240,14 +242,14 @@ export default function Timetable() {
             Class {selectedClass}-{selectedSection} · {selectedDay} · Period {periodForm.no}
           </div>
           <div>
-            <label htmlFor="period-subject" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>SUBJECT</label>
+            <label htmlFor="period-subject" style={{ display:"block", fontSize:11, fontWeight:700, color:"#64748B", marginBottom:6, letterSpacing:"0.06em" }}>SUBJECT</label>
             <input id="period-subject" value={periodForm.subject} onChange={e => f("subject", e.target.value)} placeholder="e.g. Mathematics" {...fe.invalid("subject")}
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
               onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
             <FieldError id="period-subject-error">{fe.errors.subject}</FieldError>
           </div>
           <div>
-            <label htmlFor="period-teacher" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TEACHER</label>
+            <label htmlFor="period-teacher" style={{ display:"block", fontSize:11, fontWeight:700, color:"#64748B", marginBottom:6, letterSpacing:"0.06em" }}>TEACHER</label>
             <select id="period-teacher" value={periodForm.teacherId} onChange={e => f("teacherId", e.target.value)}
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
               <option value="">Select Teacher (optional)</option>
@@ -256,12 +258,12 @@ export default function Timetable() {
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             <div>
-              <label htmlFor="period-start" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>START TIME</label>
+              <label htmlFor="period-start" style={{ display:"block", fontSize:11, fontWeight:700, color:"#64748B", marginBottom:6, letterSpacing:"0.06em" }}>START TIME</label>
               <input id="period-start" type="time" value={periodForm.startTime} onChange={e => f("startTime", e.target.value)}
                 style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box" }} />
             </div>
             <div>
-              <label htmlFor="period-end" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>END TIME</label>
+              <label htmlFor="period-end" style={{ display:"block", fontSize:11, fontWeight:700, color:"#64748B", marginBottom:6, letterSpacing:"0.06em" }}>END TIME</label>
               <input id="period-end" type="time" value={periodForm.endTime} onChange={e => f("endTime", e.target.value)} {...fe.invalid("endTime")}
                 style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box" }} />
               <FieldError id="period-end-error">{fe.errors.endTime}</FieldError>
