@@ -460,3 +460,6 @@ Final verification (2026-10-15, on 8de6770, isolated ports 8130/5194):
 - Full suite on 8de6770: 102 passed, 19 skipped (the opt-in sweep/crawl specs, run separately above, and conditional specs), 0 failed.
 - Not covered: real-device voice and the live bus map (no trip in the demo data).
 
+
+## Next: visual redesign plan (2026-10-15)
+The unified design system, the route-by-route classification (78 routes) and the implementation batches B0–B15 are in `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md`. It is based on the 312-screen sweep of 8de6770, reviewed as contact sheets. No application code was changed for it.
