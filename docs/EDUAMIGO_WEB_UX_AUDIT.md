@@ -930,3 +930,25 @@ Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B12.
 - Sweep 390/1280: 156 screens, 0 findings.
 - Dark-mode contrast: 0 spots under 3:1.
 - The build passes, and ESLint counts match HEAD (one existing fetch-on-mount warning in each of the student and teacher profiles).
+
+### Redesign batch B11: one shell (admin adopts the white sidebar, D1) (2026-10-16)
+Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B11, §2.5; owner decision D1 (approved).
+
+**Admin sidebar** (`pages/admin/Home.jsx`) is built from the same `.ea-sidebar__*` classes as the student, teacher and parent sidebar:
+- **Look:** white `--ea-surface`, a `--ea-line` right border and 260 px wide (was 230 px, a deep brand gradient for bold schools and a heavy shadow).
+- **Top:** school logo (or the initial on brand) and name, then "Admin Portal" (or the staff role).
+- **Menu:** 11 px section overlines; 40 px links, `--ea-body` text, `--ea-hover` on hover, `--brand-soft` / `--brand-dark` when active (no more filled gradient or white dot).
+- **Bottom:** the user card (shared avatar) and the Log Out button in the shared sign-out style.
+- **Kept as before:** the menu's permission filtering, real links with `aria-current="page"`, the "Leave unsaved changes?" check on Log Out, the skip link, and the phone drawer (a dialog with focus trap, Escape and focus return). The drawer is 280 px (max 85% of the screen) and white.
+- **`sidebarLook()` is gone:** no school gets a coloured sidebar any more. School colour shows in the active item, buttons and the home hero.
+- **Admin canvas** is `--ea-canvas` (was #E8ECF4), the same as the portals.
+
+**Review (ports 8130/5194):**
+- Students page at 1024, 1280 and 1440.
+- Keyboard focus on a menu link (ring visible).
+- The phone drawer open at 390 and 768.
+
+**Tests:**
+- 41/41 passed: `auth-and-navigation` (sign out from the sidebar), `admin-keyboard` (menu links, `aria-current`, the drawer's Tab wrap from Close menu to Log Out), `screens`, `unsaved-changes` (Log Out from the `aside` with unsaved changes), the capture spec and the full sweep.
+- The full sweep at four widths (390, 768, 1024, 1280): 312 screens, 0 findings.
+- The build passes; ESLint on `admin/Home.jsx` is clean (as at HEAD).

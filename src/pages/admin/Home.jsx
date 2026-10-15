@@ -14,7 +14,6 @@ import { useAuth } from "../../context/AuthContext";
 import Dashboard from "./Dashboard";
 import { can, ROLE_LABELS } from "../../utils/permissions";
 import SubscriptionBanner from "../../components/SubscriptionBanner";
-import { userTheme } from "../../utils/theme";
 
 // Screens load when first opened, so a parent does not download the admin screens (and so on).
 const Students = lazy(() => import('./Students'))
@@ -52,16 +51,6 @@ const HRManagement = lazy(() => import('./HRManagement'))
 const Admissions = lazy(() => import('./Admissions'))
 const AskInsights = lazy(() => import('./AskInsights'))
 
-// Sidebar colours from the school theme: white with a brand-colour active item for light schools,
-// a deep brand-colour sidebar for bold ones.
-function sidebarLook(theme) {
-  if (theme.isLight) {
-    return { bg: "#FFFFFF", edge: "1px solid #EEF0F4", text: "#0F172A", muted: "#64748B", faint: "#94A3B8", divider: "#F1F5F9",
-      hoverBg: theme.soft, hoverText: theme.deep, activeBg: theme.button, activeText: "#fff", activeShadow: `0 4px 12px ${theme.glow}`, card: theme.mist };
-  }
-  return { bg: `linear-gradient(180deg, ${theme.deep} 0%, ${theme.dark} 100%)`, edge: "none", text: "#fff", muted: "rgba(255,255,255,0.55)", faint: "rgba(255,255,255,0.32)", divider: "rgba(255,255,255,0.08)",
-    hoverBg: "rgba(255,255,255,0.08)", hoverText: "rgba(255,255,255,0.9)", activeBg: "rgba(255,255,255,0.16)", activeText: "#fff", activeShadow: `inset 3px 0 0 ${theme.accent}`, card: "rgba(255,255,255,0.06)" };
-}
 
 // Shown when a staff member opens a screen their role does not include.
 function Gate({ user, perm, children }) {
@@ -133,8 +122,6 @@ export default function AdminHome() {
   const { user, logout } = useAuth();
   const mainRef = useRef(null);
   useStackedTables(mainRef);   // record tables become cards on phones (utils/stackTables.js)
-  const theme = userTheme(user);
-  const sb = sidebarLook(theme);
   // Permissions, plan and billing state are refreshed from the server by AuthContext on app start.
 
   // Menu filtered by permission; section headings without any visible entries are dropped.
@@ -179,70 +166,55 @@ export default function AdminHome() {
   // every render, so the menu would be rebuilt and keyboard focus lost each time (e.g. right after pressing Enter).
   const sidebarContent = () => (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <div style={{ padding: "22px 18px 18px", borderBottom: `1px solid ${sb.divider}` }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            {user?.branding?.logoUrl ? (
-              <img src={user.branding.logoUrl} alt="" style={{ width: 38, height: 38, borderRadius: "50%", background: "#fff", objectFit: "contain", border: `2px solid ${theme.accent}`, flexShrink: 0 }} />
-            ) : (
-              <div style={{ width: 38, height: 38, borderRadius: 12, background: theme.button, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 4px 12px ${theme.glow}`, flexShrink: 0 }}>
-                <BookOpen size={18} color="white" />
-              </div>
-            )}
-            <div>
-              <div style={{ fontSize: 13, fontWeight: 800, color: sb.text, letterSpacing: "-0.2px" }}>{user?.branding?.appName || user?.school || "EduAmigo"}</div>
-              <div style={{ fontSize: 10, color: sb.muted, marginTop: 1, textTransform: "capitalize" }}>{user?.role || "admin"} Portal</div>
-            </div>
-          </div>
-          {isMobile && <button type="button" className="ea-side-btn" aria-label="Close menu" onClick={closeMenu} style={{ color: sb.muted, padding: 4, borderRadius: 8 }}><X size={18} aria-hidden="true" /></button>}
+      <div className="ea-sidebar__brand" style={{ justifyContent: "space-between" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
+          {user?.branding?.logoUrl
+            ? <img src={user.branding.logoUrl} alt="" className="ea-sidebar__logo" />
+            : <span className="ea-sidebar__logo ea-sidebar__logo--initial" aria-hidden="true">{(user?.branding?.appName || user?.school || "E")[0].toUpperCase()}</span>}
+          <span className="ea-sidebar__school">
+            <strong>{user?.branding?.appName || user?.school || "EduAmigo"}</strong>
+            <small style={{ textTransform: "capitalize" }}>{user?.role || "admin"} Portal</small>
+          </span>
         </div>
+        {isMobile && <button type="button" className="ea-side-btn" aria-label="Close menu" onClick={closeMenu} style={{ color: "var(--ea-muted)", padding: 4, borderRadius: 8 }}><X size={18} aria-hidden="true" /></button>}
       </div>
-      <nav aria-label="Admin menu" style={{ overflowY: "auto", flex: 1, padding: "8px 0 16px" }}>
+      <nav aria-label="Admin menu" className="ea-sidebar__nav">
         {visibleNav.map((item, i) => {
-          if (item.section) return <div key={i} style={{ fontSize: 9, color: sb.faint, padding: "14px 20px 5px", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 700 }}>{item.section}</div>;
+          if (item.section) return <div key={i} className="ea-sidebar__heading" style={{ marginTop: i ? 10 : 0 }}>{item.section}</div>;
           const Icon = item.icon;
           // From the address only: a move that waits for "Leave unsaved changes?" must not light up the new entry early.
           const isActive = location.pathname === item.path || (item.path !== "/admin" && location.pathname.startsWith(item.path));
           // A real link: Tab reaches it, Enter opens it, it can open in a new tab, and screen readers hear "current page".
           return (
-            <Link key={i} to={item.path} className="ea-side-link" aria-current={isActive ? "page" : undefined}
-              onClick={() => { if (isMobile) closeMenu(); }}
-              style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 16px", margin: "1px 10px", fontSize: 13, textDecoration: "none", color: isActive ? sb.activeText : sb.muted, background: isActive ? sb.activeBg : "transparent", fontWeight: isActive ? 700 : 500, borderRadius: 12, transition: "all 0.15s", boxShadow: isActive ? sb.activeShadow : "none" }}
-              onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = sb.hoverBg; e.currentTarget.style.color = sb.hoverText; } }}
-              onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = sb.muted; } }}>
-              <Icon size={15} aria-hidden="true" />
+            <Link key={i} to={item.path} className={`ea-sidebar__link ea-side-link${isActive ? " is-active" : ""}`} aria-current={isActive ? "page" : undefined}
+              onClick={() => { if (isMobile) closeMenu(); }}>
+              <Icon size={18} aria-hidden="true" />
               {item.label}
-              {isActive && <div aria-hidden="true" style={{ marginLeft: "auto", width: 6, height: 6, borderRadius: "50%", background: theme.isLight ? "#fff" : theme.accent }} />}
             </Link>
           );
         })}
       </nav>
-      <div style={{ padding: "12px 10px 16px", borderTop: `1px solid ${sb.divider}` }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", borderRadius: 12, background: sb.card, marginBottom: 6 }}>
-          <div style={{ width: 32, height: 32, borderRadius: 10, background: theme.button, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: "white" }}>
-            {user?.name?.[0]?.toUpperCase() || "A"}
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: sb.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{user?.name || "Admin"}</div>
-            <div style={{ fontSize: 10, color: sb.muted }}>{ROLE_LABELS[user?.role] || "Staff"}</div>
-          </div>
+      <div className="ea-sidebar__footer">
+        <div className="ea-sidebar__user">
+          <span className="ea-avatar" aria-hidden="true">{user?.name?.[0]?.toUpperCase() || "A"}</span>
+          <span className="ea-sidebar__user-text">
+            <strong>{user?.name || "Admin"}</strong>
+            <small>{ROLE_LABELS[user?.role] || "Staff"}</small>
+          </span>
         </div>
-        <button type="button" className="ea-side-btn" onClick={async () => { if (!(await confirmLeave())) return; logout(); navigate("/login"); }}
-          style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", padding: "8px 12px", borderRadius: 12, color: "rgba(239,68,68,0.8)", fontSize: 13, fontWeight: 600, transition: "all 0.15s" }}
-          onMouseEnter={e => { e.currentTarget.style.background = "rgba(239,68,68,0.1)"; e.currentTarget.style.color = "#EF4444"; }}
-          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "rgba(239,68,68,0.8)"; }}>
-          <LogOut size={15} aria-hidden="true" /> Log Out
+        <button type="button" className="ea-sidebar__signout" onClick={async () => { if (!(await confirmLeave())) return; logout(); navigate("/login"); }}>
+          <LogOut size={16} aria-hidden="true" />Log Out
         </button>
       </div>
     </div>
   );
 
   return (
-    <div className="ea-admin-shell" style={{ display: "flex", width: "100vw", minHeight: "100vh", background: "#E8ECF4", fontFamily: "inherit", position: "fixed", top: 0, left: 0, overflow: "hidden" }}>
+    <div className="ea-admin-shell" style={{ display: "flex", width: "100vw", minHeight: "100vh", background: "var(--ea-canvas)", fontFamily: "inherit", position: "fixed", top: 0, left: 0, overflow: "hidden" }}>
       {/* First Tab stop: jumps past the menu to the page. Hidden until it has keyboard focus. */}
       <a href="#admin-main" className="ea-skip-link" onClick={(e) => { e.preventDefault(); mainRef.current?.focus(); }}>Skip to main content</a>
       {!isMobile && (
-        <aside style={{ width: 230, flexShrink: 0, background: sb.bg, borderRight: sb.edge, display: "flex", flexDirection: "column", height: "100vh", overflowY: "auto", boxShadow: "4px 0 24px rgba(0,0,0,0.15)" }}>
+        <aside style={{ width: 260, flexShrink: 0, background: "var(--ea-surface)", borderRight: "1px solid var(--ea-line)", display: "flex", flexDirection: "column", height: "100vh", overflowY: "auto" }}>
           {sidebarContent()}
         </aside>
       )}
@@ -251,7 +223,7 @@ export default function AdminHome() {
           <div onClick={closeMenu} style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.6)", zIndex: 40, backdropFilter: "blur(4px)" }} />
           {/* The phone menu is a dialog: focus moves into it, Tab stays inside, Escape closes it and focus returns to the menu button. */}
           <aside ref={drawerRef} id="admin-menu" role="dialog" aria-modal="true" aria-label="Menu" onKeyDown={onDrawerKey}
-            style={{ position: "fixed", top: 0, left: 0, bottom: 0, width: 230, background: sb.bg, zIndex: 50, display: "flex", flexDirection: "column", boxShadow: "8px 0 32px rgba(0,0,0,0.3)" }}>
+            style={{ position: "fixed", top: 0, left: 0, bottom: 0, width: 280, maxWidth: "85vw", background: "var(--ea-surface)", zIndex: 50, display: "flex", flexDirection: "column", boxShadow: "var(--ea-shadow-e3, 0 12px 32px rgba(15,23,42,0.18))" }}>
             {sidebarContent()}
           </aside>
         </>
