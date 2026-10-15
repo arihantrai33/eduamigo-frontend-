@@ -56,8 +56,10 @@ export default function SelectSchool() {
   if (selected) {
     const color = schoolColor(selected);
     return (
-      <div style={s.page}>
-        <div style={s.top}>
+      <div className="ea-auth" style={s.page}>
+        <div className="ea-school-hero" style={s.top}>
+          <div style={s.logoBox}><GraduationCap aria-hidden size={34} strokeWidth={1.8} color="#fff" /></div>
+          <p style={s.brand}>EduAmigo</p>
           <p style={s.step}>Confirm your school</p>
         </div>
         <div style={s.card}>
@@ -76,8 +78,8 @@ export default function SelectSchool() {
   }
 
   return (
-    <div style={s.page}>
-      <div style={s.top}>
+    <div className="ea-auth" style={s.page}>
+      <div className="ea-school-hero" style={s.top}>
         <div style={s.logoBox}><GraduationCap aria-hidden size={34} strokeWidth={1.8} color="#fff" /></div>
         <h1 style={s.brand}>EduAmigo</h1>
         <p style={s.tagline}>Find your school</p>

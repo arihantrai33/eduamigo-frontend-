@@ -467,7 +467,7 @@ export default function ParentBus() {
           {mapContent}
         </div>
 
-        <button type="button" aria-label="Full-screen map"
+        <button type="button" aria-label="Full-screen map" className="ea-bus-fs"
           style={{ ...styles.fsBtn, bottom: panelExpanded ? "calc(70vh - 160px)" : "260px" }}
           onClick={() => setIsFullscreen(true)}
         >
@@ -549,7 +549,7 @@ export default function ParentBus() {
           </div>
         </div>
 
-        <div style={{ ...styles.stopsPanel, maxHeight: panelExpanded ? "70vh" : "240px" }}>
+        <div className="ea-bus-panel" style={{ ...styles.stopsPanel, maxHeight: panelExpanded ? "70vh" : "240px" }}>
           <div style={styles.stopsHeader} onClick={() => setPanelExpanded(p => !p)}>
             <div style={styles.dragHandle} />
             <div style={styles.stopsHeaderRow}>

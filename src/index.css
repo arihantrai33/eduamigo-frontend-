@@ -163,6 +163,10 @@ input, button, select, textarea {
   .ea-pd-dash { display: grid !important; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); grid-auto-flow: row dense; gap: 4px 24px; align-content: start; }
   .ea-pd-dash > .ea-tile-grid { order: -1; grid-column: 1 / -1; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important; }
   .ea-pd-hide { display: none !important; }
+  /* Bus tracking: the route stops become a panel on the right of the map instead of a phone bottom sheet; the
+     full-screen button sits at the bottom of the map, clear of the panel. */
+  .ea-bus-panel { left: auto !important; right: 20px !important; bottom: 20px !important; width: 360px; max-height: calc(100% - 210px) !important; border-radius: 20px !important; }
+  .ea-bus-fs { bottom: 20px !important; right: 396px !important; }
   /* Tiles start at the top, so icons line up across a row even when a label wraps to two lines. */
   .ea-pd-dash > .ea-tile-grid > * { display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; }
   .ea-pd-dash > .ea-pd-main { grid-column: 1; grid-row: span 3; min-width: 0; }
@@ -327,7 +331,7 @@ input, button, select, textarea {
   .ea-auth > .ea-school-hero { display: flex; flex-direction: column; justify-content: center; padding: 48px 40px !important; }
   .ea-auth > .ea-school-hero .ea-school-hero__wave { display: none !important; }
   .ea-auth > div:not(.ea-school-hero) {
-    max-width: none; margin: 0; display: flex; flex-direction: column; justify-content: center;
+    max-width: none; margin: 0; display: flex; flex-direction: column; justify-content: center; border-radius: 0 !important;
     padding: 48px max(48px, calc((100% - 440px) / 2)) !important;
   }
 }

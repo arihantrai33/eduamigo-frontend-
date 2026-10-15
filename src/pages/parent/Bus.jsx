@@ -468,7 +468,7 @@ export default function ParentBus() {
         <div style={{ position:"absolute", top:headerHeight, left:0, right:0, bottom:0, zIndex:0, transition:"top 0.3s ease" }}>
           {mapContent}
         </div>
-        <button type="button" aria-label="Full-screen map" style={{ ...styles.fsBtn, bottom: panelExpanded ? "calc(70vh + 12px)" : "300px" }} onClick={() => setIsFullscreen(true)}>
+        <button type="button" aria-label="Full-screen map" className="ea-bus-fs" style={{ ...styles.fsBtn, bottom: panelExpanded ? "calc(70vh + 12px)" : "300px" }} onClick={() => setIsFullscreen(true)}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
         </button>
 
@@ -532,7 +532,7 @@ export default function ParentBus() {
           </div>
         </div>
 
-        <div style={{ ...styles.stopsPanel, maxHeight: panelExpanded ? "70vh" : "300px" }}>
+        <div className="ea-bus-panel" style={{ ...styles.stopsPanel, maxHeight: panelExpanded ? "70vh" : "300px" }}>
           <div style={styles.stopsHeader} onClick={() => setPanelExpanded(p => !p)}>
             <div style={styles.dragHandle} />
             <div style={styles.stopsHeaderRow}>
