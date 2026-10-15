@@ -1070,6 +1070,35 @@ td .ea-skeleton { box-sizing: border-box; padding: 0 20px; }
 .ea-idcard__grid dd { margin: 2px 0 0; font-size: 13px; font-weight: 700; color: var(--ea-ink); overflow-wrap: anywhere; }
 .ea-idcard__foot { padding: 10px 16px; font-size: 12px; text-align: center; color: var(--ea-muted); background: var(--ea-hover); }
 
+/* Teacher attendance roster (design plan §4 B14): one card, one compact row per student with a four-way status
+   control; the chosen status shows its meaning (present green, absent red, late amber, holiday neutral). */
+.ea-roster__all { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px; }
+.ea-roster__all-label { font-size: 13px; font-weight: 600; color: var(--ea-muted); }
+.ea-roster { padding: 0; overflow: hidden; }
+.ea-roster__row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--ea-line); }
+.ea-roster__row:last-child { border-bottom: 0; }
+.ea-roster__row.is-absent { box-shadow: inset 3px 0 0 var(--ea-danger); }
+.ea-roster__who { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.ea-roster__name { font-size: 14px; font-weight: 650; color: var(--ea-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ea-roster__roll { font-size: 12px; color: var(--ea-muted); }
+.ea-roster__status { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 3px; border-radius: 10px; background: var(--ea-hover); }
+.ea-roster__status button {
+  min-height: 36px; border: 0; border-radius: 8px; background: transparent; font: inherit; font-size: 12px; font-weight: 650;
+  color: var(--ea-body); cursor: pointer;
+}
+.ea-roster__status button:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
+.ea-roster__status button[aria-pressed="true"] { box-shadow: var(--ea-shadow); }
+.ea-roster__status button[aria-pressed="true"][data-st="Present"] { background: #F0FDF4; color: var(--ea-success); box-shadow: inset 0 0 0 1px #BBF7D0; }
+.ea-roster__status button[aria-pressed="true"][data-st="Absent"]  { background: #FEF2F2; color: var(--ea-danger);  box-shadow: inset 0 0 0 1px #FECACA; }
+.ea-roster__status button[aria-pressed="true"][data-st="Late"]    { background: #FFFBEB; color: var(--ea-warning); box-shadow: inset 0 0 0 1px #FDE68A; }
+.ea-roster__status button[aria-pressed="true"][data-st="Holiday"] { background: var(--ea-surface); color: var(--ea-ink); box-shadow: inset 0 0 0 1px var(--ea-line); }
+.ea-roster__remark { width: 100%; height: 36px; font-size: 13px; }
+.ea-roster__save { width: 100%; min-height: 48px; margin-top: 12px; font-size: 15px; }
+@media (min-width: 768px) {
+  .ea-roster__row { grid-template-columns: minmax(170px, 1.1fr) minmax(300px, 2fr) minmax(150px, 1.1fr); align-items: center; gap: 14px; }
+}
+.ea-note--warning { background: color-mix(in srgb, var(--ea-warning) 8%, var(--ea-surface)); border-color: color-mix(in srgb, var(--ea-warning) 30%, var(--ea-surface)); border-left-color: var(--ea-warning); }
+
 /* Forms (design plan §2.6, B7): a section title, a grid of fields (one column on phones, two from 768 px), each field
    a 13 px sentence-case label over a white 40 px input (.ea-input / .ea-select above), an optional hint, and the
    actions in a bar at the end. */

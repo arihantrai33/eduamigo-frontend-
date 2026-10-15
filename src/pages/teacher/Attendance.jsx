@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext'
 import { todayLocal } from "../../utils/dates";
 
 import Glyph from "../../components/Glyph";
+import Avatar from "../../components/ui/Avatar";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import { CheckCircle2, XCircle, Clock } from "lucide-react";
 import BottomNav from "../../layout/BottomNav";
@@ -12,13 +13,6 @@ import { plural } from "../../utils/plural";
 import { errorMessage } from "../../utils/toast";
 import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL
-
-const STATUS_COLORS = {
-  Present: { bg: "#DCFCE7", color: "#15803D", border: "#86EFAC" },
-  Absent:  { bg: "#FEE2E2", color: "#DC2626", border: "#FECACA" },
-  Late:    { bg: "#FEF9C3", color: "#CA8A04", border: "#FDE047" },
-  Holiday: { bg: "#EEF2FF", color: "#4338CA", border: "#A5B4FC" },
-}
 
 export default function TeacherAttendance() {
   const navigate  = useNavigate()
@@ -213,14 +207,10 @@ export default function TeacherAttendance() {
 
         {/* Mark All */}
         {students.length > 0 && (
-          <div style={{ background: "var(--card)", borderRadius: 20, padding: "12px 16px", marginBottom: 12, boxShadow: "0 2px 16px color-mix(in srgb, var(--brand) 8%, transparent)", display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-            <span style={{ fontSize: 12, fontWeight: 700, color: "#7B8099" }}>Mark All:</span>
+          <div className="ea-roster__all" role="group" aria-label="Mark all students">
+            <span className="ea-roster__all-label">Mark All:</span>
             {["Present", "Absent", "Late", "Holiday"].map(st => (
-              <button key={st} onClick={() => setAll(st)} style={{
-                padding: "5px 12px", borderRadius: 20, fontSize: 11, fontWeight: 700, cursor: "pointer",
-                background: STATUS_COLORS[st].bg, color: STATUS_COLORS[st].color,
-                border: `1px solid ${STATUS_COLORS[st].border}`,
-              }}>{st}</button>
+              <button key={st} type="button" className="ea-btn ea-btn--ghost ea-btn--sm" onClick={() => setAll(st)}>{st}</button>
             ))}
           </div>
         )}
@@ -231,66 +221,39 @@ export default function TeacherAttendance() {
         ) : students.length > 0 ? (
           <>
             {existing && (
-              <div style={{ background: "#FEF9C3", border: "1px solid #FDE047", borderRadius: 12, padding: "10px 14px", marginBottom: 12, fontSize: 12, color: "#CA8A04", fontWeight: 600 }}>
-                <Glyph e="⚠" /> Attendance already marked — saving will update existing records
+              <div className="ea-note ea-note--warning" style={{ marginBottom: 12 }}>
+                Attendance already marked — saving will update existing records
               </div>
             )}
-            {students.map((s, i) => (
-              <div key={s._id} style={{
-                background: "var(--card)", borderRadius: 20, padding: "14px 16px", marginBottom: 10,
-                boxShadow: "0 2px 16px color-mix(in srgb, var(--brand) 8%, transparent)",
-                border: attendance[s._id]?.status === "Absent" ? "2px solid #FECACA" : "2px solid transparent",
-              }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-                  <div style={{
-                    width: 36, height: 36, borderRadius: 12, background: "var(--brand-soft)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: 14, fontWeight: 700, color: "var(--brand)", flexShrink: 0,
-                  }}>{s.name?.[0]?.toUpperCase()}</div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 13.5, fontWeight: 700, color: "#1C2033" }}>{s.name}</div>
-                    <div style={{ fontSize: 11, color: "#7B8099" }}>Roll: {s.rollNumber || "—"}</div>
+            <section className="ea-card ea-roster" aria-label="Class roster">
+              {students.map((s) => {
+                const status = attendance[s._id]?.status || "Present"
+                return (
+                  <div key={s._id} className={`ea-roster__row${status === "Absent" ? " is-absent" : ""}`}>
+                    <div className="ea-roster__who">
+                      <Avatar name={s.name} size="sm" />
+                      <div style={{ minWidth: 0 }}>
+                        <div className="ea-roster__name">{s.name}</div>
+                        <div className="ea-roster__roll">Roll {s.rollNumber || "—"}</div>
+                      </div>
+                    </div>
+                    {/* Status: one choice per student; each button keeps its name ("Present: Riya Sharma") and pressed state. */}
+                    <div className="ea-roster__status" role="group" aria-label={`Attendance for ${s.name}`}>
+                      {["Present", "Absent", "Late", "Holiday"].map(st => (
+                        <button key={st} type="button" data-st={st} aria-label={`${st}: ${s.name}`} aria-pressed={attendance[s._id]?.status === st}
+                          onClick={() => setAttendance(a => ({ ...a, [s._id]: { ...a[s._id], status: st } }))}>{st}</button>
+                      ))}
+                    </div>
+                    <input type="text" className="ea-input ea-roster__remark" placeholder="Add remark (optional)" aria-label={`Remark for ${s.name}`}
+                      value={attendance[s._id]?.remarks || ""}
+                      onChange={e => setAttendance(a => ({ ...a, [s._id]: { ...a[s._id], remarks: e.target.value } }))} />
                   </div>
-                  <span style={{
-                    padding: "4px 10px", borderRadius: 20, fontSize: 11, fontWeight: 700,
-                    background: STATUS_COLORS[attendance[s._id]?.status]?.bg || "#F3F4F6",
-                    color: STATUS_COLORS[attendance[s._id]?.status]?.color || "#6B7280",
-                  }}>{attendance[s._id]?.status || "Present"}</span>
-                </div>
-
-                {/* Status buttons */}
-                <div style={{ display: "flex", gap: 6, marginBottom: 10 }}>
-                  {["Present", "Absent", "Late", "Holiday"].map(st => {
-                    const active = attendance[s._id]?.status === st
-                    return (
-                      <button key={st} type="button" aria-label={`${st}: ${s.name}`} aria-pressed={active}
-                        onClick={() => setAttendance(a => ({ ...a, [s._id]: { ...a[s._id], status: st } }))}
-                        style={{
-                          flex: 1, padding: "6px 0", borderRadius: 10, fontSize: 11, fontWeight: 700, cursor: "pointer",
-                          background: active ? STATUS_COLORS[st].bg : "#F4F6FB",
-                          color: active ? STATUS_COLORS[st].color : "#9CA3AF",
-                          border: active ? `1.5px solid ${STATUS_COLORS[st].border}` : "1.5px solid transparent",
-                        }}>{st}</button>
-                    )
-                  })}
-                </div>
-
-                {/* Remarks */}
-                <input type="text" placeholder="Add remark (optional)..." aria-label={`Remark for ${s.name}`}
-                  value={attendance[s._id]?.remarks || ""}
-                  onChange={e => setAttendance(a => ({ ...a, [s._id]: { ...a[s._id], remarks: e.target.value } }))}
-                  style={{ width: "100%", padding: "8px 12px", borderRadius: 10, border: "1px solid #E5E7EB", fontSize: 12, outline: "none", background: "#F9FAFB", boxSizing: "border-box" }}
-                />
-              </div>
-            ))}
+                )
+              })}
+            </section>
 
             {/* Save Button */}
-            <button onClick={handleSave} disabled={saving} style={{
-              width: "100%", padding: "14px", borderRadius: 16, border: "none",
-              background: saving ? "#A5B4FC" : "var(--brand-gradient)",
-              color: "#fff", fontSize: 15, fontWeight: 800, cursor: saving ? "not-allowed" : "pointer",
-              marginTop: 8, boxShadow: "0 4px 16px color-mix(in srgb, var(--brand) 30%, transparent)",
-            }}>
+            <button type="button" onClick={handleSave} disabled={saving} className="ea-btn ea-btn--primary ea-roster__save">
               {saving ? "Saving..." : existing ? "Update Attendance" : "Save Attendance"}
             </button>
           </>

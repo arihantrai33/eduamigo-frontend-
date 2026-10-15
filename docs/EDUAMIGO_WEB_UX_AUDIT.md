@@ -988,3 +988,23 @@ Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B13, §2.6 (Loading, Empty state
 - Sweep 390/1280: 156 screens, 0 findings.
 - Dark-mode contrast: 0 spots under 3:1.
 - The build passes, and ESLint counts on all 55 changed files match HEAD.
+
+### Redesign batch B14: teacher attendance roster (2026-10-16)
+Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B14 (risk H). Layout only: the state, the save request and every accessible name are unchanged.
+
+**Roster:**
+- It was one large card per student (avatar tile, name, a duplicate status pill, four pastel buttons, a remark box). It is now **one card with a compact row per student**: the shared `Avatar`, name, "Roll N", a four-way status control and the remark field. From 768 px each student is a single line (name | status | remark).
+- **Status control:** a segmented track; the chosen status shows its meaning (Present green, Absent red, Late amber, Holiday neutral). Each button keeps its name ("Present: Kabir Sharma") and `aria-pressed`; each group is labelled "Attendance for <name>". An absent student's row has a red edge.
+- **Removed:** the duplicate status pill on every card (the control already shows the status).
+- **Mark All:** secondary buttons in a labelled group (same names Present/Absent/Late/Holiday), instead of pastel pills.
+- **"Attendance already marked":** the note style (warning).
+- **Save/Update Attendance:** a primary button, no longer the brand gradient (left over from B5).
+- **Found in review and removed:** a sticky Save above the phone tabs was tried. The phone page scrolls inside its own container, so the button floated over the middle of the roster.
+
+**Manual run-through on the 8130 test server** (automated): open Class 9-A; select Absent for Kabir Sharma with the keyboard (Space; Present un-pressed); Late plus a remark for Riya Sharma; Mark All → Present (both pressed); save → "Attendance saved for 3 students". Captured at 390, 768 and 1280, with keyboard focus.
+
+**Tests:**
+- 56/56 passed: `workflows` (the teacher marks a student absent and the parent is told once; parent ↔ teacher chat), `interactions`, `accessible-names`, `ux-regressions`, `screens`, `scroll`, the sweep and the run-through.
+- After removing the sticky rule: the attendance workflow test again (1/1) and a phone recapture.
+- Sweep 390/1280: 156 screens, 0 findings.
+- The build passes; ESLint on `teacher/Attendance.jsx` has one fewer error than HEAD (the now-unused `STATUS_COLORS` and an unused index variable are gone).
