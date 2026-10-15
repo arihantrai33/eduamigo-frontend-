@@ -225,6 +225,12 @@ test.describe('Honest AI availability', () => {
     await page.goto('/student/learn');
     await expect(page.getByRole('status').filter({ hasText: 'switched off on this server' })).toBeVisible();
     await expect(page.getByRole('status').filter({ hasText: 'ASSISTANT_AI' })).toHaveCount(0);
+    // No "ask this" starters that could only fail; the empty chat points at what still works.
+    await expect(page.getByRole('heading', { name: 'Answers are not available right now' })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Understand a topic/ })).toHaveCount(0);
+    await page.getByRole('button', { name: 'Open Revision Planner' }).click();
+    await expect(page.getByRole('tab', { name: 'Revision Planner' })).toHaveAttribute('aria-selected', 'true');
+    await page.getByRole('tab', { name: 'AI Tutor' }).click();
     await page.getByRole('tab', { name: 'Revision Planner' }).click();
     await expect(page.getByRole('tab', { name: 'Revision Planner' })).toHaveAttribute('aria-selected', 'true');
   });
@@ -235,6 +241,7 @@ test.describe('Honest AI availability', () => {
     await page.goto('/student/learn');
     await expect(page.getByLabel('Your question')).toBeVisible();
     await expect(page.getByText('switched off on this server')).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /Understand a topic/ })).toBeVisible();
     await expect(page.getByText('No AI provider is configured')).toHaveCount(0);
   });
 });

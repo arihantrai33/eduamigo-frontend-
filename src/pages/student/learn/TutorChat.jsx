@@ -191,6 +191,7 @@ export default function TutorChat({ context, initialQuestion, onSuggest }) {
   function newChat() { stop(); setMessages([]); setConversationId(null); setInput(""); }
 
   const listening = voice.state === "listening";
+  const aiOff = context?.capabilities?.ai?.available === false;
   return (
     <section className="ea-learn__tutor" aria-label="AI Tutor">
       <div className="ea-learn__toolbar">
@@ -234,7 +235,18 @@ export default function TutorChat({ context, initialQuestion, onSuggest }) {
       )}
 
       <div ref={logRef} className="ea-learn__log" role="log" aria-live="polite" aria-busy={busy} aria-label="Conversation">
-        {messages.length === 0 && (
+        {messages.length === 0 && aiOff && (
+          // The banner above says why; inviting a question here would only lead to an error, so point at what still works.
+          <div className="ea-learn__empty">
+            <span className="ea-learn__hero-icon" aria-hidden="true"><Wrench size={24} /></span>
+            <h2 className="ea-learn__empty-title">Answers are not available right now</h2>
+            <p className="ea-learn__muted">Your past chats are still in History. Plan your revision or check your progress meanwhile.</p>
+            <div className="ea-learn__row">
+              <button type="button" className="ea-btn ea-btn--primary" onClick={() => onSuggest?.({ action: "planner" })}>Open Revision Planner</button>
+            </div>
+          </div>
+        )}
+        {messages.length === 0 && !aiOff && (
           <div className="ea-learn__empty">
             <span className="ea-learn__hero-icon" aria-hidden="true"><Sparkles size={24} /></span>
             <h2 className="ea-learn__empty-title">Ask anything from your subjects</h2>
