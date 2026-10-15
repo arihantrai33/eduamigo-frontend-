@@ -6,6 +6,9 @@ import { PayFeeButton, ReceiptLinks, PaymentInfo } from "../../components/FeePay
 
 import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
+import PortalHeader from "../../components/ui/PortalHeader";
+import SummaryCard from "../../components/ui/SummaryCard";
+import Segmented from "../../components/ui/Segmented";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -61,23 +64,13 @@ export default function StudentFee() {
     <div className="ea-pd-narrow" style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "inherit" }}>
 
       {/* Header */}
-      <div className="ea-pd-band" style={{ background: "var(--brand-gradient)", padding: "48px 20px 24px", flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-          <button type="button" aria-label="Back" onClick={() => navigate(-1)} style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(255,255,255,0.2)", border: "none", color: "white", fontSize: 18, cursor: "pointer" }}><Glyph e="←" /></button>
-          <div style={{ fontSize: 18, fontWeight: 800, color: "white" }}>Fee Statement</div>
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
-          {[
-            { label: "Total Fees",  value: formatAmount(summary.total),    color: "#fff"    },
-            { label: "Paid",        value: formatAmount(summary.totalPaid), color: "#bbf7d0" },
-            { label: "Outstanding", value: formatAmount(summary.totalDue),  color: "#fde68a" },
-          ].map(s => (
-            <div key={s.label} style={{ background: "rgba(255,255,255,0.15)", borderRadius: 12, padding: "12px 8px", textAlign: "center" }}>
-              <div style={{ fontSize: 10, color: "rgba(255,255,255,0.75)", fontWeight: 600, marginBottom: 4 }}>{s.label}</div>
-              <div style={{ fontSize: 15, fontWeight: 800, color: s.color }}>{s.value}</div>
-            </div>
-          ))}
-        </div>
+      <PortalHeader title="Fee Statement" onBack={() => navigate(-1)} />
+      <div className="ea-pd-bar" style={{ margin: "16px 16px 0" }}>
+        <SummaryCard title="Fee summary" items={[
+          { label: "Total Fees", value: formatAmount(summary.total) },
+          { label: "Paid", value: formatAmount(summary.totalPaid), tone: "success" },
+          { label: "Outstanding", value: formatAmount(summary.totalDue), tone: "warning" },
+        ]} />
       </div>
 
       {/* Due Alert */}
@@ -92,18 +85,11 @@ export default function StudentFee() {
       )}
 
       {/* Tabs */}
-      <div className="ea-pd-bar" style={{ display: "flex", margin: "16px 16px 0", background: "var(--card)", borderRadius: 12, padding: 4, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-        {[
-          { key: "pending", label: `Outstanding (${pendingFees.length})` },
-          { key: "paid",    label: `Payments (${paidFees.length})` },
-        ].map(tab => (
-          <button key={tab.key} type="button" aria-pressed={activeTab === tab.key} onClick={() => setActiveTab(tab.key)}
-            style={{ flex: 1, padding: "10px 0", border: "none", borderRadius: 10, cursor: "pointer", fontWeight: 700, fontSize: 13,
-              background: activeTab === tab.key ? "var(--brand-gradient)" : "transparent",
-              color: activeTab === tab.key ? "white" : "#888" }}>
-            {tab.label}
-          </button>
-        ))}
+      <div className="ea-pd-bar" style={{ margin: "16px 16px 0" }}>
+        <Segmented label="Fee view" value={activeTab} onChange={setActiveTab} options={[
+          { value: "pending", label: `Outstanding (${pendingFees.length})` },
+          { value: "paid",    label: `Payments (${paidFees.length})` },
+        ]} />
       </div>
 
       {/* Fee List */}

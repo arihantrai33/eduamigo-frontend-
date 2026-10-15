@@ -7,6 +7,7 @@ import EmptyState from "../../components/ui/EmptyState";
 import { Bell } from "lucide-react";
 
 import Glyph from "../../components/Glyph";
+import PortalHeader from "../../components/ui/PortalHeader";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -58,13 +59,8 @@ export default function Notifications() {
 
   return (
     <div className="ea-pd-narrow" style={{ minHeight: "100vh", background: "var(--bg)", paddingBottom: "80px" }}>
-      <div className="ea-pd-band" style={{ background: "var(--brand-gradient)", padding: "48px 16px 40px", color: "white" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <button type="button" aria-label="Back" onClick={() => navigate(-1)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "8px", padding: "8px", color: "white", cursor: "pointer" }}><Glyph e="←" /></button>
-          <h2 style={{ margin: 0, fontSize: "18px" }}>Notifications</h2>
-        </div>
-      </div>
-      <div className="ea-pd-body" style={{ padding: "16px", marginTop: "-20px" }}>
+      <PortalHeader title="Notifications" onBack={() => navigate(-1)} />
+      <div className="ea-pd-body" style={{ padding: "16px" }}>
         {notifications.length === 0 ? (
           <EmptyState icon={Bell} title="No notifications yet" text="Notices and alerts from your school will appear here." />
         ) : (

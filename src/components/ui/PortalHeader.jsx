@@ -1,11 +1,15 @@
 import { ArrowLeft } from "lucide-react";
 
-// Header bar of the student, teacher and parent screens: the school's brand colour, a back button, the title and an
-// optional line under it, actions on the right. The same bar most portal screens already drew by hand.
+// Page header of the student, teacher and parent screens (design plan §2.5).
+//   Phones and tablets (below 1024 px): a 56 px app bar in the solid brand colour with a back button, the title and
+//   up to two actions.
+//   Desktop: the same header as admin (PageHeader): the title on the page background, a line under it, actions on the
+//   right. No back button there (the sidebar navigates), unless the page is a detail page (`detail`).
 //   <PortalHeader title="Timetable" subtitle="This week" onBack={() => navigate("/student/home")} />
-export default function PortalHeader({ title, subtitle, onBack, backLabel = "Back", actions }) {
+// Actions are buttons with the class ea-portal-head__btn; they look right on both bars.
+export default function PortalHeader({ title, subtitle, onBack, backLabel = "Back", actions, detail = false }) {
   return (
-    <header className="ea-portal-head">
+    <header className={`ea-portal-head${detail ? " ea-portal-head--detail" : ""}`}>
       {onBack && (
         <button type="button" className="ea-portal-head__back" onClick={onBack} aria-label={backLabel}>
           <ArrowLeft size={20} aria-hidden="true" />

@@ -568,3 +568,47 @@ Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B2.
 - **HR "Mark Paid" is broken (functional).** On a salary row it calls the leave endpoint (`PUT /hr/leaves/<salary id>`), so it cannot mark a salary paid. This is existing behaviour; the Salaries page has its own working Mark Paid.
 - **Phone layout (B8):** on Leave Requests and Transport at 390, the row/meta line is wider than the card. Approve/Reject and the bus actions are reachable and clickable, but only after the card's content scrolls sideways, which hides the name. Same before B2.
 - **Still to do in B8:** row hover tints (green/blue gradients), table-header gradients, amounts in green, and the HR/Leave Requests status pills are still per-page styles.
+
+The HR "Mark Paid" defect above is fixed in its own commit (`ad739eb`): the salary row now calls `PUT /hr/salaries/<id>`. A regression test in `e2e/workflows.spec.js` failed on the old code and passes on the fix.
+
+### Redesign batch B3: portal page header (2026-10-15)
+Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B3, §2.5.
+
+**Shared header** (`PortalHeader`, used by every student, teacher and parent screen):
+- **Below 1024 px:** a 56 px app bar in the solid brand colour: back button, title (one line, ellipsis), optional subtitle and up to two actions (`ea-portal-head__btn`).
+- **From 1024 px:** the admin-style page header: the title on the page background in the h1 type style, the subtitle in muted text and secondary-style actions on the right. There is no back button (the sidebar navigates), except on detail views (`detail`), which get a surface-coloured back button.
+- The gradient band, the stat chips inside it and the negative overlap of the body are gone.
+
+**New `SummaryCard`** (`components/ui/SummaryCard.jsx`): the single summary at the top of a portal screen. It has a white card, a title, one large value, an optional progress ring, a caption, and optional labelled figures in a row. It is used here and is the base for B6.
+
+**Student pages converted:**
+- Attendance: ring summary.
+- Apply Leave: leave balance summary; buttons use the primary style.
+- Fee: fee summary; the tabs are the shared Segmented control.
+- Results: exam-type Segmented control and an overall-result summary; the strength and focus cards are token cards with icon chips; the progress bars are solid brand.
+- Chat: list header, plus a detail header in the open conversation; the bubbles and Send button are solid brand.
+- Notifications and Notes: header only; the Notes buttons use the primary style.
+- Bus: the header band is solid brand instead of a gradient (the live-tracking layout is unchanged).
+- Learning AI, Revise and Timetable already used `PortalHeader` and changed with it, as did **parent Profile** and **teacher Marks**.
+
+**Shared CSS fix:** `.ea-pd-cols` now has `align-content: start`. When the body is taller than its content, the grid used to stretch its rows and leave a large gap under the first row (seen on Results at 1280).
+
+**Review (ports 8130/5194):**
+- Before/after side by side at 390 and 1280 for all 12 changed screens.
+- The open chat conversation at 390, 768, 1024 and 1280, with keyboard focus on the back button.
+- Results, Apply Leave and Chat at 768 (app bar) and 1024 (desktop header).
+- The pixel diff against the B2 sweep (156 screens) shows only these screens. Two B3 runs also differ from each other on admin Library, Reports, Transport, parent Results and the splash screen, so those differences are row order and time, not B3.
+
+**Tests:**
+- 76/76 passed: `screens`, `scroll`, `auth-and-navigation`, the three `learning` specs, `print`, `interactions` and `accessible-names`.
+- After the CSS fix: the sweep plus `screens`, `scroll` and `accessible-names` passed 23/23.
+- Sweep 390/1280: 156 screens, 0 findings.
+- Dark-mode contrast probe (student and parent): 0 spots under 3:1.
+- The build passes, and ESLint counts on the changed files match HEAD.
+
+**Scope notes:**
+- The student Profile (gradient hero) moves to B12 with the other profiles.
+- `SummaryCard` was created here, not in B6, because the B3 pages need it.
+
+**Found, not fixed:**
+- **Notes → assignment "Submit" has no handler (functional).** The button is restyled but still does nothing. Same before B3.

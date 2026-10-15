@@ -5,6 +5,9 @@ import { useTheme } from '../../context/ThemeContext';
 
 import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
+import PortalHeader from "../../components/ui/PortalHeader";
+import SummaryCard from "../../components/ui/SummaryCard";
+import Segmented from "../../components/ui/Segmented";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -103,63 +106,15 @@ export default function StudentResult() {
       background: dm ? '#0f172a' : '#F4F6FB', fontFamily: 'inherit',
       display: 'flex', flexDirection: 'column' }}>
 
-      <div className="ea-pd-band" style={{ background: 'linear-gradient(145deg,#1C2033,var(--brand-dark),var(--brand))',
-        paddingBottom: 16, flexShrink: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '48px 18px 10px' }}>
-          <button onClick={() => navigate('/student/home')} aria-label="Back"
-            style={{ width: 38, height: 38, borderRadius: 12, border: 'none',
-              background: 'rgba(255,255,255,.18)', color: '#fff', fontSize: 20, cursor: 'pointer' }}>
-            <Glyph e="←" />
-          </button>
-          <span style={{ fontSize: 17, fontWeight: 800, color: '#fff' }}>Academic Results</span>
-          <button onClick={() => navigate('/report-card?studentId=me')} aria-label="Report card"
-            style={{ height: 38, padding: '0 12px', borderRadius: 12, border: 'none',
-              background: 'rgba(255,255,255,.18)', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
-            Report Card
-          </button>
-        </div>
-
-        <div style={{ display: 'flex', background: 'rgba(255,255,255,.12)', borderRadius: 12,
-          padding: 4, margin: '0 16px 12px', gap: 3, flexWrap: 'wrap' }}>
-          {examTypes.map(e => (
-            <button key={e} type="button" aria-pressed={activeExam === e} onClick={() => setActiveExam(e)}
-              style={{ flex: 1, padding: '8px 4px', borderRadius: 9, fontSize: 11,
-                fontWeight: 700, border: 'none', cursor: 'pointer', whiteSpace: 'nowrap',
-                background: activeExam === e ? 'rgba(255,255,255,.22)' : 'none',
-                color: activeExam === e ? '#fff' : 'rgba(255,255,255,.6)' }}>
-              {e}
-            </button>
-          ))}
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center',
-          justifyContent: 'space-around', padding: '0 16px' }}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 60, fontWeight: 800, color: '#fff', lineHeight: 1 }}>
-              {percentage ?? '—'}%
-            </div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: 'rgba(255,255,255,.85)' }}>
-              Grade: {displayGrade ?? '—'}
-            </div>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {[
-              { label: 'Scored', value: totalScored || '—' },
-              { label: 'Total',  value: totalMax   || '—' },
-            ].map(p => (
-              <div key={p.label} style={{ background: 'rgba(255,255,255,.13)',
-                borderRadius: 14, padding: '10px 14px', textAlign: 'center' }}>
-                <div style={{ fontSize: 17, fontWeight: 800, color: '#fff' }}>{p.value}</div>
-                <div style={{ fontSize: 9.5, color: 'rgba(255,255,255,.7)',
-                  fontWeight: 700, textTransform: 'uppercase' }}>{p.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <PortalHeader title="Academic Results" onBack={() => navigate('/student/home')}
+        actions={<button type="button" className="ea-portal-head__btn" onClick={() => navigate('/report-card?studentId=me')} aria-label="Report card">Report Card</button>} />
 
       <div className="ea-pd-body ea-pd-cols" style={{ flex: 1, overflowY: 'auto', padding: '14px 16px 80px' }}>
+        <div className="ea-pd-full" style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 14 }}>
+          {examTypes.length > 1 && <Segmented label="Exam type" value={activeExam} onChange={setActiveExam} options={examTypes.map((e) => ({ value: e, label: e }))} />}
+          <SummaryCard title="Overall result" value={`${percentage ?? '—'}%`} caption={`Grade: ${displayGrade ?? '—'}`}
+            items={[{ label: 'Scored', value: totalScored || '—' }, { label: 'Total', value: totalMax || '—' }]} />
+        </div>
         <div className="ea-pd-main" style={{ background: dm ? '#1e293b' : '#fff', borderRadius: 20, padding: 18,
           marginBottom: 14, boxShadow: dm ? '0 2px 16px rgba(0,0,0,.3)' : '0 2px 16px color-mix(in srgb, var(--brand) 10%, transparent)' }}>
           <div style={{ fontSize: 11, fontWeight: 700,
@@ -192,9 +147,9 @@ export default function StudentResult() {
                       </span>
                     </div>
                   </div>
-                  <div style={{ background: dm ? '#334155' : '#E8EAF0', borderRadius: 20, height: 10, overflow: 'hidden' }}>
+                  <div style={{ background: 'var(--ea-hover)', borderRadius: 20, height: 10, overflow: 'hidden' }}>
                     <div style={{ borderRadius: 20, height: 10,
-                      width: `${pct}%`, background: 'var(--brand-gradient)',
+                      width: `${pct}%`, background: 'var(--brand)',
                       transition: 'width .8s ease' }} />
                   </div>
                   <div style={{ fontSize: 11, color: dm ? '#94a3b8' : '#7B8099', marginTop: 4 }}>
@@ -209,15 +164,14 @@ export default function StudentResult() {
         {best && worst && best._id !== worst._id && (
           <div className="ea-pd-side ea-pd-onecol" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 14 }}>
             {[
-              { label: 'Strength',   emoji: <Glyph e="🏆" />, sub: best.subject,  val: `${best.marksObtained}/${best.totalMarks}`,   bg: dm ? 'linear-gradient(135deg,#0f2a25,#1a3a34)' : 'linear-gradient(135deg,#E0F7F4,#B2DFDB)' },
-              { label: 'Focus Area', emoji: <Glyph e="📌" />, sub: worst.subject, val: `${worst.marksObtained}/${worst.totalMarks}`, bg: dm ? 'linear-gradient(135deg,#2a0f0f,#3a1a1a)' : 'linear-gradient(135deg,#FFEBEE,#FFCDD2)' },
+              { label: 'Strength',   emoji: <Glyph e="🏆" />, sub: best.subject,  val: `${best.marksObtained}/${best.totalMarks}`,   tone: 'success' },
+              { label: 'Focus area', emoji: <Glyph e="📌" />, sub: worst.subject, val: `${worst.marksObtained}/${worst.totalMarks}`, tone: 'warning' },
             ].map(c => (
-              <div key={c.label} style={{ background: c.bg, borderRadius: 16, padding: 14 }}>
-                <div style={{ fontSize: 22 }}>{c.emoji}</div>
-                <div style={{ fontSize: 10, fontWeight: 800, textTransform: 'uppercase',
-                  color: dm ? '#94a3b8' : '#7B8099', marginTop: 4 }}>{c.label}</div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: dm ? '#f1f5f9' : '#1C2033' }}>{c.sub}</div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: dm ? '#94a3b8' : '#7B8099' }}>{c.val}</div>
+              <div key={c.label} className="ea-card" style={{ padding: 14 }}>
+                <span className={`ea-icon-chip ea-icon-chip--${c.tone}`} aria-hidden="true" style={{ fontSize: 18 }}>{c.emoji}</span>
+                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--ea-muted)', marginTop: 8 }}>{c.label}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ea-ink)' }}>{c.sub}</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--ea-muted)' }}>{c.val}</div>
               </div>
             ))}
           </div>

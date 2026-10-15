@@ -4,8 +4,9 @@ import axios from "axios";
 import EmptyState from "../../components/ui/EmptyState";
 import { CalendarCheck } from "lucide-react";
 
-import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
+import PortalHeader from "../../components/ui/PortalHeader";
+import SummaryCard from "../../components/ui/SummaryCard";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -47,39 +48,14 @@ export default function StudentAttendance() {
       background: "var(--bg)", fontFamily: "inherit" }}>
 
       {/* Header */}
-      <div className="ea-pd-band" style={{ background: "var(--brand-gradient)",
-        padding: "48px 20px 24px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-          <button type="button" aria-label="Back" onClick={() => navigate(-1)}
-            style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "50%",
-              width: 36, height: 36, cursor: "pointer", color: "#fff", fontSize: 18 }}>
-            <Glyph e="←" />
-          </button>
-          <div style={{ fontSize: 18, fontWeight: 800, color: "#fff" }}>My Attendance</div>
-        </div>
-
-        {/* Circle Progress */}
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: 8 }}>
-          <div style={{ position: "relative", width: 120, height: 120 }}>
-            <svg width="120" height="120" viewBox="0 0 120 120">
-              <circle cx="60" cy="60" r="50" fill="none"
-                stroke="rgba(255,255,255,0.2)" strokeWidth="10" />
-              <circle cx="60" cy="60" r="50" fill="none" stroke="white" strokeWidth="10"
-                strokeDasharray={`${2 * Math.PI * 50}`}
-                strokeDashoffset={`${2 * Math.PI * 50 * (1 - pct / 100)}`}
-                strokeLinecap="round" transform="rotate(-90 60 60)" />
-            </svg>
-            <div style={{ position: "absolute", top: "50%", left: "50%",
-              transform: "translate(-50%, -50%)", textAlign: "center" }}>
-              <div style={{ fontSize: 22, fontWeight: 900, color: "#fff" }}>{pct}%</div>
-              <div style={{ fontSize: 10, color: "rgba(255,255,255,0.7)" }}>Overall</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PortalHeader title="My Attendance" onBack={() => navigate(-1)} />
 
       {/* Body */}
       <div className="ea-pd-body" style={{ flex: 1, overflowY: "auto", padding: "16px 16px 80px" }}>
+
+        <div style={{ marginBottom: 16 }}>
+          <SummaryCard title="Overall attendance" value={`${pct}%`} ring={pct} caption={`${present} of ${total} days present`} />
+        </div>
 
         {/* Stats Cards */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr",

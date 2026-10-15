@@ -7,6 +7,8 @@ import FieldError from "../../components/ui/FieldError";
 import { useFieldErrors } from "../../utils/fieldErrors";
 import EmptyState from "../../components/ui/EmptyState";
 import { CalendarDays } from "lucide-react";
+import PortalHeader from "../../components/ui/PortalHeader";
+import SummaryCard from "../../components/ui/SummaryCard";
 
 const FIELDS = { fromDate: "leave-from", toDate: "leave-to", reason: "leave-reason" };
 const API = import.meta.env.VITE_API_URL;
@@ -95,39 +97,23 @@ export default function ApplyLeave() {
       <div style={{ fontSize: "64px" }}><Glyph e="✅" /></div>
       <div style={{ fontWeight: "800", fontSize: "20px", marginTop: "16px", color: dm ? "#f1f5f9" : "#111" }}>Leave Applied Successfully!</div>
       <div style={{ color: dm ? "#94a3b8" : "#888", fontSize: "13px", marginTop: "8px" }}>Your request has been submitted for approval.</div>
-      <button onClick={() => navigate(-1)} style={{ marginTop: "32px", padding: "14px 32px", borderRadius: "12px", background: "var(--brand-gradient)", color: "white", border: "none", fontWeight: "700", fontSize: "15px", cursor: "pointer" }}>
+      <button type="button" className="ea-btn ea-btn--primary" onClick={() => navigate(-1)} style={{ marginTop: "32px", minHeight: 48, padding: "0 32px", fontSize: 15 }}>
         Go Back
       </button>
     </div>
   );
   return (
     <div style={{ minHeight: "100vh", background: dm ? "#0f172a" : "#f5f6fa", fontFamily: "inherit", paddingBottom: "32px" }}>
-      <div className="ea-pd-band" style={{ background: "var(--brand-gradient)", padding: "48px 20px 24px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <button type="button" aria-label="Back" onClick={() => navigate(-1)} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "50%", width: "36px", height: "36px", color: "white", fontSize: "18px", cursor: "pointer" }}><Glyph e="←" /></button>
-          <div>
-            <div style={{ color: "white", fontWeight: "800", fontSize: "18px" }}>Leave Application</div>
-            <div style={{ color: "rgba(255,255,255,0.8)", fontSize: "12px" }}>Submit and track your leave requests</div>
-          </div>
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px", marginTop: "20px" }}>
-          {quotaLoading ? (
-            <div style={{ gridColumn: "1/-1", textAlign: "center", color: "rgba(255,255,255,0.7)", fontSize: "13px" }}>Loading balance...</div>
-          ) : (
-            [
-              { label: "TOTAL", value: quota.total, color: "var(--brand)" },
-              { label: "AVAILABLE", value: quota.available, color: "#22c55e" },
-              { label: "USED", value: quota.used, color: "#ef4444" },
-            ].map((stat) => (
-              <div key={stat.label} style={{ background: dm ? "#1e293b" : "white", borderRadius: "12px", padding: "12px", textAlign: "center" }}>
-                <div style={{ fontSize: "24px", fontWeight: "800", color: stat.color }}>{stat.value}</div>
-                <div style={{ fontSize: "10px", color: dm ? "#94a3b8" : "#888", fontWeight: "700", letterSpacing: "0.5px" }}>{stat.label}</div>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
+      <PortalHeader title="Leave Application" subtitle="Submit and track your leave requests" onBack={() => navigate(-1)} />
       <div className="ea-pd-body ea-pd-cols" style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "16px" }}>
+        <div className="ea-pd-full">
+          <SummaryCard title="Leave balance" caption={quotaLoading ? "Loading balance..." : undefined}
+            items={quotaLoading ? [] : [
+              { label: "Total", value: quota.total },
+              { label: "Available", value: quota.available, tone: "success" },
+              { label: "Used", value: quota.used },
+            ]} />
+        </div>
         <div className="ea-pd-main" style={{ background: dm ? "#1e293b" : "white", borderRadius: "16px", padding: "20px", boxShadow: dm ? "0 2px 8px rgba(0,0,0,0.3)" : "0 2px 8px rgba(0,0,0,0.06)" }}>
           <div style={{ fontSize: "12px", fontWeight: "700", color: dm ? "#94a3b8" : "#888", letterSpacing: "1px", marginBottom: "16px" }}>APPLY NEW LEAVE</div>
           <div style={{ marginBottom: "16px" }}>
@@ -173,7 +159,7 @@ export default function ApplyLeave() {
           {formError && (
             <div style={{ marginBottom: "12px", padding: "10px 14px", background: dm ? "#2a0f0f" : "#fff5f5", borderRadius: "8px", border: "1px solid #fee2e2", fontSize: "13px", color: "#ef4444", fontWeight: "600" }}>{formError}</div>
           )}
-          <button onClick={handleSubmit} disabled={loading} style={{ width: "100%", padding: "16px", borderRadius: "12px", border: "none", background: loading ? "#aaa" : "var(--brand-gradient)", color: "white", fontSize: "15px", fontWeight: "700", cursor: loading ? "not-allowed" : "pointer", fontFamily: "inherit" }}>
+          <button type="button" className="ea-btn ea-btn--primary" onClick={handleSubmit} disabled={loading} style={{ width: "100%", minHeight: 48, fontSize: 15 }}>
             {loading ? "Submitting..." : "Submit Leave Request"}
           </button>
         </div>

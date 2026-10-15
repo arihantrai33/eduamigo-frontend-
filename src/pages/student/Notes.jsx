@@ -182,7 +182,7 @@ export default function Notes() {
                   </div>
                   {isDone
                     ? <button style={{ background: '#E8F5E9', color: '#2E7D32', border: '1.5px solid #A5D6A7', borderRadius: 10, padding: '8px 16px', fontSize: 13, fontWeight: 700, cursor: 'default', flexShrink: 0 }}>Done</button>
-                    : <button style={{ background: 'var(--brand-gradient)', color: '#fff', border: 'none', borderRadius: 10, padding: '8px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>Submit</button>
+                    : <button type="button" className="ea-btn ea-btn--primary ea-btn--sm" style={{ flexShrink: 0 }}>Submit</button>
                   }
                 </div>
               );
@@ -244,7 +244,7 @@ export default function Notes() {
                 <input style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: `1.5px solid ${dm ? '#334155' : '#E8E8F0'}`, background: dm ? '#0f172a' : '#fff', fontSize: 14, color: dm ? '#f1f5f9' : '#1A1A2E', outline: 'none', boxSizing: 'border-box', colorScheme: dm ? 'dark' : 'light' }} type="date" value={form.dueDate} onChange={e => setForm({ ...form, dueDate: e.target.value })} />
               </>
             )}
-            <button style={{ marginTop: 20, width: '100%', padding: '14px', background: 'linear-gradient(135deg, var(--brand), #3A0CA3)', color: '#fff', border: 'none', borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: 'pointer', opacity: uploading ? 0.7 : 1 }} onClick={handleUpload} disabled={uploading}>
+            <button type="button" className="ea-btn ea-btn--primary" style={{ marginTop: 20, width: '100%', minHeight: 48, fontSize: 15 }} onClick={handleUpload} disabled={uploading}>
               {uploaded ? 'Uploaded successfully!' : uploading ? 'Uploading...' : 'Upload Now'}
             </button>
             <button style={{ marginTop: 12, background: 'none', border: 'none', color: 'var(--brand)', fontSize: 15, fontWeight: 600, cursor: 'pointer', alignSelf: 'center' }} onClick={() => { setShowModal(false); setForm({ ...form, title: '', fileUrl: '' }); }}>
