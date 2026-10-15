@@ -612,3 +612,32 @@ Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B3, §2.5.
 
 **Found, not fixed:**
 - **Notes → assignment "Submit" has no handler (functional).** The button is restyled but still does nothing. Same before B3.
+
+### Redesign batch B10: platform and sign-in screens (2026-10-15)
+Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B10, §2.1, D2.
+
+**Shared work:**
+- **New `PlatformHero`** (`components/PlatformHero.jsx`): the sign-in hero (`SchoolHero`) with the EduAmigo logo instead of the school's. The dots, rings, glow and curved edge are the same. On phones it is a header above the form; from 1024 px it is the left half of the existing `.ea-auth` split. `full` fills the whole screen for the splash.
+- **New `.ea-platform`** (`src/index.css`) pins the EduAmigo indigo on these screens, whatever school theme was applied before. The main colour is indigo 600 (#4F46E5): white text on it reads at 6.3:1, while the `:root` #6366F1 reaches 4.5:1 only for large text.
+- **`EmptyState`** gets `tone="danger"` (red icon chip) for error states.
+
+**Screens:**
+- **Splash `/`:** full window at every width, with no centred phone frame from 768 px; the same logo and type as Find your school. The loading dots are a `role="status"`. "Powered by EduAmigo" is readable (was #1E3A6E on navy).
+- **Find your school** (search, results, confirm) and the error state of a bad `/s/<code>` link: indigo split instead of royal blue. Continue, "Yes, this is my school" and "Find my school" are solid primary buttons (were a blue gradient). The confirm card keeps the school's colour as its border.
+- **Support `/support`:** platform split; the missing or expired token message is an `EmptyState` error with `role="alert"`.
+- **Driver `/driver`** (token entry only; the trip screen is unchanged): platform split, a visible "Driver token" label (was `aria-label` only), the focus ring is no longer removed, and Continue is a primary button (was a bright-blue gradient).
+- **Change password:** the school-coloured split like Forgot password (`SchoolHero`). Update password is a solid primary button in the school colour (was the brand gradient); the heading is h2 under the hero's h1, as on Forgot password.
+- No visible text was changed except the case of the splash tagline (now "Your school companion").
+
+**Review (ports 8130/5194):**
+- 390, 768 and 1280 captured: splash with and without a saved school, Find your school (empty, the empty-submit error, search results, keyboard focus on a result, confirm, button hover), the bad school link, support, driver (empty, invalid token, input focus) and change password.
+- Pixel diff of the sweep against B3 (156 screens): only the B10 screens changed. The other differences are row order and activity-log rows written by earlier tests.
+
+**Tests:**
+- 49/49 passed: `auth-and-navigation`, `accessible-names` (including sign-in, password and driver pages), `interactions` (including change password field errors), `error-feedback` and `screens`.
+- Sweep 390/1280: 156 screens, 0 layout findings. The only "clipped text" entries are the two screen-reader-only labels on Learning AI/Revise, which have been flagged since B2 and are intentional.
+- The build passes, and ESLint counts on all changed files match HEAD.
+
+**Not changed (later batches):**
+- The inputs on Find your school and Change password still remove the browser focus outline; their field style belongs to B7 (forms).
+- The driver trip screen keeps its dark look and green/red trip buttons; it is outside B10.

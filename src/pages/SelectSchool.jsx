@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { findSchoolByCode, searchSchools, saveSchool, schoolColor } from "../utils/school";
-import { GraduationCap, MapPin, AlertCircle } from "lucide-react";
+import { MapPin, AlertCircle } from "lucide-react";
 import { errorMessage } from "../utils/toast";
+import PlatformHero from "../components/PlatformHero";
 
 // "Find your school": shown once per device, before the first sign-in.
 // The user types the school code given by the school, or searches by name, then confirms.
@@ -56,12 +57,8 @@ export default function SelectSchool() {
   if (selected) {
     const color = schoolColor(selected);
     return (
-      <div className="ea-auth" style={s.page}>
-        <div className="ea-school-hero" style={s.top}>
-          <div style={s.logoBox}><GraduationCap aria-hidden size={34} strokeWidth={1.8} color="#fff" /></div>
-          <p style={s.brand}>EduAmigo</p>
-          <p style={s.step}>Confirm your school</p>
-        </div>
+      <div className="ea-auth ea-platform" style={s.page}>
+        <PlatformHero titleAs="p" subtitle="Confirm your school" />
         <div style={s.card}>
           <div style={{ ...s.confirmCard, borderColor: color }}>
             <SchoolLogo school={selected} size={72} />
@@ -70,7 +67,7 @@ export default function SelectSchool() {
             {selected.city && <p style={{ ...s.muted, display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}><MapPin aria-hidden size={13} /> {selected.city}</p>}
             <p style={{ ...s.muted, marginTop: 8 }}>School code: <strong style={{ color: "var(--text)" }}>{selected.code}</strong></p>
           </div>
-          <button onClick={confirm} style={{ ...s.btn, background: color }}>Yes, this is my school</button>
+          <button onClick={confirm} className="ea-btn ea-btn--primary" style={s.btn}>Yes, this is my school</button>
           <button onClick={() => setSelected(null)} style={s.linkBtn}>No, search again</button>
         </div>
       </div>
@@ -78,12 +75,8 @@ export default function SelectSchool() {
   }
 
   return (
-    <div className="ea-auth" style={s.page}>
-      <div className="ea-school-hero" style={s.top}>
-        <div style={s.logoBox}><GraduationCap aria-hidden size={34} strokeWidth={1.8} color="#fff" /></div>
-        <h1 style={s.brand}>EduAmigo</h1>
-        <p style={s.tagline}>Find your school</p>
-      </div>
+    <div className="ea-auth ea-platform" style={s.page}>
+      <PlatformHero subtitle="Find your school" />
       <div style={s.card}>
         <h2 style={s.heading}>Which school are you from?</h2>
         <p style={s.sub}>Enter the school code given by your school, or search by the school's name.</p>
@@ -114,7 +107,7 @@ export default function SelectSchool() {
           ))}
         </div>
 
-        <button onClick={lookupCode} style={s.btn}>Continue</button>
+        <button onClick={lookupCode} className="ea-btn ea-btn--primary" style={s.btn}>Continue</button>
         <p style={{ ...s.muted, marginTop: 18, textAlign: "center" }}>
           Got a link or QR code from your school? Open it on this phone and your school is selected automatically.
         </p>
@@ -134,12 +127,13 @@ export function SchoolLink() {
       .catch(() => setError("This school link is not valid. Please search for your school instead."));
   }, [code, navigate]);
   return (
-    <div style={s.page}>
-      <div style={{ ...s.card, marginTop: 120, textAlign: "center" }}>
+    <div className="ea-auth ea-platform" style={s.page}>
+      <PlatformHero titleAs="p" />
+      <div style={{ ...s.card, textAlign: "center" }}>
         {error ? (
           <>
-            <div style={s.err}><AlertCircle aria-hidden size={16} style={{ flexShrink: 0 }} />{error}</div>
-            <button onClick={() => navigate("/select-school", { replace: true })} style={s.btn}>Find my school</button>
+            <div role="alert" style={s.err}><AlertCircle aria-hidden size={16} style={{ flexShrink: 0 }} />{error}</div>
+            <button onClick={() => navigate("/select-school", { replace: true })} className="ea-btn ea-btn--primary" style={s.btn}>Find my school</button>
           </>
         ) : <p style={s.muted}>Opening your school…</p>}
       </div>
@@ -161,14 +155,8 @@ export function SchoolLogo({ school, size = 48 }) {
 }
 
 const s = {
-  page: { minHeight: "100vh", height: "100vh", display: "flex", flexDirection: "column", background: "linear-gradient(160deg, #0f1b4c 0%, #1a3a8f 50%, #0f1b4c 100%)", fontFamily: "inherit", overflowY: "auto" },
-  // Taller brand area so the logo sits in the middle of it and the card starts about a third down.
-  top: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "64px 24px 44px", minHeight: "28vh", boxSizing: "border-box" },
-  logoBox: { width: 72, height: 72, borderRadius: 20, background: "rgba(255,255,255,0.12)", border: "1.5px solid rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, marginBottom: 12 },
-  brand: { color: "white", fontSize: 24, fontWeight: 700, margin: "0 0 4px", letterSpacing: 0.5 },
-  tagline: { color: "rgba(255,255,255,0.6)", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", margin: 0 },
-  step: { color: "rgba(255,255,255,0.8)", fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "20px 0 0" },
-  card: { flex: 1, background: "var(--card)", borderRadius: 24, padding: "24px 20px 40px", overflowY: "auto" },
+  page: { minHeight: "100vh", height: "100vh", display: "flex", flexDirection: "column", background: "var(--card)", fontFamily: "inherit", overflowY: "auto" },
+  card: { flex: 1, background: "var(--card)", padding: "8px 22px 40px" },
   heading: { fontSize: 20, fontWeight: 700, color: "var(--text)", margin: "0 0 4px" },
   sub: { fontSize: 13, color: "var(--subtext)", margin: "0 0 20px", lineHeight: 1.5 },
   label: { fontSize: 12, fontWeight: 600, color: "var(--text)", display: "block", marginBottom: 5 },
@@ -177,6 +165,6 @@ const s = {
   err: { display: "flex", gap: 8, alignItems: "flex-start", background: "#fef2f2", border: "1px solid #fecaca", color: "#dc2626", borderRadius: 10, padding: "9px 13px", fontSize: 12, marginBottom: 12 },
   result: { display: "flex", alignItems: "center", gap: 12, width: "100%", padding: "10px 12px", border: "1.5px solid var(--border)", borderRadius: 12, background: "var(--input)", cursor: "pointer" },
   confirmCard: { display: "flex", flexDirection: "column", alignItems: "center", border: "2px solid", borderRadius: 18, padding: "24px 16px", marginBottom: 20 },
-  btn: { width: "100%", padding: 13, background: "linear-gradient(135deg, #1a3a8f, #4f8ef7)", color: "white", border: "none", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer" },
+  btn: { width: "100%", minHeight: 48, fontSize: 15 },
   linkBtn: { width: "100%", padding: 12, marginTop: 8, background: "none", border: "none", color: "var(--subtext)", fontSize: 13, fontWeight: 600, cursor: "pointer" },
 };

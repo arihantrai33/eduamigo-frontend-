@@ -335,6 +335,42 @@ input, button, select, textarea {
     padding: 48px max(48px, calc((100% - 440px) / 2)) !important;
   }
 }
+/* Screens before a school is known: splash, find your school, support, driver sign-in (design plan §2.1, D2).
+   .ea-platform pins the EduAmigo indigo, whatever school theme was applied last. The main colour is indigo 600:
+   white text on it reads at 6.3:1 (the :root #6366F1 gives 4.5:1 only for large text). */
+.ea-platform {
+  --brand: #4F46E5; --brand-dark: #4338CA; --brand-deep: #1E1B4B; --brand-light: #A5B4FC;
+  --brand-soft: #EEF2FF; --brand-border: #C7D2FE; --brand-accent: #F5B301;
+  --brand-gradient: linear-gradient(135deg, #4338CA 0%, #4F46E5 100%);
+}
+.ea-platform-hero {
+  position: relative; overflow: hidden; flex-shrink: 0; box-sizing: border-box;
+  padding: 44px 24px 58px; text-align: center; color: #fff;
+  background: radial-gradient(120% 90% at 85% 0%, rgba(165, 180, 252, 0.4) 0%, transparent 55%),
+              linear-gradient(160deg, var(--brand-deep) 0%, var(--brand) 58%, var(--brand-dark) 100%);
+}
+.ea-platform-hero__dots {
+  position: absolute; inset: 0; background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1.2px); background-size: 16px 16px;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 85%); mask-image: linear-gradient(180deg, #000 0%, transparent 85%);
+}
+.ea-platform-hero__ring { position: absolute; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.12); }
+.ea-platform-hero__glow { position: absolute; width: 220px; height: 220px; border-radius: 50%; bottom: -110px; right: -70px; background: radial-gradient(circle, rgba(245, 179, 1, 0.3) 0%, transparent 70%); }
+.ea-platform-hero__content { position: relative; display: flex; flex-direction: column; align-items: center; animation: heroIn .6s cubic-bezier(.2, .8, .2, 1) both; }
+.ea-platform-hero__logo {
+  width: 72px; height: 72px; border-radius: 20px; background: #fff; color: var(--brand);
+  display: flex; align-items: center; justify-content: center; box-shadow: 0 14px 34px rgba(30, 27, 75, 0.45);
+}
+.ea-platform-hero__title { margin: 14px 0 6px; font-size: 24px; font-weight: 800; line-height: 1.2; letter-spacing: 0.2px; color: #fff; }
+.ea-platform-hero__sub { margin: 0; font-size: 14px; line-height: 1.45; color: rgba(255, 255, 255, 0.86); }
+.ea-platform-hero--full { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 24px; }
+.ea-platform-hero--full .ea-platform-hero__logo { width: 88px; height: 88px; border-radius: 24px; }
+.ea-platform-hero--full .ea-platform-hero__title { font-size: 32px; }
+@keyframes heroIn { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+/* The splash fills the window at every width (no centred frame from 768 px). */
+@media (min-width: 768px) {
+  .ea-solo:has(.ea-splash) { display: block; padding: env(safe-area-inset-top) 0 0; }
+  .ea-solo:has(.ea-splash) .ea-solo__stage { max-width: none; border: 0; border-radius: 0; box-shadow: none; height: calc(var(--ea-vh) - env(safe-area-inset-top)); }
+}
 /* ───────────── Printing a document (report card, fee receipt, transfer certificate) ─────────────
    The document's root has .ea-print-doc. The app shells around it have a fixed height and scroll inside, which cut a
    printout after one screen (and a centred grid shrank it to half the paper). While a document is on the page, its
@@ -697,6 +733,7 @@ input:-webkit-autofill:focus {
 .ea-empty__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px; }
 /* Inside a card or table that already has its own frame. */
 .ea-empty--plain { background: none; border: 0; border-radius: 0; }
+.ea-empty--danger .ea-empty__icon { background: #FEF2F2; color: var(--ea-on-card-danger); }
 
 /* Admin sidebar (pages/admin/Home.jsx): links and buttons keep their look, and show a ring when reached by keyboard.
    currentColor works on the dark and the light sidebar. */

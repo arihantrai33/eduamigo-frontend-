@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { getDriverBus, startTrip as apiStartTrip, endTrip as apiEndTrip, markStopDone, updateDriverLocation } from "../../api/transport";
 
 import Glyph from "../../components/Glyph";
+import PlatformHero from "../../components/PlatformHero";
+import { Bus, AlertCircle } from "lucide-react";
 export default function DriverHome() {
   const [token, setToken] = useState(localStorage.getItem("driverToken") || "");
   const [tokenInput, setTokenInput] = useState("");
@@ -193,26 +195,30 @@ export default function DriverHome() {
   const stops = busData?.stops || [];
   const isLastStop = currentStopIndex >= stops.length - 1;
 
+  // Sign-in with the driver token: the EduAmigo split like "Find your school". The trip screen below keeps its own look.
   if (!token || !busData) {
     return (
-      <div style={{ minHeight: "100vh", background: "linear-gradient(160deg, #0f172a 0%, #1e3a5f 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "inherit", padding: "24px" }}>
-        <div style={{ width: "80px", height: "80px", background: "rgba(255,255,255,0.08)", borderRadius: "24px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "40px", marginBottom: "16px", border: "1px solid rgba(255,255,255,0.1)" }}><Glyph e="🚌" /></div>
-        <div style={{ color: "white", fontSize: "22px", fontWeight: "800", marginBottom: "4px" }}>EduAmigo Driver</div>
-        <div style={{ color: "rgba(255,255,255,0.4)", fontSize: "13px", marginBottom: "32px" }}>Enter your driver token to continue</div>
-        {error && (
-          <div id="driver-token-error" role="alert" style={{ background: "rgba(239,68,68,0.15)", border: "1px solid rgba(239,68,68,0.4)", borderRadius: "12px", padding: "12px 20px", color: "#f87171", fontSize: "13px", marginBottom: "16px", width: "100%", maxWidth: "320px" }}>{error}</div>
-        )}
-        <input
-          aria-label="Driver token" aria-invalid={error ? true : undefined} aria-describedby={error ? "driver-token-error" : undefined}
-          value={tokenInput}
-          onChange={e => setTokenInput(e.target.value)}
-          onKeyDown={e => e.key === "Enter" && handleTokenSubmit()}
-          placeholder="e.g. BUS_01-257868"
-          style={{ width: "100%", maxWidth: "320px", padding: "14px 18px", borderRadius: "14px", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: "white", fontSize: "15px", fontWeight: "600", outline: "none", marginBottom: "16px", letterSpacing: "1px", textAlign: "center", fontFamily: "monospace" }}
-        />
-        <button onClick={handleTokenSubmit} disabled={loading} style={{ background: "linear-gradient(135deg, #1a73e8, #0EA5E9)", color: "white", border: "none", borderRadius: "14px", padding: "14px 48px", fontSize: "15px", fontWeight: "700", cursor: "pointer", width: "100%", maxWidth: "320px" }}>
-          {loading ? "Verifying..." : "Continue →"}
-        </button>
+      <div className="ea-auth ea-platform" style={{ minHeight: "100vh", height: "100vh", display: "flex", flexDirection: "column", background: "var(--card)", fontFamily: "inherit", overflowY: "auto" }}>
+        <PlatformHero icon={Bus} title="EduAmigo Driver" subtitle="Enter your driver token to continue" />
+        <div style={{ flex: 1, background: "var(--card)", padding: "16px 22px 40px" }}>
+          <label htmlFor="driver-token" style={{ fontSize: 12, fontWeight: 600, color: "var(--text)", display: "block", marginBottom: 5 }}>Driver token</label>
+          <input
+            id="driver-token" aria-invalid={error ? true : undefined} aria-describedby={error ? "driver-token-error" : undefined}
+            value={tokenInput}
+            onChange={e => setTokenInput(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && handleTokenSubmit()}
+            placeholder="e.g. BUS_01-257868" autoCapitalize="characters" autoComplete="off" spellCheck={false}
+            style={{ width: "100%", padding: "12px 13px", border: "1.5px solid var(--border)", borderRadius: 10, fontSize: 15, color: "var(--text)", boxSizing: "border-box", background: "var(--input)", marginBottom: 12, letterSpacing: 1, fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}
+          />
+          {error && (
+            <div id="driver-token-error" role="alert" style={{ display: "flex", gap: 8, alignItems: "flex-start", background: "#fef2f2", border: "1px solid #fecaca", color: "#B91C1C", borderRadius: 10, padding: "9px 13px", fontSize: 12, marginBottom: 12 }}>
+              <AlertCircle aria-hidden size={16} style={{ flexShrink: 0 }} />{error}
+            </div>
+          )}
+          <button onClick={handleTokenSubmit} disabled={loading} className="ea-btn ea-btn--primary" style={{ width: "100%", minHeight: 48, fontSize: 15 }}>
+            {loading ? "Verifying..." : "Continue →"}
+          </button>
+        </div>
       </div>
     );
   }

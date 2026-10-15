@@ -4,6 +4,9 @@ import { useAuth } from "../context/AuthContext";
 import { toast, errorMessage } from "../utils/toast";
 import FieldError from "../components/ui/FieldError";
 import { useFieldErrors } from "../utils/fieldErrors";
+import SchoolHero from "../components/SchoolHero";
+import { getSavedSchool } from "../utils/school";
+import { userTheme } from "../utils/theme";
 
 const API = import.meta.env.VITE_API_URL;
 const FIELDS = { currentPassword: "cp-current", newPassword: "cp-new", confirm: "cp-confirm" };
@@ -47,14 +50,17 @@ export default function ChangePassword() {
     }
   };
 
-  const input = { width: "100%", padding: "12px 14px", borderRadius: 10, border: "1.5px solid #E2E8F0", fontSize: 14, boxSizing: "border-box", outline: "none", fontFamily: "inherit" };
-  const label = { display: "block", fontSize: 12, fontWeight: 600, color: "#475569", margin: "14px 0 6px" };
+  const input = { width: "100%", padding: "11px 13px", borderRadius: 10, border: "1.5px solid var(--border)", fontSize: 14, color: "var(--text)", background: "var(--input)", boxSizing: "border-box", fontFamily: "inherit" };
+  const label = { display: "block", fontSize: 12, fontWeight: 600, color: "var(--text)", margin: "14px 0 5px" };
 
+  // The sign-in split in the school's colours, like "Forgot password".
   return (
-    <div style={{ minHeight: "100vh", background: "#F4F5FA", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: "inherit" }}>
-      <form onSubmit={submit} noValidate style={{ background: "#fff", borderRadius: 16, padding: 24, width: "100%", maxWidth: 400, boxShadow: "0 10px 30px rgba(15,23,42,0.08)" }}>
-        <h1 style={{ fontSize: 20, margin: "0 0 6px", color: "#0F172A" }}>{forced ? "Set a new password" : "Change password"}</h1>
-        <p style={{ fontSize: 13, color: "#64748B", margin: 0, lineHeight: 1.5 }}>
+    <div className="ea-auth" style={{ minHeight: "100vh", height: "100vh", display: "flex", flexDirection: "column", background: "var(--card)", fontFamily: "inherit", overflowY: "auto" }}>
+      <SchoolHero school={getSavedSchool()} theme={userTheme(user)} compact />
+      <div style={{ flex: 1, background: "var(--card)", padding: "4px 22px 32px" }}>
+      <form onSubmit={submit} noValidate>
+        <h2 style={{ fontSize: 19, fontWeight: 700, margin: "0 0 6px", color: "var(--text)" }}>{forced ? "Set a new password" : "Change password"}</h2>
+        <p style={{ fontSize: 13, color: "var(--subtext)", margin: 0, lineHeight: 1.55 }}>
           {forced ? "Your account uses a temporary password. Please choose your own password to continue." : "Choose a strong password you do not use elsewhere."}
         </p>
 
@@ -72,13 +78,14 @@ export default function ChangePassword() {
 
         {error && <div role="alert" style={{ marginTop: 12, fontSize: 13, color: "#B91C1C" }}>{error}</div>}
 
-        <button type="submit" disabled={saving} style={{ marginTop: 18, width: "100%", padding: 13, borderRadius: 10, border: "none", background: "var(--brand-gradient)", color: "#fff", fontWeight: 700, fontSize: 15, cursor: saving ? "default" : "pointer", opacity: saving ? 0.7 : 1 }}>
+        <button type="submit" disabled={saving} className="ea-btn ea-btn--primary" style={{ marginTop: 18, width: "100%", minHeight: 48, fontSize: 15 }}>
           {saving ? "Saving..." : "Update password"}
         </button>
-        <button type="button" onClick={() => { logout(); navigate("/login", { replace: true }); }} style={{ marginTop: 10, width: "100%", padding: 10, border: "none", background: "none", color: "#64748B", fontSize: 13, cursor: "pointer" }}>
+        <button type="button" onClick={() => { logout(); navigate("/login", { replace: true }); }} style={{ marginTop: 10, width: "100%", padding: 10, border: "none", background: "none", color: "var(--subtext)", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
           Sign out
         </button>
       </form>
+      </div>
     </div>
   );
 }

@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { saveSchool, findSchoolByCode } from "../utils/school";
 import { homeFor } from "../utils/home";
-import { LifeBuoy } from "lucide-react";
+import { LifeBuoy, AlertCircle } from "lucide-react";
+import PlatformHero from "../components/PlatformHero";
+import EmptyState from "../components/ui/EmptyState";
 import { errorMessage } from "../utils/toast";
 
 // /support#token=... — opened from the EduAmigo owner console. Signs in as the school's admin for the
@@ -36,13 +38,14 @@ export default function SupportLogin() {
   }, [token, login, navigate]);
 
   return (
-    <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", fontFamily: "inherit", background: "#F4F5F8", padding: 24 }}>
-      <div style={{ background: "#fff", borderRadius: 16, padding: 24, maxWidth: 380, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: 8 }}><LifeBuoy aria-hidden size={34} color="#2F5BD3" /></div>
-        <h2 style={{ margin: "0 0 8px", fontSize: 18 }}>EduAmigo support</h2>
-        {error
-          ? <p style={{ color: "#B42318", fontSize: 14 }}>{error}</p>
-          : <p style={{ color: "#667085", fontSize: 14 }}>Opening the school…</p>}
+    <div className="ea-auth ea-platform" style={{ minHeight: "100vh", height: "100vh", display: "flex", flexDirection: "column", background: "var(--card)", fontFamily: "inherit", overflowY: "auto" }}>
+      <PlatformHero icon={LifeBuoy} subtitle="Support session" />
+      <div style={{ flex: 1, background: "var(--card)", padding: "8px 22px 40px" }}>
+        {error ? (
+          <EmptyState role="alert" tone="danger" icon={AlertCircle} title="EduAmigo support" text={error} plain />
+        ) : (
+          <EmptyState role="status" icon={LifeBuoy} title="EduAmigo support" text="Opening the school…" plain />
+        )}
       </div>
     </div>
   );

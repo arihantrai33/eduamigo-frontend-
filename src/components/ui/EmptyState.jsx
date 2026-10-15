@@ -2,9 +2,10 @@
 //   <EmptyState icon={FileText} title="No transfer certificate yet" text="Issued when the student leaves."
 //     actions={<button className="ea-btn ea-btn--primary" ...>Go to Year End</button>} />
 // plain: no frame of its own, for use inside a card or a table that already has one.
-export default function EmptyState({ icon: Icon, title, text, actions, role, plain }) {
+// tone="danger": something went wrong (the icon turns red); the text says what and what to do.
+export default function EmptyState({ icon: Icon, title, text, actions, role, plain, tone }) {
   return (
-    <div className={plain ? "ea-empty ea-empty--plain" : "ea-empty"} role={role}>
+    <div className={`ea-empty${plain ? " ea-empty--plain" : ""}${tone === "danger" ? " ea-empty--danger" : ""}`} role={role}>
       {Icon && <span className="ea-empty__icon" aria-hidden="true"><Icon size={24} /></span>}
       <h2 className="ea-empty__title">{title}</h2>
       {text && <p className="ea-empty__text">{text}</p>}
