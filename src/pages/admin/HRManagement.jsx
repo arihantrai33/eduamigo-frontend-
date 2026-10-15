@@ -187,10 +187,10 @@ export default function HRManagement() {
               </select>
             </div>
             <div style={{ display:"flex", gap:10 }}>
-              <button onClick={generateSalaries} disabled={loading} style={{ padding:"10px 20px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#374151" }}>
+              <button type="button" className="ea-btn ea-btn--ghost" onClick={generateSalaries} disabled={loading}>
                 <Glyph e="⚡" /> Auto Generate
               </button>
-              <button onClick={() => openModal("salary")} style={{ padding:"10px 20px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#0F172A,#1E3A5F)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer" }}>
+              <button type="button" className="ea-btn ea-btn--primary" onClick={() => openModal("salary")}>
                 + Add Salary
               </button>
             </div>
@@ -223,10 +223,10 @@ export default function HRManagement() {
                     <td style={{ padding:"12px 14px" }}>
                       <div style={{ display:"flex", gap:6 }}>
                         {s.status === "Pending" && (
-                          <button onClick={() => handleLeaveAction(s._id, "Paid")} style={{ padding:"5px 12px", borderRadius:8, border:"none", background:"#F0FDF4", color:"#15803D", fontSize:11, fontWeight:700, cursor:"pointer" }}>Mark Paid</button>
+                          <button type="button" className="ea-btn ea-btn--primary ea-btn--sm" onClick={() => handleLeaveAction(s._id, "Paid")}>Mark Paid</button>
                         )}
-                        <button type="button" aria-label="Edit salary record" title="Edit" onClick={() => openModal("salary", s)} style={{ padding:"5px 10px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", fontSize:11, cursor:"pointer" }}><Glyph e="✏" /></button>
-                        <button type="button" aria-label="Delete salary record" title="Delete" onClick={() => handleDelete(s._id)} style={{ padding:"5px 10px", borderRadius:8, border:"none", background:"#FEF2F2", color:"#DC2626", fontSize:11, cursor:"pointer" }}><Glyph e="🗑" /></button>
+                        <button type="button" aria-label="Edit salary record" title="Edit" onClick={() => openModal("salary", s)} className="ea-btn ea-btn--ghost ea-btn--sm ea-btn--icon"><Glyph e="✏" /></button>
+                        <button type="button" aria-label="Delete salary record" title="Delete" onClick={() => handleDelete(s._id)} className="ea-btn ea-btn--danger-ghost ea-btn--sm ea-btn--icon"><Glyph e="🗑" /></button>
                       </div>
                     </td>
                   </tr>
@@ -244,7 +244,7 @@ export default function HRManagement() {
               <option value="">All Statuses</option>
               {["Pending","Approved","Rejected"].map(s => <option key={s} value={s}>{s}</option>)}
             </select>
-            <button onClick={() => openModal("leave")} style={{ padding:"10px 20px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#0F172A,#1E3A5F)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer" }}>
+            <button type="button" className="ea-btn ea-btn--primary" onClick={() => openModal("leave")}>
               + Add Leave
             </button>
           </div>
@@ -274,11 +274,11 @@ export default function HRManagement() {
                     <StatusBadge status={l.status} />
                     {l.status === "Pending" && (
                       <>
-                        <button onClick={() => handleLeaveAction(l._id, "Approved")} style={{ padding:"6px 14px", borderRadius:8, border:"none", background:"#F0FDF4", color:"#15803D", fontSize:12, fontWeight:700, cursor:"pointer" }}>✓ Approve</button>
-                        <button onClick={() => handleLeaveAction(l._id, "Rejected")} style={{ padding:"6px 14px", borderRadius:8, border:"none", background:"#FEF2F2", color:"#DC2626", fontSize:12, fontWeight:700, cursor:"pointer" }}>✗ Reject</button>
+                        <button type="button" className="ea-btn ea-btn--primary ea-btn--sm" onClick={() => handleLeaveAction(l._id, "Approved")}>✓ Approve</button>
+                        <button type="button" className="ea-btn ea-btn--danger-ghost ea-btn--sm" onClick={() => handleLeaveAction(l._id, "Rejected")}>✗ Reject</button>
                       </>
                     )}
-                    <button type="button" aria-label="Delete leave request" title="Delete" onClick={() => handleDelete(l._id)} style={{ padding:"6px 10px", borderRadius:8, border:"none", background:"#F1F5F9", color:"#64748B", fontSize:12, cursor:"pointer" }}><Glyph e="🗑" /></button>
+                    <button type="button" aria-label="Delete leave request" title="Delete" onClick={() => handleDelete(l._id)} className="ea-btn ea-btn--danger-ghost ea-btn--sm ea-btn--icon"><Glyph e="🗑" /></button>
                   </div>
                 </div>
               ))}
@@ -331,8 +331,8 @@ export default function HRManagement() {
               </>}
             </div>
             <div style={{ display:"flex", gap:10, marginTop:24, justifyContent:"flex-end" }}>
-              <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
-              <button onClick={handleSave} disabled={loading} style={{ padding:"10px 24px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#0F172A,#1E3A5F)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer" }}>
+              <button type="button" className="ea-btn ea-btn--ghost" onClick={() => setShowModal(false)}>Cancel</button>
+              <button type="button" className="ea-btn ea-btn--primary" onClick={handleSave} disabled={loading}>
                 {loading ? "Saving..." : "Save"}
               </button>
             </div>

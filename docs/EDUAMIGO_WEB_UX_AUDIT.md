@@ -531,3 +531,40 @@ Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B1.
 - The student fee page still shows "UNPAID" and "PART PAID" in capitals; that page is not a B1 file. It moves to Badge when the student fee page is redesigned (B3/B6).
 - The 43 CSS uppercase rules outside badges are untouched; they belong to B7 and B8.
 - "+ Add Salary", "+ Add Leave" and "Collect" keep their navy/green fills; buttons are B2.
+
+### Redesign batch B2: buttons and actions across admin (2026-10-15)
+Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B2.
+
+**Pages:** fee collection, leave requests, salaries, HR, results, transport, user management.
+
+**Button roles** (plan §2.6):
+- Positive workflow actions are **primary** (solid brand, small in rows): Collect, Approve, Mark Paid, + Add Salary, + Add Leave, Report Cards, and the dialogs' Save/Record payment/Generate/Add Bus/+ Add Stop/Assign/Create User.
+- Neutral actions are **secondary** (`ea-btn--ghost`): Cancel, Edit, Auto Generate, Reopen, Stops, Students, the expand toggle.
+- Receipt is **tertiary**.
+- Reject and Delete are **danger-ghost** (red text, no fill).
+- Success stays a status, not a button colour: "✓ Done" is now success green (was faint grey, 2.6:1). The badges are unchanged.
+- The payment-method picker (green selection, no pressed state) is now the shared Segmented control (`aria-pressed`).
+
+**What was removed:** green, navy, orange and red fills and all gradient buttons on these pages.
+
+**CSS additions** (`src/index.css`; no existing rule changed):
+- `--tertiary`, `--danger-ghost`, `--sm` (nowrap), `--icon`;
+- a ghost hover;
+- a disabled state for `.ea-btn`. A disabled button used to look enabled; the shared rule also fades the AI Tutor's Send button while the box is empty.
+
+**Review (ports 8130/5194):**
+- Before/after side by side at 1280 for all 7 pages and 9 dialogs (Collect, Add Salary ×2, Generate Month, Add Leave, New Bus, Stops, Assign students, Add User).
+- At 390: Fee Collection, the Collect dialog, Leave Requests, Salaries, HR leaves, Transport, the Stops dialog and the Add User dialog.
+- Rest, hover, keyboard focus and disabled captured for primary and danger-ghost.
+- Pixel diff of the sweep against the B1 sweep (156 screens): only the B2 pages and the disabled Send changed; the other differences are data or time (library order, the Reports timestamp, bus trip progress, the splash animation).
+
+**Tests:**
+- 88/88 passed: `workflows`, `interactions`, `ux-regressions`, `admin-keyboard`, `screens`, `accessible-names`, `unsaved-changes`, `error-feedback` and the three `learning` specs.
+- Sweep 390/1280: 10/10 passed, 156 screens, 0 findings.
+- Dark-mode contrast probe: 0 spots under 3:1.
+- Build passes; ESLint counts on all seven pages are unchanged from HEAD.
+
+**Found, not fixed (outside B2):**
+- **HR "Mark Paid" is broken (functional).** On a salary row it calls the leave endpoint (`PUT /hr/leaves/<salary id>`), so it cannot mark a salary paid. This is existing behaviour; the Salaries page has its own working Mark Paid.
+- **Phone layout (B8):** on Leave Requests and Transport at 390, the row/meta line is wider than the card. Approve/Reject and the bus actions are reachable and clickable, but only after the card's content scrolls sideways, which hides the name. Same before B2.
+- **Still to do in B8:** row hover tints (green/blue gradients), table-header gradients, amounts in green, and the HR/Leave Requests status pills are still per-page styles.

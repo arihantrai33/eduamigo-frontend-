@@ -133,8 +133,6 @@ export default function Transport() {
         @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
         .bus-card:hover { transform:translateY(-3px); box-shadow:0 12px 36px rgba(0,0,0,0.12) !important; }
         .bus-card { transition: all 0.25s ease; }
-        .act-btn { transition: all 0.15s ease; }
-        .act-btn:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,0.12); }
       `}</style>
 
       {/* Header */}
@@ -193,20 +191,16 @@ export default function Transport() {
                     </div>
                   </div>
                   <div style={{ display:"flex", gap:8, alignItems:"center" }}>
-                    <button className="act-btn" onClick={() => openStops(bus)}
-                      style={{ padding:"8px 16px", borderRadius:10, border:"1px solid #E2E8F0", background:"white", fontSize:12, fontWeight:700, cursor:"pointer", color:"var(--brand)" }}>
+                    <button type="button" className="ea-btn ea-btn--ghost ea-btn--sm" onClick={() => openStops(bus)}>
                       <Glyph e="📍" /> Stops ({bus.stops?.length||0})
                     </button>
-                    <button className="act-btn" onClick={() => openStudents(bus)}
-                      style={{ padding:"8px 16px", borderRadius:10, border:"1px solid #E2E8F0", background:"white", fontSize:12, fontWeight:700, cursor:"pointer", color:"#10B981" }}>
+                    <button type="button" className="ea-btn ea-btn--ghost ea-btn--sm" onClick={() => openStudents(bus)}>
                       <Glyph e="👦" /> Students ({bus.assignedStudents?.length||0})
                     </button>
-                    <button type="button" className="act-btn" onClick={() => setExpandedBus(isExpanded ? null : bus._id)} aria-expanded={isExpanded} aria-label={isExpanded ? "Hide bus details" : "Show bus details"}
-                      style={{ padding:"8px 14px", borderRadius:10, border:"1px solid #E2E8F0", background: isExpanded ? "#F1F5F9" : "white", fontSize:12, fontWeight:700, cursor:"pointer", color:"#64748B" }}>
+                    <button type="button" className="ea-btn ea-btn--ghost ea-btn--sm ea-btn--icon" onClick={() => setExpandedBus(isExpanded ? null : bus._id)} aria-expanded={isExpanded} aria-label={isExpanded ? "Hide bus details" : "Show bus details"}>
                       {isExpanded ? "▲" : "▼"}
                     </button>
-                    <button type="button" className="act-btn" onClick={() => handleDeleteBus(bus._id)} aria-label={`Delete bus ${bus.busNumber}`} title="Delete"
-                      style={{ width:34, height:34, borderRadius:10, border:"none", background:"#FEF2F2", cursor:"pointer", fontSize:14 }}>
+                    <button type="button" className="ea-btn ea-btn--danger-ghost ea-btn--sm ea-btn--icon" onClick={() => handleDeleteBus(bus._id)} aria-label={`Delete bus ${bus.busNumber}`} title="Delete">
                       <Glyph e="🗑" />
                     </button>
                   </div>
@@ -257,8 +251,8 @@ export default function Transport() {
             ))}
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
-            <button onClick={() => setShowAddModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
-            <button onClick={handleAddBus} disabled={saving} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#F59E0B,#F97316)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", opacity:saving?0.7:1 }}>
+            <button type="button" className="ea-btn ea-btn--ghost" onClick={() => setShowAddModal(false)}>Cancel</button>
+            <button type="button" className="ea-btn ea-btn--primary" onClick={handleAddBus} disabled={saving}>
               {saving ? "Adding..." : "Add Bus"}
             </button>
           </div>
@@ -291,7 +285,7 @@ export default function Transport() {
                 </label>
               ))}
             </div>
-            <button onClick={handleAddStop} style={{ marginTop:12, width:"100%", padding:"10px", borderRadius:10, border:"none", background:"linear-gradient(135deg,#F59E0B,#F97316)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer" }}>
+            <button type="button" className="ea-btn ea-btn--primary" onClick={handleAddStop} style={{ marginTop:12, width:"100%" }}>
               + Add Stop
             </button>
           </div>
@@ -312,8 +306,8 @@ export default function Transport() {
             ))}
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
-            <button onClick={() => setShowStudentsModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
-            <button onClick={handleAssignStudents} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#F59E0B,#F97316)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer" }}>
+            <button type="button" className="ea-btn ea-btn--ghost" onClick={() => setShowStudentsModal(false)}>Cancel</button>
+            <button type="button" className="ea-btn ea-btn--primary" onClick={handleAssignStudents}>
               Save
             </button>
           </div>

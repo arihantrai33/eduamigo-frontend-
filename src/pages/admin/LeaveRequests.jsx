@@ -75,8 +75,6 @@ export default function LeaveRequests() {
         @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
         .leave-card:hover { box-shadow: 0 8px 32px rgba(15,23,42,0.12) !important; transform: translateY(-2px); }
         .leave-card { transition: all 0.2s ease; }
-        .act-btn { transition: all 0.15s ease; }
-        .act-btn:hover { transform: translateY(-1px); }
       `}</style>
 
       {/* Header */}
@@ -154,14 +152,12 @@ export default function LeaveRequests() {
                     </div>
                     {status === "Pending" && (
                       <div style={{ display:"flex", gap:8 }}>
-                        <button className="act-btn" onClick={e => { e.stopPropagation(); handleAction(l._id, "Approved"); }}
-                          disabled={!!actionLoading}
-                          style={{ padding:"8px 18px", borderRadius:10, border:"none", background:"linear-gradient(135deg,#10B981,#059669)", color:"white", fontSize:12, fontWeight:700, cursor:"pointer", boxShadow:"0 2px 8px rgba(16,185,129,0.3)", opacity: actionLoading ? 0.7 : 1 }}>
+                        <button type="button" className="ea-btn ea-btn--primary ea-btn--sm" onClick={e => { e.stopPropagation(); handleAction(l._id, "Approved"); }}
+                          disabled={!!actionLoading}>
                           {actionLoading === l._id + "Approved" ? "Approving…" : "✓ Approve"}
                         </button>
-                        <button className="act-btn" onClick={e => { e.stopPropagation(); handleAction(l._id, "Rejected"); }}
-                          disabled={!!actionLoading}
-                          style={{ padding:"8px 18px", borderRadius:10, border:"none", background:"linear-gradient(135deg,#EF4444,#DC2626)", color:"white", fontSize:12, fontWeight:700, cursor:"pointer", boxShadow:"0 2px 8px rgba(239,68,68,0.3)", opacity: actionLoading ? 0.7 : 1 }}>
+                        <button type="button" className="ea-btn ea-btn--danger-ghost ea-btn--sm" onClick={e => { e.stopPropagation(); handleAction(l._id, "Rejected"); }}
+                          disabled={!!actionLoading}>
                           {actionLoading === l._id + "Rejected" ? "Rejecting…" : "✗ Reject"}
                         </button>
                       </div>

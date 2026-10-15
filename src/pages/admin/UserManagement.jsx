@@ -194,9 +194,8 @@ export default function UserManagement() {
               </div>
             </div>
             <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 20 }}>
-              <button onClick={() => setShowModal(false)} style={{ padding: "9px 20px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#F8FAFC", fontSize: 13, cursor: "pointer", color: "#64748B" }}>Cancel</button>
-              <button onClick={handleAdd} disabled={saving}
-                style={{ padding: "9px 24px", borderRadius: 8, border: "none", background: saving ? "#94A3B8" : "var(--brand-gradient)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: saving ? "not-allowed" : "pointer" }}>
+              <button type="button" className="ea-btn ea-btn--ghost" onClick={() => setShowModal(false)}>Cancel</button>
+              <button type="button" className="ea-btn ea-btn--primary" onClick={handleAdd} disabled={saving}>
                 {saving ? "Creating..." : "Create User"}
               </button>
             </div>

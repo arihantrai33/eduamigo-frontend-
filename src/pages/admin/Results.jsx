@@ -124,10 +124,10 @@ export default function Results() {
           <option value="">All Terms</option>
           {termNames.map(t => <option key={t} value={t}>{t}</option>)}
         </select>
-        <button onClick={() => (filterClass && filterSection)
+        <button type="button" className="ea-btn ea-btn--primary" onClick={() => (filterClass && filterSection)
             ? navigate(`/report-card?class=${filterClass}&section=${filterSection}&term=${encodeURIComponent(filterTerm || "Term 1")}`)
             : toast.error("Choose a class and section to print report cards")}
-          style={{ padding:"11px 16px", borderRadius:12, border:"none", background:"var(--brand-gradient)", color:"white", fontSize:13, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>
+          style={{ whiteSpace:"nowrap" }}>
           Report Cards
         </button>
         <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600, whiteSpace:"nowrap" }}>{filtered.length} records</div>
@@ -197,8 +197,7 @@ export default function Results() {
                     </span>
                   </td>
                   <td style={{ padding:"14px 18px" }}>
-                    {r.exam && <button onClick={() => reopen(r)} title="Reopen this exam's marks for correction"
-                      style={{ padding:"6px 12px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", color:"#64748B", fontSize:12, fontWeight:700, cursor:"pointer" }}>Reopen</button>}
+                    {r.exam && <button type="button" className="ea-btn ea-btn--ghost ea-btn--sm" onClick={() => reopen(r)} title="Reopen this exam's marks for correction">Reopen</button>}
                   </td>
                 </tr>
               );

@@ -855,6 +855,21 @@ input:-webkit-autofill:focus {
 .ea-btn--primary { background: var(--brand); color: #fff; }
 .ea-btn--primary:hover { background: var(--brand-dark); }
 .ea-btn--danger { background: var(--ea-danger); color: #fff; }
+/* Button roles (design plan §2.6): primary (solid brand, one per region), ghost = secondary (surface + line), tertiary
+   (text only, brand), danger (solid, only in the confirm dialog), danger-ghost (red text, no fill: Delete, Reject in
+   tables). Positive workflow actions (Collect, Approve, Mark paid) are primary, never green; success is a status
+   (badge, "✓ Done"), not a button colour. */
+.ea-btn--ghost:hover { background: var(--ea-hover); }
+.ea-btn--tertiary { background: transparent; color: var(--brand-dark); padding-inline: 8px; }
+.ea-btn--tertiary:hover { background: var(--brand-soft); }
+.ea-btn--danger-ghost { background: var(--ea-surface); border-color: var(--ea-line); color: var(--ea-danger); }
+.ea-btn--danger-ghost:hover { background: #FEF2F2; border-color: #FECACA; }
+.ea-btn--sm { min-height: 32px; padding: 0 12px; border-radius: var(--ea-radius-sm); font-size: 12.5px; white-space: nowrap; }  /* row actions never wrap ("Mark / Paid") */
+.ea-btn--icon { padding: 0; width: 36px; }
+.ea-btn--sm.ea-btn--icon { width: 32px; }
+/* Disabled (and busy while saving) reads as unavailable; before, a disabled button looked exactly like an enabled one. */
+.ea-btn:disabled, .ea-btn[aria-disabled="true"] { opacity: 0.55; cursor: not-allowed; }
+.ea-btn--primary:disabled:hover { background: var(--brand); }
 
 .ea-icon-chip--brand { background: var(--brand-soft); color: var(--brand-dark); }
 .ea-icon-chip--success { background: #F0FDF4; color: var(--ea-success); }

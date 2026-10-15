@@ -11,6 +11,7 @@ import PageHeader from "../../components/ui/PageHeader";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import { toneOf } from "../../components/ui/tone";
 import Badge from "../../components/ui/Badge";
+import Segmented from "../../components/ui/Segmented";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -99,8 +100,6 @@ export default function FeeCollection() {
         @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
         .fee-row:hover { background:#F0FDF4 !important; transform:translateX(2px); }
         .fee-row { transition: all 0.15s ease; }
-        .act-btn { transition: all 0.15s ease; }
-        .act-btn:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,0.1); }
       `}</style>
 
       {/* Header */}
@@ -194,16 +193,15 @@ export default function FeeCollection() {
                   </td>
                   <td style={{ padding:"14px 18px" }}>
                     {status !== "Paid" ? (
-                      <button className="act-btn" onClick={() => openCollect(f)}
-                        style={{ padding:"7px 16px", borderRadius:10, border:"none", background:"linear-gradient(135deg,#10B981,#059669)", color:"white", fontSize:12, fontWeight:700, cursor:"pointer", boxShadow:"0 2px 8px rgba(16,185,129,0.3)" }}>
+                      <button type="button" className="ea-btn ea-btn--primary ea-btn--sm" onClick={() => openCollect(f)}>
                         Collect
                       </button>
                     ) : (
-                      <span style={{ fontSize:12, color:"#94A3B8", fontWeight:600 }}>✓ Done</span>
+                      <span style={{ fontSize:12, color:"var(--ea-success)", fontWeight:600 }}>✓ Done</span>
                     )}
                     {f.payments?.length > 0 && (
-                      <button type="button" onClick={() => navigate(`/receipt/${f._id}/${f.payments[f.payments.length - 1].receiptNo}`)} title="Latest receipt"
-                        style={{ display:"block", marginTop:2, border:"none", background:"none", color:"var(--brand)", fontSize:12, fontWeight:700, cursor:"pointer", padding:"6px 0", minHeight:28 }}>
+                      <button type="button" className="ea-btn ea-btn--tertiary ea-btn--sm" onClick={() => navigate(`/receipt/${f._id}/${f.payments[f.payments.length - 1].receiptNo}`)} title="Latest receipt"
+                        style={{ display:"flex", marginTop:4, marginLeft:-8 }}>
                         Receipt{f.payments.length > 1 ? ` (${f.payments.length})` : ""}
                       </button>
                     )}
@@ -231,19 +229,12 @@ export default function FeeCollection() {
             </div>
             <div>
               <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>PAYMENT METHOD</div>
-              <div style={{ display:"flex", gap:8 }}>
-                {["Cash","UPI","Online","Cheque"].map(m => (
-                  <button key={m} onClick={() => setPayMethod(m)}
-                    style={{ flex:1, padding:"10px", borderRadius:10, border:`2px solid ${payMethod===m?"#10B981":"#E2E8F0"}`, background:payMethod===m?"#F0FDF4":"white", color:payMethod===m?"#059669":"#64748B", fontWeight:700, fontSize:13, cursor:"pointer", transition:"all 0.15s" }}>
-                    {m}
-                  </button>
-                ))}
-              </div>
+              <Segmented label="Payment method" value={payMethod} onChange={setPayMethod}
+                options={["Cash","UPI","Online","Cheque"].map((m) => ({ value: m, label: m }))} />
             </div>
             <div style={{ display:"flex", gap:10, justifyContent:"flex-end", marginTop:4 }}>
-              <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
-              <button onClick={handleCollect} disabled={saving}
-                style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#10B981,#059669)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 14px rgba(16,185,129,0.4)", opacity:saving?0.7:1 }}>
+              <button type="button" className="ea-btn ea-btn--ghost" onClick={() => setShowModal(false)}>Cancel</button>
+              <button type="button" className="ea-btn ea-btn--primary" onClick={handleCollect} disabled={saving}>
                 {saving ? "Processing..." : "Record payment"}
               </button>
             </div>

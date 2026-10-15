@@ -129,8 +129,6 @@ export default function SalaryManagement() {
         @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
         .sal-row:hover { background:#F0FDF4 !important; transform:translateX(2px); }
         .sal-row { transition: all 0.15s ease; }
-        .act-btn { transition: all 0.15s ease; }
-        .act-btn:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,0.1); }
       `}</style>
 
       {/* Header */}
@@ -228,13 +226,11 @@ export default function SalaryManagement() {
                   <td style={{ padding:"14px 18px" }}>
                     <div style={{ display:"flex", gap:8 }}>
                       {s.status === "Pending" && (
-                        <button className="act-btn" onClick={() => handleMarkPaid(s._id)}
-                          style={{ padding:"6px 14px", borderRadius:8, border:"none", background:"linear-gradient(135deg,#10B981,#059669)", color:"white", fontSize:11, fontWeight:700, cursor:"pointer" }}>
+                        <button type="button" className="ea-btn ea-btn--primary ea-btn--sm" onClick={() => handleMarkPaid(s._id)}>
                           Mark Paid
                         </button>
                       )}
-                      <button className="act-btn" onClick={() => openEdit(s)}
-                        style={{ padding:"6px 14px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", color:"#374151", fontSize:11, fontWeight:700, cursor:"pointer" }}>
+                      <button type="button" className="ea-btn ea-btn--ghost ea-btn--sm" onClick={() => openEdit(s)}>
                         Edit
                       </button>
                     </div>
@@ -279,8 +275,8 @@ export default function SalaryManagement() {
             <input value={form.remarks} onChange={e => f("remarks", e.target.value)} placeholder="Optional remarks..."
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />)}
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
-            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
-            <button onClick={handleSave} disabled={saving} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#059669,#0891B2)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", opacity:saving?0.7:1 }}>
+            <button type="button" className="ea-btn ea-btn--ghost" onClick={() => setShowModal(false)}>Cancel</button>
+            <button type="button" className="ea-btn ea-btn--primary" onClick={handleSave} disabled={saving}>
               {saving ? "Saving..." : "Save"}
             </button>
           </div>
@@ -304,8 +300,8 @@ export default function SalaryManagement() {
                 style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box" }} />)}
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
-            <button onClick={() => setShowGenerateModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
-            <button onClick={handleGenerate} disabled={generating} style={{ padding:"10px 28px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#059669,#0891B2)", color:"white", fontWeight:700, fontSize:13, cursor:"pointer", opacity:generating?0.7:1 }}>
+            <button type="button" className="ea-btn ea-btn--ghost" onClick={() => setShowGenerateModal(false)}>Cancel</button>
+            <button type="button" className="ea-btn ea-btn--primary" onClick={handleGenerate} disabled={generating}>
               {generating ? "Generating..." : "Generate"}
             </button>
           </div>
