@@ -425,17 +425,27 @@ library, admissions, communications, user management, teacher attendance class a
 grid for timetables (they stay a day list in the reading column); real devices and Safari/Firefox not checked.
 
 ## Phase 3 (2026-10-15, in progress): product-wide pass — tracker
-Commits 71f005a, a74587f, 0b3d276, 4c55df9, bb6d39b, 83bf26e (local).
+Batch 1: 71f005a … 55649f9. Batch 2: 26acc96, 27930ce, 9654743, 0cd27e8, 783f641, 29a17eb and the crawl/checklist commit after them (all local, not pushed).
 | Area | Done (verified by e2e and/or screenshots) | Pending |
 |---|---|---|
 | Shared confirm dialog | alertdialog, Escape, Cancel focused for destructive, focus return | — |
 | Destructive actions | event delete and account deactivation now ask | review every other delete for wording |
-| Selected state | aria-pressed on all tab/filter groups found by crawl and scan | re-run crawl to confirm |
-| Empty states | `components/ui/EmptyState` (used on transfer certificate) | adopt on remaining custom empty states |
-| Admin dialogs | field-level messages: events (was silent), users, exams, fees, library, bus, HR, salaries | timetable period, transport stops, settings, bulk operations |
+| Selected state | aria-pressed on all tab/filter groups; the crawl now skips the already-pressed option of a group (choosing it again rightly does nothing) | — |
+| Admin dialogs and forms | field-level messages everywhere: events, users, exams, fees, library, bus, HR, salaries, timetable period, bus stops, settings, bulk operations | — |
+| AI Tutor | streamed answer, network error with Try again, voice listening/speaking with Stop speaking, reviewed at 1280 and 390. AI off: no "ask this" starters, the empty chat points at the Revision Planner (e2e). Phone tab row fades at the edge to show it scrolls | real-device voice (see AI docs) |
+| Admin reports | `/admin/reports` reviewed at 1280: stat cards and progress bars read clearly; no chart library, nothing broken | real charts would be a product decision |
+| Dark mode | student and parent portals: sidebar and the --ea-* tokens follow the theme (only in those portals, `.ea-shell--themed`); text that was dark on dark fixed on calendar, attendance, results, profile, chat, bus, leave history, AI Tutor toolbar. A contrast probe over all 23 student/parent screens went from ~90 spots under 3:1 to 3 marginal ones (grade pill, partial-fee amount, "At Home" on the parent bus) | teacher portal has a "Dark Mode" switch that only darkens its own help cards (decision: remove it or build teacher dark mode); admin has no dark theme (no switch) |
+| Contrast (light) | section labels token --ea-faint now 4.5:1 (was 2.6:1); amber status text (UNPAID, PARTIAL, Pending, Leave) moved to amber-700 | remaining grey-on-white captions on bus/fee rows (pre-existing) |
+| Empty states | `components/ui/EmptyState` (+ `plain` variant) on 19 admin empty states (lucide icons instead of emoji); the `.ea-empty` name clash that stripped its padding fixed (`.ea-empty-line`); Library tells "no match" from "no books" | student/parent notifications, student notes/chat/leave lists, teacher leave |
+| School setup | checklist "Go" buttons named per step and move focus to the section they scroll to | — |
+| Search pills | student notes and teacher messages: 24 px field, visible focus ring (was outline: none) | — |
 | Add teacher/parent | centred 760 px column | — |
 | Select school | full-viewport split like sign-in | code-link state still a card |
 | Bus tracking | stops panel beside the map on desktop | fullscreen mode on desktop not reviewed |
 | Timetables | week view on desktop (student, teacher); status only for today | admin timetable editor |
-| Not yet reviewed in this phase | | AI tutor states (streaming/voice/errors), admin reports charts, notifications pages' empty states, dark mode across portals, 1024 px width sweep, full suite run |
-Tests at the end of this batch: targeted runs all passing (latest 22/22); full suite not re-run after the last two commits.
+
+Evidence for batch 2:
+- Full e2e suite on isolated ports 8130/5194: 101 passed, 19 skipped (opt-in sweep/crawl and conditional specs), 0 failed (after 9654743). Targeted re-runs after later commits: interactions + screens + accessible names 29/29, learning 34/34.
+- 1024 px sweep (78 screens, all portals and public pages): no sideways scroll, cut-off, covered or clipped text, page errors or failed API calls; two small touch targets (the search pills), fixed in 29a17eb.
+- Dead-click crawl (all four portals, 63 screens, 206 clicks): no failed actions. The only "no change" left is School setup "Go to: Assign class teachers", whose section is already on screen; it moves focus there (checked), which the crawl does not watch. The earlier run also flagged re-choosing an already-selected option (17 of them); the crawl now skips those.
+- Build passes; ESLint reports nothing on changed lines (the pages still carry older lint findings on untouched lines).

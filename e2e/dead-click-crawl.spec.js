@@ -58,6 +58,9 @@ for (const [role, routes] of Object.entries(ROUTES)) {
         const r = el.getBoundingClientRect();
         if (r.width === 0 || r.height === 0 || el.disabled || el.closest('nav, aside, .ea-bottom-nav, .ea-sidebar, [aria-hidden="true"]')) return;
         if (el.getAttribute('aria-selected') === 'true' || el.getAttribute('aria-current')) return; // already the current tab/page
+        // The pressed option of a single-choice group (filters, segmented tabs, a teacher's only class, Present/Absent):
+        // choosing it again rightly changes nothing. Toggles such as mute start unpressed, so they are still tried.
+        if (el.getAttribute('aria-pressed') === 'true') return;
         const n = nameOf(el);
         if (!re.test(n)) out.push({ i, name: n.slice(0, 40) });
       });

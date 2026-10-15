@@ -67,7 +67,7 @@ function Checklist({ status, onJump }) {
               </span>
               <span style={{ flex: 1, textDecoration: step.done ? "line-through" : "none" }}>{step.label}</span>
               {!step.done && (
-                <button style={ui.ghost} onClick={() => (link.path ? navigate(link.path) : onJump(link.anchor))}>Go</button>
+                <button type="button" style={ui.ghost} aria-label={`Go to: ${step.label}`} onClick={() => (link.path ? navigate(link.path) : onJump(link.anchor))}>Go</button>
               )}
             </div>
           );
@@ -129,7 +129,7 @@ function Sessions({ onChanged }) {
   const saveSettings = () => run(() => axios.put(`${API}/academic/settings`, settings, auth()), "Settings saved");
 
   return (
-    <div id="sessions" style={ui.card}>
+    <div id="sessions" tabIndex={-1} style={ui.card}>
       <h3 style={ui.title}>Academic sessions</h3>
       <p style={ui.hint}>
         Current session: <strong style={{ color: "#0F172A" }}>{current || "—"}</strong>. New admissions, fees, exams and report
@@ -309,7 +309,7 @@ function Classes({ onChanged }) {
   if (!classes) return <div style={ui.card}><p style={ui.hint}>Loading classes…</p></div>;
 
   return (
-    <div id="classes" style={ui.card}>
+    <div id="classes" tabIndex={-1} style={ui.card}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
         <div>
           <h3 style={ui.title}>Classes, sections and subjects</h3>
@@ -372,7 +372,13 @@ export default function AcademicSetup() {
   }, []);
   useEffect(() => { loadStatus(); }, [loadStatus]);
 
-  const jump = (anchor) => document.getElementById(anchor)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  // Scroll to the section and move keyboard focus there, so Tab continues inside it.
+  const jump = (anchor) => {
+    const el = document.getElementById(anchor);
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+    el.focus({ preventScroll: true });
+  };
 
   return (
     <div style={{ fontFamily: "inherit", maxWidth: 900, margin: "0 auto" }}>
