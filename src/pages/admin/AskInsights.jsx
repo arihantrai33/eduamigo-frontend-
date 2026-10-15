@@ -4,6 +4,7 @@ import AskKnowledge from "./AskKnowledge";
 import AiUsage from "./AiUsage";
 import PageHeader from "../../components/ui/PageHeader";
 import { getAssistantMetrics, getAssistantEvaluation, getTickets, updateTicket, errorText } from "../../api/assistant";
+import Skeleton from "../../components/ui/Skeleton";
 
 // EduAmigo Ask insights: how well the assistant routes and resolves questions (PS18 metrics),
 // what people ask about, and every hand-off ticket in the school.
@@ -146,7 +147,7 @@ export default function AskInsights() {
                 </>
               )}
             </>
-          ) : <div style={s.muted}>Loading...</div>}
+          ) : <Skeleton rows={3} label="Loading" />}
         </section>
 
         <section style={s.card}>
@@ -173,7 +174,7 @@ export default function AskInsights() {
                 </>
               )}
             </>
-          ) : <div style={s.muted}>Loading...</div>}
+          ) : <Skeleton rows={3} label="Loading" />}
         </section>
       </div>
 

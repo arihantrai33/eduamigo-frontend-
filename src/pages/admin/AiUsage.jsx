@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { AlertTriangle, Info, OctagonAlert } from "lucide-react";
 import { getAiUsage, errorText } from "../../api/assistant";
+import Skeleton from "../../components/ui/Skeleton";
 
 // The school's AI use this month: calls, tokens, an estimated cost (only when prices are configured) and the limits that stop
 // paid calls, with warnings. The cost is an estimate from tokens, never the provider's invoice; the page says so.
@@ -14,7 +15,7 @@ export default function AiUsage() {
   const [error, setError] = useState("");
   useEffect(() => { getAiUsage().then(setData).catch((err) => setError(errorText(err))); }, []);
   if (error) return <p className="ea-alert" role="alert"><span>{error}</span></p>;
-  if (!data) return <p role="status" style={{ color: "var(--subtext)" }}>Loading…</p>;
+  if (!data) return <Skeleton rows={4} label="Loading AI usage" />;
   const { totals, cost, limits, alerts } = data;
   return (
     <section style={{ display: "grid", gap: 14 }} aria-label="AI usage and cost">

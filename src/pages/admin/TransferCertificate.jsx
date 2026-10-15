@@ -6,6 +6,7 @@ import { Printer, FileText } from "lucide-react";
 import PageHeader from "../../components/ui/PageHeader";
 import EmptyState from "../../components/ui/EmptyState";
 import { todayLocal } from "../../utils/dates";
+import Skeleton from "../../components/ui/Skeleton";
 
 // Printable transfer certificate (backend: GET /api/students/:id/transfer-certificate).
 const API = import.meta.env.VITE_API_URL;
@@ -60,7 +61,7 @@ export default function TransferCertificate() {
         </>} />
     </div>
   );
-  if (!tc) return <div>{header}<div role="status" style={{ padding: 24, color: "var(--ea-muted)" }}>Loading…</div></div>;
+  if (!tc) return <div>{header}<div style={{ padding: 24 }}><Skeleton rows={5} label="Loading the certificate" /></div></div>;
   const s = tc.student;
   const missing = (tc.missing || []).filter((k) => MISSING_LABELS[k]);
   const rows = [

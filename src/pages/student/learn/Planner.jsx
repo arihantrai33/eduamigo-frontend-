@@ -3,6 +3,7 @@ import { Plus, Trash2, AlertTriangle, CalendarDays } from "lucide-react";
 import { learningApi } from "./api";
 import { toast, errorMessage, confirmAction } from "../../../utils/toast";
 import { todayLocal } from "../../../utils/dates";
+import Skeleton from "../../../components/ui/Skeleton";
 
 // Revision Planner: a day-by-day plan from an exam date (from the school's exam schedule, or one the student enters),
 // the topics to revise and the time available. The plan is made by fixed rules, not by the AI, and anything that does not
@@ -51,7 +52,7 @@ export default function Planner({ context }) {
     try { await learningApi.del(`/plan/${plan._id}`); setPlan(null); toast.success("Plan deleted"); } catch (err) { toast.error(errorMessage(err, "Could not delete the plan")); }
   }
 
-  if (plan === undefined) return <p className="ea-learn__muted" role="status">Loading…</p>;
+  if (plan === undefined) return <Skeleton rows={4} label="Loading" />;
 
   if (plan && !editing) {
     const byDay = plan.items.reduce((m, i) => { (m[i.date] = m[i.date] || []).push(i); return m; }, {});

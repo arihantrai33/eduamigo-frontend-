@@ -10,6 +10,7 @@ import BottomNav from "../../layout/BottomNav";
 import PortalHeader from "../../components/ui/PortalHeader";
 import { plural } from "../../utils/plural";
 import { errorMessage } from "../../utils/toast";
+import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL
 
 const STATUS_COLORS = {
@@ -226,7 +227,7 @@ export default function TeacherAttendance() {
 
         {/* Student List */}
         {loading ? (
-          <div style={{ textAlign: "center", padding: 48, color: "#7B8099", fontSize: 14 }}>Loading students...</div>
+          <Skeleton rows={3} label="Loading students" />
         ) : students.length > 0 ? (
           <>
             {existing && (

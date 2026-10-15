@@ -8,6 +8,7 @@ import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import FieldError from "../../components/ui/FieldError";
 import { useFieldErrors } from "../../utils/fieldErrors";
 import EmptyState from "../../components/ui/EmptyState";
+import Skeleton from "../../components/ui/Skeleton";
 
 const FIELDS = { name: "user-name", email: "user-email" };
 
@@ -137,7 +138,7 @@ export default function UserManagement() {
 
         {/* "Loading" only on the first load: a refresh after a change keeps the rows (and keyboard focus) in place. */}
         {loading && users.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "40px 0", color: "#94A3B8", fontSize: 13 }}>Loading users...</div>
+          <Skeleton rows={3} label="Loading users" />
         ) : filtered.length === 0 ? (
           <EmptyState plain icon={SearchX} title="No users found" text="Try a different search or role." />
         ) : filtered.map((u, i) => {

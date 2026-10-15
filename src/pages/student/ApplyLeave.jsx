@@ -9,6 +9,7 @@ import EmptyState from "../../components/ui/EmptyState";
 import { CalendarDays } from "lucide-react";
 import PortalHeader from "../../components/ui/PortalHeader";
 import SummaryCard from "../../components/ui/SummaryCard";
+import Skeleton from "../../components/ui/Skeleton";
 
 const FIELDS = { fromDate: "leave-from", toDate: "leave-to", reason: "leave-reason" };
 const API = import.meta.env.VITE_API_URL;
@@ -160,7 +161,7 @@ export default function ApplyLeave() {
         <div className="ea-pd-side ea-card" style={{ padding: 20 }}>
           <h2 className="ea-form-section__title">Leave history</h2>
           {historyLoading ? (
-            <div style={{ textAlign: "center", color: dm ? "#94a3b8" : "#aaa", fontSize: "13px", padding: "20px 0" }}>Loading history...</div>
+            <Skeleton rows={3} label="Loading history" />
           ) : leaveHistory.length === 0 ? (
             <EmptyState plain icon={CalendarDays} title="No leave requests yet" text="Requests you send appear here with their status." />
           ) : leaveHistory.map((leave, i) => {

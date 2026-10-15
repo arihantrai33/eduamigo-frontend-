@@ -5,6 +5,7 @@ import { toast, confirmAction, errorMessage } from '../../utils/toast'
 
 import BottomNav from "../../layout/BottomNav";
 import PortalHeader from "../../components/ui/PortalHeader";
+import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
 
@@ -130,7 +131,7 @@ export default function TeacherMarks() {
     }
   }
 
-  if (loading) return <Shell navigate={navigate}><div style={styles.empty}>Loading...</div></Shell>
+  if (loading) return <Shell navigate={navigate}><Skeleton rows={3} label="Loading" /></Shell>
   if (error) return <Shell navigate={navigate}><div style={{ ...styles.empty, color: '#B91C1C' }}>{error}</div></Shell>
   if (!classes.length) return <Shell navigate={navigate}><div style={styles.empty}>No classes are assigned to you yet. Contact the school admin.</div></Shell>
 
@@ -138,7 +139,7 @@ export default function TeacherMarks() {
   if (exam) {
     return (
       <Shell navigate={navigate} title="Enter Marks" onBack={closeExam}>
-        {loadingSheet || !sheet ? <div style={styles.empty}>Loading class list...</div> : (
+        {loadingSheet || !sheet ? <Skeleton rows={3} label="Loading class list" /> : (
           <>
             <div style={styles.card}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
@@ -218,7 +219,7 @@ export default function TeacherMarks() {
       </div>
 
       <div style={styles.label}>Scheduled exams</div>
-      {loadingExams ? <div style={styles.empty}>Loading exams...</div> : exams.length === 0 ? (
+      {loadingExams ? <Skeleton rows={3} label="Loading exams" /> : exams.length === 0 ? (
         <div style={styles.card}>
           <div style={{ fontSize: 14, fontWeight: 600, color: '#1A1A2E' }}>No exams scheduled for your subjects in Class {classKey}</div>
           <div style={{ fontSize: 12, color: '#64748B', marginTop: 4 }}>Exams are created by the school admin in Exam Schedule. Once an exam is scheduled, it appears here for marks entry.</div>

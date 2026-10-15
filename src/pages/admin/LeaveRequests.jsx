@@ -8,6 +8,7 @@ import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import { toneOf } from "../../components/ui/tone";
+import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -114,8 +115,7 @@ export default function LeaveRequests() {
       {/* Leave Cards */}
       {loading ? (
         <div style={{ padding:"60px 0", textAlign:"center" }}>
-          <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid var(--brand)", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
-          <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading leave requests...</div>
+          <Skeleton rows={4} label="Loading leave requests" />
         </div>
       ) : filtered.length === 0 ? (
         <div style={{ background:"white", borderRadius:20, padding: 16, textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>

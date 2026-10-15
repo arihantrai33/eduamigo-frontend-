@@ -5,6 +5,7 @@ import { toast, errorMessage, confirmAction } from "../../utils/toast";
 
 import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
+import Skeleton from "../../components/ui/Skeleton";
 // End of the academic year: promote, detain, leave or pass out (backend: /api/academic/year-end),
 // and transfer certificates for students who have left.
 const API = import.meta.env.VITE_API_URL;
@@ -201,7 +202,7 @@ export default function YearEnd() {
 
       {tab === "former" && (
         <div style={{ ...card, padding: 0, overflow: "hidden" }}>
-          {!former && <p style={{ padding: 20, color: "#64748B" }}>Loading…</p>}
+          {!former && <Skeleton rows={3} label="Loading" />}
           {former && former.length === 0 && <p style={{ padding: 20, color: "#64748B" }}>No former students yet.</p>}
           {former && former.map((s) => (
             <div key={s._id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", borderBottom: "1px solid #F1F5F9" }}>

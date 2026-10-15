@@ -6,6 +6,7 @@ import { CalendarDays } from "lucide-react";
 
 import PortalHeader from "../../components/ui/PortalHeader";
 import { useMediaQuery } from "../../utils/useMediaQuery";
+import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -157,7 +158,7 @@ export default function Timetable() {
                     <span>{DAY_FULL[day]}</span>
                     <small>{shortDateForDay(day, weekOffset)}{today ? " · Today" : ""}</small>
                   </h2>
-                  {list === undefined ? <p className="ea-week__empty">Loading…</p>
+                  {list === undefined ? <Skeleton rows={2} label="Loading periods" />
                     : list.length === 0 ? <p className="ea-week__empty">No classes</p>
                     : list.map((cls, i) => {
                       const isBreak = cls.subject === "Break" || cls.subject?.toLowerCase().includes("lunch");
@@ -181,7 +182,7 @@ export default function Timetable() {
         </div>
 
         {loading ? (
-          <div style={{ textAlign: "center", padding: "40px 0", color: "var(--subtext)", fontSize: 14 }}>Loading...</div>
+          <Skeleton rows={3} label="Loading" />
         ) : classes.length === 0 ? (
           <EmptyState icon={CalendarDays} title="No classes scheduled" text={`No timetable found for ${DAY_FULL[selectedDay]}.`} />
         ) : (

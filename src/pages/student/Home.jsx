@@ -10,6 +10,7 @@ import Glyph from "../../components/Glyph";
 import HeroStat from "../../components/HeroStat";
 import BottomNav from "../../layout/BottomNav";
 import { plural } from "../../utils/plural";
+import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
 headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -118,7 +119,7 @@ path: "/student/apply-leave",
 if (loading) {
 return (
 <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--bg)" }}>
-<div style={{ fontSize: 14, color: "var(--subtext)" }}>Loading...</div>
+<div className="ea-card" style={{ width: "calc(100% - 32px)", maxWidth: 520, padding: 16, margin: "0 auto" }}><Skeleton rows={5} label="Loading" /></div>
 </div>
     );
   }

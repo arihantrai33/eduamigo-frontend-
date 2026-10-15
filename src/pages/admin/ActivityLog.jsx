@@ -3,6 +3,9 @@ import axios from "axios";
 import { toast, errorMessage } from "../../utils/toast";
 import { activityLabel } from "../../utils/activity";
 import PageHeader from "../../components/ui/PageHeader";
+import Skeleton from "../../components/ui/Skeleton";
+import EmptyState from "../../components/ui/EmptyState";
+import { History } from "lucide-react";
 
 // School activity log: who changed what (backend: GET /api/audit).
 const API = import.meta.env.VITE_API_URL;
@@ -74,8 +77,8 @@ export default function ActivityLog() {
       </div>
 
       <div style={{ ...card, padding: 0, overflow: "hidden" }}>
-        {loading && <p style={empty}>Loading…</p>}
-        {!loading && rows.length === 0 && <p style={empty}>No activity found for these filters.</p>}
+        {loading && <Skeleton rows={3} label="Loading" />}
+        {!loading && rows.length === 0 && <EmptyState plain icon={History} title="No activity found" text="Nothing matches these filters. Clear them or choose other dates." />}
         {!loading && rows.map((r) => (
           <div key={r._id} style={{ borderBottom: "1px solid #F1F5F9" }}>
             <button onClick={() => setOpen(open === r._id ? null : r._id)} style={rowBtn}>
@@ -111,7 +114,6 @@ const card = { background: "#fff", border: "1px solid #E8E8E5", borderRadius: 12
 const lbl = { fontSize: 11, color: "#64748B", fontWeight: 600, display: "flex", flexDirection: "column", gap: 4 };
 const input = { padding: "8px 10px", borderRadius: 8, border: "1px solid #E2E8F0", fontSize: 13, color: "#0F172A", background: "#F8FAFC" };
 const ghost = { padding: "7px 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", color: "#334155", fontSize: 12, fontWeight: 600, cursor: "pointer" };
-const empty = { textAlign: "center", color: "#64748B", fontSize: 13, padding: "28px 0", margin: 0 };
 const rowBtn = { display: "flex", alignItems: "center", gap: 12, width: "100%", padding: "12px 16px", background: "none", border: "none", textAlign: "left", cursor: "pointer" };
 const supportTag = { marginLeft: 6, padding: "1px 6px", borderRadius: 6, background: "#FEF3C7", color: "#92400E", fontSize: 10, fontWeight: 700 };
 const details = { margin: "0 16px 12px", padding: 12, background: "#F8FAFC", border: "1px solid #E2E8F0", borderRadius: 8, fontSize: 11.5, color: "#334155", whiteSpace: "pre-wrap", wordBreak: "break-word", maxHeight: 280, overflow: "auto" };

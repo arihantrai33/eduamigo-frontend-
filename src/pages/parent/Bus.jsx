@@ -10,6 +10,7 @@ import SosModal from "../../components/SosModal";
 
 import Glyph from "../../components/Glyph";
 import { BUS_SVG, schoolSvg, cssVar } from "../../utils/mapIcons";
+import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL;
 const COLOR = {
   primary: "var(--brand)", primaryDark: "var(--brand-dark)", primaryLight: "var(--brand-soft)",
@@ -390,7 +391,7 @@ export default function ParentBus() {
     return (
       <div style={{ minHeight:"100dvh", display:"flex", alignItems:"center", justifyContent:"center", background:"var(--bg)", flexDirection:"column", gap:"16px" }}>
         <div style={{ fontSize:"48px" }}><Glyph e="🚌" /></div>
-        <p style={{ fontSize:"16px", color:"var(--brand)", fontWeight:600 }}>Loading bus information...</p>
+        <Skeleton rows={3} label="Loading bus information" />
       </div>
     );
   }

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { BookOpenText, FileUp, Trash2, Loader2, Eye, EyeOff } from "lucide-react";
 import { getKnowledge, addKnowledge, updateKnowledge, deleteKnowledge, errorText } from "../../api/assistant";
+import Skeleton from "../../components/ui/Skeleton";
 
 // The school's own written documents (handbook, policies, FAQs). EduAmigo Ask answers rules and policy questions
 // only from these, and cites the document and section it used.
@@ -78,7 +79,7 @@ export default function AskKnowledge() {
 
       <section style={s.card}>
         <h2 style={s.h2}>Documents {docs ? `(${docs.length}${limits ? ` of ${limits.documents}` : ""})` : ""}</h2>
-        {!docs && <div style={s.muted}>Loading...</div>}
+        {!docs && <Skeleton rows={3} label="Loading" />}
         {docs?.length === 0 && <div style={s.empty}>No documents yet. Until you add some, questions about school rules are offered to the school office.</div>}
         {docs?.map((d) => (
           <div key={d.id} style={{ ...s.doc, opacity: d.isActive ? 1 : 0.6 }}>

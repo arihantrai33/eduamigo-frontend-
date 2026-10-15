@@ -8,6 +8,7 @@ import BottomNav from "../../layout/BottomNav";
 import PortalHeader from "../../components/ui/PortalHeader";
 import SummaryCard from "../../components/ui/SummaryCard";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
+import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -40,7 +41,7 @@ export default function StudentAttendance() {
   if (loading) return (
     <div style={{ height: "100vh", display: "flex", alignItems: "center",
       justifyContent: "center", background: "var(--bg)" }}>
-      <div style={{ fontSize: 14, color: "var(--subtext)" }}>Loading...</div>
+      <div className="ea-card" style={{ width: "calc(100% - 32px)", maxWidth: 520, padding: 16, margin: "0 auto" }}><Skeleton rows={5} label="Loading" /></div>
     </div>
   );
 

@@ -7,6 +7,7 @@ import { Users } from "lucide-react";
 
 import Glyph from "../../components/Glyph";
 import PortalHeader from "../../components/ui/PortalHeader";
+import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -172,7 +173,7 @@ export default function ParentChat() {
         subtitle={data.child ? `${data.child.name} · Class ${data.child.class}${data.child.section ? `-${data.child.section}` : ''}` : undefined} />
 
       {loading ? (
-        <div style={S.center}><div style={{ color: 'var(--brand)', fontWeight: 600 }}>Loading...</div></div>
+        <div style={S.center}><Skeleton rows={3} label="Loading" /></div>
       ) : (
         <div className="ea-pd-body" style={S.list}>
 

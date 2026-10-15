@@ -6,6 +6,7 @@ import { childQuery } from "../../utils/selectedChild";
 
 import Glyph from "../../components/Glyph";
 import PortalHeader from "../../components/ui/PortalHeader";
+import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -66,7 +67,7 @@ export default function ParentCalendar() {
       <PortalHeader title="School Calendar" onBack={() => navigate(-1)} />
 
       <div className="ea-pd-body" style={{ padding: "16px" }}>
-        {loading && <div style={{ ...card, padding: 16, fontSize: 13, color: "var(--subtext)" }}>Loading calendar...</div>}
+        {loading && <Skeleton rows={3} label="Loading calendar" />}
         {!loading && error && <div style={{ ...card, padding: 16, fontSize: 13, color: "#B91C1C" }}>{error}</div>}
 
         {!loading && !error && (

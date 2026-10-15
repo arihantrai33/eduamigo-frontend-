@@ -881,7 +881,9 @@ input:-webkit-autofill:focus {
 }
 
 /* Loading placeholder rows (components/ui/Skeleton). The shimmer stops under reduced motion (rule further down). */
-.ea-skeleton { display: flex; flex-direction: column; gap: 10px; }
+.ea-skeleton { display: flex; flex-direction: column; gap: 10px; align-self: stretch; width: 100%; text-align: left; }
+/* In a table cell (a list that is loading) the rows keep a margin from the card edges. */
+td .ea-skeleton { box-sizing: border-box; padding: 0 20px; }
 .ea-skeleton__row {
   display: block; height: 14px; border-radius: 6px;
   background: linear-gradient(90deg, var(--ea-hover) 25%, var(--ea-line) 37%, var(--ea-hover) 63%); background-size: 400% 100%;

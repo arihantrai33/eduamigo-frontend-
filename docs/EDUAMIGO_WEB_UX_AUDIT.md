@@ -952,3 +952,39 @@ Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B11, §2.5; owner decision D1 (a
 - 41/41 passed: `auth-and-navigation` (sign out from the sidebar), `admin-keyboard` (menu links, `aria-current`, the drawer's Tab wrap from Close menu to Log Out), `screens`, `unsaved-changes` (Log Out from the `aside` with unsaved changes), the capture spec and the full sweep.
 - The full sweep at four widths (390, 768, 1024, 1280): 312 screens, 0 findings.
 - The build passes; ESLint on `admin/Home.jsx` is clean (as at HEAD).
+
+### Redesign batch B13: states (loading, empty, error) (2026-10-16)
+Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B13, §2.6 (Loading, Empty state, Error state).
+
+**Loading:** no more plain "Loading…" lines. Lists, tables and screens show skeleton rows (`Skeleton`). The label is kept as the screen-reader text ("Loading students", "Loading fee records", …).
+- **14 admin lists:** the spinner plus "Loading X…" became 4 skeleton rows: Students, Teachers, Parents, Fee Collection, Fee Structure, Fee Reports, Attendance Reports, Results, Salaries, Exams, Library, Leave Requests, Transport, Chat (×2).
+- **Whole-screen loading in the student portal:** Home, Attendance, Fee, Notifications, Notes. Skeleton rows in a centred card; checked in light and dark mode.
+- **About 35 other one-line loading messages** across admin, student, teacher and parent: Settings (3), HR (2), Marks (3), Admissions, School setup, Year end, Transfer certificate, AI usage, Ask insights and knowledge, User management, ID cards, the profiles, Timetable, Revision Planner, Progress, the chats, Bus, Calendar and others.
+- **Kept, on purpose:**
+  - The receipt and report card keep their print-styled message.
+  - The Reports "Refresh" button keeps its "Loading..." button text (the button's loading state).
+  - The parent home hero keeps its text (grey rows would not fit on the brand hero).
+- **CSS:** `.ea-skeleton` stretches inside centred containers; in a table cell it keeps a 20 px margin from the card edges.
+
+**Empty and error states (the last ones on the old pattern):**
+- **Teacher notifications:**
+  - Empty: the shared `EmptyState` ("No notifications found", with the filter-specific line).
+  - Error: `EmptyState tone="danger"` with `role="alert"` ("Notifications could not be loaded" plus the message, e.g. "Can't reach EduAmigo right now. Check your internet connection and try again."). The `error-feedback` test reads that message.
+- **Activity log:** `EmptyState` "No activity found", with "Nothing matches these filters. Clear them or choose other dates." (was a plain grey line).
+- Support's missing-token error became an `EmptyState` error in B10.
+
+**Review (ports 8130/5194):**
+- Loading states captured by holding back the API response for 4 s: admin Students at 390 and 1280; student Attendance at 390 in light and dark.
+- The Activity log empty state at 390 and 1280.
+- Teacher notifications: the error (connection aborted) and the empty state.
+- Two fixes from this review:
+  - The whole-screen skeleton sat on the page background, too faint, and was off-centre. It is now in a centred card.
+  - The table-cell skeleton touched the card edges; it now has a margin.
+
+**Tests:**
+- 69/69 passed: `screens`, `scroll`, `accessible-names`, `error-feedback`, `interactions`, `workflows`, `learning`, the sweep and the contrast probe.
+- One of my own screenshot specs failed (`route.continue` after `unroute`, a capture-script bug). It was re-run fixed: 2/2.
+- After the final fixes, `screens` + `error-feedback`: 7/7.
+- Sweep 390/1280: 156 screens, 0 findings.
+- Dark-mode contrast: 0 spots under 3:1.
+- The build passes, and ESLint counts on all 55 changed files match HEAD.

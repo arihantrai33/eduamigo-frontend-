@@ -6,6 +6,7 @@ import BottomNav from "../../layout/BottomNav";
 import PortalHeader from "../../components/ui/PortalHeader";
 import Segmented from "../../components/ui/Segmented";
 import { errorMessage } from "../../utils/toast";
+import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL;
 
 const NOTE_TYPES = ['Notes', 'Assignment', 'Resource', 'Question Paper'];
@@ -138,7 +139,7 @@ export default function TeacherUpload() {
             {loading ? (
               <div style={styles.centered}>
                 <div style={styles.spinner} />
-                <p style={styles.loadingText}>Loading uploads...</p>
+                <Skeleton rows={3} label="Loading uploads" />
               </div>
             ) : error ? (
               <div style={styles.errorBox}><Glyph e="⚠" /> {error}</div>

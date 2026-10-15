@@ -5,6 +5,7 @@ import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
 import FieldError from "../../components/ui/FieldError";
 import { useFieldErrors } from "../../utils/fieldErrors";
+import Skeleton from "../../components/ui/Skeleton";
 
 const FIELDS = { name: "school-name" };
 
@@ -60,7 +61,7 @@ function OnlinePayments() {
     }
   };
 
-  if (!cfg) return <div className="ea-card" style={card}><h2 className="ea-form-section__title">Online Fee Payments</h2><div style={{ fontSize: 13, color: "#94A3B8" }}>Loading...</div></div>;
+  if (!cfg) return <div className="ea-card" style={card}><h2 className="ea-form-section__title">Online Fee Payments</h2><Skeleton rows={3} label="Loading" /></div>;
   if (cfg.error) return <div className="ea-card" style={card}><h2 className="ea-form-section__title">Online Fee Payments</h2><div style={{ fontSize: 13, color: "#B91C1C" }}>{cfg.error}</div></div>;
   const url = webhookUrl(cfg.webhookPath);
   return (
@@ -110,7 +111,7 @@ function PlanAndBills({ school }) {
         {sub?.endsAt && <span>{sub.status === "trial" ? "Trial ends" : "Paid until"}: <strong>{utcDay(sub.endsAt)}</strong></span>}
         <span>School code: <strong>{school?.code}</strong></span>
       </div>
-      {!invoices ? <p style={{ fontSize: 13, color: "#64748B" }}>Loading bills…</p> : invoices.length === 0 ? (
+      {!invoices ? <Skeleton rows={3} label="Loading bills" /> : invoices.length === 0 ? (
         <p style={{ fontSize: 13, color: "#64748B", margin: 0 }}>No bills yet.</p>
       ) : (
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
@@ -212,7 +213,7 @@ export default function Settings() {
     </div>
   );
 
-  if (loading) return <div style={{ fontFamily: "inherit" }}>{header}<div className="ea-card" style={{ ...card, color: "var(--ea-muted)", fontSize: 13 }}>Loading settings...</div></div>;
+  if (loading) return <div style={{ fontFamily: "inherit" }}>{header}<Skeleton rows={3} label="Loading settings" /></div>;
   if (error) return <div style={{ fontFamily: "inherit" }}>{header}<div className="ea-card" style={{ ...card, color: "#B91C1C", fontSize: 13 }}>{error}</div></div>;
 
   return (

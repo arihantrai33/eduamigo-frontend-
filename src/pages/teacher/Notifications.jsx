@@ -5,6 +5,9 @@ import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
 import PortalHeader from "../../components/ui/PortalHeader";
 import { errorMessage } from "../../utils/toast";
+import Skeleton from "../../components/ui/Skeleton";
+import EmptyState from "../../components/ui/EmptyState";
+import { AlertCircle, Bell } from "lucide-react";
 const API = import.meta.env.VITE_API_URL;
 
 const TYPE_STYLES = {
@@ -90,20 +93,13 @@ export default function TeacherNotifications() {
         {loading ? (
           <div style={styles.centered}>
             <div style={styles.spinner} />
-            <p style={styles.loadingText}>Loading notifications...</p>
+            <Skeleton rows={3} label="Loading notifications" />
           </div>
         ) : error ? (
-          <div style={styles.errorBox}><Glyph e="⚠" /> {error}</div>
+          <EmptyState tone="danger" role="alert" icon={AlertCircle} title="Notifications could not be loaded" text={error} />
         ) : filtered.length === 0 ? (
-          <div style={styles.emptyBox}>
-            <p style={styles.emptyIcon}><Glyph e="🔔" /></p>
-            <p style={styles.emptyText}>No notifications found</p>
-            <p style={styles.emptySubText}>
-              {filter === 'All'
-                ? 'You have no notifications at this time.'
-                : `No "${filter}" notifications found.`}
-            </p>
-          </div>
+          <EmptyState icon={Bell} title="No notifications found"
+            text={filter === 'All' ? 'You have no notifications at this time.' : `No "${filter}" notifications found.`} />
         ) : (
           <>
             <p style={styles.resultCount}>

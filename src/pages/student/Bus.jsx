@@ -13,6 +13,7 @@ import SosModal from "../../components/SosModal";
 import Glyph from "../../components/Glyph";
 import { BUS_SVG, schoolSvg, cssVar } from "../../utils/mapIcons";
 import { errorMessage } from "../../utils/toast";
+import Skeleton from "../../components/ui/Skeleton";
 // ── Utils ──────────────────────────────────────────────────────
 const getTrafficStatus = (speed) => {
   if (!speed || speed === 0) return { color: "#9CA3AF", label: "Stationary" };
@@ -351,7 +352,7 @@ export default function ParentBus() {
       <div style={{ ...styles.pageShell, alignItems: "center", justifyContent: "center" }}>
         <div style={{ textAlign: "center" }}>
           <div style={{ fontSize: "48px", marginBottom: "12px" }}><Glyph e="🚌" /></div>
-          <p style={{ color: "var(--brand)", fontWeight: 600 }}>Loading bus info...</p>
+          <Skeleton rows={3} label="Loading bus info" />
         </div>
       </div>
     );

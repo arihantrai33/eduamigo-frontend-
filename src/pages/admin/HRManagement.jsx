@@ -12,6 +12,7 @@ import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import { toneOf } from "../../components/ui/tone";
 import FieldError from "../../components/ui/FieldError";
 import { useFieldErrors } from "../../utils/fieldErrors";
+import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -205,7 +206,7 @@ export default function HRManagement() {
             </div>
           </div>
 
-          {loading ? <div style={{ textAlign:"center", padding:"40px 0", color:"#94A3B8" }}>Loading...</div>
+          {loading ? <Skeleton rows={3} label="Loading" />
           : salaries.length === 0 ? (
             <div style={{ textAlign:"center", padding: 16 }}>
               <EmptyState plain icon={Banknote} title={`No salary records for ${MONTHS[filterMonth-1]} ${filterYear}`} text={`Click "Auto Generate" to create records for all teachers`} />
@@ -258,7 +259,7 @@ export default function HRManagement() {
             </button>
           </div>
 
-          {loading ? <div style={{ textAlign:"center", padding:"40px 0", color:"#94A3B8" }}>Loading...</div>
+          {loading ? <Skeleton rows={3} label="Loading" />
           : leaves.length === 0 ? (
             <div style={{ textAlign:"center", padding: 16 }}>
               <EmptyState plain icon={CalendarOff} title="No leave requests found" />

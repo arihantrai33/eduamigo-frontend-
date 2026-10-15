@@ -11,6 +11,7 @@ import BottomNav from "../../layout/BottomNav";
 import PortalHeader from "../../components/ui/PortalHeader";
 import SummaryCard from "../../components/ui/SummaryCard";
 import Segmented from "../../components/ui/Segmented";
+import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -76,7 +77,7 @@ export default function ParentFee() {
   if (loading) return (
     <div style={styles.centered}>
       <div style={styles.spinner} />
-      <div style={{ color: "#6b7280", fontSize: 13, marginTop: 12 }}>Loading fee details...</div>
+      <Skeleton rows={3} label="Loading fee details" />
     </div>
   );
 

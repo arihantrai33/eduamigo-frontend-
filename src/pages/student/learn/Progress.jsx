@@ -3,6 +3,7 @@ import { Target, Award, MessageSquare, CalendarCheck } from "lucide-react";
 import { learningApi } from "./api";
 import { errorMessage } from "../../../utils/toast";
 import { StatCard, StatGrid } from "../../../components/ui/StatCard";
+import Skeleton from "../../../components/ui/Skeleton";
 
 // Learning Progress: counts from the student's own practice answers, tutor chats and revision plan. A topic is called weak
 // or strong only after at least three marked answers. No AI involved.
@@ -13,7 +14,7 @@ export default function Progress({ onPractise }) {
   useEffect(() => { learningApi.get("/progress").then(setData).catch((err) => setError(errorMessage(err, "Could not load your progress"))); }, []);
 
   if (error) return <p className="ea-alert" role="alert"><span>{error}</span></p>;
-  if (!data) return <p className="ea-learn__muted" role="status">Loading…</p>;
+  if (!data) return <Skeleton rows={4} label="Loading" />;
   const empty = !data.practice.sets && !data.tutorConversations && !data.plan;
   return (
     <section className="ea-learn__progress" aria-label="Learning Progress">

@@ -8,6 +8,7 @@ import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
 import { plural } from "../../utils/plural";
 import { errorMessage } from "../../utils/toast";
+import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL
 
 function getGreeting() {
@@ -133,7 +134,7 @@ export default function TeacherHome() {
   if (loading) return (
     <div style={styles.centered}>
       <div style={styles.spinner} />
-      <p style={{ color: '#7B8099', fontSize: 13, marginTop: 12 }}>Loading dashboard...</p>
+      <Skeleton rows={3} label="Loading dashboard" />
     </div>
   )
 

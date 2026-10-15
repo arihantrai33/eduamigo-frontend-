@@ -9,6 +9,7 @@ import PortalHeader from "../../components/ui/PortalHeader";
 import SummaryCard from "../../components/ui/SummaryCard";
 import Segmented from "../../components/ui/Segmented";
 import { errorMessage } from "../../utils/toast";
+import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL;
 
 const LEAVE_TYPES = ['Sick Leave', 'Casual Leave', 'Emergency Leave', 'Personal Leave', 'Other'];
@@ -207,7 +208,7 @@ export default function TeacherLeave() {
             {loading ? (
               <div style={styles.centered}>
                 <div style={styles.spinner} />
-                <p style={styles.loadingText}>Loading leave history...</p>
+                <Skeleton rows={3} label="Loading leave history" />
               </div>
             ) : error ? (
               <div style={styles.errorBox}><Glyph e="⚠" /> {error}</div>

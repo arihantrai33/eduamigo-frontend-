@@ -12,6 +12,7 @@ import { toneOf } from "../../components/ui/tone";
 import Badge, { CategoryBadge } from "../../components/ui/Badge";
 import FieldError from "../../components/ui/FieldError";
 import { useFieldErrors } from "../../utils/fieldErrors";
+import Skeleton from "../../components/ui/Skeleton";
 
 // Checked fields; each input's id is "exam-<key>".
 const FIELDS = Object.fromEntries(["title", "subject", "class", "date", "totalMarks", "startTime", "endTime"].map((k) => [k, `exam-${k}`]));
@@ -182,8 +183,7 @@ export default function ExamSchedule() {
       {/* Exam Cards */}
       {loading ? (
         <div style={{ padding:"60px 0", textAlign:"center" }}>
-          <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid var(--brand)", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
-          <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading exams...</div>
+          <Skeleton rows={4} label="Loading exams" />
         </div>
       ) : filtered.length === 0 ? (
         <div style={{ background:"white", borderRadius:20, padding: 16, textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>

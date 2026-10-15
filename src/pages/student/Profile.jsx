@@ -11,6 +11,7 @@ import PortalHeader from "../../components/ui/PortalHeader";
 import { ProfileCard, InfoList, MenuList } from "../../components/ui/Profile";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import BottomNav from "../../layout/BottomNav";
+import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -69,7 +70,7 @@ export default function Profile() {
   if (loading) return (
     <div className="ea-pd-narrow" style={{ minHeight: "100vh", background: "var(--app-bg, #F4F6FB)" }}>
       <PortalHeader title="My Profile" onBack={() => navigate(-1)} />
-      <div style={{ padding: 16, fontSize: 14, color: "var(--ea-muted)" }}>Loading…</div>
+      <Skeleton rows={3} label="Loading" />
     </div>
   );
 

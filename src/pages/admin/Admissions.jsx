@@ -7,6 +7,7 @@ import Modal from "../../components/Dialog";
 import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
 import Chips from "../../components/ui/Chips";
+import Skeleton from "../../components/ui/Skeleton";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -186,7 +187,7 @@ function AdmitDialog({ record, onCancel, onDone }) {
 
   return (
     <Modal title={`Admit ${record.studentName} to Class ${record.classApplied}`} onClose={onCancel} width={480}>
-      {!defaults ? <div style={{ color: "#64748B", fontSize: 13 }}>Loading...</div> : (
+      {!defaults ? <Skeleton rows={3} label="Loading" /> : (
         <form onSubmit={submit} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
           <Field label="Section" required>
             <input style={input} list="adm-sections" value={form.section} required
@@ -361,7 +362,7 @@ export default function Admissions() {
             </tr>
           </thead>
           <tbody>
-            {loading && rows.length === 0 && <tr><td colSpan={8} style={{ padding: 30, textAlign: "center", color: "#94A3B8" }}>Loading...</td></tr>}
+            {loading && rows.length === 0 && <tr><td colSpan={8} style={{ padding: 20 }}><Skeleton rows={4} label="Loading admissions" /></td></tr>}
             {!loading && rows.length === 0 && (
               <tr><td colSpan={8} style={{ padding: 36, textAlign: "center", color: "#64748B" }}>
                 {total === 0 ? "No enquiries yet this year. Record the first one with New enquiry." : "No applications match these filters."}

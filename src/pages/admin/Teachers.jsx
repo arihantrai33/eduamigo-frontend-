@@ -12,6 +12,7 @@ import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
 import { StatCard as SharedStat, StatGrid } from "../../components/ui/StatCard";
 import { toneOf } from "../../components/ui/tone";
+import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -205,8 +206,7 @@ export default function Teachers() {
             {loading ? (
               <tr><td colSpan={7} style={{ padding:"60px 0", textAlign:"center" }}>
                 <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:12 }}>
-                  <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid var(--brand)", animation:"spin 0.8s linear infinite" }} />
-                  <div style={{ color:"#94A3B8", fontSize:13, fontWeight:600 }}>Loading teachers...</div>
+                  <Skeleton rows={4} label="Loading teachers" />
                 </div>
               </td></tr>
             ) : filtered.length === 0 ? (

@@ -6,6 +6,7 @@ import { pressable } from "../../utils/pressable";
 import EmptyState from "../../components/ui/EmptyState";
 import { Megaphone, Users } from "lucide-react";
 import PortalHeader from "../../components/ui/PortalHeader";
+import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
 const avatarColor = (name = '') => {
@@ -185,7 +186,7 @@ export default function Chat() {
         ))}
       </div>
       {loading ? (
-        <div style={S.center}><div style={{ color: 'var(--brand)', fontWeight: 600 }}>Loading...</div></div>
+        <div style={S.center}><Skeleton rows={3} label="Loading" /></div>
       ) : tab === 'chats' ? (
         <div className="ea-pd-body" style={S.list}>
           <div style={S.sectionLabel}><Glyph e="🏫" /> SCHOOL ADMINISTRATION</div>

@@ -4,6 +4,7 @@ import axios from "axios";
 import { errorMessage } from "../../utils/toast";
 import { FileText } from "lucide-react";
 import PageHeader from "../../components/ui/PageHeader";
+import Skeleton from "../../components/ui/Skeleton";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -72,7 +73,7 @@ export default function StudentProfile() {
     </div>
   );
 
-  if (loading) return <div style={{ fontFamily: "inherit" }}>{header}<div style={{ ...card, color: "#999", fontSize: 13 }}>Loading student details...</div></div>;
+  if (loading) return <div style={{ fontFamily: "inherit" }}>{header}<Skeleton rows={3} label="Loading student details" /></div>;
   if (error || !student) {
     return (
       <div style={{ fontFamily: "inherit" }}>

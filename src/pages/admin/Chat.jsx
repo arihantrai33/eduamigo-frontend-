@@ -4,6 +4,7 @@ import { toast, errorMessage } from "../../utils/toast";
 
 import Glyph from "../../components/Glyph";
 import { ArrowLeft, RefreshCw, Search } from "lucide-react";
+import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -295,8 +296,7 @@ export default function Chat() {
         <div style={{ flex: 1, overflowY: "auto" }}>
           {loading ? (
             <div style={{ padding: "48px 0", textAlign: "center" }}>
-              <div style={{ width: 24, height: 24, borderRadius: "50%", border: "2px solid rgba(255,255,255,0.1)", borderTop: "2px solid var(--brand)", animation: "spin 0.8s linear infinite", margin: "0 auto 8px" }} />
-              <div style={{ fontSize: 11, color: "#475569" }}>Loading...</div>
+              <Skeleton rows={4} label="Loading" />
             </div>
           ) : filtered.length === 0 ? (
             <div style={{ padding: "64px 20px", textAlign: "center" }}>
@@ -384,8 +384,7 @@ export default function Chat() {
             <div className="r-scroll" style={{ flex: 1, overflowY: "auto", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 4, background: "white" }}>
               {msgLoading ? (
                 <div style={{ margin: "auto", textAlign: "center" }}>
-                  <div style={{ width: 28, height: 28, borderRadius: "50%", border: "3px solid #E2E8F0", borderTop: "3px solid var(--brand)", animation: "spin 0.8s linear infinite", margin: "0 auto 10px" }} />
-                  <div style={{ fontSize: 12, color: "#94A3B8" }}>Loading messages...</div>
+                  <Skeleton rows={4} label="Loading messages" />
                 </div>
               ) : messages.length === 0 ? (
                 <div style={{ margin: "auto", textAlign: "center" }}>

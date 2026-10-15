@@ -4,6 +4,7 @@ import axios from "axios";
 import { Printer } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
+import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 const SCHOOL_NAME = "EduAmigo School";
@@ -293,7 +294,7 @@ export default function IDCardGenerator() {
             onFocus={e => e.target.style.borderColor = "var(--brand)"} onBlur={e => e.target.style.borderColor = "#E2E8F0"} />
           <div style={{ fontSize: 11, color: "#94A3B8", fontWeight: 600 }}>{filtered.length} {tab === "student" ? "students" : "faculty members"}</div>
           <div style={{ overflowY: "auto", flex: 1 }}>
-            {loading ? <div style={{ textAlign: "center", padding: "30px 0", color: "#94A3B8" }}>Loading...</div>
+            {loading ? <Skeleton rows={3} label="Loading" />
               : filtered.length === 0 ? <div style={{ textAlign: "center", padding: "30px 0", color: "#CBD5E1" }}>No results found</div>
               : filtered.map((person, i) => {
                 const isActive = selectedId === person._id;

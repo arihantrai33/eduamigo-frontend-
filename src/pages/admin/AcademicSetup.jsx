@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, errorMessage, confirmAction } from "../../utils/toast";
 import PageHeader from "../../components/ui/PageHeader";
+import Skeleton from "../../components/ui/Skeleton";
 
 // School setup: onboarding checklist, academic sessions and settings, and the class list
 // (classes, sections, class teachers, subjects). Backed by /api/academic.
@@ -301,7 +302,7 @@ function Classes({ onChanged }) {
     run(() => axios.delete(`${API}/academic/classes/${cls._id}`, auth()), `Class ${cls.name} deleted`);
   };
 
-  if (!classes) return <div style={ui.card}><p style={ui.hint}>Loading classes…</p></div>;
+  if (!classes) return <div style={ui.card}><Skeleton rows={3} label="Loading classes" /></div>;
 
   return (
     <div id="classes" tabIndex={-1} style={ui.card}>

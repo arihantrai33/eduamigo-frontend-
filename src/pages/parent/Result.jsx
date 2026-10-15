@@ -7,6 +7,7 @@ import PortalHeader from "../../components/ui/PortalHeader";
 import SummaryCard from "../../components/ui/SummaryCard";
 import Segmented from "../../components/ui/Segmented";
 import { Trophy } from "lucide-react";
+import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -54,7 +55,7 @@ export default function ParentResult() {
   const topGrade = filtered[0]?.grade ?? "—";
   if (loading) return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "inherit" }}>
-      <div style={{ color: "var(--subtext)", fontSize: 14 }}>Loading results...</div>
+      <Skeleton rows={3} label="Loading results" />
     </div>
   );
   if (error) return (

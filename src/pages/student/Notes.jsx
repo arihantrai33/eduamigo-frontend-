@@ -8,6 +8,7 @@ import BottomNav from "../../layout/BottomNav";
 import PortalHeader from "../../components/ui/PortalHeader";
 import { Inbox, Plus, SearchX, Sparkles } from "lucide-react";
 import EmptyState from "../../components/ui/EmptyState";
+import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -95,8 +96,8 @@ export default function Notes() {
     }
   };
   if (loading) return (
-    <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: dm ? '#0f172a' : '#F8F9FB', fontFamily: 'inherit', color: 'var(--brand)' }}>
-      Loading...
+    <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: dm ? '#0f172a' : '#F8F9FB', fontFamily: 'inherit' }}>
+      <div className="ea-card" style={{ width: 'calc(100% - 32px)', maxWidth: 520, padding: 16, margin: '0 auto' }}><Skeleton rows={5} label="Loading notes" /></div>
     </div>
   );
   return (

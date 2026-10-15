@@ -5,6 +5,7 @@ import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
 import PortalHeader from "../../components/ui/PortalHeader";
 import { errorMessage } from "../../utils/toast";
+import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL;
 
 const getUser = () => JSON.parse(localStorage.getItem('eduamigo_user'));
@@ -244,7 +245,7 @@ export default function TeacherChat() {
             {loading ? (
               <div style={styles.centered}>
                 <div style={styles.spinner} />
-                <p style={styles.loadingText}>Loading contacts...</p>
+                <Skeleton rows={3} label="Loading contacts" />
               </div>
             ) : error ? (
               <div style={styles.errorBox}><Glyph e="⚠" /> {error}</div>

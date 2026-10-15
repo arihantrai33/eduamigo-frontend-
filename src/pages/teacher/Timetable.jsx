@@ -8,6 +8,7 @@ import PortalHeader from "../../components/ui/PortalHeader";
 import SummaryCard from "../../components/ui/SummaryCard";
 import { errorMessage } from "../../utils/toast";
 import { useMediaQuery } from "../../utils/useMediaQuery";
+import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
@@ -90,7 +91,7 @@ export default function TeacherTimetable() {
   if (loading) return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#F4F6FB', gap: 12 }}>
       <div style={{ width: 36, height: 36, borderRadius: '50%', border: '3px solid var(--brand-soft)', borderTop: '3px solid var(--brand)', animation: 'spin 0.8s linear infinite' }} />
-      <p style={{ color: '#7B8099', fontSize: 13 }}>Loading timetable...</p>
+      <Skeleton rows={3} label="Loading timetable" />
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   )
