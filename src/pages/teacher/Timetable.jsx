@@ -4,6 +4,8 @@ import { useAuth } from '../../context/AuthContext'
 
 import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
+import PortalHeader from "../../components/ui/PortalHeader";
+import SummaryCard from "../../components/ui/SummaryCard";
 import { errorMessage } from "../../utils/toast";
 import { useMediaQuery } from "../../utils/useMediaQuery";
 const API = import.meta.env.VITE_API_URL
@@ -105,32 +107,17 @@ export default function TeacherTimetable() {
     <div className={isDesktop ? undefined : "ea-pd-narrow"} style={{ minHeight: '100vh', background: '#F4F6FB', fontFamily: "inherit", paddingBottom: 90 }}>
 
       {/* Header */}
-      <div className="ea-pd-band" style={{ background: 'var(--brand-gradient)', padding: '48px 18px 20px', display: 'flex', alignItems: 'center', gap: 12 }}>
-        <button type="button" aria-label="Back" onClick={() => navigate('/teacher/home')} style={{ background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: 10, width: 36, height: 36, fontSize: 18, cursor: 'pointer', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Glyph e="←" /></button>
-        <div>
-          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', fontWeight: 700, letterSpacing: 1 }}>TEACHER PORTAL</div>
-          <div style={{ fontSize: 20, fontWeight: 800, color: '#fff', fontFamily: "inherit" }}>My Timetable</div>
-        </div>
-      </div>
+      <PortalHeader title="My Timetable" onBack={() => navigate('/teacher/home')} />
 
       <div className="ea-pd-body" style={{ padding: 16 }}>
 
         {/* Summary Card */}
-        <div style={{ background: 'var(--brand-gradient)', borderRadius: 20, padding: 18, marginBottom: 16, color: '#fff' }}>
-          <div style={{ fontSize: 12, opacity: 0.75, marginBottom: 4 }}>{teacher?.subjects?.join(', ') || 'No subjects'}</div>
-          <div style={{ fontSize: 18, fontWeight: 800, fontFamily: "inherit", marginBottom: 12 }}>{teacher?.name || '—'}</div>
-          <div style={{ display: 'flex', gap: 10 }}>
-            {[
-              { val: totalPeriods,                              lbl: 'Total Periods' },
-              { val: getPeriodsForDay(today).length,           lbl: 'Today' },
-              { val: teacher?.assignedClasses?.length || 0,    lbl: 'Classes' },
-            ].map(s => (
-              <div key={s.lbl} style={{ background: 'rgba(255,255,255,0.15)', borderRadius: 12, padding: '10px 14px', flex: 1, textAlign: 'center' }}>
-                <div style={{ fontSize: 20, fontWeight: 800 }}>{s.val}</div>
-                <div style={{ fontSize: 9, opacity: 0.8, textTransform: 'uppercase', marginTop: 2 }}>{s.lbl}</div>
-              </div>
-            ))}
-          </div>
+        <div style={{ marginBottom: 16 }}>
+          <SummaryCard title={teacher?.name || '—'} subtitle={teacher?.subjects?.join(', ') || 'No subjects'} items={[
+            { label: 'Total Periods', value: totalPeriods },
+            { label: 'Today',         value: getPeriodsForDay(today).length },
+            { label: 'Classes',       value: teacher?.assignedClasses?.length || 0 },
+          ]} />
         </div>
 
         {/* Desktop: the whole week side by side (same view as the student timetable). */}

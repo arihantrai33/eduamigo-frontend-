@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
+import PortalHeader from "../../components/ui/PortalHeader";
+import Segmented from "../../components/ui/Segmented";
 import { errorMessage } from "../../utils/toast";
 const API = import.meta.env.VITE_API_URL;
 
@@ -119,33 +121,16 @@ export default function TeacherUpload() {
 
   return (
     <div className="ea-pd-narrow" style={styles.container}>
-      <div className="ea-pd-band" style={styles.header}>
-        <button type="button" aria-label="Back" onClick={() => navigate('/teacher/home')} style={styles.backBtn}><Glyph e="←" /></button>
-        <div style={{ flex: 1 }}>
-          <p style={styles.portalLabel}>TEACHER PORTAL</p>
-          <h1 style={styles.headerTitle}>Upload Materials</h1>
-        </div>
-        {uploads.length > 0 && (
-          <div style={styles.countBadge}>{uploads.length}</div>
-        )}
-      </div>
+      <PortalHeader title="Upload Materials" onBack={() => navigate('/teacher/home')} actions={uploads.length > 0 && <span className="ea-badge ea-badge--brand">{uploads.length}</span>} />
 
       <div className="ea-pd-body" style={styles.content}>
         {successMsg && <div style={styles.successBanner}><Glyph e="✅" /> {successMsg}</div>}
 
-        <div style={styles.tabRow}>
-          <button type="button" aria-pressed={tab === 'uploads'}
-            style={{ ...styles.tab, ...(tab === 'uploads' ? styles.tabActive : {}) }}
-            onClick={() => setTab('uploads')}
-          >
-            My Uploads
-          </button>
-          <button type="button" aria-pressed={tab === 'upload'}
-            style={{ ...styles.tab, ...(tab === 'upload' ? styles.tabActive : {}) }}
-            onClick={() => setTab('upload')}
-          >
-            + New Upload
-          </button>
+        <div style={{ marginBottom: 16 }}>
+          <Segmented label="Upload view" value={tab} onChange={setTab} options={[
+            { value: 'uploads', label: 'My Uploads' },
+            { value: 'upload', label: '+ New Upload' },
+          ]} />
         </div>
 
         {tab === 'uploads' && (
@@ -293,7 +278,7 @@ export default function TeacherUpload() {
             )}
 
             <button
-              style={{ ...styles.submitBtn, opacity: submitting ? 0.7 : 1 }}
+              className="ea-btn ea-btn--primary" style={{ width: '100%', minHeight: 48, fontSize: 15 }}
               onClick={handleSubmit}
               disabled={submitting}
             >
@@ -318,49 +303,7 @@ const styles = {
     minHeight: '100vh',
     position: 'relative',
   },
-  header: {
-    background: 'var(--brand-gradient)',
-    padding: '20px 16px 24px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: 12,
-  },
-  backBtn: {
-    background: 'rgba(255,255,255,0.2)',
-    border: 'none',
-    color: '#fff',
-    fontSize: 20,
-    borderRadius: 10,
-    width: 36,
-    height: 36,
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0,
-  },
-  portalLabel: {
-    color: 'rgba(255,255,255,0.75)',
-    fontSize: 10,
-    fontWeight: 600,
-    letterSpacing: 1.5,
-    margin: 0,
-  },
-  headerTitle: { color: '#fff', fontSize: 20, fontWeight: 700, margin: 0 },
-  countBadge: {
-    background: '#FF5252',
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 700,
-    borderRadius: 99,
-    minWidth: 24,
-    height: 24,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '0 6px',
-  },
-  content: { padding: '16px', marginTop: -12 },
+  content: { padding: '16px' },
   successBanner: {
     background: '#E8F5E9',
     color: '#2E7D32',
@@ -370,27 +313,6 @@ const styles = {
     fontWeight: 600,
     marginBottom: 16,
   },
-  tabRow: {
-    display: 'flex',
-    background: '#fff',
-    borderRadius: 12,
-    padding: 4,
-    marginBottom: 16,
-    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-  },
-  tab: {
-    flex: 1,
-    padding: '10px',
-    border: 'none',
-    background: 'none',
-    borderRadius: 10,
-    fontSize: 13,
-    fontWeight: 600,
-    color: '#9E9E9E',
-    cursor: 'pointer',
-    fontFamily: "inherit",
-  },
-  tabActive: { background: 'var(--brand)', color: '#fff' },
   card: {
     background: '#fff',
     borderRadius: 14,
@@ -482,18 +404,6 @@ const styles = {
     background: '#fff',
   },
   hintText: { fontSize: 11, color: '#9E9E9E', margin: '-10px 0 14px', lineHeight: 1.5 },
-  submitBtn: {
-    width: '100%',
-    padding: '14px',
-    background: 'var(--brand-gradient)',
-    color: '#fff',
-    border: 'none',
-    borderRadius: 12,
-    fontSize: 15,
-    fontWeight: 700,
-    cursor: 'pointer',
-    fontFamily: "inherit",
-  },
   centered: { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 0' },
   spinner: {
     width: 32,

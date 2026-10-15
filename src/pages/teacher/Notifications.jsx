@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
+import PortalHeader from "../../components/ui/PortalHeader";
 import { errorMessage } from "../../utils/toast";
 const API = import.meta.env.VITE_API_URL;
 
@@ -67,16 +68,7 @@ export default function TeacherNotifications() {
   return (
     <div className="ea-pd-narrow" style={styles.container}>
       {/* Header */}
-      <div className="ea-pd-band" style={styles.header}>
-        <button type="button" aria-label="Back" onClick={() => navigate('/teacher/home')} style={styles.backBtn}><Glyph e="←" /></button>
-        <div>
-          <p style={styles.portalLabel}>TEACHER PORTAL</p>
-          <h1 style={styles.headerTitle}>Notifications</h1>
-        </div>
-        {notifications.length > 0 && (
-          <div style={styles.countBadge}>{notifications.length}</div>
-        )}
-      </div>
+      <PortalHeader title="Notifications" onBack={() => navigate('/teacher/home')} actions={notifications.length > 0 && <span className="ea-badge ea-badge--brand">{notifications.length}</span>} />
 
       <div className="ea-pd-body" style={styles.content}>
         {/* Filter Chips */}
@@ -163,57 +155,8 @@ const styles = {
     minHeight: '100vh',
     position: 'relative',
   },
-  header: {
-    background: 'var(--brand-gradient)',
-    padding: '20px 16px 24px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: 12,
-  },
-  backBtn: {
-    background: 'rgba(255,255,255,0.2)',
-    border: 'none',
-    color: '#fff',
-    fontSize: 20,
-    borderRadius: 10,
-    width: 36,
-    height: 36,
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0,
-  },
-  portalLabel: {
-    color: 'rgba(255,255,255,0.75)',
-    fontSize: 10,
-    fontWeight: 600,
-    letterSpacing: 1.5,
-    margin: 0,
-  },
-  headerTitle: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 700,
-    margin: 0,
-  },
-  countBadge: {
-    marginLeft: 'auto',
-    background: '#FF5252',
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 700,
-    borderRadius: 99,
-    minWidth: 24,
-    height: 24,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '0 6px',
-  },
   content: {
     padding: '16px',
-    marginTop: -12,
   },
   filterRow: {
     display: 'flex',

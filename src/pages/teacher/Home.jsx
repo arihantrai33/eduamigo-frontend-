@@ -31,9 +31,6 @@ export default function TeacherHome() {
   // School branding, in the same style (light or bold) as the school's sign-in page.
   const theme = userTheme(user)
   const look = brandLook(theme)
-  const heroCard = theme.isLight
-    ? { background: `linear-gradient(135deg, ${theme.soft} 0%, #fff 100%)`, border: look.border, color: theme.deep }
-    : { background: `linear-gradient(135deg, ${theme.dark} 0%, ${theme.primary} 100%)`, color: '#fff' }
 
   const [teacher, setTeacher]           = useState(null)
   const [todayPeriods, setTodayPeriods] = useState([])
@@ -156,10 +153,7 @@ export default function TeacherHome() {
       <div className="ea-pd-band" style={{ ...styles.header, background: look.header, flexDirection: 'column', alignItems: 'stretch', paddingTop: 20 }}>
         <SchoolStrip user={user} theme={theme} look={look} />
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <div style={{ ...styles.headerSub, color: look.muted }}>TEACHER PORTAL</div>
-          <div style={{ ...styles.headerName, color: look.text }}>{teacher?.name || '—'}</div>
-        </div>
+        <div style={{ ...styles.headerName, color: look.text }}>{teacher?.name || '—'}</div>
         <button type="button" aria-label={unreadCount > 0 ? `Notifications, ${unreadCount} unread` : 'Notifications'} onClick={() => navigate('/teacher/notifications')} style={{ ...styles.bellBtn, background: look.glass, border: look.border }}>
           <Glyph e="🔔" />
           {unreadCount > 0 && <div style={{ position: 'absolute', top: -4, right: -4, minWidth: 18, height: 18, background: '#EF5350', borderRadius: '50%', border: '2px solid white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: 'white', padding: '0 4px' }}>{unreadCount}</div>}
@@ -169,8 +163,8 @@ export default function TeacherHome() {
 
       <div className="ea-pd-body ea-pd-dash" style={styles.scroll}>
 
-        {/* Hero Card (desktop: the side column) */}
-        <div className="ea-pd-side" style={{ ...styles.heroCard, ...heroCard }}>
+        {/* Today card (desktop: the side column). A plain card: the header above is the page's one brand block. */}
+        <div className="ea-pd-side" style={styles.heroCard}>
           <div style={styles.heroSub}>
             {teacher?.subjects?.join(', ') || 'No subjects assigned'}
           </div>
@@ -184,8 +178,8 @@ export default function TeacherHome() {
               { val: teacher?.subjects?.length || 0,        lbl: 'Subjects' },
               { val: teacher?.experience || 0,              lbl: 'Yrs Exp' },
             ].map(s => (
-              <div key={s.lbl} style={{ ...styles.statBox, background: look.tile, border: look.border }}>
-                <div style={{ ...styles.statVal, color: look.value }}>{s.val}</div>
+              <div key={s.lbl} style={styles.statBox}>
+                <div style={styles.statVal}>{s.val}</div>
                 <div style={styles.statLbl}>{s.lbl}</div>
               </div>
             ))}
@@ -258,7 +252,6 @@ const styles = {
     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
     flexShrink: 0,
   },
-  headerSub:  { fontSize: 11, color: 'rgba(255,255,255,.7)', fontWeight: 700, letterSpacing: 1 },
   headerName: { fontSize: 20, fontWeight: 800, color: '#fff', fontFamily: "inherit" },
   bellBtn: {
     width: 38, height: 38, borderRadius: 12, border: 'none', cursor: 'pointer',
@@ -271,19 +264,19 @@ const styles = {
   },
   scroll: { flex: 1, overflowY: 'auto', padding: '16px 16px 0' },
   heroCard: {
-    background: 'var(--brand-gradient)',
-    borderRadius: 20, padding: '20px', marginBottom: 16, color: '#fff',
+    background: 'var(--ea-surface)', border: '1px solid var(--ea-line)', boxShadow: 'var(--ea-shadow)',
+    borderRadius: 16, padding: '20px', marginBottom: 16, color: 'var(--ea-ink)',
   },
-  heroSub:      { fontSize: 11, opacity: .75, marginBottom: 4 },
+  heroSub:      { fontSize: 12, color: 'var(--ea-muted)', marginBottom: 4 },
   heroGreeting: { fontSize: 22, fontWeight: 800, fontFamily: "inherit" },
-  heroDate:     { fontSize: 12, opacity: .8, marginTop: 2, marginBottom: 14 },
+  heroDate:     { fontSize: 13, color: 'var(--ea-muted)', marginTop: 2, marginBottom: 14 },
   statsRow:     { display: 'flex', gap: 10 },
   statBox: {
-    background: 'rgba(255,255,255,.15)', borderRadius: 10,
-    padding: '9px 13px', textAlign: 'center', flex: 1,
+    background: 'var(--ea-hover)', borderRadius: 10,
+    padding: '9px 13px', flex: 1,
   },
-  statVal: { fontSize: 19, fontWeight: 800 },
-  statLbl: { fontSize: 9, opacity: .8, textTransform: 'uppercase' },
+  statVal: { fontSize: 19, fontWeight: 800, color: 'var(--ea-ink)' },
+  statLbl: { fontSize: 12, fontWeight: 600, color: 'var(--ea-muted)' },
   tilesGrid: {
     display: 'grid', gridTemplateColumns: '1fr 1fr',
     gap: 12, marginBottom: 18,

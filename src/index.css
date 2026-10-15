@@ -972,6 +972,7 @@ input:-webkit-autofill:focus {
 .ea-summary__text { min-width: 0; }
 .ea-summary__value { font: var(--ea-text-display); color: var(--ea-ink); font-variant-numeric: tabular-nums; }
 .ea-summary__caption { font-size: 13px; line-height: 20px; color: var(--ea-muted); }
+.ea-summary__subtitle { margin: -10px 0 0; font-size: 13px; color: var(--ea-muted); }
 .ea-summary__items { display: grid; grid-template-columns: repeat(auto-fit, minmax(84px, 1fr)); gap: 8px; margin: 0; }
 .ea-summary__item { padding: 10px 12px; border-radius: var(--ea-radius); background: var(--ea-hover); min-width: 0; }
 .ea-summary__item dt { font-size: 12px; font-weight: 600; color: var(--ea-muted); }

@@ -7,6 +7,7 @@ import Glyph from "../../components/Glyph";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import { CheckCircle2, XCircle, Clock } from "lucide-react";
 import BottomNav from "../../layout/BottomNav";
+import PortalHeader from "../../components/ui/PortalHeader";
 import { plural } from "../../utils/plural";
 import { errorMessage } from "../../utils/toast";
 const API = import.meta.env.VITE_API_URL
@@ -154,13 +155,7 @@ export default function TeacherAttendance() {
       )}
 
       {/* Header */}
-      <div className="ea-pd-band" style={{ background: "var(--brand-gradient)", padding: "48px 18px 20px", display: "flex", alignItems: "center", gap: 12 }}>
-        <button type="button" aria-label="Back" onClick={() => navigate('/teacher/home')} style={{ background: "rgba(255,255,255,0.15)", border: "none", borderRadius: 10, width: 36, height: 36, fontSize: 18, cursor: "pointer", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}><Glyph e="←" /></button>
-        <div>
-          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", fontWeight: 700, letterSpacing: 1 }}>TEACHER PORTAL</div>
-          <div style={{ fontSize: 20, fontWeight: 800, color: "#fff", fontFamily: "inherit" }}>Attendance</div>
-        </div>
-      </div>
+      <PortalHeader title="Attendance" onBack={() => navigate('/teacher/home')} />
 
       <div className="ea-pd-body" style={{ padding: 16 }}>
 

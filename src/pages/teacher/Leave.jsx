@@ -5,6 +5,9 @@ import { ClipboardList } from "lucide-react";
 
 import Glyph from "../../components/Glyph";
 import BottomNav from "../../layout/BottomNav";
+import PortalHeader from "../../components/ui/PortalHeader";
+import SummaryCard from "../../components/ui/SummaryCard";
+import Segmented from "../../components/ui/Segmented";
 import { errorMessage } from "../../utils/toast";
 const API = import.meta.env.VITE_API_URL;
 
@@ -146,13 +149,7 @@ export default function TeacherLeave() {
   return (
     <div className="ea-pd-narrow" style={styles.container}>
       {/* Header */}
-      <div className="ea-pd-band" style={styles.header}>
-        <button type="button" aria-label="Back" onClick={() => navigate('/teacher/home')} style={styles.backBtn}><Glyph e="←" /></button>
-        <div>
-          <p style={styles.portalLabel}>TEACHER PORTAL</p>
-          <h1 style={styles.headerTitle}>Leave Management</h1>
-        </div>
-      </div>
+      <PortalHeader title="Leave Management" onBack={() => navigate('/teacher/home')} />
 
       <div className="ea-pd-body" style={styles.content}>
         {/* Success Message */}
@@ -162,42 +159,29 @@ export default function TeacherLeave() {
 
         {/* Quota Card */}
         {quota && (
-          <div style={styles.quotaCard}>
-            <p style={styles.quotaTitle}>Annual Leave Balance</p>
-            <div style={styles.quotaRow}>
-              <QuotaBox label="Total" value={quota.total} />
-              <QuotaBox label="Used" value={quota.used} />
-              <QuotaBox label="Available" value={quota.available} />
-            </div>
-            <div style={styles.progressBarBg}>
-              <div style={{
-                ...styles.progressBarFill,
-                width: `${(quota.used / quota.total) * 100}%`,
-              }} />
-            </div>
+          <div style={{ marginBottom: 16 }}>
+            <SummaryCard title="Annual Leave Balance" items={[
+              { label: 'Total', value: quota.total },
+              { label: 'Used', value: quota.used },
+              { label: 'Available', value: quota.available, tone: 'success' },
+            ]}>
+              <div style={styles.progressBarBg} role="progressbar" aria-label="Leave used" aria-valuenow={quota.used} aria-valuemin={0} aria-valuemax={quota.total}>
+                <div style={{
+                  ...styles.progressBarFill,
+                  width: `${(quota.used / quota.total) * 100}%`,
+                }} />
+              </div>
+            </SummaryCard>
           </div>
         )}
 
         {/* Tabs */}
-        <div style={styles.tabRow}>
-          <button type="button" aria-pressed={tab === 'history'}
-            style={{ ...styles.tab, ...(tab === 'history' ? styles.tabActive : {}) }}
-            onClick={() => setTab('history')}
-          >
-            Leave History
-          </button>
-          <button type="button" aria-pressed={tab === 'apply'}
-            style={{ ...styles.tab, ...(tab === 'apply' ? styles.tabActive : {}) }}
-            onClick={() => setTab('apply')}
-          >
-            + Apply Leave
-          </button>
-          <button type="button" aria-pressed={tab === 'students'}
-            style={{ ...styles.tab, ...(tab === 'students' ? styles.tabActive : {}) }}
-            onClick={() => setTab('students')}
-          >
-            Students{studentLeaves.length ? ` (${studentLeaves.length})` : ''}
-          </button>
+        <div style={{ marginBottom: 16 }}>
+          <Segmented label="Leave view" value={tab} onChange={setTab} options={[
+            { value: 'history', label: 'Leave History' },
+            { value: 'apply', label: '+ Apply Leave' },
+            { value: 'students', label: `Students${studentLeaves.length ? ` (${studentLeaves.length})` : ''}` },
+          ]} />
         </div>
 
         {tab === 'students' && (
@@ -309,7 +293,7 @@ export default function TeacherLeave() {
             )}
 
             <button
-              style={{ ...styles.submitBtn, opacity: submitting ? 0.7 : 1 }}
+              className="ea-btn ea-btn--primary" style={{ width: '100%', minHeight: 48, fontSize: 15 }}
               onClick={handleSubmit}
               disabled={submitting}
             >
@@ -327,14 +311,6 @@ export default function TeacherLeave() {
 }
 
 // White numbers on the brand card (coloured numbers were unreadable on it); the label says what each is.
-function QuotaBox({ label, value }) {
-  return (
-    <div style={styles.quotaBox}>
-      <p style={styles.quotaValue}>{value}</p>
-      <p style={styles.quotaLabel}>{label}</p>
-    </div>
-  );
-}
 
 
 const styles = {
@@ -344,42 +320,8 @@ const styles = {
     minHeight: '100vh',
     position: 'relative',
   },
-  header: {
-    background: 'var(--brand-gradient)',
-    padding: '20px 16px 24px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: 12,
-  },
-  backBtn: {
-    background: 'rgba(255,255,255,0.2)',
-    border: 'none',
-    color: '#fff',
-    fontSize: 20,
-    borderRadius: 10,
-    width: 36,
-    height: 36,
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  portalLabel: {
-    color: 'rgba(255,255,255,0.75)',
-    fontSize: 10,
-    fontWeight: 600,
-    letterSpacing: 1.5,
-    margin: 0,
-  },
-  headerTitle: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 700,
-    margin: 0,
-  },
   content: {
     padding: '16px',
-    marginTop: -12,
   },
   successBanner: {
     background: '#E8F5E9',
@@ -390,78 +332,17 @@ const styles = {
     fontWeight: 600,
     marginBottom: 16,
   },
-  quotaCard: {
-    background: 'var(--brand-gradient)',
-    borderRadius: 16,
-    padding: '16px',
-    marginBottom: 16,
-  },
-  quotaTitle: {
-    color: 'rgba(255,255,255,0.8)',
-    fontSize: 11,
-    fontWeight: 600,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-    margin: '0 0 12px',
-  },
-  quotaRow: {
-    display: 'flex',
-    justifyContent: 'space-around',
-    marginBottom: 14,
-  },
-  quotaBox: {
-    textAlign: 'center',
-    background: 'rgba(255,255,255,0.15)',
-    borderRadius: 10,
-    padding: '10px 20px',
-  },
-  quotaValue: {
-    fontSize: 24,
-    fontWeight: 700,
-    margin: 0,
-    color: '#fff',
-  },
-  quotaLabel: {
-    fontSize: 11,
-    color: 'rgba(255,255,255,0.75)',
-    margin: 0,
-    fontWeight: 600,
-  },
   progressBarBg: {
-    background: 'rgba(255,255,255,0.2)',
+    background: 'var(--ea-hover)',
     borderRadius: 99,
     height: 6,
     overflow: 'hidden',
   },
   progressBarFill: {
-    background: '#fff',
+    background: 'var(--brand)',
     height: '100%',
     borderRadius: 99,
     transition: 'width 0.4s ease',
-  },
-  tabRow: {
-    display: 'flex',
-    background: '#fff',
-    borderRadius: 12,
-    padding: 4,
-    marginBottom: 16,
-    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-  },
-  tab: {
-    flex: 1,
-    padding: '10px',
-    border: 'none',
-    background: 'none',
-    borderRadius: 10,
-    fontSize: 13,
-    fontWeight: 600,
-    color: '#9E9E9E',
-    cursor: 'pointer',
-    fontFamily: "inherit",
-  },
-  tabActive: {
-    background: 'var(--brand)',
-    color: '#fff',
   },
   leaveCard: {
     background: '#fff',
@@ -585,18 +466,6 @@ const styles = {
     padding: '10px 14px',
     borderRadius: 10,
     marginBottom: 16,
-  },
-  submitBtn: {
-    width: '100%',
-    padding: '14px',
-    background: 'var(--brand-gradient)',
-    color: '#fff',
-    border: 'none',
-    borderRadius: 12,
-    fontSize: 15,
-    fontWeight: 700,
-    cursor: 'pointer',
-    fontFamily: "inherit",
   },
   centered: {
     display: 'flex',

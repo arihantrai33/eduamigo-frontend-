@@ -711,3 +711,35 @@ Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B4 (as B3, for the parent portal
 - Parent Home (B9) and Profile (B12).
 - The Calendar event colours (pink/yellow/green tints) are categories; they move to `--ea-cat-*` with the categorical palette (B8).
 - The Bus map keeps its marker and progress-bar gradients.
+
+### Redesign batch B5: teacher page headers (2026-10-15)
+Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B5 (as B3, for the teacher portal; attendance roster excluded).
+
+**Header:**
+- `PortalHeader` on Attendance, Timetable, Leave, Upload, Notifications, Students and Chat (the list, plus a detail header for the open conversation). Marks already used it.
+- The "TEACHER PORTAL" eyebrows are gone from every page, including Home.
+- The counts next to the titles (uploads, notifications, contacts) are neutral brand badges in the header actions. They were white on #FF5252 (about 3.3:1, and red reads as an alert).
+
+**Duplicate gradient blocks removed:**
+- **Home:** the header band stays as the portal's one home hero. The "Good evening" card below it is now a plain card (subjects, greeting, date, figures on neutral tiles).
+- **Timetable:** the gradient summary is a `SummaryCard` (teacher, subjects, Total Periods/Today/Classes).
+- **Leave:** the gradient "Annual Leave Balance" is a `SummaryCard` (Total, Used, Available) with the used bar in solid brand on a neutral track (`role="progressbar"`).
+
+**Controls:**
+- The Leave tabs (Leave History / + Apply Leave / Students) and the Upload tabs (My Uploads / + New Upload) are the shared `Segmented` control; `aria-pressed` is kept, so the `interactions` tab check still holds.
+- Leave "Submit Leave Request", Upload "Upload Material" and Marks "Publish" are primary buttons; Marks "Save Draft" is secondary. All were gradients or a brand tint.
+- The chat bubbles and the Send button are solid brand.
+- **`SummaryCard`** gets an optional `subtitle` line.
+
+**Review (ports 8130/5194):**
+- 390, 768 and 1280 captures of Home, Timetable, Leave (and its Apply tab, full page), Upload, Notifications, Students, Chat, the open conversation with Meera Sharma, Marks and Attendance.
+- Pixel diff against the B4 sweep: only teacher pages changed. The others are data (activity log, reports time, transport, result order, splash).
+
+**Tests:**
+- 54/54 passed: `screens`, `scroll`, `accessible-names`, `workflows` (teacher attendance → parent notice; parent ↔ teacher chat), `interactions` and `error-feedback` (the teacher notifications offline message).
+- Sweep 390/1280: 156 screens, 0 findings.
+- The build passes, and ESLint counts on all changed files match HEAD.
+
+**Left for later:**
+- The Attendance "Save/Update Attendance" button is still a gradient; it changes with the roster in B14.
+- Teacher Profile is B12.

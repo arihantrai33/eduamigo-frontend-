@@ -188,8 +188,8 @@ export default function TeacherMarks() {
 
             {!locked && total > 0 && (
               <div style={{ display: 'flex', gap: 10, marginBottom: 90 }}>
-                <button onClick={() => save()} disabled={busy} style={{ ...styles.btn, background: 'var(--brand-soft)', color: 'var(--brand-dark)' }}>{busy ? 'Saving...' : 'Save Draft'}</button>
-                <button onClick={publish} disabled={busy || invalid} style={{ ...styles.btn, background: 'var(--brand-gradient)', color: '#fff' }}>Publish</button>
+                <button onClick={() => save()} disabled={busy} className="ea-btn ea-btn--ghost" style={styles.btn}>{busy ? 'Saving...' : 'Save Draft'}</button>
+                <button onClick={publish} disabled={busy || invalid} className="ea-btn ea-btn--primary" style={styles.btn}>Publish</button>
               </div>
             )}
           </>
@@ -272,5 +272,5 @@ const styles = {
   empty: { textAlign: 'center', padding: 40, color: '#7B8099', fontSize: 14 },
   markInput: { width: 72, padding: '9px 10px', borderRadius: 10, border: '1.5px solid #E2E8F0', fontSize: 15, fontWeight: 600, textAlign: 'center', outline: 'none', fontFamily: 'inherit' },
   absentBtn: { border: 'none', borderRadius: 10, padding: '9px 10px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' },
-  btn: { flex: 1, padding: '14px', borderRadius: 14, border: 'none', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' },
+  btn: { flex: 1, minHeight: 48, fontSize: 15 },
 }

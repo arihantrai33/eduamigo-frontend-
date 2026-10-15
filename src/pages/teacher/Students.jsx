@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { resetStudentPassword } from "../../utils/account";
 import { showCredentials, toast, errorMessage } from "../../utils/toast";
-import Glyph from "../../components/Glyph";
+import PortalHeader from "../../components/ui/PortalHeader";
 
 import { plural } from "../../utils/plural";
 const API = import.meta.env.VITE_API_URL;
@@ -41,13 +41,8 @@ export default function TeacherStudents() {
 
   return (
     <div className="ea-pd-narrow" style={s.screen}>
-      <div className="ea-pd-band" style={s.header}>
-        <button onClick={() => navigate("/teacher/home")} style={s.back} aria-label="Back"><Glyph e="←" /></button>
-        <div>
-          <div style={s.headerTitle}>My Students</div>
-          <div style={s.headerSub}>{students ? `${plural(students.length, "student")} in your classes` : "Loading..."}</div>
-        </div>
-      </div>
+      <PortalHeader title="My Students" onBack={() => navigate("/teacher/home")}
+        subtitle={students ? `${plural(students.length, "student")} in your classes` : "Loading..."} />
 
       <div className="ea-pd-body" style={{ padding: 16 }}>
         <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
@@ -90,10 +85,6 @@ export default function TeacherStudents() {
 
 const s = {
   screen: { minHeight: "100vh", background: "#F4F6FB", fontFamily: "inherit" },
-  header: { background: "var(--brand-gradient)", padding: "20px 16px 18px", display: "flex", alignItems: "center", gap: 12, color: "#fff" },
-  back: { width: 36, height: 36, borderRadius: 10, border: "none", background: "rgba(255,255,255,.2)", color: "#fff", fontSize: 18, cursor: "pointer" },
-  headerTitle: { fontSize: 18, fontWeight: 800 },
-  headerSub: { fontSize: 12, opacity: 0.85 },
   input: { padding: "10px 12px", borderRadius: 12, border: "1px solid #E2E8F0", fontSize: 13, background: "#fff", outline: "none", minWidth: 0 },
   row: { display: "flex", alignItems: "center", gap: 10, background: "#fff", borderRadius: 16, padding: "10px 12px", boxShadow: "0 2px 12px rgba(15,23,42,.05)" },
   avatar: { width: 38, height: 38, borderRadius: 12, background: "var(--brand-soft)", color: "var(--brand-dark)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 13, flexShrink: 0 },

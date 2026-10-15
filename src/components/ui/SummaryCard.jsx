@@ -2,14 +2,15 @@
 // an optional ring for a percentage, a line under the value and optional figures or controls below.
 //   <SummaryCard title="Overall attendance" value="95%" caption="35 of 40 days present" ring={95} />
 //   <SummaryCard title="Leave balance" items={[{ label: "Total", value: 12 }, { label: "Available", value: 12 }]} />
-// `items` are small labelled figures in a row; `children` go under everything.
-export default function SummaryCard({ title, value, caption, ring, items, children, label }) {
+// `items` are small labelled figures in a row; `children` go under everything; `subtitle` is a short line under the title.
+export default function SummaryCard({ title, subtitle, value, caption, ring, items, children, label }) {
   const r = 34;
   const c = 2 * Math.PI * r;
   const pct = Math.max(0, Math.min(100, Number(ring) || 0));
   return (
     <section className="ea-card ea-summary" aria-label={label || title}>
       {title && <h2 className="ea-summary__title">{title}</h2>}
+      {subtitle && <p className="ea-summary__subtitle">{subtitle}</p>}
       {(value !== undefined || ring !== undefined) && (
         <div className="ea-summary__main">
           {ring !== undefined && (
