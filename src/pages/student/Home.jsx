@@ -7,6 +7,7 @@ import { userTheme, brandLook } from "../../utils/theme";
 import SchoolStrip from "../../components/SchoolStrip";
 import axios from "axios";
 import Glyph from "../../components/Glyph";
+import HeroStat from "../../components/HeroStat";
 import BottomNav from "../../layout/BottomNav";
 import { plural } from "../../utils/plural";
 const API = import.meta.env.VITE_API_URL;
@@ -128,8 +129,8 @@ return (
 <SchoolStrip user={user} theme={theme} look={look} />
 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
 <div>
-<div style={{ fontSize: 11, color: look.muted, fontWeight: 700, marginBottom: 2 }}>
-{getGreeting().toUpperCase()}
+<div style={{ fontSize: 12, color: look.muted, fontWeight: 600, marginBottom: 2 }}>
+{getGreeting()}
 </div>
 <div style={{ fontSize: 20, fontWeight: 800, color: look.text }}>
 {profile?.name ?? user?.name ?? "Student"}
@@ -154,42 +155,21 @@ getInitials(profile?.name ?? user?.name)
 </div>
 </div>
 {/* Student ID Card */}
-<div className="ea-pd-idcard" style={{ background: look.glass, border: look.border, borderRadius: 16, padding: 16, backdropFilter: "blur(10px)" }}>
-<div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-<div>
-<div style={{ fontSize: 10, color: look.muted, fontWeight: 700 }}>STUDENT ID</div>
-<div style={{ fontSize: 18, fontWeight: 800, color: look.text, margin: "2px 0" }}>
-{profile?.name ?? "—"}
-</div>
-<div style={{ fontSize: 12, color: look.muted }}>
+<div className="ea-pd-idcard" style={{ background: look.glass, border: look.border, borderRadius: 16, padding: 14, backdropFilter: "blur(10px)" }}>
+{/* The name and photo are in the header above; the card carries the school record. */}
+<div style={{ fontSize: 13, color: look.text, fontWeight: 600 }}>
                 Class {profile?.class ?? "—"}-{profile?.section ?? "—"} • Roll #{profile?.rollNumber ?? "—"}
-</div>
-<div style={{ fontSize: 12, color: look.muted }}>
-{profile?.admissionNo ? `Admission No ${profile.admissionNo}` : (profile?.email ?? "")}
-</div>
-</div>
-<div style={{ width: 48, height: 48, borderRadius: 14, background: look.avatar, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, color: "#fff", fontSize: 16, overflow: "hidden" }}>
-{profile?.photo ? (
-<img src={profile.photo} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-) : (
-getInitials(profile?.name ?? user?.name)
-)}
-</div>
+{profile?.admissionNo ? ` • Admission No ${profile.admissionNo}` : ""}
 </div>
 {/* Stats Row */}
-<div className="ea-pd-idstats" style={{ display: "flex", gap: 8, marginTop: 14 }}>
+<div className="ea-pd-idstats" style={{ display: "flex", gap: 8, marginTop: 12 }}>
 {[
               { val: attendancePct,    label: "Attendance", path: "/student/attendance" },
               { val: grade,            label: "Grade",      path: null, feature: "exams" },
               { val: marks,            label: "Marks",      path: null, feature: "exams" },
               { val: feeStatus ?? "—", label: "Fee",        path: "/student/fee" },
             ].filter(visibleFor(user)).map((stat) => (
-<div key={stat.label}
-onClick={() => stat.path && navigate(stat.path)}
-style={{ flex: 1, background: look.tile, border: look.border, borderRadius: 10, padding: "8px 4px", textAlign: "center", cursor: stat.path ? "pointer" : "default" }}>
-<div style={{ fontSize: 14, fontWeight: 800, color: look.value }}>{stat.val}</div>
-<div style={{ fontSize: 9, color: look.muted, fontWeight: 700, textTransform: "uppercase" }}>{stat.label}</div>
-</div>
+<HeroStat key={stat.label} value={stat.val} label={stat.label} look={look} onClick={stat.path ? () => navigate(stat.path) : undefined} />
             ))}
 </div>
 </div>

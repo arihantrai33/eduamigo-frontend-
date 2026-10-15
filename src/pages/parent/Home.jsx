@@ -10,15 +10,12 @@ import ChildSwitcher from "../../components/ChildSwitcher";
 import UpcomingExams from "../../components/UpcomingExams";
 
 import Glyph from "../../components/Glyph";
+import HeroStat from "../../components/HeroStat";
 import BottomNav from "../../layout/BottomNav";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 });
-
-function getInitials(name = "") {
-  return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
-}
 
 function getGreeting() {
   const h = new Date().getHours();
@@ -101,8 +98,8 @@ export default function ParentHome() {
         <SchoolStrip user={user} theme={theme} look={look} />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
-            <div style={{ fontSize: 11, color: look.muted, fontWeight: 700 }}>
-              {getGreeting().toUpperCase()} — PARENT PORTAL
+            <div style={{ fontSize: 12, color: look.muted, fontWeight: 600 }}>
+              {getGreeting()}
             </div>
             <div style={{ fontSize: 20, fontWeight: 800, color: look.text }}>
               {user?.name ?? "Parent"}
@@ -121,44 +118,29 @@ export default function ParentHome() {
         <ChildSwitcher children={children} current={child} theme={theme} onChange={() => { setLoading(true); fetchAll(); }} />
 
         {/* Child Card */}
-        <div className="ea-pd-childcard" style={{ background: look.glass, border: look.border, borderRadius: 16, padding: 16, marginTop: 16, backdropFilter: "blur(10px)" }}>
-          <div style={{ fontSize: 11, color: look.muted, marginBottom: 4 }}>Monitoring</div>
+        <div className="ea-pd-childcard" style={{ background: look.glass, border: look.border, borderRadius: 16, padding: 14, marginTop: 14, backdropFilter: "blur(10px)" }}>
+          <div style={{ fontSize: 12, color: look.muted, marginBottom: 2 }}>Monitoring</div>
 
           {loading ? (
             <div style={{ fontSize: 16, color: look.muted }}>Loading...</div>
           ) : child ? (
             <>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div>
-                  <div style={{ fontSize: 22, fontWeight: 900, color: look.text }}>{child.name}</div>
-                  <div style={{ fontSize: 12, color: look.muted, marginTop: 2 }}>
-                    Class {child.class}-{child.section} • Roll #{child.rollNumber}
-                  </div>
-                </div>
-                <div style={{ width: 44, height: 44, borderRadius: 12, background: look.avatar, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, color: "#fff", fontSize: 15 }}>
-                  {getInitials(child.name)}
+              <div>
+                <div style={{ fontSize: 17, fontWeight: 800, color: look.text }}>{child.name}</div>
+                <div style={{ fontSize: 12, color: look.muted, marginTop: 2 }}>
+                  Class {child.class}-{child.section} • Roll #{child.rollNumber}
                 </div>
               </div>
 
               {/* Clickable Stats */}
-              <div className="ea-pd-idstats" style={{ display: "flex", gap: 10, marginTop: 14 }}>
+              <div className="ea-pd-idstats" style={{ display: "flex", gap: 8, marginTop: 12 }}>
                 {[
                   { val: attendance ? `${attendance.percentage}%` : "—", label: "Attendance", path: "/parent/attendance" },
                   { val: results?.percentage    ? `${results.percentage}%`    : "—", label: "Marks",      path: "/parent/result"     },
                   { val: results?.grade         ?? "—",                               label: "Grade",      path: "/parent/result"     },
                   { val: child.feeStatus        ?? "—",                               label: "Fee",        path: "/parent/fee"        },
                 ].filter(visibleFor(user)).map((s) => (
-                  <div
-                    key={s.label}
-                    onClick={() => navigate(s.path)}
-                    style={{
-                      flex: 1, background: look.tile, border: look.border, borderRadius: 12,
-                      padding: "10px 6px", textAlign: "center", cursor: "pointer",
-                    }}
-                  >
-                    <div style={{ fontSize: 15, fontWeight: 900, color: look.value }}>{s.val}</div>
-                    <div style={{ fontSize: 9, color: look.muted, marginTop: 2 }}>{s.label}</div>
-                  </div>
+                  <HeroStat key={s.label} value={s.val} label={s.label} look={look} onClick={() => navigate(s.path)} />
                 ))}
               </div>
             </>

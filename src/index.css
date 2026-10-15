@@ -780,7 +780,14 @@ input:-webkit-autofill:focus {
 }
 .ea-icon-chip--sm { width: 32px; height: 32px; border-radius: 10px; }
 
-.ea-quick { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 10px; }
+/* Figures on a portal home hero (components/HeroStat.jsx): the focus ring takes the hero's text colour (white on a
+   bold school hero, dark on a light one), since the brand ring would not show on a brand background. */
+.ea-hero-stat:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+
+/* Quick access: --quick-cols (3 or 4, set by the page from the module count) up to 1099 px; from 1100 px one row of
+   --quick-n tiles. Either way no tile sits alone on a row. */
+.ea-quick { display: grid; grid-template-columns: repeat(var(--quick-cols, 3), minmax(0, 1fr)); gap: 10px; }
+@media (min-width: 1100px) { .ea-quick { grid-template-columns: repeat(var(--quick-n, 9), minmax(0, 1fr)); } }
 .ea-quick__tile {
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 84px; padding: 12px 8px;
   border-radius: var(--ea-radius); border: 1px solid var(--ea-line); background: var(--ea-surface); color: var(--brand-dark);
@@ -925,6 +932,9 @@ input:-webkit-autofill:focus {
 
 /* Stat strip: icon chip on the left, caption over the number. Four across on wide screens, two on phones. */
 .ea-stats { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+/* Exactly four cards: 2 × 2 up to 1099 px and one row from 1100 px, never 3 + 1. */
+.ea-stats:has(> :nth-child(4):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 1100px) { .ea-stats:has(> :nth-child(4):last-child) { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .ea-stat--row { flex-direction: row; align-items: center; gap: 14px; padding: 16px 18px; min-width: 0; }
 .ea-stat.is-static { cursor: default; }
 .ea-stat.is-selected, .ea-stat.is-selected:hover { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-soft); }

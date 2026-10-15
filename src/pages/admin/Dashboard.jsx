@@ -8,6 +8,7 @@ import { can } from "../../utils/permissions";
 import { hasFeature } from "../../utils/features";
 import { activityLabel } from "../../utils/activity";
 import { plural } from "../../utils/plural";
+import { StatCard, StatGrid } from "../../components/ui/StatCard";
 
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -39,16 +40,6 @@ const greetingNow = () => {
   return h < 12 ? "Good Morning" : h < 17 ? "Good Afternoon" : "Good Evening";
 };
 
-function StatCard({ icon: Icon, value, label, sub, onClick, loading }) {
-  return (
-    <button type="button" className="ea-stat" onClick={onClick} disabled={!onClick}>
-      <span className="ea-icon-chip" aria-hidden="true"><Icon size={20} /></span>
-      <span className="ea-stat__value">{loading ? <span className="skeleton" style={{ display: "inline-block", width: 48, height: 28 }} /> : value}</span>
-      <span className="ea-stat__label">{label}</span>
-      <span className="ea-stat__sub">{sub}</span>
-    </button>
-  );
-}
 
 function Card({ title, subtitle, icon: Icon, action, onClick, children, className = "" }) {
   return (
@@ -160,17 +151,18 @@ export default function Dashboard({ navigate, user }) {
       )}
 
       {stats.length > 0 && (
-        <div className="ea-grid ea-grid--4">
-          {stats.map((s) => (
-            <StatCard key={s.key} icon={s.icon} value={counts[s.key]} label={s.label} sub={s.sub} loading={loading}
-              onClick={() => navigate(s.path)} />
+        <StatGrid label="School totals">
+          {stats.map(({ icon: Icon, ...s }) => (
+            <StatCard key={s.key} icon={<Icon />} label={s.label} sub={s.sub} onClick={() => navigate(s.path)}
+              value={loading ? <span className="skeleton" style={{ display: "inline-block", width: 48, height: 22 }} aria-label="Loading" /> : counts[s.key]} />
           ))}
-        </div>
+        </StatGrid>
       )}
 
       {modules.length > 0 && (
         <Card title="Quick Access" subtitle="Jump to any module">
-          <div className="ea-quick">
+          {/* Columns chosen from the number of modules, so no tile sits alone on the last row. */}
+          <div className="ea-quick" style={{ "--quick-cols": [3, 4].find((c) => modules.length % c === 0) ?? (modules.length % 3 === 1 ? 4 : 3), "--quick-n": Math.min(modules.length, 9) }}>
             {modules.map(({ icon: Icon, name, path }) => (
               <button key={path} type="button" className="ea-quick__tile" onClick={() => navigate(path)}>
                 <Icon size={20} aria-hidden="true" />

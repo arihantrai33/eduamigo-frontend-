@@ -864,3 +864,33 @@ Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B8, §3.2.
 - After the last fixes: `interactions` + `workflows` 28/28, then `interactions` + `accessible-names` 27/27.
 - Sweep 390/1280: 156 screens, 0 findings.
 - The build passes, and ESLint counts on all 27 changed files match HEAD.
+
+### Redesign batch B9: homes (2026-10-16)
+Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B9.
+
+**Admin dashboard:**
+- **KPIs:** the shared `StatCard` (clickable, the same as every other KPI; a skeleton while loading) instead of the dashboard's own large tiles. On a phone the four KPIs are a compact 2 × 2 and no longer fill the first screen.
+- **Quick access:** the column count comes from the number of modules (three columns, or four when that divides better; from 1100 px one row), so no tile sits alone. "Transport" was orphaned on its own row at 1280.
+- **Any `StatGrid` with exactly four cards:** 2 × 2 up to 1099 px and one row from 1100 px. At 1024 the shared grid made them 3 + 1 (found in review and fixed).
+
+**Student and parent homes (hero height):**
+- **Student:** the ID card in the hero repeated the name and the photo already in the header line above. It now carries one line (Class • Roll • Admission No) and the four figures. The hero at 390 px is about 190 px tall (was about 530 px, 63% of the screen).
+- **Parent:**
+  - "GOOD EVENING — PARENT PORTAL" is now just the greeting ("Good Morning"), as on the other portals (the eyebrows went in B5).
+  - The child card loses its duplicate initials tile and has a smaller name.
+  - The hero is about 245 px tall at 390 px.
+- **Hero figures:** the attendance/grade/marks/fee figures were clickable `div`s that a keyboard could not reach. They are buttons now (`HeroStat`), with 11 px sentence-case labels (were 9 px capitals) and a focus ring in the hero's text colour (visible on a brand hero; checked).
+
+**Teacher home:** de-duplicated in B5 (the eyebrow and the second gradient card); nothing more needed.
+
+**Review (ports 8130/5194):**
+- All four homes at 390, 768, 1024 and 1280.
+- Keyboard focus on a hero figure (student, parent).
+- After the fixes: the dashboard plus three four-card pages (Teachers, Library, Students) at 768, 1024 and 1280.
+
+**Tests:**
+- 40/40 passed: `screens`, `scroll`, `ux-regressions`, `accessible-names`, `auth-and-navigation`, the sweep and the contrast probe.
+- After the fixes, the capture plus `screens`: 7/7.
+- Sweep 390/1280: 156 screens, 0 findings.
+- Dark-mode contrast: 0 spots under 3:1.
+- The build passes, and ESLint counts on the changed files match HEAD.
