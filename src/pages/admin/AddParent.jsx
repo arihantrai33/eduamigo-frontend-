@@ -102,7 +102,7 @@ const AddParent = () => {
   );
 
   return (
-    <div style={{ fontFamily: "inherit", maxWidth: 760, margin: "0 auto" }}>
+    <div className="ea-page--read" style={{ fontFamily: "inherit" }}>
 
       {/* Toast */}
       {toast.msg && (

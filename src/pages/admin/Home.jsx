@@ -228,7 +228,7 @@ export default function AdminHome() {
           </aside>
         </>
       )}
-      <main ref={mainRef} id="admin-main" tabIndex={-1} className="ea-admin-main" style={{ flex: 1, padding: isMobile ? "1rem" : "1.75rem 2.5rem", overflowY: "auto", height: "100vh", minWidth: 0, outline: "none" }}>
+      <main ref={mainRef} id="admin-main" tabIndex={-1} className="ea-admin-main" style={{ flex: 1, padding: "var(--ea-page-top) var(--ea-gutter)", overflowY: "auto", height: "100vh", minWidth: 0, outline: "none" }}>
         {isMobile && (
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "1rem" }}>
             <button type="button" ref={menuButtonRef} className="ea-side-btn" aria-label="Open menu" aria-expanded={sidebarOpen} aria-controls="admin-menu" onClick={() => setSidebarOpen(true)}

@@ -329,7 +329,7 @@ export default function Admissions() {
   const classes = [...new Set(rows.map((r) => r.classApplied))].sort((a, b) => (Number(a) || 0) - (Number(b) || 0) || a.localeCompare(b));
 
   return (
-    <div style={{ padding: 24, fontFamily: "inherit", maxWidth: 1200, margin: "0 auto" }}>
+    <div style={{ fontFamily: "inherit" }}>
       <div style={{ marginBottom: 18 }}>
         <PageHeader title="Admissions"
           subtitle={`Academic year ${academicYear || "—"} · ${total} total · ${open} in progress · ${counts.Admitted || 0} admitted`}

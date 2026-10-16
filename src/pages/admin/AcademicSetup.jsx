@@ -377,7 +377,7 @@ export default function AcademicSetup() {
   };
 
   return (
-    <div style={{ fontFamily: "inherit", maxWidth: 900, margin: "0 auto" }}>
+    <div className="ea-page--read" style={{ fontFamily: "inherit" }}>
       <div style={{ marginBottom: 18 }}>
         <PageHeader title="School Setup" subtitle="Sessions, classes, sections, class teachers and subjects" />
       </div>

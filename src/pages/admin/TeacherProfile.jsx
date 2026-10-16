@@ -113,7 +113,7 @@ export default function TeacherProfile() {
         .profile-card { animation: fadeIn 0.3s ease; }
       `}</style>
 
-      <div style={{ fontFamily: "inherit", maxWidth: 900, margin: "0 auto" }}>
+      <div className="ea-page--wide" style={{ fontFamily: "inherit" }}>
 
         {/* Header */}
         <div style={{ marginBottom: "1.5rem" }}>

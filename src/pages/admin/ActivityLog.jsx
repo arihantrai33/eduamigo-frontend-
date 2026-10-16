@@ -58,7 +58,7 @@ export default function ActivityLog() {
   const goTo = (n) => { setLoading(true); setPage(n); };
 
   return (
-    <div style={{ fontFamily: "inherit", maxWidth: 1000, margin: "0 auto" }}>
+    <div className="ea-page--wide" style={{ fontFamily: "inherit" }}>
       <div style={{ marginBottom: 18 }}>
         <PageHeader title="Activity Log" subtitle="Who changed marks, fees, students, logins and settings, and when" />
       </div>

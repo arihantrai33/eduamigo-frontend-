@@ -143,8 +143,6 @@ input, button, select, textarea {
     background: var(--ea-surface);
     border-right: 1px solid var(--ea-line);
   }
-  /* Portal screens were designed for phones: on a wide screen they sit in a centred column instead of stretching. */
-  .ea-stage { max-width: 1080px; }
   /* Home screens: the quick-access tiles use three columns when there is room (inline styles set two). */
   .ea-tile-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
 
@@ -157,16 +155,20 @@ input, button, select, textarea {
      .ea-pd-narrow on the page root: a reading-width column for lists and forms */
   /* --pd-w: width of the content column (the whole stage by default, 820 px under .ea-pd-narrow). Band and body
      are centred on it with margins/padding, so the body keeps its scrollbar at the edge of the stage. */
-  .ea-pd-band { margin: 20px max(28px, calc((100% - var(--pd-w, 100%)) / 2)) 0 !important; border-radius: 20px; padding: 22px 26px !important; }
-  .ea-pd-body { padding: 24px max(28px, calc((100% - var(--pd-w, 100%)) / 2)) 40px !important; margin-top: 0 !important; }
+  .ea-pd-band { margin: var(--ea-page-top) max(var(--ea-gutter), calc(100% - var(--pd-w) - var(--ea-gutter))) 0 var(--ea-gutter) !important; border-radius: 20px; padding: 22px 26px !important; }
+  .ea-pd-body { padding: 24px max(var(--ea-gutter), calc(100% - var(--pd-w) - var(--ea-gutter))) 40px var(--ea-gutter) !important; margin-top: 0 !important; }
   /* dense: a side card written before the main section still fills the top of the side column */
   .ea-pd-dash { display: grid !important; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); grid-auto-flow: row dense; gap: 4px 24px; align-content: start; }
   .ea-pd-dash > .ea-tile-grid { order: -1; grid-column: 1 / -1; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important; }
   .ea-pd-hide { display: none !important; }
   /* Bus tracking: the route stops become a panel on the right of the map instead of a phone bottom sheet; the
      full-screen button sits at the bottom of the map, clear of the panel. */
-  .ea-bus-panel { left: auto !important; right: 20px !important; bottom: 20px !important; width: 360px; max-height: calc(100% - 210px) !important; border-radius: 20px !important; }
-  .ea-bus-fs { bottom: 20px !important; right: 396px !important; }
+  .ea-bus-panel { left: auto !important; right: var(--ea-gutter) !important; bottom: var(--ea-gutter) !important; width: 360px; max-height: calc(100% - 392px) !important; border-radius: 20px !important; }
+  .ea-bus-fs { bottom: var(--ea-gutter) !important; right: calc(var(--ea-gutter) + 376px) !important; }
+  /* Its header is a card on the page frame, like every page title (the map behind it stays full-bleed); no back
+     button beside the sidebar. */
+  .ea-bus-head { top: var(--ea-page-top) !important; left: var(--ea-gutter) !important; right: var(--ea-gutter) !important; padding-top: 14px !important; border-radius: 20px !important; }
+  .ea-bus-back { display: none !important; }
   /* Tiles start at the top, so icons line up across a row even when a label wraps to two lines. */
   .ea-pd-dash > .ea-tile-grid > * { display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; }
   .ea-pd-dash > .ea-pd-main { grid-column: 1; grid-row: span 3; min-width: 0; }
@@ -177,11 +179,12 @@ input, button, select, textarea {
   .ea-pd-cols > .ea-pd-side { grid-column: 2; min-width: 0; }
   .ea-pd-cols > .ea-pd-tall { grid-row: span 2; }
   .ea-pd-onecol { grid-template-columns: minmax(0, 1fr) !important; }
-  .ea-pd-narrow { --pd-w: 820px; }
+  .ea-scroll { --pd-w: var(--ea-w-wide); }
+  .ea-pd-narrow { --pd-w: var(--ea-w-read); }
   /* A row whose own padding holds its content (filter chips): the padding lines it up with the column. */
-  .ea-pd-row { padding-left: max(28px, calc((100% - var(--pd-w, 100%)) / 2)) !important; padding-right: max(28px, calc((100% - var(--pd-w, 100%)) / 2)) !important; }
+  .ea-pd-row { padding-left: var(--ea-gutter) !important; padding-right: max(var(--ea-gutter), calc(100% - var(--pd-w) - var(--ea-gutter))) !important; }
   /* A bar between the band and the body (tabs, day picker): lined up with the column. */
-  .ea-pd-bar { margin-left: max(28px, calc((100% - var(--pd-w, 100%)) / 2)) !important; margin-right: max(28px, calc((100% - var(--pd-w, 100%)) / 2)) !important; margin-top: 16px; border-radius: 14px; }
+  .ea-pd-bar { margin-left: var(--ea-gutter) !important; margin-right: max(var(--ea-gutter), calc(100% - var(--pd-w) - var(--ea-gutter))) !important; margin-top: 16px; border-radius: 14px; }
   /* Home header: the identity card puts its numbers beside the name instead of under it. */
   .ea-pd-idcard { display: flex !important; align-items: center; gap: 24px; }
   .ea-pd-idcard > :first-child { flex: 1 1 auto; min-width: 0; }
@@ -580,7 +583,21 @@ body.admin-body #root {
   --ea-space-4: 16px;
   --ea-space-5: 24px;
   --ea-space-6: 32px;
+  /* Page frame (every signed-in screen, all four portals). The content starts one gutter from the edge of the
+     navigation, the title one page-top from the top; the column is as wide as the page's purpose:
+     read (forms, lists, profile, messages) or wide (dashboards, timetables, results, Learning AI). Admin tables use
+     the whole area. Widths differ by purpose; the left edge and the title position never do. */
+  --ea-gutter: 16px;
+  --ea-page-top: 16px;
+  --ea-w-read: 880px;
+  --ea-w-wide: 1200px;
 }
+@media (min-width: 1024px) {
+  :root { --ea-gutter: 32px; --ea-page-top: 28px; }
+}
+/* A page root that is narrower than its area by purpose: it starts on the gutter like every page (not centred). */
+.ea-page--read { max-width: var(--ea-w-read); }
+.ea-page--wide { max-width: var(--ea-w-wide); }
 
 @media (max-width: 767px) {
   :root {
@@ -976,7 +993,7 @@ td .ea-skeleton { box-sizing: border-box; padding: 0 20px; }
 @media (min-width: 1024px) {
   .ea-portal-head {
     min-height: 0; gap: 12px; background: none; color: var(--ea-ink); align-items: flex-start;
-    padding: 28px max(28px, calc((100% - var(--pd-w, 100%)) / 2)) 4px;
+    padding: var(--ea-page-top) max(var(--ea-gutter), calc(100% - var(--pd-w) - var(--ea-gutter))) 4px var(--ea-gutter);
   }
   .ea-portal-head__back { display: none; }
   .ea-portal-head--detail .ea-portal-head__back { display: grid; width: 36px; height: 36px; margin-top: 0; border: 1px solid var(--ea-line); background: var(--ea-surface); color: var(--ea-ink); }
@@ -1193,7 +1210,11 @@ input.ea-input-bare[aria-invalid="true"], input.ea-input-bare[aria-invalid="true
 .ea-admin-frame:has(.ea-ask-fab) .ea-admin-main { padding-bottom: 88px !important; }
 /* From 1024 px the portals have no tab bar to float above: the round Ask button sits in the corner. */
 @media (min-width: 1024px) {
-  .ea-scroll .ea-ask-fab { bottom: calc(24px + env(safe-area-inset-bottom)) !important; }
+  .ea-scroll .ea-ask-fab { bottom: calc(24px + env(safe-area-inset-bottom)) !important; right: 24px !important; }
+  /* Same corner as admin; the bus page's stops panel moves up so the button never sits on it. */
+  .ea-scroll:has(.ea-ask-fab) .ea-bus-panel { bottom: 92px !important; max-height: calc(100% - 392px) !important; }
+  /* The end of a page scrolls clear of the button, as in admin. */
+  .ea-scroll:has(.ea-ask-fab) .ea-pd-body { padding-bottom: 96px !important; }
 }
 /* Tables scroll sideways inside their card instead of squeezing or clipping columns. */
 .ea-admin-main div:has(> table) { overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
@@ -1309,6 +1330,11 @@ body:has(.ea-dialog-backdrop) .ea-ask-fab { display: none !important; }
 @media (max-width: 599px) { .ea-learn__tabs { padding-right: 40px; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent); } }
 .ea-learn__tab:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; border-radius: 6px; }
 .ea-learn__panel { padding: 16px; display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 960px; margin: 0 auto; box-sizing: border-box; }
+/* Desktop: the tabs and the panel sit in the page frame like every other page (they were centred and full-bleed). */
+@media (min-width: 1024px) {
+  .ea-learn__tabs { margin: 16px max(var(--ea-gutter), calc(100% - var(--pd-w) - var(--ea-gutter))) 0 var(--ea-gutter); padding: 0; background: none; }
+  .ea-learn__panel { max-width: none; margin: 0; padding: 24px max(var(--ea-gutter), calc(100% - var(--pd-w) - var(--ea-gutter))) 0 var(--ea-gutter); }
+}
 .ea-learn__toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-bottom: 12px; border-bottom: 1px solid var(--ea-line); }
 .ea-learn__toolbar .ea-select { min-width: 150px; border-radius: 10px; }
 .ea-learn__spacer { flex: 1; }
@@ -1446,7 +1472,6 @@ body:has(.ea-dialog-backdrop) .ea-ask-fab { display: none !important; }
 .ea-learn__task.is-done > span { text-decoration: line-through; color: var(--ea-muted); }
 @media (min-width: 1024px) {
   .ea-learn { padding-bottom: 32px; }
-  .ea-learn__panel { padding: 20px 24px; }
   .ea-learn__bubble.is-user { max-width: 70%; }
 }
 

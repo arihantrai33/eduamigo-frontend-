@@ -478,15 +478,15 @@ export default function ParentBus() {
           </svg>
         </button>
 
-        <div ref={headerRef} style={styles.header}>
+        <div ref={headerRef} className="ea-bus-head" style={styles.header}>
           <div style={styles.navRow}>
-            <button type="button" aria-label="Back to home" style={styles.backBtn} onClick={() => navigate("/student/home")}>
+            <button type="button" aria-label="Back to home" className="ea-bus-back" style={styles.backBtn} onClick={() => navigate("/student/home")}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M19 12H5M12 5l-7 7 7 7"/>
               </svg>
             </button>
             <div style={{ flex: 1 }}>
-              <p style={styles.navTitle}>Live Bus Tracking</p>
+              <h1 style={{ ...styles.navTitle, margin: 0 }}>Live Bus Tracking</h1>
               <p style={styles.navSub}>{busLabel} · {routeLabel}</p>
             </div>
             {tripActive && (

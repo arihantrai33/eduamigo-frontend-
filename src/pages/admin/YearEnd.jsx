@@ -117,7 +117,7 @@ export default function YearEnd() {
   const upcoming = sessions.filter((s) => s.name !== current);
 
   return (
-    <div style={{ fontFamily: "inherit", maxWidth: 1050, margin: "0 auto" }}>
+    <div className="ea-page--wide" style={{ fontFamily: "inherit" }}>
       <div style={{ marginBottom: 14 }}>
         <PageHeader title="Year End" subtitle="Move students to the next session, and issue transfer certificates" />
       </div>
