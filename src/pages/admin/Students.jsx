@@ -23,7 +23,7 @@ const FEE_BADGE = {
   Paid:    { bg:"#F0FDF4", color:"#15803D", dot:"#22C55E" },
   Pending: { bg:"#FEF9C3", color:"#854D0E", dot:"#EAB308" },
   Partial: { bg:"#FFF7ED", color:"#C2410C", dot:"#F97316" },
-  "Not billed": { bg:"#F1F5F9", color:"#56657A", dot:"#94A3B8" },
+  "Not billed": { bg:"#F1F5F9", color:"var(--ea-muted)", dot:"#94A3B8" },
 };
 
 // The shared stat card; the border colour this screen passes becomes the card's status tone.
@@ -75,7 +75,7 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
           <label style={{
             display: "inline-block", padding: "8px 16px", borderRadius: 10,
             border: "1.5px solid #E2E8F0", background: "white",
-            fontSize: 12, fontWeight: 700, color: "var(--brand-dark)", cursor: "pointer",
+            fontSize: 12, fontWeight: 700, color: "var(--brand-text)", cursor: "pointer",
           }}>
             {form.photoFile ? "Change Photo" : "Upload Photo"}
             <input type="file" accept="image/*" onChange={handlePhotoChange} style={{ display: "none" }} />
@@ -84,7 +84,7 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
         </div>
       </div>
       <div style={{ height:1, background:"#F1F5F9", margin:"4px 0" }} />
-      <div style={{ fontSize:12, fontWeight:700, color:"var(--brand-dark)", marginBottom:2, letterSpacing:"0.06em" }}>PERSONAL INFO</div>
+      <div style={{ fontSize:12, fontWeight:700, color:"var(--brand-text)", marginBottom:2, letterSpacing:"0.06em" }}>PERSONAL INFO</div>
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
         {inp("FULL NAME","name","text","e.g. Rahul Sharma")}
         {inp("EMAIL","email","email","student@school.com")}
@@ -93,7 +93,7 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
       </div>
       {sel("GENDER","gender",["Male","Female","Other"])}
       <div style={{ height:1, background:"#F1F5F9", margin:"4px 0" }} />
-      <div style={{ fontSize:12, fontWeight:700, color:"var(--brand-dark)", marginBottom:2, letterSpacing:"0.06em" }}>ACADEMIC INFO</div>
+      <div style={{ fontSize:12, fontWeight:700, color:"var(--brand-text)", marginBottom:2, letterSpacing:"0.06em" }}>ACADEMIC INFO</div>
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:12 }}>
         {inp("CLASS","class","text","e.g. 10")}
         {inp("SECTION","section","text","e.g. A")}
@@ -104,14 +104,14 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
         <div style={{ fontSize:11, color:"var(--ea-muted)", marginTop:5 }}>The day the school admitted the student. Leave empty if not known; it is printed on the transfer certificate.</div>
       </div>
       <div style={{ height:1, background:"#F1F5F9", margin:"4px 0" }} />
-      <div style={{ fontSize:12, fontWeight:700, color:"var(--brand-dark)", marginBottom:2, letterSpacing:"0.06em" }}>PARENT INFO</div>
+      <div style={{ fontSize:12, fontWeight:700, color:"var(--brand-text)", marginBottom:2, letterSpacing:"0.06em" }}>PARENT INFO</div>
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
         {inp("PARENT NAME","parentName","text","e.g. Rajesh Sharma")}
         {inp("PARENT PHONE","parentPhone","tel","10-digit number")}
         {inp("PARENT EMAIL","parentEmail","email","parent@email.com")}
       </div>
       <div style={{ display:"flex", gap:10, marginTop:8, justifyContent:"flex-end" }}>
-        <button onClick={onClose} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#56657A" }}>Cancel</button>
+        <button onClick={onClose} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
         <button onClick={onSave} disabled={loading} className="ea-btn ea-btn--primary">
           {loading ? "Saving..." : "Save Student"}
         </button>
@@ -258,7 +258,7 @@ export default function Students() {
           <thead>
             <tr style={{ background:"var(--ea-hover)" }}>
               {["Student","Roll No","Class","Parent","Phone","Fee Status","Actions"].map(h => (
-                <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#56657A", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
+                <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"var(--ea-muted)", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
               ))}
             </tr>
           </thead>
@@ -312,7 +312,7 @@ export default function Students() {
                   <td style={{ padding:"14px 18px" }}>
                     <div style={{ display:"flex", gap:6 }}>
                       <button type="button" className="action-btn" onClick={() => navigate(`/admin/students/${s._id}`)}
-                        style={{ padding:"6px 14px", borderRadius:8, border:"none", background:"var(--brand-soft)", color:"var(--brand-dark)", fontSize:12, fontWeight:700, cursor:"pointer" }}>View</button>
+                        style={{ padding:"6px 14px", borderRadius:8, border:"none", background:"var(--brand-soft)", color:"var(--brand-text)", fontSize:12, fontWeight:700, cursor:"pointer" }}>View</button>
                       {canManage && <>
                       <button className="action-btn" onClick={() => openEdit(s)}
                         style={{ padding:"6px 14px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", color:"#374151", fontSize:12, fontWeight:700, cursor:"pointer" }}>Edit</button>
@@ -338,7 +338,7 @@ export default function Students() {
           <div style={{ fontSize:16, fontWeight:700, color:"#0F172A", marginBottom:8 }}>Are you sure?</div>
           <div style={{ fontSize:13, color:"var(--ea-muted)", marginBottom:24 }}>This action cannot be undone.</div>
           <div style={{ display:"flex", gap:10, justifyContent:"center" }}>
-            <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#56657A" }}>Cancel</button>
+            <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
             <button onClick={() => handleDelete(deleteId)} className="ea-btn ea-btn--danger">Delete</button>
           </div>
         </div>

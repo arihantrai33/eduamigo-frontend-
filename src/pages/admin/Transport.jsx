@@ -21,7 +21,7 @@ const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("
 
 const STATUS_CONFIG = {
   "On Route":  { bg:"#F0FDF4", color:"#15803D", border:"#BBF7D0", dot:"#22C55E" },
-  "Idle":      { bg:"#F8FAFC", color:"#56657A", border:"#E2E8F0", dot:"#94A3B8" },
+  "Idle":      { bg:"#F8FAFC", color:"var(--ea-muted)", border:"#E2E8F0", dot:"#94A3B8" },
   "Completed": { bg:"#F1F5F9", color:"#475569", border:"#E2E8F0", dot:"#94A3B8" },
 };
 
@@ -182,7 +182,7 @@ export default function Transport() {
                         <span style={{ width:6, height:6, borderRadius:"50%", background:scfg.dot }} />{bus.busStatus}
                       </span>
                     </div>
-                    <div style={{ display:"flex", flexWrap:"wrap", gap:"4px 16px", fontSize:12, color:"#56657A", fontWeight:500 }}>
+                    <div style={{ display:"flex", flexWrap:"wrap", gap:"4px 16px", fontSize:12, color:"var(--ea-muted)", fontWeight:500 }}>
                       <span><Glyph e="👤" /> {bus.driverName}</span>
                       <span><Glyph e="📞" /> {bus.driverPhone}</span>
                       <span><Glyph e="🗺" /> {bus.routeName}</span>
@@ -219,11 +219,11 @@ export default function Transport() {
                 {/* Expanded — Stops */}
                 {isExpanded && bus.stops?.length > 0 && (
                   <div style={{ margin:"0 24px 20px", padding:"16px", background:"#F8FAFC", borderRadius:14, border:"1px solid #E2E8F0" }}>
-                    <div style={{ fontSize:12, fontWeight:800, color:"#56657A", marginBottom:12, letterSpacing:"0.06em" }}>ROUTE STOPS</div>
+                    <div style={{ fontSize:12, fontWeight:800, color:"var(--ea-muted)", marginBottom:12, letterSpacing:"0.06em" }}>ROUTE STOPS</div>
                     <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
                       {bus.stops.sort((a,b)=>a.order-b.order).map((stop, si) => (
                         <div key={si} style={{ display:"flex", alignItems:"center", gap:10 }}>
-                          <div style={{ width:24, height:24, borderRadius:"50%", background:"var(--brand-soft)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:10, fontWeight:800, color:"var(--brand-dark)", flexShrink:0 }}>{si+1}</div>
+                          <div style={{ width:24, height:24, borderRadius:"50%", background:"var(--brand-soft)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:10, fontWeight:800, color:"var(--brand-text)", flexShrink:0 }}>{si+1}</div>
                           <div style={{ flex:1 }}>
                             <span style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>{stop.name}</span>
                             {stop.estimatedTime && <span style={{ fontSize:11, color:"var(--ea-muted)", marginLeft:8 }}><Glyph e="⏱" /> {stop.estimatedTime}</span>}

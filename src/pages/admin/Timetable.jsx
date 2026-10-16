@@ -144,7 +144,7 @@ export default function Timetable() {
       <div style={{ background:"white", borderRadius:16, padding:"20px 24px", marginBottom:24, boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0", animation:"fadeUp 0.4s ease 0.05s both" }}>
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:16, marginBottom:16 }}>
           <div>
-            <div style={{ fontSize:11, fontWeight:700, color:"#56657A", marginBottom:6, letterSpacing:"0.06em" }}>CLASS</div>
+            <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>CLASS</div>
             <select aria-label="Class" value={selectedClass} onChange={e => { setSelectedClass(e.target.value); setSelectedSection(""); }}
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white" }}>
               <option value="">Select Class</option>
@@ -152,7 +152,7 @@ export default function Timetable() {
             </select>
           </div>
           <div>
-            <div style={{ fontSize:11, fontWeight:700, color:"#56657A", marginBottom:6, letterSpacing:"0.06em" }}>SECTION</div>
+            <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>SECTION</div>
             <select aria-label="Section" value={selectedSection} onChange={e => setSelectedSection(e.target.value)}
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white" }}>
               <option value="">Select Section</option>
@@ -172,7 +172,7 @@ export default function Timetable() {
             <button key={day} type="button" className="day-btn" aria-pressed={selectedDay === day} onClick={() => setSelectedDay(day)}
               style={{ flex:1, padding:"10px 8px", borderRadius:12, border:"none", cursor:"pointer", fontWeight:700, fontSize:12,
                 background: selectedDay === day ? DAY_COLORS[day] : "#F8FAFC",
-                color: selectedDay === day ? "white" : "#64748B",
+                color: selectedDay === day ? "white" : "var(--ea-muted)",
                 boxShadow: selectedDay === day ? `0 4px 14px color-mix(in srgb, ${DAY_COLORS[day]} 27%, transparent)` : "none" }}>
               {day.slice(0,3)}
             </button>
@@ -217,17 +217,17 @@ export default function Timetable() {
                     <>
                       <div style={{ fontSize:14, fontWeight:800, color:"#0F172A", marginBottom:4 }}>{period.subject}</div>
                       {getTeacherName(period.teacher) && (
-                        <div style={{ fontSize:11, color:"#56657A", fontWeight:600 }}><Glyph e="👩‍🏫" /> {getTeacherName(period.teacher)}</div>
+                        <div style={{ fontSize:11, color:"var(--ea-muted)", fontWeight:600 }}><Glyph e="👩‍🏫" /> {getTeacherName(period.teacher)}</div>
                       )}
                       {(period.startTime || period.endTime) && (
-                        <div style={{ fontSize:11, color:"#56657A", marginTop:4 }}><Glyph e="🕐" /> {period.startTime} - {period.endTime}</div>
+                        <div style={{ fontSize:11, color:"var(--ea-muted)", marginTop:4 }}><Glyph e="🕐" /> {period.startTime} - {period.endTime}</div>
                       )}
                       <div style={{ marginTop:8, fontSize:11, color, fontWeight:700 }}>Click to edit →</div>
                     </>
                   ) : (
                     <div style={{ textAlign:"center", paddingTop:8 }}>
                       <div style={{ fontSize:24, marginBottom:4 }}>+</div>
-                      <div style={{ fontSize:12, color:"#56657A", fontWeight:600 }}>Add Period</div>
+                      <div style={{ fontSize:12, color:"var(--ea-muted)", fontWeight:600 }}>Add Period</div>
                     </div>
                   )}
                 </div>
@@ -239,18 +239,18 @@ export default function Timetable() {
 
       <Modal show={showModal} onClose={closePeriod} title={editPeriod ? `Edit Period ${periodForm.no}` : `Add Period ${periodForm.no}`}>
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
-          <div style={{ background:"#F8FAFC", borderRadius:12, padding:"12px 16px", fontSize:13, color:"#56657A", fontWeight:600 }}>
+          <div style={{ background:"#F8FAFC", borderRadius:12, padding:"12px 16px", fontSize:13, color:"var(--ea-muted)", fontWeight:600 }}>
             Class {selectedClass}-{selectedSection} · {selectedDay} · Period {periodForm.no}
           </div>
           <div>
-            <label htmlFor="period-subject" style={{ display:"block", fontSize:11, fontWeight:700, color:"#56657A", marginBottom:6, letterSpacing:"0.06em" }}>SUBJECT</label>
+            <label htmlFor="period-subject" style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>SUBJECT</label>
             <input id="period-subject" value={periodForm.subject} onChange={e => f("subject", e.target.value)} placeholder="e.g. Mathematics" {...fe.invalid("subject")}
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
               onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
             <FieldError id="period-subject-error">{fe.errors.subject}</FieldError>
           </div>
           <div>
-            <label htmlFor="period-teacher" style={{ display:"block", fontSize:11, fontWeight:700, color:"#56657A", marginBottom:6, letterSpacing:"0.06em" }}>TEACHER</label>
+            <label htmlFor="period-teacher" style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>TEACHER</label>
             <select id="period-teacher" value={periodForm.teacherId} onChange={e => f("teacherId", e.target.value)}
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
               <option value="">Select Teacher (optional)</option>
@@ -259,19 +259,19 @@ export default function Timetable() {
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             <div>
-              <label htmlFor="period-start" style={{ display:"block", fontSize:11, fontWeight:700, color:"#56657A", marginBottom:6, letterSpacing:"0.06em" }}>START TIME</label>
+              <label htmlFor="period-start" style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>START TIME</label>
               <input id="period-start" type="time" value={periodForm.startTime} onChange={e => f("startTime", e.target.value)}
                 style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box" }} />
             </div>
             <div>
-              <label htmlFor="period-end" style={{ display:"block", fontSize:11, fontWeight:700, color:"#56657A", marginBottom:6, letterSpacing:"0.06em" }}>END TIME</label>
+              <label htmlFor="period-end" style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>END TIME</label>
               <input id="period-end" type="time" value={periodForm.endTime} onChange={e => f("endTime", e.target.value)} {...fe.invalid("endTime")}
                 style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box" }} />
               <FieldError id="period-end-error">{fe.errors.endTime}</FieldError>
             </div>
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end", marginTop:4 }}>
-            <button type="button" onClick={closePeriod} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#56657A" }}>Cancel</button>
+            <button type="button" onClick={closePeriod} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
             <button type="button" onClick={handleSavePeriod} disabled={saving}
               className="ea-btn ea-btn--primary">
               {saving ? "Saving..." : "Save Period"}

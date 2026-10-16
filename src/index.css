@@ -132,7 +132,7 @@ input, button, select, textarea {
   font-size: 11px;
   font-weight: 500;
 }
-.ea-bottom-nav__item.is-active { color: var(--brand-dark); font-weight: 700; }
+.ea-bottom-nav__item.is-active { color: var(--brand-text); font-weight: 700; }
 
 @media (min-width: 1024px) {
   .ea-bottom-nav { display: none; }
@@ -181,6 +181,9 @@ input, button, select, textarea {
      button beside the sidebar. */
   .ea-bus-head { top: var(--ea-page-top) !important; left: var(--ea-gutter) !important; right: var(--ea-gutter) !important; padding-top: 14px !important; border-radius: 20px !important; }
   .ea-bus-back { display: none !important; }
+  /* "Bus not on route yet" is centred in the space left of the stops panel (the live map stays full width under it);
+     before, it sat in the middle of the whole area and the panel covered part of it between 1024 and 1279 px. */
+  .ea-bus-empty { padding-right: calc(360px + var(--ea-gutter) * 2); box-sizing: border-box; }
   /* Tiles start at the top, so icons line up across a row even when a label wraps to two lines. */
   .ea-pd-dash > .ea-tile-grid > * { display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; }
   .ea-pd-dash > .ea-pd-main { grid-column: 1; grid-row: span 3; min-width: 0; }
@@ -268,7 +271,7 @@ input, button, select, textarea {
   text-decoration: none;
 }
 .ea-sidebar__link:hover { background: var(--ea-hover); color: var(--ea-ink); }
-.ea-sidebar__link.is-active { background: var(--brand-soft); color: var(--brand-dark); font-weight: 650; }
+.ea-sidebar__link.is-active { background: var(--brand-soft); color: var(--brand-text); font-weight: 650; }
 .ea-sidebar__footer { padding: 12px; border-top: 1px solid var(--ea-line); }
 .ea-sidebar__user { display: flex; align-items: center; gap: 10px; padding: 8px 8px 12px; }
 .ea-avatar {
@@ -279,7 +282,7 @@ input, button, select, textarea {
   display: grid;
   place-items: center;
   background: var(--brand-soft);
-  color: var(--brand-dark);
+  color: var(--brand-text);
   font-weight: 700;
   font-size: 14px;
 }
@@ -356,6 +359,7 @@ input, button, select, textarea {
    white text on it reads at 6.3:1 (the :root #6366F1 gives 4.5:1 only for large text). */
 .ea-platform {
   --brand: #4F46E5; --brand-dark: #4338CA; --brand-deep: #1E1B4B; --brand-light: #A5B4FC;
+  --brand-text: #4338CA; --brand-text-dark: #A5B4FC;  /* brand-coloured text: 4.5:1 on the light canvas / on the dark cards (see utils/theme.js) */
   --brand-soft: #EEF2FF; --brand-border: #C7D2FE; --brand-accent: #F5B301;
   --brand-gradient: linear-gradient(135deg, #4338CA 0%, #4F46E5 100%);
 }
@@ -439,12 +443,13 @@ input, button, select, textarea {
   --brand-soft: color-mix(in srgb, var(--brand) 22%, var(--ea-surface));
   --brand-border: color-mix(in srgb, var(--brand) 38%, var(--ea-surface));
   --brand-dark: color-mix(in srgb, var(--brand-light) 65%, #fff);
+  --brand-text: var(--brand-text-dark);
   --ea-on-card-info: #93C5FD;
   /* Text without a colour of its own inherits the body's dark ink; on dark cards it must be light. */
   color: var(--text);
 }
 [data-theme="dark"] .ea-shell--themed .ea-sidebar__link.is-active,
-[data-theme="dark"] .ea-shell--themed .ea-sidebar .ea-avatar { background: color-mix(in srgb, var(--brand) 24%, transparent); color: var(--brand-dark); }
+[data-theme="dark"] .ea-shell--themed .ea-sidebar .ea-avatar { background: color-mix(in srgb, var(--brand) 24%, transparent); color: var(--brand-text); }
 [data-theme="dark"] .ea-shell--themed .ea-sidebar__signout { background: transparent; color: #FCA5A5; }
 /* Form fields without a background of their own. Zero specificity: any component class or inline style wins. */
 :where([data-theme="dark"] .ea-shell--themed) :where(input:not([type="checkbox"], [type="radio"], [type="range"]), textarea, select) { background-color: var(--input); color: var(--text); border-color: var(--border); }
@@ -505,7 +510,7 @@ body.admin-body #root {
 /* Selection color */
 ::selection {
   background: color-mix(in srgb, var(--brand) 20%, transparent);
-  color: var(--brand-dark);
+  color: var(--brand-text);
 }
 
 /* Focus ring */
@@ -558,7 +563,7 @@ body.admin-body #root {
   --ea-info: #1D4ED8;
   /* Status text straight on a card (amounts): the --ea-success/warning/danger above are also fills and sit on pale
      tints, so only these flip in dark mode. */
-  --ea-on-card-success: #15803D;
+  --ea-on-card-success: #166534;
   --ea-on-card-warning: #B45309;
   --ea-on-card-danger: #B91C1C;
   --ea-on-card-info: #1D4ED8;
@@ -566,7 +571,7 @@ body.admin-body #root {
   --ea-info-border: #BFDBFE;
   /* Categories only (event types, library genres, subjects, notice types), never status or decoration: text in the
      colour on a 10% tint of it (--ea-cat-N-bg). On a white card all six reach 4.5:1 on their tint. */
-  --ea-cat-1: #0F766E;
+  --ea-cat-1: #0B5F58;
   --ea-cat-2: #4338CA;
   --ea-cat-3: #A14608;
   --ea-cat-4: #BE123C;
@@ -729,7 +734,7 @@ input:-webkit-autofill:focus {
 
 .ea-callout {
   display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; cursor: pointer;
-  background: var(--ea-surface); border: 1px solid var(--brand-border); border-radius: var(--ea-radius); padding: 12px 16px; color: var(--brand-dark);
+  background: var(--ea-surface); border: 1px solid var(--brand-border); border-radius: var(--ea-radius); padding: 12px 16px; color: var(--brand-text);
 }
 .ea-callout__text { flex: 1; display: flex; flex-direction: column; gap: 2px; }
 .ea-callout__text strong { font-size: 13px; color: var(--ea-ink); }
@@ -760,13 +765,13 @@ input:-webkit-autofill:focus {
 .ea-week__day.is-today { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand); }
 .ea-week__head { display: flex; flex-direction: column; gap: 2px; margin: 0 0 10px; font-size: 14px; font-weight: 700; color: var(--ea-ink); }
 .ea-week__head small { font-size: 12px; font-weight: 600; color: var(--ea-muted); }
-.ea-week__day.is-today .ea-week__head small { color: var(--brand-dark); }
+.ea-week__day.is-today .ea-week__head small { color: var(--brand-text); }
 .ea-week__slot { display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; margin-bottom: 8px; border-radius: 10px; background: var(--ea-canvas, #F4F6FB); border-left: 3px solid var(--brand-soft); }
 .ea-week__slot:last-child { margin-bottom: 0; }
 .ea-week__slot.is-now { background: var(--brand-soft); border-left-color: var(--brand); }
 .ea-week__slot.is-done { opacity: 0.6; }
 .ea-week__slot.is-break { border-left-color: #E9D5FF; }
-.ea-week__time { font-size: 11px; font-weight: 700; color: var(--brand-dark); }
+.ea-week__time { font-size: 11px; font-weight: 700; color: var(--brand-text); }
 .ea-week__subject { font-size: 13px; color: var(--ea-ink); overflow-wrap: break-word; }
 .ea-week__slot.is-break .ea-week__subject { color: #6B21A8; font-weight: 600; }
 .ea-week__meta { font-size: 11px; color: var(--ea-muted); overflow-wrap: anywhere; }
@@ -780,7 +785,7 @@ input:-webkit-autofill:focus {
   display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px;
   padding: 40px 24px; background: var(--ea-surface); border: 1px solid var(--ea-line); border-radius: var(--ea-radius);
 }
-.ea-empty__icon { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; background: var(--brand-soft); color: var(--brand-dark); margin-bottom: 4px; }
+.ea-empty__icon { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; background: var(--brand-soft); color: var(--brand-text); margin-bottom: 4px; }
 .ea-empty__title { margin: 0; font-size: 17px; font-weight: 700; color: var(--ea-ink); }
 .ea-empty__text { margin: 0; max-width: 460px; font-size: 14px; line-height: 1.5; color: var(--ea-muted); }
 .ea-empty__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px; }
@@ -829,7 +834,7 @@ input:-webkit-autofill:focus {
 .ea-stat__sub { font-size: 12px; color: var(--ea-muted); }
 .ea-icon-chip {
   display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; flex: none;
-  background: var(--brand-soft); color: var(--brand-dark);
+  background: var(--brand-soft); color: var(--brand-text);
 }
 .ea-icon-chip--sm { width: 32px; height: 32px; border-radius: 10px; }
 
@@ -843,7 +848,7 @@ input:-webkit-autofill:focus {
 @media (min-width: 1100px) { .ea-quick { grid-template-columns: repeat(var(--quick-n, 9), minmax(0, 1fr)); } }
 .ea-quick__tile {
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 84px; padding: 12px 8px;
-  border-radius: var(--ea-radius); border: 1px solid var(--ea-line); background: var(--ea-surface); color: var(--brand-dark);
+  border-radius: var(--ea-radius); border: 1px solid var(--ea-line); background: var(--ea-surface); color: var(--brand-text);
   font-size: 12px; font-weight: 650; text-align: center; cursor: pointer;
 }
 .ea-quick__tile span { color: var(--ea-ink); }
@@ -859,7 +864,7 @@ input:-webkit-autofill:focus {
 .ea-text-danger { color: var(--ea-danger); }
 .ea-text-warning { color: var(--ea-warning); }
 .ea-muted { color: var(--ea-faint); }
-.ea-link { background: none; border: none; color: var(--brand-dark); font-size: 12px; font-weight: 700; cursor: pointer; padding: 4px 2px; min-height: 28px; display: inline-flex; align-items: center; white-space: nowrap; }
+.ea-link { background: none; border: none; color: var(--brand-text); font-size: 12px; font-weight: 700; cursor: pointer; padding: 4px 2px; min-height: 28px; display: inline-flex; align-items: center; white-space: nowrap; }
 .ea-link:hover { text-decoration: underline; }
 /* A one-line "nothing here" inside a card (the full empty state is .ea-empty, components/ui/EmptyState). */
 .ea-empty-line { font-size: 13px; color: var(--ea-faint); text-align: center; padding: 20px 0; }
@@ -889,7 +894,7 @@ input:-webkit-autofill:focus {
 .ea-badge--danger { background: #FEF2F2; color: var(--ea-danger); border-color: #FECACA; }
 .ea-badge--info { background: var(--ea-info-bg); color: var(--ea-info); border-color: var(--ea-info-border); }
 .ea-badge--neutral { background: #F1F5F9; color: #475569; border-color: #E2E8F0; }
-.ea-badge--brand { background: var(--brand-soft); color: var(--brand-dark); border-color: var(--brand-border); }
+.ea-badge--brand { background: var(--brand-soft); color: var(--brand-text); border-color: var(--brand-border); }
 /* Categories (CategoryBadge): text in the category colour on its 10% tint (all six reach 4.5:1 on a white card). */
 .ea-badge--cat1 { background: var(--ea-cat-1-bg); color: var(--ea-cat-1); border-color: transparent; }
 .ea-badge--cat2 { background: var(--ea-cat-2-bg); color: var(--ea-cat-2); border-color: transparent; }
@@ -924,10 +929,10 @@ input:-webkit-autofill:focus {
   font: inherit; font-size: 13px; font-weight: 600; white-space: nowrap; cursor: pointer;
 }
 .ea-chip:hover { border-color: var(--ea-muted); color: var(--ea-ink); }
-.ea-chip[aria-pressed="true"] { background: var(--brand-soft); border-color: var(--brand); color: var(--brand-dark); }
+.ea-chip[aria-pressed="true"] { background: var(--brand-soft); border-color: var(--brand); color: var(--brand-text); }
 .ea-chip:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 .ea-chip__count { font-size: 12px; font-weight: 700; color: var(--ea-muted); font-variant-numeric: tabular-nums; }
-.ea-chip[aria-pressed="true"] .ea-chip__count { color: var(--brand-dark); }
+.ea-chip[aria-pressed="true"] .ea-chip__count { color: var(--brand-text); }
 @media (max-width: 767px) {
   .ea-chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding: 2px 2px 4px; scroll-padding-inline: 2px; }
   .ea-chips::-webkit-scrollbar, .ea-seg::-webkit-scrollbar { display: none; }
@@ -966,7 +971,7 @@ td .ea-skeleton { box-sizing: border-box; padding: 0 20px; }
    tables). Positive workflow actions (Collect, Approve, Mark paid) are primary, never green; success is a status
    (badge, "✓ Done"), not a button colour. */
 .ea-btn--ghost:hover { background: var(--ea-hover); }
-.ea-btn--tertiary { background: transparent; color: var(--brand-dark); padding-inline: 8px; }
+.ea-btn--tertiary { background: transparent; color: var(--brand-text); padding-inline: 8px; }
 .ea-btn--tertiary:hover { background: var(--brand-soft); }
 .ea-btn--danger-ghost { background: var(--ea-surface); border-color: var(--ea-line); color: var(--ea-danger); }
 .ea-btn--danger-ghost:hover { background: #FEF2F2; border-color: #FECACA; }
@@ -977,7 +982,7 @@ td .ea-skeleton { box-sizing: border-box; padding: 0 20px; }
 .ea-btn:disabled, .ea-btn[aria-disabled="true"] { opacity: 0.55; cursor: not-allowed; }
 .ea-btn--primary:disabled:hover { background: var(--brand); }
 
-.ea-icon-chip--brand { background: var(--brand-soft); color: var(--brand-dark); }
+.ea-icon-chip--brand { background: var(--brand-soft); color: var(--brand-text); }
 .ea-icon-chip--success { background: color-mix(in srgb, var(--ea-success) 10%, var(--ea-surface)); color: var(--ea-on-card-success); }
 .ea-icon-chip--warning { background: color-mix(in srgb, var(--ea-warning) 10%, var(--ea-surface)); color: var(--ea-on-card-warning); }
 .ea-icon-chip--danger { background: color-mix(in srgb, var(--ea-danger) 9%, var(--ea-surface)); color: var(--ea-on-card-danger); }
@@ -1043,6 +1048,11 @@ td .ea-skeleton { box-sizing: border-box; padding: 0 20px; }
   .ea-profile { display: grid; grid-template-columns: minmax(280px, 360px) minmax(0, 1fr); gap: 24px; align-items: start; }
   .ea-profile__aside .ea-stats { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
 }
+
+/* A notification card. Unread carries a light tint of the school colour and a bar on the left; both follow the theme
+   (the surface and the brand tokens), so the card reads in the light and the dark portal alike. */
+.ea-notice { background: var(--ea-surface); border-radius: 12px; padding: 14px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08); border-left: 3px solid transparent; }
+.ea-notice.is-unread { background: color-mix(in srgb, var(--brand) 7%, var(--ea-surface)); border-left-color: var(--brand); cursor: pointer; }
 
 /* Summary card (components/ui/SummaryCard): the one summary at the top of a portal screen. */
 .ea-summary { display: flex; flex-direction: column; gap: 14px; }
@@ -1396,17 +1406,17 @@ body:has(.ea-dialog-backdrop) .ea-ask-fab { display: none !important; }
 .ea-learn__row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .ea-learn__muted { color: var(--ea-muted); font-size: 13px; }
 .ea-learn__danger { color: var(--ea-danger); }
-.ea-btn.is-on { border-color: var(--brand); color: var(--brand-dark); background: var(--brand-soft); }
+.ea-btn.is-on { border-color: var(--brand); color: var(--brand-text); background: var(--brand-soft); }
 
 .ea-learn__log { flex: 1 1 0; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding: 16px; overscroll-behavior: contain; }
 .ea-learn__log > .ea-learn__empty { margin-block: auto; }
 .ea-learn__empty { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; padding: 28px 8px 12px; font-size: 14px; line-height: 1.55; }
 .ea-learn__empty > p { max-width: 520px; margin: 0; }
-.ea-learn__hero-icon { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 16px; background: var(--brand-soft); color: var(--brand-dark); }
+.ea-learn__hero-icon { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 16px; background: var(--brand-soft); color: var(--brand-text); }
 .ea-learn__empty-title { margin: 6px 0 0; font-size: 20px; font-weight: 800; color: var(--ea-ink); letter-spacing: -0.01em; }
 .ea-learn__starters { list-style: none; margin: 14px 0 0; padding: 0; width: 100%; max-width: 640px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); gap: 10px; }
 .ea-learn__starter { width: 100%; display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; border: 1px solid var(--ea-line); border-radius: 12px; background: var(--ea-surface); font: inherit; text-align: left; color: var(--ea-ink); cursor: pointer; transition: border-color .15s, box-shadow .15s, transform .15s; }
-.ea-learn__starter svg { flex: none; margin-top: 2px; color: var(--brand-dark); }
+.ea-learn__starter svg { flex: none; margin-top: 2px; color: var(--brand-text); }
 .ea-learn__starter span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .ea-learn__starter strong { font-size: 14px; font-weight: 700; }
 .ea-learn__starter small { font-size: 13px; color: var(--ea-muted); overflow-wrap: anywhere; }
@@ -1430,7 +1440,7 @@ body:has(.ea-dialog-backdrop) .ea-ask-fab { display: none !important; }
 .ea-learn__answer ul, .ea-learn__answer ol { margin: 0 0 8px; padding-left: 20px; }
 .ea-learn__answer code { font-family: ui-monospace, Menlo, monospace; font-size: 0.92em; background: var(--ea-hover); padding: 1px 4px; border-radius: 4px; }
 .ea-learn__answer pre { white-space: pre-wrap; background: var(--ea-hover); padding: 8px 10px; border-radius: 8px; overflow-x: auto; }
-.ea-learn__cite { display: inline-block; padding: 0 6px; margin: 0 1px; border-radius: 999px; background: var(--brand-soft); color: var(--brand-dark); font-size: 11px; font-weight: 700; text-decoration: none; vertical-align: 1px; }
+.ea-learn__cite { display: inline-block; padding: 0 6px; margin: 0 1px; border-radius: 999px; background: var(--brand-soft); color: var(--brand-text); font-size: 11px; font-weight: 700; text-decoration: none; vertical-align: 1px; }
 .ea-learn__reliability { margin: 6px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--ea-muted); }
 .ea-learn__reliability svg { vertical-align: -2px; }
 .ea-learn__reliability.is-high strong { color: var(--ea-success); }
@@ -1439,7 +1449,7 @@ body:has(.ea-dialog-backdrop) .ea-ask-fab { display: none !important; }
 .ea-learn__check { display: flex; gap: 6px; align-items: flex-start; font-size: 13px; color: var(--ea-success); margin: 6px 0 0; }
 .ea-learn__check.is-failed { color: var(--ea-warning); }
 .ea-learn__sources { margin-top: 8px; font-size: 13px; }
-.ea-learn__sources summary { cursor: pointer; color: var(--brand-dark); font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+.ea-learn__sources summary { cursor: pointer; color: var(--brand-text); font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
 .ea-learn__sources ul { list-style: none; padding: 6px 0 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
 
 .ea-learn__composer { flex: none; display: flex; flex-direction: column; gap: 8px; margin: 0 16px 16px; padding: 12px 14px; border: 1px solid var(--ea-line); border-radius: 16px; background: var(--ea-surface); }

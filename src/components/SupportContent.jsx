@@ -57,7 +57,7 @@ export default function SupportContent({ role = "student", dark = false }) {
         </div>
         <div style={{ display: "flex", gap: 8 }}>
           {school?.phone && <a href={`tel:${school.phone}`} style={btn}>Call school</a>}
-          {school?.email && <a href={`mailto:${school.email}`} style={{ ...btn, background: "var(--brand-soft)", color: "var(--brand-dark)" }}>Email</a>}
+          {school?.email && <a href={`mailto:${school.email}`} style={{ ...btn, background: "var(--brand-soft)", color: "var(--brand-text)" }}>Email</a>}
         </div>
         {school && !school.phone && !school.email && (
           <div style={{ fontSize: 12, color: dark ? "var(--ea-muted)" : "var(--ea-muted)" }}>Your school has not added contact details yet.</div>

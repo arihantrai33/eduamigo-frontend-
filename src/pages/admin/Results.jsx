@@ -140,7 +140,7 @@ export default function Results() {
           <thead>
             <tr style={{ background:"var(--ea-hover)" }}>
               {["Student","Class","Exam","Subject","Marks","Percentage","Grade","Status",""].map(h => (
-                <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#56657A", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
+                <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"var(--ea-muted)", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
               ))}
             </tr>
           </thead>
@@ -160,14 +160,14 @@ export default function Results() {
                 <tr key={r._id} className="res-row" style={{ borderBottom:"1px solid #F1F5F9", animation:`fadeUp 0.3s ease ${i*0.03}s both` }}>
                   <td style={{ padding:"14px 18px" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                      <div style={{ width:36, height:36, borderRadius:10, background:"var(--brand-soft)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, fontWeight:800, color:"var(--brand-dark)", flexShrink:0 }}>
+                      <div style={{ width:36, height:36, borderRadius:10, background:"var(--brand-soft)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, fontWeight:800, color:"var(--brand-text)", flexShrink:0 }}>
                         {r.studentName?.[0]?.toUpperCase()}
                       </div>
                       <div style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>{r.studentName}</div>
                     </div>
                   </td>
                   <td style={{ padding:"14px 18px" }}>
-                    <span style={{ fontSize:12, fontWeight:700, padding:"3px 10px", borderRadius:8, background:"var(--brand-soft)", color:"var(--brand-dark)" }}>
+                    <span style={{ fontSize:12, fontWeight:700, padding:"3px 10px", borderRadius:8, background:"var(--brand-soft)", color:"var(--brand-text)" }}>
                       {r.studentClass}{r.studentSection ? `-${r.studentSection}` : ""}
                     </span>
                   </td>

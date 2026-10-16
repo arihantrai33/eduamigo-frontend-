@@ -56,7 +56,7 @@ export default function SosModal({ onClose, studentName, studentId, location, dr
         )}
 
         <div style={{ display: "flex", gap: 10 }}>
-          {sent?.schoolPhone && <a href={`tel:${sent.schoolPhone}`} style={{ ...btn, background: "var(--brand-soft)", color: "var(--brand-dark)" }}>Call school</a>}
+          {sent?.schoolPhone && <a href={`tel:${sent.schoolPhone}`} style={{ ...btn, background: "var(--brand-soft)", color: "var(--brand-text)" }}>Call school</a>}
           {driverPhone && <a href={`tel:${driverPhone}`} style={{ ...btn, background: "#ECFDF5", color: "#047857" }}>Call driver</a>}
           <a href="tel:112" style={{ ...btn, background: "#FEF2F2", color: "#B91C1C" }}>Call 112</a>
         </div>

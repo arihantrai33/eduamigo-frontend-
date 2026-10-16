@@ -13,11 +13,11 @@ export function gradeFor(pct) {
 
 export const GRADE_STYLE = {
   "A+": { bg: "#F0FDF4", color: "#15803D", border: "#BBF7D0" },
-  A:    { bg: "#F0FDF4", color: "#16A34A", border: "#BBF7D0" },
+  A:    { bg: "#F0FDF4", color: "#166534", border: "#BBF7D0" },
   B:    { bg: "#EEF2FF", color: "#4338CA", border: "#C7D2FE" },
-  C:    { bg: "#EEF2FF", color: "#6366F1", border: "#C7D2FE" },
-  D:    { bg: "#FFFBEB", color: "#D97706", border: "#FDE68A" },
-  E:    { bg: "#FFF7ED", color: "#EA580C", border: "#FED7AA" },
-  F:    { bg: "#FEF2F2", color: "#DC2626", border: "#FECACA" },
-  AB:   { bg: "#F1F5F9", color: "#64748B", border: "#E2E8F0" },
+  C:    { bg: "#EEF2FF", color: "#4338CA", border: "#C7D2FE" },
+  D:    { bg: "#FFFBEB", color: "#B45309", border: "#FDE68A" },
+  E:    { bg: "#FFF7ED", color: "#C2410C", border: "#FED7AA" },
+  F:    { bg: "#FEF2F2", color: "#B91C1C", border: "#FECACA" },
+  AB:   { bg: "#F1F5F9", color: "#475569", border: "#E2E8F0" },
 };

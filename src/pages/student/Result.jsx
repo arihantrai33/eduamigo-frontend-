@@ -15,8 +15,8 @@ const authHeader = () => ({
 
 // By grade band, so both scales work: A+/A/B/C/D and the CBSE A1, A2, B1 ... E. Only E/F get the fail red.
 const gradeColor = (grade) => { const g = String(grade || ''); return (
-  g === 'A+' || g === 'A1' ? '#00695C' : g[0] === 'A' ? '#2E7D32' : g[0] === 'B' ? '#B45309' :
-  g[0] === 'C' ? '#C2410C' : g[0] === 'D' ? '#C62828' : '#B71C1C'); };
+  g[0] === 'A' ? 'var(--ea-on-card-success)' : g[0] === 'B' ? 'var(--ea-on-card-warning)' :
+  g[0] === 'C' ? 'color-mix(in srgb, var(--ea-on-card-warning) 55%, var(--ea-on-card-danger))' : 'var(--ea-on-card-danger)'); };
 
 export default function StudentResult() {
   const { darkMode } = useTheme();
@@ -61,7 +61,7 @@ export default function StudentResult() {
 
   if (loading) return (
     <div style={{ height: '100vh', display: 'flex', alignItems: 'center',
-      justifyContent: 'center', fontFamily: 'inherit', color: 'var(--brand-dark)',
+      justifyContent: 'center', fontFamily: 'inherit', color: 'var(--brand-text)',
       background: dm ? '#0f172a' : '#F4F6FB' }}>
       Loading results...
     </div>
@@ -140,7 +140,7 @@ export default function StudentResult() {
                         borderRadius: 10, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>
                         {r.grade}
                       </span>
-                      <span style={{ fontSize: 13, fontWeight: 800, color: 'var(--brand-dark)' }}>
+                      <span style={{ fontSize: 13, fontWeight: 800, color: 'var(--brand-text)' }}>
                         {r.absent ? 'Absent' : `${r.marksObtained}/${r.totalMarks}`}
                       </span>
                     </div>

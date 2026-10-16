@@ -165,7 +165,7 @@ export default function AttendanceReports() {
             <thead>
               <tr style={{ background:"var(--ea-hover)" }}>
                 {["Class","Students","Present","Absent","Late","Attendance Rate","Status"].map(h => (
-                  <th key={h} style={{ padding:"12px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#56657A", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
+                  <th key={h} style={{ padding:"12px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"var(--ea-muted)", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -197,7 +197,7 @@ export default function AttendanceReports() {
                       </div>
                     </td>
                     <td style={{ padding:"14px 18px" }}>
-                      <span style={{ fontSize:11, fontWeight:700, padding:"4px 12px", borderRadius:20, background: noData ? "#F8FAFC" : good ? "#F0FDF4" : "#FEF2F2", color: noData ? "#64748B" : good ? "#15803D" : "#DC2626", border:`1px solid ${noData ? "#E2E8F0" : good ? "#BBF7D0" : "#FECACA"}` }}>
+                      <span style={{ fontSize:11, fontWeight:700, padding:"4px 12px", borderRadius:20, background: noData ? "#F8FAFC" : good ? "#F0FDF4" : "#FEF2F2", color: noData ? "var(--ea-muted)" : good ? "#15803D" : "#DC2626", border:`1px solid ${noData ? "#E2E8F0" : good ? "#BBF7D0" : "#FECACA"}` }}>
                         {noData ? "Not marked" : good ? "✓ Good" : "Low"}
                       </span>
                     </td>

@@ -246,7 +246,7 @@ export default function DriverHome() {
             const isCurrent = i === currentStopIndex;
             return (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px", opacity: isDone ? 0.35 : 1 }}>
-                <div style={{ width: "22px", height: "22px", borderRadius: "50%", background: isDone ? "#334155" : isCurrent ? "#1a73e8" : "rgba(255,255,255,0.08)", border: `2px solid ${isDone ? "#475569" : isCurrent ? "#1a73e8" : "rgba(255,255,255,0.15)"}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", fontWeight: "700", flexShrink: 0, color: isDone ? "#64748b" : "white" }}>
+                <div style={{ width: "22px", height: "22px", borderRadius: "50%", background: isDone ? "#334155" : isCurrent ? "#1a73e8" : "rgba(255,255,255,0.08)", border: `2px solid ${isDone ? "#475569" : isCurrent ? "#1a73e8" : "rgba(255,255,255,0.15)"}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", fontWeight: "700", flexShrink: 0, color: isDone ? "var(--ea-muted)" : "white" }}>
                   {isDone ? "✓" : i + 1}
                 </div>
                 <div style={{ fontSize: "13px", fontWeight: isCurrent ? "700" : "400", color: isDone ? "#475569" : isCurrent ? "#60a5fa" : "rgba(255,255,255,0.7)" }}>{stop.name}</div>

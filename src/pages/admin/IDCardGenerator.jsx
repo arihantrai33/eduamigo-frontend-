@@ -74,7 +74,7 @@ function BuildingAnimation({ tab }) {
         <div style={{ position: "absolute", left: 0, right: 0, height: 2, background: "linear-gradient(90deg, transparent, var(--brand), var(--brand), transparent)", boxShadow: "0 0 6px color-mix(in srgb, var(--brand) 30%, transparent)", animation: "scanDown 1.6s ease-in-out infinite", top: 0 }} />
       </div>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-        <div style={{ fontSize: 12, fontWeight: 600, color: "var(--brand-dark)", letterSpacing: "0.06em" }}>Generating ID Card</div>
+        <div style={{ fontSize: 12, fontWeight: 600, color: "var(--brand-text)", letterSpacing: "0.06em" }}>Generating ID Card</div>
         <div style={{ display: "flex", gap: 5 }}>
           {[0,1,2].map(i => <div key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--brand)", animation: `dotPulse 1s ease-in-out ${i*0.2}s infinite` }} />)}
         </div>
@@ -101,7 +101,7 @@ function StudentCard({ student, animPhase }) {
         </div>
         <div style={{ paddingLeft: 76, paddingTop: 6 }}>
           <div style={{ fontSize: 15, fontWeight: 800, color: "#0F172A", letterSpacing: "-0.3px" }}>{student.name}</div>
-          <div style={{ fontSize: 10, color: "var(--brand-dark)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 2 }}>Student</div>
+          <div style={{ fontSize: 10, color: "var(--brand-text)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 2 }}>Student</div>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 12 }}>
           {[{ label: "ROLL NO", value: student.rollNumber }, { label: "CLASS", value: `${student.class}-${student.section}` }, { label: "GENDER", value: student.gender || "—" }].map((item, i) => (
@@ -115,7 +115,7 @@ function StudentCard({ student, animPhase }) {
           <div>
             <div style={{ fontSize: 8, color: "var(--ea-muted)", fontWeight: 700, letterSpacing: "0.06em" }}>PARENT / GUARDIAN</div>
             <div style={{ fontSize: 11, fontWeight: 700, color: "#374151", marginTop: 2 }}>{student.parentName || "—"}</div>
-            <div style={{ fontSize: 10, color: "#56657A" }}>{student.parentPhone || student.phone}</div>
+            <div style={{ fontSize: 10, color: "var(--ea-muted)" }}>{student.parentPhone || student.phone}</div>
           </div>
           <BarcodeStrip value={student.rollNumber + student._id} />
         </div>
@@ -155,7 +155,7 @@ function TeacherCard({ teacher, animPhase }) {
           <div>
             <div style={{ fontSize: 8, color: "var(--ea-muted)", fontWeight: 700, letterSpacing: "0.06em" }}>CONTACT</div>
             <div style={{ fontSize: 11, fontWeight: 700, color: "#374151", marginTop: 2 }}>{teacher.phone}</div>
-            <div style={{ fontSize: 10, color: "#56657A" }}>{teacher.qualification || "—"}</div>
+            <div style={{ fontSize: 10, color: "var(--ea-muted)" }}>{teacher.qualification || "—"}</div>
           </div>
           <BarcodeStrip value={teacher.employeeId + teacher._id} />
         </div>
@@ -327,7 +327,7 @@ export default function IDCardGenerator() {
               </div>
               <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 24 }}>
                 {(tab === "student" ? ["Filter by Class →", "Select Section →", "Click Student →", "Print Card ✓"] : ["Click Faculty →", "Preview Card →", "Print Card ✓"]).map((s, i) => (
-                  <div key={i} style={{ fontSize: 11, fontWeight: 700, color: "var(--brand-dark)", background: "var(--brand-soft)", padding: "6px 12px", borderRadius: 8 }}>{s}</div>
+                  <div key={i} style={{ fontSize: 11, fontWeight: 700, color: "var(--brand-text)", background: "var(--brand-soft)", padding: "6px 12px", borderRadius: 8 }}>{s}</div>
                 ))}
               </div>
             </div>
@@ -376,7 +376,7 @@ export default function IDCardGenerator() {
                   <Glyph e="🖨" /> Print Card
                 </button>
                 <button onClick={() => { setSelected(null); setSelectedId(""); setAnimPhase(0); }}
-                  style={{ background: "white", color: "#56657A", border: "1.5px solid #E2E8F0", borderRadius: 14, padding: "12px 20px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+                  style={{ background: "white", color: "var(--ea-muted)", border: "1.5px solid #E2E8F0", borderRadius: 14, padding: "12px 20px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
                   Clear
                 </button>
               </div>

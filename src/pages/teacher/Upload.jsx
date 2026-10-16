@@ -21,7 +21,7 @@ const TYPE_STYLES = {
 // Status of the note in the AI revision pipeline (see backend docs/AI_REVISION.md).
 const AI_STATUS = {
   pending:    { label: 'Queued', color: '#6B7280' },
-  processing: { label: 'Processing', color: 'var(--brand-dark)' },
+  processing: { label: 'Processing', color: 'var(--brand-text)' },
   ready:      { label: 'Ready for students', color: '#047857' },
   failed:     { label: 'Failed, will retry', color: '#B91C1C' },
   skipped:    { label: 'No readable text (scanned PDF)', color: '#B45309' },
@@ -358,11 +358,11 @@ const styles = {
     whiteSpace: 'nowrap',
     flexShrink: 0,
   },
-  cardMeta: { fontSize: 12, color: 'var(--brand-dark)', fontWeight: 500, margin: '0 0 4px' },
+  cardMeta: { fontSize: 12, color: 'var(--brand-text)', fontWeight: 500, margin: '0 0 4px' },
   dueDateText: { fontSize: 12, color: 'var(--ea-on-card-warning)', fontWeight: 600, margin: '0 0 6px' },
   cardFooter: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   timeText: { fontSize: 11, color: 'var(--ea-muted)', fontWeight: 500 },
-  viewLink: { fontSize: 12, color: 'var(--brand-dark)', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4, minHeight: 28 },
+  viewLink: { fontSize: 12, color: 'var(--brand-text)', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4, minHeight: 28 },
   formCard: { padding: '20px 16px' },
   label: { display: 'block', marginBottom: 6 },
   input: { width: '100%', marginBottom: 14 },
@@ -377,7 +377,7 @@ const styles = {
     borderRadius: '50%',
     animation: 'spin 0.8s linear infinite',
   },
-  loadingText: { color: 'var(--brand-dark)', fontSize: 13, marginTop: 10 },
+  loadingText: { color: 'var(--brand-text)', fontSize: 13, marginTop: 10 },
   errorBox: {
     background: '#FFEBEE',
     color: '#C62828',

@@ -80,7 +80,7 @@ export default function TeacherTimetable() {
 
   const statusStyle = {
     done:     { bg: '#F3F4F6', color: 'var(--ea-muted)', label: 'Done',     dot: '#D1D5DB' },
-    now:      { bg: 'var(--brand-soft)', color: 'var(--brand-dark)', label: 'Now',      dot: 'var(--brand)' },
+    now:      { bg: 'var(--brand-soft)', color: 'var(--brand-text)', label: 'Now',      dot: 'var(--brand)' },
     upcoming: { bg: '#F0FDF4', color: '#15803D', label: 'Upcoming', dot: '#22C55E' },
     other:    { bg: '#F9FAFB', color: '#6B7280', label: '',         dot: '#9CA3AF' },
   }
@@ -178,7 +178,7 @@ export default function TeacherTimetable() {
 
         {/* Periods */}
         <div style={{ fontSize: 14, fontWeight: 700, color: '#1C2033', marginBottom: 12, fontFamily: "inherit" }}>
-          {selectedDay} {selectedDay === today && <span style={{ fontSize: 11, color: 'var(--brand-dark)', fontWeight: 600 }}>• Today</span>}
+          {selectedDay} {selectedDay === today && <span style={{ fontSize: 11, color: 'var(--brand-text)', fontWeight: 600 }}>• Today</span>}
         </div>
 
         {selectedPeriods.length === 0 ? (
@@ -200,9 +200,9 @@ export default function TeacherTimetable() {
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
                   {/* Time column */}
                   <div style={{ background: 'var(--brand-soft)', borderRadius: 12, padding: '10px 12px', textAlign: 'center', flexShrink: 0, minWidth: 64 }}>
-                    <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--brand-dark)' }}>{period.startTime || '—'}</div>
+                    <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--brand-text)' }}>{period.startTime || '—'}</div>
                     <div style={{ width: 1, height: 8, background: 'var(--brand-border)', margin: '3px auto' }} />
-                    <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--brand-dark)' }}>{period.endTime || '—'}</div>
+                    <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--brand-text)' }}>{period.endTime || '—'}</div>
                   </div>
 
                   {/* Info */}

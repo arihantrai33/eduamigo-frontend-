@@ -15,7 +15,7 @@ const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("
 const CLASS_SUGGESTIONS = ["Nursery", "LKG", "UKG", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 const STATUS_STYLE = {
   Enquiry:          { bg: "#EFF6FF", color: "#1D4ED8", border: "#BFDBFE" },
-  Applied:          { bg: "var(--brand-soft)", color: "var(--brand-dark)", border: "var(--brand-border)" },
+  Applied:          { bg: "var(--brand-soft)", color: "var(--brand-text)", border: "var(--brand-border)" },
   "Test Scheduled": { bg: "#FFFBEB", color: "#B45309", border: "#FDE68A" },
   Approved:         { bg: "#ECFDF5", color: "#047857", border: "#A7F3D0" },
   Admitted:         { bg: "#DCFCE7", color: "#15803D", border: "#86EFAC" },
@@ -204,7 +204,7 @@ function AdmitDialog({ record, onCancel, onDone }) {
           <Field label="Student mobile (defaults to the parent's)" full>
             <input style={input} value={form.studentPhone} inputMode="tel" onChange={(e) => setForm((f) => ({ ...f, studentPhone: e.target.value }))} placeholder={record.parentPhone} />
           </Field>
-          <div style={{ gridColumn: "1 / -1", fontSize: 12, color: "#56657A", background: "#F8FAFC", borderRadius: 8, padding: "10px 12px" }}>
+          <div style={{ gridColumn: "1 / -1", fontSize: 12, color: "var(--ea-muted)", background: "#F8FAFC", borderRadius: 8, padding: "10px 12px" }}>
             A student account is created with a temporary password. {record.parentEmail
               ? `A parent account is created for ${record.parentEmail} unless that parent already has one (siblings are linked).`
               : "No parent email is on record, so no parent login is created. You can add the parent later from All Parents."}
@@ -222,7 +222,7 @@ function AdmitDialog({ record, onCancel, onDone }) {
 function Detail({ record, next, onClose, onEdit, onStatus, onAdmit, onOpenStudent }) {
   const row = (label, value) => (
     <div style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "7px 0", borderBottom: "1px solid #F1F5F9", fontSize: 13 }}>
-      <span style={{ color: "#56657A" }}>{label}</span><span style={{ color: "#0F172A", fontWeight: 600, textAlign: "right" }}>{value || "—"}</span>
+      <span style={{ color: "var(--ea-muted)" }}>{label}</span><span style={{ color: "#0F172A", fontWeight: 600, textAlign: "right" }}>{value || "—"}</span>
     </div>
   );
   return (
@@ -231,7 +231,7 @@ function Detail({ record, next, onClose, onEdit, onStatus, onAdmit, onOpenStuden
         style={{ position: "absolute", top: 0, right: 0, bottom: 0, width: "100%", maxWidth: 440, background: "#fff", overflowY: "auto", boxShadow: "-10px 0 30px rgba(0,0,0,.12)", padding: 22 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10 }}>
           <div>
-            <div style={{ fontSize: 12, color: "#56657A", fontWeight: 600 }}>{record.applicationNo}</div>
+            <div style={{ fontSize: 12, color: "var(--ea-muted)", fontWeight: 600 }}>{record.applicationNo}</div>
             <div style={{ fontSize: 19, fontWeight: 800, color: "#0F172A", marginTop: 2 }}>{record.studentName}</div>
             <div style={{ marginTop: 6 }}><Badge status={record.status} /></div>
           </div>
@@ -364,7 +364,7 @@ export default function Admissions() {
           <tbody>
             {loading && rows.length === 0 && <tr><td colSpan={8} style={{ padding: 20 }}><Skeleton rows={4} label="Loading admissions" /></td></tr>}
             {!loading && rows.length === 0 && (
-              <tr><td colSpan={8} style={{ padding: 36, textAlign: "center", color: "#56657A" }}>
+              <tr><td colSpan={8} style={{ padding: 36, textAlign: "center", color: "var(--ea-muted)" }}>
                 {total === 0 ? "No enquiries yet this year. Record the first one with New enquiry." : "No applications match these filters."}
               </td></tr>
             )}
@@ -372,7 +372,7 @@ export default function Admissions() {
               const nextDate = r.status === "Test Scheduled" ? r.testDate : r.followUpDate;
               return (
                 <tr key={r._id} onClick={() => setSelected(r)} style={{ borderTop: "1px solid #F1F5F9", cursor: "pointer" }}>
-                  <td style={{ padding: "11px 14px", color: "#56657A", fontWeight: 600 }}>{r.applicationNo}</td>
+                  <td style={{ padding: "11px 14px", color: "var(--ea-muted)", fontWeight: 600 }}>{r.applicationNo}</td>
                   <td style={{ padding: "11px 14px", fontWeight: 700, color: "#0F172A" }}>{r.studentName}</td>
                   <td style={{ padding: "11px 14px" }}>{r.classApplied}{r.student ? `-${r.student.section}` : ""}</td>
                   <td style={{ padding: "11px 14px" }}>{r.parentName}</td>
@@ -381,7 +381,7 @@ export default function Admissions() {
                   <td style={{ padding: "11px 14px", color: nextDate && new Date(nextDate) < new Date(new Date().toDateString()) && !["Admitted", "Rejected", "Withdrawn"].includes(r.status) ? "#DC2626" : "#334155" }}>
                     {nextDate ? `${r.status === "Test Scheduled" ? "Test " : "Follow-up "}${fmtDate(nextDate)}` : "—"}
                   </td>
-                  <td style={{ padding: "11px 14px", color: "#56657A" }}>{fmtDate(r.updatedAt, false)}</td>
+                  <td style={{ padding: "11px 14px", color: "var(--ea-muted)" }}>{fmtDate(r.updatedAt, false)}</td>
                 </tr>
               );
             })}

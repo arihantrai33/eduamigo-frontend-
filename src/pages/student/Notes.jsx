@@ -249,7 +249,7 @@ export default function Notes() {
             <button type="button" className="ea-btn ea-btn--primary" style={{ marginTop: 20, width: '100%', minHeight: 48, fontSize: 15 }} onClick={handleUpload} disabled={uploading}>
               {uploaded ? 'Uploaded successfully!' : uploading ? 'Uploading...' : 'Upload Now'}
             </button>
-            <button style={{ marginTop: 12, background: 'none', border: 'none', color: 'var(--brand-dark)', fontSize: 15, fontWeight: 600, cursor: 'pointer', alignSelf: 'center' }} onClick={() => { setShowModal(false); setForm({ ...form, title: '', fileUrl: '' }); }}>
+            <button style={{ marginTop: 12, background: 'none', border: 'none', color: 'var(--brand-text)', fontSize: 15, fontWeight: 600, cursor: 'pointer', alignSelf: 'center' }} onClick={() => { setShowModal(false); setForm({ ...form, title: '', fileUrl: '' }); }}>
               Cancel
             </button>
           </div>

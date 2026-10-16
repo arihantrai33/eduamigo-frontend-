@@ -109,7 +109,7 @@ export default function Notifications() {
       {/* Stats */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12, marginBottom: 20 }}>
         {[
-          { label: "Total Sent",  value: stats.total,  color: "var(--brand-dark)", bg: "var(--brand-soft)", icon: <Glyph e="📢" /> },
+          { label: "Total Sent",  value: stats.total,  color: "var(--brand-text)", bg: "var(--brand-soft)", icon: <Glyph e="📢" /> },
           { label: "Sent Today",  value: stats.today,  color: "#166534", bg: "#F0FDF4", icon: <Glyph e="📅" /> },
           { label: "Unread",      value: stats.unread, color: "#D97706", bg: "#FFFBEB", icon: <Glyph e="🔔" /> },
         ].map((s, i) => (
@@ -130,7 +130,7 @@ export default function Notifications() {
           const active = filterRole === role;
           return (
             <button key={role} onClick={() => setFilterRole(role)}
-              style={{ display: "flex", alignItems: "center", gap: 5, padding: "6px 14px", borderRadius: 20, border: `1px solid ${active ? meta.color : "#E2E8F0"}`, background: active ? meta.bg : "#fff", color: active ? meta.color : "#64748B", fontSize: 12, fontWeight: active ? 600 : 400, cursor: "pointer", transition: "all 0.15s" }}>
+              style={{ display: "flex", alignItems: "center", gap: 5, padding: "6px 14px", borderRadius: 20, border: `1px solid ${active ? meta.color : "#E2E8F0"}`, background: active ? meta.bg : "#fff", color: active ? meta.color : "var(--ea-muted)", fontSize: 12, fontWeight: active ? 600 : 400, cursor: "pointer", transition: "all 0.15s" }}>
               <Icon size={12} /> {meta.label}
             </button>
           );
@@ -156,7 +156,7 @@ export default function Notifications() {
                   {!n.isRead && <div style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--brand)", flexShrink: 0 }} />}
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 14, fontWeight: 600, color: "#0F172A" }}>{n.title}</div>
-                    <div style={{ fontSize: 12, color: "#56657A", marginTop: 4, lineHeight: 1.5 }}>{n.message}</div>
+                    <div style={{ fontSize: 12, color: "var(--ea-muted)", marginTop: 4, lineHeight: 1.5 }}>{n.message}</div>
                     <div style={{ display: "flex", gap: 6, marginTop: 8, flexWrap: "wrap", alignItems: "center" }}>
                       <span style={{ fontSize: 10, padding: "3px 10px", borderRadius: 20, fontWeight: 600, background: typeMeta.bg, color: typeMeta.color }}>{n.type}</span>
                       <span style={{ display: "flex", alignItems: "center", gap: 3, fontSize: 10, padding: "3px 10px", borderRadius: 20, fontWeight: 600, background: roleMeta.bg, color: roleMeta.color }}>
@@ -192,27 +192,27 @@ export default function Notifications() {
                 <div style={{ fontSize: 17, fontWeight: 700, color: "#0F172A" }}>Send Notification</div>
                 <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>Reach your audience instantly</div>
               </div>
-              <button type="button" aria-label="Close" onClick={() => setShowModal(false)} style={{ width: 30, height: 30, borderRadius: 8, border: "1px solid #E2E8F0", background: "#F8FAFC", cursor: "pointer", fontSize: 16, color: "#56657A" }}><Glyph e="×" /></button>
+              <button type="button" aria-label="Close" onClick={() => setShowModal(false)} style={{ width: 30, height: 30, borderRadius: 8, border: "1px solid #E2E8F0", background: "#F8FAFC", cursor: "pointer", fontSize: 16, color: "var(--ea-muted)" }}><Glyph e="×" /></button>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               <div>
-                <label style={{ fontSize: 11, color: "#56657A", fontWeight: 600, display: "block", marginBottom: 5 }}>TITLE *</label>
+                <label style={{ fontSize: 11, color: "var(--ea-muted)", fontWeight: 600, display: "block", marginBottom: 5 }}>TITLE *</label>
                 <input value={form.title} onChange={e => setForm({...form, title: e.target.value})} placeholder="e.g. Exam Schedule Updated" style={inp} />
               </div>
               <div>
-                <label style={{ fontSize: 11, color: "#56657A", fontWeight: 600, display: "block", marginBottom: 5 }}>MESSAGE *</label>
+                <label style={{ fontSize: 11, color: "var(--ea-muted)", fontWeight: 600, display: "block", marginBottom: 5 }}>MESSAGE *</label>
                 <textarea value={form.message} onChange={e => setForm({...form, message: e.target.value})} placeholder="Write your notification message..." rows={3} style={{ ...inp, resize: "vertical" }} />
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                 <div>
-                  <label style={{ fontSize: 11, color: "#56657A", fontWeight: 600, display: "block", marginBottom: 5 }}>TYPE</label>
+                  <label style={{ fontSize: 11, color: "var(--ea-muted)", fontWeight: 600, display: "block", marginBottom: 5 }}>TYPE</label>
                   <select value={form.type} onChange={e => setForm({...form, type: e.target.value})} style={inp}>
                     {["General","Fee","Exam","Alert","Leave","Timetable","Result","Info"].map(t => <option key={t}>{t}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label style={{ fontSize: 11, color: "#56657A", fontWeight: 600, display: "block", marginBottom: 5 }}>SEND TO</label>
+                  <label style={{ fontSize: 11, color: "var(--ea-muted)", fontWeight: 600, display: "block", marginBottom: 5 }}>SEND TO</label>
                   <select value={form.targetRole} onChange={e => setForm({...form, targetRole: e.target.value})} style={inp}>
                     {Object.entries(ROLE_META).map(([r, m]) => <option key={r} value={r}>{m.label}</option>)}
                   </select>
@@ -221,7 +221,7 @@ export default function Notifications() {
 
               {/* Class/Section targeting */}
               <div style={{ background: "#F8FAFC", borderRadius: 10, padding: "14px", border: "1px solid #E2E8F0" }}>
-                <div style={{ fontSize: 11, color: "#56657A", fontWeight: 600, marginBottom: 10 }}><Glyph e="🎯" /> TARGET SPECIFIC CLASS (Optional)</div>
+                <div style={{ fontSize: 11, color: "var(--ea-muted)", fontWeight: 600, marginBottom: 10 }}><Glyph e="🎯" /> TARGET SPECIFIC CLASS (Optional)</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                   <div>
                     <label style={{ fontSize: 11, color: "#94A3B8", display: "block", marginBottom: 4 }}>Class</label>
@@ -239,7 +239,7 @@ export default function Notifications() {
             </div>
 
             <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 20 }}>
-              <button onClick={() => setShowModal(false)} style={{ padding: "9px 20px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#F8FAFC", fontSize: 13, cursor: "pointer", color: "#56657A" }}>Cancel</button>
+              <button onClick={() => setShowModal(false)} style={{ padding: "9px 20px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#F8FAFC", fontSize: 13, cursor: "pointer", color: "var(--ea-muted)" }}>Cancel</button>
               <button onClick={handleSend} disabled={sending}
                 style={{ display: "flex", alignItems: "center", gap: 6, padding: "9px 24px", borderRadius: 8, border: "none", background: sending ? "#94A3B8" : "var(--brand-gradient)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: sending ? "not-allowed" : "pointer" }}>
                 <Send size={13} /> {sending ? "Sending..." : "Send Now"}

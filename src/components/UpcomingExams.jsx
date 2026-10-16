@@ -12,7 +12,7 @@ function whenLabel(date) {
   const diff = Math.round((new Date(examDay(date)) - new Date(dayKey(Date.now()))) / 864e5);
   if (diff === 0) return { text: "Today", color: "#B91C1C", bg: "#FEE2E2" };
   if (diff === 1) return { text: "Tomorrow", color: "#B45309", bg: "#FEF3C7" };
-  if (diff <= 7) return { text: `In ${diff} days`, color: "var(--brand-dark)", bg: "var(--brand-soft)" };
+  if (diff <= 7) return { text: `In ${diff} days`, color: "var(--brand-text)", bg: "var(--brand-soft)" };
   return null;
 }
 

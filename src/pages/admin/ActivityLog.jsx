@@ -82,15 +82,15 @@ export default function ActivityLog() {
         {!loading && rows.map((r) => (
           <div key={r._id} style={{ borderBottom: "1px solid #F1F5F9" }}>
             <button onClick={() => setOpen(open === r._id ? null : r._id)} style={rowBtn}>
-              <span style={{ width: 150, flexShrink: 0, fontSize: 12, color: "#56657A" }}>{when(r.createdAt)}</span>
+              <span style={{ width: 150, flexShrink: 0, fontSize: 12, color: "var(--ea-muted)" }}>{when(r.createdAt)}</span>
               <span style={{ flex: 1, minWidth: 0 }}>
                 <span style={{ fontSize: 13, fontWeight: 600, color: "#0F172A" }}>{label(r.action)}</span>
-                <span style={{ display: "block", fontSize: 12, color: "#56657A" }}>
+                <span style={{ display: "block", fontSize: 12, color: "var(--ea-muted)" }}>
                   by {r.actor?.name || "Unknown"}{r.actorRole ? ` (${r.actorRole})` : ""}
                   {r.impersonatedBy && <span style={supportTag}>{r.impersonatedBy}</span>}
                 </span>
               </span>
-              <span style={{ fontSize: 12, color: "var(--brand-dark)", fontWeight: 600 }}>{open === r._id ? "Hide" : "Details"}</span>
+              <span style={{ fontSize: 12, color: "var(--brand-text)", fontWeight: 600 }}>{open === r._id ? "Hide" : "Details"}</span>
             </button>
             {open === r._id && (
               <pre style={details}>{JSON.stringify({ record: r.targetType ? `${r.targetType} ${r.targetId || ""}`.trim() : undefined, ...r.details }, null, 2)}</pre>
@@ -102,7 +102,7 @@ export default function ActivityLog() {
       {paging && paging.pages > 1 && (
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 12 }}>
           <button style={ghost} disabled={page <= 1} onClick={() => goTo(page - 1)}>← Newer</button>
-          <span style={{ fontSize: 12, color: "#56657A" }}>Page {paging.page} of {paging.pages}</span>
+          <span style={{ fontSize: 12, color: "var(--ea-muted)" }}>Page {paging.page} of {paging.pages}</span>
           <button style={ghost} disabled={page >= paging.pages} onClick={() => goTo(page + 1)}>Older →</button>
         </div>
       )}
@@ -111,7 +111,7 @@ export default function ActivityLog() {
 }
 
 const card = { background: "#fff", border: "1px solid #E8E8E5", borderRadius: 12, padding: "1rem 1.25rem", marginBottom: 16 };
-const lbl = { fontSize: 11, color: "#56657A", fontWeight: 600, display: "flex", flexDirection: "column", gap: 4 };
+const lbl = { fontSize: 11, color: "var(--ea-muted)", fontWeight: 600, display: "flex", flexDirection: "column", gap: 4 };
 const input = { padding: "8px 10px", borderRadius: 8, border: "1px solid #E2E8F0", fontSize: 13, color: "#0F172A", background: "#F8FAFC" };
 const ghost = { padding: "7px 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", color: "#334155", fontSize: 12, fontWeight: 600, cursor: "pointer" };
 const rowBtn = { display: "flex", alignItems: "center", gap: 12, width: "100%", padding: "12px 16px", background: "none", border: "none", textAlign: "left", cursor: "pointer" };

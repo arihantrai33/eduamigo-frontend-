@@ -111,7 +111,7 @@ export default function NoticeBoardPage() {
             <button key={t} onClick={() => setFilterTarget(t)}
               style={{ padding: "5px 12px", borderRadius: 8, border: "none", fontSize: 11, fontWeight: 600, cursor: "pointer",
                 background: filterTarget === t ? "var(--brand-gradient)" : "transparent",
-                color: filterTarget === t ? "white" : "#64748B" }}>
+                color: filterTarget === t ? "white" : "var(--ea-muted)" }}>
               {t === "all_filter" ? "All Targets" : TARGET_CONFIG[t]?.label}
             </button>
           ))}
@@ -121,7 +121,7 @@ export default function NoticeBoardPage() {
             <button key={p} onClick={() => setFilterPriority(p)}
               style={{ padding: "5px 12px", borderRadius: 8, border: "none", fontSize: 11, fontWeight: 600, cursor: "pointer",
                 background: filterPriority === p ? "var(--brand-gradient)" : "transparent",
-                color: filterPriority === p ? "white" : "#64748B" }}>
+                color: filterPriority === p ? "white" : "var(--ea-muted)" }}>
               {p === "all_filter" ? "All Priority" : PRIORITY_CONFIG[p]?.label}
             </button>
           ))}
@@ -131,7 +131,7 @@ export default function NoticeBoardPage() {
       {/* Stats Row */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12, marginBottom: "1.5rem" }}>
         {[
-          { label: "Total", value: announcements.length, color: "var(--brand-dark)", bg: "var(--brand-gradient)" },
+          { label: "Total", value: announcements.length, color: "var(--brand-text)", bg: "var(--brand-gradient)" },
           { label: "Pinned", value: announcements.filter(a=>a.isPinned).length, color: "#F59E0B", bg: "linear-gradient(135deg,#F59E0B,#EF4444)" },
           { label: "Urgent", value: announcements.filter(a=>a.priority==="urgent").length, color: "#EF4444", bg: "linear-gradient(135deg,#EF4444,#EC4899)" },
           { label: "Important", value: announcements.filter(a=>a.priority==="important").length, color: "#10B981", bg: "linear-gradient(135deg,#10B981,#059669)" },
@@ -226,7 +226,7 @@ export default function NoticeBoardPage() {
 
             <div style={{ display: "flex", gap: 10 }}>
               <button onClick={() => { setShowForm(false); setEditItem(null); }}
-                style={{ flex: 1, padding: "11px", borderRadius: 10, border: "1.5px solid #E2E8F0", background: "white", fontSize: 13, fontWeight: 600, cursor: "pointer", color: "#56657A" }}>
+                style={{ flex: 1, padding: "11px", borderRadius: 10, border: "1.5px solid #E2E8F0", background: "white", fontSize: 13, fontWeight: 600, cursor: "pointer", color: "var(--ea-muted)" }}>
                 Cancel
               </button>
               <button onClick={handleSubmit} disabled={saving}
@@ -289,7 +289,7 @@ function AnnouncementCard({ ann, onPin, onDelete, onEdit }) {
             {ann.isPinned ? <PinOff size={14} /> : <Pin size={14} />}
           </button>
           <button onClick={() => onEdit(ann)} title="Edit"
-            style={{ width: 32, height: 32, borderRadius: 8, border: "1px solid #E2E8F0", background: "white", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--brand-dark)", fontSize: 13, fontWeight: 700 }}>
+            style={{ width: 32, height: 32, borderRadius: 8, border: "1px solid #E2E8F0", background: "white", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--brand-text)", fontSize: 13, fontWeight: 700 }}>
             <Glyph e="✏" />
           </button>
           <button onClick={() => onDelete(ann._id)} title="Delete"

@@ -162,7 +162,7 @@ export default function ParentAttendance() {
               { color: "color-mix(in srgb, var(--ea-on-card-success) 14%, transparent)", label: "Present" },
               { color: "color-mix(in srgb, var(--ea-on-card-danger) 14%, transparent)", label: "Absent"  },
               { color: "color-mix(in srgb, var(--ea-on-card-warning) 16%, transparent)", label: "Leave"   },
-              { color: "var(--brand-dark)", label: "Today"   },
+              { color: "var(--brand-text)", label: "Today"   },
             ].map((l) => (
               <div key={l.label} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11 }}>
                 <div style={{ width: 12, height: 12, borderRadius: 3, background: l.color }} />

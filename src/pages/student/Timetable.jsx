@@ -132,14 +132,14 @@ export default function Timetable() {
         {/* Week navigation */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingBottom: "12px", paddingTop: "4px" }}>
           <button onClick={() => { setWeekOffset(w => w - 1); setSelectedDay("Mon"); }}
-            style={{ background: "none", border: "none", fontSize: "13px", color: "var(--brand-dark)", fontWeight: "700", cursor: "pointer", padding: "4px 8px" }}>
+            style={{ background: "none", border: "none", fontSize: "13px", color: "var(--brand-text)", fontWeight: "700", cursor: "pointer", padding: "4px 8px" }}>
             ← Prev Week
           </button>
           <span style={{ fontSize: "12px", color: "var(--subtext)", fontWeight: "600" }}>
             {weekOffset === 0 ? "This Week" : weekOffset === 1 ? "Next Week" : weekOffset === -1 ? "Last Week" : weekOffset > 0 ? `+${weekOffset} Weeks` : `${weekOffset} Weeks`}
           </span>
           <button onClick={() => { setWeekOffset(w => w + 1); setSelectedDay("Mon"); }}
-            style={{ background: "none", border: "none", fontSize: "13px", color: "var(--brand-dark)", fontWeight: "700", cursor: "pointer", padding: "4px 8px" }}>
+            style={{ background: "none", border: "none", fontSize: "13px", color: "var(--brand-text)", fontWeight: "700", cursor: "pointer", padding: "4px 8px" }}>
             Next Week →
           </button>
         </div>

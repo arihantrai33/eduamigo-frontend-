@@ -69,16 +69,7 @@ export default function ParentNotifications() {
         {!loading && notifications.map((n) => {
           const isRead = n.isRead ?? false;
           return (
-            <div key={n._id}
-              onClick={() => !isRead && markRead(n._id)}
-              style={{
-                // Theme tokens, so the card and its text also read in dark mode; unread carries a light brand tint.
-                background:  isRead ? "var(--ea-surface)" : "color-mix(in srgb, var(--brand) 6%, var(--ea-surface))",
-                borderRadius: 12, padding: 14, marginBottom: 10,
-                boxShadow:   "0 1px 4px rgba(0,0,0,0.08)",
-                borderLeft:  isRead ? "3px solid transparent" : "3px solid var(--brand)",
-                cursor:      isRead ? "default" : "pointer",
-              }}>
+            <div key={n._id} onClick={() => !isRead && markRead(n._id)} className={`ea-notice${isRead ? "" : " is-unread"}`}>
               <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
                 <span style={{ fontSize: 24 }}>{icons[n.type] ?? <Glyph e="📢" />}</span>
                 <div style={{ flex: 1 }}>

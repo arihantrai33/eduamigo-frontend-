@@ -11,7 +11,7 @@ import Segmented from "../../components/ui/Segmented";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
 const avatarColor = (name = '') => {
-  const colors = ['var(--brand)','var(--brand-dark)','#0891b2','#059669','#d97706','#dc2626','#0284c7'];
+  const colors = ['var(--brand)','var(--brand-deep)','#0891b2','#059669','#d97706','#dc2626','#0284c7'];
   let hash = 0;
   for (let c of name) hash = c.charCodeAt(0) + ((hash << 5) - hash);
   return colors[Math.abs(hash) % colors.length];
@@ -116,7 +116,7 @@ export default function Chat() {
     avatar: { width: 46, height: 46, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 18, flexShrink: 0 },
     rowName: { fontSize: 14, fontWeight: 700, color: dm ? '#f1f5f9' : '#111', marginBottom: 3 },
     rowSub: { fontSize: 12, color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)' },
-    chevron: { fontSize: 22, color: dm ? '#64748b' : 'var(--ea-muted)' },
+    chevron: { fontSize: 22, color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)' },
     emptyBox: { textAlign: 'center', padding: '32px 0', color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)', fontSize: 13 },
     center: { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' },
     broadcastCard: { background: dm ? '#1e293b' : 'white', borderRadius: 14, padding: 16, marginBottom: 10, boxShadow: dm ? '0 1px 6px rgba(0,0,0,0.3)' : '0 1px 6px rgba(0,0,0,0.06)' },

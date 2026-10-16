@@ -10,7 +10,7 @@ const API = import.meta.env.VITE_API_URL
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
 
 const STATUS_STYLE = {
-  'Not started': { bg: '#F1F5F9', color: '#56657A' },
+  'Not started': { bg: '#F1F5F9', color: 'var(--ea-muted)' },
   Draft:         { bg: '#FEF3C7', color: '#B45309' },
   Published:     { bg: '#DCFCE7', color: '#15803D' },
 }
@@ -145,12 +145,12 @@ export default function TeacherMarks() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
                 <div>
                   <div style={{ fontSize: 16, fontWeight: 700, color: '#1A1A2E' }}>{sheet.exam.subject}</div>
-                  <div style={{ fontSize: 13, color: '#56657A', marginTop: 2 }}>{sheet.exam.examName} · Class {classKey}</div>
+                  <div style={{ fontSize: 13, color: 'var(--ea-muted)', marginTop: 2 }}>{sheet.exam.examName} · Class {classKey}</div>
                   <div style={{ fontSize: 12, color: 'var(--ea-muted)', marginTop: 2 }}>{sheet.exam.term} · {fmtDate(sheet.exam.date)} · Out of {max}</div>
                 </div>
                 <Badge status={sheet.status} />
               </div>
-              <div style={{ marginTop: 12, fontSize: 12, color: '#56657A' }}>{filled} of {total} students entered</div>
+              <div style={{ marginTop: 12, fontSize: 12, color: 'var(--ea-muted)' }}>{filled} of {total} students entered</div>
               <div style={{ height: 6, background: 'var(--brand-soft)', borderRadius: 3, marginTop: 6 }}>
                 <div style={{ height: 6, width: `${total ? (filled / total) * 100 : 0}%`, background: 'var(--brand)', borderRadius: 3 }} />
               </div>
@@ -179,7 +179,7 @@ export default function TeacherMarks() {
                         disabled={locked}
                         onClick={() => setRow(s.studentId, { absent: !r.absent, marks: '' })}
                         aria-pressed={r.absent}
-                        style={{ ...styles.absentBtn, background: r.absent ? '#FEE2E2' : '#F1F5F9', color: r.absent ? '#B91C1C' : '#64748B' }}
+                        style={{ ...styles.absentBtn, background: r.absent ? '#FEE2E2' : '#F1F5F9', color: r.absent ? '#B91C1C' : 'var(--ea-muted)' }}
                       >AB</button>
                     </div>
                   )
@@ -213,7 +213,7 @@ export default function TeacherMarks() {
           ))}
         </div>
         <button onClick={() => navigate(`/report-card?class=${cls}&section=${section}`)}
-          style={{ marginTop: 12, width: '100%', padding: '10px', borderRadius: 10, border: '1.5px solid var(--brand-border)', background: 'var(--brand-soft)', color: 'var(--brand-dark)', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>
+          style={{ marginTop: 12, width: '100%', padding: '10px', borderRadius: 10, border: '1.5px solid var(--brand-border)', background: 'var(--brand-soft)', color: 'var(--brand-text)', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>
           Report cards for Class {classKey}
         </button>
       </div>
@@ -222,7 +222,7 @@ export default function TeacherMarks() {
       {loadingExams ? <Skeleton rows={3} label="Loading exams" /> : exams.length === 0 ? (
         <div style={styles.card}>
           <div style={{ fontSize: 14, fontWeight: 600, color: '#1A1A2E' }}>No exams scheduled for your subjects in Class {classKey}</div>
-          <div style={{ fontSize: 12, color: '#56657A', marginTop: 4 }}>Exams are created by the school admin in Exam Schedule. Once an exam is scheduled, it appears here for marks entry.</div>
+          <div style={{ fontSize: 12, color: 'var(--ea-muted)', marginTop: 4 }}>Exams are created by the school admin in Exam Schedule. Once an exam is scheduled, it appears here for marks entry.</div>
         </div>
       ) : exams.map(e => {
         const disabledReason = !e.canEnter ? 'Total marks not set by the admin' : !e.held ? `Opens after ${fmtDate(e.date)}` : ''
@@ -232,7 +232,7 @@ export default function TeacherMarks() {
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
               <div>
                 <div style={{ fontSize: 15, fontWeight: 700, color: '#1A1A2E' }}>{e.subject} · {e.title}</div>
-                <div style={{ fontSize: 12, color: '#56657A', marginTop: 3 }}>{e.examType} · {e.term} · {fmtDate(e.date)}{e.totalMarks ? ` · Out of ${e.totalMarks}` : ''}</div>
+                <div style={{ fontSize: 12, color: 'var(--ea-muted)', marginTop: 3 }}>{e.examType} · {e.term} · {fmtDate(e.date)}{e.totalMarks ? ` · Out of ${e.totalMarks}` : ''}</div>
               </div>
               <Badge status={e.status} />
             </div>

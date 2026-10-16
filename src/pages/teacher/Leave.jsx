@@ -193,7 +193,7 @@ export default function TeacherLeave() {
               <div style={{ fontWeight: 700, fontSize: 15, color: '#1F2937' }}>{l.name} <span style={{ fontWeight: 500, color: '#6B7280', fontSize: 13 }}>· Class {l.class}-{l.section}</span></div>
               <div style={{ fontSize: 13, color: '#6B7280', margin: '4px 0 8px' }}>{l.leaveType} · {fmtDay(l.fromDate)} to {fmtDay(l.toDate)} · {l.days} day{l.days > 1 ? 's' : ''}</div>
               <p style={styles.leaveReason}>{l.reason}</p>
-              {l.attachmentUrl && <a href={l.attachmentUrl} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: 'var(--brand-dark)', fontWeight: 600 }}>View attachment</a>}
+              {l.attachmentUrl && <a href={l.attachmentUrl} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: 'var(--brand-text)', fontWeight: 600 }}>View attachment</a>}
               <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
                 <button disabled={!!reviewing} onClick={() => review(l._id, 'Approved')} style={{ flex: 1, padding: 10, borderRadius: 10, border: 'none', background: '#10B981', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>{reviewing === l._id + 'Approved' ? 'Saving...' : 'Approve'}</button>
                 <button disabled={!!reviewing} onClick={() => review(l._id, 'Rejected')} style={{ flex: 1, padding: 10, borderRadius: 10, border: 'none', background: '#EF4444', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>{reviewing === l._id + 'Rejected' ? 'Saving...' : 'Reject'}</button>
@@ -366,7 +366,7 @@ const styles = {
   },
   leaveDates: {
     fontSize: 12,
-    color: 'var(--brand-dark)',
+    color: 'var(--brand-text)',
     fontWeight: 500,
     margin: 0,
   },
@@ -389,7 +389,7 @@ const styles = {
   },
   reviewNote: {
     fontSize: 12,
-    color: 'var(--brand-dark)',
+    color: 'var(--brand-text)',
     background: '#EEF0FF',
     padding: '6px 10px',
     borderRadius: 8,
@@ -407,7 +407,7 @@ const styles = {
   textarea: { width: '100%', marginBottom: 14 },
   durationPreview: {
     background: '#EEF0FF',
-    color: 'var(--brand-dark)',
+    color: 'var(--brand-text)',
     fontSize: 13,
     fontWeight: 600,
     padding: '10px 14px',
@@ -428,7 +428,7 @@ const styles = {
     borderRadius: '50%',
     animation: 'spin 0.8s linear infinite',
   },
-  loadingText: { color: 'var(--brand-dark)', fontSize: 13, marginTop: 10 },
+  loadingText: { color: 'var(--brand-text)', fontSize: 13, marginTop: 10 },
   errorBox: {
     background: '#FFEBEE',
     color: '#C62828',

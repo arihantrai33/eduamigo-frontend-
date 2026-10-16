@@ -182,7 +182,7 @@ getInitials(profile?.name ?? user?.name)
 {quickTiles.filter(visibleFor(user)).map((tile) => (
 <button key={tile.label} onClick={() => navigate(tile.path)}
 style={{ background: "var(--card)", borderRadius: 14, padding: 14, border: "none", cursor: "pointer", textAlign: "left", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-<div style={{ width: 40, height: 40, borderRadius: 12, background: "var(--brand-soft)", color: "var(--brand-dark)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, marginBottom: 10 }}>{tile.icon}</div>
+<div style={{ width: 40, height: 40, borderRadius: 12, background: "var(--brand-soft)", color: "var(--brand-text)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, marginBottom: 10 }}>{tile.icon}</div>
 <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text)" }}>{tile.label}</div>
 <div style={{ fontSize: 11, color: "var(--subtext)", marginTop: 2 }}>{tile.sub}</div>
 </button>
@@ -192,7 +192,7 @@ style={{ background: "var(--card)", borderRadius: 14, padding: 14, border: "none
 <section className="ea-pd-main">
 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
 <h3 className="ea-section-title">Today's Classes</h3>
-<span style={{ fontSize: 13, color: theme.primary, fontWeight: 700, cursor: "pointer" }} onClick={() => navigate("/student/timetable")}>
+<span style={{ fontSize: 13, color: "var(--brand-text)", fontWeight: 700, cursor: "pointer" }} onClick={() => navigate("/student/timetable")}>
             View all →
 </span>
 </div>
@@ -223,7 +223,7 @@ timetable.slice(0, 4).map((c, i) => (
 <section className="ea-pd-side">
 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
 <h3 className="ea-section-title">Notices</h3>
-<span style={{ fontSize: 13, color: theme.primary, fontWeight: 700, cursor: "pointer" }} onClick={() => navigate("/student/notifications")}>
+<span style={{ fontSize: 13, color: "var(--brand-text)", fontWeight: 700, cursor: "pointer" }} onClick={() => navigate("/student/notifications")}>
             View all →
 </span>
 </div>

@@ -128,7 +128,7 @@ export default function Login() {
 
       <div style={s.card}>
         <div style={s.titleRow}>
-          <span aria-hidden style={{ ...s.titleIcon, background: theme.soft, color: theme.primary }}>
+          <span aria-hidden style={{ ...s.titleIcon, background: theme.soft, color: theme.text }}>
             <GraduationCap size={22} strokeWidth={2} />
           </span>
           <div>
@@ -170,14 +170,14 @@ export default function Login() {
             onKeyDown={(e) => e.key === "Enter" && handleLogin()} placeholder="Enter your password"
             style={s.input} className="ea-input-bare" autoComplete="current-password" />
         ), (
-          <button type="button" onClick={() => setShowPassword((p) => !p)} aria-label={showPassword ? "Hide password" : "Show password"} style={{ ...s.showBtn, color: theme.primary }}>
+          <button type="button" onClick={() => setShowPassword((p) => !p)} aria-label={showPassword ? "Hide password" : "Show password"} style={{ ...s.showBtn, color: theme.text }}>
             {showPassword ? "Hide" : "Show"}
           </button>
         ), !!v.errors.password)}
         <FieldError id={v.errorId("password")}>{v.errors.password}</FieldError>
 
         <div style={{ textAlign: "right", margin: "10px 0 16px" }}>
-          <button type="button" style={{ ...s.forgot, color: theme.primary }} onClick={() => navigate(`/forgot-password?role=${role}`)}>Forgot password?</button>
+          <button type="button" style={{ ...s.forgot, color: theme.text }} onClick={() => navigate(`/forgot-password?role=${role}`)}>Forgot password?</button>
         </div>
 
         {error && <div role="alert" style={s.err}><AlertCircle aria-hidden size={16} style={{ flexShrink: 0, marginTop: 1 }} />{error}</div>}
@@ -193,7 +193,7 @@ export default function Login() {
         </button>
 
         <div style={{ ...s.schoolRow, background: alpha(theme.primary, 0.06), border: `1px dashed ${alpha(theme.primary, 0.3)}` }}>
-          <span>School code <strong style={{ color: theme.primary, letterSpacing: 1 }}>{school.code}</strong></span>
+          <span>School code <strong style={{ color: theme.text, letterSpacing: 1 }}>{school.code}</strong></span>
           <button onClick={changeSchool} style={s.changeBtn}>Change school</button>
         </div>
         <p style={s.footer}>Powered by <strong>EduAmigo</strong></p>

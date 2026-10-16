@@ -158,7 +158,7 @@ export default function FeeStructure() {
           <thead>
             <tr style={{ background:"var(--ea-hover)" }}>
               {["Class","Fee Type","Amount","Academic Year","Due Date","Description","Actions"].map(h => (
-                <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#56657A", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
+                <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"var(--ea-muted)", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
               ))}
             </tr>
           </thead>
@@ -182,8 +182,8 @@ export default function FeeStructure() {
                     <span style={{ fontSize:15, fontWeight:800, color:"var(--ea-ink)", fontVariantNumeric:"tabular-nums" }}>₹{Number(s.amount||0).toLocaleString("en-IN")}</span>
                   </td>
                   <td style={{ padding:"14px 18px" }}>
-                    <span style={{ fontSize:12, fontWeight:700, padding:"4px 10px", borderRadius:8, background:"var(--brand-soft)", color:"var(--brand-dark)" }}>{s.academicYear}</span>
-                    {s.applyHistory?.length > 0 && <div style={{ fontSize:11, color:"#56657A", marginTop:4 }}>Billed {s.applyHistory.reduce((n, h) => n + (h.created || 0), 0)} student(s)</div>}
+                    <span style={{ fontSize:12, fontWeight:700, padding:"4px 10px", borderRadius:8, background:"var(--brand-soft)", color:"var(--brand-text)" }}>{s.academicYear}</span>
+                    {s.applyHistory?.length > 0 && <div style={{ fontSize:11, color:"var(--ea-muted)", marginTop:4 }}>Billed {s.applyHistory.reduce((n, h) => n + (h.created || 0), 0)} student(s)</div>}
                   </td>
                   <td style={{ padding:"14px 18px", fontSize:13, color:"#374151", fontWeight:600 }}>{s.dueDate ? (isNaN(new Date(s.dueDate)) ? s.dueDate : new Date(s.dueDate).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})) : 'Not set'}</td>
                   <td style={{ padding:"14px 18px", fontSize:12, color:"var(--ea-muted)", maxWidth:180 }}>{s.description || "No description"}</td>
@@ -218,14 +218,14 @@ export default function FeeStructure() {
             {inp("AMOUNT (Rs.)","amount","number","e.g. 5000")}
             {inp("DUE DATE","dueDate","date","")}
           </div>
-          <div style={{ fontSize:12, color:"#56657A" }}>For monthly or quarterly fees, add one structure per instalment (for example "Tuition Fee - April").</div>
+          <div style={{ fontSize:12, color:"var(--ea-muted)" }}>For monthly or quarterly fees, add one structure per instalment (for example "Tuition Fee - April").</div>
           <div>
             <label htmlFor="fee-description" style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6 }}>DESCRIPTION</label>
             <textarea id="fee-description" value={form.description||""} onChange={e => f("description", e.target.value)} placeholder="Optional..."
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", resize:"vertical", minHeight:70 }} />
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
-            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#56657A" }}>Cancel</button>
+            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
             <button onClick={handleSave} disabled={saving} className="ea-btn ea-btn--primary">
               {saving ? "Saving..." : "Save"}
             </button>
@@ -239,7 +239,7 @@ export default function FeeStructure() {
           <div style={{ fontSize:16, fontWeight:700, color:"#0F172A", marginBottom:8 }}>Are you sure?</div>
           <div style={{ fontSize:13, color:"var(--ea-muted)", marginBottom:24 }}>This fee structure will be permanently deleted.</div>
           <div style={{ display:"flex", gap:10, justifyContent:"center" }}>
-            <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#56657A" }}>Cancel</button>
+            <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
             <button onClick={() => handleDelete(deleteId)} className="ea-btn ea-btn--danger">Delete</button>
           </div>
         </div>

@@ -14,7 +14,7 @@ import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL;
 const COLOR = {
   primary: "var(--brand)", primaryDark: "var(--brand-dark)", primaryLight: "var(--brand-soft)",
-  success: "#10B981", successLight: "#D1FAE5",
+  success: "#10B981", successLight: "color-mix(in srgb, var(--ea-success) 16%, var(--ea-surface))",
   danger: "#EF4444", warning: "#F59E0B", sos: "#DC2626", safe: "#10B981",
 };
 
@@ -29,7 +29,7 @@ function makeStopIcon(type) {
     completed: { bg: "#10B981", text: "✓", size: 22 },
     current:   { bg: "var(--brand)", text: "●", size: 26 },
     school:    { bg: "#F59E0B", text: schoolSvg(13), size: 24 },
-    upcoming:  { bg: "#E5E7EB", text: "●", size: 18 },
+    upcoming:  { bg: "var(--ea-line)", text: "●", size: 18 },
   };
   const c = configs[type] || configs.upcoming;
   return L.divIcon({
@@ -176,7 +176,7 @@ function CallModal({ onClose, name, phone }) {
         </div>
         <button
           onClick={() => { navigator.clipboard.writeText(phone); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
-          style={{ marginTop:"10px", width:"100%", padding:"10px", borderRadius:"12px", border:"1px solid #E2E8F0", background: copied?"#F0FDF4":"#F8FAFC", color: copied?"#16A34A":"#64748B", fontSize:"13px", fontWeight:600, cursor:"pointer" }}
+          style={{ marginTop:"10px", width:"100%", padding:"10px", borderRadius:"12px", border:"1px solid #E2E8F0", background: copied?"#F0FDF4":"#F8FAFC", color: copied?"#16A34A":"var(--ea-muted)", fontSize:"13px", fontWeight:600, cursor:"pointer" }}
         >
           {copied ? "Copied" : "Copy Number"}
         </button>
@@ -197,7 +197,7 @@ function NotificationSettingsModal({ onClose, prefs, onChange }) {
       <div style={styles.modalCard}>
         <div style={{ fontSize:"36px", marginBottom:"8px" }}><Glyph e="🔔" /></div>
         <p style={styles.modalTitle}>Notification Preferences</p>
-        <p style={{ fontSize:"13px", color:"#56657A", marginBottom:"16px" }}>Select which alerts you want to receive.</p>
+        <p style={{ fontSize:"13px", color:"var(--ea-muted)", marginBottom:"16px" }}>Select which alerts you want to receive.</p>
         {items.map(item => (
           <div
             key={item.key}
@@ -400,7 +400,7 @@ export default function ParentBus() {
     return (
       <div style={{ minHeight:"100dvh", display:"flex", alignItems:"center", justifyContent:"center", background:"var(--bg)", flexDirection:"column", gap:"16px" }}>
         <div style={{ fontSize:"48px" }}><Glyph e="🚌" /></div>
-        <p style={{ fontSize:"16px", color:"#56657A", fontWeight:600 }}>No bus has been assigned yet.</p>
+        <p style={{ fontSize:"16px", color:"var(--ea-muted)", fontWeight:600 }}>No bus has been assigned yet.</p>
         <button onClick={() => navigate("/parent/home")} style={{ padding:"10px 24px", borderRadius:"12px", background:"var(--brand)", color:"white", border:"none", fontWeight:600, cursor:"pointer" }}>Go Back</button>
       </div>
     );
@@ -430,7 +430,7 @@ export default function ParentBus() {
       })}
     </MapContainer>
   ) : (
-    <div style={styles.mapPlaceholder}>
+    <div className="ea-bus-empty" style={styles.mapPlaceholder}>
       <div style={{ fontSize:"56px" }}><Glyph e="🚌" /></div>
       <p style={styles.busEmptyTitle}>Bus is not on route yet</p>
       <p style={styles.busEmptySub}>Trip has not started</p>
@@ -575,26 +575,26 @@ export default function ParentBus() {
           )}
 
           <div style={styles.stopsList}>
-            <p style={{ fontSize:"12px", fontWeight:700, color:"#56657A", marginBottom:"10px", textTransform:"uppercase", letterSpacing:"0.5px" }}>Route</p>
+            <p style={{ fontSize:"12px", fontWeight:700, color:"var(--ea-muted)", marginBottom:"10px", textTransform:"uppercase", letterSpacing:"0.5px" }}>Route</p>
             {stops.map((stop, i) => {
               const type        = getStopType(i, currentStopIdx, tripActive, stops.length);
               const isLast      = i === stops.length - 1;
               const isCompleted = type === "completed";
               const isCurrent   = type === "current";
               const isSchool    = isLast && !isCurrent;
-              const circleBg     = isCurrent ? COLOR.primary : isCompleted ? "#D1FAE5" : isSchool ? "#FFF7ED" : "#F3F4F6";
-              const circleBorder = isCurrent ? `2px solid ${COLOR.primary}` : isCompleted ? "2px solid #6EE7B7" : isSchool ? "2px solid #FCD34D" : "2px solid #E5E7EB";
+              const circleBg     = isCurrent ? COLOR.primary : isCompleted ? "color-mix(in srgb, var(--ea-success) 16%, var(--ea-surface))" : isSchool ? "color-mix(in srgb, var(--ea-warning) 5%, var(--ea-surface))" : "var(--ea-hover)";
+              const circleBorder = isCurrent ? `2px solid ${COLOR.primary}` : isCompleted ? "2px solid #6EE7B7" : isSchool ? "2px solid #FCD34D" : "2px solid var(--ea-line)";
               const circleShadow = isCurrent ? `0 0 0 4px ${COLOR.primaryLight}` : "none";
               return (
                 <div key={stop.id} style={styles.stopRow}>
                   <div style={styles.timeline}>
                     <div style={{ ...styles.stopCircle, background:circleBg, border:circleBorder, boxShadow:circleShadow }}>
-                      {isCompleted ? <span style={{ fontSize:"9px", color:"#047857" }}>✓</span>
+                      {isCompleted ? <span style={{ fontSize:"9px", color:"var(--ea-on-card-success)" }}>✓</span>
                         : isCurrent ? <span style={{ width:"6px", height:"6px", borderRadius:"50%", background:"white", display:"block" }} />
                         : isSchool  ? <span style={{ fontSize:"10px" }}><Glyph e="🏫" /></span>
-                        : <span style={{ fontSize:"9px", color:"#56657A" }}>{i + 1}</span>}
+                        : <span style={{ fontSize:"9px", color:"var(--ea-muted)" }}>{i + 1}</span>}
                     </div>
-                    {!isLast && <div style={{ ...styles.connector, background: isCompleted ? "linear-gradient(to bottom, #6EE7B7, #D1FAE5)" : isCurrent ? `linear-gradient(to bottom, ${COLOR.primary}, #E5E7EB)` : "#E5E7EB" }} />}
+                    {!isLast && <div style={{ ...styles.connector, background: isCompleted ? "linear-gradient(to bottom, #6EE7B7, color-mix(in srgb, var(--ea-success) 16%, var(--ea-surface)))" : isCurrent ? `linear-gradient(to bottom, ${COLOR.primary}, var(--ea-line))` : "var(--ea-line)" }} />}
                   </div>
                   <div style={{ flex:1, minWidth:0, paddingBottom: isLast ? 4 : "18px" }}>
                     <div style={styles.stopContent}>
@@ -610,7 +610,7 @@ export default function ParentBus() {
                       <div style={{ flexShrink:0 }}>
                         {isCompleted        && <span style={{ ...styles.badge, background:"#F0FDF4", color:"#166534", border:"0.5px solid #BBF7D0" }}>Done</span>}
                         {isCurrent          && <span style={{ ...styles.badge, background:COLOR.primaryLight, color:COLOR.primary, border:`0.5px solid var(--brand-border)` }}>Live</span>}
-                        {isSchool           && <span style={{ ...styles.badge, background:"#FFF7ED", color:"#C2410C", border:"0.5px solid #FED7AA" }}>{eta}</span>}
+                        {isSchool           && <span style={{ ...styles.badge, background:"color-mix(in srgb, var(--ea-warning) 5%, var(--ea-surface))", color:"var(--ea-on-card-warning)", border:"0.5px solid #FED7AA" }}>{eta}</span>}
                         {type === "upcoming" && <span style={{ fontSize:"10px", color:"var(--ea-faint)" }}>—</span>}
                       </div>
                     </div>
@@ -667,7 +667,7 @@ const styles = {
   metricSub:      { color:"rgba(255,255,255,0.92)", fontSize:"10px" },
   trafficStrip:   { display:"flex", alignItems:"center", gap:"8px", background:"rgba(255,255,255,0.1)", border:"1px solid rgba(255,255,255,0.12)", borderRadius:"12px", padding:"8px 14px" },
   trafficLabel:   { color:"rgba(255,255,255,0.85)", fontSize:"12px", flex:1, fontWeight:500 },
-  trafficRight:   { color:"rgba(255,255,255,0.45)", fontSize:"11px" },
+  trafficRight:   { color:"rgba(255,255,255,0.92)", fontSize:"11px" },
   fsBtn:          { position:"absolute", right:"14px", zIndex:200, width:"40px", height:"40px", borderRadius:"12px", background:"color-mix(in srgb, var(--brand) 85%, transparent)", backdropFilter:"blur(8px)", border:"1px solid rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", boxShadow:"0 2px 12px color-mix(in srgb, var(--brand-dark) 35%, transparent)", transition:"bottom 0.35s cubic-bezier(0.4,0,0.2,1)" },
   stopsPanel:     { position:"absolute", bottom:0, left:0, right:0, zIndex:100, background:"var(--ea-surface)", borderRadius:"24px 24px 0 0", boxShadow:"0 -4px 30px rgba(0,0,0,0.10)", overflowY:"auto", transition:"max-height 0.35s cubic-bezier(0.4,0,0.2,1)", paddingBottom:"env(safe-area-inset-bottom, 0px)", WebkitOverflowScrolling:"touch" },
   stopsHeader:    { position:"sticky", top:0, background:"var(--ea-surface)", borderBottom:"1px solid var(--ea-line)", paddingBottom:"10px", zIndex:1, cursor:"pointer", userSelect:"none" },
@@ -682,11 +682,11 @@ const styles = {
   routeBar:       { height:"3px", background:"var(--ea-line)" },
   routeBarFill:   { height:"100%", background:"linear-gradient(90deg, var(--brand-light), var(--brand))", transition:"width 0.5s ease" },
   panelActionRow: { display:"flex", gap:"8px", padding:"10px 16px 4px" },
-  panelCallBtn:   { flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", padding:"9px 8px", borderRadius:"12px", fontSize:"11px", fontWeight:600, background:"var(--brand-soft)", color:"var(--brand-dark)", border:"1px solid var(--brand-border)", cursor:"pointer" },
-  panelSchoolBtn: { flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", padding:"9px 8px", borderRadius:"12px", fontSize:"11px", fontWeight:600, background:"#FFF7ED", color:"#C2410C", border:"1px solid #FED7AA", cursor:"pointer" },
-  panelSosBtn:    { display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", padding:"9px 14px", borderRadius:"12px", fontSize:"11px", fontWeight:700, background:"#FEF2F2", color:"#B91C1C", border:"1px solid #FECACA", cursor:"pointer" },
+  panelCallBtn:   { flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", padding:"9px 8px", borderRadius:"12px", fontSize:"11px", fontWeight:600, background:"var(--brand-soft)", color:"var(--brand-text)", border:"1px solid var(--brand-border)", cursor:"pointer" },
+  panelSchoolBtn: { flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", padding:"9px 8px", borderRadius:"12px", fontSize:"11px", fontWeight:600, background:"color-mix(in srgb, var(--ea-warning) 5%, var(--ea-surface))", color:"var(--ea-on-card-warning)", border:"1px solid #FED7AA", cursor:"pointer" },
+  panelSosBtn:    { display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", padding:"9px 14px", borderRadius:"12px", fontSize:"11px", fontWeight:700, background:"color-mix(in srgb, var(--ea-danger) 9%, var(--ea-surface))", color:"var(--ea-on-card-danger)", border:"1px solid color-mix(in srgb, var(--ea-danger) 30%, var(--ea-surface))", cursor:"pointer" },
   notifSection:   { padding:"12px 20px 0", borderTop:"1px solid #F1F5F9" },
-  notifTitle:     { fontSize:"11px", fontWeight:700, color:"#56657A", textTransform:"uppercase", letterSpacing:"0.5px", marginBottom:"8px" },
+  notifTitle:     { fontSize:"11px", fontWeight:700, color:"var(--ea-muted)", textTransform:"uppercase", letterSpacing:"0.5px", marginBottom:"8px" },
   notifRow:       { display:"flex", alignItems:"flex-start", gap:"10px", marginBottom:"8px" },
   notifIcon:      { fontSize:"16px", flexShrink:0, marginTop:"1px" },
   notifText:      { fontSize:"12px", color:"var(--ea-body)", lineHeight:1.4 },
@@ -706,6 +706,6 @@ const styles = {
   modalSub:       { fontSize:"13px", color:"var(--ea-muted)", lineHeight:1.6, marginBottom:"20px" },
   modalBtns:      { display:"flex", gap:"10px" },
   cancelBtn:      { flex:1, padding:"12px", borderRadius:"14px", fontSize:"14px", fontWeight:600, background:"var(--ea-hover)", color:"var(--ea-body)", border:"none", cursor:"pointer" },
-  confirmSosBtn:  { flex:1, padding:"12px", borderRadius:"14px", fontSize:"14px", fontWeight:700, background:"#DC2626", color:"white", border:"none", cursor:"pointer", boxShadow:"0 4px 16px rgba(220,38,38,0.4)" },
+  confirmSosBtn:  { flex:1, padding:"12px", borderRadius:"14px", fontSize:"14px", fontWeight:700, background:"var(--ea-on-card-danger)", color:"white", border:"none", cursor:"pointer", boxShadow:"0 4px 16px rgba(220,38,38,0.4)" },
   callConfirmBtn: { flex:1, padding:"12px", borderRadius:"14px", fontSize:"14px", fontWeight:700, background:"var(--brand)", color:"white", border:"none", cursor:"pointer", textDecoration:"none", display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 4px 16px color-mix(in srgb, var(--brand-dark) 40%, transparent)" },
 };

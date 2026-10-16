@@ -222,7 +222,7 @@ export default function Reports() {
             ))}
           </div>
           <div style={{ background:"#F8FAFC", borderRadius:12, padding:"12px 16px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-            <span style={{ fontSize:12, fontWeight:600, color:"#56657A" }}>Total Payroll</span>
+            <span style={{ fontSize:12, fontWeight:600, color:"var(--ea-muted)" }}>Total Payroll</span>
             <span style={{ fontSize:16, fontWeight:900, color:"#047857" }}>{fmt(salary.totalAmt)}</span>
           </div>
           <ProgressBar label="Paid" value={salary.paid} total={salary.paid+salary.pending} color="var(--ea-on-card-success)" />
@@ -263,7 +263,7 @@ export default function Reports() {
           </div>
           <div style={{ background:"var(--brand-soft)", borderRadius:12, padding:"14px 16px", textAlign:"center" }}>
             <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:4 }}>AVERAGE SCORE</div>
-            <div style={{ fontSize:32, fontWeight:900, color:"var(--brand-dark)" }}>{marks.avgScore}%</div>
+            <div style={{ fontSize:32, fontWeight:900, color:"var(--brand-text)" }}>{marks.avgScore}%</div>
           </div>
           <ProgressBar label="Pass Rate" value={marks.passed} total={marks.total} color="var(--brand)" />
         </SectionCard>

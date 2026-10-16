@@ -241,7 +241,7 @@ export default function ApplyLeave() {
                   )}
                   {leave.attachmentName && (
                     <div style={{
-                      marginTop: "8px", fontSize: "11px", color: "var(--brand-dark)",
+                      marginTop: "8px", fontSize: "11px", color: "var(--brand-text)",
                       display: "flex", alignItems: "center", gap: "4px",
                     }}>
                       <Glyph e="📎" /> {leave.attachmentName}

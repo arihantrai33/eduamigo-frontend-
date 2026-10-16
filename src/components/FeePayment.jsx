@@ -51,7 +51,7 @@ export function ReceiptLinks({ fee }) {
   const payments = [...fee.payments].reverse();
   const shown = all ? payments : payments.slice(0, SHOWN_RECEIPTS);
   const hidden = payments.length - shown.length;
-  const chip = { border: "1px solid var(--brand-soft)", background: "var(--brand-soft)", color: "var(--brand-dark)", borderRadius: 8, padding: "5px 10px", minHeight: 28, display: "inline-flex", alignItems: "center", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" };
+  const chip = { border: "1px solid var(--brand-soft)", background: "var(--brand-soft)", color: "var(--brand-text)", borderRadius: 8, padding: "5px 10px", minHeight: 28, display: "inline-flex", alignItems: "center", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" };
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
       {shown.map((p) => (

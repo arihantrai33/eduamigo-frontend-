@@ -209,7 +209,7 @@ export default function TeacherProfile() {
 
                   <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 5, flexWrap: "wrap" }}>
                     {teacher.subjects?.length > 0 && (
-                      <span style={{ fontSize: 12, color: "#56657A", display: "flex", alignItems: "center", gap: 4 }}>
+                      <span style={{ fontSize: 12, color: "var(--ea-muted)", display: "flex", alignItems: "center", gap: 4 }}>
                         <BookOpen size={12} color="var(--ea-muted)" />
                         {teacher.subjects.join(", ")}
                       </span>
@@ -217,7 +217,7 @@ export default function TeacherProfile() {
                     {teacher.employeeId && (
                       <>
                         <span style={{ color: "var(--ea-faint)", fontSize: 12 }}>·</span>
-                        <span style={{ fontSize: 12, color: "#56657A", display: "flex", alignItems: "center", gap: 4 }}>
+                        <span style={{ fontSize: 12, color: "var(--ea-muted)", display: "flex", alignItems: "center", gap: 4 }}>
                           <Hash size={11} color="var(--ea-muted)" />
                           {teacher.employeeId}
                         </span>
@@ -226,7 +226,7 @@ export default function TeacherProfile() {
                     {teacher.experience > 0 && (
                       <>
                         <span style={{ color: "var(--ea-faint)", fontSize: 12 }}>·</span>
-                        <span style={{ fontSize: 12, color: "#56657A", display: "flex", alignItems: "center", gap: 4 }}>
+                        <span style={{ fontSize: 12, color: "var(--ea-muted)", display: "flex", alignItems: "center", gap: 4 }}>
                           <Clock size={11} color="var(--ea-muted)" />
                           {teacher.experience} {teacher.experience === 1 ? "year" : "years"} experience
                         </span>
@@ -240,7 +240,7 @@ export default function TeacherProfile() {
                       {
                         icon: Users, label: "Classes Assigned",
                         value: teacher.assignedClasses?.length || 0,
-                        color: "var(--brand-dark)", bg: "var(--brand-soft)",
+                        color: "var(--brand-text)", bg: "var(--brand-soft)",
                       },
                       {
                         icon: BookOpen, label: "Subjects",
@@ -324,7 +324,7 @@ export default function TeacherProfile() {
                     {teacher.assignedClasses.map((cls, i) => (
                       <span key={i} style={{
                         padding: "6px 14px", borderRadius: 20, fontSize: 12,
-                        fontWeight: 600, background: "var(--brand-soft)", color: "var(--brand-dark)",
+                        fontWeight: 600, background: "var(--brand-soft)", color: "var(--brand-text)",
                         border: "1px solid var(--brand-border)",
                       }}>
                         {cls}

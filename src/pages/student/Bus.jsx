@@ -96,7 +96,7 @@ function makeStopIcon(type) {
     completed: { bg: "#10B981", text: "✓",  size: 22 },
     current:   { bg: "var(--brand)", text: "●",  size: 26 },
     school:    { bg: "#F59E0B", text: schoolSvg(13), size: 24 },
-    upcoming:  { bg: "#E5E7EB", text: "●",  size: 18 },
+    upcoming:  { bg: "var(--ea-line)", text: "●",  size: 18 },
   };
   const c = configs[type] || configs.upcoming;
   return L.divIcon({
@@ -423,7 +423,7 @@ export default function ParentBus() {
       })}
     </MapContainer>
   ) : (
-    <div style={styles.mapPlaceholder}>
+    <div className="ea-bus-empty" style={styles.mapPlaceholder}>
       <div style={{ fontSize: "56px" }}><Glyph e="🚌" /></div>
       <p style={styles.busEmptyTitle}>Bus not on route yet</p>
       <p style={styles.busEmptySub}>Trip has not started</p>
@@ -506,8 +506,8 @@ export default function ParentBus() {
             <div style={{ textAlign: "right" }}>
               <span style={{
                 fontSize: "11px", fontWeight: 600, padding: "4px 10px", borderRadius: "20px",
-                background: tripActive ? "rgba(74,222,128,0.2)" : "rgba(255,255,255,0.15)",
-                color: tripActive ? "#4ADE80" : "rgba(255,255,255,0.7)",
+                background: tripActive ? "rgba(74,222,128,0.2)" : "rgba(255,255,255,0.06)",
+                color: tripActive ? "#4ADE80" : "#fff",
                 border: `1px solid ${tripActive ? "rgba(74,222,128,0.4)" : "rgba(255,255,255,0.2)"}`,
               }}>
                 {tripActive ? "On Bus" : "At Home"}
@@ -590,17 +590,17 @@ export default function ParentBus() {
               const isCompleted = type === "completed";
               const isCurrent   = type === "current";
               const isSchool    = isLast && !isCurrent;
-              const circleBg     = isCurrent ? "var(--brand)" : isCompleted ? "#D1FAE5" : isSchool ? "#FFF7ED" : "#F3F4F6";
-              const circleBorder = isCurrent ? "2px solid var(--brand)" : isCompleted ? "2px solid #6EE7B7" : isSchool ? "2px solid #FCD34D" : "2px solid #E5E7EB";
+              const circleBg     = isCurrent ? "var(--brand)" : isCompleted ? "color-mix(in srgb, var(--ea-success) 16%, var(--ea-surface))" : isSchool ? "color-mix(in srgb, var(--ea-warning) 5%, var(--ea-surface))" : "var(--ea-hover)";
+              const circleBorder = isCurrent ? "2px solid var(--brand)" : isCompleted ? "2px solid #6EE7B7" : isSchool ? "2px solid #FCD34D" : "2px solid var(--ea-line)";
               const circleShadow = isCurrent ? "0 0 0 4px var(--brand-soft)" : "none";
               return (
                 <div key={stop.id || i} style={styles.stopRow}>
                   <div style={styles.timeline}>
                     <div style={{ ...styles.stopCircle, background: circleBg, border: circleBorder, boxShadow: circleShadow }}>
-                      {isCompleted ? <span style={{ fontSize: "9px", color: "#047857" }}>✓</span>
+                      {isCompleted ? <span style={{ fontSize: "9px", color: "var(--ea-on-card-success)" }}>✓</span>
                        : isCurrent ? <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--card)", display: "block" }} />
                        : isSchool  ? <span style={{ fontSize: "10px" }}><Glyph e="🏫" /></span>
-                       : <span style={{ fontSize: "9px", color: "#56657A" }}>{i + 1}</span>}
+                       : <span style={{ fontSize: "9px", color: "var(--ea-muted)" }}>{i + 1}</span>}
                     </div>
                     {!isLast && (
                       <div style={{
@@ -608,8 +608,8 @@ export default function ParentBus() {
                         background: isCompleted
                           ? "linear-gradient(to bottom, #6EE7B7, #D1FAE5)"
                           : isCurrent
-                          ? "linear-gradient(to bottom, var(--brand), #E5E7EB)"
-                          : "#E5E7EB",
+                          ? "linear-gradient(to bottom, var(--brand), var(--ea-line))"
+                          : "var(--ea-line)",
                       }} />
                     )}
                   </div>
@@ -631,8 +631,8 @@ export default function ParentBus() {
                       </div>
                       <div style={{ flexShrink: 0 }}>
                         {isCompleted && <span style={{ ...styles.badge, background: "#F0FDF4", color: "#166534", border: "0.5px solid #BBF7D0" }}>Done</span>}
-                        {isCurrent   && <span style={{ ...styles.badge, background: "var(--brand-soft)", color: "var(--brand-dark)", border: "0.5px solid var(--brand-border)" }}>Live</span>}
-                        {isSchool    && <span style={{ ...styles.badge, background: "#FFF7ED", color: "#C2410C", border: "0.5px solid #FED7AA" }}>{eta}</span>}
+                        {isCurrent   && <span style={{ ...styles.badge, background: "var(--brand-soft)", color: "var(--brand-text)", border: "0.5px solid var(--brand-border)" }}>Live</span>}
+                        {isSchool    && <span style={{ ...styles.badge, background: "color-mix(in srgb, var(--ea-warning) 5%, var(--ea-surface))", color: "var(--ea-on-card-warning)", border: "0.5px solid #FED7AA" }}>{eta}</span>}
                         {type === "upcoming" && <span style={{ fontSize: "10px", color: "var(--ea-faint)" }}>—</span>}
                       </div>
                     </div>
@@ -685,14 +685,14 @@ const styles = {
   metricSub:   { color: "rgba(255,255,255,0.92)", fontSize: "11px" },
   trafficStrip: { display: "flex", alignItems: "center", gap: "8px", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "12px", padding: "8px 14px" },
   trafficLabel: { color: "rgba(255,255,255,0.85)", fontSize: "12px", flex: 1, fontWeight: 500 },
-  trafficRight: { color: "rgba(255,255,255,0.45)", fontSize: "11px" },
+  trafficRight: { color: "rgba(255,255,255,0.92)", fontSize: "11px" },
   fsBtn: { position: "absolute", right: "14px", zIndex: 200, width: "40px", height: "40px", borderRadius: "12px", background: "color-mix(in srgb, var(--brand) 85%, transparent)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 2px 12px color-mix(in srgb, var(--brand) 35%, transparent)", transition: "bottom 0.35s cubic-bezier(0.4,0,0.2,1)" },
   stopsPanel: { position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 100, background: "var(--card)", borderRadius: "24px 24px 0 0", boxShadow: "0 -4px 30px rgba(0,0,0,0.10)", overflowY: "auto", transition: "max-height 0.35s cubic-bezier(0.4,0,0.2,1)", paddingBottom: "env(safe-area-inset-bottom, 0px)", WebkitOverflowScrolling: "touch" },
   stopsHeader: { position: "sticky", top: 0, background: "var(--card)", borderBottom: "1px solid var(--border)", paddingBottom: "10px", zIndex: 10, cursor: "pointer", userSelect: "none" },
   dragHandle: { width: "36px", height: "4px", borderRadius: "2px", background: "var(--ea-line)", margin: "10px auto 8px" },
   stopsHeaderRow: { display: "flex", alignItems: "center", justifyContent: "space-between", paddingLeft: "20px", paddingRight: "20px" },
   stopsTitle: { fontSize: "14px", fontWeight: 700, color: "var(--text)" },
-  stopsBadge: { fontSize: "11px", color: "#56657A", background: "var(--card2)", border: "1px solid var(--border)", padding: "3px 10px", borderRadius: "20px", fontWeight: 500 },
+  stopsBadge: { fontSize: "11px", color: "var(--ea-muted)", background: "var(--card2)", border: "1px solid var(--border)", padding: "3px 10px", borderRadius: "20px", fontWeight: 500 },
   progressPill: { position: "relative", width: "68px", height: "18px", background: "var(--card2)", borderRadius: "10px", overflow: "hidden", display: "flex", alignItems: "center" },
   progressFill: { position: "absolute", left: 0, top: 0, bottom: 0, background: "var(--brand-gradient)", borderRadius: "10px", transition: "width 0.5s ease" },
   progressText: { position: "relative", zIndex: 1, fontSize: "9px", fontWeight: 700, color: "var(--ea-ink)", width: "100%", textAlign: "center" },
@@ -700,8 +700,8 @@ const styles = {
   routeBar:     { height: "3px", background: "var(--ea-line)" },
   routeBarFill: { height: "100%", background: "var(--brand-gradient)", transition: "width 0.5s ease" },
   panelActionRow: { display: "flex", gap: "10px", padding: "10px 20px 2px" },
-  panelCallBtn: { flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", padding: "9px 12px", borderRadius: "12px", fontSize: "12px", fontWeight: 600, background: "var(--card2)", color: "var(--brand-dark)", border: "1px solid var(--brand-border)", cursor: "pointer" },
-  panelSosBtn:  { display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", padding: "9px 16px", borderRadius: "12px", fontSize: "12px", fontWeight: 700, background: "var(--card2)", color: "#B91C1C", border: "1px solid #FECACA", cursor: "pointer" },
+  panelCallBtn: { flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", padding: "9px 12px", borderRadius: "12px", fontSize: "12px", fontWeight: 600, background: "var(--card2)", color: "var(--brand-text)", border: "1px solid var(--brand-border)", cursor: "pointer" },
+  panelSosBtn:  { display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", padding: "9px 16px", borderRadius: "12px", fontSize: "12px", fontWeight: 700, background: "var(--card2)", color: "var(--ea-on-card-danger)", border: "1px solid #FECACA", cursor: "pointer" },
   stopsList: { padding: "10px 20px 20px" },
   stopRow:   { display: "flex", alignItems: "flex-start", gap: "14px" },
   timeline:  { display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0, width: "20px" },
@@ -714,9 +714,9 @@ const styles = {
   modalOverlay: { position: "fixed", inset: 0, zIndex: 99999, background: "rgba(0,0,0,0.55)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" },
   modalCard: { background: "var(--card)", borderRadius: "24px", padding: "28px 24px", width: "100%", maxWidth: "340px", textAlign: "center", boxShadow: "0 20px 60px rgba(0,0,0,0.25)" },
   modalTitle: { fontSize: "18px", fontWeight: 700, color: "var(--text)", marginBottom: "8px" },
-  modalSub:   { fontSize: "13px", color: "#56657A", lineHeight: 1.6, marginBottom: "20px" },
+  modalSub:   { fontSize: "13px", color: "var(--ea-muted)", lineHeight: 1.6, marginBottom: "20px" },
   modalBtns:  { display: "flex", gap: "10px" },
   cancelBtn: { flex: 1, padding: "12px", borderRadius: "14px", fontSize: "14px", fontWeight: 600, background: "var(--card2)", color: "var(--subtext)", border: "none", cursor: "pointer" },
-  confirmSosBtn: { flex: 1, padding: "12px", borderRadius: "14px", fontSize: "14px", fontWeight: 700, background: "#DC2626", color: "white", border: "none", cursor: "pointer" },
+  confirmSosBtn: { flex: 1, padding: "12px", borderRadius: "14px", fontSize: "14px", fontWeight: 700, background: "var(--ea-on-card-danger)", color: "white", border: "none", cursor: "pointer" },
   callConfirmBtn: { flex: 1, padding: "12px", borderRadius: "14px", fontSize: "14px", fontWeight: 700, background: "var(--brand)", color: "white", border: "none", cursor: "pointer", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center" },
 };

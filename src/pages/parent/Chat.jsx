@@ -14,7 +14,7 @@ const authHeader = () => ({
 });
 
 const avatarColor = (name = '') => {
-  const colors = ['var(--brand)','var(--brand-dark)','#0891b2','#059669','#d97706','#dc2626','#0284c7'];
+  const colors = ['var(--brand)','var(--brand-deep)','#0891b2','#059669','#d97706','#dc2626','#0284c7'];
   let hash = 0;
   for (let c of name) hash = c.charCodeAt(0) + ((hash << 5) - hash);
   return colors[Math.abs(hash) % colors.length];

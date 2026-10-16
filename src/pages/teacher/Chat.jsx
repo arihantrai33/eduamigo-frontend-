@@ -484,7 +484,7 @@ const styles = {
     borderRadius: '50%',
     animation: 'spin 0.8s linear infinite',
   },
-  loadingText: { color: 'var(--brand-dark)', fontSize: 13, marginTop: 10 },
+  loadingText: { color: 'var(--brand-text)', fontSize: 13, marginTop: 10 },
   errorBox: {
     background: '#FFEBEE',
     color: '#C62828',

@@ -234,7 +234,7 @@ export default function Attendance() {
             })}
           </div>
           <div style={{ padding: "20px 24px", borderTop: "1px solid #F1F5F9", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div style={{ fontSize: 13, color: "#56657A", fontWeight: 600 }}>
+            <div style={{ fontSize: 13, color: "var(--ea-muted)", fontWeight: 600 }}>
               {stats.present} Present · {stats.absent} Absent · {stats.late} Late
             </div>
             <div style={{ display: "flex", gap: 12, alignItems: "center" }}>

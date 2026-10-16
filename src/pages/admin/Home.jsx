@@ -58,7 +58,7 @@ function Gate({ user, perm, children }) {
   return (
     <div style={{ padding: 48, textAlign: "center", fontFamily: "inherit" }}>
       <div style={{ fontSize: 18, fontWeight: 800, color: "#0F172A" }}>No access</div>
-      <div style={{ fontSize: 13, color: "#56657A", marginTop: 6 }}>Your role does not include this section. Ask your school administrator if you need it.</div>
+      <div style={{ fontSize: 13, color: "var(--ea-muted)", marginTop: 6 }}>Your role does not include this section. Ask your school administrator if you need it.</div>
     </div>
   );
 }

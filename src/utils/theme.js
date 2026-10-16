@@ -30,6 +30,23 @@ function luminance(hex) {
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
+// WCAG contrast ratio of two hex colours.
+function contrast(a, b) {
+  const x = luminance(a), y = luminance(b);
+  return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
+}
+// The brand colour as text: darkened (on light surfaces) or lightened (on dark ones) until it reaches `min`:1 on `bg`.
+// A school with a light brand colour still gets readable links and labels; a dark one keeps its own shade.
+function textShade(hex, bg, min, dir) {
+  let c = hex;
+  for (let i = 1; i <= 20 && contrast(c, bg) < min; i++) c = shade(hex, dir * i * 0.05);
+  return c;
+}
+const lighterOf = (a, b) => (luminance(a) >= luminance(b) ? a : b);
+const mixHex = (a, b, t) => toHex(toRgb(a).map((v, i) => v * (1 - t) + toRgb(b)[i] * t));
+export const LIGHT_SURFACE = "#EEF1F6"; // the page canvas: the darkest background text sits on in the light themes
+export const DARK_SURFACE = "#1E293B";  // the dark theme's cards
+
 // Text colour that reads well on the given background.
 export const readableOn = (hex) => (luminance(hex) > 0.45 ? "#14213D" : "#FFFFFF");
 
@@ -60,6 +77,8 @@ export function schoolTheme(school) {
     soft: shade(primary, 0.9),     // selected chips, subtle fills
     ring: alpha(primary, 0.18),    // focus rings
     glow: alpha(primary, 0.35),    // button shadow
+    text: textShade(primary, LIGHT_SURFACE, 4.7, -1),       // brand-coloured text, light themes
+    textOnDark: textShade(primary, lighterOf(DARK_SURFACE, mixHex(DARK_SURFACE, primary, 0.28)), 4.7, 1),   // brand-coloured text, dark themes: on the card and on the brand tint of a pill or an active link (the lighter of the two is the harder test)
   };
 }
 
@@ -104,6 +123,8 @@ export function brandCssVars(theme) {
     "--brand-soft": theme.soft,
     "--brand-border": shade(theme.primary, 0.72),
     "--brand-accent": theme.accent,
+    "--brand-text": theme.text,
+    "--brand-text-dark": theme.textOnDark,
     // Headers and main buttons: deep brand gradient for bold schools, brighter for light ones.
     "--brand-gradient": theme.isLight ? theme.button : `linear-gradient(135deg, ${theme.dark} 0%, ${theme.primary} 100%)`,
   };

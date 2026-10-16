@@ -213,7 +213,7 @@ export default function BulkOperations() {
           </div>
           {attClass && (
             <div style={{ padding:"12px 16px", borderRadius:12, background:"var(--brand-soft)", border:"1px solid var(--brand-border)" }}>
-              <span style={{ fontSize:13, fontWeight:700, color:"var(--brand-dark)" }}>
+              <span style={{ fontSize:13, fontWeight:700, color:"var(--brand-text)" }}>
                 {countStudents(attClass, attSection)} students will be marked <b>{attStatus}</b>
                 {attSection ? ` in Class ${attClass}-${attSection}` : ` in all sections of Class ${attClass}`} on {attDate}
               </span>
@@ -247,7 +247,7 @@ export default function BulkOperations() {
       {tab === "fee" && card(
         <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
           <div style={{ fontSize:15, fontWeight:800, color:"#0F172A" }}><Glyph e="💰" /> Fee Reminder</div>
-          <div style={{ fontSize:13, color:"#56657A", lineHeight:1.6 }}>
+          <div style={{ fontSize:13, color:"var(--ea-muted)", lineHeight:1.6 }}>
             Lists every student whose fee is pending or partly paid, with the parent's phone and email, so the office can follow up.
           </div>
           {btn("Fetch Pending Students", handleFeeReminder, "#EF4444")}
@@ -283,14 +283,14 @@ export default function BulkOperations() {
           </div>
 
           <div style={{ padding:16, borderRadius:12, background:"#F8FAFC", border:"1px solid #E2E8F0" }}>
-            <div style={{ fontSize:12, fontWeight:700, color:"#56657A", marginBottom:8 }}>REQUIRED CSV COLUMNS:</div>
+            <div style={{ fontSize:12, fontWeight:700, color:"var(--ea-muted)", marginBottom:8 }}>REQUIRED CSV COLUMNS:</div>
             <div style={{ fontSize:12, color:"var(--ea-muted)", fontFamily:"monospace", lineHeight:2 }}>
               {csvTab === "students"
                 ? "name, email, rollNumber, class, section, phone, gender, parentName, parentPhone"
                 : "name, email, employeeId, phone, subjects, qualification, experience"}
             </div>
             {csvTab === "students" && (
-              <div style={{ fontSize:12, color:"#56657A", marginTop:6, lineHeight:1.6 }}>
+              <div style={{ fontSize:12, color:"var(--ea-muted)", marginTop:6, lineHeight:1.6 }}>
                 Optional: <span style={{ fontFamily:"monospace" }}>admissionDate</span> (YYYY-MM-DD), the real date of admission. Leave it out when not known; it is never filled in automatically.
               </div>
             )}
@@ -298,7 +298,7 @@ export default function BulkOperations() {
 
           <label style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:10, padding:"32px 20px", borderRadius:14, border:"2px dashed var(--brand-border)", background:"var(--brand-soft)", cursor:"pointer" }}>
             <span style={{ fontSize:32 }}><Glyph e="📁" /></span>
-            <span style={{ fontSize:13, fontWeight:700, color:"var(--brand-dark)" }}>{csvFileName || "Click to select CSV file"}</span>
+            <span style={{ fontSize:13, fontWeight:700, color:"var(--brand-text)" }}>{csvFileName || "Click to select CSV file"}</span>
             <span style={{ fontSize:11, color:"var(--ea-muted)" }}>Only .csv files supported</span>
             <input type="file" accept=".csv" onChange={handleCSVUpload} style={{ display:"none" }} />
           </label>
@@ -310,7 +310,7 @@ export default function BulkOperations() {
                 <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12 }}>
                   <thead>
                     <tr style={{ background:"#F8FAFC" }}>
-                      {Object.keys(csvPreview[0]).map(h => <th key={h} style={{ padding:"8px 12px", textAlign:"left", fontWeight:700, color:"#56657A", borderBottom:"1px solid #E2E8F0" }}>{h}</th>)}
+                      {Object.keys(csvPreview[0]).map(h => <th key={h} style={{ padding:"8px 12px", textAlign:"left", fontWeight:700, color:"var(--ea-muted)", borderBottom:"1px solid #E2E8F0" }}>{h}</th>)}
                     </tr>
                   </thead>
                   <tbody>

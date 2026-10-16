@@ -52,7 +52,7 @@ function Avatar({ name, type, size = 40 }) {
   return (
     <div aria-hidden="true" style={{ width: size, height: size, borderRadius: "50%", background: cfg.bg,
       display: "flex", alignItems: "center", justifyContent: "center",
-      fontSize: size * 0.32, fontWeight: 700, color: "var(--brand-dark)", flexShrink: 0 }}>
+      fontSize: size * 0.32, fontWeight: 700, color: "var(--brand-text)", flexShrink: 0 }}>
       {getInitials(name)}
     </div>
   );
@@ -95,7 +95,7 @@ function ContactDetailModal({ contact, onClose }) {
 function InfoRow({ label, value }) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "#F8FAFC", borderRadius: 10, border: "1px solid #F1F5F9" }}>
-      <span style={{ fontSize: 12, color: "#56657A", fontWeight: 600 }}>{label}</span>
+      <span style={{ fontSize: 12, color: "var(--ea-muted)", fontWeight: 600 }}>{label}</span>
       <span style={{ fontSize: 13, color: "#0F172A", fontWeight: 700 }}>{value}</span>
     </div>
   );
@@ -269,7 +269,7 @@ export default function Chat() {
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
             <div>
               <div style={{ fontSize: 17, fontWeight: 800, color: "#0F172A", letterSpacing: "-0.3px" }}>Messages</div>
-              {totalUnread > 0 && <div style={{ fontSize: 11, color: "var(--brand-dark)", fontWeight: 700, marginTop: 2 }}>{totalUnread} unread</div>}
+              {totalUnread > 0 && <div style={{ fontSize: 11, color: "var(--brand-text)", fontWeight: 700, marginTop: 2 }}>{totalUnread} unread</div>}
             </div>
             <button type="button" className="ea-btn ea-btn--ghost" onClick={fetchContacts} aria-label="Refresh contacts" style={{ width: 36, padding: 0 }}>
               <RefreshCw size={16} aria-hidden="true" />
@@ -286,7 +286,7 @@ export default function Chat() {
               <button key={val} type="button" aria-pressed={filterRole === val} onClick={() => setFilterRole(val)}
                 style={{ flex: 1, padding: "6px 2px", borderRadius: 8, border: "none", cursor: "pointer", fontWeight: 700, fontSize: 10,
                   background: filterRole === val ? "color-mix(in srgb, var(--brand) 85%, transparent)" : "transparent",
-                  color: filterRole === val ? "white" : "#64748B", transition: "all 0.15s ease" }}>
+                  color: filterRole === val ? "white" : "var(--ea-muted)", transition: "all 0.15s ease" }}>
                 {lbl}
               </button>
             ))}
@@ -342,7 +342,7 @@ export default function Chat() {
         </div>
 
         <div style={{ padding: "12px 16px", borderTop: "1px solid #F1F5F9", display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 34, height: 34, borderRadius: 10, background: "var(--brand-soft)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: "var(--brand-dark)" }}>A</div>
+          <div style={{ width: 34, height: 34, borderRadius: 10, background: "var(--brand-soft)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: "var(--brand-text)" }}>A</div>
           <div>
             <div style={{ fontSize: 12, fontWeight: 700, color: "#0F172A" }}>Admin</div>
             <div style={{ fontSize: 10, color: "var(--ea-on-card-success)", fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
@@ -369,7 +369,7 @@ export default function Chat() {
                   <span style={{ fontSize: 15, fontWeight: 800, color: "#0F172A" }}>{selected.name}</span>
                   <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 20, background: cfg?.badge.bg, color: cfg?.badge.color }}>{cfg?.label}</span>
                 </div>
-                <span style={{ fontSize: 11, color: "#56657A" }}>{getHeaderSub(selected)}</span>
+                <span style={{ fontSize: 11, color: "var(--ea-muted)" }}>{getHeaderSub(selected)}</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <div className="is-hidden-phone" style={{ fontSize: 10, color: "var(--ea-muted)", fontWeight: 500 }}>Click for details</div>
@@ -434,7 +434,7 @@ export default function Chat() {
                 onFocusCapture={e => { e.currentTarget.style.borderColor = "var(--brand)"; e.currentTarget.style.borderWidth = "2.5px"; }}
                 onBlurCapture={e => e.currentTarget.style.borderColor = "#E2E8F0"}>
                 <button className="file-btn" onClick={() => fileInputRef.current?.click()} disabled={uploading}
-                  style={{ width: 42, height: 42, borderRadius: 12, border: "none", background: "transparent", cursor: "pointer", fontSize: 24, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "#56657A", transition: "background 0.15s ease" }}>
+                  style={{ width: 42, height: 42, borderRadius: 12, border: "none", background: "transparent", cursor: "pointer", fontSize: 24, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "var(--ea-muted)", transition: "background 0.15s ease" }}>
                   {uploading ? <span style={{ width: 14, height: 14, border: "2px solid #E2E8F0", borderTop: "2px solid var(--brand)", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} /> : "+"}
                 </button>
                 <textarea ref={inputRef} value={input} rows={1}

@@ -160,7 +160,7 @@ export default function ParentHome() {
           {tiles.filter(visibleFor(user)).map((t) => (
             <button key={t.label} onClick={() => navigate(t.path)}
               style={{ background: "var(--card)", borderRadius: 14, padding: 14, border: "none", cursor: "pointer", textAlign: "left", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-              <div style={{ width: 40, height: 40, borderRadius: 12, background: "var(--brand-soft)", color: "var(--brand-dark)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, marginBottom: 10 }}>{t.icon}</div>
+              <div style={{ width: 40, height: 40, borderRadius: 12, background: "var(--brand-soft)", color: "var(--brand-text)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, marginBottom: 10 }}>{t.icon}</div>
               <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text)" }}>{t.label}</div>
               <div style={{ fontSize: 11, color: "var(--subtext)", marginTop: 2 }}>{t.sub}</div>
             </button>
@@ -177,7 +177,7 @@ export default function ParentHome() {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
           <h3 className="ea-section-title"><Glyph e="🔔" /> Notices</h3>
           <span onClick={() => navigate("/parent/notifications")}
-            style={{ fontSize: 13, color: theme.primary, fontWeight: 700, cursor: "pointer" }}>View all →</span>
+            style={{ fontSize: 13, color: "var(--brand-text)", fontWeight: 700, cursor: "pointer" }}>View all →</span>
         </div>
 
         <div style={{ background: "var(--card)", borderRadius: 14, padding: "4px 12px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>

@@ -131,7 +131,7 @@ export default function ApplyLeave() {
             </div>
           </div>
           {days > 0 && (
-            <div style={{ marginBottom: "16px", padding: "8px 12px", background: dm ? "#1e3a5f" : "#f0f4ff", borderRadius: "8px", fontSize: "12px", color: "var(--brand-dark)", fontWeight: "600" }}>
+            <div style={{ marginBottom: "16px", padding: "8px 12px", background: dm ? "#1e3a5f" : "#f0f4ff", borderRadius: "8px", fontSize: "12px", color: "var(--brand-text)", fontWeight: "600" }}>
               Duration: {days} day{days > 1 ? "s" : ""}
             </div>
           )}
@@ -168,7 +168,7 @@ export default function ApplyLeave() {
                 <div style={{ fontSize: "12px", color: dm ? "var(--ea-muted)" : "var(--ea-muted)", marginTop: "4px" }}>
                   {new Date(leave.fromDate).toLocaleDateString("en-GB")} — {new Date(leave.toDate).toLocaleDateString("en-GB")} • {leaveDays} day{leaveDays > 1 ? "s" : ""}
                 </div>
-                {leave.reason && <div style={{ fontSize: "12px", color: dm ? "#64748b" : "var(--ea-muted)", marginTop: "4px" }}>{leave.reason}</div>}
+                {leave.reason && <div style={{ fontSize: "12px", color: dm ? "var(--ea-muted)" : "var(--ea-muted)", marginTop: "4px" }}>{leave.reason}</div>}
                 {leave.reviewNote && <div style={{ marginTop: "8px", fontSize: "11px", color: dm ? "var(--ea-muted)" : "#666", background: dm ? "#1e3a5f" : "#f0f4ff", padding: "6px 10px", borderRadius: "6px" }}>Reviewer Note: {leave.reviewNote}</div>}
               </div>
             );

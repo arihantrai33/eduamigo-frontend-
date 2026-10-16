@@ -1235,3 +1235,30 @@ The owner reported two visible problems and asked for every screen to be checked
 **Not done:**
 - The remaining contrast findings, and teal text on white cards in the school's brand colour (a deeper per-school text token would be needed for very light brand colours).
 - The Bus page at 1024–1279 px: the stops panel overlaps part of the "Bus not on route yet" message (this was already so).
+
+### Final fixes after the layout pass (2026-10-16, third pass)
+
+**1. Bus: the stops panel covered "Bus not on route yet" between 1024 and 1279 px.**
+- *Cause:* the message was centred in the whole map area, while the 360 px panel sits on the right. Below about 1280 px the message's right half fell under the panel.
+- *Fix:* the empty state (`.ea-bus-empty`, student and parent) is centred in the space left of the panel. The live map still fills the width under it.
+- *Also:* the stop connector lines and the number circles use the theme tokens. The parent "SOS" button follows the surface.
+- *Test:* `e2e/bus-layout.spec.js`, 8 tests (student and parent at 1024, 1100, 1279 and 1280). The test checks that the text block ends before the panel begins, that the panel and the message stay inside the page area, that "Route Stops" and the call button are visible, and that nothing scrolls sideways. Without the fix, 4 of the 8 fail.
+
+**2. Contrast: 94 findings, now 0 in the probe.**
+- *Brand colour as text:*
+  - `utils/theme.js` now computes `--brand-text` (darkened until it reaches 4.7:1 on the light canvas) and `--brand-text-dark` (lightened until it reaches 4.7:1 on the dark card and on the brand tint of a pill or an active link).
+  - A brand colour that already reads well is kept as it is.
+  - All text uses of `--brand` and `--brand-dark` (98 inline, 22 CSS rules) and `theme.primary` (home screens, Login) use these tokens.
+  - `e2e/brand-text.spec.js` (23 tests) checks 11 school colours (including light teal, yellow, pale pink, white, light grey and black) in both styles.
+- *Other:*
+  - Grade badge colours (`utils/grades.js`, student result) now meet AA on their own fills.
+  - `--ea-on-card-success` is darker (#166534).
+  - Category 1 (teal) as text is darker.
+  - About 150 grey and slate text literals use `--ea-muted`.
+  - Bus text, the orange "Call School" and the ✓ chip use the status tokens.
+  - Chat avatars use `--brand-deep`.
+- *Probe:* light and dark, 1280 px, every portal route (student 15, parent 10, teacher 10, admin 29 pages). Limits: it checks text visible in the first 900 px, skips text on gradients, and skips hidden or disabled elements and completed timetable rows.
+
+**3. Notification unread colour.**
+- Student notifications used `#eff6ff` and `#1e3a5f` inline. The unread card is now `.ea-notice.is-unread`: a 7% tint of the school colour on the surface, with a brand bar on the left. Student and parent share it.
+- `e2e/notice-theme.spec.js` (4 tests: student and parent, light and dark) checks that the bar is the brand colour, that the card is light in light mode and dark in dark mode, that text keeps 4.5:1, that the old blues are not used, and that opening a notice still marks it read.

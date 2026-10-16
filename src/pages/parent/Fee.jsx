@@ -221,7 +221,7 @@ export default function ParentFee() {
                 FEE BREAKDOWN
               </span>
               <span style={{
-                color: "var(--brand-dark)", fontSize: 16,
+                color: "var(--brand-text)", fontSize: 16,
                 transform: showBreakdown ? "rotate(180deg)" : "rotate(0deg)",
                 transition: "transform 0.3s", display: "inline-block"
               }}>⌄</span>
@@ -251,7 +251,7 @@ export default function ParentFee() {
                 ))}
                 <div style={styles.breakdownTotal}>
                   <span style={{ fontWeight: 700, fontSize: 14 }}>Total</span>
-                  <span style={{ fontWeight: 900, fontSize: 15, color: "var(--brand-dark)" }}>
+                  <span style={{ fontWeight: 900, fontSize: 15, color: "var(--brand-text)" }}>
                     ₹{summary.total.toLocaleString("en-IN")}
                   </span>
                 </div>

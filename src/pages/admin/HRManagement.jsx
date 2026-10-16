@@ -32,7 +32,7 @@ const FIELDS = Object.fromEntries(["teacher", "basicSalary", "leaveType", "fromD
 function StatusBadge({ status }) {
   const map = { Paid:"var(--ea-on-card-success)", Pending:"var(--ea-on-card-warning)", Approved:"var(--ea-on-card-success)", Rejected:"var(--ea-on-card-danger)" };
   const bg = { Paid:"#F0FDF4", Pending:"#FFFBEB", Approved:"#F0FDF4", Rejected:"#FEF2F2" };
-  return <span style={{ fontSize:11, fontWeight:700, padding:"4px 10px", borderRadius:20, background: bg[status]||"#F8FAFC", color: map[status]||"#64748B" }}>{status}</span>;
+  return <span style={{ fontSize:11, fontWeight:700, padding:"4px 10px", borderRadius:20, background: bg[status]||"#F8FAFC", color: map[status]||"var(--ea-muted)" }}>{status}</span>;
 }
 
 export default function HRManagement() {
@@ -172,7 +172,7 @@ export default function HRManagement() {
       <div style={{ marginBottom:24 }}>
         <StatGrid>
           {[
-            { label:"TOTAL TEACHERS", value: teachers.length, icon:<Glyph e="👩‍🏫" />, color:"var(--brand-dark)" },
+            { label:"TOTAL TEACHERS", value: teachers.length, icon:<Glyph e="👩‍🏫" />, color:"var(--brand-text)" },
             { label:"SALARY PAID", value: `₹${totalPaid.toLocaleString()}`, icon:<Glyph e="✅" />, color:"var(--ea-on-card-success)" },
             { label:"SALARY PENDING", value: `₹${totalPending.toLocaleString()}`, icon:<Glyph e="⏳" />, color:"var(--ea-on-card-warning)" },
             { label:"LEAVE REQUESTS", value: pendingLeaves, icon:<Glyph e="📋" />, color: pendingLeaves ? "var(--ea-on-card-warning)" : "var(--brand)" },
@@ -224,7 +224,7 @@ export default function HRManagement() {
                 {salaries.map((s,i) => (
                   <tr key={i} style={{ borderBottom:"1px solid #F1F5F9" }}>
                     <td style={{ padding:"12px 14px", fontSize:13, fontWeight:700, color:"#0F172A" }}>{s.teacher?.name || "—"}</td>
-                    <td style={{ padding:"12px 14px", fontSize:12, color:"#56657A" }}>{s.teacher?.employeeId || "—"}</td>
+                    <td style={{ padding:"12px 14px", fontSize:12, color:"var(--ea-muted)" }}>{s.teacher?.employeeId || "—"}</td>
                     <td style={{ padding:"12px 14px", fontSize:13, fontWeight:600, color:"#0F172A" }}>₹{(s.basicSalary||0).toLocaleString("en-IN")}</td>
                     <td style={{ padding:"12px 14px", fontSize:13, color:"var(--ea-on-card-success)" }}>+₹{(s.allowances||0).toLocaleString("en-IN")}</td>
                     <td style={{ padding:"12px 14px", fontSize:13, color:"var(--ea-on-card-danger)" }}>-₹{(s.deductions||0).toLocaleString("en-IN")}</td>
@@ -269,12 +269,12 @@ export default function HRManagement() {
               {leaves.map((l,i) => (
                 <div key={i} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"14px 18px", borderRadius:14, background:"#F8FAFC", border:"1px solid #E2E8F0" }}>
                   <div style={{ display:"flex", gap:16, alignItems:"center" }}>
-                    <div style={{ width:40, height:40, borderRadius:"50%", background:"var(--brand-soft)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, color:"var(--brand-dark)", fontWeight:800 }}>
+                    <div style={{ width:40, height:40, borderRadius:"50%", background:"var(--brand-soft)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, color:"var(--brand-text)", fontWeight:800 }}>
                       {l.teacher?.name?.[0] || "?"}
                     </div>
                     <div>
                       <div style={{ fontSize:14, fontWeight:700, color:"#0F172A" }}>{l.teacher?.name || "—"}</div>
-                      <div style={{ fontSize:12, color:"#56657A", marginTop:2 }}>
+                      <div style={{ fontSize:12, color:"var(--ea-muted)", marginTop:2 }}>
                         {l.leaveType} Leave · {new Date(l.fromDate).toLocaleDateString()} – {new Date(l.toDate).toLocaleDateString()} · {l.days} day{l.days!==1?"s":""}
                       </div>
                       {l.reason && <div style={{ fontSize:12, color:"var(--ea-muted)", marginTop:2 }}>"{l.reason}"</div>}

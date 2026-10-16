@@ -132,14 +132,14 @@ export default function LeaveRequests() {
                 style={{ background:"white", borderRadius:16, boxShadow:"0 2px 16px rgba(15,23,42,0.06)", border:`1px solid ${isExpanded ? "var(--brand-border)" : "var(--ea-line)"}`, overflow:"hidden", animation:`fadeUp 0.3s ease ${i*0.05}s both` }}>
                 <div className="ea-row-wrap" style={{ padding:"18px 24px", display:"flex", alignItems:"center", gap:16, cursor:"pointer" }} onClick={() => setExpandedId(isExpanded ? null : l._id)}>
                   {/* Avatar */}
-                  <div style={{ width:44, height:44, borderRadius:14, background:"var(--brand-soft)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, fontWeight:800, color:"var(--brand-dark)", flexShrink:0 }}>
+                  <div style={{ width:44, height:44, borderRadius:14, background:"var(--brand-soft)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, fontWeight:800, color:"var(--brand-text)", flexShrink:0 }}>
                     {l.name?.[0]?.toUpperCase() || "?"}
                   </div>
                   <div style={{ flex:1, minWidth:0 }}>
                     <div style={{ display:"flex", alignItems:"center", flexWrap:"wrap", gap:"6px 10px", marginBottom:4 }}>
                       <span style={{ fontSize:14, fontWeight:800, color:"#0F172A" }}>{l.name || "Unknown"}</span>
                       <span className="ea-badge ea-badge--neutral" style={{ textTransform:"capitalize" }}>{l.role?.charAt(0).toUpperCase() + l.role?.slice(1) || "User"}</span>
-                      <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:"#F1F5F9", color:"#56657A" }}>{l.leaveType || "Leave"}</span>
+                      <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:"#F1F5F9", color:"var(--ea-muted)" }}>{l.leaveType || "Leave"}</span>
                     </div>
                     <div style={{ fontSize:12, color:"var(--ea-muted)" }}>
                       {fmtDate(l.fromDate)} → {fmtDate(l.toDate)} · {daysDiff(l.fromDate, l.toDate)}{l.class ? ` · Class ${l.class}${l.section ? `-${l.section}` : ""}` : ""}
@@ -172,7 +172,7 @@ export default function LeaveRequests() {
                       <div style={{ fontSize:13, color:"#374151", lineHeight:1.6 }}>{l.reason || "No reason provided"}</div>
                     </div>
                     {l.attachmentUrl && (
-                      <a href={l.attachmentUrl} target="_blank" rel="noreferrer" style={{ display:"inline-block", marginTop:10, fontSize:13, fontWeight:600, color:"var(--brand-dark)" }}>
+                      <a href={l.attachmentUrl} target="_blank" rel="noreferrer" style={{ display:"inline-block", marginTop:10, fontSize:13, fontWeight:600, color:"var(--brand-text)" }}>
                         View attachment: {l.attachmentName || "document"}
                       </a>
                     )}

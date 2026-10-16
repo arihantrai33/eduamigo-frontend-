@@ -106,7 +106,7 @@ export default function TeacherHome() {
 
   const statusBadge = (status) => {
     const map = {
-      done:     { bg: theme.soft, color: theme.primary, label: 'Done' },
+      done:     { bg: theme.soft, color: 'var(--brand-text)', label: 'Done' },
       now:      { bg: theme.primary, color: '#fff',    label: 'Now' },
       next:     { bg: '#FFF9C4', color: 'var(--ea-on-card-warning)', label: 'Next' },
       upcoming: { bg: '#F4F6FB', color: 'var(--ea-muted)', label: 'Upcoming' },
@@ -202,7 +202,7 @@ export default function TeacherHome() {
         <section className="ea-pd-main">
         <div style={styles.sectionHeader}>
           <h2 className="ea-section-title">Today's Schedule</h2>
-          <span style={{ ...styles.sectionDay, color: theme.primary }}>{today}</span>
+          <span style={{ ...styles.sectionDay, color: 'var(--brand-text)' }}>{today}</span>
         </div>
 
         {todayPeriods.length === 0 ? (
@@ -287,14 +287,14 @@ const styles = {
     cursor: 'pointer', border: 'none', textAlign: 'left',
     boxShadow: '0 2px 16px color-mix(in srgb, var(--brand) 10%, transparent)',
   },
-  tileIcon:  { width: 40, height: 40, borderRadius: 12, background: "var(--brand-soft)", color: "var(--brand-dark)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, marginBottom: 10 },
+  tileIcon:  { width: 40, height: 40, borderRadius: 12, background: "var(--brand-soft)", color: "var(--brand-text)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, marginBottom: 10 },
   tileLabel: { fontSize: 13, fontWeight: 700, color: '#1C2033' },
   tileSub:   { fontSize: 10.5, color: 'var(--ea-muted)', fontWeight: 500, marginTop: 2 },
   sectionHeader: {
     display: 'flex', justifyContent: 'space-between',
     alignItems: 'center', marginBottom: 12,
   },
-  sectionDay:   { fontSize: 12, color: 'var(--brand-dark)', fontWeight: 700 },
+  sectionDay:   { fontSize: 12, color: 'var(--brand-text)', fontWeight: 700 },
   periodCard: {
     background: '#fff', borderRadius: 20, padding: '13px 15px',
     display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer',
