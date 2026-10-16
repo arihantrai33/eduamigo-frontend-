@@ -44,7 +44,7 @@ function textShade(hex, bg, min, dir) {
 }
 const lighterOf = (a, b) => (luminance(a) >= luminance(b) ? a : b);
 const mixHex = (a, b, t) => toHex(toRgb(a).map((v, i) => v * (1 - t) + toRgb(b)[i] * t));
-export const LIGHT_SURFACE = "#EEF1F6"; // the page canvas: the darkest background text sits on in the light themes
+export const LIGHT_SURFACE = "#EDF3F9"; // the page canvas: the darkest background text sits on in the light themes
 export const DARK_SURFACE = "#1E293B";  // the dark theme's cards
 
 // Text colour that reads well on the given background.

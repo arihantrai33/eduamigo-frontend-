@@ -190,7 +190,7 @@ export default function Communications() {
                 </button>
               ))}
             </div>
-            <div style={{ display:"flex", gap:6, background:"#F8FAFC", padding:"4px", borderRadius:12, border:"1px solid #E2E8F0" }}>
+            <div style={{ display:"flex", gap:6, background:"#F8FAFC", padding:"4px", borderRadius:12, border:"1px solid var(--ea-edge)" }}>
               {[
                 { val:"", lbl:"All", icon:"▤", active:"var(--brand)", dot:null },
                 { val:"normal", lbl:"Normal", icon:"●", active:"#15803D", dot:"#22C55E" },
@@ -214,10 +214,10 @@ export default function Communications() {
 
           {loading ? (
             <div style={{ padding:"60px 0", textAlign:"center" }}>
-              <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid #E2E8F0", borderTop:"3px solid var(--brand)", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
+              <div style={{ width:36, height:36, borderRadius:"50%", border:"3px solid var(--ea-edge)", borderTop:"3px solid var(--brand)", animation:"spin 0.8s linear infinite", margin:"0 auto 12px" }} />
             </div>
           ) : filteredAnn.length === 0 ? (
-            <div style={{ background:"white", borderRadius:20, padding: 16, textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
+            <div style={{ background:"white", borderRadius:20, padding: 16, textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid var(--ea-edge)" }}>
               <EmptyState plain icon={Megaphone} title="No announcements yet" />
             </div>
           ) : (
@@ -227,7 +227,7 @@ export default function Communications() {
                 const tcfg = TARGET_CONFIG[a.targetRole] || TARGET_CONFIG.all;
                 return (
                   <div key={a._id} className="comm-card"
-                    style={{ background:"white", borderRadius:16, padding:"20px 24px", boxShadow:"0 2px 16px rgba(15,23,42,0.06)", border:"1px solid var(--ea-line)", animation:`fadeUp 0.3s ease ${i*0.04}s both` }}>
+                    style={{ background:"white", borderRadius:16, padding:"20px 24px", boxShadow:"0 2px 16px rgba(15,23,42,0.06)", border:"1px solid var(--ea-edge)", animation:`fadeUp 0.3s ease ${i*0.04}s both` }}>
                     <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                       <div style={{ flex:1 }}>
                         <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
@@ -243,11 +243,11 @@ export default function Communications() {
                       </div>
                       <div style={{ display:"flex", gap:6, marginLeft:16 }}>
                         <button type="button" className="act-btn" onClick={() => handleTogglePin(a._id)} aria-label={a.isPinned ? "Unpin announcement" : "Pin announcement"} aria-pressed={!!a.isPinned} title={a.isPinned ? "Unpin" : "Pin"}
-                          style={{ width:32, height:32, borderRadius:8, border:"1px solid #E2E8F0", background: a.isPinned ? "#FFFBEB" : "white", cursor:"pointer", fontSize:14 }}>
+                          style={{ width:32, height:32, borderRadius:8, border:"1px solid var(--ea-edge)", background: a.isPinned ? "#FFFBEB" : "white", cursor:"pointer", fontSize:14 }}>
                           <Glyph e="📌" />
                         </button>
                         <button type="button" className="act-btn" onClick={() => openEditAnnouncement(a)} aria-label="Edit announcement" title="Edit"
-                          style={{ width:32, height:32, borderRadius:8, border:"1px solid #E2E8F0", background:"white", cursor:"pointer", fontSize:14 }}>
+                          style={{ width:32, height:32, borderRadius:8, border:"1px solid var(--ea-edge)", background:"white", cursor:"pointer", fontSize:14 }}>
                           <Glyph e="✏" />
                         </button>
                         <button type="button" className="act-btn" onClick={() => handleDeleteAnn(a._id)} aria-label="Delete announcement" title="Delete"
@@ -274,7 +274,7 @@ export default function Communications() {
             </button>
           </div>
           {circulars.length === 0 ? (
-            <div style={{ background:"white", borderRadius:20, padding: 16, textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
+            <div style={{ background:"white", borderRadius:20, padding: 16, textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid var(--ea-edge)" }}>
               <EmptyState plain icon={ClipboardList} title="No circulars yet" text="Important/Urgent announcements appear here as circulars" />
             </div>
           ) : (
@@ -284,7 +284,7 @@ export default function Communications() {
                 const tcfg = TARGET_CONFIG[a.targetRole] || TARGET_CONFIG.all;
                 return (
                   <div key={a._id} className="comm-card"
-                    style={{ background:"white", borderRadius:16, padding:"20px 24px", boxShadow:"0 2px 16px rgba(15,23,42,0.06)", border:"1px solid var(--ea-line)", animation:`fadeUp 0.3s ease ${i*0.04}s both` }}>
+                    style={{ background:"white", borderRadius:16, padding:"20px 24px", boxShadow:"0 2px 16px rgba(15,23,42,0.06)", border:"1px solid var(--ea-edge)", animation:`fadeUp 0.3s ease ${i*0.04}s both` }}>
                     <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                       <div style={{ flex:1 }}>
                         <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
@@ -319,7 +319,7 @@ export default function Communications() {
             </button>
           </div>
           {notifications.length === 0 ? (
-            <div style={{ background:"white", borderRadius:20, padding: 16, textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
+            <div style={{ background:"white", borderRadius:20, padding: 16, textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid var(--ea-edge)" }}>
               <EmptyState plain icon={Bell} title="No notifications sent yet" />
             </div>
           ) : (
@@ -328,7 +328,7 @@ export default function Communications() {
                 const tcfg = TARGET_CONFIG[n.targetRole] || TARGET_CONFIG.all;
                 return (
                   <div key={n._id} className="comm-card"
-                    style={{ background:"white", borderRadius:14, padding:"16px 20px", boxShadow:"0 2px 12px rgba(15,23,42,0.06)", border:"1px solid #E2E8F0", display:"flex", justifyContent:"space-between", alignItems:"center", animation:`fadeUp 0.3s ease ${i*0.03}s both` }}>
+                    style={{ background:"white", borderRadius:14, padding:"16px 20px", boxShadow:"0 2px 12px rgba(15,23,42,0.06)", border:"1px solid var(--ea-edge)", display:"flex", justifyContent:"space-between", alignItems:"center", animation:`fadeUp 0.3s ease ${i*0.03}s both` }}>
                     <div style={{ display:"flex", alignItems:"center", gap:12 }}>
                       <div style={{ width:40, height:40, borderRadius:12, background:"var(--brand-soft)", color:"var(--brand-text)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}><Glyph e="🔔" /></div>
                       <div>
@@ -358,26 +358,26 @@ export default function Communications() {
           <div>
             <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>TITLE</div>
             <input value={annForm.title} onChange={e => setAnnForm(p=>({...p,title:e.target.value}))} placeholder="Announcement title..."
-              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
+              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
               onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
           </div>
           <div>
             <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>MESSAGE</div>
             <textarea value={annForm.message} onChange={e => setAnnForm(p=>({...p,message:e.target.value}))} placeholder="Write your announcement..."
-              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", resize:"vertical", minHeight:100 }} />
+              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", resize:"vertical", minHeight:100 }} />
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             <div>
               <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>TARGET</div>
               <select value={annForm.targetRole} onChange={e => setAnnForm(p=>({...p,targetRole:e.target.value}))}
-                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white" }}>
+                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", background:"white" }}>
                 {[["all","Everyone"],["student","Students"],["teacher","Teachers"],["parent","Parents"],["admin","Admin"]].map(([v,l]) => <option key={v} value={v}>{l}</option>)}
               </select>
             </div>
             <div>
               <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>PRIORITY</div>
               <select value={annForm.priority} onChange={e => setAnnForm(p=>({...p,priority:e.target.value}))}
-                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white" }}>
+                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", background:"white" }}>
                 {["normal","important","urgent"].map(p => <option key={p} value={p}>{p.charAt(0).toUpperCase()+p.slice(1)}</option>)}
               </select>
             </div>
@@ -387,7 +387,7 @@ export default function Communications() {
             <span style={{ fontSize:13, fontWeight:600, color:"#374151" }}><Glyph e="📌" /> Pin this announcement</span>
           </label>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
-            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
+            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid var(--ea-edge)", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
             <button onClick={handleSaveAnnouncement} disabled={saving} className="ea-btn ea-btn--primary">
               {saving ? "Saving..." : editItem ? "Update" : "Post"}
             </button>
@@ -404,26 +404,26 @@ export default function Communications() {
           <div>
             <label htmlFor="notif-title" style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>TITLE</label>
             <input id="notif-title" value={notifForm.title} onChange={e => setNotifForm(p=>({...p,title:e.target.value}))} placeholder="Notification title..."
-              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />
+              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />
           </div>
           <div>
             <label htmlFor="notif-message" style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>MESSAGE</label>
             <textarea id="notif-message" value={notifForm.message} onChange={e => setNotifForm(p=>({...p,message:e.target.value}))} placeholder="Notification message..."
-              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", resize:"vertical", minHeight:80 }} />
+              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", resize:"vertical", minHeight:80 }} />
           </div>
           <div>
             <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>TARGET</div>
             <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
               {[["all","Everyone"],["student","Students"],["teacher","Teachers"],["parent","Parents"]].map(([v,l]) => (
                 <button key={v} type="button" aria-pressed={notifForm.targetRole===v} onClick={() => setNotifForm(p=>({...p,targetRole:v}))}
-                  style={{ padding:"8px 16px", borderRadius:10, border:`2px solid ${notifForm.targetRole===v?"var(--brand)":"#E2E8F0"}`, background: notifForm.targetRole===v?"var(--brand-soft)":"white", color: notifForm.targetRole===v?"var(--brand)":"var(--ea-muted)", fontWeight:700, fontSize:13, cursor:"pointer" }}>
+                  style={{ padding:"8px 16px", borderRadius:10, border:`2px solid ${notifForm.targetRole===v?"var(--brand)":"var(--ea-edge)"}`, background: notifForm.targetRole===v?"var(--brand-soft)":"white", color: notifForm.targetRole===v?"var(--brand)":"var(--ea-muted)", fontWeight:700, fontSize:13, cursor:"pointer" }}>
                   {l}
                 </button>
               ))}
             </div>
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
-            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
+            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid var(--ea-edge)", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
             <button onClick={handleSendNotification} disabled={saving} className="ea-btn ea-btn--primary">
               {saving ? "Sending..." : "Send Now"}
             </button>

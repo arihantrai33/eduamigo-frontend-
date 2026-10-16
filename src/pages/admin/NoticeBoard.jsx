@@ -106,7 +106,7 @@ export default function NoticeBoardPage() {
 
       {/* Filters */}
       <div style={{ display: "flex", gap: 10, marginBottom: "1.5rem", flexWrap: "wrap" }}>
-        <div style={{ display: "flex", gap: 6, background: "white", borderRadius: 12, padding: 6, border: "1px solid #E2E8F0" }}>
+        <div style={{ display: "flex", gap: 6, background: "white", borderRadius: 12, padding: 6, border: "1px solid var(--ea-edge)" }}>
           {["all_filter", "all", "student", "teacher", "parent", "admin"].map(t => (
             <button key={t} onClick={() => setFilterTarget(t)}
               style={{ padding: "5px 12px", borderRadius: 8, border: "none", fontSize: 11, fontWeight: 600, cursor: "pointer",
@@ -116,7 +116,7 @@ export default function NoticeBoardPage() {
             </button>
           ))}
         </div>
-        <div style={{ display: "flex", gap: 6, background: "white", borderRadius: 12, padding: 6, border: "1px solid #E2E8F0" }}>
+        <div style={{ display: "flex", gap: 6, background: "white", borderRadius: 12, padding: 6, border: "1px solid var(--ea-edge)" }}>
           {["all_filter", "normal", "important", "urgent"].map(p => (
             <button key={p} onClick={() => setFilterPriority(p)}
               style={{ padding: "5px 12px", borderRadius: 8, border: "none", fontSize: 11, fontWeight: 600, cursor: "pointer",
@@ -183,7 +183,7 @@ export default function NoticeBoardPage() {
               <label style={{ fontSize: 12, fontWeight: 700, color: "#374151", display: "block", marginBottom: 6 }}>Title *</label>
               <input value={form.title} onChange={e => setForm({...form, title: e.target.value})}
                 placeholder="Announcement title..."
-                style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1.5px solid #E2E8F0", fontSize: 13, outline: "none", fontFamily: "inherit", boxSizing: "border-box" }} />
+                style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1.5px solid var(--ea-edge)", fontSize: 13, outline: "none", fontFamily: "inherit", boxSizing: "border-box" }} />
             </div>
 
             <div style={{ marginBottom: 16 }}>
@@ -191,14 +191,14 @@ export default function NoticeBoardPage() {
               <textarea value={form.message} onChange={e => setForm({...form, message: e.target.value})}
                 placeholder="Write your announcement..."
                 rows={4}
-                style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1.5px solid #E2E8F0", fontSize: 13, outline: "none", fontFamily: "inherit", resize: "vertical", boxSizing: "border-box" }} />
+                style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1.5px solid var(--ea-edge)", fontSize: 13, outline: "none", fontFamily: "inherit", resize: "vertical", boxSizing: "border-box" }} />
             </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
               <div>
                 <label style={{ fontSize: 12, fontWeight: 700, color: "#374151", display: "block", marginBottom: 6 }}>Target Audience</label>
                 <select value={form.targetRole} onChange={e => setForm({...form, targetRole: e.target.value})}
-                  style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1.5px solid #E2E8F0", fontSize: 13, outline: "none", fontFamily: "inherit", background: "white" }}>
+                  style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1.5px solid var(--ea-edge)", fontSize: 13, outline: "none", fontFamily: "inherit", background: "white" }}>
                   <option value="all">Everyone</option>
                   <option value="student">Students Only</option>
                   <option value="teacher">Teachers Only</option>
@@ -209,7 +209,7 @@ export default function NoticeBoardPage() {
               <div>
                 <label style={{ fontSize: 12, fontWeight: 700, color: "#374151", display: "block", marginBottom: 6 }}>Priority Level</label>
                 <select value={form.priority} onChange={e => setForm({...form, priority: e.target.value})}
-                  style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1.5px solid #E2E8F0", fontSize: 13, outline: "none", fontFamily: "inherit", background: "white" }}>
+                  style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1.5px solid var(--ea-edge)", fontSize: 13, outline: "none", fontFamily: "inherit", background: "white" }}>
                   <option value="normal">Normal</option>
                   <option value="important">Important</option>
                   <option value="urgent">Urgent</option>
@@ -218,7 +218,7 @@ export default function NoticeBoardPage() {
             </div>
 
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24, padding: "12px 14px", background: "#F8FAFC", borderRadius: 10, cursor: "pointer" }} onClick={() => setForm({...form, isPinned: !form.isPinned})}>
-              <div style={{ width: 20, height: 20, borderRadius: 6, border: `2px solid ${form.isPinned ? "var(--brand)" : "#CBD5E1"}`, background: form.isPinned ? "var(--brand)" : "white", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}>
+              <div style={{ width: 20, height: 20, borderRadius: 6, border: `2px solid ${form.isPinned ? "var(--brand)" : "var(--ea-edge)"}`, background: form.isPinned ? "var(--brand)" : "white", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}>
                 {form.isPinned && <span style={{ color: "white", fontSize: 12 }}>✓</span>}
               </div>
               <span style={{ fontSize: 13, fontWeight: 600, color: "#374151" }}>Pin this announcement to top</span>
@@ -226,7 +226,7 @@ export default function NoticeBoardPage() {
 
             <div style={{ display: "flex", gap: 10 }}>
               <button onClick={() => { setShowForm(false); setEditItem(null); }}
-                style={{ flex: 1, padding: "11px", borderRadius: 10, border: "1.5px solid #E2E8F0", background: "white", fontSize: 13, fontWeight: 600, cursor: "pointer", color: "var(--ea-muted)" }}>
+                style={{ flex: 1, padding: "11px", borderRadius: 10, border: "1.5px solid var(--ea-edge)", background: "white", fontSize: 13, fontWeight: 600, cursor: "pointer", color: "var(--ea-muted)" }}>
                 Cancel
               </button>
               <button onClick={handleSubmit} disabled={saving}
@@ -246,7 +246,7 @@ export default function NoticeBoardPage() {
             <div style={{ fontSize: 16, fontWeight: 800, color: "#0F172A", marginBottom: 8 }}>Delete Announcement?</div>
             <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 24 }}>This action cannot be undone.</div>
             <div style={{ display: "flex", gap: 10 }}>
-              <button onClick={() => setDeleteConfirm(null)} style={{ flex: 1, padding: "10px", borderRadius: 10, border: "1.5px solid #E2E8F0", background: "white", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Cancel</button>
+              <button onClick={() => setDeleteConfirm(null)} style={{ flex: 1, padding: "10px", borderRadius: 10, border: "1.5px solid var(--ea-edge)", background: "white", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Cancel</button>
               <button onClick={() => handleDelete(deleteConfirm)} style={{ flex: 1, padding: "10px", borderRadius: 10, border: "none", background: "linear-gradient(135deg,#EF4444,#EC4899)", color: "white", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>Delete</button>
             </div>
           </div>
@@ -285,11 +285,11 @@ function AnnouncementCard({ ann, onPin, onDelete, onEdit }) {
         </div>
         <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
           <button onClick={() => onPin(ann._id)} title={ann.isPinned ? "Unpin" : "Pin"}
-            style={{ width: 32, height: 32, borderRadius: 8, border: "1px solid #E2E8F0", background: ann.isPinned ? "#FFFBEB" : "white", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: ann.isPinned ? "#F59E0B" : "#94A3B8" }}>
+            style={{ width: 32, height: 32, borderRadius: 8, border: "1px solid var(--ea-edge)", background: ann.isPinned ? "#FFFBEB" : "white", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: ann.isPinned ? "#F59E0B" : "#94A3B8" }}>
             {ann.isPinned ? <PinOff size={14} /> : <Pin size={14} />}
           </button>
           <button onClick={() => onEdit(ann)} title="Edit"
-            style={{ width: 32, height: 32, borderRadius: 8, border: "1px solid #E2E8F0", background: "white", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--brand-text)", fontSize: 13, fontWeight: 700 }}>
+            style={{ width: 32, height: 32, borderRadius: 8, border: "1px solid var(--ea-edge)", background: "white", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--brand-text)", fontSize: 13, fontWeight: 700 }}>
             <Glyph e="✏" />
           </button>
           <button onClick={() => onDelete(ann._id)} title="Delete"

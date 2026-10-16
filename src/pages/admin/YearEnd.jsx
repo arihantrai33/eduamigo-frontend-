@@ -225,6 +225,6 @@ export default function YearEnd() {
 
 const card = { background: "#fff", border: "1px solid #E8E8E5", borderRadius: 12, padding: "1rem 1.25rem", marginBottom: 14 };
 const lbl = { fontSize: 11, color: "var(--ea-muted)", fontWeight: 600, display: "flex", flexDirection: "column", gap: 4 };
-const input = { padding: "7px 9px", borderRadius: 8, border: "1px solid #E2E8F0", fontSize: 13, color: "#0F172A", background: "#F8FAFC" };
+const input = { padding: "7px 9px", borderRadius: 8, border: "1px solid var(--ea-edge)", fontSize: 13, color: "#0F172A", background: "#F8FAFC" };
 const btn = { padding: "8px 14px", borderRadius: 8, border: "none", background: "var(--brand)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer" };
-const ghost = { padding: "7px 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", color: "#334155", fontSize: 12.5, fontWeight: 600, cursor: "pointer" };
+const ghost = { padding: "7px 12px", borderRadius: 8, border: "1px solid var(--ea-edge)", background: "#fff", color: "#334155", fontSize: 12.5, fontWeight: 600, cursor: "pointer" };

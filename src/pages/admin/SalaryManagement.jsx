@@ -156,17 +156,17 @@ export default function SalaryManagement() {
       {/* Filters */}
       <div style={{ display:"flex", flexWrap:"wrap", gap:12, marginBottom:20, animation:"fadeUp 0.4s ease 0.1s both" }}>
         <select aria-label="Filter by month" value={filterMonth} onChange={e => setFilterMonth(e.target.value)}
-          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:150 }}>
+          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid var(--ea-edge)", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:150 }}>
           <option value="">All Months</option>
           {MONTHS.map((m,i) => <option key={i} value={i+1}>{m}</option>)}
         </select>
         <select aria-label="Filter by year" value={filterYear} onChange={e => setFilterYear(e.target.value)}
-          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:120 }}>
+          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid var(--ea-edge)", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:120 }}>
           <option value="">All Years</option>
           {years.map(y => <option key={y} value={y}>{y}</option>)}
         </select>
         <select aria-label="Filter by status" value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
-          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:130 }}>
+          style={{ padding:"11px 16px", borderRadius:12, border:"1.5px solid var(--ea-edge)", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer", minWidth:130 }}>
           <option value="">All Status</option>
           <option value="Paid">Paid</option>
           <option value="Pending">Pending</option>
@@ -247,24 +247,24 @@ export default function SalaryManagement() {
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
           {field("TEACHER",
             <select id="salary-teacherId" value={form.teacherId} onChange={e => f("teacherId", e.target.value)} {...fe.invalid("teacherId")}
-              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white" }}>
+              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", background:"white" }}>
               <option value="">Select Teacher</option>
               {teachers.map(t => <option key={t._id} value={t._id}>{t.name}{t.employeeId ? ` (${t.employeeId})` : ""}</option>)}
             </select>, undefined, <FieldError id="salary-teacherId-error">{fe.errors.teacherId}</FieldError>)}
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             {field("MONTH",
               <select value={form.month} onChange={e => f("month", Number(e.target.value))}
-                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white" }}>
+                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", background:"white" }}>
                 {MONTHS.map((m,i) => <option key={i} value={i+1}>{m}</option>)}
               </select>)}
             {field("YEAR",
               <input type="number" value={form.year} onChange={e => f("year", Number(e.target.value))}
-                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box" }} />)}
+                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box" }} />)}
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:12 }}>
             {[["BASIC SALARY","basicSalary"],["ALLOWANCES","allowances"],["DEDUCTIONS","deductions"]].map(([label, key]) => field(`${label} (₹)`,
               <input id={`salary-${key}`} type="number" value={form[key]} onChange={e => f(key, e.target.value)} {...fe.invalid(key)}
-                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box" }} />, key,
+                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box" }} />, key,
               <FieldError id={`salary-${key}-error`}>{fe.errors[key]}</FieldError>))}
           </div>
           <div style={{ background:"#F0FDF4", borderRadius:12, padding:"12px 16px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
@@ -273,7 +273,7 @@ export default function SalaryManagement() {
           </div>
           {field("REMARKS",
             <input value={form.remarks} onChange={e => f("remarks", e.target.value)} placeholder="Optional remarks..."
-              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />)}
+              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />)}
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
             <button type="button" className="ea-btn ea-btn--ghost" onClick={() => setShowModal(false)}>Cancel</button>
             <button type="button" className="ea-btn ea-btn--primary" onClick={handleSave} disabled={saving}>
@@ -292,12 +292,12 @@ export default function SalaryManagement() {
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             {field("MONTH",
               <select value={genForm.month} onChange={e => setGenForm(p => ({ ...p, month: Number(e.target.value) }))}
-                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white" }}>
+                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", background:"white" }}>
                 {MONTHS.map((m,i) => <option key={i} value={i+1}>{m}</option>)}
               </select>)}
             {field("YEAR",
               <input type="number" value={genForm.year} onChange={e => setGenForm(p => ({ ...p, year: Number(e.target.value) }))}
-                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box" }} />)}
+                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box" }} />)}
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
             <button type="button" className="ea-btn ea-btn--ghost" onClick={() => setShowGenerateModal(false)}>Cancel</button>

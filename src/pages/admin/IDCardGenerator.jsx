@@ -105,7 +105,7 @@ function StudentCard({ student, animPhase }) {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 12 }}>
           {[{ label: "ROLL NO", value: student.rollNumber }, { label: "CLASS", value: `${student.class}-${student.section}` }, { label: "GENDER", value: student.gender || "—" }].map((item, i) => (
-            <div key={i} style={{ background: "linear-gradient(135deg,#F8FAFC,#F1F5F9)", borderRadius: 10, padding: "6px 10px", border: "1px solid #E2E8F0" }}>
+            <div key={i} style={{ background: "linear-gradient(135deg,#F8FAFC,#F1F5F9)", borderRadius: 10, padding: "6px 10px", border: "1px solid var(--ea-edge)" }}>
               <div style={{ fontSize: 7, fontWeight: 800, color: "var(--ea-muted)", letterSpacing: "0.08em" }}>{item.label}</div>
               <div style={{ fontSize: 11, fontWeight: 800, color: "#0F172A", marginTop: 2 }}>{item.value}</div>
             </div>
@@ -145,7 +145,7 @@ function TeacherCard({ teacher, animPhase }) {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 12 }}>
           {[{ label: "EMP ID", value: teacher.employeeId }, { label: "SUBJECT", value: teacher.subjects?.[0] || "—" }, { label: "EXP", value: teacher.experience ? `${teacher.experience}y` : "—" }].map((item, i) => (
-            <div key={i} style={{ background: "linear-gradient(135deg,#F8FAFC,#F1F5F9)", borderRadius: 10, padding: "6px 10px", border: "1px solid #E2E8F0" }}>
+            <div key={i} style={{ background: "linear-gradient(135deg,#F8FAFC,#F1F5F9)", borderRadius: 10, padding: "6px 10px", border: "1px solid var(--ea-edge)" }}>
               <div style={{ fontSize: 7, fontWeight: 800, color: "var(--ea-muted)", letterSpacing: "0.08em" }}>{item.label}</div>
               <div style={{ fontSize: 11, fontWeight: 800, color: "#0F172A", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.value}</div>
             </div>
@@ -272,12 +272,12 @@ export default function IDCardGenerator() {
           {tab === "student" && (
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
               <select aria-label="Class" value={selectedClass} onChange={e => { setSelectedClass(e.target.value); setSelectedSection(""); setSelected(null); setAnimPhase(0); }}
-                style={{ padding: "9px 12px", borderRadius: 10, border: "1.5px solid #E2E8F0", fontSize: 12, fontWeight: 600, outline: "none", background: "white", cursor: "pointer" }}>
+                style={{ padding: "9px 12px", borderRadius: 10, border: "1.5px solid var(--ea-edge)", fontSize: 12, fontWeight: 600, outline: "none", background: "white", cursor: "pointer" }}>
                 <option value="">All Classes</option>
                 {classes.map(c => <option key={c} value={c}>Class {c}</option>)}
               </select>
               <select aria-label="Section" value={selectedSection} onChange={e => { setSelectedSection(e.target.value); setSelected(null); setAnimPhase(0); }}
-                style={{ padding: "9px 12px", borderRadius: 10, border: "1.5px solid #E2E8F0", fontSize: 12, fontWeight: 600, outline: "none", background: "white", cursor: "pointer" }}>
+                style={{ padding: "9px 12px", borderRadius: 10, border: "1.5px solid var(--ea-edge)", fontSize: 12, fontWeight: 600, outline: "none", background: "white", cursor: "pointer" }}>
                 <option value="">All Sections</option>
                 {sections.map(s => <option key={s} value={s}>Section {s}</option>)}
               </select>
@@ -286,7 +286,7 @@ export default function IDCardGenerator() {
           <input value={search} onChange={e => setSearch(e.target.value)}
             aria-label={tab === "student" ? "Search students" : "Search faculty"}
             placeholder={`Search ${tab === "student" ? "students" : "faculty"}...`}
-            style={{ padding: "10px 14px", borderRadius: 12, border: "1.5px solid #E2E8F0", fontSize: 13, outline: "none", fontFamily: "inherit", transition: "border 0.2s" }}
+            style={{ padding: "10px 14px", borderRadius: 12, border: "1.5px solid var(--ea-edge)", fontSize: 13, outline: "none", fontFamily: "inherit", transition: "border 0.2s" }}
             onFocus={e => e.target.style.borderColor = "var(--brand)"} onBlur={e => e.target.style.borderColor = "#E2E8F0"} />
           <div style={{ fontSize: 11, color: "var(--ea-muted)", fontWeight: 600 }}>{filtered.length} {tab === "student" ? "students" : "faculty members"}</div>
           <div style={{ overflowY: "auto", flex: 1 }}>
@@ -315,7 +315,7 @@ export default function IDCardGenerator() {
 
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: 500 }}>
           {animPhase === 0 && (
-            <div style={{ textAlign: "center", padding: "60px 40px", background: "white", borderRadius: 24, border: "2px dashed #E2E8F0", width: "100%" }}>
+            <div style={{ textAlign: "center", padding: "60px 40px", background: "white", borderRadius: 24, border: "2px dashed var(--ea-edge)", width: "100%" }}>
               <div style={{ fontSize: 64, marginBottom: 16 }}><Glyph e="🪪" /></div>
               <div style={{ fontSize: 18, fontWeight: 800, color: "var(--ea-muted)", marginBottom: 8 }}>
                 {tab === "student" ? "Select a Student" : "Select a Faculty Member"}
@@ -376,7 +376,7 @@ export default function IDCardGenerator() {
                   <Glyph e="🖨" /> Print Card
                 </button>
                 <button onClick={() => { setSelected(null); setSelectedId(""); setAnimPhase(0); }}
-                  style={{ background: "white", color: "var(--ea-muted)", border: "1.5px solid #E2E8F0", borderRadius: 14, padding: "12px 20px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+                  style={{ background: "white", color: "var(--ea-muted)", border: "1.5px solid var(--ea-edge)", borderRadius: 14, padding: "12px 20px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
                   Clear
                 </button>
               </div>

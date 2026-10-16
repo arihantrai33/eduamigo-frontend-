@@ -87,7 +87,7 @@ export default function Toast() {
           <div ref={confirmBox} role="alertdialog" aria-modal="true" aria-labelledby="ea-confirm-message" onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 14, padding: 20, width: "100%", maxWidth: 380, boxShadow: "0 20px 50px rgba(15,23,42,0.3)", fontFamily: "inherit" }}>
             <p id="ea-confirm-message" style={{ margin: "0 0 18px", fontSize: 15, color: "#0F172A", lineHeight: 1.5 }}>{confirm.message}</p>
             <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
-              <button type="button" autoFocus={confirm.danger} onClick={() => answer(false)} style={{ padding: "9px 16px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", color: "#334155", fontWeight: 600, cursor: "pointer" }}>Cancel</button>
+              <button type="button" autoFocus={confirm.danger} onClick={() => answer(false)} style={{ padding: "9px 16px", borderRadius: 8, border: "1px solid var(--ea-edge)", background: "#fff", color: "#334155", fontWeight: 600, cursor: "pointer" }}>Cancel</button>
               <button type="button" autoFocus={!confirm.danger} onClick={() => answer(true)} style={{ padding: "9px 16px", borderRadius: 8, border: "none", background: confirm.danger ? "#DC2626" : "var(--brand)", color: "#fff", fontWeight: 600, cursor: "pointer" }}>{confirm.confirmLabel}</button>
             </div>
           </div>
@@ -101,7 +101,7 @@ export default function Toast() {
             <p style={{ margin: "0 0 14px", fontSize: 13, color: "var(--ea-muted)", lineHeight: 1.5 }}>Share these securely. Each password is temporary and must be changed at first login. They will not be shown again.</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 8, maxHeight: 280, overflowY: "auto" }}>
               {creds.entries.map((c, i) => (
-                <div key={i} style={{ background: "#F8FAFC", border: "1px solid #E2E8F0", borderRadius: 10, padding: "10px 12px", fontSize: 13 }}>
+                <div key={i} style={{ background: "#F8FAFC", border: "1px solid var(--ea-edge)", borderRadius: 10, padding: "10px 12px", fontSize: 13 }}>
                   {c.label && <div style={{ fontSize: 11, fontWeight: 700, color: "var(--brand-text)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4 }}>{c.label}</div>}
                   {c.schoolCode && <div style={{ color: "var(--ea-muted)", fontSize: 12 }}>School code: <strong style={{ color: "#0F172A" }}>{c.schoolCode}</strong></div>}
                   <div style={{ color: "#0F172A" }}>Login ID: <strong>{c.loginId || c.email}</strong></div>
@@ -110,7 +110,7 @@ export default function Toast() {
               ))}
             </div>
             <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 16 }}>
-              <button onClick={copyCreds} style={{ padding: "9px 16px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", color: "#334155", fontWeight: 600, cursor: "pointer" }}>{copied ? "Copied" : "Copy all"}</button>
+              <button onClick={copyCreds} style={{ padding: "9px 16px", borderRadius: 8, border: "1px solid var(--ea-edge)", background: "#fff", color: "#334155", fontWeight: 600, cursor: "pointer" }}>{copied ? "Copied" : "Copy all"}</button>
               <button onClick={() => setCreds(null)} style={{ padding: "9px 16px", borderRadius: 8, border: "none", background: "var(--brand)", color: "#fff", fontWeight: 600, cursor: "pointer" }}>Done</button>
             </div>
           </div>

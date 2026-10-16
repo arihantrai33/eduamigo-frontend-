@@ -124,14 +124,39 @@ function ConceptMap({ d }) {
   );
 }
 
+// Words wrapped to lines of about `max` characters.
+function wrap(text, max) {
+  const lines = []; let cur = "";
+  for (const w of String(text).split(/\s+/)) {
+    if (cur && `${cur} ${w}`.length > max) { lines.push(cur); cur = w; } else cur = cur ? `${cur} ${w}` : w;
+  }
+  if (cur) lines.push(cur);
+  return lines;
+}
+
+// A top-to-bottom flowchart: a numbered box per step with an arrow to the next.
 function Flow({ d }) {
+  const boxes = d.steps.map((s) => ({ lines: wrap(s, 30) }));
+  let y = 8;
+  boxes.forEach((b) => { b.y = y; b.h = Math.max(30, 16 + b.lines.length * 15); y += b.h + 22; });
+  const H = y - 22 + 8;
   return (
-    <figure className="ea-diagram" role="img" aria-label={d.alt}>
-      {d.title && <figcaption className="ea-diagram__title">{d.title}</figcaption>}
-      <ol className="ea-diagram__flow" aria-hidden="true">
-        {d.steps.map((s, i) => <li key={i}><span className="ea-diagram__step-no">{i + 1}</span><span>{s}</span></li>)}
-      </ol>
-    </figure>
+    <Frame d={d} height={H}>
+      {boxes.map((b, i) => (
+        <g key={i}>
+          <rect x={14} y={b.y} width={W - 28} height={b.h} rx={9} className="ea-diagram__node" />
+          <circle cx={36} cy={b.y + b.h / 2} r={10} className="ea-diagram__point" />
+          <text x={36} y={b.y + b.h / 2 + 4} textAnchor="middle" className="ea-diagram__label ea-diagram__label--on-brand">{i + 1}</text>
+          {b.lines.map((l, k) => <text key={k} x={58} y={b.y + b.h / 2 + 4 + (k - (b.lines.length - 1) / 2) * 15} className="ea-diagram__step">{l}</text>)}
+          {i < boxes.length - 1 && (
+            <g>
+              <line x1={W / 2} y1={b.y + b.h} x2={W / 2} y2={b.y + b.h + 17} className="ea-diagram__axis" />
+              <polygon points={`${W / 2 - 5},${b.y + b.h + 12} ${W / 2 + 5},${b.y + b.h + 12} ${W / 2},${b.y + b.h + 21}`} className="ea-diagram__arrow" />
+            </g>
+          )}
+        </g>
+      ))}
+    </Frame>
   );
 }
 
@@ -176,7 +201,51 @@ function Table({ d }) {
   );
 }
 
-const SHAPES = { numberline: NumberLine, bar: Bars, graph: Graph, flow: Flow, cycle: Cycle, table: Table, conceptmap: ConceptMap };
+// A drawing from the tutor's shapes (validated on the server): the numbers and colour names are the only things used.
+function arrowHead(x1, y1, x2, y2, size = 2.6) {
+  const a = Math.atan2(y2 - y1, x2 - x1);
+  const p = (ang, len) => `${(x2 - len * Math.cos(a + ang)).toFixed(2)},${(y2 - len * Math.sin(a + ang)).toFixed(2)}`;
+  return `${x2.toFixed(2)},${y2.toFixed(2)} ${p(0.42, size)} ${p(-0.42, size)}`;
+}
+
+function Scene({ d }) {
+  return (
+    <figure className="ea-diagram ea-diagram--scene" role="img" aria-label={d.alt}>
+      {d.title && <figcaption className="ea-diagram__title">{d.title}</figcaption>}
+      <svg viewBox={`0 0 100 ${d.h}`} style={{ width: "100%", height: "auto", display: "block" }} aria-hidden="true" focusable="false">
+        {d.elements.map((e, i) => {
+          const common = { className: `ea-scene-${e.color}`, stroke: "currentColor", strokeWidth: (e.sw || 1) * 0.5, strokeDasharray: e.dash ? "2 1.6" : undefined, strokeLinecap: "round", strokeLinejoin: "round", fill: e.fill ? "currentColor" : "none", fillOpacity: e.fill ? 0.16 : undefined };
+          switch (e.t) {
+            case "line": return (
+              <g key={i} className={`ea-scene-${e.color}`}>
+                <line x1={e.x1} y1={e.y1} x2={e.x2} y2={e.y2} {...common} />
+                {e.arrow && <polygon points={arrowHead(e.x1, e.y1, e.x2, e.y2)} fill="currentColor" stroke="none" />}
+              </g>
+            );
+            case "curve": return (
+              <g key={i} className={`ea-scene-${e.color}`}>
+                <path d={`M${e.x1} ${e.y1} Q${e.cx} ${e.cy} ${e.x2} ${e.y2}`} {...common} fill="none" />
+                {e.arrow && <polygon points={arrowHead(e.cx, e.cy, e.x2, e.y2)} fill="currentColor" stroke="none" />}
+              </g>
+            );
+            case "circle": return <circle key={i} cx={e.cx} cy={e.cy} r={e.r} {...common} />;
+            case "ellipse": return <ellipse key={i} cx={e.cx} cy={e.cy} rx={e.rx} ry={e.ry} {...common} />;
+            case "rect": return <rect key={i} x={e.x} y={e.y} width={e.w} height={e.h} rx={e.r} {...common} />;
+            case "poly": {
+              const pts = e.points.map((p) => p.join(",")).join(" ");
+              return e.closed ? <polygon key={i} points={pts} {...common} /> : <polyline key={i} points={pts} {...common} fill="none" />;
+            }
+            case "text": return <text key={i} x={e.x} y={e.y} textAnchor={e.anchor} className={`ea-scene-${e.color} ea-scene__text`} fill="currentColor" style={{ fontSize: e.size, fontWeight: e.bold ? 700 : 500 }}>{e.text}</text>;
+            default: return null;
+          }
+        })}
+      </svg>
+      {d.caption && <p className="ea-diagram__caption">{d.caption}</p>}
+    </figure>
+  );
+}
+
+const SHAPES = { scene: Scene, numberline: NumberLine, bar: Bars, graph: Graph, flow: Flow, cycle: Cycle, table: Table, conceptmap: ConceptMap };
 
 export default function Diagram({ d }) {
   const Shape = d && SHAPES[d.type];

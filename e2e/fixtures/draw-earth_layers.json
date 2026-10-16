@@ -1,0 +1,189 @@
+{
+ "type": "scene",
+ "title": "Layers of the Earth",
+ "h": 70,
+ "elements": [
+  {
+   "t": "circle",
+   "color": "brand",
+   "dash": false,
+   "fill": "brand",
+   "sw": 1.8,
+   "cx": 50,
+   "cy": 35,
+   "r": 24
+  },
+  {
+   "t": "circle",
+   "color": "orange",
+   "dash": false,
+   "fill": "orange",
+   "sw": 1,
+   "cx": 50,
+   "cy": 35,
+   "r": 22
+  },
+  {
+   "t": "circle",
+   "color": "red",
+   "dash": false,
+   "fill": "red",
+   "sw": 1,
+   "cx": 50,
+   "cy": 35,
+   "r": 14
+  },
+  {
+   "t": "circle",
+   "color": "orange",
+   "dash": false,
+   "fill": "orange",
+   "sw": 1,
+   "cx": 50,
+   "cy": 35,
+   "r": 7
+  },
+  {
+   "t": "line",
+   "color": "grey",
+   "dash": false,
+   "fill": null,
+   "sw": 0.6,
+   "x1": 14.25,
+   "y1": 10.7,
+   "x2": 27.2,
+   "y2": 35,
+   "arrow": false
+  },
+  {
+   "t": "circle",
+   "color": "grey",
+   "dash": false,
+   "fill": "grey",
+   "sw": 0.5,
+   "cx": 27.2,
+   "cy": 35,
+   "r": 0.7
+  },
+  {
+   "t": "text",
+   "color": "ink",
+   "dash": false,
+   "fill": null,
+   "sw": 1,
+   "x": 3,
+   "y": 12,
+   "text": "Crust",
+   "size": 3.4,
+   "anchor": "start",
+   "bold": true
+  },
+  {
+   "t": "line",
+   "color": "grey",
+   "dash": false,
+   "fill": null,
+   "sw": 0.6,
+   "x1": 16.2,
+   "y1": 22.7,
+   "x2": 34,
+   "y2": 23,
+   "arrow": false
+  },
+  {
+   "t": "circle",
+   "color": "grey",
+   "dash": false,
+   "fill": "grey",
+   "sw": 0.5,
+   "cx": 34,
+   "cy": 23,
+   "r": 0.7
+  },
+  {
+   "t": "text",
+   "color": "ink",
+   "dash": false,
+   "fill": null,
+   "sw": 1,
+   "x": 3,
+   "y": 24,
+   "text": "Mantle",
+   "size": 3.4,
+   "anchor": "start",
+   "bold": true
+  },
+  {
+   "t": "line",
+   "color": "grey",
+   "dash": false,
+   "fill": null,
+   "sw": 0.6,
+   "x1": 24,
+   "y1": 54.7,
+   "x2": 41,
+   "y2": 44,
+   "arrow": false
+  },
+  {
+   "t": "circle",
+   "color": "grey",
+   "dash": false,
+   "fill": "grey",
+   "sw": 0.5,
+   "cx": 41,
+   "cy": 44,
+   "r": 0.7
+  },
+  {
+   "t": "text",
+   "color": "ink",
+   "dash": false,
+   "fill": null,
+   "sw": 1,
+   "x": 3,
+   "y": 56,
+   "text": "Outer core",
+   "size": 3.4,
+   "anchor": "start",
+   "bold": true
+  },
+  {
+   "t": "line",
+   "color": "grey",
+   "dash": false,
+   "fill": null,
+   "sw": 0.6,
+   "x1": 76,
+   "y1": 34.7,
+   "x2": 52,
+   "y2": 35,
+   "arrow": false
+  },
+  {
+   "t": "circle",
+   "color": "grey",
+   "dash": false,
+   "fill": "grey",
+   "sw": 0.5,
+   "cx": 52,
+   "cy": 35,
+   "r": 0.7
+  },
+  {
+   "t": "text",
+   "color": "ink",
+   "dash": false,
+   "fill": null,
+   "sw": 1,
+   "x": 97,
+   "y": 36,
+   "text": "Inner core",
+   "size": 3.4,
+   "anchor": "end",
+   "bold": true
+  }
+ ],
+ "caption": "",
+ "alt": "Drawing: Layers of the Earth."
+}

@@ -232,7 +232,7 @@ export default function AdminHome() {
         {isMobile && (
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "1rem" }}>
             <button type="button" ref={menuButtonRef} className="ea-side-btn" aria-label="Open menu" aria-expanded={sidebarOpen} aria-controls="admin-menu" onClick={() => setSidebarOpen(true)}
-              style={{ width: 38, height: 38, borderRadius: 12, background: "white", border: "1px solid #E2E8F0", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
+              style={{ width: 38, height: 38, borderRadius: 12, background: "white", border: "1px solid var(--ea-edge)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
               <Menu size={16} color="#64748B" aria-hidden="true" />
             </button>
             <div style={{ fontSize: 16, fontWeight: 800, color: "#0F172A" }}>{user?.school || "EduAmigo"}</div>

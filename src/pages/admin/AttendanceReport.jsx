@@ -87,7 +87,7 @@ export default function AttendanceReports() {
       </div>
 
       {/* Filters */}
-      <div style={{ background:"white", borderRadius:16, padding:"18px 24px", marginBottom:24, boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0", display:"flex", flexWrap:"wrap", gap:16, alignItems:"end", animation:"fadeUp 0.4s ease 0.05s both" }}>
+      <div style={{ background:"white", borderRadius:16, padding:"18px 24px", marginBottom:24, boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:"1px solid var(--ea-edge)", display:"flex", flexWrap:"wrap", gap:16, alignItems:"end", animation:"fadeUp 0.4s ease 0.05s both" }}>
         <label style={{ flex:"1 1 140px" }}>
           <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>CLASS</span>
           <select className="ea-select" value={filterClass} onChange={e => setFilterClass(e.target.value)} style={{ width:"100%" }}>
@@ -118,7 +118,7 @@ export default function AttendanceReports() {
       </div>
 
       {/* Overall Progress */}
-      <div style={{ background:"white", borderRadius:16, padding:"20px 24px", marginBottom:24, boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0", animation:"fadeUp 0.4s ease 0.3s both" }}>
+      <div style={{ background:"white", borderRadius:16, padding:"20px 24px", marginBottom:24, boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:"1px solid var(--ea-edge)", animation:"fadeUp 0.4s ease 0.3s both" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
           <div style={{ fontSize:14, fontWeight:800, color:"#0F172A" }}>Overall Attendance Rate — {MONTHS[filterMonth-1]} {filterYear}</div>
           <div style={{ fontSize:24, fontWeight:900, color: !hasData ? "var(--ea-muted)" : overallPct >= 75 ? "var(--ea-on-card-success)" : "var(--ea-on-card-danger)" }}>{pctText(overallPct)}</div>
@@ -197,7 +197,7 @@ export default function AttendanceReports() {
                       </div>
                     </td>
                     <td style={{ padding:"14px 18px" }}>
-                      <span style={{ fontSize:11, fontWeight:700, padding:"4px 12px", borderRadius:20, background: noData ? "#F8FAFC" : good ? "#F0FDF4" : "#FEF2F2", color: noData ? "var(--ea-muted)" : good ? "#15803D" : "#DC2626", border:`1px solid ${noData ? "#E2E8F0" : good ? "#BBF7D0" : "#FECACA"}` }}>
+                      <span style={{ fontSize:11, fontWeight:700, padding:"4px 12px", borderRadius:20, background: noData ? "#F8FAFC" : good ? "#F0FDF4" : "#FEF2F2", color: noData ? "var(--ea-muted)" : good ? "#15803D" : "#DC2626", border:`1px solid ${noData ? "var(--ea-edge)" : good ? "#BBF7D0" : "#FECACA"}` }}>
                         {noData ? "Not marked" : good ? "✓ Good" : "Low"}
                       </span>
                     </td>

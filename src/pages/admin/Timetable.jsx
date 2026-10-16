@@ -141,12 +141,12 @@ export default function Timetable() {
       </div>
 
       {/* Controls */}
-      <div style={{ background:"white", borderRadius:16, padding:"20px 24px", marginBottom:24, boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0", animation:"fadeUp 0.4s ease 0.05s both" }}>
+      <div style={{ background:"white", borderRadius:16, padding:"20px 24px", marginBottom:24, boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:"1px solid var(--ea-edge)", animation:"fadeUp 0.4s ease 0.05s both" }}>
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:16, marginBottom:16 }}>
           <div>
             <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>CLASS</div>
             <select aria-label="Class" value={selectedClass} onChange={e => { setSelectedClass(e.target.value); setSelectedSection(""); }}
-              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white" }}>
+              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, fontWeight:600, outline:"none", background:"white" }}>
               <option value="">Select Class</option>
               {classes.map(c => <option key={c} value={c}>Class {c}</option>)}
             </select>
@@ -154,7 +154,7 @@ export default function Timetable() {
           <div>
             <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>SECTION</div>
             <select aria-label="Section" value={selectedSection} onChange={e => setSelectedSection(e.target.value)}
-              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white" }}>
+              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, fontWeight:600, outline:"none", background:"white" }}>
               <option value="">Select Section</option>
               {sections.map(s => <option key={s} value={s}>Section {s}</option>)}
             </select>
@@ -182,7 +182,7 @@ export default function Timetable() {
 
       {/* Timetable Grid */}
       {!selectedClass || !selectedSection ? (
-        <div style={{ background:"white", borderRadius:20, padding: 16, textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
+        <div style={{ background:"white", borderRadius:20, padding: 16, textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid var(--ea-edge)" }}>
           <EmptyState plain icon={CalendarDays} title="Select a class and section" text="Choose them above to view or edit the timetable." />
         </div>
       ) : (
@@ -245,14 +245,14 @@ export default function Timetable() {
           <div>
             <label htmlFor="period-subject" style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>SUBJECT</label>
             <input id="period-subject" value={periodForm.subject} onChange={e => f("subject", e.target.value)} placeholder="e.g. Mathematics" {...fe.invalid("subject")}
-              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
+              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
               onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
             <FieldError id="period-subject-error">{fe.errors.subject}</FieldError>
           </div>
           <div>
             <label htmlFor="period-teacher" style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>TEACHER</label>
             <select id="period-teacher" value={periodForm.teacherId} onChange={e => f("teacherId", e.target.value)}
-              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
+              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
               <option value="">Select Teacher (optional)</option>
               {teachers.map(t => <option key={t._id} value={t._id}>{t.name}{t.subjects ? ` — ${Array.isArray(t.subjects) ? t.subjects.join(", ") : t.subjects}` : ""}</option>)}
             </select>
@@ -261,17 +261,17 @@ export default function Timetable() {
             <div>
               <label htmlFor="period-start" style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>START TIME</label>
               <input id="period-start" type="time" value={periodForm.startTime} onChange={e => f("startTime", e.target.value)}
-                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box" }} />
+                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box" }} />
             </div>
             <div>
               <label htmlFor="period-end" style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>END TIME</label>
               <input id="period-end" type="time" value={periodForm.endTime} onChange={e => f("endTime", e.target.value)} {...fe.invalid("endTime")}
-                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box" }} />
+                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box" }} />
               <FieldError id="period-end-error">{fe.errors.endTime}</FieldError>
             </div>
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end", marginTop:4 }}>
-            <button type="button" onClick={closePeriod} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
+            <button type="button" onClick={closePeriod} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid var(--ea-edge)", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
             <button type="button" onClick={handleSavePeriod} disabled={saving}
               className="ea-btn ea-btn--primary">
               {saving ? "Saving..." : "Save Period"}

@@ -191,7 +191,7 @@ export default function Library() {
                       <div style={{ flex:1, height:6, borderRadius:4, background:"#E2E8F0", overflow:"hidden", minWidth:50 }}>
                         <div style={{ width:`${availPct}%`, height:"100%", borderRadius:4, background: availPct>50?"#10B981":availPct>20?"#F59E0B":"#EF4444", transition:"width 0.3s ease" }} />
                       </div>
-                      <span style={{ fontSize:12, fontWeight:700, color: availPct>50?"var(--ea-on-card-success)":availPct>20?"var(--ea-on-card-warning)":"#DC2626", minWidth:20 }}>{b.available}</span>
+                      <span style={{ fontSize:12, fontWeight:700, color: availPct>50?"var(--ea-on-card-success)":availPct>20?"var(--ea-on-card-warning)":"var(--ea-on-card-danger)", minWidth:20 }}>{b.available}</span>
                     </div>
                   </td>
                   <td style={{ padding:"14px 18px" }}>
@@ -200,7 +200,7 @@ export default function Library() {
                   <td style={{ padding:"14px 18px" }}>
                     <div style={{ display:"flex", gap:6 }}>
                       <button className="act-btn" onClick={() => openEdit(b)}
-                        style={{ padding:"6px 14px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", color:"#374151", fontSize:11, fontWeight:700, cursor:"pointer" }}>
+                        style={{ padding:"6px 14px", borderRadius:8, border:"1px solid var(--ea-edge)", background:"white", color:"#374151", fontSize:11, fontWeight:700, cursor:"pointer" }}>
                         Edit
                       </button>
                       <button type="button" className="act-btn" onClick={() => handleDelete(b._id)} aria-label={`Delete ${b.title}`} title="Delete"
@@ -223,7 +223,7 @@ export default function Library() {
           <label style={{ display:"block" }}>
             <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>TITLE *</span>
             <input id="book-title" value={form.title} onChange={e=>f("title",e.target.value)} placeholder="Book title..." {...fe.invalid("title")}
-              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
+              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
               onFocus={e=>e.target.style.borderColor="var(--brand)"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
             <FieldError id="book-title-error">{fe.errors.title}</FieldError>
           </label>
@@ -232,7 +232,7 @@ export default function Library() {
               <label key={key} style={{ display:"block" }}>
                 <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
                 <input value={form[key]||""} onChange={e=>f(key,e.target.value)}
-                  style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
+                  style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
                   onFocus={e=>e.target.style.borderColor="var(--brand)"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
               </label>
             ))}
@@ -241,7 +241,7 @@ export default function Library() {
             <label style={{ display:"block" }}>
               <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>CATEGORY</span>
               <select value={form.category} onChange={e=>f("category",e.target.value)}
-                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white" }}>
+                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", background:"white" }}>
                 {/* Plain text: an option cannot show an icon (it rendered as "[object Object]"). */}
                 {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
@@ -249,12 +249,12 @@ export default function Library() {
             <label style={{ display:"block" }}>
               <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>TOTAL COPIES *</span>
               <input id="book-totalCopies" type="number" value={form.totalCopies} onChange={e=>f("totalCopies",e.target.value)} min="1" {...fe.invalid("totalCopies")}
-                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />
+                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />
               <FieldError id="book-totalCopies-error">{fe.errors.totalCopies}</FieldError>
             </label>
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
-            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
+            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid var(--ea-edge)", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
             <button onClick={handleSave} disabled={saving} className="ea-btn ea-btn--primary">
               {saving ? "Saving..." : editBook ? "Update" : "Add Book"}
             </button>

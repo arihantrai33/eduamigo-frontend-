@@ -188,7 +188,7 @@ export default function AddStudent() {
         <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}>
           <div style={{
             width: 72, height: 72, borderRadius: "50%", overflow: "hidden",
-            background: "#F3F4F6", border: "1px solid #E5E7EB",
+            background: "#F3F4F6", border: "1px solid var(--ea-edge)",
             display: "flex", alignItems: "center", justifyContent: "center",
             flexShrink: 0,
           }}>
@@ -201,7 +201,7 @@ export default function AddStudent() {
           <div>
             <label style={{
               display: "inline-block", padding: "8px 16px", borderRadius: 8,
-              border: "1px solid #E5E7EB", background: "#F9FAFB",
+              border: "1px solid var(--ea-edge)", background: "#F9FAFB",
               fontSize: 12, fontWeight: 600, color: "#374151", cursor: "pointer",
             }}>
               {photoFile ? "Change Photo" : "Upload Photo"}
@@ -242,7 +242,7 @@ export default function AddStudent() {
         </div>
 
         <div style={{
-          background: "#FAFAFA", border: "1px solid #E5E7EB", borderRadius: 10,
+          background: "#FAFAFA", border: "1px solid var(--ea-edge)", borderRadius: 10,
           padding: "12px 16px", marginBottom: 24, fontSize: 12, color: "#6B7280", lineHeight: 1.6,
         }}>
           <strong style={{ color: "#374151" }}>How they will log in:</strong> the student with the school code and

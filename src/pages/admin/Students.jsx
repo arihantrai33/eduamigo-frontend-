@@ -38,14 +38,14 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
       <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
       <input type={type} value={type === "date" ? String(form[key]||"").slice(0, 10) : form[key]||""} onChange={e=>f(key,e.target.value)} placeholder={placeholder}
         max={type === "date" ? todayLocal() : undefined}
-        style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", transition:"border 0.2s" }}
+        style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", transition:"border 0.2s" }}
         onFocus={e=>e.target.style.borderColor="var(--brand)"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
     </div>
   );
   const sel = (label, key, options) => (
     <div>
       <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
-      <select value={form[key]||""} onChange={e=>f(key,e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
+      <select value={form[key]||""} onChange={e=>f(key,e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
         <option value="">Select</option>
         {options.map(o => <option key={o} value={o}>{o}</option>)}
       </select>
@@ -63,7 +63,7 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
       <div style={{ display:"flex", alignItems:"center", gap:16 }}>
         <div style={{
           width: 64, height: 64, borderRadius: "50%", overflow: "hidden",
-          background: "#F1F5F9", border: "1.5px solid #E2E8F0",
+          background: "#F1F5F9", border: "1.5px solid var(--ea-edge)",
           display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
         }}>
           {(form.photoPreview || form.photo) ? (
@@ -75,7 +75,7 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
         <div>
           <label style={{
             display: "inline-block", padding: "8px 16px", borderRadius: 10,
-            border: "1.5px solid #E2E8F0", background: "white",
+            border: "1.5px solid var(--ea-edge)", background: "white",
             fontSize: 12, fontWeight: 700, color: "var(--brand-text)", cursor: "pointer",
           }}>
             {form.photoFile ? "Change Photo" : "Upload Photo"}
@@ -112,7 +112,7 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
         {inp("PARENT EMAIL","parentEmail","email","parent@email.com")}
       </div>
       <div style={{ display:"flex", gap:10, marginTop:8, justifyContent:"flex-end" }}>
-        <button onClick={onClose} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
+        <button onClick={onClose} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid var(--ea-edge)", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
         <button onClick={onSave} disabled={loading} className="ea-btn ea-btn--primary">
           {loading ? "Saving..." : "Save Student"}
         </button>
@@ -289,7 +289,7 @@ export default function Students() {
                     </div>
                   </td>
                   <td style={{ padding:"14px 18px" }}>
-                    <span style={{ fontSize:13, fontWeight:700, color:"#374151", background:"#F8FAFC", padding:"4px 10px", borderRadius:8, border:"1px solid #E2E8F0" }}>#{s.rollNumber}</span>
+                    <span style={{ fontSize:13, fontWeight:700, color:"#374151", background:"#F8FAFC", padding:"4px 10px", borderRadius:8, border:"1px solid var(--ea-edge)" }}>#{s.rollNumber}</span>
                   </td>
                   <td style={{ padding:"14px 18px" }}>
                     <span className="ea-badge ea-badge--neutral">
@@ -313,7 +313,7 @@ export default function Students() {
                         style={{ padding:"6px 14px", borderRadius:8, border:"none", background:"var(--brand-soft)", color:"var(--brand-text)", fontSize:12, fontWeight:700, cursor:"pointer" }}>View</button>
                       {canManage && <>
                       <button className="action-btn" onClick={() => openEdit(s)}
-                        style={{ padding:"6px 14px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", color:"#374151", fontSize:12, fontWeight:700, cursor:"pointer" }}>Edit</button>
+                        style={{ padding:"6px 14px", borderRadius:8, border:"1px solid var(--ea-edge)", background:"white", color:"#374151", fontSize:12, fontWeight:700, cursor:"pointer" }}>Edit</button>
                       <button type="button" className="action-btn" onClick={() => setDeleteId(s._id)} aria-label={`Delete ${s.name}`} title="Delete"
                         style={{ padding:"6px 12px", borderRadius:8, border:"none", background:"#FEF2F2", color:"#B91C1C", fontSize:12, fontWeight:700, cursor:"pointer" }}><Glyph e="🗑" /></button>
                       </>}
@@ -336,7 +336,7 @@ export default function Students() {
           <div style={{ fontSize:16, fontWeight:700, color:"#0F172A", marginBottom:8 }}>Are you sure?</div>
           <div style={{ fontSize:13, color:"var(--ea-muted)", marginBottom:24 }}>This action cannot be undone.</div>
           <div style={{ display:"flex", gap:10, justifyContent:"center" }}>
-            <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
+            <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid var(--ea-edge)", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
             <button onClick={() => handleDelete(deleteId)} className="ea-btn ea-btn--danger">Delete</button>
           </div>
         </div>

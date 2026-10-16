@@ -168,7 +168,7 @@ export default function Transport() {
             const isExpanded = expandedBus === bus._id;
             return (
               <div key={bus._id} className="bus-card"
-                style={{ background:"white", borderRadius:20, boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0", overflow:"hidden", animation:`fadeUp 0.4s ease ${i*0.1}s both` }}>
+                style={{ background:"white", borderRadius:20, boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid var(--ea-edge)", overflow:"hidden", animation:`fadeUp 0.4s ease ${i*0.1}s both` }}>
                 {/* Bus Header */}
                 <div className="ea-row-wrap" style={{ padding:"20px 24px", display:"flex", alignItems:"center", gap:16 }}>
                   {/* Bus Icon */}
@@ -207,7 +207,7 @@ export default function Transport() {
                 </div>
 
                 {/* Driver Token */}
-                <div style={{ margin:"0 24px 16px", padding:"8px 8px 8px 14px", background:"var(--ea-hover)", borderRadius:10, border:"1px solid var(--ea-line)", display:"flex", alignItems:"center", flexWrap:"wrap", gap:8 }}>
+                <div style={{ margin:"0 24px 16px", padding:"8px 8px 8px 14px", background:"var(--ea-hover)", borderRadius:10, border:"1px solid var(--ea-edge)", display:"flex", alignItems:"center", flexWrap:"wrap", gap:8 }}>
                   <span style={{ fontSize:12, fontWeight:600, color:"var(--ea-muted)" }}>Driver token</span>
                   <code style={{ fontSize:13, fontWeight:700, color:"var(--ea-ink)", letterSpacing:"0.5px", fontFamily:"ui-monospace, SFMono-Regular, Menlo, monospace", flex:"1 1 auto", minWidth:0, overflowWrap:"anywhere" }}>{bus.driverToken}</code>
                   <button type="button" className="ea-btn ea-btn--ghost ea-btn--sm" aria-label={`Copy driver token for bus ${bus.busNumber}`}
@@ -218,7 +218,7 @@ export default function Transport() {
 
                 {/* Expanded — Stops */}
                 {isExpanded && bus.stops?.length > 0 && (
-                  <div style={{ margin:"0 24px 20px", padding:"16px", background:"#F8FAFC", borderRadius:14, border:"1px solid #E2E8F0" }}>
+                  <div style={{ margin:"0 24px 20px", padding:"16px", background:"#F8FAFC", borderRadius:14, border:"1px solid var(--ea-edge)" }}>
                     <div style={{ fontSize:12, fontWeight:800, color:"var(--ea-muted)", marginBottom:12, letterSpacing:"0.06em" }}>ROUTE STOPS</div>
                     <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
                       {bus.stops.sort((a,b)=>a.order-b.order).map((stop, si) => (
@@ -248,7 +248,7 @@ export default function Transport() {
               <label key={key} style={{ display:"block" }}>
                 <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
                 <input id={`bus-${key}`} type={type} value={form[key]||""} onChange={e => f(key,e.target.value)} {...fe.invalid(key)}
-                  style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
+                  style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
                   onFocus={e=>e.target.style.borderColor="#F59E0B"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
                 <FieldError id={`bus-${key}-error`}>{fe.errors[key]}</FieldError>
               </label>
@@ -284,7 +284,7 @@ export default function Transport() {
                 <label key={key} style={{ display:"block" }}>
                   <span style={{ display:"block", fontSize:10, fontWeight:700, color:"var(--ea-muted)", marginBottom:4 }}>{label}</span>
                   <input id={`stop-${key}`} type={type} value={newStop[key]||""} onChange={e => { setNewStop(p=>({...p,[key]:e.target.value})); stopErrors.clear(key); }} {...stopErrors.invalid(key)}
-                    style={{ width:"100%", padding:"9px 12px", borderRadius:9, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />
+                    style={{ width:"100%", padding:"9px 12px", borderRadius:9, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />
                   <FieldError id={`stop-${key}-error`}>{stopErrors.errors[key]}</FieldError>
                 </label>
               ))}
@@ -302,7 +302,7 @@ export default function Transport() {
           <div style={{ fontSize:12, color:"var(--ea-muted)", fontWeight:600 }}>{selectedStudents.length} students selected</div>
           <div style={{ maxHeight:320, overflowY:"auto", display:"flex", flexDirection:"column", gap:6 }}>
             {allStudents.map(s => (
-              <label key={s._id} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", borderRadius:10, background: selectedStudents.includes(s._id) ? "#FFFBEB" : "#F8FAFC", cursor:"pointer", border:`1px solid ${selectedStudents.includes(s._id)?"#FDE68A":"#E2E8F0"}` }}>
+              <label key={s._id} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", borderRadius:10, background: selectedStudents.includes(s._id) ? "#FFFBEB" : "#F8FAFC", cursor:"pointer", border:`1px solid ${selectedStudents.includes(s._id)?"#FDE68A":"var(--ea-edge)"}` }}>
                 <input type="checkbox" checked={selectedStudents.includes(s._id)} onChange={() => toggleStudent(s._id)} style={{ accentColor:"#F59E0B", width:16, height:16 }} />
                 <span style={{ fontSize:13, fontWeight:600, color:"#0F172A", flex:1 }}>{s.name}</span>
                 <span style={{ fontSize:11, color:"var(--ea-on-card-warning)", fontWeight:700 }}>Class {s.class}{s.section?`-${s.section}`:""}</span>

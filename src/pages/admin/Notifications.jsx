@@ -28,7 +28,7 @@ const ROLE_META = {
 };
 
 const inp = {
-  padding: "9px 12px", borderRadius: 8, border: "1px solid #E2E8F0",
+  padding: "9px 12px", borderRadius: 8, border: "1px solid var(--ea-edge)",
   fontSize: 13, color: "#1a1a1a", outline: "none", background: "#F8FAFC",
   fontFamily: "inherit", width: "100%", boxSizing: "border-box",
   transition: "border 0.15s",
@@ -96,7 +96,7 @@ export default function Notifications() {
           <div style={{ fontSize: 12, color: "#94A3B8", marginTop: 3 }}>Broadcast to students, parents, teachers & staff</div>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
-          <button type="button" onClick={fetchNotifs} aria-label="Refresh notifications" title="Refresh" style={{ width: 36, height: 36, borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+          <button type="button" onClick={fetchNotifs} aria-label="Refresh notifications" title="Refresh" style={{ width: 36, height: 36, borderRadius: 8, border: "1px solid var(--ea-edge)", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
             <RefreshCw size={14} color="#64748B" />
           </button>
           <button onClick={() => setShowModal(true)}
@@ -130,7 +130,7 @@ export default function Notifications() {
           const active = filterRole === role;
           return (
             <button key={role} onClick={() => setFilterRole(role)}
-              style={{ display: "flex", alignItems: "center", gap: 5, padding: "6px 14px", borderRadius: 20, border: `1px solid ${active ? meta.color : "#E2E8F0"}`, background: active ? meta.bg : "#fff", color: active ? meta.color : "var(--ea-muted)", fontSize: 12, fontWeight: active ? 600 : 400, cursor: "pointer", transition: "all 0.15s" }}>
+              style={{ display: "flex", alignItems: "center", gap: 5, padding: "6px 14px", borderRadius: 20, border: `1px solid ${active ? meta.color : "var(--ea-edge)"}`, background: active ? meta.bg : "#fff", color: active ? meta.color : "var(--ea-muted)", fontSize: 12, fontWeight: active ? 600 : 400, cursor: "pointer", transition: "all 0.15s" }}>
               <Icon size={12} /> {meta.label}
             </button>
           );
@@ -192,7 +192,7 @@ export default function Notifications() {
                 <div style={{ fontSize: 17, fontWeight: 700, color: "#0F172A" }}>Send Notification</div>
                 <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>Reach your audience instantly</div>
               </div>
-              <button type="button" aria-label="Close" onClick={() => setShowModal(false)} style={{ width: 30, height: 30, borderRadius: 8, border: "1px solid #E2E8F0", background: "#F8FAFC", cursor: "pointer", fontSize: 16, color: "var(--ea-muted)" }}><Glyph e="×" /></button>
+              <button type="button" aria-label="Close" onClick={() => setShowModal(false)} style={{ width: 30, height: 30, borderRadius: 8, border: "1px solid var(--ea-edge)", background: "#F8FAFC", cursor: "pointer", fontSize: 16, color: "var(--ea-muted)" }}><Glyph e="×" /></button>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -220,7 +220,7 @@ export default function Notifications() {
               </div>
 
               {/* Class/Section targeting */}
-              <div style={{ background: "#F8FAFC", borderRadius: 10, padding: "14px", border: "1px solid #E2E8F0" }}>
+              <div style={{ background: "#F8FAFC", borderRadius: 10, padding: "14px", border: "1px solid var(--ea-edge)" }}>
                 <div style={{ fontSize: 11, color: "var(--ea-muted)", fontWeight: 600, marginBottom: 10 }}><Glyph e="🎯" /> TARGET SPECIFIC CLASS (Optional)</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                   <div>
@@ -239,7 +239,7 @@ export default function Notifications() {
             </div>
 
             <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 20 }}>
-              <button onClick={() => setShowModal(false)} style={{ padding: "9px 20px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#F8FAFC", fontSize: 13, cursor: "pointer", color: "var(--ea-muted)" }}>Cancel</button>
+              <button onClick={() => setShowModal(false)} style={{ padding: "9px 20px", borderRadius: 8, border: "1px solid var(--ea-edge)", background: "#F8FAFC", fontSize: 13, cursor: "pointer", color: "var(--ea-muted)" }}>Cancel</button>
               <button onClick={handleSend} disabled={sending}
                 style={{ display: "flex", alignItems: "center", gap: 6, padding: "9px 24px", borderRadius: 8, border: "none", background: sending ? "#94A3B8" : "var(--brand-gradient)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: sending ? "not-allowed" : "pointer" }}>
                 <Send size={13} /> {sending ? "Sending..." : "Send Now"}

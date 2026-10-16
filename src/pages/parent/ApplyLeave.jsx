@@ -220,7 +220,7 @@ export default function ApplyLeave() {
                   padding: "14px", borderRadius: "12px",
                   background: leave.status === "Rejected" ? "color-mix(in srgb, #EF4444 10%, var(--ea-surface))" : "var(--ea-hover)",
                   marginBottom: "10px",
-                  border: `1px solid ${leave.status === "Rejected" ? "rgba(239, 68, 68, 0.25)" : "var(--ea-line)"}`,
+                  border: `1px solid ${leave.status === "Rejected" ? "rgba(239, 68, 68, 0.25)" : "var(--ea-edge)"}`,
                 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div style={{ fontWeight: "700", fontSize: "14px", color: "var(--text)" }}>

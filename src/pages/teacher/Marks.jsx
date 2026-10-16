@@ -271,7 +271,7 @@ const styles = {
   card: { background: 'var(--card, #fff)', borderRadius: 16, padding: 16, marginBottom: 14, boxShadow: '0 2px 12px rgba(0,0,0,0.06)', fontFamily: 'inherit' },
   label: { margin: '4px 0 8px' },
   empty: { textAlign: 'center', padding: 40, color: 'var(--ea-muted)', fontSize: 14 },
-  markInput: { width: 72, padding: '9px 10px', borderRadius: 10, border: '1.5px solid #E2E8F0', fontSize: 15, fontWeight: 600, textAlign: 'center', outline: 'none', fontFamily: 'inherit' },
+  markInput: { width: 72, padding: '9px 10px', borderRadius: 10, border: '1.5px solid var(--ea-edge)', fontSize: 15, fontWeight: 600, textAlign: 'center', outline: 'none', fontFamily: 'inherit' },
   absentBtn: { border: 'none', borderRadius: 10, padding: '9px 10px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' },
   btn: { flex: 1, minHeight: 48, fontSize: 15 },
 }

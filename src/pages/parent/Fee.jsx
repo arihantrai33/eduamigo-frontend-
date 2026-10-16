@@ -286,7 +286,7 @@ const styles = {
   },
   spinner: {
     width: 32, height: 32,
-    border: "3px solid #e5e7eb",
+    border: "3px solid var(--ea-edge)",
     borderTop: "3px solid var(--brand)",
     borderRadius: "50%",
     animation: "spin 0.8s linear infinite",

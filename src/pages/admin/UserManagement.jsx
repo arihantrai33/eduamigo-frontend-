@@ -30,7 +30,7 @@ const ROLE_META = {
 };
 
 const inp = {
-  padding: "9px 12px", borderRadius: 8, border: "1px solid #E2E8F0",
+  padding: "9px 12px", borderRadius: 8, border: "1px solid var(--ea-edge)",
   fontSize: 13, outline: "none", background: "#F8FAFC",
   fontFamily: "inherit", width: "100%", boxSizing: "border-box",
 };
@@ -126,7 +126,7 @@ export default function UserManagement() {
       </div>
 
       {/* Table */}
-      <div style={{ background: "#fff", border: "1px solid #E2E8F0", borderRadius: 16, overflow: "hidden" }}>
+      <div style={{ background: "#fff", border: "1px solid var(--ea-edge)", borderRadius: 16, overflow: "hidden" }}>
         <div className="ea-um-head" style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 100px", padding: "12px 20px", background: "#F8FAFC", borderBottom: "1px solid #E2E8F0" }}>
           {["User", "Role", "School", "Joined", "Status"].map(h => (
             <span key={h} style={{ fontSize: 11, fontWeight: 600, color: "var(--ea-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>{h}</span>

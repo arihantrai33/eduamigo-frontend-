@@ -61,7 +61,8 @@ input, button, select, textarea {
   height: calc(var(--ea-vh) - env(safe-area-inset-top));
   overflow: hidden;
   transform: translateZ(0);
-  background: var(--app-bg, var(--ea-canvas));
+  background-color: var(--app-bg, var(--ea-canvas));
+  background-image: var(--ea-canvas-wash, none);
 }
 
 /* One canvas behind every signed-in page, in all four portals (--ea-canvas, as in admin; dark: --app-bg). Page roots
@@ -308,7 +309,8 @@ input, button, select, textarea {
 .ea-solo {
   min-height: var(--ea-vh);
   padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
-  background: var(--app-bg, var(--ea-canvas));
+  background-color: var(--app-bg, var(--ea-canvas));
+  background-image: var(--ea-canvas-wash, none);
 }
 .ea-solo__stage {
   position: relative;
@@ -319,7 +321,7 @@ input, button, select, textarea {
   background: var(--app-bg, var(--ea-canvas));
 }
 @media (min-width: 768px) {
-  .ea-solo { display: grid; place-items: center; padding: 32px 16px; background: var(--ea-canvas); }
+  .ea-solo { display: grid; place-items: center; padding: 32px 16px; background-color: var(--ea-canvas); background-image: var(--ea-canvas-wash, none); }
   .ea-solo__stage {
     max-width: 480px;
     height: min(860px, calc(var(--ea-vh) - 64px));
@@ -329,6 +331,8 @@ input, button, select, textarea {
   }
   .ea-solo--document .ea-solo__stage { max-width: 920px; }
 }
+[data-theme="dark"] .ea-auth { background: var(--bg) !important; }
+[data-theme="dark"] .ea-auth > div:not(.ea-school-hero) { border-color: var(--border) !important; box-shadow: none !important; }
 /* Sign-in and forgot password (page roots .ea-auth, shared hero .ea-school-hero) use the whole viewport from 768 px,
    not the centred card above: no outer padding, no max-width, no fixed card height, no frame. The stage keeps the
    viewport height and scrolls (.ea-scroll); the page root grows with its content, so a short window scrolls instead
@@ -343,6 +347,12 @@ input, button, select, textarea {
   .ea-solo .ea-scroll > div > .ea-auth { width: 100%; height: auto !important; min-height: 100% !important; overflow: visible !important; }
   /* Tablet: the brand panel on top, the form below in a comfortable centred column. */
   .ea-auth > div:not(.ea-school-hero) { width: 100%; max-width: 520px; margin: 0 auto; padding-top: 28px !important; }
+  /* The page behind is the canvas; the form is a card on it (the same surface, edge and shadow as every card). */
+  .ea-auth { background-color: var(--ea-canvas) !important; background-image: var(--ea-canvas-wash, none) !important; }
+  .ea-auth > div:not(.ea-school-hero) {
+    flex: none !important; margin: 24px auto 32px !important; border: 1px solid var(--ea-edge); border-radius: 20px;
+    padding: 28px 24px 24px !important; box-shadow: var(--ea-shadow-e2);
+  }
 }
 /* Desktop: a balanced split over the full viewport, the brand panel on the left, the form centred on the right. */
 @media (min-width: 1024px) {
@@ -350,8 +360,8 @@ input, button, select, textarea {
   .ea-auth > .ea-school-hero { display: flex; flex-direction: column; justify-content: center; padding: 48px 40px !important; }
   .ea-auth > .ea-school-hero .ea-school-hero__wave { display: none !important; }
   .ea-auth > div:not(.ea-school-hero) {
-    max-width: none; margin: 0; display: flex; flex-direction: column; justify-content: center; border-radius: 0 !important;
-    padding: 48px max(48px, calc((100% - 440px) / 2)) !important;
+    display: flex; flex-direction: column; justify-content: center; align-self: center; justify-self: center;
+    width: min(520px, calc(100% - 64px)); max-width: none; margin: 32px 0 !important; padding: 36px 32px 28px !important;
   }
 }
 /* Screens before a school is known: splash, find your school, support, driver sign-in (design plan §2.1, D2).
@@ -427,6 +437,7 @@ input, button, select, textarea {
   --ea-cat-5-bg: color-mix(in srgb, #7DD3FC 12%, transparent); --ea-cat-6-bg: color-mix(in srgb, #CBD5E1 12%, transparent);
   --app-bg: #0f172a;
   --ea-canvas: #0f172a;
+  --ea-canvas-wash: none;
   --ea-surface: #1e293b;
   --ea-hover: #26354b;
   --ea-line: #2d3f55;
@@ -435,6 +446,9 @@ input, button, select, textarea {
   --ea-muted: #94a3b8;
   --ea-faint: #8b9ab0;
   --ea-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --ea-shadow-e2: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --ea-surface-shade: none;
+  --ea-sidebar-shade: none;
   --ea-on-card-success: #4ADE80;
   --ea-on-card-warning: #FBBF24;
   --ea-on-card-danger: #FCA5A5;
@@ -466,7 +480,7 @@ input, button, select, textarea {
   transform: translateZ(0);
   background: #F5F5F3;
 }
-.ea-admin-shell { width: 100% !important; height: 100%; min-height: 0 !important; }
+.ea-admin-shell { background-image: var(--ea-canvas-wash, none) !important; width: 100% !important; height: 100%; min-height: 0 !important; }
 .ea-admin-shell > main,
 .ea-admin-shell > aside { height: 100% !important; }
 
@@ -549,7 +563,11 @@ body.admin-body #root {
   /* Design tokens (neutral UI). New and refactored screens use these instead of literals.
      Brand colour comes from --brand*; status colours stay fixed so meaning never depends on the school's palette. */
   --ea-font: "Inter Variable", Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --ea-canvas: #EEF1F6;      /* page background around content */
+  --ea-canvas: #EDF3F9;      /* page background around content */
+  /* A very faint tonal wash on the canvas: a cool glow top right and a softer one bottom left. It stays under 6% so
+     cards and text keep their separation; the dark themes set it to none. */
+  --ea-canvas-wash: radial-gradient(1100px 620px at 88% -8%, rgba(56, 130, 190, 0.075), transparent 62%),
+                    radial-gradient(900px 560px at -6% 108%, rgba(20, 130, 150, 0.06), transparent 60%);
   --ea-surface: #FFFFFF;     /* cards, sidebar */
   --ea-hover: #F3F5F9;
   --ea-line: #E3E7EE;        /* borders and dividers */
@@ -600,9 +618,14 @@ body.admin-body #root {
   --ea-radius: 12px;
   --ea-radius-lg: 16px;
   --ea-radius-xl: 20px;      /* home hero and auth panels only */
-  --ea-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.04);   /* e1: cards */
-  --ea-shadow-e2: 0 8px 24px rgba(15, 23, 42, 0.10);                                     /* menus, popovers, panels */
-  --ea-shadow-e3: 0 24px 64px rgba(15, 23, 42, 0.24);                                    /* dialogs */
+  /* Elevation. The shadows are tinted with the canvas blue (not grey) so a panel looks lifted off the page, not outlined. */
+  --ea-shadow: 0 1px 2px rgba(23, 55, 94, 0.10), 0 10px 24px -8px rgba(23, 55, 94, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.9);   /* e1: cards, tiles, list panels (the inset line is a lit top edge) */
+  --ea-shadow-e2: 0 2px 4px rgba(23, 55, 94, 0.10), 0 18px 40px -10px rgba(23, 55, 94, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.9);   /* menus, popovers, the tutor panel */
+  --ea-shadow-e3: 0 24px 64px rgba(15, 23, 42, 0.26);                                           /* dialogs */
+  /* The foreground surface: white at the top, a faint blue-grey at the bottom. Laid over the surface colour, so the
+     dark themes (which set it to none) keep their flat dark cards. */
+  --ea-surface-shade: linear-gradient(180deg, #FFFFFF 0%, #F5F9FD 100%);
+  --ea-sidebar-shade: linear-gradient(180deg, #FFFFFF 0%, #F7FAFD 30%, #EEF4FA 100%);
   --ea-space-1: 4px;
   --ea-space-2: 8px;
   --ea-space-3: 12px;
@@ -621,7 +644,7 @@ body.admin-body #root {
   --ea-control-border: #8494AA;
   --ea-control-border-hover: #5F6F85;
   --ea-control-border-soft: #8E9BB0;        /* buttons, chips, the segmented track: they carry a label, so a quieter edge (2.8:1) */
-  --ea-edge: #B3BECD;                       /* the edge of a card, tile or panel: clear but lighter than a field (1.8:1 on white, 1.6:1 on the canvas) */
+  --ea-edge: #B8C3D1;                       /* the edge of a card, tile or panel: clear but lighter than a field (1.8:1 on white, 1.6:1 on the canvas) */
   --ea-control-placeholder: #66758B;        /* 4.7:1 on white */
   --ea-control-disabled-bg: #E8ECF2;
   --ea-control-track: #DDE3EC;              /* the track a segmented control sits in */
@@ -650,6 +673,9 @@ body.admin-body #root {
 
 /* Dark mode */
 [data-theme="dark"] {
+  --ea-canvas-wash: none;
+  --ea-surface-shade: none;
+  --ea-sidebar-shade: none;
   --bg: #0f172a;
   --card: #1e293b;
   --card2: #162032;
@@ -1118,6 +1144,20 @@ td .ea-skeleton { box-sizing: border-box; padding: 0 20px; }
   outline: 1px solid var(--ea-edge); outline-offset: -1px;
 }
 
+/* Small action buttons that pages draw inline (edit, delete, pin, calendar arrows, download) and tinted actions (call,
+   reset, report cards): the same clear edge as every other button; delete-type ones keep a red edge. */
+:is(.ea-scroll, .ea-admin-main, .ea-dialog) :is(.act-btn, button[aria-label^="Edit"], button[aria-label^="Pin"], button[aria-label^="Unpin"], button[aria-label$="month"], button[title="Edit"], a[download], a[aria-label^="Download"]) {
+  border: 1px solid var(--ea-control-border-soft) !important;
+}
+:is(.ea-scroll, .ea-admin-main, .ea-dialog) :is(button[aria-label^="Delete"], button[title="Delete"], button[aria-label^="Remove"], .act-btn[style*="FEF2F2" i], .act-btn[style*="239, 68, 68"], .act-btn[style*="239,68,68"]) {
+  border: 1px solid color-mix(in srgb, var(--ea-danger) 55%, var(--ea-surface)) !important;
+}
+:is(.ea-scroll, .ea-admin-main, .ea-dialog) :is(button, a)[style*="var(--brand-soft)"]:not([aria-pressed="true"], .ea-chip, [role="tab"]) {
+  border: 1px solid color-mix(in srgb, var(--brand) 55%, var(--ea-surface)) !important;
+}
+
+input[type="checkbox"], input[type="radio"], input[type="range"] { accent-color: var(--brand); }
+
 /* ───────────── Form controls ─────────────
    Every text field, dropdown, date, number and text area in the app gets one look: a control surface that differs from
    the page, a real boundary (--ea-control-border), one height, one radius, one text size, readable placeholders and
@@ -1129,8 +1169,8 @@ td .ea-skeleton { box-sizing: border-box; padding: 0 20px; }
   background-color: var(--ea-control-bg) !important; border: 1px solid var(--ea-control-border) !important;
   border-radius: var(--ea-control-radius) !important; font-size: 14px !important; box-sizing: border-box; color: var(--ea-ink);
 }
-:is(.ea-shell, .ea-admin-frame, .ea-solo, .ea-dialog-backdrop) :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="hidden"], [type="color"], [type="submit"], [type="button"], [type="reset"], [type="image"]), select, textarea):not(.ea-input-bare, .ea-learn__input, [style*="border: none"], [style*="border:none"], [style*="border: 0"], [style*="background: transparent"], [style*="background:transparent"], [style*="background: none"]):is(input, select):not(:is(table, .ea-roster) *) { min-height: var(--ea-control-h) !important; }
-:is(.ea-shell, .ea-admin-frame, .ea-dialog-backdrop) :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="hidden"], [type="color"], [type="submit"], [type="button"], [type="reset"], [type="image"]), select, textarea):not(.ea-input-bare, .ea-learn__input, [style*="border: none"], [style*="border:none"], [style*="border: 0"], [style*="background: transparent"], [style*="background:transparent"], [style*="background: none"]):is(input, select):not(:is(table, .ea-roster) *) { height: var(--ea-control-h) !important; }
+:is(.ea-shell, .ea-admin-frame, .ea-solo, .ea-dialog-backdrop) :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="hidden"], [type="color"], [type="submit"], [type="button"], [type="reset"], [type="image"]), select, textarea):not(.ea-learn__lang, .ea-input-bare, .ea-learn__input, [style*="border: none"], [style*="border:none"], [style*="border: 0"], [style*="background: transparent"], [style*="background:transparent"], [style*="background: none"]):is(input, select):not(:is(table, .ea-roster) *) { min-height: var(--ea-control-h) !important; }
+:is(.ea-shell, .ea-admin-frame, .ea-dialog-backdrop) :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="hidden"], [type="color"], [type="submit"], [type="button"], [type="reset"], [type="image"]), select, textarea):not(.ea-learn__lang, .ea-input-bare, .ea-learn__input, [style*="border: none"], [style*="border:none"], [style*="border: 0"], [style*="background: transparent"], [style*="background:transparent"], [style*="background: none"]):is(input, select):not(:is(table, .ea-roster) *) { height: var(--ea-control-h) !important; }
 :is(.ea-shell, .ea-admin-frame, .ea-solo, .ea-dialog-backdrop) :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="hidden"], [type="color"], [type="submit"], [type="button"], [type="reset"], [type="image"]), select, textarea):not(.ea-input-bare, .ea-learn__input, [style*="border: none"], [style*="border:none"], [style*="border: 0"], [style*="background: transparent"], [style*="background:transparent"], [style*="background: none"]):hover:not(:focus, :disabled) { border-color: var(--ea-control-border-hover) !important; }
 :is(.ea-shell, .ea-admin-frame, .ea-solo, .ea-dialog-backdrop) :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="hidden"], [type="color"], [type="submit"], [type="button"], [type="reset"], [type="image"]), select, textarea):not(.ea-input-bare, .ea-learn__input, [style*="border: none"], [style*="border:none"], [style*="border: 0"], [style*="background: transparent"], [style*="background:transparent"], [style*="background: none"]):focus { border-color: var(--brand) !important; box-shadow: 0 0 0 3px var(--brand-soft) !important; outline: none; }
 :is(.ea-shell, .ea-admin-frame, .ea-solo, .ea-dialog-backdrop) :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="hidden"], [type="color"], [type="submit"], [type="button"], [type="reset"], [type="image"]), select, textarea):not(.ea-input-bare, .ea-learn__input, [style*="border: none"], [style*="border:none"], [style*="border: 0"], [style*="background: transparent"], [style*="background:transparent"], [style*="background: none"]):disabled { background-color: var(--ea-control-disabled-bg) !important; border-color: var(--ea-control-border-soft) !important; color: var(--ea-muted) !important; -webkit-text-fill-color: var(--ea-muted); cursor: not-allowed; }
@@ -1208,16 +1248,16 @@ td .ea-skeleton { box-sizing: border-box; padding: 0 20px; }
 .ea-roster__roll { font-size: 12px; color: var(--ea-muted); }
 .ea-roster__status { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 3px; border-radius: 10px; background: var(--ea-control-track); border: 1px solid var(--ea-control-border-soft); }
 .ea-roster__status button {
-  min-height: 36px; border: 1px solid transparent; border-radius: 8px; background: transparent; font: inherit; font-size: 12px; font-weight: 650;
+  min-height: 36px; border: 1px solid var(--ea-control-border-soft); border-radius: 8px; background: transparent; font: inherit; font-size: 12px; font-weight: 650;
   color: var(--ea-body); cursor: pointer;
 }
-.ea-roster__status button:hover:not([aria-pressed="true"]) { border-color: var(--ea-control-border-soft); background: var(--ea-surface); }
+.ea-roster__status button:hover:not([aria-pressed="true"]) { border-color: var(--ea-control-border-hover); background: var(--ea-surface); }
 .ea-roster__status button:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
 .ea-roster__status button[aria-pressed="true"] { box-shadow: var(--ea-shadow); }
-.ea-roster__status button[aria-pressed="true"][data-st="Present"] { background: #F0FDF4; color: var(--ea-success); box-shadow: inset 0 0 0 1px #BBF7D0; }
-.ea-roster__status button[aria-pressed="true"][data-st="Absent"]  { background: #FEF2F2; color: var(--ea-danger);  box-shadow: inset 0 0 0 1px #FECACA; }
-.ea-roster__status button[aria-pressed="true"][data-st="Late"]    { background: #FFFBEB; color: var(--ea-warning); box-shadow: inset 0 0 0 1px #FDE68A; }
-.ea-roster__status button[aria-pressed="true"][data-st="Holiday"] { background: var(--ea-surface); color: var(--ea-ink); box-shadow: inset 0 0 0 1px var(--ea-line); }
+.ea-roster__status button[aria-pressed="true"][data-st="Present"] { background: color-mix(in srgb, var(--ea-success) 12%, var(--ea-surface)); color: var(--ea-on-card-success); border-color: color-mix(in srgb, var(--ea-success) 65%, var(--ea-surface)); box-shadow: none; }
+.ea-roster__status button[aria-pressed="true"][data-st="Absent"] { background: color-mix(in srgb, var(--ea-danger) 12%, var(--ea-surface)); color: var(--ea-on-card-danger); border-color: color-mix(in srgb, var(--ea-danger) 65%, var(--ea-surface)); box-shadow: none; }
+.ea-roster__status button[aria-pressed="true"][data-st="Late"] { background: color-mix(in srgb, var(--ea-warning) 12%, var(--ea-surface)); color: var(--ea-on-card-warning); border-color: color-mix(in srgb, var(--ea-warning) 65%, var(--ea-surface)); box-shadow: none; }
+.ea-roster__status button[aria-pressed="true"][data-st="Holiday"] { background: var(--ea-surface); color: var(--ea-ink); border-color: var(--ea-control-border); box-shadow: none; }
 .ea-roster__remark { width: 100%; height: 36px; font-size: 13px; }
 .ea-roster__save { width: 100%; min-height: 48px; margin-top: 12px; font-size: 15px; }
 @media (min-width: 768px) {
@@ -1421,7 +1461,7 @@ input.ea-input-bare[aria-invalid="true"], input.ea-input-bare[aria-invalid="true
 body:has(.ea-dialog-backdrop) .ea-ask-fab { display: none !important; }
 .ea-dialog {
   max-width: 100%; max-height: calc(var(--ea-vh) - 32px); overflow-y: auto; outline: none;
-  background: #fff; border-radius: 20px; padding: 24px; box-shadow: 0 32px 80px rgba(15, 23, 42, 0.25);
+  background: #fff var(--ea-surface-shade); border-radius: 20px; padding: 24px; border: 1px solid var(--ea-edge); box-shadow: var(--ea-shadow-e3);
   animation: ea-dialog-in 0.18s ease-out;
 }
 .ea-dialog__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
@@ -1468,8 +1508,9 @@ body:has(.ea-dialog-backdrop) .ea-ask-fab { display: none !important; }
 .ea-learn__hero-icon { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 16px; background: var(--brand-soft); color: var(--brand-text); }
 .ea-learn__empty-title { margin: 6px 0 0; font-size: 20px; font-weight: 800; color: var(--ea-ink); letter-spacing: -0.01em; }
 .ea-learn__starters { list-style: none; margin: 14px 0 0; padding: 0; width: 100%; max-width: 640px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); gap: 10px; }
-.ea-learn__starter { width: 100%; display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; border: 1px solid var(--ea-edge); border-radius: 12px; background: var(--ea-surface); font: inherit; text-align: left; color: var(--ea-ink); cursor: pointer; transition: border-color .15s, box-shadow .15s, transform .15s; }
+.ea-learn__starter { width: 100%; display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; border: 1px solid var(--ea-edge); border-radius: 12px; background: linear-gradient(180deg, var(--ea-surface), color-mix(in srgb, var(--brand) 4%, var(--ea-surface))); box-shadow: var(--ea-shadow); font: inherit; text-align: left; color: var(--ea-ink); cursor: pointer; transition: border-color .15s, box-shadow .15s, transform .15s; }
 .ea-learn__starter svg { flex: none; margin-top: 2px; color: var(--brand-text); }
+.ea-learn__starter:hover { border-color: var(--brand); box-shadow: var(--ea-shadow-e2); }
 .ea-learn__starter span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .ea-learn__starter strong { font-size: 14px; font-weight: 700; }
 .ea-learn__starter small { font-size: 13px; color: var(--ea-muted); overflow-wrap: anywhere; }
@@ -1492,6 +1533,11 @@ body:has(.ea-dialog-backdrop) .ea-ask-fab { display: none !important; }
 .ea-learn__answer strong { color: var(--ea-ink); }
 .ea-learn__answer ul, .ea-learn__answer ol { margin: 0 0 8px; padding-left: 20px; }
 .ea-learn__answer code { font-family: ui-monospace, Menlo, monospace; font-size: 0.92em; background: var(--ea-hover); padding: 1px 4px; border-radius: 4px; }
+.ea-learn__table { overflow-x: auto; margin: 4px 0 10px; border: 1px solid var(--ea-edge); border-radius: 10px; }
+.ea-learn__table table { width: 100%; border-collapse: collapse; font-size: 0.94em; }
+.ea-learn__table th, .ea-learn__table td { padding: 7px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--ea-edge); }
+.ea-learn__table th { background: var(--ea-surface-shade); color: var(--ea-ink); font-weight: 650; }
+.ea-learn__table tr:last-child td { border-bottom: 0; }
 .ea-learn__answer pre { white-space: pre-wrap; background: var(--ea-hover); padding: 8px 10px; border-radius: 8px; overflow-x: auto; }
 .ea-learn__cite { display: inline-block; padding: 0 6px; margin: 0 1px; border-radius: 999px; background: var(--brand-soft); color: var(--brand-text); font-size: 11px; font-weight: 700; text-decoration: none; vertical-align: 1px; }
 .ea-learn__reliability { margin: 6px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--ea-muted); }
@@ -1505,13 +1551,19 @@ body:has(.ea-dialog-backdrop) .ea-ask-fab { display: none !important; }
 .ea-learn__sources summary { cursor: pointer; color: var(--brand-text); font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
 .ea-learn__sources ul { list-style: none; padding: 6px 0 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
 
-.ea-learn__composer { flex: none; display: flex; flex-direction: column; gap: 8px; margin: 0 16px 16px; padding: 12px 14px; border: 1px solid var(--ea-control-border); border-radius: 16px; background: var(--ea-control-bg); }
+.ea-learn__dock { flex: none; margin: 0 16px 12px; width: calc(100% - 32px); }
+.ea-learn__composer { display: flex; align-items: center; gap: 8px; margin: 0; padding: 6px 8px 6px 16px; border: 1px solid var(--ea-control-border); border-radius: 14px; background: var(--ea-control-bg); }
+.ea-learn__under { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 6px; padding: 0 2px; }
+.ea-learn__under .ea-learn__hint { margin: 0 0 0 auto; text-align: right; font-size: 11.5px; }
 .ea-learn__composer:focus-within { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-soft); }
-.ea-learn__input { width: 100%; box-sizing: border-box; resize: none; border: none; outline: none; background: transparent; font: inherit; font-size: 16px; line-height: 1.5; color: var(--ea-ink); min-height: 28px; max-height: 160px; padding: 2px 0; }
+.ea-learn__input { flex: 1 1 auto; min-width: 0; width: auto; box-sizing: border-box; resize: none; border: none; outline: none; background: transparent; font: inherit; font-size: 14px; line-height: 1.5; color: var(--ea-ink); min-height: 24px; padding: 8px 0; max-height: 160px; padding: 2px 0; }
 .ea-learn__input::placeholder { color: var(--ea-control-placeholder); opacity: 1; }
-.ea-learn__composer-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.ea-learn__composer-actions > .ea-btn[type="submit"], .ea-learn__composer-actions > .ea-btn[aria-label="Stop the answer"] { margin-left: auto; border-radius: 999px; padding-inline: 18px; }
-.ea-learn__composer-actions > .ea-btn[aria-label*="voice"], .ea-learn__composer-actions > .ea-btn[aria-label*="listening"], .ea-learn__composer-actions > .ea-btn[aria-label*="spoken"] { width: 40px; height: 40px; padding: 0; border-radius: 50%; justify-content: center; }
+.ea-learn__composer-actions { display: flex; flex: none; flex-wrap: nowrap; align-items: center; gap: 6px; }
+.ea-learn__composer-actions > .ea-btn[type="submit"], .ea-learn__composer-actions > .ea-btn[aria-label="Stop the answer"] { margin-left: 2px; height: 38px; min-height: 38px; border-radius: 999px; padding-inline: 16px; }
+.ea-learn__composer-actions > .ea-btn[aria-label*="voice"], .ea-learn__composer-actions > .ea-btn[aria-label*="listening"], .ea-learn__composer-actions > .ea-btn[aria-label*="spoken"], .ea-learn__more > .ea-btn { width: 38px; height: 38px; min-height: 38px; padding: 0; border-radius: 50%; justify-content: center; }
+.ea-learn__composer-actions > .ea-btn[type="submit"]:not(:disabled) { background: var(--brand); color: #fff; box-shadow: 0 2px 8px color-mix(in srgb, var(--brand) 38%, transparent); }
+.ea-learn__composer-actions > .ea-btn[type="submit"]:not(:disabled):hover { background: color-mix(in srgb, var(--brand) 84%, #000); }
+.ea-learn__composer-actions > .ea-btn[type="submit"]:disabled { opacity: 1; background: var(--ea-control-disabled-bg); color: var(--ea-muted); border: 1px solid var(--ea-control-border-soft); box-shadow: none; }
 .ea-learn__hint { margin: 0; font-size: 12px; line-height: 1.4; color: var(--ea-muted); }
 .ea-learn__note { margin: 0; padding: 8px 12px; border-radius: 10px; background: var(--ea-hover); }
 .ea-learn__failure { display: flex; align-items: flex-start; gap: 10px; }
@@ -1524,17 +1576,38 @@ body:has(.ea-dialog-backdrop) .ea-ask-fab { display: none !important; }
   .ea-learn__tutor { min-height: 360px; border-radius: 14px; }
   .ea-learn__toolbar { padding: 10px 12px; }
   .ea-learn__log { padding: 12px; }
-  .ea-learn__composer { margin: 0 10px 10px; }
+  .ea-learn__dock { margin: 0 10px 8px; width: calc(100% - 20px); }
   .ea-learn__tutor > .ea-learn__history, .ea-learn__tutor > .ea-learn__consent, .ea-learn__tutor > .ea-learn__voice-status, .ea-learn__tutor > .ea-learn__note { margin: 10px 12px 0; }
-  .ea-learn__hint, .ea-learn__btn-text { display: none; }
-  .ea-learn__composer { padding: 10px 12px; border-radius: 16px; }
-  .ea-learn__composer-actions { flex-wrap: nowrap; }
-  .ea-learn__composer-actions .ea-learn__lang { flex: 1 1 auto; min-width: 0; max-width: 150px; }
-  .ea-learn__composer-actions > .ea-btn[type="submit"], .ea-learn__composer-actions > .ea-btn[aria-label="Stop the answer"] { width: 44px; height: 44px; padding: 0; justify-content: center; border-radius: 50%; }
-  .ea-learn__empty { padding-top: 12px; }
+  .ea-learn__hint { display: none; }
+  .ea-learn__btn-text { display: none; }
+  .ea-learn__composer { padding: 4px 6px 4px 12px; border-radius: 14px; }
+  .ea-learn__composer-actions > .ea-btn[type="submit"], .ea-learn__composer-actions > .ea-btn[aria-label="Stop the answer"] { width: 38px; padding: 0; justify-content: center; border-radius: 50%; margin-left: 0; }
+  .ea-learn__composer-actions { gap: 4px; }
+  .ea-learn__empty { padding: 4px 4px 8px; gap: 6px; }
+  .ea-learn__hero-icon { width: 44px; height: 44px; }
+  .ea-learn__starters { margin-top: 8px; gap: 8px; }
+  .ea-learn__starter { padding: 10px 12px; }
 }
-.ea-learn__lang { width: auto; min-width: 0; max-width: 150px; }
-.ea-learn__novoice { margin-right: auto; }
+.ea-learn__lang { width: auto; min-width: 0; max-width: 170px; height: 36px; padding: 0 26px 0 10px; border-radius: 9px; flex: none; }
+/* The panel's own small controls (the subject dropdown and the toolbar buttons) and the language dropdown: a little smaller
+   than the app's 40 px fields, so the tutor panel does not feel crowded. These out-rank the shared field rule. */
+.ea-learn .ea-learn__toolbar .ea-learn__sm.ea-select { height: 34px !important; min-height: 34px !important; font-size: 13px !important; padding-left: 10px; min-width: 128px; }
+.ea-learn .ea-learn__under .ea-learn__lang.ea-select { font-size: 12.5px !important; }
+.ea-learn__toolbar { gap: 6px; padding: 9px 14px; }
+.ea-learn__toolbar .ea-btn { min-height: 34px; height: 34px; padding: 0 11px; gap: 5px; font-size: 12.5px; border-radius: 9px; }
+.ea-learn__toolbar .ea-btn svg { width: 14px; height: 14px; }
+.ea-learn__more { position: relative; display: flex; }
+.ea-learn__menu { position: absolute; right: 0; bottom: calc(100% + 10px); z-index: 20; width: 260px; display: grid; gap: 4px; padding: 8px; background: var(--ea-surface); border: 1px solid var(--ea-edge); border-radius: 12px; box-shadow: 0 10px 28px rgba(15, 23, 42, 0.16); }
+.ea-learn__menu-row { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 40px; padding: 6px 8px; border: 0; border-radius: 8px; background: transparent; color: var(--ea-ink); font: inherit; font-size: 13.5px; text-align: left; cursor: pointer; }
+.ea-learn__menu-row:hover { background: var(--ea-hover); }
+.ea-learn__menu-row > span:first-of-type { flex: 1; }
+.ea-learn__menu-lang { cursor: default; justify-content: space-between; }
+.ea-learn__menu-lang:hover { background: transparent; }
+.ea-learn__switch { width: 34px; height: 20px; border-radius: 999px; background: var(--ea-control-border-soft); position: relative; flex: none; transition: background 0.15s; }
+.ea-learn__switch i { position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); transition: transform 0.15s; }
+.ea-learn__menu-row[aria-checked="true"] .ea-learn__switch { background: var(--brand); }
+.ea-learn__menu-row[aria-checked="true"] .ea-learn__switch i { transform: translateX(14px); }
+.ea-learn__novoice { margin-right: auto; font-size: 12px; }
 .ea-learn__voice-status { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 12px; background: var(--brand-soft); color: var(--ea-ink); font-size: 14px; }
 .ea-learn__voice-status em { font-style: normal; color: var(--ea-muted); }
 .ea-learn__pulse { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--brand); color: #fff; animation: ea-learn-pulse 1.4s infinite; }
@@ -1613,7 +1686,32 @@ body:has(.ea-dialog-backdrop) .ea-ask-fab { display: none !important; }
 .ea-diagram__bar, .ea-diagram__point { fill: var(--brand); }
 .ea-diagram__range { fill: var(--brand); opacity: 0.25; }
 .ea-diagram__text { font-size: 10px; fill: var(--ea-muted); }
-.ea-diagram__label { font-size: 11px; font-weight: 700; fill: var(--ea-ink); }
+.ea-diagram__step { font-size: 12.5px; fill: var(--ea-ink); }
+.ea-diagram__arrow { fill: var(--ea-muted); }
+.ea-diagram--scene { width: 100%; min-width: 0; margin: 0; }
+.ea-diagram__caption { margin: 8px 2px 0; font-size: 12.5px; line-height: 1.5; color: var(--ea-muted); }
+.ea-scene-ink { color: var(--ea-ink); }
+.ea-scene-brand { color: var(--brand); }
+.ea-scene-green { color: #15803D; }
+.ea-scene-orange { color: #C2410C; }
+.ea-scene-red { color: #B91C1C; }
+.ea-scene-blue { color: #1D4ED8; }
+.ea-scene-grey { color: var(--ea-muted); }
+[data-theme="dark"] .ea-scene-ink { color: var(--text); }
+[data-theme="dark"] .ea-scene-green { color: #4ADE80; }
+[data-theme="dark"] .ea-scene-orange { color: #FB923C; }
+[data-theme="dark"] .ea-scene-red { color: #F87171; }
+[data-theme="dark"] .ea-scene-blue { color: #60A5FA; }
+.ea-scene__text { font-family: inherit; }
+/* An answer with a drawing: the explanation on the left, the drawing beside it (stacked on a narrow screen). */
+.ea-learn__answer.has-figure { display: block; }
+.ea-learn__answer-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; align-items: start; }
+.ea-learn__answer-figs { display: grid; gap: 12px; min-width: 0; }
+@media (min-width: 900px) {
+  .ea-learn__answer-grid.has-figure { grid-template-columns: minmax(0, 1fr) minmax(300px, 44%); gap: 22px; }
+  .ea-learn__answer-figs { position: sticky; top: 4px; }
+}
+.ea-diagram__label { font-weight: 700; fill: var(--ea-ink); }
 .ea-diagram__flow { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
 .ea-diagram__flow li { display: flex; gap: 8px; align-items: flex-start; padding: 8px 10px; border-radius: 8px; background: var(--brand-soft); font-size: 14px; }
 .ea-diagram__flow li + li { position: relative; }
@@ -1642,3 +1740,142 @@ body:has(.ea-dialog-backdrop) .ea-ask-fab { display: none !important; }
 [data-theme="dark"] .ea-learn__history-item { color: var(--text); }
 [data-theme="dark"] .ea-learn__verdict { background: var(--card2); color: var(--text); }
 [data-theme="dark"] .ea-diagram__label { fill: var(--text); }
+
+
+/* ───────────── Foreground surfaces (the shaded panels) ─────────────
+   Cards, tiles, list panels, empty states, callouts and the tutor panel sit on the blue canvas as lifted surfaces: the
+   surface gradient (--ea-surface-shade), an edge, and the tinted elevation shadow (--ea-shadow). One place, so every
+   screen that uses these classes gets it. This block is last on purpose: several of these classes set a "background"
+   shorthand elsewhere, which would otherwise reset the gradient. The dark themes set the gradient to none. */
+:is(.ea-card, .ea-stat, .ea-week__day, .ea-empty, .ea-callout, .ea-notice:not(.is-unread), .ea-learn__tutor, .ea-learn__q, .ea-learn__history, .ea-learn__consent, .ea-learn__bubble.is-ai, .ea-auth > div:not(.ea-school-hero)) {
+  background-image: var(--ea-surface-shade);
+}
+.ea-learn__tutor { box-shadow: var(--ea-shadow-e2); }
+/* the tutor's toolbar is a faintly tinted band: the card reads as a panel with a header, not one white slab */
+.ea-learn__toolbar { background: color-mix(in srgb, var(--brand) 5%, transparent); border-radius: var(--ea-radius-lg) var(--ea-radius-lg) 0 0; }
+/* Panels that pages draw inline (a white or card-coloured box with a radius): the same surface and elevation. */
+:is(.ea-scroll, .ea-admin-main) :is(div, section, article, li, form, header, a, button):is([style*="background: var(--card)"], [style*="background:var(--card)"], [style*="background: var(--ea-surface)"], [style*="background: white"], [style*="background:white"], [style*="background: rgb(255, 255, 255)"], [style*="background-color: rgb(255, 255, 255)"], [style*="background-color: white"]):is([style*="border-radius"]):not(.ea-ask-fab, .ea-btn, .ea-chip, .ea-seg__opt, .ea-roster__status button, [role="tab"], [aria-pressed="true"], [style*="border-radius: 50%"], [style*="position: fixed"], [style*="position:fixed"], [style*="position: absolute"], [style*="position:absolute"]) {
+  background-image: var(--ea-surface-shade) !important;
+}
+/* ...and their soft grey shadows become the shared elevation */
+:is(.ea-scroll, .ea-admin-main) :is(div, section, article, li, form, header)[style*="border-radius"]:is([style*="rgba(0, 0, 0, 0.0"], [style*="rgba(0,0,0,0.0"], [style*="rgba(15, 23, 42, 0.0"]):not(.ea-ask-fab, [style*="border-radius: 50%"], [style*="position: fixed"], [style*="position: absolute"]) {
+  box-shadow: var(--ea-shadow) !important;
+}
+
+/* ───────────── Sidebar, balance, and the AI Tutor welcome ───────────── */
+/* The sidebar is a shaded surface of its own (white at the top, a faint blue-grey at the bottom) with a lit edge, so it
+   reads as a column standing apart from the canvas; the active item keeps its brand tint. */
+.ea-sidebar, .ea-admin-shell > aside:not([role="dialog"]) {
+  background-image: var(--ea-sidebar-shade, none) !important;
+  border-right: 1px solid var(--ea-edge) !important;
+  box-shadow: 8px 0 24px -14px rgba(23, 55, 94, 0.22);
+  z-index: 2;
+}
+.ea-admin-shell > aside:not([role="dialog"]) { position: relative; }
+.ea-sidebar__brand { background: color-mix(in srgb, var(--brand) 5%, transparent); }
+.ea-sidebar__footer { background: color-mix(in srgb, var(--brand) 4%, transparent); }
+[data-theme="dark"] .ea-shell--themed .ea-sidebar { box-shadow: none; border-right-color: var(--ea-line) !important; }
+/* A card inside a card is not a second panel: no shadow, no shade, a quiet divider-coloured edge (keeps the UI from
+   feeling boxed in). */
+.ea-card :is(.ea-card, .ea-stat) { box-shadow: none; background-image: none; border-color: var(--ea-line); }
+
+/* AI Tutor welcome: the robot, soft decorative shapes (this card only), the heading and four prompt cards. */
+.ea-learn__welcome {
+  --ea-bot-shell-hi: #FFFFFF;
+  --ea-bot-shell-lo: color-mix(in srgb, var(--brand) 9%, #D9E4EC);
+  --ea-bot-edge: color-mix(in srgb, var(--brand) 22%, #C3D2DC);
+  --ea-bot-visor-hi: color-mix(in srgb, var(--brand) 18%, #26394A);
+  --ea-bot-visor-lo: color-mix(in srgb, var(--brand) 14%, #0D1B27);
+  --ea-bot-accent: var(--brand);
+  --ea-bot-accent-hi: color-mix(in srgb, var(--brand) 55%, #fff);
+  position: relative; isolation: isolate; padding: 28px 16px 12px; gap: 8px;
+}
+.ea-learn__welcome > * { position: relative; z-index: 1; }
+.ea-learn__welcome::before, .ea-learn__welcome::after { content: ""; position: absolute; pointer-events: none; z-index: 0; border-radius: 50%; }
+/* a soft glow behind the robot, and a dotted field fading out to the sides */
+.ea-learn__welcome::before { width: 520px; max-width: 90%; aspect-ratio: 1; top: -150px; left: 50%; transform: translateX(-50%);
+  background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--brand) 11%, transparent), transparent 68%); }
+.ea-learn__welcome::after { inset: 0; border-radius: 0;
+  background-image: radial-gradient(color-mix(in srgb, var(--brand) 22%, transparent) 1.2px, transparent 1.4px); background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 38%, transparent 38%, #000 100%); mask-image: radial-gradient(ellipse 70% 60% at 50% 38%, transparent 38%, #000 100%);
+  opacity: 0.55; }
+/* The robot: a neutral base image plus an accent layer painted in the school colour. hard-light blends the accent's grey
+   shading over --brand: mid-grey is the colour itself, lighter greys are highlights, darker ones shadows. The mask keeps
+   the colour on the coloured parts only. */
+.ea-tutor-art { position: relative; display: block; width: 132px; height: 132px; margin: 0 auto; user-select: none; pointer-events: none;
+  filter: drop-shadow(0 12px 14px color-mix(in srgb, var(--brand) 22%, transparent)); }
+.ea-tutor-art__base, .ea-tutor-art__accent { position: absolute; inset: var(--ea-art-pad, 0px); width: calc(100% - 2 * var(--ea-art-pad, 0px)); height: calc(100% - 2 * var(--ea-art-pad, 0px)); }
+.ea-tutor-art__base { object-fit: contain; }
+.ea-tutor-art__accent { background-color: var(--brand); background-image: var(--ea-art-accent); background-blend-mode: hard-light;
+  background-size: contain; background-repeat: no-repeat; background-position: center;
+  -webkit-mask-image: var(--ea-art-accent); mask-image: var(--ea-art-accent); -webkit-mask-size: contain; mask-size: contain;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; }
+.ea-learn__welcome .ea-learn__empty-title { font-size: 22px; }
+.ea-learn__welcome .ea-learn__muted { max-width: 560px; font-size: 14px; }
+/* the prompt cards: an icon tile, a title, the example (a soft shaded surface, like every card) */
+.ea-learn__starters { max-width: 700px; gap: 12px; margin-top: 18px; }
+.ea-learn__starter { align-items: center; padding: 12px 14px; border-radius: 14px; box-shadow: var(--ea-shadow); }
+.ea-learn__starter > svg { width: 38px; height: 38px; padding: 9px; box-sizing: border-box; margin-top: 0; border-radius: 11px;
+  background: var(--brand-soft); color: var(--brand-text); }
+.ea-learn__starter strong { font-size: 14px; }
+.ea-learn__starter:hover > svg { background: var(--brand); color: #fff; }
+@media (max-width: 640px) {
+  .ea-learn__welcome { padding: 10px 6px 8px; }
+  .ea-tutor-art { width: 100px; height: 100px; }
+  .ea-learn__welcome .ea-learn__empty-title { font-size: 19px; }
+  .ea-learn__welcome::after { opacity: 0.35; }
+  .ea-learn__starters { gap: 8px; }
+  .ea-learn__starter > svg { width: 34px; height: 34px; padding: 8px; }
+}
+[data-theme="dark"] .ea-learn__welcome { --ea-bot-shell-lo: color-mix(in srgb, var(--brand) 10%, #C9D6E0); --ea-bot-edge: color-mix(in srgb, var(--brand) 30%, #9FB3C2); --ea-bot-visor-hi: color-mix(in srgb, var(--brand) 24%, #1B2C3B); --ea-bot-visor-lo: color-mix(in srgb, var(--brand) 18%, #07121C); }
+
+/* A short window (a laptop, a phone turned sideways): the robot shrinks and the prompt cards stay in view above the
+   typing box. The log still scrolls if it must. */
+@media (max-height: 800px) and (min-width: 641px) {
+  .ea-tutor-art { width: 100px; height: 100px; }
+  .ea-learn__welcome { gap: 4px; padding-top: 2px; }
+  .ea-learn__welcome .ea-learn__empty-title { font-size: 19px; margin-top: 2px; }
+  .ea-learn__welcome .ea-learn__muted { font-size: 13px; }
+  .ea-learn__starters { margin-top: 6px; gap: 8px; }
+  .ea-learn__starter { padding: 8px 12px; }
+  .ea-learn__starter > svg { width: 32px; height: 32px; padding: 7px; }
+}
+
+/* The robot is light: in the dark theme it sits on a soft orb of the same light tone, so its edges stay clean. */
+[data-theme="dark"] .ea-tutor-art { --ea-art-pad: 6px; border-radius: 50%; background: radial-gradient(circle at 50% 46%, #EEF3F6 0%, #E3EBEF 58%, rgba(227, 235, 239, 0) 74%); filter: none; }
+
+/* ───────────── Learning AI: header panel ─────────────
+   From 1024 px the title, the class and the four sections are one bordered, shaded panel at the top of the page (the
+   title used to float on the canvas with the sections in a separate strip), so the tutor panel below starts higher and
+   is taller. Below 1024 px the page keeps the app bar and the strip under it. */
+.ea-learn__head { display: contents; }
+.ea-learn__head-icon { display: none; }
+@media (min-width: 1024px) {
+  .ea-learn__head {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; flex: none;
+    margin: 16px max(var(--ea-gutter), calc(100% - var(--ea-pad-l) - var(--pd-w))) 0 var(--ea-pad-l);
+    padding: 14px 20px; border: 1px solid var(--ea-edge); border-radius: var(--ea-radius-lg);
+    background-color: var(--ea-surface); background-image: var(--ea-surface-shade); box-shadow: var(--ea-shadow);
+  }
+  .ea-learn__head-icon { display: grid; place-items: center; flex: none; width: 46px; height: 46px; border-radius: 13px;
+    background: var(--brand-soft); color: var(--brand-text); border: 1px solid color-mix(in srgb, var(--brand) 35%, var(--ea-surface)); }
+  .ea-learn__head .ea-portal-head { flex: 1 1 200px; min-width: 0; padding: 0; background: none; align-items: center; }
+  .ea-learn__head .ea-portal-head__title { font-size: 21px; line-height: 28px; }
+  .ea-learn__head .ea-portal-head__sub { margin-top: 1px; font-size: 13px; line-height: 18px; }
+  .ea-learn__head .ea-learn__tabs { margin: 0; padding: 0; background: none; margin-left: auto; }
+  .ea-learn__panel { padding-top: 16px; }
+}
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .ea-learn__head .ea-learn__tabs { flex: 1 1 100%; margin-left: 0; }
+  .ea-learn__head .ea-learn__tabs .ea-seg { width: 100%; }
+  .ea-learn__head .ea-learn__tabs .ea-seg__opt { flex: 1 1 0; }
+}
+
+/* The welcome sits in the middle of the tutor panel (its free space is split above and below), with room to breathe: a
+   larger robot and more space between the robot, the text and the prompt cards when the window is tall enough. */
+@media (min-height: 801px) and (min-width: 1024px) {
+  .ea-tutor-art { width: 152px; height: 152px; }
+  .ea-learn__welcome { gap: 10px; padding-top: 36px; }
+  .ea-learn__welcome .ea-learn__empty-title { margin-top: 10px; }
+  .ea-learn__starters { margin-top: 26px; gap: 14px; }
+}

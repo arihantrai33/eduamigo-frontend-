@@ -29,6 +29,7 @@ function measure() {
     const ph = getComputedStyle(el, '::placeholder');
     out.push({
       area: el.tagName === 'TEXTAREA',
+      compact: !!el.closest('.ea-learn__toolbar, .ea-learn__under, .ea-learn__menu'), // the Learning AI panel's own small controls
       name: (el.getAttribute('aria-label') || el.getAttribute('placeholder') || el.id || el.tagName).slice(0, 30),
       h: Math.round(r.height), radius: s.borderTopLeftRadius, borderW: s.borderTopWidth,
       fillVsBack: +ratio(fill.slice(0, 3), back.slice(0, 3)).toFixed(2), edgeVsBack: +ratio(edge.slice(0, 3), back.slice(0, 3)).toFixed(2),
@@ -59,7 +60,7 @@ for (const [role, pages] of Object.entries(PAGES)) {
           if (c.edgeVsBack < 2.5 && c.edgeVsFill < 2.5) problems.push(`${where}: edge ${c.edgeVsBack}:1 on the page and ${c.edgeVsFill}:1 on the field`);
           if (c.fillVsBack < 1.05 && c.edgeVsBack < 2.5) problems.push(`${where}: no visible box`);
           if (c.radius !== '10px' && c.radius !== '12px') problems.push(`${where}: radius ${c.radius}`);
-          if (!c.area && (c.h < 36 || c.h > 48)) problems.push(`${where}: height ${c.h}`);
+          if (!c.area && (c.h < (c.compact ? 32 : 36) || c.h > 48)) problems.push(`${where}: height ${c.h}`);
           if (c.placeholder !== null && c.placeholder < 4.5) problems.push(`${where}: placeholder ${c.placeholder}:1`);
           if (c.text < 7) problems.push(`${where}: text ${c.text}:1`);
         }

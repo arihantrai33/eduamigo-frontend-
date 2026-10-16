@@ -244,6 +244,6 @@ const S = {
   timeRow:     { display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4, marginTop: 4 },
   timeText:    { fontSize: 10, opacity: 0.7 },
   inputRow:    { padding: '12px 16px', background: 'var(--ea-surface)', display: 'flex', gap: 10, alignItems: 'center', boxShadow: '0 -2px 8px rgba(0,0,0,0.06)', flexShrink: 0 },
-  input:       { flex: 1, border: '1.5px solid var(--ea-line)', borderRadius: 24, padding: '10px 16px', fontSize: 14, outline: 'none', fontFamily: 'inherit' },
+  input:       { flex: 1, border: '1.5px solid var(--ea-edge)', borderRadius: 24, padding: '10px 16px', fontSize: 14, outline: 'none', fontFamily: 'inherit' },
   sendBtn:     { background: 'var(--brand)', color: 'white', border: 'none', borderRadius: '50%', width: 44, height: 44, fontSize: 18, cursor: 'pointer', flexShrink: 0 },
 };

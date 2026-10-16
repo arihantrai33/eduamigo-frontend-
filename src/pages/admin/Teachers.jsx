@@ -34,14 +34,14 @@ function TeacherForm({ form, setForm, onSave, loading, onClose }) {
     <div>
       <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
       <input type={type} value={form[key]||""} onChange={e => f(key, e.target.value)} placeholder={placeholder}
-        style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", transition:"border 0.2s" }}
+        style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", transition:"border 0.2s" }}
         onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
     </div>
   );
   const sel = (label, key, options) => (
     <div>
       <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
-      <select value={form[key]||""} onChange={e => f(key, e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
+      <select value={form[key]||""} onChange={e => f(key, e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
         <option value="">Select</option>
         {options.map(o => <option key={o} value={o}>{o}</option>)}
       </select>
@@ -67,7 +67,7 @@ function TeacherForm({ form, setForm, onSave, loading, onClose }) {
       </div>
       {inp("PASSWORD","password","password","Login password")}
       <div style={{ display:"flex", gap:10, marginTop:8, justifyContent:"flex-end" }}>
-        <button onClick={onClose} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
+        <button onClick={onClose} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid var(--ea-edge)", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
         <button onClick={onSave} disabled={loading} className="ea-btn ea-btn--primary">
           {loading ? "Saving..." : "Save Teacher"}
         </button>
@@ -231,7 +231,7 @@ export default function Teachers() {
                     </div>
                   </td>
                   <td style={{ padding:"14px 18px" }}>
-                    <span style={{ fontSize:13, fontWeight:700, color:"#374151", background:"#F8FAFC", padding:"4px 10px", borderRadius:8, border:"1px solid #E2E8F0" }}>{t.employeeId || "—"}</span>
+                    <span style={{ fontSize:13, fontWeight:700, color:"#374151", background:"#F8FAFC", padding:"4px 10px", borderRadius:8, border:"1px solid var(--ea-edge)" }}>{t.employeeId || "—"}</span>
                   </td>
                   <td style={{ padding:"14px 18px" }}>
                     <div style={{ display:"flex", gap:4, flexWrap:"wrap" }}>
@@ -254,7 +254,7 @@ export default function Teachers() {
                       <button className="act-btn" onClick={() => navigate(`/admin/teachers/${t._id}`)}
                         style={{ padding:"6px 14px", borderRadius:8, border:"none", background:"#ECFDF5", color:"#047857", fontSize:12, fontWeight:700, cursor:"pointer" }}>View</button>
                       <button className="act-btn" onClick={() => openEdit(t)}
-                        style={{ padding:"6px 14px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", color:"#374151", fontSize:12, fontWeight:700, cursor:"pointer" }}>Edit</button>
+                        style={{ padding:"6px 14px", borderRadius:8, border:"1px solid var(--ea-edge)", background:"white", color:"#374151", fontSize:12, fontWeight:700, cursor:"pointer" }}>Edit</button>
                       <button type="button" className="act-btn" onClick={() => setDeleteId(t._id)} aria-label={`Delete ${t.name}`} title="Delete"
                         style={{ padding:"6px 12px", borderRadius:8, border:"none", background:"#FEF2F2", color:"#B91C1C", fontSize:12, fontWeight:700, cursor:"pointer" }}><Glyph e="🗑" /></button>
                     </div>
@@ -276,7 +276,7 @@ export default function Teachers() {
           <div style={{ fontSize:16, fontWeight:700, color:"#0F172A", marginBottom:8 }}>Are you sure?</div>
           <div style={{ fontSize:13, color:"var(--ea-muted)", marginBottom:24 }}>This teacher record will be permanently deleted.</div>
           <div style={{ display:"flex", gap:10, justifyContent:"center" }}>
-            <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
+            <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid var(--ea-edge)", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
             <button onClick={() => handleDelete(deleteId)} className="ea-btn ea-btn--danger">Delete</button>
           </div>
         </div>

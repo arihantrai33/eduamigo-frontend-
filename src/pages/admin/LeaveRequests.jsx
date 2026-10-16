@@ -116,7 +116,7 @@ export default function LeaveRequests() {
           <Skeleton rows={4} label="Loading leave requests" />
         </div>
       ) : filtered.length === 0 ? (
-        <div style={{ background:"white", borderRadius:20, padding: 16, textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
+        <div style={{ background:"white", borderRadius:20, padding: 16, textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid var(--ea-edge)" }}>
           <EmptyState plain icon={CalendarOff} title="No leave requests found" text="Leave requests from students, parents and teachers will appear here" />
         </div>
       ) : (
@@ -127,7 +127,7 @@ export default function LeaveRequests() {
             const isExpanded = expandedId === l._id;
             return (
               <div key={l._id} className="leave-card"
-                style={{ background:"white", borderRadius:16, boxShadow:"0 2px 16px rgba(15,23,42,0.06)", border:`1px solid ${isExpanded ? "var(--brand-border)" : "var(--ea-line)"}`, overflow:"hidden", animation:`fadeUp 0.3s ease ${i*0.05}s both` }}>
+                style={{ background:"white", borderRadius:16, boxShadow:"0 2px 16px rgba(15,23,42,0.06)", border:`1px solid ${isExpanded ? "var(--brand-border)" : "var(--ea-edge)"}`, overflow:"hidden", animation:`fadeUp 0.3s ease ${i*0.05}s both` }}>
                 <div className="ea-row-wrap" style={{ padding:"18px 24px", display:"flex", alignItems:"center", gap:16, cursor:"pointer" }} onClick={() => setExpandedId(isExpanded ? null : l._id)}>
                   {/* Avatar */}
                   <div style={{ width:44, height:44, borderRadius:14, background:"var(--brand-soft)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, fontWeight:800, color:"var(--brand-text)", flexShrink:0 }}>

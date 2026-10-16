@@ -176,7 +176,7 @@ const AddParent = () => {
                   display: "flex", alignItems: "center", gap: 12, width: "100%", textAlign: "left", font: "inherit",
                   padding: "10px 12px", borderRadius: 10, cursor: "pointer",
                   background: isSelected ? "var(--brand-soft)" : "var(--ea-surface)",
-                  border: `1.5px solid ${isSelected ? "var(--brand)" : "var(--ea-line)"}`,
+                  border: `1.5px solid ${isSelected ? "var(--brand)" : "var(--ea-edge)"}`,
                   transition: "all 0.15s ease",
                 }}
               >

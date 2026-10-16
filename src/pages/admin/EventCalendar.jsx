@@ -117,7 +117,7 @@ export default function EventCalendar() {
     .filter(e => new Date(e.date) >= new Date(today.getFullYear(), today.getMonth(), today.getDate()))
     .sort((a,b) => new Date(a.date) - new Date(b.date));
 
-  const inputStyle = { width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", fontFamily:"inherit", boxSizing:"border-box" };
+  const inputStyle = { width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", fontFamily:"inherit", boxSizing:"border-box" };
 
   // The calendar header and today's date use the school's brand colour (it used to change colour every month).
 
@@ -140,12 +140,12 @@ export default function EventCalendar() {
 
       <div style={{ display:"grid", gridTemplateColumns:"360px 1fr", gap:20 }}>
         {/* LEFT: Compact Calendar */}
-        <div style={{ borderRadius:16, overflow:"hidden", boxShadow:"var(--ea-shadow)", border:"1px solid var(--ea-line)", background:"var(--ea-surface)", flexShrink:0 }}>
+        <div style={{ borderRadius:16, overflow:"hidden", boxShadow:"var(--ea-shadow)", border:"1px solid var(--ea-edge)", background:"var(--ea-surface)", flexShrink:0 }}>
           {/* Calendar header: month, year and the month arrows on the card */}
           <div style={{ background:"var(--ea-surface)", padding:"18px 16px 8px", borderBottom:"1px solid var(--ea-line)", position:"relative" }}>
             <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:16, position:"relative" }}>
               <button type="button" aria-label="Previous month" onClick={() => changeMonth(-1)}
-                style={{ width:32, height:32, borderRadius:10, border:"1px solid var(--ea-line)", background:"var(--ea-surface)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", color:"var(--ea-ink)" }}>
+                style={{ width:32, height:32, borderRadius:10, border:"1px solid var(--ea-edge)", background:"var(--ea-surface)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", color:"var(--ea-ink)" }}>
                 <ChevronLeft size={16} />
               </button>
               <div style={{ textAlign:"center", opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : `translateY(${animDir * 10}px)`, transition:"all 0.2s" }}>
@@ -153,7 +153,7 @@ export default function EventCalendar() {
                 <div style={{ fontSize:12, color:"var(--ea-muted)", fontWeight:600 }}>{currentYear}</div>
               </div>
               <button type="button" aria-label="Next month" onClick={() => changeMonth(1)}
-                style={{ width:32, height:32, borderRadius:10, border:"1px solid var(--ea-line)", background:"var(--ea-surface)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", color:"var(--ea-ink)" }}>
+                style={{ width:32, height:32, borderRadius:10, border:"1px solid var(--ea-edge)", background:"var(--ea-surface)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", color:"var(--ea-ink)" }}>
                 <ChevronRight size={16} />
               </button>
             </div>
@@ -219,7 +219,7 @@ export default function EventCalendar() {
         </div>
 
         {/* RIGHT: Events List */}
-        <div style={{ background:"var(--ea-surface)", borderRadius:16, padding:"20px", boxShadow:"var(--ea-shadow)", border:"1px solid var(--ea-line)", overflowY:"auto", maxHeight:560 }}>
+        <div style={{ background:"var(--ea-surface)", borderRadius:16, padding:"20px", boxShadow:"var(--ea-shadow)", border:"1px solid var(--ea-edge)", overflowY:"auto", maxHeight:560 }}>
           <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:20 }}>
             <div style={{ fontSize:15, fontWeight:800, color:"#0F172A", display:"flex", alignItems:"center", gap:8 }}>
               Upcoming events in {MONTHS[currentMonth]}
@@ -310,7 +310,7 @@ export default function EventCalendar() {
               <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
                 {Object.entries(EVENT_TYPES).map(([key,val]) => (
                   <button key={key} onClick={() => setForm({...form, type:key})}
-                    style={{ padding:"6px 12px", borderRadius:10, border:`2px solid ${form.type===key ? val.color : "#E2E8F0"}`, background: form.type===key ? val.light : "white", color: form.type===key ? val.color : "var(--ea-muted)", fontSize:11, fontWeight:700, cursor:"pointer", transition:"all 0.15s" }}>
+                    style={{ padding:"6px 12px", borderRadius:10, border:`2px solid ${form.type===key ? val.color : "var(--ea-edge)"}`, background: form.type===key ? val.light : "white", color: form.type===key ? val.color : "var(--ea-muted)", fontSize:11, fontWeight:700, cursor:"pointer", transition:"all 0.15s" }}>
                     {val.icon} {val.label}
                   </button>
                 ))}

@@ -236,7 +236,7 @@ export default function ParentsList() {
               <div key={key}>
                 <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
                 <input type={type} value={form[key]||""} onChange={e => f(key, e.target.value)}
-                  style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
+                  style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
                   onFocus={e => e.target.style.borderColor="#F59E0B"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
               </div>
             ))}
@@ -244,7 +244,7 @@ export default function ParentsList() {
           <div>
             <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>GENDER</div>
             <select value={form.gender} onChange={e => f("gender", e.target.value)}
-              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white" }}>
+              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", background:"white" }}>
               <option value="">Select Gender</option>
               {["Male","Female","Other"].map(g => <option key={g} value={g}>{g}</option>)}
             </select>
@@ -252,13 +252,13 @@ export default function ParentsList() {
           <div>
             <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>ADDRESS</div>
             <input value={form.address||""} onChange={e => f("address", e.target.value)}
-              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />
+              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />
           </div>
           <div>
             <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:8, letterSpacing:"0.06em" }}>LINK STUDENTS</div>
             <div style={{ maxHeight:160, overflowY:"auto", display:"flex", flexDirection:"column", gap:6 }}>
               {students.map(s => (
-                <label key={s._id} style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 12px", borderRadius:10, background: form.childrenIds.includes(s._id) ? "var(--brand-soft)" : "#F8FAFC", cursor:"pointer", border:`1px solid ${form.childrenIds.includes(s._id) ? "var(--brand-border)" : "#E2E8F0"}` }}>
+                <label key={s._id} style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 12px", borderRadius:10, background: form.childrenIds.includes(s._id) ? "var(--brand-soft)" : "#F8FAFC", cursor:"pointer", border:`1px solid ${form.childrenIds.includes(s._id) ? "var(--brand-border)" : "var(--ea-edge)"}` }}>
                   <input type="checkbox" checked={form.childrenIds.includes(s._id)} onChange={() => toggleChild(s._id)} style={{ accentColor:"var(--brand)" }} />
                   <span style={{ fontSize:13, fontWeight:600, color:"#374151" }}>{s.name}</span>
                   <span style={{ fontSize:11, color:"var(--brand-text)", fontWeight:700 }}>Class {s.class}{s.section ? `-${s.section}` : ""}</span>
@@ -267,7 +267,7 @@ export default function ParentsList() {
             </div>
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
-            <button onClick={() => setShowAddModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
+            <button onClick={() => setShowAddModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid var(--ea-edge)", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
             <button onClick={handleAddParent} disabled={saving} className="ea-btn ea-btn--primary">
               {saving ? "Saving..." : "Add Parent"}
             </button>

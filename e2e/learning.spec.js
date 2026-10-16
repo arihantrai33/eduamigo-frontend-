@@ -197,12 +197,15 @@ test.describe('Voice Learning', () => {
     await mockLearning(page);
     await page.addInitScript(() => { try { localStorage.setItem('ea-voice-consent', 'yes'); } catch { /* */ } });
     await page.goto('/student/learn');
-    await page.getByRole('button', { name: 'Mute spoken answers' }).click();
+    await page.getByRole('button', { name: 'More voice options' }).click();
+    await page.getByRole('switch', { name: 'Read answers aloud' }).click();
     await page.getByRole('button', { name: 'Ask with your voice' }).click();
     await expect(page.getByText('High confidence')).toBeVisible();
     expect(await page.evaluate(() => window.__spoken.length)).toBe(0);
 
-    await page.getByRole('button', { name: 'Turn spoken answers on' }).click();
+    await page.getByRole('button', { name: 'More voice options' }).click();
+    await page.getByRole('switch', { name: 'Read answers aloud' }).click();
+    await page.keyboard.press('Escape');
     await page.evaluate(() => { window.__holdSpeech = true; });
     await page.getByRole('button', { name: 'Ask with your voice' }).click();
     await expect(page.getByRole('status').filter({ hasText: 'Speaking' })).toBeVisible();
@@ -233,11 +236,15 @@ test.describe('speech text', () => {
       return {
         en: speakable('**Area** = l × b. So x² + 3 = 12 [S1] and 3/4 of it. See https://example.com\n- point one'),
         hi: speakable('क्षेत्रफल = l × b', 'hi'),
+        table: speakable('**Physical change**\n| Aspect | Physical | Chemical |\n|---|---|---|\n| Example | Melting | Burning |\nWould you like a question?'),
+        list: speakable('## Chemical change:\n- New substance formed\n- **Definition:** a change.\n- Example: burning paper'),
         split: takeSentences('Pi is 3.14 roughly. Next one! And the rest'),
       };
     });
-    expect(out.en).toBe('Area equals l times b. So x squared plus 3 equals 12 and 3 over 4 of it. See point one');
-    expect(out.hi).toBe('क्षेत्रफल बराबर l गुणा b');
+    expect(out.en).toBe('Area equals l times b. So x squared plus 3 equals 12 and 3 over 4 of it. See. point one.');
+    expect(out.hi).toBe('क्षेत्रफल बराबर l गुणा b.');
+    expect(out.table).toBe('Physical change. A summary table is shown on screen. Would you like a question?');
+    expect(out.list).toBe('Chemical change: New substance formed. Definition: a change. Example: burning paper.');
     expect(out.split).toEqual({ sentences: ['Pi is 3.14 roughly.', 'Next one!'], rest: ' And the rest' });
   });
 });

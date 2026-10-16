@@ -44,6 +44,7 @@ export default function Login() {
   const { login } = useAuth();
   const current = ROLES.find((r) => r.id === role);
   const theme = schoolTheme(school);
+  const brandText = darkMode ? theme.textOnDark : theme.text; // the school colour as text, readable on the page it sits on
 
   // No school chosen on this device yet: choose it first.
   useEffect(() => {
@@ -128,7 +129,7 @@ export default function Login() {
 
       <div style={s.card}>
         <div style={s.titleRow}>
-          <span aria-hidden style={{ ...s.titleIcon, background: theme.soft, color: theme.text }}>
+          <span aria-hidden style={{ ...s.titleIcon, background: theme.soft, color: brandText }}>
             <GraduationCap size={22} strokeWidth={2} />
           </span>
           <div>
@@ -145,7 +146,7 @@ export default function Login() {
                 onClick={() => { setRole(r.id); setError(""); setIdentifier(""); v.setErrors({}); }}
                 style={{
                   ...s.roleBtn,
-                  ...(active ? { background: theme.button, color: "#fff", textShadow: theme.buttonTextShadow, boxShadow: `0 6px 16px ${theme.glow}`, transform: "translateY(-1px)" } : {}),
+                  ...(active ? { background: theme.button, color: "#fff", borderColor: "transparent", textShadow: theme.buttonTextShadow, boxShadow: `0 6px 16px ${theme.glow}`, transform: "translateY(-1px)" } : {}),
                 }}>
                 <r.icon aria-hidden size={19} strokeWidth={2} />
                 <span style={{ fontSize: 11, fontWeight: 700 }}>{r.label}</span>
@@ -170,14 +171,14 @@ export default function Login() {
             onKeyDown={(e) => e.key === "Enter" && handleLogin()} placeholder="Enter your password"
             style={s.input} className="ea-input-bare" autoComplete="current-password" />
         ), (
-          <button type="button" onClick={() => setShowPassword((p) => !p)} aria-label={showPassword ? "Hide password" : "Show password"} style={{ ...s.showBtn, color: theme.text }}>
+          <button type="button" onClick={() => setShowPassword((p) => !p)} aria-label={showPassword ? "Hide password" : "Show password"} style={{ ...s.showBtn, color: brandText }}>
             {showPassword ? "Hide" : "Show"}
           </button>
         ), !!v.errors.password)}
         <FieldError id={v.errorId("password")}>{v.errors.password}</FieldError>
 
         <div style={{ textAlign: "right", margin: "10px 0 16px" }}>
-          <button type="button" style={{ ...s.forgot, color: theme.text }} onClick={() => navigate(`/forgot-password?role=${role}`)}>Forgot password?</button>
+          <button type="button" style={{ ...s.forgot, color: brandText }} onClick={() => navigate(`/forgot-password?role=${role}`)}>Forgot password?</button>
         </div>
 
         {error && <div role="alert" style={s.err}><AlertCircle aria-hidden size={16} style={{ flexShrink: 0, marginTop: 1 }} />{error}</div>}
@@ -193,7 +194,7 @@ export default function Login() {
         </button>
 
         <div style={{ ...s.schoolRow, background: alpha(theme.primary, 0.06), border: `1px dashed ${alpha(theme.primary, 0.3)}` }}>
-          <span>School code <strong style={{ color: theme.text, letterSpacing: 1 }}>{school.code}</strong></span>
+          <span>School code <strong style={{ color: brandText, letterSpacing: 1 }}>{school.code}</strong></span>
           <button onClick={changeSchool} style={s.changeBtn}>Change school</button>
         </div>
         <p style={s.footer}>Powered by <strong>EduAmigo</strong></p>
@@ -216,7 +217,7 @@ const s = {
   heading: { fontSize: 19, fontWeight: 800, color: "var(--text)", margin: "0 0 2px", letterSpacing: -0.2 },
   sub: { fontSize: 12.5, color: "var(--subtext)", margin: 0 },
   roles: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, marginBottom: 20 },
-  roleBtn: { padding: "9px 2px 8px", border: "none", borderRadius: 14, background: "var(--input)", color: "var(--subtext)", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, transition: "all .18s ease" },
+  roleBtn: { padding: "9px 2px 8px", border: "1px solid var(--ea-control-border)", borderRadius: 14, background: "var(--input)", color: "var(--text)", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, transition: "all .18s ease" },
   label: { fontSize: 12, fontWeight: 700, color: "var(--text)", display: "block", marginBottom: 6, letterSpacing: 0.2 },
   input: { flex: 1, minWidth: 0, height: "100%", border: "none", outline: "none", background: "transparent", fontSize: 14, color: "var(--text)", colorScheme: "dark light" },
   showBtn: { background: "none", border: "none", fontSize: 12, fontWeight: 800, cursor: "pointer", padding: "7px 8px" },

@@ -101,7 +101,7 @@ export default function FeeStructure() {
     <label style={{ display:"block" }}>
       <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
       <input id={`fee-${key}`} type={type} value={form[key]||""} onChange={e => f(key, e.target.value)} placeholder={placeholder} {...fe.invalid(key)}
-        style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
+        style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
         onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
       <FieldError id={`fee-${key}-error`}>{fe.errors[key]}</FieldError>
     </label>
@@ -109,7 +109,7 @@ export default function FeeStructure() {
   const sel = (label, key, options) => (
     <label style={{ display:"block" }}>
       <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
-      <select id={`fee-${key}`} value={form[key]||""} onChange={e => f(key, e.target.value)} {...fe.invalid(key)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
+      <select id={`fee-${key}`} value={form[key]||""} onChange={e => f(key, e.target.value)} {...fe.invalid(key)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
         <option value="">Select</option>
         {options.map(o => <option key={o} value={o}>{o}</option>)}
       </select>
@@ -192,7 +192,7 @@ export default function FeeStructure() {
                       <button className="act-btn" onClick={() => handleApply(s)} disabled={applyingId === s._id}
                         style={{ padding:"6px 12px", borderRadius:8, border:"none", background:"#ECFDF5", color:"#047857", fontSize:12, fontWeight:700, cursor:"pointer" }}>{applyingId === s._id ? "Applying..." : "Apply"}</button>
                       <button className="act-btn" onClick={() => openEdit(s)}
-                        style={{ padding:"6px 14px", borderRadius:8, border:"1px solid #E2E8F0", background:"white", color:"#374151", fontSize:12, fontWeight:700, cursor:"pointer" }}>Edit</button>
+                        style={{ padding:"6px 14px", borderRadius:8, border:"1px solid var(--ea-edge)", background:"white", color:"#374151", fontSize:12, fontWeight:700, cursor:"pointer" }}>Edit</button>
                       <button className="act-btn" onClick={() => setDeleteId(s._id)}
                         style={{ padding:"6px 12px", borderRadius:8, border:"none", background:"#FEF2F2", color:"#B91C1C", fontSize:12, fontWeight:700, cursor:"pointer" }}>Del</button>
                     </div>
@@ -222,10 +222,10 @@ export default function FeeStructure() {
           <div>
             <label htmlFor="fee-description" style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6 }}>DESCRIPTION</label>
             <textarea id="fee-description" value={form.description||""} onChange={e => f("description", e.target.value)} placeholder="Optional..."
-              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", resize:"vertical", minHeight:70 }} />
+              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", resize:"vertical", minHeight:70 }} />
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
-            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
+            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid var(--ea-edge)", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
             <button onClick={handleSave} disabled={saving} className="ea-btn ea-btn--primary">
               {saving ? "Saving..." : "Save"}
             </button>
@@ -239,7 +239,7 @@ export default function FeeStructure() {
           <div style={{ fontSize:16, fontWeight:700, color:"#0F172A", marginBottom:8 }}>Are you sure?</div>
           <div style={{ fontSize:13, color:"var(--ea-muted)", marginBottom:24 }}>This fee structure will be permanently deleted.</div>
           <div style={{ display:"flex", gap:10, justifyContent:"center" }}>
-            <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
+            <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid var(--ea-edge)", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
             <button onClick={() => handleDelete(deleteId)} className="ea-btn ea-btn--danger">Delete</button>
           </div>
         </div>

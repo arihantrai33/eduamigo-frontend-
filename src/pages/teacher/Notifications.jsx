@@ -164,7 +164,7 @@ const styles = {
   },
   chip: {
     background: '#fff',
-    border: '1.5px solid #E0E0E0',
+    border: '1.5px solid var(--ea-edge)',
     borderRadius: 20,
     padding: '6px 14px',
     fontSize: 12,

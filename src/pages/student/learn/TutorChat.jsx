@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { Mic, MicOff, Send, Square, Volume2, VolumeX, Plus, History, Trash2, X, RotateCcw, Compass, Sparkles, Calculator, Lightbulb, Shapes, TrendingUp, WifiOff, Clock, AlertTriangle, Wrench } from "lucide-react";
+import { Mic, MicOff, Send, Square, Volume2, VolumeX, MoreHorizontal, Plus, History, Trash2, X, RotateCcw, Compass, Sparkles, Calculator, Lightbulb, Shapes, TrendingUp, WifiOff, Clock, AlertTriangle, Wrench } from "lucide-react";
 import { learningApi, streamChat, visibleWhileStreaming } from "./api";
 import AnswerView from "./AnswerView";
 import { useVoice, VOICE_LANGS } from "./useVoice";
 import { takeSentences } from "./speakable";
 import { toast, errorMessage, confirmAction } from "../../../utils/toast";
+import AiTutorArt from "./AiTutorArt";
 
 // AI Tutor, Guided Learning and Voice Learning in one conversation. Text and voice share the same conversation; the
 // answer streams in, can be stopped, and is read aloud sentence by sentence when voice is used (unless muted).
@@ -57,12 +58,28 @@ export default function TutorChat({ context, initialQuestion, onSuggest }) {
   const controller = useRef(null);
   const logRef = useRef(null);
   const inputRef = useRef(null);
+  const menuRef = useRef(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  // The ⋯ menu closes on a click elsewhere or Escape.
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    const away = (e) => { if (!menuRef.current?.contains(e.target)) setMenuOpen(false); };
+    const esc = (e) => { if (e.key === "Escape") setMenuOpen(false); };
+    document.addEventListener("pointerdown", away);
+    document.addEventListener("keydown", esc);
+    return () => { document.removeEventListener("pointerdown", away); document.removeEventListener("keydown", esc); };
+  }, [menuOpen]);
   const timing = useRef({});
   const sending = useRef(false); // set at once, before React re-renders: a double tap or Enter twice cannot send two requests
-  const voice = useVoice();
+  const voice = useVoice({ natural: !!context?.capabilities?.voice?.natural });
   const voiceDebug = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("voicedebug") === "1";
 
-  useEffect(() => { logRef.current?.scrollTo?.({ top: logRef.current.scrollHeight }); }, [messages]);
+  // While an answer is typed out, keep the bottom in view, unless the student has scrolled up to read.
+  const followAnswer = () => {
+    const el = logRef.current;
+    if (el && el.scrollHeight - el.scrollTop - el.clientHeight < 220) el.scrollTo?.({ top: el.scrollHeight });
+  };
+  useEffect(() => { if (messages.length) logRef.current?.scrollTo?.({ top: logRef.current.scrollHeight }); }, [messages]);
   useEffect(() => { if (initialQuestion) inputRef.current?.focus(); }, [initialQuestion]);
   // The box grows with what is typed, up to a limit, and shrinks again after sending.
   useEffect(() => {
@@ -84,7 +101,7 @@ export default function TutorChat({ context, initialQuestion, onSuggest }) {
     timing.current = { endedAt, firstText: null, firstAudio: null };
     const userMsg = { id: nextId(), role: "user", text: question, voice: spoken };
     const answerId = nextId();
-    setMessages((list) => [...list, userMsg, { id: answerId, role: "assistant", text: "", streaming: true, raw: "" }]);
+    setMessages((list) => [...list, userMsg, { id: answerId, role: "assistant", text: "", streaming: true, live: true, raw: "" }]);
     setBusy(true);
     const mine = new AbortController();
     controller.current = mine;
@@ -197,7 +214,7 @@ export default function TutorChat({ context, initialQuestion, onSuggest }) {
       <div className="ea-learn__toolbar">
         <label className="ea-learn__field">
           <span className="ea-sr-only">Subject</span>
-          <select className="ea-select" value={subject} onChange={(e) => setSubject(e.target.value)} aria-label="Subject">
+          <select className="ea-select ea-learn__sm" value={subject} onChange={(e) => setSubject(e.target.value)} aria-label="Subject">
             <option value="">Any subject</option>
             {(context?.subjects || []).map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
@@ -247,8 +264,8 @@ export default function TutorChat({ context, initialQuestion, onSuggest }) {
           </div>
         )}
         {messages.length === 0 && !aiOff && (
-          <div className="ea-learn__empty">
-            <span className="ea-learn__hero-icon" aria-hidden="true"><Sparkles size={24} /></span>
+          <div className="ea-learn__empty ea-learn__welcome">
+            <AiTutorArt />
             <h2 className="ea-learn__empty-title">Ask anything from your subjects</h2>
             <p className="ea-learn__muted">I explain step by step, check calculations, and use your teachers' notes when they cover the topic. Turn on Guided Learning to solve a problem one step at a time.</p>
             <ul className="ea-learn__starters">
@@ -270,7 +287,7 @@ export default function TutorChat({ context, initialQuestion, onSuggest }) {
             <span className="ea-learn__avatar" aria-hidden="true"><Sparkles size={15} /></span>
             <div className="ea-learn__bubble is-ai">
               {m.streaming && !m.text && <span className="ea-learn__typing"><i /><i /><i /><span className="ea-sr-only">Thinking…</span></span>}
-              {m.text && <AnswerView msg={m} idPrefix={m.id} />}
+              {m.text && <AnswerView msg={m} idPrefix={m.id} onGrow={followAnswer} />}
               {m.stopped && <p className="ea-learn__muted">Stopped.</p>}
               {m.suggest?.action === "practice" && (
                 <button type="button" className="ea-btn ea-btn--primary" onClick={() => onSuggest?.(m.suggest)}>Start practice{m.suggest.topic ? `: ${m.suggest.topic}` : ""} ({m.suggest.count} questions)</button>
@@ -312,34 +329,56 @@ export default function TutorChat({ context, initialQuestion, onSuggest }) {
       )}
       {voice.noHindiVoice && <p className="ea-learn__muted ea-learn__note">This device has no Hindi voice installed, so Hindi answers may sound unclear. You can read the written answer, or add a Hindi voice in your device's speech settings.</p>}
 
-      <form className="ea-learn__composer" onSubmit={(e) => { e.preventDefault(); send(input); }}>
-        <label className="ea-sr-only" htmlFor="ea-learn-input">Your question</label>
-        <textarea id="ea-learn-input" ref={inputRef} className="ea-learn__input" rows={1} maxLength={2000} value={input} placeholder="Type your question…"
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={onComposerKey} />
-        <div className="ea-learn__composer-actions">
-          {voice.supported.listen ? (
-            <>
-              <select className="ea-select ea-learn__lang" value={voiceLang} onChange={(e) => setVoiceLang(e.target.value)} aria-label="Language you will speak">
-                {VOICE_LANGS.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}
-              </select>
+      <div className="ea-learn__dock">
+        <form className="ea-learn__composer" onSubmit={(e) => { e.preventDefault(); send(input); }}>
+          <label className="ea-sr-only" htmlFor="ea-learn-input">Your question</label>
+          <textarea id="ea-learn-input" ref={inputRef} className="ea-learn__input" rows={1} maxLength={2000} value={input} placeholder="Type your question…"
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={onComposerKey} />
+          <div className="ea-learn__composer-actions">
+            {(voice.supported.speak || voice.supported.listen) && (
+              <div className="ea-learn__more" ref={menuRef}>
+                <button type="button" className="ea-btn ea-btn--ghost" aria-haspopup="true" aria-expanded={menuOpen} aria-label="More voice options" onClick={() => setMenuOpen((o) => !o)}>
+                  <MoreHorizontal size={18} aria-hidden="true" />
+                </button>
+                {menuOpen && (
+                  <div className="ea-learn__menu" role="group" aria-label="Voice options">
+                    {voice.supported.speak && (
+                      <button type="button" className="ea-learn__menu-row" role="switch" aria-checked={!voice.muted} onClick={() => voice.setMuted(!voice.muted)}>
+                        {voice.muted ? <VolumeX size={16} aria-hidden="true" /> : <Volume2 size={16} aria-hidden="true" />}
+                        <span>Read answers aloud</span>
+                        <span className="ea-learn__switch" aria-hidden="true"><i /></span>
+                      </button>
+                    )}
+                    {voice.supported.listen && (
+                      <label className="ea-learn__menu-row ea-learn__menu-lang">
+                        <span>I will speak in</span>
+                        <select className="ea-select ea-learn__lang" value={voiceLang} onChange={(e) => setVoiceLang(e.target.value)} aria-label="Language you will speak">
+                          {VOICE_LANGS.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}
+                        </select>
+                      </label>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+            {voice.supported.listen && (
               <button type="button" className={`ea-btn ${listening ? "ea-btn--primary" : "ea-btn--ghost"}`} aria-pressed={listening}
                 aria-label={listening ? "Stop listening" : "Ask with your voice"} onClick={() => { if (listening) { voice.stopListening(); return; } if (busy) stop(); startVoice(); }}>
                 {listening ? <MicOff size={18} aria-hidden="true" /> : <Mic size={18} aria-hidden="true" />}
               </button>
-            </>
-          ) : <span className="ea-learn__muted ea-learn__novoice">Voice input is not available in this browser; typing works.</span>}
-          {voice.supported.speak && (
-            <button type="button" className="ea-btn ea-btn--ghost" aria-pressed={voice.muted} aria-label={voice.muted ? "Turn spoken answers on" : "Mute spoken answers"} onClick={() => voice.setMuted(!voice.muted)}>
-              {voice.muted ? <VolumeX size={18} aria-hidden="true" /> : <Volume2 size={18} aria-hidden="true" />}
-            </button>
-          )}
-          {busy
-            ? <button type="button" className="ea-btn ea-btn--primary" onClick={stop} aria-label="Stop the answer"><Square size={16} aria-hidden="true" /> <span className="ea-learn__btn-text">Stop</span></button>
-            : <button type="submit" className="ea-btn ea-btn--primary" disabled={!input.trim()} aria-label="Send"><Send size={16} aria-hidden="true" /> <span className="ea-learn__btn-text">Send</span></button>}
+            )}
+            {busy
+              ? <button type="button" className="ea-btn ea-btn--primary" onClick={stop} aria-label="Stop the answer"><Square size={16} aria-hidden="true" /> <span className="ea-learn__btn-text">Stop</span></button>
+              : <button type="submit" className="ea-btn ea-btn--primary" disabled={!input.trim()} aria-label="Send"><Send size={16} aria-hidden="true" /> <span className="ea-learn__btn-text">Send</span></button>}
+          </div>
+        </form>
+        {/* Under the box: the one line that matters, the tutor's limits. Language and spoken answers live in the ⋯ menu. */}
+        <div className="ea-learn__under">
+          {!voice.supported.listen && <span className="ea-learn__muted ea-learn__novoice">Voice input is not available in this browser; typing works.</span>}
+          <p className="ea-learn__hint">The tutor can make mistakes: check important answers with your teacher.</p>
         </div>
-        <p className="ea-learn__hint">Enter to send, Shift+Enter for a new line, Esc to stop. The tutor can make mistakes: check important answers with your teacher.</p>
-      </form>
+      </div>
     </section>
   );
 }

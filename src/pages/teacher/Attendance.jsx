@@ -193,7 +193,7 @@ export default function TeacherAttendance() {
           {/* Date */}
           <label htmlFor="attendance-date" style={{ display: "block", fontSize: 13, fontWeight: 700, color: "#1C2033", marginBottom: 8 }}>Date</label>
           <input id="attendance-date" type="date" value={filters.date} onChange={e => setFilters(f => ({ ...f, date: e.target.value }))}
-            style={{ padding: "9px 12px", borderRadius: 10, border: "1px solid #E5E7EB", fontSize: 13, outline: "none", background: "#F9FAFB", width: "100%", boxSizing: "border-box" }} />
+            style={{ padding: "9px 12px", borderRadius: 10, border: "1px solid var(--ea-edge)", fontSize: 13, outline: "none", background: "#F9FAFB", width: "100%", boxSizing: "border-box" }} />
         </div>
 
         {/* Stats */}

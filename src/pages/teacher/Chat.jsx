@@ -414,7 +414,7 @@ const styles = {
   },
   textInput: {
     flex: 1,
-    border: '1.5px solid #E0E0E0',
+    border: '1.5px solid var(--ea-edge)',
     borderRadius: 12,
     padding: '10px 12px',
     fontSize: 14,

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { Sparkles } from "lucide-react";
 import PortalHeader from "../../../components/ui/PortalHeader";
 import BottomNav from "../../../layout/BottomNav";
 import { learningApi } from "./api";
@@ -57,6 +58,9 @@ export default function Learn() {
 
   return (
     <div className="ea-learn">
+      {/* One header panel on a desktop: the title and class on the left, the four sections on the right. */}
+      <div className="ea-learn__head">
+      <span className="ea-learn__head-icon" aria-hidden="true"><Sparkles size={22} /></span>
       <PortalHeader title="Learning AI" subtitle={context ? `Class ${context.class}-${context.section}` : "Your study companion"} onBack={() => navigate("/student/home")} />
       <div className="ea-learn__tabs">
       <div className="ea-seg" role="tablist" aria-label="Learning AI" onKeyDown={onKey}>
@@ -66,6 +70,7 @@ export default function Learn() {
             {t.label}
           </button>
         ))}
+      </div>
       </div>
       </div>
       <div className="ea-learn__panel" role="tabpanel" id={`learn-panel-${tab}`} aria-labelledby={`learn-tab-${tab}`}>

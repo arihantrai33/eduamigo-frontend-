@@ -45,6 +45,19 @@ export async function streamChat(body, { signal, onEvent }) {
   if (buffer.trim()) { try { onEvent(JSON.parse(buffer)); } catch { /* ignore */ } }
 }
 
+// One piece of the answer in the server's natural voice: resolves with the audio (a WAV blob). Rejects with an Error that has
+// the HTTP status (503 when the voice is off or failed, 429 at a limit), so the caller can fall back to the device's voice.
+export async function fetchSpeech(text, signal) {
+  const res = await fetch(`${API}/learning/speak`, {
+    method: "POST",
+    headers: { ...headers(), "Content-Type": "application/json" },
+    body: JSON.stringify({ text }),
+    signal,
+  });
+  if (!res.ok) throw Object.assign(new Error(`Speech request failed with status ${res.status}`), { status: res.status });
+  return res.blob();
+}
+
 // While an answer is still streaming, hidden blocks (```check, ```diagram) may be half written: hide them until the final
 // answer arrives with them taken out.
 export function visibleWhileStreaming(text) {

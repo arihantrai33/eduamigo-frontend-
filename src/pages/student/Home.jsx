@@ -204,12 +204,12 @@ style={{ background: "var(--card)", borderRadius: 14, padding: 14, border: "none
           ) : (
 timetable.slice(0, 4).map((c, i) => (
 <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 0", borderBottom: i < 3 ? "1px solid var(--ea-line)" : "none" }}>
-<div style={{ minWidth: 44, background: "var(--bg)", borderRadius: 8, padding: 4, textAlign: "center", fontSize: 11, fontWeight: 700, color: "var(--subtext)" }}>
+<div style={{ flex: "none", width: 104, background: "var(--bg)", borderRadius: 8, padding: "5px 4px", textAlign: "center", fontSize: 11, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: "var(--subtext)" }}>
 {c.time ?? "—"}
 </div>
 <div style={{ flex: 1 }}>
 <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text)" }}>{c.subject}</div>
-<div style={{ fontSize: 11, color: "var(--subtext)" }}>{c.teacher?.name ?? c.teacherName ?? "—"}{c.room ? ` • ${c.room}` : ""}</div>
+{(c.teacher?.name ?? c.teacherName ?? c.room) && <div style={{ fontSize: 12, color: "var(--subtext)" }}>{[c.teacher?.name ?? c.teacherName, c.room].filter(Boolean).join(" • ")}</div>}
 </div>
 </div>
             ))

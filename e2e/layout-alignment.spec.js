@@ -157,11 +157,28 @@ for (const [width, height] of [[1440, 900], [1280, 800], [1024, 768], [768, 1024
     await page.goto('/student/learn');
     await page.waitForLoadState('networkidle');
     const card = await page.locator('.ea-learn__tutor').boundingBox();
-    const box = await page.locator('.ea-learn__composer').boundingBox();
+    const box = await page.locator('.ea-learn__dock').boundingBox(); // the typing row plus the language and note under it
     const input = page.getByLabel('Your question');
     await expect(input).toBeVisible();
     // The composer ends within one margin of the card's bottom edge, and the card ends within the visible screen.
     expect(card.y + card.height - (box.y + box.height)).toBeLessThanOrEqual(18);
+    const row = await page.locator('.ea-learn__composer').boundingBox();
+    expect(row.height).toBeLessThanOrEqual(64); // a compact row, not a tall block
+    // The language and the spoken-answers switch live in the ⋯ menu beside the mic, not under the box.
+    await expect(page.getByLabel('Language you will speak')).toHaveCount(0);
+    const more = page.getByRole('button', { name: 'More voice options' });
+    if (await more.count()) {
+      const m = await more.boundingBox();
+      const mic = await page.getByRole('button', { name: 'Ask with your voice' }).boundingBox().catch(() => null);
+      if (mic) expect(m.x + m.width).toBeLessThanOrEqual(mic.x + 1); // the dots sit just left of the mic
+      await more.click();
+      await expect(page.getByLabel('Language you will speak')).toBeVisible();
+      await expect(page.getByRole('switch', { name: 'Read answers aloud' })).toBeVisible();
+      await page.keyboard.press('Escape');
+      await expect(page.getByLabel('Language you will speak')).toHaveCount(0);
+    }
+    // The keyboard-shortcut line is gone; the tutor's limits stay.
+    await expect(page.getByText(/Enter to send/)).toHaveCount(0);
     expect(card.y + card.height).toBeLessThanOrEqual(height);
     expect(box.x).toBeGreaterThanOrEqual(card.x);
     expect(box.x + box.width).toBeLessThanOrEqual(card.x + card.width);

@@ -128,12 +128,12 @@ export default function Attendance() {
       </div>
 
       {/* Filters */}
-      <div style={{ background: "white", borderRadius: 16, padding: "20px 24px", boxShadow: "0 4px 20px rgba(15,23,42,0.07)", border: "1px solid #E2E8F0", marginBottom: 24, animation: "fadeUp 0.4s ease 0.05s both" }}>
+      <div style={{ background: "white", borderRadius: 16, padding: "20px 24px", boxShadow: "0 4px 20px rgba(15,23,42,0.07)", border: "1px solid var(--ea-edge)", marginBottom: 24, animation: "fadeUp 0.4s ease 0.05s both" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr auto", gap: 16, alignItems: "end" }}>
           <div>
             <div style={{ fontSize: 11, fontWeight: 700, color: "#94A3B8", marginBottom: 8, letterSpacing: "0.06em" }}>CLASS</div>
             <select value={selectedClass} onChange={e => setSelectedClass(e.target.value)}
-              style={{ width: "100%", padding: "11px 14px", borderRadius: 12, border: "1.5px solid #E2E8F0", fontSize: 13, fontWeight: 600, outline: "none", background: "white", cursor: "pointer" }}>
+              style={{ width: "100%", padding: "11px 14px", borderRadius: 12, border: "1.5px solid var(--ea-edge)", fontSize: 13, fontWeight: 600, outline: "none", background: "white", cursor: "pointer" }}>
               <option value="">Select Class</option>
               {classes.map(c => <option key={c} value={c}>Class {c}</option>)}
             </select>
@@ -141,7 +141,7 @@ export default function Attendance() {
           <div>
             <div style={{ fontSize: 11, fontWeight: 700, color: "#94A3B8", marginBottom: 8, letterSpacing: "0.06em" }}>SECTION</div>
             <select value={selectedSection} onChange={e => setSelectedSection(e.target.value)} disabled={!selectedClass}
-              style={{ width: "100%", padding: "11px 14px", borderRadius: 12, border: "1.5px solid #E2E8F0", fontSize: 13, fontWeight: 600, outline: "none", background: selectedClass ? "white" : "#F8FAFC", cursor: selectedClass ? "pointer" : "not-allowed", opacity: selectedClass ? 1 : 0.6 }}>
+              style={{ width: "100%", padding: "11px 14px", borderRadius: 12, border: "1.5px solid var(--ea-edge)", fontSize: 13, fontWeight: 600, outline: "none", background: selectedClass ? "white" : "#F8FAFC", cursor: selectedClass ? "pointer" : "not-allowed", opacity: selectedClass ? 1 : 0.6 }}>
               <option value="">Select Section</option>
               {sections.map(s => <option key={s} value={s}>Section {s}</option>)}
             </select>
@@ -149,7 +149,7 @@ export default function Attendance() {
           <div>
             <div style={{ fontSize: 11, fontWeight: 700, color: "#94A3B8", marginBottom: 8, letterSpacing: "0.06em" }}>DATE</div>
             <input type="date" value={date} onChange={e => setDate(e.target.value)}
-              style={{ width: "100%", padding: "11px 14px", borderRadius: 12, border: "1.5px solid #E2E8F0", fontSize: 13, fontWeight: 600, outline: "none", boxSizing: "border-box", fontFamily: "inherit" }} />
+              style={{ width: "100%", padding: "11px 14px", borderRadius: 12, border: "1.5px solid var(--ea-edge)", fontSize: 13, fontWeight: 600, outline: "none", boxSizing: "border-box", fontFamily: "inherit" }} />
           </div>
           {students.length > 0 && (
             <div style={{ display: "flex", gap: 8 }}>
@@ -176,7 +176,7 @@ export default function Attendance() {
 
       {/* Progress Bar */}
       {students.length > 0 && (
-        <div style={{ background: "white", borderRadius: 16, padding: "16px 24px", boxShadow: "0 4px 20px rgba(15,23,42,0.07)", border: "1px solid #E2E8F0", marginBottom: 24, animation: "fadeUp 0.4s ease 0.2s both" }}>
+        <div style={{ background: "white", borderRadius: 16, padding: "16px 24px", boxShadow: "0 4px 20px rgba(15,23,42,0.07)", border: "1px solid var(--ea-edge)", marginBottom: 24, animation: "fadeUp 0.4s ease 0.2s both" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: "#0F172A" }}>Attendance Rate</div>
             <div style={{ fontSize: 22, fontWeight: 900, color: pct >= 75 ? "#10B981" : "#EF4444" }}>{pct}%</div>
@@ -189,14 +189,14 @@ export default function Attendance() {
 
       {/* Student List */}
       {!selectedClass || !selectedSection ? (
-        <div style={{ background: "white", borderRadius: 20, padding: "80px 40px", textAlign: "center", boxShadow: "0 4px 20px rgba(15,23,42,0.07)", border: "1px solid #E2E8F0", animation: "fadeUp 0.4s ease 0.1s both" }}>
+        <div style={{ background: "white", borderRadius: 20, padding: "80px 40px", textAlign: "center", boxShadow: "0 4px 20px rgba(15,23,42,0.07)", border: "1px solid var(--ea-edge)", animation: "fadeUp 0.4s ease 0.1s both" }}>
           <div style={{ fontSize: 56, marginBottom: 16 }}><Glyph e="📋" /></div>
           <div style={{ fontSize: 18, fontWeight: 700, color: "#94A3B8", marginBottom: 8 }}>Select Class and Section</div>
           <div style={{ fontSize: 13, color: "#CBD5E1" }}>Choose a class and section to load students and mark attendance</div>
         </div>
       ) : loading ? (
-        <div style={{ background: "white", borderRadius: 20, padding: "80px 40px", textAlign: "center", boxShadow: "0 4px 20px rgba(15,23,42,0.07)", border: "1px solid #E2E8F0" }}>
-          <div style={{ width: 40, height: 40, borderRadius: "50%", border: "3px solid #E2E8F0", borderTop: "3px solid var(--brand)", animation: "spin 0.8s linear infinite", margin: "0 auto 16px" }} />
+        <div style={{ background: "white", borderRadius: 20, padding: "80px 40px", textAlign: "center", boxShadow: "0 4px 20px rgba(15,23,42,0.07)", border: "1px solid var(--ea-edge)" }}>
+          <div style={{ width: 40, height: 40, borderRadius: "50%", border: "3px solid var(--ea-edge)", borderTop: "3px solid var(--brand)", animation: "spin 0.8s linear infinite", margin: "0 auto 16px" }} />
           <div style={{ color: "#94A3B8", fontSize: 13, fontWeight: 600 }}>Loading students...</div>
         </div>
       ) : students.length === 0 ? (

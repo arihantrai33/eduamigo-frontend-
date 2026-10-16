@@ -79,7 +79,7 @@ function OnlinePayments() {
         <Field text="Key Secret"><input className="ea-input" type="password" value={form.keySecret} onChange={e => setForm({ ...form, keySecret: e.target.value })} placeholder={cfg.hasKeySecret ? "Saved. Type to replace" : "Paste the key secret"} autoComplete="new-password" /></Field>
         <Field text="Webhook Secret"><input className="ea-input" type="password" value={form.webhookSecret} onChange={e => setForm({ ...form, webhookSecret: e.target.value })} placeholder={cfg.hasWebhookSecret ? "Saved. Type to replace" : "Secret you set on the webhook"} autoComplete="new-password" /></Field>
       </div>
-      <div style={{ marginTop: 12, fontSize: 12, color: "#475569", background: "#F8FAFC", border: "1px solid #E2E8F0", borderRadius: 8, padding: "10px 12px", lineHeight: 1.6 }}>
+      <div style={{ marginTop: 12, fontSize: 12, color: "#475569", background: "#F8FAFC", border: "1px solid var(--ea-edge)", borderRadius: 8, padding: "10px 12px", lineHeight: 1.6 }}>
         In Razorpay Dashboard → Webhooks, add this URL with the events <b>payment.captured</b>, <b>order.paid</b> and <b>payment.failed</b>, and use the same webhook secret as above:
         <div style={{ fontFamily: "monospace", fontSize: 12, marginTop: 4, wordBreak: "break-all", color: "#0F172A" }}>{url}</div>
       </div>

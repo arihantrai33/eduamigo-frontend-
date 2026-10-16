@@ -247,7 +247,7 @@ export default function Chat() {
   }
 
   return (
-    <div style={{ fontFamily: "inherit", display: "flex", height: "calc(100vh - 80px)", borderRadius: "var(--ea-radius-lg)", overflow: "hidden", border: "1px solid var(--ea-line)", boxShadow: "var(--ea-shadow)", background: "var(--ea-surface)" }}>
+    <div style={{ fontFamily: "inherit", display: "flex", height: "calc(100vh - 80px)", borderRadius: "var(--ea-radius-lg)", overflow: "hidden", border: "1px solid var(--ea-edge)", boxShadow: "var(--ea-shadow)", background: "var(--ea-surface)" }}>
       <style>{`
         @keyframes fadeIn  { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
         @keyframes spin    { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
@@ -386,14 +386,14 @@ export default function Chat() {
                 </div>
               ) : messages.length === 0 ? (
                 <div style={{ margin: "auto", textAlign: "center" }}>
-                  <div style={{ width: 68, height: 68, borderRadius: 20, background: "white", border: "1px solid #E2E8F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, margin: "0 auto 14px", boxShadow: "0 4px 16px rgba(15,23,42,0.06)" }}><Glyph e="💬" /></div>
+                  <div style={{ width: 68, height: 68, borderRadius: 20, background: "white", border: "1px solid var(--ea-edge)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, margin: "0 auto 14px", boxShadow: "0 4px 16px rgba(15,23,42,0.06)" }}><Glyph e="💬" /></div>
                   <div style={{ fontSize: 15, fontWeight: 700, color: "#0F172A", marginBottom: 4 }}>No messages yet</div>
                   <div style={{ fontSize: 12, color: "var(--ea-muted)" }}>Send the first message to {selected.name}</div>
                 </div>
               ) : groupByDate(messages).map((item, i) => {
                 if (item.type === "date") return (
                   <div key={"d"+i} style={{ textAlign: "center", margin: "10px 0 6px" }}>
-                    <span style={{ fontSize: 11, color: "var(--ea-muted)", fontWeight: 600, background: "white", border: "1px solid #E2E8F0", padding: "3px 14px", borderRadius: 20 }}>{item.label}</span>
+                    <span style={{ fontSize: 11, color: "var(--ea-muted)", fontWeight: 600, background: "white", border: "1px solid var(--ea-edge)", padding: "3px 14px", borderRadius: 20 }}>{item.label}</span>
                   </div>
                 );
                 const isMe = item.senderId?.toString() === adminId?.toString() || item.senderId === adminId;
@@ -428,12 +428,12 @@ export default function Chat() {
             <div style={{ padding: "14px 24px", background: "white", borderTop: "1px solid #F1F5F9" }}>
               <input ref={fileInputRef} type="file" style={{ display: "none" }} onChange={handleFileUpload}
                 accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" />
-              <div style={{ display: "flex", gap: 10, alignItems: "flex-end", background: "#F8FAFC", borderRadius: 14, padding: "8px 8px 8px 4px", border: "2.5px solid #E2E8F0", transition: "border-color 0.2s" }}
+              <div style={{ display: "flex", gap: 10, alignItems: "flex-end", background: "#F8FAFC", borderRadius: 14, padding: "8px 8px 8px 4px", border: "2.5px solid var(--ea-edge)", transition: "border-color 0.2s" }}
                 onFocusCapture={e => { e.currentTarget.style.borderColor = "var(--brand)"; e.currentTarget.style.borderWidth = "2.5px"; }}
                 onBlurCapture={e => e.currentTarget.style.borderColor = "#E2E8F0"}>
                 <button className="file-btn" onClick={() => fileInputRef.current?.click()} disabled={uploading}
                   style={{ width: 42, height: 42, borderRadius: 12, border: "none", background: "transparent", cursor: "pointer", fontSize: 24, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "var(--ea-muted)", transition: "background 0.15s ease" }}>
-                  {uploading ? <span style={{ width: 14, height: 14, border: "2px solid #E2E8F0", borderTop: "2px solid var(--brand)", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} /> : "+"}
+                  {uploading ? <span style={{ width: 14, height: 14, border: "2px solid var(--ea-edge)", borderTop: "2px solid var(--brand)", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} /> : "+"}
                 </button>
                 <textarea ref={inputRef} value={input} rows={1}
                   onChange={e => { setInput(e.target.value); e.target.style.height = "auto"; e.target.style.height = Math.min(e.target.scrollHeight, 100) + "px"; }}
@@ -454,7 +454,7 @@ export default function Chat() {
           </>
         ) : (
           <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 16 }}>
-            <div style={{ width: 88, height: 88, borderRadius: 26, background: "white", border: "1px solid #E2E8F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 40, boxShadow: "0 4px 24px rgba(15,23,42,0.07)" }}><Glyph e="💬" /></div>
+            <div style={{ width: 88, height: 88, borderRadius: 26, background: "white", border: "1px solid var(--ea-edge)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 40, boxShadow: "0 4px 24px rgba(15,23,42,0.07)" }}><Glyph e="💬" /></div>
             <div style={{ textAlign: "center" }}>
               <div style={{ fontSize: 18, fontWeight: 700, color: "#0F172A", marginBottom: 6 }}>Welcome to Messages</div>
               <div style={{ fontSize: 13, color: "var(--ea-muted)" }}>Select a contact from the sidebar to start a conversation</div>

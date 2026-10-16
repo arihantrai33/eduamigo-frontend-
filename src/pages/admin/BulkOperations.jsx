@@ -172,7 +172,7 @@ export default function BulkOperations() {
 
   // `key`: the field's name for its message under it (and its id, "bulk-<key>").
   const select = (value, onChange, options, placeholder, key) => (
-    <select id={key ? `bulk-${key}` : undefined} value={value} onChange={e => { onChange(e.target.value); if (key) fe.clear(key); }} {...(key ? fe.invalid(key) : {})} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer" }}>
+    <select id={key ? `bulk-${key}` : undefined} value={value} onChange={e => { onChange(e.target.value); if (key) fe.clear(key); }} {...(key ? fe.invalid(key) : {})} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, fontWeight:600, outline:"none", background:"white", cursor:"pointer" }}>
       <option value="">{placeholder}</option>
       {options.map(o => <option key={o} value={o}>{o}</option>)}
     </select>
@@ -208,7 +208,7 @@ export default function BulkOperations() {
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr", gap:12 }}>
             <label style={fieldStyle}>{label("CLASS")}{select(attClass, v => { setAttClass(v); setAttSection(""); }, classes, "Select Class", "attClass")}{err("attClass")}</label>
             <label style={fieldStyle}>{label("SECTION")}{select(attSection, setAttSection, sections(attClass), "All Sections")}</label>
-            <label style={fieldStyle}>{label("DATE")}<input id="bulk-attDate" type="date" value={attDate} onChange={e => { setAttDate(e.target.value); fe.clear("attDate"); }} {...fe.invalid("attDate")} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", boxSizing:"border-box" }} />{err("attDate")}</label>
+            <label style={fieldStyle}>{label("DATE")}<input id="bulk-attDate" type="date" value={attDate} onChange={e => { setAttDate(e.target.value); fe.clear("attDate"); }} {...fe.invalid("attDate")} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, fontWeight:600, outline:"none", boxSizing:"border-box" }} />{err("attDate")}</label>
             <label style={fieldStyle}>{label("STATUS")}{select(attStatus, setAttStatus, ["Present","Absent","Late"], "Status")}</label>
           </div>
           {attClass && (
@@ -230,8 +230,8 @@ export default function BulkOperations() {
             <label style={fieldStyle}>{label("FROM CLASS")}{select(fromClass, v => { setFromClass(v); setFromSection(""); }, classes, "From Class", "fromClass")}{err("fromClass")}</label>
             <label style={fieldStyle}>{label("FROM SECTION")}{select(fromSection, setFromSection, sections(fromClass), "Section", "fromSection")}{err("fromSection")}</label>
             <div aria-hidden="true" style={{ display:"flex", alignItems:"center", paddingBottom:4, fontSize:22 }}>→</div>
-            <label style={fieldStyle}>{label("TO CLASS")}<input id="bulk-toClass" value={toClass} onChange={e => { setToClass(e.target.value); fe.clear("toClass"); }} {...fe.invalid("toClass")} placeholder="e.g. 9" style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", boxSizing:"border-box" }} />{err("toClass")}</label>
-            <label style={fieldStyle}>{label("TO SECTION")}<input id="bulk-toSection" value={toSection} onChange={e => { setToSection(e.target.value); fe.clear("toSection"); }} {...fe.invalid("toSection")} placeholder="e.g. A" style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none", boxSizing:"border-box" }} />{err("toSection")}</label>
+            <label style={fieldStyle}>{label("TO CLASS")}<input id="bulk-toClass" value={toClass} onChange={e => { setToClass(e.target.value); fe.clear("toClass"); }} {...fe.invalid("toClass")} placeholder="e.g. 9" style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, fontWeight:600, outline:"none", boxSizing:"border-box" }} />{err("toClass")}</label>
+            <label style={fieldStyle}>{label("TO SECTION")}<input id="bulk-toSection" value={toSection} onChange={e => { setToSection(e.target.value); fe.clear("toSection"); }} {...fe.invalid("toSection")} placeholder="e.g. A" style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, fontWeight:600, outline:"none", boxSizing:"border-box" }} />{err("toSection")}</label>
           </div>
           {fromClass && fromSection && (
             <div style={{ padding:"12px 16px", borderRadius:12, background:"#FFF7ED", border:"1px solid #FED7AA" }}>
@@ -282,7 +282,7 @@ export default function BulkOperations() {
             ))}
           </div>
 
-          <div style={{ padding:16, borderRadius:12, background:"#F8FAFC", border:"1px solid #E2E8F0" }}>
+          <div style={{ padding:16, borderRadius:12, background:"#F8FAFC", border:"1px solid var(--ea-edge)" }}>
             <div style={{ fontSize:12, fontWeight:700, color:"var(--ea-muted)", marginBottom:8 }}>REQUIRED CSV COLUMNS:</div>
             <div style={{ fontSize:12, color:"var(--ea-muted)", fontFamily:"monospace", lineHeight:2 }}>
               {csvTab === "students"
@@ -306,7 +306,7 @@ export default function BulkOperations() {
           {csvPreview.length > 0 && (
             <div>
               <div style={{ fontSize:12, fontWeight:700, color:"var(--ea-muted)", marginBottom:8 }}>PREVIEW (first 5 rows) — {csvData.length} total rows</div>
-              <div style={{ overflowX:"auto", borderRadius:10, border:"1px solid #E2E8F0" }}>
+              <div style={{ overflowX:"auto", borderRadius:10, border:"1px solid var(--ea-edge)" }}>
                 <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12 }}>
                   <thead>
                     <tr style={{ background:"#F8FAFC" }}>

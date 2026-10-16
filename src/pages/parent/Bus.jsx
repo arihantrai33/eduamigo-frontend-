@@ -176,7 +176,7 @@ function CallModal({ onClose, name, phone }) {
         </div>
         <button
           onClick={() => { navigator.clipboard.writeText(phone); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
-          style={{ marginTop:"10px", width:"100%", padding:"10px", borderRadius:"12px", border:"1px solid #E2E8F0", background: copied?"#F0FDF4":"#F8FAFC", color: copied?"#16A34A":"var(--ea-muted)", fontSize:"13px", fontWeight:600, cursor:"pointer" }}
+          style={{ marginTop:"10px", width:"100%", padding:"10px", borderRadius:"12px", border:"1px solid var(--ea-edge)", background: copied?"#F0FDF4":"#F8FAFC", color: copied?"#16A34A":"var(--ea-muted)", fontSize:"13px", fontWeight:600, cursor:"pointer" }}
         >
           {copied ? "Copied" : "Copy Number"}
         </button>
@@ -674,7 +674,7 @@ const styles = {
   dragHandle:     { width:"36px", height:"4px", borderRadius:"2px", background:"var(--ea-line)", margin:"10px auto 8px" },
   stopsHeaderRow: { display:"flex", alignItems:"center", justifyContent:"space-between", paddingLeft:"20px", paddingRight:"20px" },
   stopsTitle:     { fontSize:"14px", fontWeight:700, color:"var(--ea-ink)" },
-  stopsBadge:     { fontSize:"11px", color:"var(--ea-muted)", background:"var(--ea-hover)", border:"1px solid var(--ea-line)", padding:"3px 10px", borderRadius:"20px", fontWeight:500 },
+  stopsBadge:     { fontSize:"11px", color:"var(--ea-muted)", background:"var(--ea-hover)", border:"1px solid var(--ea-edge)", padding:"3px 10px", borderRadius:"20px", fontWeight:500 },
   progressPill:   { position:"relative", width:"68px", height:"18px", background:"var(--ea-hover)", borderRadius:"10px", overflow:"hidden", display:"flex", alignItems:"center" },
   progressFill:   { position:"absolute", left:0, top:0, bottom:0, background:"linear-gradient(90deg, var(--brand-light), var(--brand))", borderRadius:"10px", transition:"width 0.5s ease" },
   progressText:   { position:"relative", zIndex:1, fontSize:"9px", fontWeight:700, color:"var(--ea-ink)", width:"100%", textAlign:"center", letterSpacing:"0.2px" },
@@ -682,9 +682,9 @@ const styles = {
   routeBar:       { height:"3px", background:"var(--ea-line)" },
   routeBarFill:   { height:"100%", background:"linear-gradient(90deg, var(--brand-light), var(--brand))", transition:"width 0.5s ease" },
   panelActionRow: { display:"flex", gap:"8px", padding:"10px 16px 4px" },
-  panelCallBtn:   { flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", padding:"9px 8px", borderRadius:"12px", fontSize:"11px", fontWeight:600, background:"var(--brand-soft)", color:"var(--brand-text)", border:"1px solid var(--brand-border)", cursor:"pointer" },
-  panelSchoolBtn: { flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", padding:"9px 8px", borderRadius:"12px", fontSize:"11px", fontWeight:600, background:"color-mix(in srgb, var(--ea-warning) 5%, var(--ea-surface))", color:"var(--ea-on-card-warning)", border:"1px solid #FED7AA", cursor:"pointer" },
-  panelSosBtn:    { display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", padding:"9px 14px", borderRadius:"12px", fontSize:"11px", fontWeight:700, background:"color-mix(in srgb, var(--ea-danger) 9%, var(--ea-surface))", color:"var(--ea-on-card-danger)", border:"1px solid color-mix(in srgb, var(--ea-danger) 30%, var(--ea-surface))", cursor:"pointer" },
+  panelCallBtn:   { flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", padding:"9px 8px", borderRadius:"12px", fontSize:"11px", fontWeight:600, background:"var(--brand-soft)", color:"var(--brand-text)", border:"1px solid color-mix(in srgb, var(--brand) 55%, var(--ea-surface))", cursor:"pointer" },
+  panelSchoolBtn: { flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", padding:"9px 8px", borderRadius:"12px", fontSize:"11px", fontWeight:600, background:"color-mix(in srgb, var(--ea-warning) 5%, var(--ea-surface))", color:"var(--ea-on-card-warning)", border:"1px solid color-mix(in srgb, var(--ea-warning) 55%, var(--ea-surface))", cursor:"pointer" },
+  panelSosBtn:    { display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", padding:"9px 14px", borderRadius:"12px", fontSize:"11px", fontWeight:700, background:"color-mix(in srgb, var(--ea-danger) 9%, var(--ea-surface))", color:"var(--ea-on-card-danger)", border:"1px solid color-mix(in srgb, var(--ea-on-card-danger) 75%, var(--ea-surface))", cursor:"pointer" },
   notifSection:   { padding:"12px 20px 0", borderTop:"1px solid #F1F5F9" },
   notifTitle:     { fontSize:"11px", fontWeight:700, color:"var(--ea-muted)", textTransform:"uppercase", letterSpacing:"0.5px", marginBottom:"8px" },
   notifRow:       { display:"flex", alignItems:"flex-start", gap:"10px", marginBottom:"8px" },

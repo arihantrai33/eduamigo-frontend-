@@ -160,7 +160,7 @@ export default function HRManagement() {
 
   const inp = (placeholder, key, type="text") => (
     <input id={`hr-${key}`} type={type} placeholder={placeholder} value={form[key]||""} onChange={e => f(key, e.target.value)} {...fe.invalid(key)}
-      style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />
+      style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />
   );
 
   return (
@@ -189,10 +189,10 @@ export default function HRManagement() {
         <div style={{ background:"white", borderRadius:20, padding:24, boxShadow:"0 4px 24px rgba(15,23,42,0.08)", border:"1px solid rgba(226,232,240,0.8)" }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:20 }}>
             <div style={{ display:"flex", gap:10, alignItems:"center" }}>
-              <select aria-label="Month" value={filterMonth} onChange={e => setFilterMonth(e.target.value)} style={{ padding:"9px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none" }}>
+              <select aria-label="Month" value={filterMonth} onChange={e => setFilterMonth(e.target.value)} style={{ padding:"9px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, fontWeight:600, outline:"none" }}>
                 {MONTHS.map((m,i) => <option key={i} value={i+1}>{m}</option>)}
               </select>
-              <select aria-label="Year" value={filterYear} onChange={e => setFilterYear(e.target.value)} style={{ padding:"9px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none" }}>
+              <select aria-label="Year" value={filterYear} onChange={e => setFilterYear(e.target.value)} style={{ padding:"9px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, fontWeight:600, outline:"none" }}>
                 {[0, 1, 2, 3].map(i => new Date().getFullYear() - 3 + i).map(y => <option key={y} value={y}>{y}</option>)}
               </select>
             </div>
@@ -250,7 +250,7 @@ export default function HRManagement() {
       {tab === "leaves" && (
         <div style={{ background:"white", borderRadius:20, padding:24, boxShadow:"0 4px 24px rgba(15,23,42,0.08)", border:"1px solid rgba(226,232,240,0.8)" }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:20 }}>
-            <select aria-label="Filter by status" value={filterStatus} onChange={e => setFilterStatus(e.target.value)} style={{ padding:"9px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none" }}>
+            <select aria-label="Filter by status" value={filterStatus} onChange={e => setFilterStatus(e.target.value)} style={{ padding:"9px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, fontWeight:600, outline:"none" }}>
               <option value="">All Statuses</option>
               {["Pending","Approved","Rejected"].map(s => <option key={s} value={s}>{s}</option>)}
             </select>
@@ -267,7 +267,7 @@ export default function HRManagement() {
           ) : (
             <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
               {leaves.map((l,i) => (
-                <div key={i} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"14px 18px", borderRadius:14, background:"#F8FAFC", border:"1px solid #E2E8F0" }}>
+                <div key={i} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"14px 18px", borderRadius:14, background:"#F8FAFC", border:"1px solid var(--ea-edge)" }}>
                   <div style={{ display:"flex", gap:16, alignItems:"center" }}>
                     <div style={{ width:40, height:40, borderRadius:"50%", background:"var(--brand-soft)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, color:"var(--brand-text)", fontWeight:800 }}>
                       {l.teacher?.name?.[0] || "?"}
@@ -301,18 +301,18 @@ export default function HRManagement() {
         title={`${editItem ? "Edit" : "Add"} ${tab === "salary" ? "Salary Record" : "Leave Request"}`}>
             <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
               {field("TEACHER",
-                <select id="hr-teacher" value={form.teacher||""} onChange={e => f("teacher", e.target.value)} {...fe.invalid("teacher")} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none" }}>
+                <select id="hr-teacher" value={form.teacher||""} onChange={e => f("teacher", e.target.value)} {...fe.invalid("teacher")} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, fontWeight:600, outline:"none" }}>
                   <option value="">Select Teacher</option>
                   {teachers.map(t => <option key={t._id} value={t._id}>{t.name} — {t.employeeId}</option>)}
                 </select>, err("teacher"))}
               {tab === "salary" ? <>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
                   {field("MONTH",
-                    <select value={form.month||""} onChange={e => f("month", e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none" }}>
+                    <select value={form.month||""} onChange={e => f("month", e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, fontWeight:600, outline:"none" }}>
                       {MONTHS.map((m,i) => <option key={i} value={i+1}>{m}</option>)}
                     </select>)}
                   {field("YEAR",
-                    <select value={form.year||""} onChange={e => f("year", e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none" }}>
+                    <select value={form.year||""} onChange={e => f("year", e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, fontWeight:600, outline:"none" }}>
                       {[0, 1, 2, 3].map(i => new Date().getFullYear() - 3 + i).map(y => <option key={y} value={y}>{y}</option>)}
                     </select>)}
                 </div>
@@ -322,14 +322,14 @@ export default function HRManagement() {
                   {field("DEDUCTIONS (₹)", inp("Deductions","deductions","number"))}
                 </div>
                 {field("STATUS",
-                  <select value={form.status||"Pending"} onChange={e => f("status", e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none" }}>
+                  <select value={form.status||"Pending"} onChange={e => f("status", e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, fontWeight:600, outline:"none" }}>
                     <option value="Pending">Pending</option>
                     <option value="Paid">Paid</option>
                   </select>)}
                 {field("REMARKS", inp("Optional remarks","remarks"))}
               </> : <>
                 {field("LEAVE TYPE",
-                  <select id="hr-leaveType" value={form.leaveType||""} onChange={e => f("leaveType", e.target.value)} {...fe.invalid("leaveType")} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, outline:"none" }}>
+                  <select id="hr-leaveType" value={form.leaveType||""} onChange={e => f("leaveType", e.target.value)} {...fe.invalid("leaveType")} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, fontWeight:600, outline:"none" }}>
                     <option value="">Select Type</option>
                     {LEAVE_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>, err("leaveType"))}

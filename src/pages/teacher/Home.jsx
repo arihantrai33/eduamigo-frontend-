@@ -265,7 +265,7 @@ const styles = {
   },
   scroll: { flex: 1, overflowY: 'auto', padding: '16px 16px 0' },
   heroCard: {
-    background: 'var(--ea-surface)', border: '1px solid var(--ea-line)', boxShadow: 'var(--ea-shadow)',
+    background: 'var(--ea-surface)', border: '1px solid var(--ea-edge)', boxShadow: 'var(--ea-shadow)',
     borderRadius: 16, padding: '20px', marginBottom: 16, color: 'var(--ea-ink)',
   },
   heroSub:      { fontSize: 12, color: 'var(--ea-muted)', marginBottom: 4 },

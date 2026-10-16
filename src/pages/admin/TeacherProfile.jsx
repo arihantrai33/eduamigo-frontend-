@@ -154,7 +154,7 @@ export default function TeacherProfile() {
 
         {/* Loading Skeleton */}
         {loading && (
-          <div style={{ background: "#fff", border: "1px solid #E2E8F0", borderRadius: 16, padding: "28px 28px" }}>
+          <div style={{ background: "#fff", border: "1px solid var(--ea-edge)", borderRadius: 16, padding: "28px 28px" }}>
             <div style={{ display: "flex", gap: 16, alignItems: "center", marginBottom: 28 }}>
               <div style={{ width: 72, height: 72, borderRadius: "50%", background: "#F1F5F9" }} />
               <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 8 }}>
@@ -174,7 +174,7 @@ export default function TeacherProfile() {
 
             {/* Hero Section */}
             <div style={{
-              background: "#fff", border: "1px solid #E2E8F0",
+              background: "#fff", border: "1px solid var(--ea-edge)",
               borderRadius: 16, padding: "28px", marginBottom: 16,
               boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
             }}>
@@ -284,7 +284,7 @@ export default function TeacherProfile() {
 
               {/* Personal Info */}
               <div style={{
-                background: "#fff", border: "1px solid #E2E8F0",
+                background: "#fff", border: "1px solid var(--ea-edge)",
                 borderRadius: 16, padding: "24px",
                 boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
               }}>
@@ -299,7 +299,7 @@ export default function TeacherProfile() {
 
               {/* Professional Info */}
               <div style={{
-                background: "#fff", border: "1px solid #E2E8F0",
+                background: "#fff", border: "1px solid var(--ea-edge)",
                 borderRadius: 16, padding: "24px",
                 boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
               }}>
@@ -314,7 +314,7 @@ export default function TeacherProfile() {
 
               {/* Assigned Classes */}
               <div style={{
-                background: "#fff", border: "1px solid #E2E8F0",
+                background: "#fff", border: "1px solid var(--ea-edge)",
                 borderRadius: 16, padding: "24px",
                 boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
               }}>
@@ -343,7 +343,7 @@ export default function TeacherProfile() {
 
               {/* Subjects */}
               <div style={{
-                background: "#fff", border: "1px solid #E2E8F0",
+                background: "#fff", border: "1px solid var(--ea-edge)",
                 borderRadius: 16, padding: "24px",
                 boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
               }}>

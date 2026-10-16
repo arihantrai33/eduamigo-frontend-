@@ -151,8 +151,8 @@ export default function Notes() {
                     <div style={{ fontSize: 12, color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)' }}>{note.teacherName} • {note.subject} • {formatDate(note.createdAt)}</div>
                   </div>
                   {note.fileUrl
-                    ? <a href={note.fileUrl} target="_blank" rel="noreferrer" style={{ background: dm ? '#0f172a' : '#F0F2F5', border: 'none', borderRadius: 10, width: 34, height: 34, fontSize: 16, cursor: 'pointer', color: dm ? 'var(--ea-muted)' : '#555', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, textDecoration: 'none' }}>↓</a>
-                    : <button style={{ background: dm ? '#0f172a' : '#F0F2F5', border: 'none', borderRadius: 10, width: 34, height: 34, fontSize: 16, color: dm ? 'var(--ea-muted)' : '#555', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, opacity: 0.4 }} disabled>↓</button>
+                    ? <a href={note.fileUrl} target="_blank" rel="noreferrer" style={{ background: dm ? '#0f172a' : '#F0F2F5', border: '1px solid var(--ea-control-border-soft)', borderRadius: 10, width: 34, height: 34, fontSize: 16, cursor: 'pointer', color: dm ? 'var(--ea-muted)' : '#555', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, textDecoration: 'none' }}>↓</a>
+                    : <button style={{ background: dm ? '#0f172a' : '#F0F2F5', border: '1px solid var(--ea-control-border-soft)', borderRadius: 10, width: 34, height: 34, fontSize: 16, color: dm ? 'var(--ea-muted)' : '#555', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, opacity: 0.4 }} disabled>↓</button>
                   }
                 </div>
               );
@@ -209,8 +209,8 @@ export default function Notes() {
                     <div style={{ fontSize: 12, color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)' }}>{res.type} • {res.fileSize || '—'}</div>
                   </div>
                   {res.fileUrl
-                    ? <a href={res.fileUrl} target="_blank" rel="noreferrer" style={{ background: dm ? '#0f172a' : '#F0F2F5', border: 'none', borderRadius: 10, width: 34, height: 34, fontSize: 16, cursor: 'pointer', color: dm ? 'var(--ea-muted)' : '#555', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, textDecoration: 'none' }}>↓</a>
-                    : <button style={{ background: dm ? '#0f172a' : '#F0F2F5', border: 'none', borderRadius: 10, width: 34, height: 34, fontSize: 16, color: dm ? 'var(--ea-muted)' : '#555', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, opacity: 0.4 }} disabled>↓</button>
+                    ? <a href={res.fileUrl} target="_blank" rel="noreferrer" style={{ background: dm ? '#0f172a' : '#F0F2F5', border: '1px solid var(--ea-control-border-soft)', borderRadius: 10, width: 34, height: 34, fontSize: 16, cursor: 'pointer', color: dm ? 'var(--ea-muted)' : '#555', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, textDecoration: 'none' }}>↓</a>
+                    : <button style={{ background: dm ? '#0f172a' : '#F0F2F5', border: '1px solid var(--ea-control-border-soft)', borderRadius: 10, width: 34, height: 34, fontSize: 16, color: dm ? 'var(--ea-muted)' : '#555', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, opacity: 0.4 }} disabled>↓</button>
                   }
                 </div>
               );
@@ -231,19 +231,19 @@ export default function Notes() {
             ].map(f => (
               <div key={f.key}>
                 <div style={{ fontSize: 11, fontWeight: 700, color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)', letterSpacing: 1, marginBottom: 8, marginTop: 16 }}>{f.label}</div>
-                <select style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: `1.5px solid ${dm ? '#334155' : '#E8E8F0'}`, background: dm ? '#0f172a' : '#F8F8FF', fontSize: 14, color: dm ? '#f1f5f9' : '#1A1A2E', outline: 'none', cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', colorScheme: dm ? 'dark' : 'light' }} value={form[f.key]} onChange={e => setForm({ ...form, [f.key]: e.target.value })}>
+                <select style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: `1.5px solid ${dm ? '#334155' : 'var(--ea-edge)'}`, background: dm ? '#0f172a' : '#F8F8FF', fontSize: 14, color: dm ? '#f1f5f9' : '#1A1A2E', outline: 'none', cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', colorScheme: dm ? 'dark' : 'light' }} value={form[f.key]} onChange={e => setForm({ ...form, [f.key]: e.target.value })}>
                   {f.options.map(o => <option key={o}>{o}</option>)}
                 </select>
               </div>
             ))}
             <div style={{ fontSize: 11, fontWeight: 700, color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)', letterSpacing: 1, marginBottom: 8, marginTop: 16 }}>TITLE</div>
-            <input style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: `1.5px solid ${dm ? '#334155' : '#E8E8F0'}`, background: dm ? '#0f172a' : '#fff', fontSize: 14, color: dm ? '#f1f5f9' : '#1A1A2E', outline: 'none', boxSizing: 'border-box' }} placeholder="e.g. Trigonometry Chapter 8" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
+            <input style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: `1.5px solid ${dm ? '#334155' : 'var(--ea-edge)'}`, background: dm ? '#0f172a' : '#fff', fontSize: 14, color: dm ? '#f1f5f9' : '#1A1A2E', outline: 'none', boxSizing: 'border-box' }} placeholder="e.g. Trigonometry Chapter 8" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
             <div style={{ fontSize: 11, fontWeight: 700, color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)', letterSpacing: 1, marginBottom: 8, marginTop: 16 }}>FILE URL</div>
-            <input style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: `1.5px solid ${dm ? '#334155' : '#E8E8F0'}`, background: dm ? '#0f172a' : '#fff', fontSize: 14, color: dm ? '#f1f5f9' : '#1A1A2E', outline: 'none', boxSizing: 'border-box' }} placeholder="https://..." value={form.fileUrl} onChange={e => setForm({ ...form, fileUrl: e.target.value })} />
+            <input style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: `1.5px solid ${dm ? '#334155' : 'var(--ea-edge)'}`, background: dm ? '#0f172a' : '#fff', fontSize: 14, color: dm ? '#f1f5f9' : '#1A1A2E', outline: 'none', boxSizing: 'border-box' }} placeholder="https://..." value={form.fileUrl} onChange={e => setForm({ ...form, fileUrl: e.target.value })} />
             {form.type === 'Assignment' && (
               <>
                 <div style={{ fontSize: 11, fontWeight: 700, color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)', letterSpacing: 1, marginBottom: 8, marginTop: 16 }}>DUE DATE</div>
-                <input style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: `1.5px solid ${dm ? '#334155' : '#E8E8F0'}`, background: dm ? '#0f172a' : '#fff', fontSize: 14, color: dm ? '#f1f5f9' : '#1A1A2E', outline: 'none', boxSizing: 'border-box', colorScheme: dm ? 'dark' : 'light' }} type="date" value={form.dueDate} onChange={e => setForm({ ...form, dueDate: e.target.value })} />
+                <input style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: `1.5px solid ${dm ? '#334155' : 'var(--ea-edge)'}`, background: dm ? '#0f172a' : '#fff', fontSize: 14, color: dm ? '#f1f5f9' : '#1A1A2E', outline: 'none', boxSizing: 'border-box', colorScheme: dm ? 'dark' : 'light' }} type="date" value={form.dueDate} onChange={e => setForm({ ...form, dueDate: e.target.value })} />
               </>
             )}
             <button type="button" className="ea-btn ea-btn--primary" style={{ marginTop: 20, width: '100%', minHeight: 48, fontSize: 15 }} onClick={handleUpload} disabled={uploading}>

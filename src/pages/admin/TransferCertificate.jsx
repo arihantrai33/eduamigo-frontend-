@@ -89,7 +89,7 @@ export default function TransferCertificate() {
           </div>
         </div>
       )}
-      <div className="tc-sheet" style={{ background: "#fff", maxWidth: 760, margin: "0 auto", border: "1px solid #CBD5E1", color: "#0F172A", fontFamily: "'Georgia', 'Times New Roman', serif" }}>
+      <div className="tc-sheet" style={{ background: "#fff", maxWidth: 760, margin: "0 auto", border: "1px solid var(--ea-edge)", color: "#0F172A", fontFamily: "'Georgia', 'Times New Roman', serif" }}>
         <div style={{ textAlign: "center", borderBottom: "2px solid var(--brand)", paddingBottom: 14, marginBottom: 18 }}>
           {tc.school?.branding?.logoUrl && <img src={tc.school.branding.logoUrl} alt="" style={{ height: 64, marginBottom: 6 }} />}
           <div style={{ fontSize: 22, fontWeight: 700 }}>{tc.school?.name}</div>

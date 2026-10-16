@@ -51,7 +51,7 @@ function Field({ label, required, children, full }) {
   );
 }
 
-const input = { padding: "9px 11px", border: "1px solid #E2E8F0", borderRadius: 8, fontSize: 13, fontFamily: "inherit", outline: "none", background: "#fff", color: "#0F172A" };
+const input = { padding: "9px 11px", border: "1px solid var(--ea-edge)", borderRadius: 8, fontSize: 13, fontFamily: "inherit", outline: "none", background: "#fff", color: "#0F172A" };
 const btn = (variant = "primary") => ({
   padding: "9px 16px", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
   border: variant === "ghost" ? "1px solid #E2E8F0" : "none",
@@ -353,7 +353,7 @@ export default function Admissions() {
 
       {error && <div style={{ background: "#FEF2F2", color: "#B91C1C", padding: 12, borderRadius: 10, fontSize: 13, marginBottom: 12 }}>{error} <button style={{ ...btn("ghost"), padding: "4px 10px", marginLeft: 8 }} onClick={load}>Retry</button></div>}
 
-      <div style={{ background: "#fff", borderRadius: 14, border: "1px solid #E2E8F0", overflowX: "auto" }}>
+      <div style={{ background: "#fff", borderRadius: 14, border: "1px solid var(--ea-edge)", overflowX: "auto" }}>
         <table data-stack style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 760 }}>
           <thead>
             <tr style={{ background: "#F8FAFC", textAlign: "left", color: "#475569" }}>

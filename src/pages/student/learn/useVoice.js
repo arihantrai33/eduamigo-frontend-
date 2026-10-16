@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { speakable } from "./speakable";
+import { fetchSpeech } from "./api";
+import { createNaturalVoice, naturalVoiceDown } from "./naturalVoice";
 
 // Voice Learning with the browser's own speech services (no extra provider or cost):
 //   listening  SpeechRecognition (Chrome and Edge send the audio to their speech service; Safari uses Apple's)
@@ -52,7 +54,9 @@ export function pickVoice(language, text = "") {
   return best;
 }
 
-export function useVoice() {
+// useVoice({ natural }): with natural true (the server has a neural voice, see capabilities.voice) answers are read in that voice,
+// and fall back to the device's own voice whenever it cannot be used.
+export function useVoice({ natural = false } = {}) {
   const [state, setState] = useState("idle");
   const [interim, setInterim] = useState("");
   const [error, setError] = useState(null);
@@ -62,10 +66,16 @@ export function useVoice() {
   const pending = useRef(0); // utterances queued or playing
   const firstAudio = useRef(null);
   const mutedRef = useRef(false);
+  const naturalRef = useRef(natural);
+  const firstCb = useRef(null);
+  const player = useRef(null);
+  const speakDevice = useRef(null);
   useEffect(() => { mutedRef.current = muted; }, [muted]);
+  useEffect(() => { naturalRef.current = natural; }, [natural]);
 
   const stopSpeaking = useCallback(() => {
     pending.current = 0;
+    try { player.current?.stop(); } catch { /* nothing playing */ }
     try { synth?.cancel(); } catch { /* nothing to stop */ }
     setState((s) => (s === "speaking" ? "idle" : s));
   }, []);
@@ -120,11 +130,9 @@ export function useVoice() {
     try { rec.start(); } catch { setError("The microphone could not be started. Please try again."); setState("error"); }
   }, [stopSpeaking]);
 
-  // Queues one piece of the answer to be spoken. Resolves the first-audio time through onFirstAudio.
-  const say = useCallback((text, language, onFirstAudio) => {
-    if (!synth || mutedRef.current) return;
-    const words = speakable(text, language);
-    if (!words) return;
+  // The device's own voice (speechSynthesis).
+  const sayWithDevice = useCallback((words, language, onFirstAudio) => {
+    if (!synth || mutedRef.current || !words) return;
     const hindi = wantsHindi(language, words);
     const u = new SpeechSynthesisUtterance(words);
     const v = pickVoice(language, words);
@@ -139,11 +147,36 @@ export function useVoice() {
       setState("speaking");
       if (!firstAudio.current) { firstAudio.current = performance.now(); onFirstAudio?.(firstAudio.current); }
     };
-    const done = () => { pending.current = Math.max(0, pending.current - 1); if (!pending.current) setState((s) => (s === "speaking" ? "idle" : s)); };
+    const done = () => { pending.current = Math.max(0, pending.current - 1); if (!pending.current && !player.current?.busy()) setState((s) => (s === "speaking" ? "idle" : s)); };
     u.onend = done;
     u.onerror = done;
     synth.speak(u);
   }, []);
+
+  // Queues one piece of the answer to be spoken. Resolves the first-audio time through onFirstAudio.
+  const say = useCallback((text, language, onFirstAudio) => {
+    if (mutedRef.current) return;
+    const words = speakable(text, language);
+    if (!words) return;
+    firstCb.current = onFirstAudio || firstCb.current;
+    speakDevice.current = (w) => sayWithDevice(w, language, onFirstAudio);
+    if (naturalRef.current && !naturalVoiceDown()) {
+      if (!player.current) {
+        player.current = createNaturalVoice({
+          fetchAudio: fetchSpeech,
+          onPlaying: () => {
+            setState("speaking");
+            if (!firstAudio.current) { firstAudio.current = performance.now(); firstCb.current?.(firstAudio.current); }
+          },
+          onIdle: () => { if (!pending.current) setState((s) => (s === "speaking" ? "idle" : s)); },
+          onFallback: (w) => speakDevice.current?.(w),
+        });
+      }
+      player.current.add(words);
+      return;
+    }
+    sayWithDevice(words, language, onFirstAudio);
+  }, [sayWithDevice]);
 
   const resetFirstAudio = useCallback(() => { firstAudio.current = null; }, []);
 
@@ -152,7 +185,7 @@ export function useVoice() {
     try { synth?.getVoices?.(); synth?.addEventListener?.("voiceschanged", () => synth.getVoices()); } catch { /* no voices */ }
   }, []);
 
-  useEffect(() => () => { try { recRef.current?.abort(); synth?.cancel(); } catch { /* leaving */ } }, []);
+  useEffect(() => () => { try { recRef.current?.abort(); player.current?.stop(); synth?.cancel(); } catch { /* leaving */ } }, []);
 
   return {
     supported: { listen: !!SR, speak: !!synth },

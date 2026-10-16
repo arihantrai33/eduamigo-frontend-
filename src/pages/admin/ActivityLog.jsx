@@ -112,8 +112,8 @@ export default function ActivityLog() {
 
 const card = { background: "#fff", border: "1px solid #E8E8E5", borderRadius: 12, padding: "1rem 1.25rem", marginBottom: 16 };
 const lbl = { fontSize: 11, color: "var(--ea-muted)", fontWeight: 600, display: "flex", flexDirection: "column", gap: 4 };
-const input = { padding: "8px 10px", borderRadius: 8, border: "1px solid #E2E8F0", fontSize: 13, color: "#0F172A", background: "#F8FAFC" };
-const ghost = { padding: "7px 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", color: "#334155", fontSize: 12, fontWeight: 600, cursor: "pointer" };
+const input = { padding: "8px 10px", borderRadius: 8, border: "1px solid var(--ea-edge)", fontSize: 13, color: "#0F172A", background: "#F8FAFC" };
+const ghost = { padding: "7px 12px", borderRadius: 8, border: "1px solid var(--ea-edge)", background: "#fff", color: "#334155", fontSize: 12, fontWeight: 600, cursor: "pointer" };
 const rowBtn = { display: "flex", alignItems: "center", gap: 12, width: "100%", padding: "12px 16px", background: "none", border: "none", textAlign: "left", cursor: "pointer" };
 const supportTag = { marginLeft: 6, padding: "1px 6px", borderRadius: 6, background: "#FEF3C7", color: "#92400E", fontSize: 10, fontWeight: 700 };
-const details = { margin: "0 16px 12px", padding: 12, background: "#F8FAFC", border: "1px solid #E2E8F0", borderRadius: 8, fontSize: 11.5, color: "#334155", whiteSpace: "pre-wrap", wordBreak: "break-word", maxHeight: 280, overflow: "auto" };
+const details = { margin: "0 16px 12px", padding: 12, background: "#F8FAFC", border: "1px solid var(--ea-edge)", borderRadius: 8, fontSize: 11.5, color: "#334155", whiteSpace: "pre-wrap", wordBreak: "break-word", maxHeight: 280, overflow: "auto" };

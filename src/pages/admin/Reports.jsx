@@ -32,7 +32,7 @@ function ProgressBar({ label, value, total, color, bg }) {
 
 function SectionCard({ title, icon, children, delay=0 }) {
   return (
-    <div style={{ background:"white", borderRadius:20, padding:"24px 28px", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0", animation:`fadeUp 0.5s ease ${delay}s both` }}>
+    <div style={{ background:"white", borderRadius:20, padding:"24px 28px", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid var(--ea-edge)", animation:`fadeUp 0.5s ease ${delay}s both` }}>
       <div style={{ fontSize:15, fontWeight:800, color:"#0F172A", marginBottom:20, display:"flex", alignItems:"center", gap:8 }}>
         <span style={{ fontSize:20 }}>{icon}</span>{title}
       </div>
@@ -270,7 +270,7 @@ export default function Reports() {
       </div>
 
       {/* Quick Stats Row */}
-      <div style={{ background:"white", borderRadius:20, padding:"20px 28px", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0", animation:"fadeUp 0.5s ease 0.45s both" }}>
+      <div style={{ background:"white", borderRadius:20, padding:"20px 28px", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid var(--ea-edge)", animation:"fadeUp 0.5s ease 0.45s both" }}>
         <div style={{ fontSize:15, fontWeight:800, color:"#0F172A", marginBottom:16, display:"flex", alignItems:"center", gap:8 }}>
           <span><Glyph e="⚡" /></span> Quick Snapshot
         </div>

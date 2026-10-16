@@ -24,7 +24,7 @@ const DEFAULT_EXAM_TYPES = ["Unit Test","Mid Term","Half Yearly","Pre-Board","Fi
 // Native selects look different in every browser (Safari draws a small grey pill); this matches the text inputs.
 const CHEVRON = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E\")";
 const SELECT_STYLE = {
-  width:"100%", padding:"0 36px 0 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none",
+  width:"100%", padding:"0 36px 0 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none",
   fontFamily:"inherit", color:"#0F172A", boxSizing:"border-box", appearance:"none", WebkitAppearance:"none", MozAppearance:"none",
   background:`white ${CHEVRON} no-repeat right 14px center`, cursor:"pointer", height:42,
 };
@@ -120,7 +120,7 @@ export default function ExamSchedule() {
     <label style={{ display:"block" }}>
       <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
       <input id={`exam-${key}`} type={type} value={form[key]||""} onChange={e => f(key, e.target.value)} placeholder={placeholder} {...fe.invalid(key)}
-        style={{ width:"100%", height:42, padding:"0 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white", color:"#0F172A" }}
+        style={{ width:"100%", height:42, padding:"0 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white", color:"#0F172A" }}
         onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
       <FieldError id={`exam-${key}-error`}>{fe.errors[key]}</FieldError>
     </label>
@@ -186,7 +186,7 @@ export default function ExamSchedule() {
           <Skeleton rows={4} label="Loading exams" />
         </div>
       ) : filtered.length === 0 ? (
-        <div style={{ background:"white", borderRadius:20, padding: 16, textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0" }}>
+        <div style={{ background:"white", borderRadius:20, padding: 16, textAlign:"center", boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid var(--ea-edge)" }}>
           <EmptyState plain icon={CalendarDays} title="No exams scheduled" text={`Click "Schedule Exam" to add your first exam`} />
         </div>
       ) : (
@@ -195,7 +195,7 @@ export default function ExamSchedule() {
             const isUpcoming = exam.date && new Date(exam.date) >= new Date();
             return (
               <div key={exam._id} className="exam-card"
-                style={{ background:"var(--ea-surface)", borderRadius:16, padding:"20px", boxShadow:"var(--ea-shadow)", border:"1px solid var(--ea-line)", animation:`fadeUp 0.3s ease ${i*0.05}s both` }}>
+                style={{ background:"var(--ea-surface)", borderRadius:16, padding:"20px", boxShadow:"var(--ea-shadow)", border:"1px solid var(--ea-edge)", animation:`fadeUp 0.3s ease ${i*0.05}s both` }}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:12 }}>
                   <CategoryBadge>{exam.examType}</CategoryBadge>
                   {isUpcoming && <Badge tone="success">Upcoming</Badge>}
@@ -212,7 +212,7 @@ export default function ExamSchedule() {
                 </div>
                 <div style={{ display:"flex", gap:8, borderTop:"1px solid #F1F5F9", paddingTop:12 }}>
                   <button className="act-btn" onClick={() => openEdit(exam)}
-                    style={{ flex:1, padding:"8px", borderRadius:10, border:"1px solid #E2E8F0", background:"white", color:"#374151", fontSize:12, fontWeight:700, cursor:"pointer" }}>Edit</button>
+                    style={{ flex:1, padding:"8px", borderRadius:10, border:"1px solid var(--ea-edge)", background:"white", color:"#374151", fontSize:12, fontWeight:700, cursor:"pointer" }}>Edit</button>
                   <button type="button" className="act-btn" onClick={() => setDeleteId(exam._id)} aria-label={`Delete ${exam.subject} exam`} title="Delete"
                     style={{ padding:"8px 14px", borderRadius:10, border:"none", background:"#FEF2F2", color:"#B91C1C", fontSize:12, fontWeight:700, cursor:"pointer" }}><Glyph e="🗑" /></button>
                 </div>
@@ -230,7 +230,7 @@ export default function ExamSchedule() {
             <div>
               <label htmlFor="exam-subject" style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>SUBJECT</label>
               <input id="exam-subject" list="exam-subjects" value={form.subject||""} onChange={e => f("subject", e.target.value)} placeholder="e.g. Mathematics" {...fe.invalid("subject")}
-                style={{ width:"100%", height:42, padding:"0 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white", color:"#0F172A" }} />
+                style={{ width:"100%", height:42, padding:"0 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white", color:"#0F172A" }} />
               <FieldError id="exam-subject-error">{fe.errors.subject}</FieldError>
               <datalist id="exam-subjects">{subjectList.map(sub => <option key={sub} value={sub} />)}</datalist>
             </div>
@@ -260,10 +260,10 @@ export default function ExamSchedule() {
           <div>
             <label htmlFor="exam-instructions" style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>INSTRUCTIONS</label>
             <textarea id="exam-instructions" value={form.instructions||""} onChange={e => f("instructions", e.target.value)} placeholder="Special instructions..."
-              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", resize:"vertical", minHeight:70 }} />
+              style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid var(--ea-edge)", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", resize:"vertical", minHeight:70 }} />
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
-            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
+            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid var(--ea-edge)", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
             <button onClick={handleSave} disabled={saving} className="ea-btn ea-btn--primary">
               {saving ? "Saving..." : "Save Exam"}
             </button>
@@ -277,7 +277,7 @@ export default function ExamSchedule() {
           <div style={{ fontSize:16, fontWeight:700, color:"#0F172A", marginBottom:8 }}>Delete this exam?</div>
           <div style={{ fontSize:13, color:"var(--ea-muted)", marginBottom:24 }}>This exam will be permanently removed. Exams that already have marks cannot be deleted.</div>
           <div style={{ display:"flex", gap:10, justifyContent:"center" }}>
-            <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
+            <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid var(--ea-edge)", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"var(--ea-muted)" }}>Cancel</button>
             <button onClick={() => handleDelete(deleteId)} className="ea-btn ea-btn--danger">Delete</button>
           </div>
         </div>
