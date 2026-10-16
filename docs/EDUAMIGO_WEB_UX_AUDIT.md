@@ -1097,3 +1097,88 @@ The three open items listed under B15, audited to the root cause. The note there
 - Backend `tests/push.test.js`, two new tests:
   - An exam pushes once, to the class's students and parents only. This test fails without the fix (0 pushes).
   - The exam is still saved and announced in the app when FCM fails.
+
+### Cross-portal consistency pass (2026-10-16)
+
+The owner reported that the portals felt like separate screens joined together, not one product. A measurement at 1470 px confirmed it:
+- page titles started at x = 325, 353 or 455 depending on the page;
+- content was 820, 1024 or 1080 px wide;
+- there was a 195 px empty strip beside the sidebar on "narrow" pages.
+
+The per-page checks in B15 (contrast, overflow, dead buttons) never compared pages with each other, so B15 marked these routes PASS.
+
+**Shared causes (before):**
+1. `.ea-stage { max-width: 1080px }` and `.ea-main { justify-content: center }`: the portal page floated in a centred stage.
+2. The `.ea-pd-*` and `.ea-portal-head` formula `max(28px, (100% − --pd-w)/2)` centred "narrow" pages in a second 820 px column.
+3. Admin `<main>` used an inline `1.75rem 2.5rem` (a 40 px gutter). Several admin roots centred themselves at 760, 900, 1000, 1050 or 1200 px.
+4. Learning AI's tabs and panel, and the bus header, used their own centring or full-bleed layout.
+
+**The system (index.css):**
+- Tokens:
+  - `--ea-gutter`: 16 px, or 32 px from 1024 px.
+  - `--ea-page-top`: 16 px, or 28 px from 1024 px.
+  - Purpose widths: `--ea-w-read` (880 px) and `--ea-w-wide` (1200 px).
+  - Admin tables use the whole area.
+- Every page starts on the gutter and is left-aligned. Its width depends on its purpose:
+  - **read:** forms, lists, profile, messages;
+  - **wide:** dashboards, timetables, results, Learning AI;
+  - **full:** admin tables;
+  - **map:** bus. The map stays full-bleed; its header card and stops panel sit on the frame.
+- One heading hierarchy:
+
+  | Level | Style |
+  |---|---|
+  | Page title | `--ea-text-h1`, the same in admin and the portals |
+  | Section and card titles | `--ea-text-h2` (16/700) |
+  | Group labels | `.ea-overline` |
+
+  The three home dashboards now have an h1.
+- One control for switching views: `Segmented` replaced five other looks. Real tablists keep `role="tab"`. Filters use `Chips`.
+- One figure style: `--ea-figure-label` and `--ea-figure-value`. Stat labels are in sentence case.
+- One warning note: `.ea-note--row` replaces four inline yellow banners.
+- One canvas: `--ea-canvas` for admin and the portals, and page roots no longer paint their own grey.
+- The Ask button sits in the same corner in every portal.
+
+**Commits:**
+
+| Commit | Change |
+|---|---|
+| `3d12457` | Frame |
+| `fb755b7` | Headings |
+| `b24ef9c` | Tabs |
+| `a4f0011` | Figures and notes |
+| `5578d12` | Phone gutter, canvas, home tiles |
+| `9930b9f` | Fixes from the review |
+
+**Verification:**
+- **New check, `e2e/layout-alignment.spec.js` (21 tests):**
+  - 4 portals at 1024, 1280 and 1440: the title and content start on the gutter, and the content is no wider than its purpose (27 admin routes).
+  - Titles sit at the same height.
+  - 390 and 768: content keeps the 16 px gutter.
+- **Full suite:** 127 passed, 19 opt-in skipped (sweep and crawl), 0 failed.
+- **Build:** passes.
+- **ESLint:** no changed file has more findings than at HEAD.
+- **Sweep and review:**
+  - Before/after sweep at 390, 768, 1024 and 1280: 312 + 312 screenshots.
+  - Automated findings are identical before and after:
+    - 16 `clippedText`: `.ea-sr-only` labels, a false positive;
+    - 8 `tiny`: the visually hidden file input on the leave forms, whose 48 px label is the target.
+  - All 78 routes reviewed side by side at 1280. Representative sheets reviewed at 1024, 768 and 390. Spot checks in dark mode.
+- **Contrast probe (new, stricter than B15's), light and dark at 1280:** 561 findings, then 336.
+  - The pass's own regression is fixed: muted text and group labels on the darker canvas.
+  - The remaining 336 are older palette issues, listed below.
+
+**Exceptions (deliberate):**
+- Admin dashboard: the "Finish setting up your school" banner sits above the title until setup is complete.
+- Admin chat: a two-pane messaging layout, with the title in the list pane.
+- Bus: the map fills the area.
+- Report card, receipts and sign-in screens: not part of the signed-in frame.
+
+**Open, not changed in this pass:**
+1. Contrast, older palette:
+   - hard-coded `#888` and `#7B8099` greys on home tiles and parent screens (77);
+   - the school's brand teal used as text on the canvas and on brand-soft (70), and in dark mode (33). This needs a darker brand text token derived from the school colour;
+   - white-on-glass text in the home hero (about 50).
+2. Dark mode: icon chips and empty-state icons use the light `--brand-soft`, so they show as white squares. Changing `--brand-soft` and `--brand-dark` for dark mode affects buttons too, so it needs its own pass.
+3. Bus at 1024–1279 px: the stops panel covers part of the "Bus not on route yet" message. This was already so before the pass.
+4. 149 inline `#64748B` colours remain in page files. They are fine on white cards. Admin table headings are now covered by a shared rule.
