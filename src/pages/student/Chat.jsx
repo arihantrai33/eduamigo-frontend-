@@ -113,7 +113,7 @@ export default function Chat() {
     tabBtn: { flex: 1, padding: '12px 0', border: 'none', background: 'none', fontSize: 13, fontWeight: 600, color: dm ? 'var(--ea-muted)' : '#888', cursor: 'pointer' },
     tabActive: { color: 'var(--brand)', borderBottom: '2px solid var(--brand)' },
     list: { flex: 1, overflowY: 'auto', padding: '12px 16px 80px' },
-    sectionLabel: { fontSize: 11, fontWeight: 700, color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)', letterSpacing: 1, marginBottom: 8, marginTop: 4 },
+    sectionLabel: { marginBottom: 8, marginTop: 4 },
     chatRow: { background: dm ? '#1e293b' : 'white', borderRadius: 14, padding: '14px', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10, boxShadow: dm ? '0 1px 6px rgba(0,0,0,0.3)' : '0 1px 6px rgba(0,0,0,0.06)', cursor: 'pointer' },
     avatar: { width: 46, height: 46, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 18, flexShrink: 0 },
     rowName: { fontSize: 14, fontWeight: 700, color: dm ? '#f1f5f9' : '#111', marginBottom: 3 },
@@ -189,7 +189,7 @@ export default function Chat() {
         <div style={S.center}><Skeleton rows={3} label="Loading" /></div>
       ) : tab === 'chats' ? (
         <div className="ea-pd-body" style={S.list}>
-          <div style={S.sectionLabel}><Glyph e="🏫" /> SCHOOL ADMINISTRATION</div>
+          <div className="ea-overline" style={S.sectionLabel}><Glyph e="🏫" /> SCHOOL ADMINISTRATION</div>
           {adminContact && (
             <div style={S.chatRow} {...pressable(() => setActiveChat({ name: adminContact.name, sub: 'Admin · Complaints & Queries', receiverId: adminContact.userId, roomId: adminContact.roomId }))}>
               <div style={{ ...S.avatar, background: '#dc2626' }}>A</div>
@@ -200,7 +200,7 @@ export default function Chat() {
               <div style={S.chevron}>›</div>
             </div>
           )}
-          <div style={{ ...S.sectionLabel, marginTop: 16 }}><Glyph e="👨‍🏫" /> YOUR TEACHERS</div>
+          <div className="ea-overline" style={{ ...S.sectionLabel, marginTop: 16 }}><Glyph e="👨‍🏫" /> YOUR TEACHERS</div>
           {teachers.length === 0 ? (
             <EmptyState plain icon={Users} title="No teachers yet" text="Your teachers appear here once they are assigned in the timetable." />
           ) : teachers.map((t) => (
@@ -216,7 +216,7 @@ export default function Chat() {
         </div>
       ) : (
         <div className="ea-pd-body" style={S.list}>
-          <div style={S.sectionLabel}><Glyph e="📢" /> CLASS BROADCASTS</div>
+          <div className="ea-overline" style={S.sectionLabel}><Glyph e="📢" /> CLASS BROADCASTS</div>
           {broadcasts.length === 0 ? (
             <EmptyState plain icon={Megaphone} title="No broadcasts yet" text="Messages your teachers send to the whole class appear here." />
           ) : broadcasts.map((b, i) => (

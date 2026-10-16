@@ -101,9 +101,9 @@ export default function ParentHome() {
             <div style={{ fontSize: 12, color: look.muted, fontWeight: 600 }}>
               {getGreeting()}
             </div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: look.text }}>
+            <h1 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: look.text }}>
               {user?.name ?? "Parent"}
-            </div>
+            </h1>
           </div>
           <button type="button" aria-label={notices.length > 0 ? `Notifications, ${notices.length} new` : "Notifications"}
             onClick={() => navigate("/parent/notifications")}
@@ -175,7 +175,7 @@ export default function ParentHome() {
         {/* Notices (desktop: the side column) */}
         <section className="ea-pd-side">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-          <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--text)", margin: 0 }}><Glyph e="🔔" /> Notices</h3>
+          <h3 className="ea-section-title"><Glyph e="🔔" /> Notices</h3>
           <span onClick={() => navigate("/parent/notifications")}
             style={{ fontSize: 13, color: theme.primary, fontWeight: 700, cursor: "pointer" }}>View all →</span>
         </div>

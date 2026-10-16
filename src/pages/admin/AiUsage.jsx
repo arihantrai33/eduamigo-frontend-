@@ -27,7 +27,7 @@ export default function AiUsage() {
         return <p key={a.key} className={`ea-alert${a.level === "critical" ? "" : " ea-alert--warning"}`} role="alert"><Icon size={16} aria-hidden="true" /><span>{a.message}</span></p>;
       })}
       <div className="ea-card" style={{ padding: 16 }}>
-        <h2 style={{ fontSize: 15, fontWeight: 800, margin: "0 0 4px" }}>This month ({data.period})</h2>
+        <h2 className="ea-section-title" style={{ margin: "0 0 4px" }}>This month ({data.period})</h2>
         {data.zeroUse ? (
           <p style={{ margin: "6px 0", fontSize: 14 }}>No AI was used this month. No variable AI cost was incurred.</p>
         ) : (
@@ -48,7 +48,7 @@ export default function AiUsage() {
 
       {limits.length > 0 && (
         <div className="ea-card" style={{ padding: 16 }}>
-          <h2 style={{ fontSize: 15, fontWeight: 800, margin: "0 0 8px" }}>Limits</h2>
+          <h2 className="ea-section-title" style={{ margin: "0 0 8px" }}>Limits</h2>
           <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 10 }}>
             {limits.map((l) => (
               <li key={l.key}>
@@ -65,7 +65,7 @@ export default function AiUsage() {
       )}
 
       <div className="ea-card" style={{ padding: 16, overflowX: "auto" }}>
-        <h2 style={{ fontSize: 15, fontWeight: 800, margin: "0 0 8px" }}>By feature</h2>
+        <h2 className="ea-section-title" style={{ margin: "0 0 8px" }}>By feature</h2>
         {data.byFeature.length === 0 ? <p style={{ margin: 0, fontSize: 13, color: "var(--subtext)" }}>Nothing yet.</p> : (
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
             <thead><tr>{["Feature", "Calls", "Cache hits", "Tokens in", "Tokens out", "Estimated cost"].map((h) => <th key={h} scope="col" style={{ textAlign: "left", fontSize: 11, textTransform: "uppercase", color: "var(--subtext)", padding: "6px 8px", borderBottom: "1px solid var(--border)" }}>{h}</th>)}</tr></thead>

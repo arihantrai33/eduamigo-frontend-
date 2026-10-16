@@ -203,7 +203,7 @@ export default function TeacherMarks() {
   return (
     <Shell navigate={navigate} title="Enter Marks">
       <div style={styles.card}>
-        <div style={styles.label}>Class</div>
+        <div className="ea-overline" style={styles.label}>Class</div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
           {classes.map(c => (
             <button key={c} type="button" aria-pressed={c === classKey} onClick={() => { if (c !== classKey) { setExam(null); setSheet(null); setExams([]) } setClassKey(c) }} style={{
@@ -218,7 +218,7 @@ export default function TeacherMarks() {
         </button>
       </div>
 
-      <div style={styles.label}>Scheduled exams</div>
+      <div className="ea-overline" style={styles.label}>Scheduled exams</div>
       {loadingExams ? <Skeleton rows={3} label="Loading exams" /> : exams.length === 0 ? (
         <div style={styles.card}>
           <div style={{ fontSize: 14, fontWeight: 600, color: '#1A1A2E' }}>No exams scheduled for your subjects in Class {classKey}</div>
@@ -269,7 +269,7 @@ const styles = {
   headerTitle: { fontSize: 18, fontWeight: 700, color: 'var(--text, #1A1A2E)', margin: 0 },
   scroll: { flex: 1, overflowY: 'auto', padding: 16 },
   card: { background: 'var(--card, #fff)', borderRadius: 16, padding: 16, marginBottom: 14, boxShadow: '0 2px 12px rgba(0,0,0,0.06)', fontFamily: 'inherit' },
-  label: { fontSize: 11, fontWeight: 700, color: 'var(--ea-muted)', letterSpacing: 1, margin: '4px 0 8px', textTransform: 'uppercase' },
+  label: { margin: '4px 0 8px' },
   empty: { textAlign: 'center', padding: 40, color: '#7B8099', fontSize: 14 },
   markInput: { width: 72, padding: '9px 10px', borderRadius: 10, border: '1.5px solid #E2E8F0', fontSize: 15, fontWeight: 600, textAlign: 'center', outline: 'none', fontFamily: 'inherit' },
   absentBtn: { border: 'none', borderRadius: 10, padding: '9px 10px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' },

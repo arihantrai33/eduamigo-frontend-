@@ -138,7 +138,7 @@ export default function Notes() {
         {/* NOTES TAB */}
         {activeTab === 'Notes' && (
           <>
-            <div style={{ fontSize: 11, fontWeight: 700, color: dm ? '#64748b' : 'var(--ea-muted)', letterSpacing: 1, marginBottom: 10, marginTop: 4 }}>RECENT NOTES</div>
+            <div className="ea-overline" style={{ marginBottom: 10, marginTop: 4 }}>RECENT NOTES</div>
             {filtered.length === 0 ? (
               search
                 ? <EmptyState icon={SearchX} title="Nothing matches your search" text="Try a different word, or clear the search." />
@@ -164,7 +164,7 @@ export default function Notes() {
         {/* TASKS TAB */}
         {activeTab === 'Tasks' && (
           <>
-            <div style={{ fontSize: 11, fontWeight: 700, color: dm ? '#64748b' : 'var(--ea-muted)', letterSpacing: 1, marginBottom: 10, marginTop: 4 }}>MY ASSIGNMENTS</div>
+            <div className="ea-overline" style={{ marginBottom: 10, marginTop: 4 }}>MY ASSIGNMENTS</div>
             {assignments.length === 0 ? (
               <EmptyState icon={Inbox} title="No assignments yet" text="Assignments will appear here once assigned by your teacher." />
             ) : assignments.map(task => {
@@ -196,7 +196,7 @@ export default function Notes() {
         {/* RESOURCES TAB */}
         {activeTab === 'Resources' && (
           <>
-            <div style={{ fontSize: 11, fontWeight: 700, color: dm ? '#64748b' : 'var(--ea-muted)', letterSpacing: 1, marginBottom: 10, marginTop: 4 }}>STUDY RESOURCES</div>
+            <div className="ea-overline" style={{ marginBottom: 10, marginTop: 4 }}>STUDY RESOURCES</div>
             {filtered.length === 0 ? (
               search
                 ? <EmptyState icon={SearchX} title="Nothing matches your search" text="Try a different word, or clear the search." />

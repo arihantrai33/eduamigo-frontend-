@@ -88,7 +88,7 @@ export default function AskInsights() {
 
       <div style={s.grid}>
         <section style={s.card}>
-          <h2 style={s.h2}>Routing evaluation</h2>
+          <h2 className="ea-section-title" style={s.h2}>Routing evaluation</h2>
           {ev ? (
             <>
               <div style={s.muted}>{ev.overall.questions} labelled questions, read by {ev.mode}{ev.savedAt ? ` (run on ${new Date(ev.savedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })})` : " (free run; no language model)"}. Holdout and Fresh questions were never used to tune the assistant.</div>
@@ -151,7 +151,7 @@ export default function AskInsights() {
         </section>
 
         <section style={s.card}>
-          <h2 style={s.h2}>Live questions</h2>
+          <h2 className="ea-section-title" style={s.h2}>Live questions</h2>
           {metrics ? (
             <>
               <div style={s.muted}>{metrics.questions} questions in the last {metrics.period.days} days; {pct(metrics.routing.keywordOnly)} routed by keywords alone, {metrics.ai.questions} used the language model{metrics.model?.providers?.length ? ` (${metrics.model.providers.map((p) => `${p.name}: ${p.model}${p.coolingOff ? ", paused" : ""}`).join("; ")})` : " (none configured)"}.</div>
@@ -180,7 +180,7 @@ export default function AskInsights() {
 
       <section style={s.card}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>
-          <h2 style={{ ...s.h2, margin: 0 }}>Hand-off tickets</h2>
+          <h2 className="ea-section-title" style={{ ...s.h2, margin: 0 }}>Hand-off tickets</h2>
           <div style={{ display: "flex", gap: 6 }}>
             {[["open", "Open"], ["in_progress", "In progress"], ["resolved", "Resolved"], ["", "All"]].map(([k, l]) => (
               <button key={k || "all"} type="button" aria-pressed={status === k} onClick={() => setStatus(k)} style={status === k ? s.segOn : s.segOff}>{l}</button>
@@ -232,7 +232,7 @@ const s = {
   head: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" },
   h1: { fontSize: 22, fontWeight: 800, margin: 0 },
   sub: { fontSize: 13, color: "var(--subtext)", marginTop: 4 },
-  h2: { fontSize: 15, fontWeight: 800, margin: "0 0 8px" },
+  h2: { margin: "0 0 8px" },
   h3: { fontSize: 13, fontWeight: 700, margin: "14px 0 6px" },
   muted: { fontSize: 12, color: "var(--subtext)" },
   kpis: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: 12 },

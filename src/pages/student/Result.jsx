@@ -117,11 +117,9 @@ export default function StudentResult() {
         </div>
         <div className="ea-pd-main" style={{ background: dm ? '#1e293b' : '#fff', borderRadius: 20, padding: 18,
           marginBottom: 14, boxShadow: dm ? '0 2px 16px rgba(0,0,0,.3)' : '0 2px 16px color-mix(in srgb, var(--brand) 10%, transparent)' }}>
-          <div style={{ fontSize: 11, fontWeight: 700,
-            color: dm ? 'var(--ea-muted)' : '#7B8099',
-            textTransform: 'uppercase', letterSpacing: .6, marginBottom: 14 }}>
+          <h2 className="ea-section-title" style={{ marginBottom: 14 }}>
             Subject-wise Performance
-          </div>
+          </h2>
           {filtered.length === 0 ? (
             <div style={{ color: dm ? 'var(--ea-muted)' : '#7B8099', fontSize: 14, textAlign: 'center', padding: 20 }}>
               No results for this exam type.

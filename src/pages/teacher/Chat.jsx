@@ -259,7 +259,7 @@ export default function TeacherChat() {
               <>
                 {students.length > 0 && (
                   <>
-                    <p style={styles.sectionLabel}>STUDENTS ({students.length})</p>
+                    <p className="ea-overline" style={styles.sectionLabel}>STUDENTS ({students.length})</p>
                     {students.map(c => (
                       <ContactCard key={`${c.type}-${c.userId}`} contact={c} onOpen={openChat} />
                     ))}
@@ -267,7 +267,7 @@ export default function TeacherChat() {
                 )}
                 {parents.length > 0 && (
                   <>
-                    <p style={styles.sectionLabel}>PARENTS ({parents.length})</p>
+                    <p className="ea-overline" style={styles.sectionLabel}>PARENTS ({parents.length})</p>
                     {parents.map(c => (
                       <ContactCard key={`${c.type}-${c.userId}`} contact={c} onOpen={openChat} />
                     ))}
@@ -345,10 +345,6 @@ const styles = {
     background: 'transparent',
   },
   sectionLabel: {
-    fontSize: 11,
-    fontWeight: 700,
-    color: 'var(--ea-muted)',
-    letterSpacing: 1,
     margin: '8px 0 8px 4px',
   },
   contactCard: {

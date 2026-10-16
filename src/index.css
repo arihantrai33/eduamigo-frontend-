@@ -563,7 +563,7 @@ body.admin-body #root {
   /* Type scale (font shorthand: use as `font: var(--ea-text-h1)`). Phones get smaller display and h1 below. */
   --ea-text-display: 750 32px/40px var(--ea-font);
   --ea-text-h1: 700 24px/32px var(--ea-font);
-  --ea-text-h2: 650 17px/24px var(--ea-font);
+  --ea-text-h2: 700 16px/24px var(--ea-font); /* section and card titles, every portal */
   --ea-text-h3: 650 15px/22px var(--ea-font);
   --ea-text-body: 400 14px/22px var(--ea-font);
   --ea-text-sm: 400 13px/20px var(--ea-font);
@@ -681,8 +681,12 @@ input:-webkit-autofill:focus {
    Neutral surfaces with the school's brand for icons, bars and links. Status colours are fixed. */
 .ea-dash { display: flex; flex-direction: column; gap: 20px; padding-bottom: 40px; color: var(--ea-body); }
 .ea-page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-.ea-page-title { font-size: 24px; font-weight: 750; letter-spacing: -0.02em; color: var(--ea-ink); line-height: 1.2; }
-.ea-page-subtitle { font-size: 13px; color: var(--ea-muted); margin-top: 4px; }
+.ea-page-title { margin: 0; font: var(--ea-text-h1); letter-spacing: -0.01em; color: var(--ea-ink); }
+.ea-page-subtitle { margin: 4px 0 0; font-size: 14px; line-height: 20px; color: var(--ea-muted); }
+/* Headings below the page title, the same in every portal: a section or card title, and a small group label over a
+   list (the sidebar's section headings use the same look). */
+.ea-section-title { margin: 0; font: var(--ea-text-h2); color: var(--ea-ink); }
+.ea-overline { font: var(--ea-text-overline); text-transform: uppercase; letter-spacing: var(--ea-tracking-overline); color: var(--ea-faint); }
 .ea-page-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; flex: none; }
 @media (max-width: 767px) { .ea-page-title { font-size: 20px; } .ea-userchip { display: none !important; } }
 
@@ -788,7 +792,7 @@ input:-webkit-autofill:focus {
 .ea-card.is-clickable { cursor: pointer; }
 .ea-card.is-clickable:hover, .ea-stat:not(:disabled):hover { border-color: var(--brand-border); }
 .ea-card__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
-.ea-card__title { font-size: 15px; font-weight: 700; color: var(--ea-ink); }
+.ea-card__title { font: var(--ea-text-h2); color: var(--ea-ink); }
 .ea-card__subtitle { font-size: 12px; color: var(--ea-muted); margin-top: 2px; }
 
 .ea-stat { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 18px 20px; text-align: left; cursor: pointer; font: inherit; }
@@ -998,8 +1002,8 @@ td .ea-skeleton { box-sizing: border-box; padding: 0 20px; }
   .ea-portal-head__back { display: none; }
   .ea-portal-head--detail .ea-portal-head__back { display: grid; width: 36px; height: 36px; margin-top: 0; border: 1px solid var(--ea-line); background: var(--ea-surface); color: var(--ea-ink); }
   .ea-portal-head--detail .ea-portal-head__back:hover { background: var(--ea-hover); }
-  .ea-portal-head__title { font: var(--ea-text-h1); color: var(--ea-ink); white-space: normal; }
-  .ea-portal-head__sub { font-size: 14px; line-height: 20px; margin-top: 2px; color: var(--ea-muted); white-space: normal; }
+  .ea-portal-head__title { font: var(--ea-text-h1); letter-spacing: -0.01em; color: var(--ea-ink); white-space: normal; }
+  .ea-portal-head__sub { font-size: 14px; line-height: 20px; margin-top: 4px; color: var(--ea-muted); white-space: normal; }
   .ea-portal-head__btn { height: 36px; min-width: 36px; border: 1px solid var(--ea-line); background: var(--ea-surface); color: var(--ea-ink); }
   .ea-portal-head__btn:hover { background: var(--ea-hover); }
   .ea-portal-head__back:focus-visible, .ea-portal-head__btn:focus-visible { outline-color: var(--brand); outline-offset: 2px; }
@@ -1052,7 +1056,7 @@ td .ea-skeleton { box-sizing: border-box; padding: 0 20px; }
 .ea-profile-card__name { margin: 6px 0 0; font-size: 20px; font-weight: 750; line-height: 1.25; color: var(--ea-ink); }
 .ea-profile-card__meta { margin: 0; font-size: 13px; line-height: 1.45; color: var(--ea-muted); overflow-wrap: anywhere; }
 .ea-info-list { padding: 4px 16px; }
-.ea-info-list__title { margin: 12px 0 4px; font-size: 15px; font-weight: 700; color: var(--ea-ink); }
+.ea-info-list__title { margin: 12px 0 4px; font: var(--ea-text-h2); color: var(--ea-ink); }
 .ea-info-list dl { margin: 0; }
 .ea-info-list__row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--ea-line); }
 .ea-info-list__row:last-child { border-bottom: 0; }
@@ -1127,7 +1131,7 @@ td .ea-skeleton { box-sizing: border-box; padding: 0 20px; }
    a 13 px sentence-case label over a white 40 px input (.ea-input / .ea-select above), an optional hint, and the
    actions in a bar at the end. */
 .ea-form-section { margin: 0 0 24px; }
-.ea-form-section__title { margin: 0 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--ea-line); font-size: 15px; font-weight: 700; color: var(--ea-ink); }
+.ea-form-section__title { margin: 0 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--ea-line); font: var(--ea-text-h2); color: var(--ea-ink); }
 .ea-form-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px 16px; }
 @media (min-width: 768px) {
   .ea-form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }

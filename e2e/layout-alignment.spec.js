@@ -41,7 +41,8 @@ function measure() {
     const bordered = parseFloat(s.borderLeftWidth) > 0 && parseFloat(s.borderRightWidth) > 0;
     if (filled || bordered || s.backgroundImage !== 'none') blocks.push([Math.round(r.left), Math.round(r.right)]);
   }
-  const t = title?.getBoundingClientRect();
+  // On a home dashboard the title is inside the coloured band: the band is what starts on the line.
+  const t = (title?.closest('.ea-pd-band') || title)?.getBoundingClientRect();
   return {
     title: t ? [Math.round(t.left), Math.round(t.top)] : null,
     left: Math.min(...blocks.map((b) => b[0])),

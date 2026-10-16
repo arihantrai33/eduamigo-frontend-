@@ -177,7 +177,7 @@ export default function Timetable() {
             })}
           </div>
         ) : <>
-        <div style={{ fontSize: "11px", fontWeight: "700", color: "var(--subtext)", marginBottom: "12px", letterSpacing: "1px" }}>
+        <div className="ea-overline" style={{ marginBottom: "12px" }}>
           {getDateForDay(selectedDay, weekOffset)}
         </div>
 

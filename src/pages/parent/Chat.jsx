@@ -178,7 +178,7 @@ export default function ParentChat() {
         <div className="ea-pd-body" style={S.list}>
 
           {/* Admin Section */}
-          <div style={S.sectionLabel}><Glyph e="🏫" /> SCHOOL ADMINISTRATION</div>
+          <div className="ea-overline" style={S.sectionLabel}><Glyph e="🏫" /> SCHOOL ADMINISTRATION</div>
           {data.admin ? (
             <div style={S.chatRow} {...pressable(() => setActiveChat({
               name:       data.admin.name,
@@ -198,7 +198,7 @@ export default function ParentChat() {
           )}
 
           {/* Teachers Section */}
-          <div style={{ ...S.sectionLabel, marginTop: 20 }}><Glyph e="👨‍🏫" /> YOUR CHILD'S TEACHERS</div>
+          <div className="ea-overline" style={{ ...S.sectionLabel, marginTop: 20 }}><Glyph e="👨‍🏫" /> YOUR CHILD'S TEACHERS</div>
           {data.teachers.length === 0 ? (
             <EmptyState plain icon={Users} title="No teachers assigned yet" text="Teachers will appear here once they are assigned in the timetable." />
           ) : data.teachers.map((t) => (
@@ -226,7 +226,7 @@ export default function ParentChat() {
 const S = {
   screen:      { minHeight: '100vh', background: 'var(--app-bg, #f5f6fa)', fontFamily: 'inherit', display: 'flex', flexDirection: 'column' },
   list:        { flex: 1, overflowY: 'auto', padding: '16px 16px 80px' },
-  sectionLabel:{ fontSize: 11, fontWeight: 700, color: 'var(--ea-muted)', letterSpacing: 1, marginBottom: 8 },
+  sectionLabel:{ marginBottom: 8 },
   chatRow:     { background: 'var(--ea-surface)', borderRadius: 14, padding: '14px', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10, boxShadow: '0 1px 6px rgba(0,0,0,0.06)', cursor: 'pointer' },
   avatar:      { width: 46, height: 46, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 18, flexShrink: 0 },
   rowName:     { fontSize: 14, fontWeight: 700, color: 'var(--ea-ink)', marginBottom: 3 },

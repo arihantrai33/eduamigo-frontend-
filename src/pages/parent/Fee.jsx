@@ -219,7 +219,7 @@ export default function ParentFee() {
               onClick={() => setShowBreakdown(!showBreakdown)}
               style={styles.breakdownToggle}
             >
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#6b7280", letterSpacing: 1 }}>
+              <span className="ea-overline">
                 FEE BREAKDOWN
               </span>
               <span style={{

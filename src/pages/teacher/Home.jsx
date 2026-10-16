@@ -154,7 +154,7 @@ export default function TeacherHome() {
       <div className="ea-pd-band" style={{ ...styles.header, background: look.header, flexDirection: 'column', alignItems: 'stretch', paddingTop: 20 }}>
         <SchoolStrip user={user} theme={theme} look={look} />
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ ...styles.headerName, color: look.text }}>{teacher?.name || '—'}</div>
+        <h1 style={{ ...styles.headerName, margin: 0, color: look.text }}>{teacher?.name || '—'}</h1>
         <button type="button" aria-label={unreadCount > 0 ? `Notifications, ${unreadCount} unread` : 'Notifications'} onClick={() => navigate('/teacher/notifications')} style={{ ...styles.bellBtn, background: look.glass, border: look.border }}>
           <Glyph e="🔔" />
           {unreadCount > 0 && <div style={{ position: 'absolute', top: -4, right: -4, minWidth: 18, height: 18, background: '#EF5350', borderRadius: '50%', border: '2px solid white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: 'white', padding: '0 4px' }}>{unreadCount}</div>}
@@ -201,7 +201,7 @@ export default function TeacherHome() {
         {/* Today's Schedule (desktop: the main column) */}
         <section className="ea-pd-main">
         <div style={styles.sectionHeader}>
-          <span style={styles.sectionTitle}>Today's Schedule</span>
+          <h2 className="ea-section-title">Today's Schedule</h2>
           <span style={{ ...styles.sectionDay, color: theme.primary }}>{today}</span>
         </div>
 
@@ -294,7 +294,6 @@ const styles = {
     display: 'flex', justifyContent: 'space-between',
     alignItems: 'center', marginBottom: 12,
   },
-  sectionTitle: { fontSize: 16, fontWeight: 800, color: '#1C2033', fontFamily: "inherit" },
   sectionDay:   { fontSize: 12, color: 'var(--brand)', fontWeight: 700 },
   periodCard: {
     background: '#fff', borderRadius: 20, padding: '13px 15px',

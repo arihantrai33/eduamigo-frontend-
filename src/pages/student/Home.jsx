@@ -133,9 +133,9 @@ return (
 <div style={{ fontSize: 12, color: look.muted, fontWeight: 600, marginBottom: 2 }}>
 {getGreeting()}
 </div>
-<div style={{ fontSize: 20, fontWeight: 800, color: look.text }}>
+<h1 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: look.text }}>
 {profile?.name ?? user?.name ?? "Student"}
-</div>
+</h1>
 </div>
 <div style={{ display: "flex", gap: 8 }}>
 <button type="button" aria-label={notices.length > 0 ? `Notifications, ${notices.length} new` : "Notifications"}
@@ -191,7 +191,7 @@ style={{ background: "var(--card)", borderRadius: 14, padding: 14, border: "none
 {/* Today's Classes (desktop: the main column) */}
 <section className="ea-pd-main">
 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-<h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--text)", margin: 0 }}>Today's Classes</h3>
+<h3 className="ea-section-title">Today's Classes</h3>
 <span style={{ fontSize: 13, color: theme.primary, fontWeight: 700, cursor: "pointer" }} onClick={() => navigate("/student/timetable")}>
             View all →
 </span>
@@ -222,7 +222,7 @@ timetable.slice(0, 4).map((c, i) => (
 </section>
 <section className="ea-pd-side">
 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-<h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--text)", margin: 0 }}>Notices</h3>
+<h3 className="ea-section-title">Notices</h3>
 <span style={{ fontSize: 13, color: theme.primary, fontWeight: 700, cursor: "pointer" }} onClick={() => navigate("/student/notifications")}>
             View all →
 </span>
