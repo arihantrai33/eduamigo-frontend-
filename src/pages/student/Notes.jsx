@@ -9,6 +9,7 @@ import PortalHeader from "../../components/ui/PortalHeader";
 import { Inbox, Plus, SearchX, Sparkles } from "lucide-react";
 import EmptyState from "../../components/ui/EmptyState";
 import Skeleton from "../../components/ui/Skeleton";
+import Badge from "../../components/ui/Badge";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -181,9 +182,11 @@ export default function Notes() {
                       <div style={{ fontSize: 12, color: dm ? 'var(--ea-muted)' : '#888' }}>Due: {formatDate(task.dueDate)} • <span style={{ color: accentColor, fontWeight: 600 }}>{isDone ? 'Submitted' : isUrgent ? 'Urgent' : 'Pending'}</span></div>
                     </div>
                   </div>
+                  {/* No in-app submission yet (there is no submission record on the server), so no Submit button that does
+                      nothing: a done task shows its status, an open one links to the teacher's file when there is one. */}
                   {isDone
-                    ? <button style={{ background: '#E8F5E9', color: '#2E7D32', border: '1.5px solid #A5D6A7', borderRadius: 10, padding: '8px 16px', fontSize: 13, fontWeight: 700, cursor: 'default', flexShrink: 0 }}>Done</button>
-                    : <button type="button" className="ea-btn ea-btn--primary ea-btn--sm" style={{ flexShrink: 0 }}>Submit</button>
+                    ? <Badge tone="success">Done</Badge>
+                    : task.fileUrl && <a href={task.fileUrl} target="_blank" rel="noreferrer" className="ea-btn ea-btn--ghost ea-btn--sm" style={{ flexShrink: 0, textDecoration: 'none' }} aria-label={`Open ${task.title}`}>Open</a>
                   }
                 </div>
               );

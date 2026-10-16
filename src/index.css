@@ -1130,6 +1130,19 @@ textarea.ea-input { height: auto; min-height: 96px; padding: 10px 12px; line-hei
 .ea-field-error { display: flex; align-items: flex-start; gap: 6px; margin-top: 6px; color: var(--ea-danger); font-size: 12.5px; font-weight: 550; line-height: 1.4; text-align: left; }
 .ea-field-error > svg { flex-shrink: 0; margin-top: 1px; }
 [data-theme="dark"] .ea-field-error { color: #FCA5A5; }
+
+/* An optional file on a form (components/ui/FileAttach.jsx): the label is the drop zone, the input stays focusable. */
+.ea-file__row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.ea-file__zone { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; padding: 12px 16px; min-height: 48px; border-radius: 10px; border: 1.5px dashed color-mix(in srgb, var(--ea-muted) 55%, transparent); background: var(--ea-hover); cursor: pointer; position: relative; }
+.ea-file__zone:hover { border-color: var(--brand); }
+.ea-file__zone:focus-within { outline: 2px solid var(--brand); outline-offset: 2px; border-color: var(--brand); }
+.ea-file__icon { flex-shrink: 0; color: var(--ea-muted); }
+.ea-file__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ea-file__name { font-size: 13px; font-weight: 600; color: var(--ea-body); overflow-wrap: anywhere; }
+.ea-file__hint { font-size: 11px; color: var(--ea-muted); }
+.ea-file__remove { flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--ea-line); background: var(--ea-surface); color: var(--ea-muted); cursor: pointer; }
+.ea-file__remove:hover { color: var(--ea-danger); border-color: var(--ea-danger); }
+.ea-file__remove:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="true"] { border-color: var(--ea-danger) !important; }
 input[aria-invalid="true"]:focus, select[aria-invalid="true"]:focus, textarea[aria-invalid="true"]:focus {
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--ea-danger) 18%, transparent) !important;

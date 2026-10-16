@@ -10,6 +10,7 @@ import { CalendarDays } from "lucide-react";
 import PortalHeader from "../../components/ui/PortalHeader";
 import SummaryCard from "../../components/ui/SummaryCard";
 import Skeleton from "../../components/ui/Skeleton";
+import FileAttach from "../../components/ui/FileAttach";
 
 const FIELDS = { fromDate: "leave-from", toDate: "leave-to", reason: "leave-reason" };
 const API = import.meta.env.VITE_API_URL;
@@ -140,16 +141,7 @@ export default function ApplyLeave() {
             <FieldError id={v.errorId("reason")}>{v.errors.reason}</FieldError>
           </div>
           <div style={{ marginBottom: "16px" }}>
-            <span className="ea-label">Attach document (optional)</span>
-            <div onClick={() => document.getElementById("fileInputStudent").click()} style={{ marginTop: "8px", padding: "12px 16px", borderRadius: "10px", border: dm ? "1.5px dashed #334155" : "1.5px dashed #c0c0c0", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px", background: dm ? "#0f172a" : "#fafafa" }}>
-              <span style={{ fontSize: "20px" }}><Glyph e="📎" /></span>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: "13px", fontWeight: "600", color: dm ? "#f1f5f9" : "#444" }}>{attachedFile ? attachedFile.name : "Attach Medical Report or Document"}</div>
-                <div style={{ fontSize: "11px", color: dm ? "var(--ea-muted)" : "#888", marginTop: "2px" }}>{attachedFile ? `${(attachedFile.size / 1024).toFixed(1)} KB` : "PDF, JPG, PNG supported"}</div>
-              </div>
-              {attachedFile && <button type="button" aria-label="Remove attachment" onClick={(e) => { e.stopPropagation(); setAttachedFile(null); }} style={{ background: "none", border: "none", padding: 0, lineHeight: 1, fontSize: "18px", color: dm ? "var(--ea-muted)" : "#888", cursor: "pointer" }}><Glyph e="✕" /></button>}
-            </div>
-            <input id="fileInputStudent" type="file" accept=".pdf,.jpg,.jpeg,.png" style={{ display: "none" }} onChange={(e) => setAttachedFile(e.target.files[0] || null)} />
+            <FileAttach id="leave-attachment" label="Attach document (optional)" file={attachedFile} onChange={setAttachedFile} />
           </div>
           {formError && (
             <div style={{ marginBottom: "12px", padding: "10px 14px", background: dm ? "#2a0f0f" : "#fff5f5", borderRadius: "8px", border: "1px solid #fee2e2", fontSize: "13px", color: "var(--ea-on-card-danger)", fontWeight: "600" }}>{formError}</div>

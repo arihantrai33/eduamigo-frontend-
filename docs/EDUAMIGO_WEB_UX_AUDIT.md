@@ -1061,3 +1061,39 @@ Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B15. Every batch B0–B14 is com
 - Push notifications are stored but not sent.
 - The leave forms' attachment drop zone is not keyboard-reachable (nested buttons; needs restructuring).
 - The test suite writes records ("Edit Me", "Imported Pupil", activity rows) into the local 8130 test database; the owner's demo on 8000/5173 was never used.
+
+### Functional fixes after the redesign (2026-10-16)
+
+The three open items listed under B15, audited to the root cause. The note there that push notifications are "stored but not sent" was wrong: the backend pushes every in-app notice through Firebase Cloud Messaging, except one path (below).
+
+**1. Notes → assignment "Submit" did nothing.**
+- *Root cause:* the button had no handler, and there is nothing for it to call. The backend has no submission record or endpoint. `Note.status` (`Pending`, `Submitted`, `Urgent`) belongs to the assignment as a whole, not to each student.
+- *Fix (interim):* the dead button is gone. An open task with a teacher's file shows an **Open** link to it. A done task shows a **Done** status badge (it was a button that looked pressable).
+- *Needs the owner's decision:* real submission. This means what a student sends (file, text, or both), where files are stored and who may see them, and how the teacher reviews and returns work. Those choices come before a per-student submission model and endpoints.
+- *Related, not changed:* the student **Add a note** sheet always fails. Students have no `notes.upload` permission, and the request sends JSON with no file to an endpoint that requires a PDF. The error is swallowed, so the sheet only shows "Uploading…" and then stops. Remove it, or give students a real upload: owner's decision.
+
+**2. The leave forms' attachment could not be reached with the keyboard.**
+- *Root cause:* the drop zone was a click-only `div` that opened a `display: none` file input, which is outside the tab order. The Remove button sat inside that clickable `div`. Remove also left the input's value in place, so the same file could not be chosen again.
+- *Fix:* a shared `components/ui/FileAttach.jsx`, used by the student and parent leave forms:
+  - The input is visually hidden (`.ea-sr-only`), so Tab still reaches it.
+  - Its label is the drop zone, and the zone shows a focus ring.
+  - Remove is a separate 44 px button. It clears the input and returns focus to the field.
+  - The visible text is unchanged.
+
+**3. Push notifications.**
+- *Root cause (code):* exam scheduled, updated and cancelled notices were written with `Notification.insertMany` in `examController.notifyExamAudience`, which bypassed `services/notify`. They reached the in-app inbox but were never pushed. This was the only notification writer outside `services/notify`.
+- *Fix (backend `0ba841d`):* those notices are now pushed through a new `push.toUsers`, to the same recipients only.
+- *Needs external configuration (not fixed in code):*
+  - `android/app/google-services.json` and `ios/App/App/GoogleService-Info.plist` are missing from the app projects, so the native apps cannot get an FCM token.
+  - The server needs `FIREBASE_SERVICE_ACCOUNT` (or the key file).
+  - The APNs key must be uploaded to Firebase for iOS.
+  - Delivery on a real device has not been verified.
+  - There is no web or PWA push. Browser users see notices in the app only.
+
+**Tests:**
+- `e2e/functional-fixes.spec.js` (new):
+  - On the student and parent leave forms, Tab reaches the field and Space opens the picker. Tab and Enter remove the file. The same file can be chosen again. Submit sends `attachmentUrl` and `attachmentName`, with the upload and the apply request answered in the test.
+  - The student task list has no Submit button. The Open link points to the teacher's file. Done is not a button.
+- Backend `tests/push.test.js`, two new tests:
+  - An exam pushes once, to the class's students and parents only. This test fails without the fix (0 pushes).
+  - The exam is still saved and announced in the app when FCM fails.

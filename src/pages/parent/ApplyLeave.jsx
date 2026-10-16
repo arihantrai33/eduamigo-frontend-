@@ -11,6 +11,7 @@ const FIELDS = { fromDate: "leave-from", toDate: "leave-to", reason: "leave-reas
 import Glyph from "../../components/Glyph";
 import PortalHeader from "../../components/ui/PortalHeader";
 import SummaryCard from "../../components/ui/SummaryCard";
+import FileAttach from "../../components/ui/FileAttach";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -190,45 +191,7 @@ export default function ApplyLeave() {
 
           {/* Attach Document */}
           <div style={{ marginBottom: "16px" }}>
-            <span className="ea-label">
-              Attach document (optional)
-            </span>
-            <div
-              onClick={() => document.getElementById("fileInputParent").click()}
-              style={{
-                marginTop: "8px", padding: "12px 16px",
-                borderRadius: "10px", border: "1.5px dashed #c0c0c0",
-                cursor: "pointer", display: "flex", alignItems: "center",
-                gap: "10px", background: "var(--ea-hover)",
-              }}
-            >
-              <span style={{ fontSize: "20px" }}><Glyph e="📎" /></span>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: "13px", fontWeight: "600", color: "var(--ea-body)" }}>
-                  {attachedFile ? attachedFile.name : "Attach Medical Report or Document"}
-                </div>
-                <div style={{ fontSize: "11px", color: "var(--subtext)", marginTop: "2px" }}>
-                  {attachedFile ? `${(attachedFile.size / 1024).toFixed(1)} KB` : "PDF, JPG, PNG supported"}
-                </div>
-              </div>
-              {attachedFile && (
-                <button
-                  type="button"
-                  aria-label="Remove attachment"
-                  onClick={(e) => { e.stopPropagation(); setAttachedFile(null); }}
-                  style={{ background: "none", border: "none", padding: 0, lineHeight: 1, fontSize: "18px", color: "var(--subtext)", cursor: "pointer" }}
-                >
-                  <Glyph e="✕" />
-                </button>
-              )}
-            </div>
-            <input
-              id="fileInputParent"
-              type="file"
-              accept=".pdf,.jpg,.jpeg,.png"
-              style={{ display: "none" }}
-              onChange={(e) => setAttachedFile(e.target.files[0] || null)}
-            />
+            <FileAttach id="leave-attachment" label="Attach document (optional)" file={attachedFile} onChange={setAttachedFile} />
           </div>
 
           {/* Submit */}
