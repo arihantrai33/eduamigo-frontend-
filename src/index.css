@@ -886,7 +886,7 @@ input:-webkit-autofill:focus {
 }
 .ea-seg__icon { display: inline-flex; }
 .ea-seg__opt:hover { color: var(--ea-ink); }
-.ea-seg__opt[aria-pressed="true"] { background: var(--ea-surface); color: var(--ea-ink); border-color: var(--ea-line); box-shadow: var(--ea-shadow); }
+.ea-seg__opt[aria-pressed="true"], .ea-seg__opt[aria-selected="true"] { background: var(--ea-surface); color: var(--ea-ink); border-color: var(--ea-line); box-shadow: var(--ea-shadow); }
 .ea-seg__opt:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
 
 /* Filter chips (components/ui/Chips): one line; on phones the row scrolls sideways instead of wrapping. */
@@ -1227,8 +1227,6 @@ input.ea-input-bare[aria-invalid="true"], input.ea-input-bare[aria-invalid="true
   .ea-admin-main [style*="grid-template-columns: repeat(4"],
   .ea-admin-main [style*="grid-template-columns: repeat(5"],
   .ea-admin-main [style*="grid-template-columns: repeat(6"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
-  .ea-admin-main [style*="grid-template-columns: 360px"],
-  .ea-admin-main [style*="grid-template-columns: 340px"] { grid-template-columns: 1fr !important; }
   /* User management: each user becomes a card. Name and the active switch on the first line; role, school and the
      joined date on the second. The column headings are not needed then. */
   .ea-um-head { display: none !important; }
@@ -1239,6 +1237,12 @@ input.ea-input-bare[aria-invalid="true"], input.ea-input-bare[aria-invalid="true
   .ea-um-row > .ea-um-school { flex: 0 1 auto; min-width: 0; }
   .ea-um-row > .ea-um-joined::before { content: "Joined "; }
   .ea-um-row > span:nth-child(2) { margin-left: 48px; } /* line up under the name, past the avatar */
+}
+/* A fixed side panel beside a preview or a list (ID cards, timetable): stacked until the area holds both (the
+   admin area is 700-940 px wide between 1024 and 1199 px). */
+@media (max-width: 1199px) {
+  .ea-admin-main [style*="grid-template-columns: 360px"],
+  .ea-admin-main [style*="grid-template-columns: 340px"] { grid-template-columns: 1fr !important; }
   .ea-admin-main [style*="grid-template-columns: 340px"] > * { min-width: 0; }
 }
 @media (max-width: 767px) {
@@ -1327,12 +1331,9 @@ body:has(.ea-dialog-backdrop) .ea-ask-fab { display: none !important; }
 
 /* ───────────── Learning AI (pages/student/learn) ───────────── */
 .ea-learn { min-height: 100%; background: var(--app-bg, #F4F6FB); padding-bottom: 96px; color: var(--ea-body); }
-.ea-learn__tabs { display: flex; gap: 4px; padding: 10px 16px 0; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid var(--ea-line); background: var(--ea-surface); }
-.ea-learn__tab { flex: none; padding: 10px 12px; border: none; border-bottom: 2px solid transparent; background: none; font: inherit; font-size: 14px; font-weight: 600; color: var(--ea-muted); cursor: pointer; white-space: nowrap; }
-.ea-learn__tab.is-on { color: var(--brand); border-bottom-color: var(--brand); }
+/* The four sections switch with the shared segmented control (.ea-seg), as every other set of views does. */
+.ea-learn__tabs { padding: 12px 16px 0; }
 /* Phones: the four tabs do not fit; fade the right edge so a cut-off label reads as "scroll for more", and pad the end so the last tab clears the fade. */
-@media (max-width: 599px) { .ea-learn__tabs { padding-right: 40px; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent); } }
-.ea-learn__tab:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; border-radius: 6px; }
 .ea-learn__panel { padding: 16px; display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 960px; margin: 0 auto; box-sizing: border-box; }
 /* Desktop: the tabs and the panel sit in the page frame like every other page (they were centred and full-bleed). */
 @media (min-width: 1024px) {
@@ -1506,7 +1507,6 @@ body:has(.ea-dialog-backdrop) .ea-ask-fab { display: none !important; }
 
 /* Learning AI in dark mode: the design tokens are light, so the surfaces are set here. */
 [data-theme="dark"] .ea-learn { background: var(--bg); color: var(--subtext2); }
-[data-theme="dark"] .ea-learn__tabs,
 [data-theme="dark"] .ea-learn__bubble.is-ai,
 [data-theme="dark"] .ea-learn__composer,
 [data-theme="dark"] .ea-learn__history,

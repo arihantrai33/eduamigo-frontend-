@@ -5,6 +5,7 @@ import AiUsage from "./AiUsage";
 import PageHeader from "../../components/ui/PageHeader";
 import { getAssistantMetrics, getAssistantEvaluation, getTickets, updateTicket, errorText } from "../../api/assistant";
 import Skeleton from "../../components/ui/Skeleton";
+import Chips from "../../components/ui/Chips";
 
 // EduAmigo Ask insights: how well the assistant routes and resolves questions (PS18 metrics),
 // what people ask about, and every hand-off ticket in the school.
@@ -69,9 +70,9 @@ export default function AskInsights() {
             {loading ? <Loader2 size={16} className="ins-spin" aria-hidden="true" /> : <RefreshCw size={16} aria-hidden="true" />} Refresh
           </button>
         </>} />
-      <div style={s.tabs} role="tablist">
+      <div className="ea-seg" role="tablist" aria-label="Ask sections" style={{ justifySelf: "start" }}>
         {[["insights", "Insights and tickets"], ["usage", "AI usage and cost"], ["knowledge", "School documents"]].map(([k, l]) => (
-          <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)} style={tab === k ? s.tabOn : s.tabOff}>{l}</button>
+          <button key={k} type="button" role="tab" aria-selected={tab === k} className="ea-seg__opt" onClick={() => setTab(k)}>{l}</button>
         ))}
       </div>
       {error && <div style={s.error}>{error}</div>}
@@ -181,11 +182,8 @@ export default function AskInsights() {
       <section style={s.card}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>
           <h2 className="ea-section-title" style={{ ...s.h2, margin: 0 }}>Hand-off tickets</h2>
-          <div style={{ display: "flex", gap: 6 }}>
-            {[["open", "Open"], ["in_progress", "In progress"], ["resolved", "Resolved"], ["", "All"]].map(([k, l]) => (
-              <button key={k || "all"} type="button" aria-pressed={status === k} onClick={() => setStatus(k)} style={status === k ? s.segOn : s.segOff}>{l}</button>
-            ))}
-          </div>
+          <Chips label="Ticket status" value={status} onChange={setStatus}
+            items={[["open", "Open"], ["in_progress", "In progress"], ["resolved", "Resolved"], ["", "All"]].map(([value, label]) => ({ value, label }))} />
         </div>
         <table style={s.table}>
           <thead><tr><th style={s.th}>Ticket</th><th style={s.th}>Issue</th><th style={s.th}>From</th><th style={s.th}>With</th><th style={s.th}>Status</th><th style={s.th} /></tr></thead>
@@ -223,12 +221,9 @@ export default function AskInsights() {
 }
 
 const s = {
-  tabs: { display: "flex", gap: 6, borderBottom: "1px solid var(--border)" },
-  tabOn: { padding: "9px 14px", border: "none", borderBottom: "2px solid var(--brand-dark)", background: "none", color: "var(--brand-dark)", fontWeight: 800, fontSize: 14, cursor: "pointer" },
-  tabOff: { padding: "9px 14px", border: "none", borderBottom: "2px solid transparent", background: "none", color: "var(--subtext)", fontWeight: 600, fontSize: 14, cursor: "pointer" },
   resolveBox: { display: "grid", gap: 6, marginTop: 8, minWidth: 220 },
   noteInput: { width: "100%", boxSizing: "border-box", padding: "8px 10px", borderRadius: 8, border: "1.5px solid var(--border)", background: "var(--input)", color: "var(--text)", fontSize: 12, fontFamily: "inherit", resize: "vertical" },
-  page: { padding: 24, fontFamily: "inherit", color: "var(--text)", display: "grid", gap: 16 },
+  page: { fontFamily: "inherit", color: "var(--text)", display: "grid", gap: 16 },
   head: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" },
   h1: { fontSize: 22, fontWeight: 800, margin: 0 },
   sub: { fontSize: 13, color: "var(--subtext)", marginTop: 4 },
@@ -253,8 +248,6 @@ const s = {
   btn: { display: "inline-flex", alignItems: "center", gap: 6, padding: "8px 12px", borderRadius: 10, border: "1px solid var(--brand-border)", background: "var(--card)", color: "var(--brand-dark)", fontWeight: 700, fontSize: 13, cursor: "pointer" },
   btnSm: { padding: "5px 9px", borderRadius: 8, border: "1px solid var(--border)", background: "var(--card)", color: "var(--text)", fontSize: 12, cursor: "pointer", marginRight: 6 },
   btnPrimary: { padding: "5px 10px", borderRadius: 8, border: "none", background: "var(--brand-gradient)", color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer" },
-  segOn: { padding: "5px 11px", borderRadius: 999, border: "1px solid var(--brand-border)", background: "var(--brand-soft)", color: "var(--brand-dark)", fontSize: 12, fontWeight: 700, cursor: "pointer" },
-  segOff: { padding: "5px 11px", borderRadius: 999, border: "1px solid var(--border)", background: "var(--card)", color: "var(--subtext)", fontSize: 12, fontWeight: 600, cursor: "pointer" },
   urgent: { display: "inline-block", fontSize: 10, fontWeight: 800, color: "#b91c1c", background: "#fee2e2", borderRadius: 6, padding: "1px 6px", marginTop: 3 },
   error: { background: "#fef2f2", border: "1px solid #fecaca", color: "#b91c1c", borderRadius: 12, padding: "9px 12px", fontSize: 13 },
 };

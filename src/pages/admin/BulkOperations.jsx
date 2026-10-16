@@ -7,6 +7,7 @@ import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
 import FieldError from "../../components/ui/FieldError";
 import { useFieldErrors } from "../../utils/fieldErrors";
+import Segmented from "../../components/ui/Segmented";
 
 const FIELDS = Object.fromEntries(["attClass", "attDate", "fromClass", "fromSection", "toClass", "toSection"].map((k) => [k, `bulk-${k}`]));
 const API = import.meta.env.VITE_API_URL;
@@ -14,13 +15,6 @@ const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
-function Tab({ label, icon, active, onClick }) {
-  return (
-    <button type="button" aria-pressed={active} onClick={onClick} style={{ display:"flex", flexShrink:0, alignItems:"center", gap:8, padding:"8px 16px", borderRadius:9, border:"none", cursor:"pointer", fontWeight:650, fontSize:13, whiteSpace:"nowrap", transition:"all 0.2s", background: active ? "var(--ea-surface)" : "transparent", color: active ? "var(--ea-ink)" : "var(--ea-body)", boxShadow: active ? "var(--ea-shadow)" : "none" }}>
-      <span>{icon}</span>{label}
-    </button>
-  );
-}
 
 function ResultBanner({ result, onClose }) {
   if (!result) return null;
@@ -198,13 +192,14 @@ export default function BulkOperations() {
 
       <ResultBanner result={result} onClose={() => setResult(null)} />
 
-      <div style={{ display:"flex", flexWrap:"nowrap", gap:4, background:"var(--ea-hover)", borderRadius:12, padding:4, border:"1px solid var(--ea-line)", width:"fit-content", maxWidth:"100%", marginBottom:24, overflowX:"auto", scrollbarWidth:"none" }}>
-        {[
+      <div style={{ marginBottom: 24 }}>
+        <Segmented label="Bulk operation" value={tab} onChange={(k) => { setTab(k); setResult(null); }}
+          options={[
           { key:"attendance", icon:<Glyph e="📋" />, label:"Bulk Attendance" },
           { key:"promote",    icon:<Glyph e="🎓" />, label:"Promote Students" },
           { key:"fee",        icon:<Glyph e="💰" />, label:"Fee Reminder" },
           { key:"csv",        icon:<Glyph e="📂" />, label:"CSV Upload" },
-        ].map(t => <Tab key={t.key} label={t.label} icon={t.icon} active={tab===t.key} onClick={() => { setTab(t.key); setResult(null); }} />)}
+        ].map((t) => ({ value: t.key, label: t.label, icon: t.icon }))} />
       </div>
 
       {tab === "attendance" && card(

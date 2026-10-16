@@ -90,7 +90,7 @@ export default function UserManagement() {
   }, {});
 
   return (
-    <div style={{ fontFamily: "inherit", maxWidth: 1000 }}>
+    <div className="ea-page--wide" style={{ fontFamily: "inherit" }}>
       {/* Header */}
       <div style={{ marginBottom: 24 }}>
         <PageHeader title="User Management" subtitle="Manage system access and roles"

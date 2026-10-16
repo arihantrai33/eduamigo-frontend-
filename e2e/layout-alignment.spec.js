@@ -13,7 +13,7 @@ const ROUTES = {
   student: { home: 'wide', notifications: 'read', timetable: 'wide', notes: 'read', learn: 'wide', result: 'wide', attendance: 'read', fee: 'read', bus: 'map', 'apply-leave': 'wide', chat: 'read', profile: 'read' },
   parent: { home: 'wide', notifications: 'read', attendance: 'wide', result: 'read', fee: 'read', bus: 'map', calendar: 'read', 'apply-leave': 'wide', chat: 'read', profile: 'read' },
   teacher: { home: 'wide', attendance: 'read', marks: 'read', students: 'read', upload: 'read', timetable: 'wide', leave: 'read', notifications: 'read', chat: 'read', profile: 'read' },
-  admin: { '': 'full', students: 'full', 'students/add': 'read', teachers: 'full', fees: 'full', exams: 'full', leaves: 'full', library: 'full', communications: 'full', settings: 'full', academic: 'read', timetable: 'full', 'hr-management': 'full', reports: 'full', admissions: 'full', 'event-calendar': 'full' },
+  admin: { '': 'full', students: 'full', 'students/add': 'read', teachers: 'full', fees: 'full', exams: 'full', leaves: 'full', library: 'full', communications: 'full', settings: 'full', academic: 'read', timetable: 'full', 'hr-management': 'full', reports: 'full', admissions: 'full', 'event-calendar': 'full', ask: 'full', 'bulk-operations': 'full', 'year-end': 'wide', 'id-card-generator': 'full', 'fee-reports': 'full', 'fee-structure': 'full', results: 'full', salaries: 'full', 'user-management': 'wide', 'attendance-reports': 'full', activity: 'wide', parents: 'full', 'parents/add': 'read', 'teachers/add': 'read', transport: 'full' },
 };
 const WIDTH = { read: 880, wide: 1200 };
 const SIDEBAR = 260;

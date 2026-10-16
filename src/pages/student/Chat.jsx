@@ -7,6 +7,7 @@ import EmptyState from "../../components/ui/EmptyState";
 import { Megaphone, Users } from "lucide-react";
 import PortalHeader from "../../components/ui/PortalHeader";
 import Skeleton from "../../components/ui/Skeleton";
+import Segmented from "../../components/ui/Segmented";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
 const avatarColor = (name = '') => {
@@ -109,9 +110,6 @@ export default function Chat() {
   };
   const S = {
     screen: { minHeight: '100vh', background: dm ? '#0f172a' : '#f5f6fa', fontFamily: 'inherit', display: 'flex', flexDirection: 'column' },
-    tabRow: { display: 'flex', background: dm ? '#1e293b' : 'white', borderBottom: dm ? '1px solid #334155' : '1px solid var(--ea-line)', padding: '0 16px' },
-    tabBtn: { flex: 1, padding: '12px 0', border: 'none', background: 'none', fontSize: 13, fontWeight: 600, color: dm ? 'var(--ea-muted)' : '#888', cursor: 'pointer' },
-    tabActive: { color: 'var(--brand)', borderBottom: '2px solid var(--brand)' },
     list: { flex: 1, overflowY: 'auto', padding: '12px 16px 80px' },
     sectionLabel: { marginBottom: 8, marginTop: 4 },
     chatRow: { background: dm ? '#1e293b' : 'white', borderRadius: 14, padding: '14px', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10, boxShadow: dm ? '0 1px 6px rgba(0,0,0,0.3)' : '0 1px 6px rgba(0,0,0,0.06)', cursor: 'pointer' },
@@ -180,10 +178,8 @@ export default function Chat() {
   return (
     <div className="ea-pd-narrow" style={S.screen}>
       <PortalHeader title="Messages" onBack={() => navigate('/student/home')} />
-      <div className="ea-pd-bar" style={S.tabRow}>
-        {[['chats','Chats'],['broadcasts','Broadcasts']].map(([key, label]) => (
-          <button key={key} type="button" aria-pressed={tab === key} style={{ ...S.tabBtn, ...(tab === key ? S.tabActive : {}) }} onClick={() => setTab(key)}>{label}</button>
-        ))}
+      <div className="ea-pd-row" style={{ padding: '12px 16px 0' }}>
+        <Segmented label="Messages" value={tab} onChange={setTab} options={[{ value: 'chats', label: 'Chats' }, { value: 'broadcasts', label: 'Broadcasts' }]} />
       </div>
       {loading ? (
         <div style={S.center}><Skeleton rows={3} label="Loading" /></div>

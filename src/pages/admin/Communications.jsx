@@ -9,6 +9,7 @@ import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import { toneOf } from "../../components/ui/tone";
+import Segmented from "../../components/ui/Segmented";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -165,16 +166,9 @@ export default function Communications() {
       </div>
 
       {/* Tabs */}
-      <div style={{ display:"flex", flexWrap:"nowrap", gap:4, marginBottom:20, background:"var(--ea-hover)", padding:4, borderRadius:12, border:"1px solid var(--ea-line)", width:"fit-content", maxWidth:"100%", overflowX:"auto", scrollbarWidth:"none" }}>
-        {TABS.map(tab => (
-          <button key={tab.id} type="button" aria-pressed={activeTab === tab.id} onClick={() => setActiveTab(tab.id)}
-            style={{ flexShrink:0, padding:"8px 16px", borderRadius:9, border:"none", cursor:"pointer", fontWeight:650, fontSize:13, whiteSpace:"nowrap", transition:"all 0.2s",
-              background: activeTab === tab.id ? "var(--ea-surface)" : "transparent",
-              color: activeTab === tab.id ? "var(--ea-ink)" : "var(--ea-body)",
-              boxShadow: activeTab === tab.id ? "var(--ea-shadow)" : "none" }}>
-            {tab.label} <span style={{ fontSize:11, opacity:0.8 }}>({tab.count})</span>
-          </button>
-        ))}
+      <div style={{ marginBottom: 20 }}>
+        <Segmented label="Communication type" value={activeTab} onChange={setActiveTab}
+          options={TABS.map((tab) => ({ value: tab.id, label: <>{tab.label} <span style={{ fontSize: 11, opacity: 0.8 }}>({tab.count})</span></> }))} />
       </div>
 
       {/* Announcements Tab */}

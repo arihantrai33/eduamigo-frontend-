@@ -5,6 +5,7 @@ import { Printer } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
 import Skeleton from "../../components/ui/Skeleton";
+import Segmented from "../../components/ui/Segmented";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 const SCHOOL_NAME = "EduAmigo School";
@@ -250,13 +251,8 @@ export default function IDCardGenerator() {
           )} />
       </div>
 
-      <div style={{ display: "flex", gap: 4, background: "white", borderRadius: 14, padding: 5, border: "1px solid #E2E8F0", width: "fit-content", marginBottom: "1.25rem", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
-        {["student","teacher"].map(t => (
-          <button key={t} type="button" aria-pressed={tab === t} onClick={() => setTab(t)}
-            style={{ padding: "9px 28px", borderRadius: 10, border: "none", fontSize: 13, fontWeight: 700, cursor: "pointer", transition: "all 0.2s", background: tab === t ? "var(--brand-gradient)" : "transparent", color: tab === t ? "white" : "var(--ea-muted)", boxShadow: tab === t ? "0 4px 12px color-mix(in srgb, var(--brand) 30%, transparent)" : "none" }}>
-            {t === "student" ? "Students" : "Faculty"}
-          </button>
-        ))}
+      <div style={{ marginBottom: "1.25rem" }}>
+        <Segmented label="Card type" value={tab} onChange={setTab} options={[{ value: "student", label: "Students" }, { value: "teacher", label: "Faculty" }]} />
       </div>
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: "1.25rem" }}>

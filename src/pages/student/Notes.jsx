@@ -10,6 +10,7 @@ import { Inbox, Plus, SearchX, Sparkles } from "lucide-react";
 import EmptyState from "../../components/ui/EmptyState";
 import Skeleton from "../../components/ui/Skeleton";
 import Badge from "../../components/ui/Badge";
+import Segmented from "../../components/ui/Segmented";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -115,14 +116,8 @@ export default function Notes() {
         <input style={{ border: 'none', background: 'transparent', fontSize: 14, color: dm ? 'var(--ea-faint)' : '#333', outline: 'none', width: '100%', colorScheme: dm ? 'dark' : 'light' }} aria-label="Search notes" placeholder="Search notes, subjects..." value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
       {/* Tabs */}
-      <div className="ea-pd-row" style={{ display: 'flex', gap: 8, padding: '0 16px 12px' }}>
-        {tabs.map(tab => (
-          <button key={tab.key} type="button" aria-pressed={activeTab === tab.key}
-            style={{ padding: '8px 16px', borderRadius: 20, border: activeTab === tab.key ? '1.5px solid var(--brand)' : `1.5px solid ${dm ? '#334155' : '#E0E0E0'}`, background: activeTab === tab.key ? (dm ? '#1e3a5f' : 'var(--brand-soft)') : (dm ? '#1e293b' : '#fff'), fontSize: 13, fontWeight: activeTab === tab.key ? 700 : 500, cursor: 'pointer', color: activeTab === tab.key ? (dm ? 'var(--brand-light)' : 'var(--brand)') : (dm ? 'var(--ea-muted)' : '#666') }}
-            onClick={() => setActiveTab(tab.key)}>
-            {tab.label}
-          </button>
-        ))}
+      <div className="ea-pd-row" style={{ padding: '0 16px 12px' }}>
+        <Segmented label="Notes view" value={activeTab} onChange={setActiveTab} options={tabs.map((t) => ({ value: t.key, label: t.label }))} />
       </div>
       {/* Content */}
       <div className="ea-pd-body" style={{ flex: 1, padding: '0 16px', overflowY: 'auto' }}>

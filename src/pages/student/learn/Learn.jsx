@@ -58,13 +58,15 @@ export default function Learn() {
   return (
     <div className="ea-learn">
       <PortalHeader title="Learning AI" subtitle={context ? `Class ${context.class}-${context.section}` : "Your study companion"} onBack={() => navigate("/student/home")} />
-      <div className="ea-learn__tabs" role="tablist" aria-label="Learning AI" onKeyDown={onKey}>
+      <div className="ea-learn__tabs">
+      <div className="ea-seg" role="tablist" aria-label="Learning AI" onKeyDown={onKey}>
         {TABS.map((t) => (
           <button key={t.key} ref={(el) => { tabRefs.current[t.key] = el; }} type="button" role="tab" id={`learn-tab-${t.key}`} aria-selected={tab === t.key}
-            aria-controls={`learn-panel-${t.key}`} tabIndex={tab === t.key ? 0 : -1} className={`ea-learn__tab${tab === t.key ? " is-on" : ""}`} onClick={() => select(t.key)}>
+            aria-controls={`learn-panel-${t.key}`} tabIndex={tab === t.key ? 0 : -1} className="ea-seg__opt" onClick={() => select(t.key)}>
             {t.label}
           </button>
         ))}
+      </div>
       </div>
       <div className="ea-learn__panel" role="tabpanel" id={`learn-panel-${tab}`} aria-labelledby={`learn-tab-${tab}`}>
         {error ? <p className="ea-alert" role="alert"><span>{error}</span></p> : (

@@ -6,6 +6,7 @@ import { toast, errorMessage, confirmAction } from "../../utils/toast";
 import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
 import Skeleton from "../../components/ui/Skeleton";
+import Segmented from "../../components/ui/Segmented";
 // End of the academic year: promote, detain, leave or pass out (backend: /api/academic/year-end),
 // and transfer certificates for students who have left.
 const API = import.meta.env.VITE_API_URL;
@@ -121,10 +122,9 @@ export default function YearEnd() {
       <div style={{ marginBottom: 14 }}>
         <PageHeader title="Year End" subtitle="Move students to the next session, and issue transfer certificates" />
       </div>
-      <div style={{ display: "flex", gap: 6, marginBottom: 16 }}>
-        {[["year", "Promote and detain"], ["former", "Former students and TCs"]].map(([k, l]) => (
-          <button key={k} onClick={() => openTab(k)} style={{ ...ghost, ...(tab === k ? { background: "var(--brand)", color: "#fff", borderColor: "var(--brand)" } : {}) }}>{l}</button>
-        ))}
+      <div style={{ marginBottom: 16 }}>
+        <Segmented label="Year end section" value={tab} onChange={openTab}
+          options={[{ value: "year", label: "Promote and detain" }, { value: "former", label: "Former students and TCs" }]} />
       </div>
 
       {tab === "year" && (
