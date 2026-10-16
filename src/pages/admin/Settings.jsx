@@ -70,7 +70,7 @@ function OnlinePayments() {
         <h2 className="ea-form-section__title" style={{ margin: 0, padding: 0, border: 0 }}>Online Fee Payments (Razorpay)</h2>
         <span style={{ fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 20, background: cfg.enabled ? "#DCFCE7" : "#F1F5F9", color: cfg.enabled ? "#15803D" : "#64748B" }}>{cfg.enabled ? "On" : "Off"}</span>
       </div>
-      <div style={{ fontSize: 12, color: "#64748B", marginBottom: 12, lineHeight: 1.6 }}>
+      <div style={{ fontSize: 12, color: "#56657A", marginBottom: 12, lineHeight: 1.6 }}>
         Parents and students pay fees from the app with UPI, cards or net banking. Money goes straight to your school's Razorpay account and receipts are issued automatically.
         Get the keys from Razorpay Dashboard → Account &amp; Settings → API Keys. Use Test Mode keys (rzp_test_…) first.
       </div>
@@ -112,17 +112,17 @@ function PlanAndBills({ school }) {
         <span>School code: <strong>{school?.code}</strong></span>
       </div>
       {!invoices ? <Skeleton rows={3} label="Loading bills" /> : invoices.length === 0 ? (
-        <p style={{ fontSize: 13, color: "#64748B", margin: 0 }}>No bills yet.</p>
+        <p style={{ fontSize: 13, color: "#56657A", margin: 0 }}>No bills yet.</p>
       ) : (
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-          <thead><tr>{["Invoice", "Period", "Students", "Total", "Status", "Due"].map((h) => <th key={h} style={{ textAlign: "left", padding: "6px 8px", color: "#64748B", fontWeight: 600, borderBottom: "1px solid #E2E8F0" }}>{h}</th>)}</tr></thead>
+          <thead><tr>{["Invoice", "Period", "Students", "Total", "Status", "Due"].map((h) => <th key={h} style={{ textAlign: "left", padding: "6px 8px", color: "#56657A", fontWeight: 600, borderBottom: "1px solid #E2E8F0" }}>{h}</th>)}</tr></thead>
           <tbody>
             {invoices.map((inv) => (
               <tr key={inv._id}>
                 <td style={td}>{inv.number}</td>
                 <td style={td}>{utcDay(inv.periodFrom)} – {utcDay(inv.periodTo)}</td>
                 <td style={td}>{inv.activeStudents}</td>
-                <td style={td}><strong>{rupees(inv.total)}</strong> <span style={{ color: "#64748B" }}>incl. GST {inv.taxRate}%</span></td>
+                <td style={td}><strong>{rupees(inv.total)}</strong> <span style={{ color: "#56657A" }}>incl. GST {inv.taxRate}%</span></td>
                 <td style={td}><span style={{ padding: "2px 8px", borderRadius: 999, fontSize: 11.5, fontWeight: 700, background: inv.status === "paid" ? "#DCFCE7" : "#FEF3C7", color: inv.status === "paid" ? "#166534" : "#92400E" }}>{inv.status === "paid" ? "Paid" : "Due"}</span></td>
                 <td style={td}>{inv.status === "paid" ? `Paid ${new Date(inv.paidAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}` : utcDay(inv.dueDate)}</td>
               </tr>
@@ -246,7 +246,7 @@ export default function Settings() {
 
       <div className="ea-card" style={card}>
         <h2 className="ea-form-section__title">School Location</h2>
-        <div style={{ fontSize: 12, color: "#64748B", marginBottom: 10 }}>Used as the destination on parents' bus tracking map. Copy the coordinates from Google Maps (right-click on the school gate).</div>
+        <div style={{ fontSize: 12, color: "#56657A", marginBottom: 10 }}>Used as the destination on parents' bus tracking map. Copy the coordinates from Google Maps (right-click on the school gate).</div>
         <div className="ea-form-grid">
           <Field text="Latitude"><input type="number" step="any" className="ea-input" value={school.lat} onChange={set("lat")} placeholder="e.g. 28.6280" /></Field>
           <Field text="Longitude"><input type="number" step="any" className="ea-input" value={school.lng} onChange={set("lng")} placeholder="e.g. 77.3649" /></Field>
@@ -264,7 +264,7 @@ export default function Settings() {
 
       <div className="ea-card" style={card}>
         <h2 className="ea-form-section__title">Subjects</h2>
-        <div style={{ fontSize: 12, color: "#64748B", marginBottom: 10 }}>Extra subjects your school teaches, shown in teacher and timetable forms.</div>
+        <div style={{ fontSize: 12, color: "#56657A", marginBottom: 10 }}>Extra subjects your school teaches, shown in teacher and timetable forms.</div>
         <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
           <input className="ea-input" style={{ flex: 1 }} value={newSubject} onChange={(e) => setNewSubject(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addSubject()} placeholder="e.g. Sanskrit" aria-label="New subject name" />
           <button type="button" onClick={addSubject} className="ea-btn ea-btn--ghost">Add</button>

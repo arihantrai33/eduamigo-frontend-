@@ -13,7 +13,7 @@ const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("
 
 const STATUS_CONFIG = {
   Present: { bg: "#F0FDF4", color: "#15803D", dot: "#22C55E", hover: "#DCFCE7" },
-  Absent:  { bg: "#FEF2F2", color: "#DC2626", dot: "#EF4444", hover: "#FEE2E2" },
+  Absent:  { bg: "#FEF2F2", color: "#B91C1C", dot: "#EF4444", hover: "#FEE2E2" },
   Late:    { bg: "#FFFBEB", color: "#D97706", dot: "#F59E0B", hover: "#FEF3C7" },
 };
 
@@ -234,7 +234,7 @@ export default function Attendance() {
             })}
           </div>
           <div style={{ padding: "20px 24px", borderTop: "1px solid #F1F5F9", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div style={{ fontSize: 13, color: "#64748B", fontWeight: 600 }}>
+            <div style={{ fontSize: 13, color: "#56657A", fontWeight: 600 }}>
               {stats.present} Present · {stats.absent} Absent · {stats.late} Late
             </div>
             <div style={{ display: "flex", gap: 12, alignItems: "center" }}>

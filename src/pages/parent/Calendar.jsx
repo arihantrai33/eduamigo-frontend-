@@ -64,7 +64,7 @@ export default function ParentCalendar() {
   const empty = (text) => <div style={{ padding: "8px 16px 18px", fontSize: 13, color: "var(--subtext)" }}>{text}</div>;
 
   return (
-    <div className="ea-pd-narrow" style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "inherit", paddingBottom: "30px" }}>
+    <div style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "inherit", paddingBottom: "30px" }}>
       <PortalHeader title="School Calendar" onBack={() => navigate(-1)} />
 
       <div className="ea-pd-body" style={{ padding: "16px" }}>

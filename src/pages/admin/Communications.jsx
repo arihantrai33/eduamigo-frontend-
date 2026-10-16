@@ -14,7 +14,7 @@ const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 const PRIORITY_CONFIG = {
-  urgent:    { bg:"#FEF2F2", color:"#DC2626", border:"#FECACA", label:"Urgent" },
+  urgent:    { bg:"#FEF2F2", color:"#B91C1C", border:"#FECACA", label:"Urgent" },
   important: { bg:"#FFFBEB", color:"var(--ea-on-card-warning)", border:"#FDE68A", label:"Important" },
   normal:    { bg:"#F0FDF4", color:"#15803D", border:"#BBF7D0", label:"Normal" },
 };
@@ -240,7 +240,7 @@ export default function Communications() {
                           <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:tcfg.bg, color:tcfg.color }}>{tcfg.label}</span>
                         </div>
                         <div style={{ fontSize:15, fontWeight:800, color:"#0F172A", marginBottom:6 }}>{a.title}</div>
-                        <div style={{ fontSize:13, color:"#64748B", lineHeight:1.6 }}>{a.message}</div>
+                        <div style={{ fontSize:13, color:"#56657A", lineHeight:1.6 }}>{a.message}</div>
                         <div style={{ fontSize:11, color:"var(--ea-muted)", marginTop:8 }}>
                           {a.createdBy?.name || "Admin"} · {fmtDate(a.createdAt)}
                         </div>
@@ -297,7 +297,7 @@ export default function Communications() {
                           <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:"#F1F5F9", color:"#475569" }}>Circular</span>
                         </div>
                         <div style={{ fontSize:15, fontWeight:800, color:"#0F172A", marginBottom:6 }}>{a.title}</div>
-                        <div style={{ fontSize:13, color:"#64748B", lineHeight:1.6 }}>{a.message}</div>
+                        <div style={{ fontSize:13, color:"#56657A", lineHeight:1.6 }}>{a.message}</div>
                         <div style={{ fontSize:11, color:"var(--ea-muted)", marginTop:8 }}>{fmtDate(a.createdAt)}</div>
                       </div>
                       <button className="act-btn" onClick={() => handleDeleteAnn(a._id)}
@@ -337,7 +337,7 @@ export default function Communications() {
                       <div style={{ width:40, height:40, borderRadius:12, background:"var(--brand-soft)", color:"var(--brand-dark)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}><Glyph e="🔔" /></div>
                       <div>
                         <div style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>{n.title}</div>
-                        <div style={{ fontSize:12, color:"#64748B", marginTop:2 }}>{n.message}</div>
+                        <div style={{ fontSize:12, color:"#56657A", marginTop:2 }}>{n.message}</div>
                         <div style={{ display:"flex", alignItems:"center", gap:8, marginTop:4 }}>
                           <span style={{ fontSize:11, fontWeight:700, padding:"2px 8px", borderRadius:20, background:tcfg.bg, color:tcfg.color }}>{tcfg.label}</span>
                           <span style={{ fontSize:11, color:"var(--ea-muted)" }}>{fmtDate(n.createdAt)}</span>
@@ -391,7 +391,7 @@ export default function Communications() {
             <span style={{ fontSize:13, fontWeight:600, color:"#374151" }}><Glyph e="📌" /> Pin this announcement</span>
           </label>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
-            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
+            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#56657A" }}>Cancel</button>
             <button onClick={handleSaveAnnouncement} disabled={saving} className="ea-btn ea-btn--primary">
               {saving ? "Saving..." : editItem ? "Update" : "Post"}
             </button>
@@ -402,7 +402,7 @@ export default function Communications() {
       {/* Notification Modal */}
       <Modal show={showModal && modalType === "notification"} onClose={() => setShowModal(false)} title="Send Notification">
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
-          <div style={{ background:"var(--brand-soft)", borderRadius:10, padding:"10px 14px", fontSize:12, color:"var(--brand)", fontWeight:600 }}>
+          <div style={{ background:"var(--brand-soft)", borderRadius:10, padding:"10px 14px", fontSize:12, color:"var(--brand-dark)", fontWeight:600 }}>
             This will send a push notification to all selected users
           </div>
           <div>
@@ -427,7 +427,7 @@ export default function Communications() {
             </div>
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
-            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
+            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#56657A" }}>Cancel</button>
             <button onClick={handleSendNotification} disabled={saving} className="ea-btn ea-btn--primary">
               {saving ? "Sending..." : "Send Now"}
             </button>

@@ -98,8 +98,8 @@ const AddTeacher = () => {
         <PageHeader title="Add Teacher" subtitle="Fill in the details to register a new teacher" />
       </div>
 
-      {error   && <div style={{ background: "#FEE2E2", color: "#DC2626", padding: "10px 14px", borderRadius: 8, fontSize: 12, marginBottom: 12 }}>{error}</div>}
-      {success && <div style={{ background: "#DCFCE7", color: "#16A34A", padding: "10px 14px", borderRadius: 8, fontSize: 12, marginBottom: 12 }}>{success}</div>}
+      {error   && <div style={{ background: "#FEE2E2", color: "#B91C1C", padding: "10px 14px", borderRadius: 8, fontSize: 12, marginBottom: 12 }}>{error}</div>}
+      {success && <div style={{ background: "#DCFCE7", color: "#166534", padding: "10px 14px", borderRadius: 8, fontSize: 12, marginBottom: 12 }}>{success}</div>}
 
       <div className="ea-card" style={{ padding: 24 }}>
 

@@ -98,12 +98,12 @@ export default function Toast() {
         <div role="dialog" aria-modal="true" style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.45)", zIndex: 10001, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
           <div style={{ background: "#fff", borderRadius: 14, padding: 20, width: "100%", maxWidth: 440, boxShadow: "0 20px 50px rgba(15,23,42,0.3)", fontFamily: "inherit" }}>
             <h3 style={{ margin: "0 0 6px", fontSize: 17, color: "#0F172A" }}>{creds.title}</h3>
-            <p style={{ margin: "0 0 14px", fontSize: 13, color: "#64748B", lineHeight: 1.5 }}>Share these securely. Each password is temporary and must be changed at first login. They will not be shown again.</p>
+            <p style={{ margin: "0 0 14px", fontSize: 13, color: "#56657A", lineHeight: 1.5 }}>Share these securely. Each password is temporary and must be changed at first login. They will not be shown again.</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 8, maxHeight: 280, overflowY: "auto" }}>
               {creds.entries.map((c, i) => (
                 <div key={i} style={{ background: "#F8FAFC", border: "1px solid #E2E8F0", borderRadius: 10, padding: "10px 12px", fontSize: 13 }}>
-                  {c.label && <div style={{ fontSize: 11, fontWeight: 700, color: "var(--brand)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4 }}>{c.label}</div>}
-                  {c.schoolCode && <div style={{ color: "#64748B", fontSize: 12 }}>School code: <strong style={{ color: "#0F172A" }}>{c.schoolCode}</strong></div>}
+                  {c.label && <div style={{ fontSize: 11, fontWeight: 700, color: "var(--brand-dark)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4 }}>{c.label}</div>}
+                  {c.schoolCode && <div style={{ color: "#56657A", fontSize: 12 }}>School code: <strong style={{ color: "#0F172A" }}>{c.schoolCode}</strong></div>}
                   <div style={{ color: "#0F172A" }}>Login ID: <strong>{c.loginId || c.email}</strong></div>
                   <div style={{ fontFamily: "ui-monospace, Menlo, monospace", color: "#0F172A", fontWeight: 700, marginTop: 2 }}>{c.password}</div>
                 </div>

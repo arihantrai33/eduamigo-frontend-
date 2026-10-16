@@ -147,7 +147,7 @@ export default function FeeReports() {
             <thead>
               <tr style={{ background:"var(--ea-hover)" }}>
                 {["Class","Records","Total Billed","Collected","Pending","Collection Rate","Status"].map(h => (
-                  <th key={h} style={{ padding:"12px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#64748B", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
+                  <th key={h} style={{ padding:"12px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#56657A", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -159,7 +159,7 @@ export default function FeeReports() {
                     <td style={{ padding:"14px 18px" }}>
                       <span style={{ fontSize:13, fontWeight:800, color:"#0F172A" }}>Class {c.cls}</span>
                     </td>
-                    <td style={{ padding:"14px 18px", fontSize:13, color:"#64748B", fontWeight:600 }}>{c.count}</td>
+                    <td style={{ padding:"14px 18px", fontSize:13, color:"#56657A", fontWeight:600 }}>{c.count}</td>
                     <td style={{ padding:"14px 18px", fontSize:13, fontWeight:700, color:"#0F172A" }}>{fmtAmt(c.total)}</td>
                     <td style={{ padding:"14px 18px" }}>
                       <span style={{ fontSize:13, fontWeight:700, color:"var(--ea-on-card-success)" }}>{fmtAmt(c.paid)}</span>

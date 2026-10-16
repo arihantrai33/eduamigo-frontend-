@@ -105,7 +105,7 @@ export default function TeacherTimetable() {
   )
 
   return (
-    <div className={isDesktop ? undefined : "ea-pd-narrow"} style={{ minHeight: '100vh', background: '#F4F6FB', fontFamily: "inherit", paddingBottom: 90 }}>
+    <div style={{ minHeight: '100vh', background: '#F4F6FB', fontFamily: "inherit", paddingBottom: 90 }}>
 
       {/* Header */}
       <PortalHeader title="My Timetable" onBack={() => navigate('/teacher/home')} />
@@ -159,7 +159,7 @@ export default function TeacherTimetable() {
               <button key={day} type="button" aria-pressed={selectedDay === day} onClick={() => setSelectedDay(day)} style={{
                 flexShrink: 0, padding: '8px 14px', borderRadius: 14, border: 'none', cursor: 'pointer',
                 background: isActive ? 'var(--brand)' : '#fff',
-                color: isActive ? '#fff' : isToday ? 'var(--brand)' : '#7B8099',
+                color: isActive ? '#fff' : isToday ? 'var(--brand)' : 'var(--ea-muted)',
                 fontWeight: isActive || isToday ? 700 : 500,
                 fontSize: 12, fontFamily: "inherit",
                 boxShadow: isActive ? '0 4px 12px color-mix(in srgb, var(--brand) 30%, transparent)' : '0 2px 8px rgba(0,0,0,0.06)',
@@ -178,13 +178,13 @@ export default function TeacherTimetable() {
 
         {/* Periods */}
         <div style={{ fontSize: 14, fontWeight: 700, color: '#1C2033', marginBottom: 12, fontFamily: "inherit" }}>
-          {selectedDay} {selectedDay === today && <span style={{ fontSize: 11, color: 'var(--brand)', fontWeight: 600 }}>• Today</span>}
+          {selectedDay} {selectedDay === today && <span style={{ fontSize: 11, color: 'var(--brand-dark)', fontWeight: 600 }}>• Today</span>}
         </div>
 
         {selectedPeriods.length === 0 ? (
           <div style={{ background: '#fff', borderRadius: 20, padding: '40px 20px', textAlign: 'center', boxShadow: '0 2px 16px color-mix(in srgb, var(--brand) 8%, transparent)' }}>
             <div style={{ fontSize: 36, marginBottom: 10 }}><Glyph e="📭" /></div>
-            <div style={{ fontSize: 14, color: '#7B8099', fontWeight: 500 }}>No classes scheduled for {selectedDay}</div>
+            <div style={{ fontSize: 14, color: 'var(--ea-muted)', fontWeight: 500 }}>No classes scheduled for {selectedDay}</div>
           </div>
         ) : (
           selectedPeriods.map((period, i) => {
@@ -202,13 +202,13 @@ export default function TeacherTimetable() {
                   <div style={{ background: 'var(--brand-soft)', borderRadius: 12, padding: '10px 12px', textAlign: 'center', flexShrink: 0, minWidth: 64 }}>
                     <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--brand-dark)' }}>{period.startTime || '—'}</div>
                     <div style={{ width: 1, height: 8, background: 'var(--brand-border)', margin: '3px auto' }} />
-                    <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--brand)' }}>{period.endTime || '—'}</div>
+                    <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--brand-dark)' }}>{period.endTime || '—'}</div>
                   </div>
 
                   {/* Info */}
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 15, fontWeight: 800, color: '#1C2033', marginBottom: 4 }}>{period.subject || '—'}</div>
-                    <div style={{ fontSize: 12, color: '#7B8099', fontWeight: 500 }}>
+                    <div style={{ fontSize: 12, color: 'var(--ea-muted)', fontWeight: 500 }}>
                       Class {period.class}{period.section ? ` - ${period.section}` : ''}
                       {period.room ? ` • Room ${period.room}` : ''}
                     </div>

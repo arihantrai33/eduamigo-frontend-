@@ -102,14 +102,14 @@ export default function TeacherHome() {
     return 'upcoming'
   }
 
-  const statusColor = { done: '#ccc', now: theme.primary, next: '#00BFA5', upcoming: '#7B8099' }
+  const statusColor = { done: '#ccc', now: theme.primary, next: '#00BFA5', upcoming: 'var(--ea-muted)' }
 
   const statusBadge = (status) => {
     const map = {
       done:     { bg: theme.soft, color: theme.primary, label: 'Done' },
       now:      { bg: theme.primary, color: '#fff',    label: 'Now' },
       next:     { bg: '#FFF9C4', color: 'var(--ea-on-card-warning)', label: 'Next' },
-      upcoming: { bg: '#F4F6FB', color: '#7B8099', label: 'Upcoming' },
+      upcoming: { bg: '#F4F6FB', color: 'var(--ea-muted)', label: 'Upcoming' },
     }
     const s = map[status] || map.upcoming
     return (
@@ -289,12 +289,12 @@ const styles = {
   },
   tileIcon:  { width: 40, height: 40, borderRadius: 12, background: "var(--brand-soft)", color: "var(--brand-dark)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, marginBottom: 10 },
   tileLabel: { fontSize: 13, fontWeight: 700, color: '#1C2033' },
-  tileSub:   { fontSize: 10.5, color: '#7B8099', fontWeight: 500, marginTop: 2 },
+  tileSub:   { fontSize: 10.5, color: 'var(--ea-muted)', fontWeight: 500, marginTop: 2 },
   sectionHeader: {
     display: 'flex', justifyContent: 'space-between',
     alignItems: 'center', marginBottom: 12,
   },
-  sectionDay:   { fontSize: 12, color: 'var(--brand)', fontWeight: 700 },
+  sectionDay:   { fontSize: 12, color: 'var(--brand-dark)', fontWeight: 700 },
   periodCard: {
     background: '#fff', borderRadius: 20, padding: '13px 15px',
     display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer',
@@ -303,7 +303,7 @@ const styles = {
   periodDot:     { width: 10, height: 10, borderRadius: '50%', flexShrink: 0 },
   periodInfo:    { flex: 1 },
   periodSubject: { fontSize: 13.5, fontWeight: 700, color: '#1C2033' },
-  periodMeta:    { fontSize: 11.5, color: '#7B8099', fontWeight: 500, marginTop: 1 },
+  periodMeta:    { fontSize: 11.5, color: 'var(--ea-muted)', fontWeight: 500, marginTop: 1 },
   emptySchedule: {
     textAlign: 'center', padding: '30px 20px',
     color: 'var(--ea-muted)', fontSize: 14, fontWeight: 500,

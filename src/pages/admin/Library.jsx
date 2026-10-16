@@ -155,7 +155,7 @@ export default function Library() {
           <thead>
             <tr style={{ background:"var(--ea-hover)" }}>
               {["Book","Author","ISBN","Category","Copies","Available","Issued","Action"].map(h => (
-                <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#64748B", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
+                <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#56657A", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
               ))}
             </tr>
           </thead>
@@ -258,7 +258,7 @@ export default function Library() {
             </label>
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
-            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
+            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#56657A" }}>Cancel</button>
             <button onClick={handleSave} disabled={saving} className="ea-btn ea-btn--primary">
               {saving ? "Saving..." : editBook ? "Update" : "Add Book"}
             </button>

@@ -131,11 +131,11 @@ export default function ParentAttendance() {
                 background: !c
                   ? "transparent"
                   : c.status === "Present"
-                  ? "color-mix(in srgb, var(--ea-on-card-success) 14%, transparent)"
+                  ? "color-mix(in srgb, var(--ea-on-card-success) 8%, transparent)"
                   : c.status === "Absent"
-                  ? "color-mix(in srgb, var(--ea-on-card-danger) 14%, transparent)"
+                  ? "color-mix(in srgb, var(--ea-on-card-danger) 8%, transparent)"
                   : c.status === "Leave"
-                  ? "color-mix(in srgb, var(--ea-on-card-warning) 16%, transparent)"
+                  ? "color-mix(in srgb, var(--ea-on-card-warning) 9%, transparent)"
                   : c.today
                   ? "var(--brand)"
                   : "transparent",
@@ -162,7 +162,7 @@ export default function ParentAttendance() {
               { color: "color-mix(in srgb, var(--ea-on-card-success) 14%, transparent)", label: "Present" },
               { color: "color-mix(in srgb, var(--ea-on-card-danger) 14%, transparent)", label: "Absent"  },
               { color: "color-mix(in srgb, var(--ea-on-card-warning) 16%, transparent)", label: "Leave"   },
-              { color: "var(--brand)", label: "Today"   },
+              { color: "var(--brand-dark)", label: "Today"   },
             ].map((l) => (
               <div key={l.label} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11 }}>
                 <div style={{ width: 12, height: 12, borderRadius: 3, background: l.color }} />

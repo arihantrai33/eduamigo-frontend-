@@ -201,20 +201,20 @@ export default function ExamSchedule() {
                   {isUpcoming && <Badge tone="success">Upcoming</Badge>}
                 </div>
                 <div style={{ fontSize:16, fontWeight:800, color:"#0F172A", marginBottom:4 }}>{exam.title}</div>
-                <div style={{ fontSize:13, color:"var(--brand)", fontWeight:700, marginBottom:12 }}>{exam.subject}</div>
+                <div style={{ fontSize:13, color:"var(--brand-dark)", fontWeight:700, marginBottom:12 }}>{exam.subject}</div>
                 <div style={{ display:"flex", flexDirection:"column", gap:6, marginBottom:16 }}>
-                  {exam.class && <div style={{ fontSize:12, color:"#64748B" }}><Glyph e="🏫" /> Class {exam.class}{exam.section ? `-${exam.section}` : ""}</div>}
-                  <div style={{ fontSize:12, color:"#64748B" }}><Glyph e="📅" /> {fmtDate(exam.date)}</div>
-                  {exam.startTime && <div style={{ fontSize:12, color:"#64748B" }}><Glyph e="🕐" /> {exam.startTime}{exam.endTime ? ` – ${exam.endTime}` : ""}</div>}
-                  {exam.totalMarks ? <div style={{ fontSize:12, color:"#64748B" }}><Glyph e="📊" /> Total Marks: {exam.totalMarks}</div> : <div style={{ fontSize:12, color:"#B45309", fontWeight:600 }}>Total marks not set: teachers cannot enter marks yet</div>}
-                  {exam.term && <div style={{ fontSize:12, color:"#64748B" }}><Glyph e="🗂" /> {exam.term} · {exam.academicYear}</div>}
-                  {exam.venue && <div style={{ fontSize:12, color:"#64748B" }}><Glyph e="📍" /> {exam.venue}</div>}
+                  {exam.class && <div style={{ fontSize:12, color:"#56657A" }}><Glyph e="🏫" /> Class {exam.class}{exam.section ? `-${exam.section}` : ""}</div>}
+                  <div style={{ fontSize:12, color:"#56657A" }}><Glyph e="📅" /> {fmtDate(exam.date)}</div>
+                  {exam.startTime && <div style={{ fontSize:12, color:"#56657A" }}><Glyph e="🕐" /> {exam.startTime}{exam.endTime ? ` – ${exam.endTime}` : ""}</div>}
+                  {exam.totalMarks ? <div style={{ fontSize:12, color:"#56657A" }}><Glyph e="📊" /> Total Marks: {exam.totalMarks}</div> : <div style={{ fontSize:12, color:"#B45309", fontWeight:600 }}>Total marks not set: teachers cannot enter marks yet</div>}
+                  {exam.term && <div style={{ fontSize:12, color:"#56657A" }}><Glyph e="🗂" /> {exam.term} · {exam.academicYear}</div>}
+                  {exam.venue && <div style={{ fontSize:12, color:"#56657A" }}><Glyph e="📍" /> {exam.venue}</div>}
                 </div>
                 <div style={{ display:"flex", gap:8, borderTop:"1px solid #F1F5F9", paddingTop:12 }}>
                   <button className="act-btn" onClick={() => openEdit(exam)}
                     style={{ flex:1, padding:"8px", borderRadius:10, border:"1px solid #E2E8F0", background:"white", color:"#374151", fontSize:12, fontWeight:700, cursor:"pointer" }}>Edit</button>
                   <button type="button" className="act-btn" onClick={() => setDeleteId(exam._id)} aria-label={`Delete ${exam.subject} exam`} title="Delete"
-                    style={{ padding:"8px 14px", borderRadius:10, border:"none", background:"#FEF2F2", color:"#DC2626", fontSize:12, fontWeight:700, cursor:"pointer" }}><Glyph e="🗑" /></button>
+                    style={{ padding:"8px 14px", borderRadius:10, border:"none", background:"#FEF2F2", color:"#B91C1C", fontSize:12, fontWeight:700, cursor:"pointer" }}><Glyph e="🗑" /></button>
                 </div>
               </div>
             );
@@ -263,7 +263,7 @@ export default function ExamSchedule() {
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", resize:"vertical", minHeight:70 }} />
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
-            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
+            <button onClick={() => setShowModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#56657A" }}>Cancel</button>
             <button onClick={handleSave} disabled={saving} className="ea-btn ea-btn--primary">
               {saving ? "Saving..." : "Save Exam"}
             </button>
@@ -277,7 +277,7 @@ export default function ExamSchedule() {
           <div style={{ fontSize:16, fontWeight:700, color:"#0F172A", marginBottom:8 }}>Delete this exam?</div>
           <div style={{ fontSize:13, color:"var(--ea-muted)", marginBottom:24 }}>This exam will be permanently removed. Exams that already have marks cannot be deleted.</div>
           <div style={{ display:"flex", gap:10, justifyContent:"center" }}>
-            <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
+            <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#56657A" }}>Cancel</button>
             <button onClick={() => handleDelete(deleteId)} className="ea-btn ea-btn--danger">Delete</button>
           </div>
         </div>

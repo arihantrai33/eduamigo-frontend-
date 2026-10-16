@@ -221,7 +221,7 @@ const s = {
   input: { flex: 1, minWidth: 0, height: "100%", border: "none", outline: "none", background: "transparent", fontSize: 15, color: "var(--text)", colorScheme: "dark light" },
   showBtn: { background: "none", border: "none", fontSize: 12, fontWeight: 800, cursor: "pointer", padding: "7px 8px" },
   forgot: { fontSize: 12.5, cursor: "pointer", fontWeight: 700, background: "none", border: "none", padding: "6px 0", fontFamily: "inherit" },
-  err: { display: "flex", gap: 8, alignItems: "flex-start", background: "#fef2f2", border: "1px solid #fecaca", color: "#dc2626", borderRadius: 12, padding: "10px 13px", fontSize: 12.5, marginBottom: 14 },
+  err: { display: "flex", gap: 8, alignItems: "flex-start", background: "#fef2f2", border: "1px solid #fecaca", color: "#B91C1C", borderRadius: 12, padding: "10px 13px", fontSize: 12.5, marginBottom: 14 },
   btn: { width: "100%", height: 52, display: "flex", alignItems: "center", justifyContent: "center", gap: 10, color: "white", border: "none", borderRadius: 16, fontSize: 15, fontWeight: 800, letterSpacing: 0.3, cursor: "pointer", transition: "transform .12s" },
   spinner: { width: 16, height: 16, borderRadius: "50%", border: "2px solid rgba(255,255,255,0.4)", borderTopColor: "#fff", animation: "spin .8s linear infinite" },
   schoolRow: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 18, padding: "10px 12px", borderRadius: 12, fontSize: 12, color: "var(--subtext)" },

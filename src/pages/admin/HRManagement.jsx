@@ -172,7 +172,7 @@ export default function HRManagement() {
       <div style={{ marginBottom:24 }}>
         <StatGrid>
           {[
-            { label:"TOTAL TEACHERS", value: teachers.length, icon:<Glyph e="👩‍🏫" />, color:"var(--brand)" },
+            { label:"TOTAL TEACHERS", value: teachers.length, icon:<Glyph e="👩‍🏫" />, color:"var(--brand-dark)" },
             { label:"SALARY PAID", value: `₹${totalPaid.toLocaleString()}`, icon:<Glyph e="✅" />, color:"var(--ea-on-card-success)" },
             { label:"SALARY PENDING", value: `₹${totalPending.toLocaleString()}`, icon:<Glyph e="⏳" />, color:"var(--ea-on-card-warning)" },
             { label:"LEAVE REQUESTS", value: pendingLeaves, icon:<Glyph e="📋" />, color: pendingLeaves ? "var(--ea-on-card-warning)" : "var(--brand)" },
@@ -224,7 +224,7 @@ export default function HRManagement() {
                 {salaries.map((s,i) => (
                   <tr key={i} style={{ borderBottom:"1px solid #F1F5F9" }}>
                     <td style={{ padding:"12px 14px", fontSize:13, fontWeight:700, color:"#0F172A" }}>{s.teacher?.name || "—"}</td>
-                    <td style={{ padding:"12px 14px", fontSize:12, color:"#64748B" }}>{s.teacher?.employeeId || "—"}</td>
+                    <td style={{ padding:"12px 14px", fontSize:12, color:"#56657A" }}>{s.teacher?.employeeId || "—"}</td>
                     <td style={{ padding:"12px 14px", fontSize:13, fontWeight:600, color:"#0F172A" }}>₹{(s.basicSalary||0).toLocaleString("en-IN")}</td>
                     <td style={{ padding:"12px 14px", fontSize:13, color:"var(--ea-on-card-success)" }}>+₹{(s.allowances||0).toLocaleString("en-IN")}</td>
                     <td style={{ padding:"12px 14px", fontSize:13, color:"var(--ea-on-card-danger)" }}>-₹{(s.deductions||0).toLocaleString("en-IN")}</td>
@@ -274,7 +274,7 @@ export default function HRManagement() {
                     </div>
                     <div>
                       <div style={{ fontSize:14, fontWeight:700, color:"#0F172A" }}>{l.teacher?.name || "—"}</div>
-                      <div style={{ fontSize:12, color:"#64748B", marginTop:2 }}>
+                      <div style={{ fontSize:12, color:"#56657A", marginTop:2 }}>
                         {l.leaveType} Leave · {new Date(l.fromDate).toLocaleDateString()} – {new Date(l.toDate).toLocaleDateString()} · {l.days} day{l.days!==1?"s":""}
                       </div>
                       {l.reason && <div style={{ fontSize:12, color:"var(--ea-muted)", marginTop:2 }}>"{l.reason}"</div>}

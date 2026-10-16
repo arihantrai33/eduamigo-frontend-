@@ -62,7 +62,7 @@ export default function StudentFee() {
   );
 
   return (
-    <div className="ea-pd-narrow" style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "inherit" }}>
+    <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "inherit" }}>
 
       {/* Header */}
       <PortalHeader title="Fee Statement" onBack={() => navigate(-1)} />

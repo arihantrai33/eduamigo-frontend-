@@ -59,7 +59,7 @@ export default function Notifications() {
   );
 
   return (
-    <div className="ea-pd-narrow" style={{ minHeight: "100vh", background: "var(--bg)", paddingBottom: "80px" }}>
+    <div style={{ minHeight: "100vh", background: "var(--bg)", paddingBottom: "80px" }}>
       <PortalHeader title="Notifications" onBack={() => navigate(-1)} />
       <div className="ea-pd-body" style={{ padding: "16px" }}>
         {notifications.length === 0 ? (

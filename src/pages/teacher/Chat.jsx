@@ -162,7 +162,7 @@ export default function TeacherChat() {
   const parents  = filtered.filter(c => c.type === 'parent');
 
   return (
-    <div className="ea-pd-narrow" style={styles.container}>
+    <div style={styles.container}>
       {/* CHAT WINDOW */}
       {tab === 'chat' && activeChat ? (
         <>
@@ -484,7 +484,7 @@ const styles = {
     borderRadius: '50%',
     animation: 'spin 0.8s linear infinite',
   },
-  loadingText: { color: 'var(--brand)', fontSize: 13, marginTop: 10 },
+  loadingText: { color: 'var(--brand-dark)', fontSize: 13, marginTop: 10 },
   errorBox: {
     background: '#FFEBEE',
     color: '#C62828',

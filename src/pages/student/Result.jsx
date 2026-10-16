@@ -61,7 +61,7 @@ export default function StudentResult() {
 
   if (loading) return (
     <div style={{ height: '100vh', display: 'flex', alignItems: 'center',
-      justifyContent: 'center', fontFamily: 'inherit', color: 'var(--brand)',
+      justifyContent: 'center', fontFamily: 'inherit', color: 'var(--brand-dark)',
       background: dm ? '#0f172a' : '#F4F6FB' }}>
       Loading results...
     </div>
@@ -73,7 +73,7 @@ export default function StudentResult() {
       gap: 12, padding: 24, background: dm ? '#0f172a' : '#F4F6FB' }}>
       <div style={{ fontSize: 48 }}><Glyph e="⚠" /></div>
       <div style={{ fontSize: 18, fontWeight: 700, color: dm ? '#f1f5f9' : '#1C2033' }}>Something went wrong</div>
-      <div style={{ fontSize: 14, color: dm ? 'var(--ea-muted)' : '#7B8099', textAlign: 'center' }}>{error}</div>
+      <div style={{ fontSize: 14, color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)', textAlign: 'center' }}>{error}</div>
       <button onClick={fetchResults}
         style={{ marginTop: 12, padding: '12px 24px', background: 'var(--brand)',
           color: '#fff', border: 'none', borderRadius: 12, fontSize: 14,
@@ -89,7 +89,7 @@ export default function StudentResult() {
       gap: 12, padding: 24, background: dm ? '#0f172a' : '#F4F6FB' }}>
       <div style={{ fontSize: 48 }}><Glyph e="📭" /></div>
       <div style={{ fontSize: 18, fontWeight: 700, color: dm ? '#f1f5f9' : '#1C2033' }}>No Results Published</div>
-      <div style={{ fontSize: 14, color: dm ? 'var(--ea-muted)' : '#7B8099', textAlign: 'center' }}>
+      <div style={{ fontSize: 14, color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)', textAlign: 'center' }}>
         No results have been published yet. Check back later.
       </div>
       <button onClick={() => navigate('/student/home')}
@@ -121,7 +121,7 @@ export default function StudentResult() {
             Subject-wise Performance
           </h2>
           {filtered.length === 0 ? (
-            <div style={{ color: dm ? 'var(--ea-muted)' : '#7B8099', fontSize: 14, textAlign: 'center', padding: 20 }}>
+            <div style={{ color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)', fontSize: 14, textAlign: 'center', padding: 20 }}>
               No results for this exam type.
             </div>
           ) : (
@@ -140,7 +140,7 @@ export default function StudentResult() {
                         borderRadius: 10, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>
                         {r.grade}
                       </span>
-                      <span style={{ fontSize: 13, fontWeight: 800, color: 'var(--brand)' }}>
+                      <span style={{ fontSize: 13, fontWeight: 800, color: 'var(--brand-dark)' }}>
                         {r.absent ? 'Absent' : `${r.marksObtained}/${r.totalMarks}`}
                       </span>
                     </div>
@@ -150,7 +150,7 @@ export default function StudentResult() {
                       width: `${pct}%`, background: 'var(--brand)',
                       transition: 'width .8s ease' }} />
                   </div>
-                  <div style={{ fontSize: 11, color: dm ? 'var(--ea-muted)' : '#7B8099', marginTop: 4 }}>
+                  <div style={{ fontSize: 11, color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)', marginTop: 4 }}>
                     {pct}% • {r.examType || '—'}
                   </div>
                 </div>

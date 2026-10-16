@@ -156,7 +156,7 @@ export default function FeeCollection() {
           <thead>
             <tr style={{ background:"var(--ea-hover)" }}>
               {["Student","Class","Fee Type","Amount","Due Date","Paid Date","Status","Action"].map(h => (
-                <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#64748B", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
+                <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#56657A", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
               ))}
             </tr>
           </thead>
@@ -177,7 +177,7 @@ export default function FeeCollection() {
                     <div style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>{f.studentName}</div>
                   </td>
                   <td style={{ padding:"14px 18px" }}>
-                    <span style={{ fontSize:12, fontWeight:700, padding:"3px 10px", borderRadius:8, background:"var(--brand-soft)", color:"var(--brand)" }}>
+                    <span style={{ fontSize:12, fontWeight:700, padding:"3px 10px", borderRadius:8, background:"var(--brand-soft)", color:"var(--brand-dark)" }}>
                       {f.studentClass}{f.studentSection ? `-${f.studentSection}` : ""}
                     </span>
                   </td>
@@ -219,7 +219,7 @@ export default function FeeCollection() {
             <div style={{ background:"#F8FAFC", borderRadius:12, padding:"14px 18px" }}>
               <div style={{ fontSize:12, color:"var(--ea-muted)", fontWeight:700 }}>STUDENT</div>
               <div style={{ fontSize:16, fontWeight:800, color:"#0F172A", marginTop:4 }}>{selectedFee.studentName}</div>
-              <div style={{ fontSize:12, color:"#64748B", marginTop:2 }}>{selectedFee.feeType} — Due: {fmtDate(selectedFee.dueDate)}</div>
+              <div style={{ fontSize:12, color:"#56657A", marginTop:2 }}>{selectedFee.feeType} — Due: {fmtDate(selectedFee.dueDate)}</div>
             </div>
             <div>
               <label htmlFor="collect-amount" style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>AMOUNT (₹)</label>

@@ -10,7 +10,7 @@ const API = import.meta.env.VITE_API_URL
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
 
 const STATUS_STYLE = {
-  'Not started': { bg: '#F1F5F9', color: '#64748B' },
+  'Not started': { bg: '#F1F5F9', color: '#56657A' },
   Draft:         { bg: '#FEF3C7', color: '#B45309' },
   Published:     { bg: '#DCFCE7', color: '#15803D' },
 }
@@ -145,12 +145,12 @@ export default function TeacherMarks() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
                 <div>
                   <div style={{ fontSize: 16, fontWeight: 700, color: '#1A1A2E' }}>{sheet.exam.subject}</div>
-                  <div style={{ fontSize: 13, color: '#64748B', marginTop: 2 }}>{sheet.exam.examName} · Class {classKey}</div>
+                  <div style={{ fontSize: 13, color: '#56657A', marginTop: 2 }}>{sheet.exam.examName} · Class {classKey}</div>
                   <div style={{ fontSize: 12, color: 'var(--ea-muted)', marginTop: 2 }}>{sheet.exam.term} · {fmtDate(sheet.exam.date)} · Out of {max}</div>
                 </div>
                 <Badge status={sheet.status} />
               </div>
-              <div style={{ marginTop: 12, fontSize: 12, color: '#64748B' }}>{filled} of {total} students entered</div>
+              <div style={{ marginTop: 12, fontSize: 12, color: '#56657A' }}>{filled} of {total} students entered</div>
               <div style={{ height: 6, background: 'var(--brand-soft)', borderRadius: 3, marginTop: 6 }}>
                 <div style={{ height: 6, width: `${total ? (filled / total) * 100 : 0}%`, background: 'var(--brand)', borderRadius: 3 }} />
               </div>
@@ -222,7 +222,7 @@ export default function TeacherMarks() {
       {loadingExams ? <Skeleton rows={3} label="Loading exams" /> : exams.length === 0 ? (
         <div style={styles.card}>
           <div style={{ fontSize: 14, fontWeight: 600, color: '#1A1A2E' }}>No exams scheduled for your subjects in Class {classKey}</div>
-          <div style={{ fontSize: 12, color: '#64748B', marginTop: 4 }}>Exams are created by the school admin in Exam Schedule. Once an exam is scheduled, it appears here for marks entry.</div>
+          <div style={{ fontSize: 12, color: '#56657A', marginTop: 4 }}>Exams are created by the school admin in Exam Schedule. Once an exam is scheduled, it appears here for marks entry.</div>
         </div>
       ) : exams.map(e => {
         const disabledReason = !e.canEnter ? 'Total marks not set by the admin' : !e.held ? `Opens after ${fmtDate(e.date)}` : ''
@@ -232,7 +232,7 @@ export default function TeacherMarks() {
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
               <div>
                 <div style={{ fontSize: 15, fontWeight: 700, color: '#1A1A2E' }}>{e.subject} · {e.title}</div>
-                <div style={{ fontSize: 12, color: '#64748B', marginTop: 3 }}>{e.examType} · {e.term} · {fmtDate(e.date)}{e.totalMarks ? ` · Out of ${e.totalMarks}` : ''}</div>
+                <div style={{ fontSize: 12, color: '#56657A', marginTop: 3 }}>{e.examType} · {e.term} · {fmtDate(e.date)}{e.totalMarks ? ` · Out of ${e.totalMarks}` : ''}</div>
               </div>
               <Badge status={e.status} />
             </div>
@@ -254,7 +254,7 @@ function Badge({ status }) {
 
 function Shell({ children, navigate, title = 'Enter Marks', onBack }) {
   return (
-    <div className="ea-pd-narrow" style={styles.screen}>
+    <div style={styles.screen}>
       <PortalHeader title={title} onBack={onBack || (() => navigate('/teacher/home'))} />
       <div className="ea-pd-body" style={styles.scroll}>{children}</div>
       <BottomNav role="teacher" />
@@ -270,7 +270,7 @@ const styles = {
   scroll: { flex: 1, overflowY: 'auto', padding: 16 },
   card: { background: 'var(--card, #fff)', borderRadius: 16, padding: 16, marginBottom: 14, boxShadow: '0 2px 12px rgba(0,0,0,0.06)', fontFamily: 'inherit' },
   label: { margin: '4px 0 8px' },
-  empty: { textAlign: 'center', padding: 40, color: '#7B8099', fontSize: 14 },
+  empty: { textAlign: 'center', padding: 40, color: 'var(--ea-muted)', fontSize: 14 },
   markInput: { width: 72, padding: '9px 10px', borderRadius: 10, border: '1.5px solid #E2E8F0', fontSize: 15, fontWeight: 600, textAlign: 'center', outline: 'none', fontFamily: 'inherit' },
   absentBtn: { border: 'none', borderRadius: 10, padding: '9px 10px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' },
   btn: { flex: 1, minHeight: 48, fontSize: 15 },

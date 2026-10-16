@@ -197,7 +197,7 @@ function NotificationSettingsModal({ onClose, prefs, onChange }) {
       <div style={styles.modalCard}>
         <div style={{ fontSize:"36px", marginBottom:"8px" }}><Glyph e="🔔" /></div>
         <p style={styles.modalTitle}>Notification Preferences</p>
-        <p style={{ fontSize:"13px", color:"#64748B", marginBottom:"16px" }}>Select which alerts you want to receive.</p>
+        <p style={{ fontSize:"13px", color:"#56657A", marginBottom:"16px" }}>Select which alerts you want to receive.</p>
         {items.map(item => (
           <div
             key={item.key}
@@ -400,7 +400,7 @@ export default function ParentBus() {
     return (
       <div style={{ minHeight:"100dvh", display:"flex", alignItems:"center", justifyContent:"center", background:"var(--bg)", flexDirection:"column", gap:"16px" }}>
         <div style={{ fontSize:"48px" }}><Glyph e="🚌" /></div>
-        <p style={{ fontSize:"16px", color:"#64748B", fontWeight:600 }}>No bus has been assigned yet.</p>
+        <p style={{ fontSize:"16px", color:"#56657A", fontWeight:600 }}>No bus has been assigned yet.</p>
         <button onClick={() => navigate("/parent/home")} style={{ padding:"10px 24px", borderRadius:"12px", background:"var(--brand)", color:"white", border:"none", fontWeight:600, cursor:"pointer" }}>Go Back</button>
       </div>
     );
@@ -453,7 +453,7 @@ export default function ParentBus() {
         <div style={styles.fsMiniPill}>
           <span style={{ width:"8px", height:"8px", borderRadius:"50%", background:childStatus.color, display:"inline-block" }} />
           <span style={{ color:"white", fontSize:"13px", fontWeight:500 }}>{studentData?.name || "Your child"}</span>
-          <span style={{ color:"rgba(255,255,255,0.6)", fontSize:"13px", marginLeft:"4px" }}>ETA {eta}</span>
+          <span style={{ color:"rgba(255,255,255,0.92)", fontSize:"13px", marginLeft:"4px" }}>ETA {eta}</span>
         </div>
         {showSOS           && <SosModal onClose={() => setShowSOS(false)} studentName={studentData?.name} location={busLocation} driverPhone={driverData?.phone} />}
         {showCallDriver    && <CallModal               onClose={() => setShowCallDriver(false)}       name={driverData?.name || "Driver"}  phone={driverData?.phone || ""} />}
@@ -499,7 +499,7 @@ export default function ParentBus() {
                 <span style={{ color:`color-mix(in srgb, ${childStatus.color} 65%, black)`, display:"flex" }}>{childStatus.emoji}</span>
                 <span style={{ color:`color-mix(in srgb, ${childStatus.color} 65%, black)`, fontSize:"11px", fontWeight:700 }}>{childStatus.label}</span>
               </div>
-              <p style={{ color:"rgba(255,255,255,0.5)", fontSize:"10px", marginTop:"4px" }}>{childStatus.sub}</p>
+              <p style={{ color:"rgba(255,255,255,0.92)", fontSize:"10px", marginTop:"4px" }}>{childStatus.sub}</p>
             </div>
           </div>
 
@@ -575,7 +575,7 @@ export default function ParentBus() {
           )}
 
           <div style={styles.stopsList}>
-            <p style={{ fontSize:"12px", fontWeight:700, color:"#64748B", marginBottom:"10px", textTransform:"uppercase", letterSpacing:"0.5px" }}>Route</p>
+            <p style={{ fontSize:"12px", fontWeight:700, color:"#56657A", marginBottom:"10px", textTransform:"uppercase", letterSpacing:"0.5px" }}>Route</p>
             {stops.map((stop, i) => {
               const type        = getStopType(i, currentStopIdx, tripActive, stops.length);
               const isLast      = i === stops.length - 1;
@@ -589,10 +589,10 @@ export default function ParentBus() {
                 <div key={stop.id} style={styles.stopRow}>
                   <div style={styles.timeline}>
                     <div style={{ ...styles.stopCircle, background:circleBg, border:circleBorder, boxShadow:circleShadow }}>
-                      {isCompleted ? <span style={{ fontSize:"9px", color:"#059669" }}>✓</span>
+                      {isCompleted ? <span style={{ fontSize:"9px", color:"#047857" }}>✓</span>
                         : isCurrent ? <span style={{ width:"6px", height:"6px", borderRadius:"50%", background:"white", display:"block" }} />
                         : isSchool  ? <span style={{ fontSize:"10px" }}><Glyph e="🏫" /></span>
-                        : <span style={{ fontSize:"9px", color:"#64748B" }}>{i + 1}</span>}
+                        : <span style={{ fontSize:"9px", color:"#56657A" }}>{i + 1}</span>}
                     </div>
                     {!isLast && <div style={{ ...styles.connector, background: isCompleted ? "linear-gradient(to bottom, #6EE7B7, #D1FAE5)" : isCurrent ? `linear-gradient(to bottom, ${COLOR.primary}, #E5E7EB)` : "#E5E7EB" }} />}
                   </div>
@@ -608,7 +608,7 @@ export default function ParentBus() {
                         </p>
                       </div>
                       <div style={{ flexShrink:0 }}>
-                        {isCompleted        && <span style={{ ...styles.badge, background:"#F0FDF4", color:"#16A34A", border:"0.5px solid #BBF7D0" }}>Done</span>}
+                        {isCompleted        && <span style={{ ...styles.badge, background:"#F0FDF4", color:"#166534", border:"0.5px solid #BBF7D0" }}>Done</span>}
                         {isCurrent          && <span style={{ ...styles.badge, background:COLOR.primaryLight, color:COLOR.primary, border:`0.5px solid var(--brand-border)` }}>Live</span>}
                         {isSchool           && <span style={{ ...styles.badge, background:"#FFF7ED", color:"#C2410C", border:"0.5px solid #FED7AA" }}>{eta}</span>}
                         {type === "upcoming" && <span style={{ fontSize:"10px", color:"var(--ea-faint)" }}>—</span>}
@@ -644,31 +644,31 @@ const styles = {
   fsCallBtn:      { display:"flex", alignItems:"center", gap:"6px", padding:"8px 12px", borderRadius:"20px", fontSize:"12px", fontWeight:600, background:"color-mix(in srgb, var(--brand) 85%, transparent)", backdropFilter:"blur(10px)", border:"1px solid rgba(255,255,255,0.2)", color:"white", cursor:"pointer" },
   fsSosBtn:       { display:"flex", alignItems:"center", gap:"6px", padding:"8px 12px", borderRadius:"20px", fontSize:"12px", fontWeight:600, background:"rgba(220,38,38,0.85)", backdropFilter:"blur(10px)", border:"1px solid rgba(255,255,255,0.2)", color:"white", cursor:"pointer" },
   fsMiniPill:     { position:"fixed", bottom:"max(24px, env(safe-area-inset-bottom, 24px))", left:"50%", transform:"translateX(-50%)", zIndex:10000, display:"flex", alignItems:"center", gap:"8px", padding:"10px 20px", borderRadius:"30px", background:"rgba(0,0,0,0.55)", backdropFilter:"blur(10px)", border:"1px solid rgba(255,255,255,0.15)", whiteSpace:"nowrap" },
-  header:         { position:"absolute", top:0, left:0, right:0, zIndex:100, background:"var(--brand)", paddingTop:"0px", paddingLeft:"16px", paddingRight:"16px", paddingBottom:"14px", borderRadius:"0 0 24px 24px", boxShadow:"0 4px 24px color-mix(in srgb, var(--brand-dark) 30%, transparent)" },
+  header:         { position:"absolute", top:0, left:0, right:0, zIndex:100, background:"color-mix(in srgb, var(--brand) 76%, #000)", paddingTop:"0px", paddingLeft:"16px", paddingRight:"16px", paddingBottom:"14px", borderRadius:"0 0 24px 24px", boxShadow:"0 4px 24px color-mix(in srgb, var(--brand-dark) 30%, transparent)" },
   navRow:         { display:"flex", alignItems:"center", gap:"12px", marginBottom:"12px", marginTop:"10px" },
   backBtn:        { width:"36px", height:"36px", borderRadius:"12px", background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", flexShrink:0 },
   notifBtn:       { width:"36px", height:"36px", borderRadius:"12px", background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", fontSize:"18px", flexShrink:0 },
   navTitle:       { color:"white", fontSize:"17px", fontWeight:600, letterSpacing:"-0.3px" },
-  navSub:         { color:"rgba(255,255,255,0.6)", fontSize:"12px", marginTop:"2px" },
+  navSub:         { color:"rgba(255,255,255,0.92)", fontSize:"12px", marginTop:"2px" },
   livePill:       { display:"flex", alignItems:"center", gap:"5px", background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.25)", borderRadius:"20px", padding:"5px 10px" },
   liveDot:        { width:"6px", height:"6px", borderRadius:"50%", background:"#4ADE80" },
   liveText:       { color:"white", fontSize:"11px", fontWeight:600, letterSpacing:"0.5px" },
   childCard:      { display:"flex", alignItems:"center", gap:"12px", background:"rgba(255,255,255,0.12)", border:"1px solid rgba(255,255,255,0.18)", borderRadius:"16px", padding:"12px 14px", marginBottom:"10px", backdropFilter:"blur(10px)" },
   childAvatar:    { width:"44px", height:"44px", borderRadius:"14px", background:"rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 },
   childName:      { color:"white", fontSize:"15px", fontWeight:700 },
-  childClass:     { color:"rgba(255,255,255,0.6)", fontSize:"11px", marginTop:"2px" },
+  childClass:     { color:"rgba(255,255,255,0.92)", fontSize:"11px", marginTop:"2px" },
   statusBadge:    { display:"inline-flex", alignItems:"center", gap:"4px", padding:"4px 10px", borderRadius:"20px" },
   metricsRow:     { display:"flex", background:"rgba(255,255,255,0.12)", border:"1px solid rgba(255,255,255,0.18)", borderRadius:"16px", padding:"12px 14px", marginBottom:"10px", backdropFilter:"blur(10px)" },
   metricCard:     { flex:1, display:"flex", flexDirection:"column", gap:"2px" },
   metricDivider:  { width:"1px", background:"rgba(255,255,255,0.2)", margin:"4px 12px", flexShrink:0 },
-  metricLabel:    { color:"rgba(255,255,255,0.55)", fontSize:"9px", letterSpacing:"0.8px", textTransform:"uppercase", fontWeight:500 },
+  metricLabel:    { color:"rgba(255,255,255,0.92)", fontSize:"9px", letterSpacing:"0.8px", textTransform:"uppercase", fontWeight:500 },
   metricValue:    { color:"white", fontSize:"20px", fontWeight:700, lineHeight:1.1 },
-  metricUnit:     { fontSize:"12px", fontWeight:400, color:"rgba(255,255,255,0.65)" },
-  metricSub:      { color:"rgba(255,255,255,0.5)", fontSize:"10px" },
+  metricUnit:     { fontSize:"12px", fontWeight:400, color:"rgba(255,255,255,0.92)" },
+  metricSub:      { color:"rgba(255,255,255,0.92)", fontSize:"10px" },
   trafficStrip:   { display:"flex", alignItems:"center", gap:"8px", background:"rgba(255,255,255,0.1)", border:"1px solid rgba(255,255,255,0.12)", borderRadius:"12px", padding:"8px 14px" },
   trafficLabel:   { color:"rgba(255,255,255,0.85)", fontSize:"12px", flex:1, fontWeight:500 },
   trafficRight:   { color:"rgba(255,255,255,0.45)", fontSize:"11px" },
-  fsBtn:          { position:"absolute", right:"14px", zIndex:200, width:"40px", height:"40px", borderRadius:"12px", background:"color-mix(in srgb, var(--brand-dark) 85%, transparent)", backdropFilter:"blur(8px)", border:"1px solid rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", boxShadow:"0 2px 12px color-mix(in srgb, var(--brand-dark) 35%, transparent)", transition:"bottom 0.35s cubic-bezier(0.4,0,0.2,1)" },
+  fsBtn:          { position:"absolute", right:"14px", zIndex:200, width:"40px", height:"40px", borderRadius:"12px", background:"color-mix(in srgb, var(--brand) 85%, transparent)", backdropFilter:"blur(8px)", border:"1px solid rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", boxShadow:"0 2px 12px color-mix(in srgb, var(--brand-dark) 35%, transparent)", transition:"bottom 0.35s cubic-bezier(0.4,0,0.2,1)" },
   stopsPanel:     { position:"absolute", bottom:0, left:0, right:0, zIndex:100, background:"var(--ea-surface)", borderRadius:"24px 24px 0 0", boxShadow:"0 -4px 30px rgba(0,0,0,0.10)", overflowY:"auto", transition:"max-height 0.35s cubic-bezier(0.4,0,0.2,1)", paddingBottom:"env(safe-area-inset-bottom, 0px)", WebkitOverflowScrolling:"touch" },
   stopsHeader:    { position:"sticky", top:0, background:"var(--ea-surface)", borderBottom:"1px solid var(--ea-line)", paddingBottom:"10px", zIndex:1, cursor:"pointer", userSelect:"none" },
   dragHandle:     { width:"36px", height:"4px", borderRadius:"2px", background:"var(--ea-line)", margin:"10px auto 8px" },
@@ -684,9 +684,9 @@ const styles = {
   panelActionRow: { display:"flex", gap:"8px", padding:"10px 16px 4px" },
   panelCallBtn:   { flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", padding:"9px 8px", borderRadius:"12px", fontSize:"11px", fontWeight:600, background:"var(--brand-soft)", color:"var(--brand-dark)", border:"1px solid var(--brand-border)", cursor:"pointer" },
   panelSchoolBtn: { flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", padding:"9px 8px", borderRadius:"12px", fontSize:"11px", fontWeight:600, background:"#FFF7ED", color:"#C2410C", border:"1px solid #FED7AA", cursor:"pointer" },
-  panelSosBtn:    { display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", padding:"9px 14px", borderRadius:"12px", fontSize:"11px", fontWeight:700, background:"#FEF2F2", color:"#DC2626", border:"1px solid #FECACA", cursor:"pointer" },
+  panelSosBtn:    { display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", padding:"9px 14px", borderRadius:"12px", fontSize:"11px", fontWeight:700, background:"#FEF2F2", color:"#B91C1C", border:"1px solid #FECACA", cursor:"pointer" },
   notifSection:   { padding:"12px 20px 0", borderTop:"1px solid #F1F5F9" },
-  notifTitle:     { fontSize:"11px", fontWeight:700, color:"#64748B", textTransform:"uppercase", letterSpacing:"0.5px", marginBottom:"8px" },
+  notifTitle:     { fontSize:"11px", fontWeight:700, color:"#56657A", textTransform:"uppercase", letterSpacing:"0.5px", marginBottom:"8px" },
   notifRow:       { display:"flex", alignItems:"flex-start", gap:"10px", marginBottom:"8px" },
   notifIcon:      { fontSize:"16px", flexShrink:0, marginTop:"1px" },
   notifText:      { fontSize:"12px", color:"var(--ea-body)", lineHeight:1.4 },

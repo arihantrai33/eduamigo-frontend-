@@ -60,7 +60,7 @@ export default function SupportContent({ role = "student", dark = false }) {
           {school?.email && <a href={`mailto:${school.email}`} style={{ ...btn, background: "var(--brand-soft)", color: "var(--brand-dark)" }}>Email</a>}
         </div>
         {school && !school.phone && !school.email && (
-          <div style={{ fontSize: 12, color: dark ? "var(--ea-muted)" : "#888" }}>Your school has not added contact details yet.</div>
+          <div style={{ fontSize: 12, color: dark ? "var(--ea-muted)" : "var(--ea-muted)" }}>Your school has not added contact details yet.</div>
         )}
       </div>
     </>

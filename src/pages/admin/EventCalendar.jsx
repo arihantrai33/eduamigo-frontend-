@@ -287,7 +287,7 @@ export default function EventCalendar() {
                   <div style={{ fontSize:24 }}>{tc.icon}</div>
                   <div style={{ flex:1 }}>
                     <div style={{ fontSize:14, fontWeight:700, color:"#0F172A" }}>{ev.title}</div>
-                    {ev.description && <div style={{ fontSize:12, color:"#64748B", marginTop:4, lineHeight:1.5 }}>{ev.description}</div>}
+                    {ev.description && <div style={{ fontSize:12, color:"#56657A", marginTop:4, lineHeight:1.5 }}>{ev.description}</div>}
                     <div style={{ fontSize:10, fontWeight:700, color:tc.color, marginTop:6, textTransform:"uppercase" }}>{tc.label}</div>
                   </div>
                   <button type="button" aria-label={`Delete ${ev.title}`} onClick={() => handleDelete(ev._id)} style={{ width:30, height:30, borderRadius:8, border:"none", background:"rgba(239,68,68,0.1)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>

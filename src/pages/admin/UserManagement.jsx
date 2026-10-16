@@ -132,7 +132,7 @@ export default function UserManagement() {
       <div style={{ background: "#fff", border: "1px solid #E2E8F0", borderRadius: 16, overflow: "hidden" }}>
         <div className="ea-um-head" style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 100px", padding: "12px 20px", background: "#F8FAFC", borderBottom: "1px solid #E2E8F0" }}>
           {["User", "Role", "School", "Joined", "Status"].map(h => (
-            <span key={h} style={{ fontSize: 11, fontWeight: 600, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.05em" }}>{h}</span>
+            <span key={h} style={{ fontSize: 11, fontWeight: 600, color: "#56657A", textTransform: "uppercase", letterSpacing: "0.05em" }}>{h}</span>
           ))}
         </div>
 
@@ -160,7 +160,7 @@ export default function UserManagement() {
               <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 11, padding: "4px 10px", borderRadius: 20, fontWeight: 600, background: meta.bg, color: meta.color, border: `1px solid ${meta.border}`, width: "fit-content", textTransform: "capitalize" }}>
                 <Icon size={10} /> {u.role}
               </span>
-              <span className="ea-um-school" style={{ fontSize: 12, color: "#64748B" }}>{u.school?.name || u.school || "—"}</span>
+              <span className="ea-um-school" style={{ fontSize: 12, color: "#56657A" }}>{u.school?.name || u.school || "—"}</span>
               <span className="ea-um-joined" style={{ fontSize: 12, color: "var(--ea-muted)" }}>
                 {new Date(u.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
               </span>
@@ -182,13 +182,13 @@ export default function UserManagement() {
                 { label: "Password (optional)", key: "password", type: "password", placeholder: "Leave blank to generate a temporary password" }
               ].map(({ label, key, type, placeholder }) => (
                 <div key={key}>
-                  <label htmlFor={`user-${key}`} style={{ fontSize: 11, color: "#64748B", fontWeight: 600, display: "block", marginBottom: 5 }}>{label.toUpperCase()}</label>
+                  <label htmlFor={`user-${key}`} style={{ fontSize: 11, color: "#56657A", fontWeight: 600, display: "block", marginBottom: 5 }}>{label.toUpperCase()}</label>
                   <input id={`user-${key}`} type={type} value={form[key]} onChange={e => { setForm({ ...form, [key]: e.target.value }); v.clear(key); }} placeholder={placeholder} style={inp} {...v.invalid(key)} />
                   <FieldError id={`user-${key}-error`}>{v.errors[key]}</FieldError>
                 </div>
               ))}
               <div>
-                <label htmlFor="user-role" style={{ fontSize: 11, color: "#64748B", fontWeight: 600, display: "block", marginBottom: 5 }}>ROLE</label>
+                <label htmlFor="user-role" style={{ fontSize: 11, color: "#56657A", fontWeight: 600, display: "block", marginBottom: 5 }}>ROLE</label>
                 <select id="user-role" value={form.role} onChange={e => setForm({ ...form, role: e.target.value })} style={inp}>
                   {STAFF_ROLES.map(r => <option key={r} value={r}>{r.charAt(0).toUpperCase() + r.slice(1)}</option>)}
                 </select>

@@ -40,7 +40,7 @@ export default function TeacherStudents() {
   };
 
   return (
-    <div className="ea-pd-narrow" style={s.screen}>
+    <div style={s.screen}>
       <PortalHeader title="My Students" onBack={() => navigate("/teacher/home")}
         subtitle={students ? `${plural(students.length, "student")} in your classes` : "Loading..."} />
 
@@ -89,8 +89,8 @@ const s = {
   row: { display: "flex", alignItems: "center", gap: 10, background: "#fff", borderRadius: 16, padding: "10px 12px", boxShadow: "0 2px 12px rgba(15,23,42,.05)" },
   avatar: { width: 38, height: 38, borderRadius: 12, background: "var(--brand-soft)", color: "var(--brand-dark)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 13, flexShrink: 0 },
   name: { fontSize: 14, fontWeight: 700, color: "#1C2033", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" },
-  meta: { fontSize: 11.5, color: "#7B8099", marginTop: 1 },
+  meta: { fontSize: 11.5, color: "var(--ea-muted)", marginTop: 1 },
   resetBtn: { padding: "7px 10px", borderRadius: 10, border: "1px solid var(--brand-border)", background: "var(--brand-soft)", color: "var(--brand-dark)", fontSize: 11.5, fontWeight: 700, cursor: "pointer", flexShrink: 0 },
-  empty: { textAlign: "center", padding: "30px 10px", color: "#7B8099", fontSize: 13 },
-  note: { fontSize: 11.5, color: "#7B8099", textAlign: "center", lineHeight: 1.5, marginTop: 16 },
+  empty: { textAlign: "center", padding: "30px 10px", color: "var(--ea-muted)", fontSize: 13 },
+  note: { fontSize: 11.5, color: "var(--ea-muted)", textAlign: "center", lineHeight: 1.5, marginTop: 16 },
 };

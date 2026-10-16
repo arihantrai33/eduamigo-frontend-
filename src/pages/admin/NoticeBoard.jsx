@@ -7,13 +7,13 @@ const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 const PRIORITY_CONFIG = {
-  normal:    { label: "Normal",    color: "#6366F1", bg: "#EEF2FF", border: "#C7D2FE", icon: Info },
+  normal:    { label: "Normal",    color: "#4F46E5", bg: "#EEF2FF", border: "#C7D2FE", icon: Info },
   important: { label: "Important", color: "#F59E0B", bg: "#FFFBEB", border: "#FDE68A", icon: AlertTriangle },
   urgent:    { label: "Urgent",    color: "#EF4444", bg: "#FEF2F2", border: "#FECACA", icon: Megaphone },
 };
 
 const TARGET_CONFIG = {
-  all:     { label: "Everyone",  color: "#6366F1", bg: "#EEF2FF", icon: <Glyph e="🌐" /> },
+  all:     { label: "Everyone",  color: "#4F46E5", bg: "#EEF2FF", icon: <Glyph e="🌐" /> },
   student: { label: "Students",  color: "#10B981", bg: "#F0FDF4", icon: <Glyph e="🎒" /> },
   teacher: { label: "Teachers",  color: "#3B82F6", bg: "#EFF6FF", icon: <Glyph e="👩‍🏫" /> },
   parent:  { label: "Parents",   color: "#F59E0B", bg: "#FFFBEB", icon: <Glyph e="👨‍👩‍👧" /> },
@@ -131,7 +131,7 @@ export default function NoticeBoardPage() {
       {/* Stats Row */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12, marginBottom: "1.5rem" }}>
         {[
-          { label: "Total", value: announcements.length, color: "var(--brand)", bg: "var(--brand-gradient)" },
+          { label: "Total", value: announcements.length, color: "var(--brand-dark)", bg: "var(--brand-gradient)" },
           { label: "Pinned", value: announcements.filter(a=>a.isPinned).length, color: "#F59E0B", bg: "linear-gradient(135deg,#F59E0B,#EF4444)" },
           { label: "Urgent", value: announcements.filter(a=>a.priority==="urgent").length, color: "#EF4444", bg: "linear-gradient(135deg,#EF4444,#EC4899)" },
           { label: "Important", value: announcements.filter(a=>a.priority==="important").length, color: "#10B981", bg: "linear-gradient(135deg,#10B981,#059669)" },
@@ -226,7 +226,7 @@ export default function NoticeBoardPage() {
 
             <div style={{ display: "flex", gap: 10 }}>
               <button onClick={() => { setShowForm(false); setEditItem(null); }}
-                style={{ flex: 1, padding: "11px", borderRadius: 10, border: "1.5px solid #E2E8F0", background: "white", fontSize: 13, fontWeight: 600, cursor: "pointer", color: "#64748B" }}>
+                style={{ flex: 1, padding: "11px", borderRadius: 10, border: "1.5px solid #E2E8F0", background: "white", fontSize: 13, fontWeight: 600, cursor: "pointer", color: "#56657A" }}>
                 Cancel
               </button>
               <button onClick={handleSubmit} disabled={saving}
@@ -289,7 +289,7 @@ function AnnouncementCard({ ann, onPin, onDelete, onEdit }) {
             {ann.isPinned ? <PinOff size={14} /> : <Pin size={14} />}
           </button>
           <button onClick={() => onEdit(ann)} title="Edit"
-            style={{ width: 32, height: 32, borderRadius: 8, border: "1px solid #E2E8F0", background: "white", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--brand)", fontSize: 13, fontWeight: 700 }}>
+            style={{ width: 32, height: 32, borderRadius: 8, border: "1px solid #E2E8F0", background: "white", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--brand-dark)", fontSize: 13, fontWeight: 700 }}>
             <Glyph e="✏" />
           </button>
           <button onClick={() => onDelete(ann._id)} title="Delete"

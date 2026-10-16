@@ -449,7 +449,7 @@ export default function ParentBus() {
         <div style={styles.fsMiniPill}>
           <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: traffic.color, display: "inline-block" }} />
           <span style={{ color: "white", fontSize: "13px", fontWeight: 500 }}>{busLabel}</span>
-          <span style={{ color: "rgba(255,255,255,0.6)", fontSize: "13px", marginLeft: "4px" }}>ETA {eta}</span>
+          <span style={{ color: "rgba(255,255,255,0.92)", fontSize: "13px", marginLeft: "4px" }}>ETA {eta}</span>
         </div>
         {showSOS  && <SosModal onClose={() => setShowSOS(false)} location={busLocation} driverPhone={busInfo?.driverPhone} />}
         {showCall && <CallModal onClose={() => setShowCall(false)} driverName={busInfo.driverName} driverPhone={busInfo.driverPhone} />}
@@ -512,7 +512,7 @@ export default function ParentBus() {
               }}>
                 {tripActive ? "On Bus" : "At Home"}
               </span>
-              <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "11px", marginTop: "4px" }}>
+              <p style={{ color: "rgba(255,255,255,0.92)", fontSize: "11px", marginTop: "4px" }}>
                 {tripActive ? `ETA: ${eta}` : "Trip not started yet"}
               </p>
             </div>
@@ -597,10 +597,10 @@ export default function ParentBus() {
                 <div key={stop.id || i} style={styles.stopRow}>
                   <div style={styles.timeline}>
                     <div style={{ ...styles.stopCircle, background: circleBg, border: circleBorder, boxShadow: circleShadow }}>
-                      {isCompleted ? <span style={{ fontSize: "9px", color: "#059669" }}>✓</span>
+                      {isCompleted ? <span style={{ fontSize: "9px", color: "#047857" }}>✓</span>
                        : isCurrent ? <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--card)", display: "block" }} />
                        : isSchool  ? <span style={{ fontSize: "10px" }}><Glyph e="🏫" /></span>
-                       : <span style={{ fontSize: "9px", color: "#64748B" }}>{i + 1}</span>}
+                       : <span style={{ fontSize: "9px", color: "#56657A" }}>{i + 1}</span>}
                     </div>
                     {!isLast && (
                       <div style={{
@@ -630,8 +630,8 @@ export default function ParentBus() {
                         </p>
                       </div>
                       <div style={{ flexShrink: 0 }}>
-                        {isCompleted && <span style={{ ...styles.badge, background: "#F0FDF4", color: "#16A34A", border: "0.5px solid #BBF7D0" }}>Done</span>}
-                        {isCurrent   && <span style={{ ...styles.badge, background: "var(--brand-soft)", color: "var(--brand)", border: "0.5px solid var(--brand-border)" }}>Live</span>}
+                        {isCompleted && <span style={{ ...styles.badge, background: "#F0FDF4", color: "#166534", border: "0.5px solid #BBF7D0" }}>Done</span>}
+                        {isCurrent   && <span style={{ ...styles.badge, background: "var(--brand-soft)", color: "var(--brand-dark)", border: "0.5px solid var(--brand-border)" }}>Live</span>}
                         {isSchool    && <span style={{ ...styles.badge, background: "#FFF7ED", color: "#C2410C", border: "0.5px solid #FED7AA" }}>{eta}</span>}
                         {type === "upcoming" && <span style={{ fontSize: "10px", color: "var(--ea-faint)" }}>—</span>}
                       </div>
@@ -665,24 +665,24 @@ const styles = {
   fsCallBtn: { display: "flex", alignItems: "center", gap: "6px", padding: "8px 14px", borderRadius: "20px", fontSize: "12px", fontWeight: 600, background: "color-mix(in srgb, var(--brand) 85%, transparent)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.2)", color: "white", cursor: "pointer" },
   fsSosBtn:  { display: "flex", alignItems: "center", gap: "6px", padding: "8px 14px", borderRadius: "20px", fontSize: "12px", fontWeight: 600, background: "rgba(220,38,38,0.85)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.2)", color: "white", cursor: "pointer" },
   fsMiniPill: { position: "fixed", bottom: "max(24px, env(safe-area-inset-bottom, 24px))", left: "50%", transform: "translateX(-50%)", zIndex: 10000, display: "flex", alignItems: "center", gap: "8px", padding: "10px 20px", borderRadius: "30px", background: "rgba(0,0,0,0.55)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.15)", whiteSpace: "nowrap" },
-  header: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 100, background: "var(--brand)", paddingTop: "0px", paddingLeft: "16px", paddingRight: "16px", paddingBottom: "14px", borderRadius: "0 0 24px 24px", boxShadow: "0 4px 24px color-mix(in srgb, var(--brand) 25%, transparent)" },
+  header: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 100, background: "color-mix(in srgb, var(--brand) 76%, #000)", paddingTop: "0px", paddingLeft: "16px", paddingRight: "16px", paddingBottom: "14px", borderRadius: "0 0 24px 24px", boxShadow: "0 4px 24px color-mix(in srgb, var(--brand) 25%, transparent)" },
   navRow: { display: "flex", alignItems: "center", gap: "12px", marginBottom: "10px", marginTop: "10px" },
   backBtn: { width: "36px", height: "36px", borderRadius: "12px", background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 },
   navTitle: { color: "white", fontSize: "17px", fontWeight: 600, letterSpacing: "-0.3px" },
-  navSub:   { color: "rgba(255,255,255,0.6)", fontSize: "12px", marginTop: "2px" },
+  navSub:   { color: "rgba(255,255,255,0.92)", fontSize: "12px", marginTop: "2px" },
   livePill: { display: "flex", alignItems: "center", gap: "5px", background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.25)", borderRadius: "20px", padding: "5px 10px" },
   liveDot:  { width: "6px", height: "6px", borderRadius: "50%", background: "#4ADE80" },
   liveText: { color: "white", fontSize: "11px", fontWeight: 600, letterSpacing: "0.5px" },
   childCard: { display: "flex", alignItems: "center", gap: "12px", background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.18)", borderRadius: "16px", padding: "12px 14px", marginBottom: "10px" },
   childName:  { color: "white", fontSize: "15px", fontWeight: 600 },
-  childClass: { color: "rgba(255,255,255,0.6)", fontSize: "12px", marginTop: "2px" },
+  childClass: { color: "rgba(255,255,255,0.92)", fontSize: "12px", marginTop: "2px" },
   metricsRow: { display: "flex", background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.18)", borderRadius: "16px", padding: "14px 16px", marginBottom: "10px", backdropFilter: "blur(10px)" },
   metricCard:    { flex: 1, display: "flex", flexDirection: "column", gap: "2px" },
   metricDivider: { width: "1px", background: "rgba(255,255,255,0.2)", margin: "4px 12px", flexShrink: 0 },
-  metricLabel: { color: "rgba(255,255,255,0.55)", fontSize: "9px", letterSpacing: "0.8px", textTransform: "uppercase", fontWeight: 500 },
+  metricLabel: { color: "rgba(255,255,255,0.92)", fontSize: "9px", letterSpacing: "0.8px", textTransform: "uppercase", fontWeight: 500 },
   metricValue: { color: "white", fontSize: "22px", fontWeight: 700, lineHeight: 1.1 },
-  metricUnit:  { fontSize: "13px", fontWeight: 400, color: "rgba(255,255,255,0.65)" },
-  metricSub:   { color: "rgba(255,255,255,0.5)", fontSize: "11px" },
+  metricUnit:  { fontSize: "13px", fontWeight: 400, color: "rgba(255,255,255,0.92)" },
+  metricSub:   { color: "rgba(255,255,255,0.92)", fontSize: "11px" },
   trafficStrip: { display: "flex", alignItems: "center", gap: "8px", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "12px", padding: "8px 14px" },
   trafficLabel: { color: "rgba(255,255,255,0.85)", fontSize: "12px", flex: 1, fontWeight: 500 },
   trafficRight: { color: "rgba(255,255,255,0.45)", fontSize: "11px" },
@@ -692,7 +692,7 @@ const styles = {
   dragHandle: { width: "36px", height: "4px", borderRadius: "2px", background: "var(--ea-line)", margin: "10px auto 8px" },
   stopsHeaderRow: { display: "flex", alignItems: "center", justifyContent: "space-between", paddingLeft: "20px", paddingRight: "20px" },
   stopsTitle: { fontSize: "14px", fontWeight: 700, color: "var(--text)" },
-  stopsBadge: { fontSize: "11px", color: "#64748B", background: "var(--card2)", border: "1px solid var(--border)", padding: "3px 10px", borderRadius: "20px", fontWeight: 500 },
+  stopsBadge: { fontSize: "11px", color: "#56657A", background: "var(--card2)", border: "1px solid var(--border)", padding: "3px 10px", borderRadius: "20px", fontWeight: 500 },
   progressPill: { position: "relative", width: "68px", height: "18px", background: "var(--card2)", borderRadius: "10px", overflow: "hidden", display: "flex", alignItems: "center" },
   progressFill: { position: "absolute", left: 0, top: 0, bottom: 0, background: "var(--brand-gradient)", borderRadius: "10px", transition: "width 0.5s ease" },
   progressText: { position: "relative", zIndex: 1, fontSize: "9px", fontWeight: 700, color: "var(--ea-ink)", width: "100%", textAlign: "center" },
@@ -700,8 +700,8 @@ const styles = {
   routeBar:     { height: "3px", background: "var(--ea-line)" },
   routeBarFill: { height: "100%", background: "var(--brand-gradient)", transition: "width 0.5s ease" },
   panelActionRow: { display: "flex", gap: "10px", padding: "10px 20px 2px" },
-  panelCallBtn: { flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", padding: "9px 12px", borderRadius: "12px", fontSize: "12px", fontWeight: 600, background: "var(--card2)", color: "var(--brand)", border: "1px solid var(--brand-border)", cursor: "pointer" },
-  panelSosBtn:  { display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", padding: "9px 16px", borderRadius: "12px", fontSize: "12px", fontWeight: 700, background: "var(--card2)", color: "#DC2626", border: "1px solid #FECACA", cursor: "pointer" },
+  panelCallBtn: { flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", padding: "9px 12px", borderRadius: "12px", fontSize: "12px", fontWeight: 600, background: "var(--card2)", color: "var(--brand-dark)", border: "1px solid var(--brand-border)", cursor: "pointer" },
+  panelSosBtn:  { display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", padding: "9px 16px", borderRadius: "12px", fontSize: "12px", fontWeight: 700, background: "var(--card2)", color: "#B91C1C", border: "1px solid #FECACA", cursor: "pointer" },
   stopsList: { padding: "10px 20px 20px" },
   stopRow:   { display: "flex", alignItems: "flex-start", gap: "14px" },
   timeline:  { display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0, width: "20px" },
@@ -714,7 +714,7 @@ const styles = {
   modalOverlay: { position: "fixed", inset: 0, zIndex: 99999, background: "rgba(0,0,0,0.55)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" },
   modalCard: { background: "var(--card)", borderRadius: "24px", padding: "28px 24px", width: "100%", maxWidth: "340px", textAlign: "center", boxShadow: "0 20px 60px rgba(0,0,0,0.25)" },
   modalTitle: { fontSize: "18px", fontWeight: 700, color: "var(--text)", marginBottom: "8px" },
-  modalSub:   { fontSize: "13px", color: "#64748B", lineHeight: 1.6, marginBottom: "20px" },
+  modalSub:   { fontSize: "13px", color: "#56657A", lineHeight: 1.6, marginBottom: "20px" },
   modalBtns:  { display: "flex", gap: "10px" },
   cancelBtn: { flex: 1, padding: "12px", borderRadius: "14px", fontSize: "14px", fontWeight: 600, background: "var(--card2)", color: "var(--subtext)", border: "none", cursor: "pointer" },
   confirmSosBtn: { flex: 1, padding: "12px", borderRadius: "14px", fontSize: "14px", fontWeight: 700, background: "#DC2626", color: "white", border: "none", cursor: "pointer" },

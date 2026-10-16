@@ -32,7 +32,7 @@ export function ThemeProvider({ children }) {
     card: "white",
     card2: "#f5f6fa",
     text: "#111",
-    subtext: "#888",
+    subtext: "#5B6B80",
     subtext2: "#666",
     border: "#f0f0f0",
     inputBg: "#f5f6fa",

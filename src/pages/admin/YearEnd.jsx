@@ -150,7 +150,7 @@ export default function YearEnd() {
                 <span><strong>{counts.detain}</strong> detain</span>
                 <span><strong>{counts.graduate}</strong> pass out</span>
                 <span><strong>{counts.leave}</strong> leaving</span>
-                {counts.done > 0 && <span style={{ color: "#64748B" }}>{counts.done} already in {toSession}</span>}
+                {counts.done > 0 && <span style={{ color: "#56657A" }}>{counts.done} already in {toSession}</span>}
                 <span style={{ flex: 1 }} />
                 <label style={{ display: "flex", gap: 6, alignItems: "center" }}><input type="checkbox" checked={makeCurrent} onChange={(e) => setMakeCurrent(e.target.checked)} />Make {toSession} the current session</label>
                 <button style={btn} disabled={busy} onClick={apply}>{busy ? "Applying…" : "Apply year end"}</button>
@@ -164,9 +164,9 @@ export default function YearEnd() {
                       <div key={row.student._id} style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", padding: "10px 16px", borderBottom: "1px solid #F1F5F9", opacity: row.alreadyInSession ? 0.5 : 1 }}>
                         <div style={{ width: 210 }}>
                           <div style={{ fontSize: 13, fontWeight: 600 }}>{row.student.name}</div>
-                          <div style={{ fontSize: 11.5, color: "#64748B" }}>Adm. {row.student.admissionNo || "—"} · Roll {row.student.rollNumber}</div>
+                          <div style={{ fontSize: 11.5, color: "#56657A" }}>Adm. {row.student.admissionNo || "—"} · Roll {row.student.rollNumber}</div>
                         </div>
-                        {row.alreadyInSession ? <span style={{ fontSize: 12, color: "#64748B" }}>Already moved to {toSession}</span> : (
+                        {row.alreadyInSession ? <span style={{ fontSize: 12, color: "#56657A" }}>Already moved to {toSession}</span> : (
                           <>
                             <select style={input} value={d.action} onChange={(e) => setDecision(row, { action: e.target.value })}>
                               {ACTIONS.map((a) => <option key={a.value} value={a.value}>{a.label}</option>)}
@@ -203,17 +203,17 @@ export default function YearEnd() {
       {tab === "former" && (
         <div style={{ ...card, padding: 0, overflow: "hidden" }}>
           {!former && <Skeleton rows={3} label="Loading" />}
-          {former && former.length === 0 && <p style={{ padding: 20, color: "#64748B" }}>No former students yet.</p>}
+          {former && former.length === 0 && <p style={{ padding: 20, color: "#56657A" }}>No former students yet.</p>}
           {former && former.map((s) => (
             <div key={s._id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", borderBottom: "1px solid #F1F5F9" }}>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 13, fontWeight: 600 }}>{s.name}</div>
-                <div style={{ fontSize: 11.5, color: "#64748B" }}>
+                <div style={{ fontSize: 11.5, color: "#56657A" }}>
                   Adm. {s.admissionNo || "—"} · Last class {s.exit?.lastClass || `${s.class}-${s.section}`} · {s.exit?.status === "graduated" ? "Passed out" : "Left"}
                   {s.exit?.date ? ` on ${new Date(s.exit.date).toLocaleDateString("en-IN")}` : ""}{s.exit?.reason ? ` · ${s.exit.reason}` : ""}
                 </div>
               </div>
-              {s.exit?.tcNumber && <span style={{ fontSize: 12, color: "#64748B" }}>{s.exit.tcNumber}</span>}
+              {s.exit?.tcNumber && <span style={{ fontSize: 12, color: "#56657A" }}>{s.exit.tcNumber}</span>}
               <button style={ghost} onClick={() => navigate(`/admin/tc/${s._id}`)}>{s.exit?.tcNumber ? "View TC" : "Issue TC"}</button>
             </div>
           ))}
@@ -224,7 +224,7 @@ export default function YearEnd() {
 }
 
 const card = { background: "#fff", border: "1px solid #E8E8E5", borderRadius: 12, padding: "1rem 1.25rem", marginBottom: 14 };
-const lbl = { fontSize: 11, color: "#64748B", fontWeight: 600, display: "flex", flexDirection: "column", gap: 4 };
+const lbl = { fontSize: 11, color: "#56657A", fontWeight: 600, display: "flex", flexDirection: "column", gap: 4 };
 const input = { padding: "7px 9px", borderRadius: 8, border: "1px solid #E2E8F0", fontSize: 13, color: "#0F172A", background: "#F8FAFC" };
 const btn = { padding: "8px 14px", borderRadius: 8, border: "none", background: "var(--brand)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer" };
 const ghost = { padding: "7px 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#fff", color: "#334155", fontSize: 12.5, fontWeight: 600, cursor: "pointer" };

@@ -46,7 +46,7 @@ export default function StudentAttendance() {
   );
 
   return (
-    <div className="ea-pd-narrow" style={{ height: "100vh", display: "flex", flexDirection: "column",
+    <div style={{ height: "100vh", display: "flex", flexDirection: "column",
       background: "var(--bg)", fontFamily: "inherit" }}>
 
       {/* Header */}

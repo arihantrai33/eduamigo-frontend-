@@ -114,7 +114,7 @@ export default function ParentsList() {
           <thead>
             <tr style={{ background:"var(--ea-hover)" }}>
               {["Parent","Phone","Email","Occupation","Linked Students","Status"].map(h => (
-                <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#64748B", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
+                <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#56657A", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
               ))}
             </tr>
           </thead>
@@ -148,7 +148,7 @@ export default function ParentsList() {
                   {p.children?.length > 0 ? (
                     <div style={{ display:"flex", flexWrap:"wrap", gap:4 }}>
                       {p.children.map(child => (
-                        <span key={child._id} style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:"var(--brand-soft)", color:"var(--brand)", border:"1px solid var(--brand-border)" }}>
+                        <span key={child._id} style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:"var(--brand-soft)", color:"var(--brand-dark)", border:"1px solid var(--brand-border)" }}>
                           {child.name} · {child.class}{child.section ? `-${child.section}` : ""}
                         </span>
                       ))}
@@ -179,7 +179,7 @@ export default function ParentsList() {
               </div>
               <div>
                 <div style={{ fontSize:18, fontWeight:800, color:"#0F172A" }}>{selectedParent.name}</div>
-                <div style={{ fontSize:13, color:"#64748B" }}>{selectedParent.email}</div>
+                <div style={{ fontSize:13, color:"#56657A" }}>{selectedParent.email}</div>
               </div>
             </div>
 
@@ -210,7 +210,7 @@ export default function ParentsList() {
                       </div>
                       <div>
                         <div style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>{child.name}</div>
-                        <div style={{ fontSize:11, color:"var(--brand)", fontWeight:600 }}>
+                        <div style={{ fontSize:11, color:"var(--brand-dark)", fontWeight:600 }}>
                           Class {child.class}{child.section ? `-${child.section}` : ""} · Roll {child.rollNumber || "N/A"}
                         </div>
                       </div>
@@ -263,13 +263,13 @@ export default function ParentsList() {
                 <label key={s._id} style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 12px", borderRadius:10, background: form.childrenIds.includes(s._id) ? "var(--brand-soft)" : "#F8FAFC", cursor:"pointer", border:`1px solid ${form.childrenIds.includes(s._id) ? "var(--brand-border)" : "#E2E8F0"}` }}>
                   <input type="checkbox" checked={form.childrenIds.includes(s._id)} onChange={() => toggleChild(s._id)} style={{ accentColor:"var(--brand)" }} />
                   <span style={{ fontSize:13, fontWeight:600, color:"#374151" }}>{s.name}</span>
-                  <span style={{ fontSize:11, color:"var(--brand)", fontWeight:700 }}>Class {s.class}{s.section ? `-${s.section}` : ""}</span>
+                  <span style={{ fontSize:11, color:"var(--brand-dark)", fontWeight:700 }}>Class {s.class}{s.section ? `-${s.section}` : ""}</span>
                 </label>
               ))}
             </div>
           </div>
           <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
-            <button onClick={() => setShowAddModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
+            <button onClick={() => setShowAddModal(false)} style={{ padding:"10px 24px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#56657A" }}>Cancel</button>
             <button onClick={handleAddParent} disabled={saving} className="ea-btn ea-btn--primary">
               {saving ? "Saving..." : "Add Parent"}
             </button>

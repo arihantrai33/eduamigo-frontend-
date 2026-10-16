@@ -135,7 +135,7 @@ export default function TeacherAttendance() {
   const late    = students.filter(s => attendance[s._id]?.status === "Late").length
 
   return (
-    <div className="ea-pd-narrow" style={{ height: "100vh", overflowY: "auto", background: "#F4F6FB", fontFamily: "inherit", paddingBottom: 90 }}>
+    <div style={{ height: "100vh", overflowY: "auto", background: "#F4F6FB", fontFamily: "inherit", paddingBottom: 90 }}>
 
       {toast && (
         <div style={{
@@ -258,11 +258,11 @@ export default function TeacherAttendance() {
             </button>
           </>
         ) : filters.class && filters.section ? (
-          <div style={{ textAlign: "center", padding: 48, color: "#7B8099", fontSize: 14 }}>
+          <div style={{ textAlign: "center", padding: 48, color: "var(--ea-muted)", fontSize: 14 }}>
             No students found in Class {filters.class} - Section {filters.section}
           </div>
         ) : (
-          <div style={{ textAlign: "center", padding: 48, color: "#7B8099", fontSize: 14 }}>
+          <div style={{ textAlign: "center", padding: 48, color: "var(--ea-muted)", fontSize: 14 }}>
             Select a class to get started
           </div>
         )}

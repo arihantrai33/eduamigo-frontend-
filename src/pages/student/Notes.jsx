@@ -106,7 +106,7 @@ export default function Notes() {
     </div>
   );
   return (
-    <div className="ea-pd-narrow" style={{ minHeight: '100vh', background: dm ? '#0f172a' : '#F8F9FB', fontFamily: 'inherit', display: 'flex', flexDirection: 'column', position: 'relative', paddingBottom: 80 }}>
+    <div style={{ minHeight: '100vh', background: dm ? '#0f172a' : '#F8F9FB', fontFamily: 'inherit', display: 'flex', flexDirection: 'column', position: 'relative', paddingBottom: 80 }}>
       {/* Header */}
       <PortalHeader title="Notes & Assignments" onBack={() => navigate('/student/home')}
         actions={<>
@@ -148,7 +148,7 @@ export default function Notes() {
                   <div style={{ width: 44, height: 44, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0, background: `var(--ea-cat-${cat}-bg)`, color: `var(--ea-cat-${cat})` }}>{icon}</div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 14, fontWeight: 600, color: dm ? '#f1f5f9' : '#1A1A2E', marginBottom: 3 }}>{note.title}</div>
-                    <div style={{ fontSize: 12, color: dm ? 'var(--ea-muted)' : '#888' }}>{note.teacherName} • {note.subject} • {formatDate(note.createdAt)}</div>
+                    <div style={{ fontSize: 12, color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)' }}>{note.teacherName} • {note.subject} • {formatDate(note.createdAt)}</div>
                   </div>
                   {note.fileUrl
                     ? <a href={note.fileUrl} target="_blank" rel="noreferrer" style={{ background: dm ? '#0f172a' : '#F0F2F5', border: 'none', borderRadius: 10, width: 34, height: 34, fontSize: 16, cursor: 'pointer', color: dm ? 'var(--ea-muted)' : '#555', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, textDecoration: 'none' }}>↓</a>
@@ -177,7 +177,7 @@ export default function Notes() {
                     <div style={{ width: 44, height: 44, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0, background: `var(--ea-cat-${cat}-bg)`, color: `var(--ea-cat-${cat})` }}>{icon}</div>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 14, fontWeight: 600, color: dm ? '#f1f5f9' : '#1A1A2E', marginBottom: 3 }}>{task.title}</div>
-                      <div style={{ fontSize: 12, color: dm ? 'var(--ea-muted)' : '#888' }}>Due: {formatDate(task.dueDate)} • <span style={{ color: accentColor, fontWeight: 600 }}>{isDone ? 'Submitted' : isUrgent ? 'Urgent' : 'Pending'}</span></div>
+                      <div style={{ fontSize: 12, color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)' }}>Due: {formatDate(task.dueDate)} • <span style={{ color: accentColor, fontWeight: 600 }}>{isDone ? 'Submitted' : isUrgent ? 'Urgent' : 'Pending'}</span></div>
                     </div>
                   </div>
                   {/* No in-app submission yet (there is no submission record on the server), so no Submit button that does
@@ -206,7 +206,7 @@ export default function Notes() {
                   <div style={{ width: 44, height: 44, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0, background: `var(--ea-cat-${cat}-bg)`, color: `var(--ea-cat-${cat})` }}>{icon}</div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 14, fontWeight: 600, color: dm ? '#f1f5f9' : '#1A1A2E', marginBottom: 3 }}>{res.title}</div>
-                    <div style={{ fontSize: 12, color: dm ? 'var(--ea-muted)' : '#888' }}>{res.type} • {res.fileSize || '—'}</div>
+                    <div style={{ fontSize: 12, color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)' }}>{res.type} • {res.fileSize || '—'}</div>
                   </div>
                   {res.fileUrl
                     ? <a href={res.fileUrl} target="_blank" rel="noreferrer" style={{ background: dm ? '#0f172a' : '#F0F2F5', border: 'none', borderRadius: 10, width: 34, height: 34, fontSize: 16, cursor: 'pointer', color: dm ? 'var(--ea-muted)' : '#555', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, textDecoration: 'none' }}>↓</a>
@@ -249,7 +249,7 @@ export default function Notes() {
             <button type="button" className="ea-btn ea-btn--primary" style={{ marginTop: 20, width: '100%', minHeight: 48, fontSize: 15 }} onClick={handleUpload} disabled={uploading}>
               {uploaded ? 'Uploaded successfully!' : uploading ? 'Uploading...' : 'Upload Now'}
             </button>
-            <button style={{ marginTop: 12, background: 'none', border: 'none', color: 'var(--brand)', fontSize: 15, fontWeight: 600, cursor: 'pointer', alignSelf: 'center' }} onClick={() => { setShowModal(false); setForm({ ...form, title: '', fileUrl: '' }); }}>
+            <button style={{ marginTop: 12, background: 'none', border: 'none', color: 'var(--brand-dark)', fontSize: 15, fontWeight: 600, cursor: 'pointer', alignSelf: 'center' }} onClick={() => { setShowModal(false); setForm({ ...form, title: '', fileUrl: '' }); }}>
               Cancel
             </button>
           </div>

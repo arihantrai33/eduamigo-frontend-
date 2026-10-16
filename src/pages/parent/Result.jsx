@@ -13,8 +13,8 @@ const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 });
 const gradeColor = (grade) => {
-  if (!grade) return { bg: "#f3f4f6", color: "#6b7280" };
-  if (grade.startsWith("A")) return { bg: "#dcfce7", color: "#16a34a" };
+  if (!grade) return { bg: "#f3f4f6", color: "var(--ea-muted)" };
+  if (grade.startsWith("A")) return { bg: "#dcfce7", color: "#166534" };
   if (grade.startsWith("B")) return { bg: "#dbeafe", color: "#1d4ed8" };
   return { bg: "color-mix(in srgb, var(--ea-on-card-warning) 16%, transparent)", color: "var(--ea-on-card-warning)" };
 };
@@ -64,7 +64,7 @@ export default function ParentResult() {
     </div>
   );
   return (
-    <div className="ea-pd-narrow" style={{ minHeight: "100vh", background: "var(--app-bg, #F4F6FB)", fontFamily: "inherit", paddingBottom: 40 }}>
+    <div style={{ minHeight: "100vh", background: "var(--app-bg, #F4F6FB)", fontFamily: "inherit", paddingBottom: 40 }}>
       <PortalHeader title="Results" subtitle={child?.name ?? "—"} onBack={() => navigate(-1)}
         actions={child?._id && (
           <button type="button" className="ea-portal-head__btn" onClick={() => navigate(`/report-card?studentId=${child._id}`)}>Report Card</button>

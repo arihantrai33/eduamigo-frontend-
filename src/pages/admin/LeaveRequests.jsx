@@ -15,7 +15,7 @@ const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("
 const STATUS_CONFIG = {
   Pending:  { bg:"#FFFBEB", color:"var(--ea-on-card-warning)", dot:"#F59E0B", border:"#FDE68A" },
   Approved: { bg:"#F0FDF4", color:"#15803D", dot:"#22C55E", border:"#BBF7D0" },
-  Rejected: { bg:"#FEF2F2", color:"#DC2626", dot:"#EF4444", border:"#FECACA" },
+  Rejected: { bg:"#FEF2F2", color:"#B91C1C", dot:"#EF4444", border:"#FECACA" },
 };
 
 const LEAVE_TYPES = ["Sick Leave","Casual Leave","Emergency Leave","Maternity Leave","Paternity Leave","Study Leave","Other"];
@@ -139,7 +139,7 @@ export default function LeaveRequests() {
                     <div style={{ display:"flex", alignItems:"center", flexWrap:"wrap", gap:"6px 10px", marginBottom:4 }}>
                       <span style={{ fontSize:14, fontWeight:800, color:"#0F172A" }}>{l.name || "Unknown"}</span>
                       <span className="ea-badge ea-badge--neutral" style={{ textTransform:"capitalize" }}>{l.role?.charAt(0).toUpperCase() + l.role?.slice(1) || "User"}</span>
-                      <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:"#F1F5F9", color:"#64748B" }}>{l.leaveType || "Leave"}</span>
+                      <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:"#F1F5F9", color:"#56657A" }}>{l.leaveType || "Leave"}</span>
                     </div>
                     <div style={{ fontSize:12, color:"var(--ea-muted)" }}>
                       {fmtDate(l.fromDate)} → {fmtDate(l.toDate)} · {daysDiff(l.fromDate, l.toDate)}{l.class ? ` · Class ${l.class}${l.section ? `-${l.section}` : ""}` : ""}
@@ -172,7 +172,7 @@ export default function LeaveRequests() {
                       <div style={{ fontSize:13, color:"#374151", lineHeight:1.6 }}>{l.reason || "No reason provided"}</div>
                     </div>
                     {l.attachmentUrl && (
-                      <a href={l.attachmentUrl} target="_blank" rel="noreferrer" style={{ display:"inline-block", marginTop:10, fontSize:13, fontWeight:600, color:"var(--brand)" }}>
+                      <a href={l.attachmentUrl} target="_blank" rel="noreferrer" style={{ display:"inline-block", marginTop:10, fontSize:13, fontWeight:600, color:"var(--brand-dark)" }}>
                         View attachment: {l.attachmentName || "document"}
                       </a>
                     )}

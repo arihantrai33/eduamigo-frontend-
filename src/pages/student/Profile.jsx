@@ -60,7 +60,7 @@ export default function Profile() {
   const classText = profile?.class ? `Class ${profile.class}-${profile.section}` : null;
 
   const page = (title, children) => (
-    <div className="ea-pd-narrow" style={{ minHeight: "100vh", background: "var(--app-bg, #F4F6FB)", fontFamily: "inherit", paddingBottom: 80 }}>
+    <div className="ea-pd-read" style={{ minHeight: "100vh", background: "var(--app-bg, #F4F6FB)", fontFamily: "inherit", paddingBottom: 80 }}>
       <PortalHeader detail title={title} onBack={() => setView(null)} />
       <div className="ea-pd-body" style={{ padding: 16, display: "flex", flexDirection: "column", gap: 14 }}>{children}</div>
       <BottomNav role="student" />
@@ -68,7 +68,7 @@ export default function Profile() {
   );
 
   if (loading) return (
-    <div className="ea-pd-narrow" style={{ minHeight: "100vh", background: "var(--app-bg, #F4F6FB)" }}>
+    <div style={{ minHeight: "100vh", background: "var(--app-bg, #F4F6FB)" }}>
       <PortalHeader title="My Profile" onBack={() => navigate(-1)} />
       <Skeleton rows={3} label="Loading" />
     </div>
@@ -123,9 +123,10 @@ export default function Profile() {
   if (view === "help") return page("Help & Support", <SupportContent role="student" dark={darkMode} />);
 
   return (
-    <div className="ea-pd-narrow" style={{ minHeight: "100vh", background: "var(--app-bg, #F4F6FB)", fontFamily: "inherit", paddingBottom: 80 }}>
+    <div style={{ minHeight: "100vh", background: "var(--app-bg, #F4F6FB)", fontFamily: "inherit", paddingBottom: 80 }}>
       <PortalHeader title="My Profile" onBack={() => navigate(-1)} />
-      <div className="ea-pd-body" style={{ padding: 16, display: "flex", flexDirection: "column", gap: 14 }}>
+      <div className="ea-pd-body" style={{ padding: 16 }}>
+        <div className="ea-profile"><div className="ea-profile__aside">
         <ProfileCard name={name} photo={profile?.photo} meta={[classText, profile?.email].filter(Boolean).join(" • ")} role="Student" />
         <StatGrid label="My figures">
           <StatCard label="Attendance" value={attendance?.percentage ? `${attendance.percentage}%` : "—"} />
@@ -133,6 +134,7 @@ export default function Profile() {
           <StatCard label="Grade" value={overallGrade || "—"} />
           <StatCard label="Roll" value={profile?.rollNumber || "—"} />
         </StatGrid>
+        </div><div className="ea-profile__main">
         <MenuList label="Profile" items={[
           { icon: <User size={18} />,     label: "View Profile",    sub: "Your school information", onClick: () => setView("profile") },
           { icon: <Bell size={18} />,     label: "Notifications",   sub: "View all notifications",  onClick: () => navigate("/student/notifications") },
@@ -144,6 +146,7 @@ export default function Profile() {
           { icon: <MonitorOff size={18} />, label: "Sign out on all devices", danger: true, onClick: () => signOutEverywhere(logout, navigate) },
           { icon: <LogOut size={18} />,     label: "Logout", danger: true, onClick: handleLogout },
         ]} />
+        </div></div>
       </div>
       <BottomNav role="student" />
     </div>

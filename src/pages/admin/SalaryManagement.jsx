@@ -180,7 +180,7 @@ export default function SalaryManagement() {
           <thead>
             <tr style={{ background:"var(--ea-hover)" }}>
               {["Teacher","Month/Year","Basic Salary","Allowances","Deductions","Net Salary","Status","Action"].map(h => (
-                <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#64748B", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
+                <th key={h} style={{ padding:"14px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#56657A", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
               ))}
             </tr>
           </thead>
@@ -268,7 +268,7 @@ export default function SalaryManagement() {
               <FieldError id={`salary-${key}-error`}>{fe.errors[key]}</FieldError>))}
           </div>
           <div style={{ background:"#F0FDF4", borderRadius:12, padding:"12px 16px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-            <span style={{ fontSize:13, fontWeight:700, color:"#64748B" }}>Net Salary</span>
+            <span style={{ fontSize:13, fontWeight:700, color:"#56657A" }}>Net Salary</span>
             <span style={{ fontSize:20, fontWeight:800, color:"var(--ea-ink)", fontVariantNumeric:"tabular-nums" }}>₹{net.toLocaleString("en-IN")}</span>
           </div>
           {field("REMARKS",

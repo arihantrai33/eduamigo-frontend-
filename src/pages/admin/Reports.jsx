@@ -164,7 +164,7 @@ export default function Reports() {
             {[
               { label:"Total Expected", value:fmt(fees.total),   color:"#0F172A", bg:"#F8FAFC" },
               { label:"Collected",      value:fmt(fees.paid),    color:"#15803D", bg:"#F0FDF4" },
-              { label:"Pending",        value:fmt(fees.pending), color:"#DC2626", bg:"#FEF2F2" },
+              { label:"Pending",        value:fmt(fees.pending), color:"#B91C1C", bg:"#FEF2F2" },
             ].map((f,i) => (
               <div key={i} style={{ flex:"1 1 96px", minWidth:0, background:f.bg, borderRadius:12, padding:"14px 16px", textAlign:"center" }}>
                 <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6 }}>{f.label}</div>
@@ -191,7 +191,7 @@ export default function Reports() {
             {[
               { label:"Total Records", value:attendance.total,   color:"#0F172A", bg:"#F8FAFC" },
               { label:"Present",       value:attendance.present, color:"#15803D", bg:"#F0FDF4" },
-              { label:"Absent",        value:attendance.absent,  color:"#DC2626", bg:"#FEF2F2" },
+              { label:"Absent",        value:attendance.absent,  color:"#B91C1C", bg:"#FEF2F2" },
             ].map((a,i) => (
               <div key={i} style={{ flex:"1 1 96px", minWidth:0, background:a.bg, borderRadius:12, padding:"14px 16px", textAlign:"center" }}>
                 <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6 }}>{a.label}</div>
@@ -222,8 +222,8 @@ export default function Reports() {
             ))}
           </div>
           <div style={{ background:"#F8FAFC", borderRadius:12, padding:"12px 16px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-            <span style={{ fontSize:12, fontWeight:600, color:"#64748B" }}>Total Payroll</span>
-            <span style={{ fontSize:16, fontWeight:900, color:"#059669" }}>{fmt(salary.totalAmt)}</span>
+            <span style={{ fontSize:12, fontWeight:600, color:"#56657A" }}>Total Payroll</span>
+            <span style={{ fontSize:16, fontWeight:900, color:"#047857" }}>{fmt(salary.totalAmt)}</span>
           </div>
           <ProgressBar label="Paid" value={salary.paid} total={salary.paid+salary.pending} color="var(--ea-on-card-success)" />
         </SectionCard>
@@ -234,7 +234,7 @@ export default function Reports() {
             {[
               { label:"Pending",  value:leaves.pending,  color:"var(--ea-on-card-warning)", bg:"#FFFBEB", dot:"#F59E0B" },
               { label:"Approved", value:leaves.approved, color:"#15803D", bg:"#F0FDF4", dot:"#22C55E" },
-              { label:"Rejected", value:leaves.rejected, color:"#DC2626", bg:"#FEF2F2", dot:"#EF4444" },
+              { label:"Rejected", value:leaves.rejected, color:"#B91C1C", bg:"#FEF2F2", dot:"#EF4444" },
             ].map((l,i) => (
               <div key={i} style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"10px 14px", background:l.bg, borderRadius:10 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:8 }}>
@@ -263,7 +263,7 @@ export default function Reports() {
           </div>
           <div style={{ background:"var(--brand-soft)", borderRadius:12, padding:"14px 16px", textAlign:"center" }}>
             <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:4 }}>AVERAGE SCORE</div>
-            <div style={{ fontSize:32, fontWeight:900, color:"var(--brand)" }}>{marks.avgScore}%</div>
+            <div style={{ fontSize:32, fontWeight:900, color:"var(--brand-dark)" }}>{marks.avgScore}%</div>
           </div>
           <ProgressBar label="Pass Rate" value={marks.passed} total={marks.total} color="var(--brand)" />
         </SectionCard>

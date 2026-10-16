@@ -4,18 +4,19 @@ import { signIn } from './helpers';
 // One frame for every signed-in screen (see "Page frame" in index.css). On a desktop, in all four portals:
 //   - the page title starts one gutter (32 px) right of the sidebar, at the same height;
 //   - the content starts on the same line as the title (nothing is centred in a wider area or pushed further in);
-//   - the content is as wide as the page's purpose allows: "read" (forms, lists: 880 px), "wide" (dashboards,
+//   - the content is as wide as the page's purpose allows: "read" (forms, detail views: 1040 px), "wide" (dashboards,
 //     timetables, results, Learning AI: 1200 px) or "full" (admin tables: the whole area), never wider.
-// Widths differ by purpose on purpose; the left edge and the title position do not.
+// Widths differ by purpose on purpose; the left edge and the title position do not. A list or overview page fills the
+// frame (up to 1280 px, centred beyond that); a form or detail page keeps a reading width (1040 px) on the same left edge.
 // Below 1024 px the portals use the phone app bar, and the check is that content keeps the phone gutter.
 
 const ROUTES = {
-  student: { home: 'wide', notifications: 'read', timetable: 'wide', notes: 'read', learn: 'wide', result: 'wide', attendance: 'read', fee: 'read', bus: 'map', 'apply-leave': 'wide', chat: 'read', profile: 'read' },
-  parent: { home: 'wide', notifications: 'read', attendance: 'wide', result: 'read', fee: 'read', bus: 'map', calendar: 'read', 'apply-leave': 'wide', chat: 'read', profile: 'read' },
-  teacher: { home: 'wide', attendance: 'read', marks: 'read', students: 'read', upload: 'read', timetable: 'wide', leave: 'read', notifications: 'read', chat: 'read', profile: 'read' },
+  student: { home: 'wide', notifications: 'wide', timetable: 'wide', notes: 'wide', learn: 'wide', result: 'wide', attendance: 'wide', fee: 'wide', bus: 'map', 'apply-leave': 'wide', chat: 'wide', profile: 'wide' },
+  parent: { home: 'wide', notifications: 'wide', attendance: 'wide', result: 'wide', fee: 'wide', bus: 'map', calendar: 'wide', 'apply-leave': 'wide', chat: 'wide', profile: 'wide' },
+  teacher: { home: 'wide', attendance: 'wide', marks: 'wide', students: 'wide', upload: 'read', timetable: 'wide', leave: 'wide', notifications: 'wide', chat: 'wide', profile: 'wide' },
   admin: { '': 'full', students: 'full', 'students/add': 'read', teachers: 'full', fees: 'full', exams: 'full', leaves: 'full', library: 'full', communications: 'full', settings: 'full', academic: 'read', timetable: 'full', 'hr-management': 'full', reports: 'full', admissions: 'full', 'event-calendar': 'full', ask: 'full', 'bulk-operations': 'full', 'year-end': 'wide', 'id-card-generator': 'full', 'fee-reports': 'full', 'fee-structure': 'full', results: 'full', salaries: 'full', 'user-management': 'wide', 'attendance-reports': 'full', activity: 'wide', parents: 'full', 'parents/add': 'read', 'teachers/add': 'read', transport: 'full' },
 };
-const WIDTH = { read: 880, wide: 1200 };
+const WIDTH = { read: 1040, wide: 1280 };
 const SIDEBAR = 260;
 const GUTTER = 32;
 
@@ -121,4 +122,52 @@ for (const [role, routes] of Object.entries(ROUTES)) {
       expect(problems, problems.join('\n')).toEqual([]);
     });
   }
+}
+
+// A very wide screen: the frame (1280 px) is centred in the area, and every page of a portal still starts on the same
+// line (read and wide pages share a left edge; nothing drifts to one side).
+for (const role of Object.keys(ROUTES)) {
+  test(`${role} pages share one centred frame at 1920px`, async ({ page }) => {
+    test.setTimeout(240_000);
+    await page.setViewportSize({ width: 1920, height: 1000 });
+    await signIn(page, role);
+    const problems = [];
+    for (const [path, purpose] of Object.entries(ROUTES[role])) {
+      if (purpose === 'map') continue;
+      await page.goto(`/${role}/${path}`.replace(/\/$/, ''));
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(400);
+      const m = await page.evaluate(measure);
+      const expected = SIDEBAR + Math.max(GUTTER, Math.round((m.area - SIDEBAR - WIDTH.wide) / 2));
+      const where = `/${role}/${path}`;
+      if (m.title && Math.abs(m.title[0] - expected) > 2) problems.push(`${where}: title at x=${m.title[0]}, expected ${expected}`);
+      if (Math.abs(m.left - expected) > 2) problems.push(`${where}: content starts at x=${m.left}, expected ${expected}`);
+      if (m.right > expected + WIDTH.wide + 2) problems.push(`${where}: content ends at x=${m.right}, wider than the frame`);
+    }
+    expect(problems, problems.join('\n')).toEqual([]);
+  });
+}
+
+// Learning AI: the typing box is pinned to the bottom of the tutor card on every screen size (it used to follow the
+// last message, leaving the lower half of a wide screen empty), the card fits the screen, and nothing scrolls sideways.
+for (const [width, height] of [[1440, 900], [1280, 800], [1024, 768], [768, 1024], [390, 844]]) {
+  test(`Learning AI keeps its typing box at the bottom of the card at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height });
+    await signIn(page, 'student');
+    await page.goto('/student/learn');
+    await page.waitForLoadState('networkidle');
+    const card = await page.locator('.ea-learn__tutor').boundingBox();
+    const box = await page.locator('.ea-learn__composer').boundingBox();
+    const input = page.getByLabel('Your question');
+    await expect(input).toBeVisible();
+    // The composer ends within one margin of the card's bottom edge, and the card ends within the visible screen.
+    expect(card.y + card.height - (box.y + box.height)).toBeLessThanOrEqual(18);
+    expect(card.y + card.height).toBeLessThanOrEqual(height);
+    expect(box.x).toBeGreaterThanOrEqual(card.x);
+    expect(box.x + box.width).toBeLessThanOrEqual(card.x + card.width);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    // Typing works from the keyboard.
+    await input.fill('What is photosynthesis?');
+    await expect(input).toHaveValue('What is photosynthesis?');
+  });
 }

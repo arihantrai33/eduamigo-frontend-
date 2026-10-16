@@ -22,7 +22,7 @@ const STEP_LINKS = {
 const ui = {
   card: { background: "#fff", border: "1px solid #E8E8E5", borderRadius: 12, padding: "1.25rem 1.5rem", marginBottom: 16 },
   title: { fontSize: 14, fontWeight: 700, color: "#0F172A", margin: "0 0 4px" },
-  hint: { fontSize: 12, color: "#64748B", margin: "0 0 14px", lineHeight: 1.5 },
+  hint: { fontSize: 12, color: "#56657A", margin: "0 0 14px", lineHeight: 1.5 },
   chip: { display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 10px", borderRadius: 999, background: "var(--brand-soft)", color: "#3730A3", fontSize: 12, fontWeight: 600 },
   row: { display: "flex", gap: 10, flexWrap: "wrap", alignItems: "flex-end" },
 };
@@ -48,7 +48,7 @@ function Checklist({ status, onJump }) {
     <div style={ui.card}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
         <h3 style={ui.title}>{status.complete ? "Your school is set up" : "Set up your school"}</h3>
-        <span style={{ fontSize: 12, color: "#64748B", fontWeight: 600 }}>{status.done} of {status.total} done</span>
+        <span style={{ fontSize: 12, color: "#56657A", fontWeight: 600 }}>{status.done} of {status.total} done</span>
       </div>
       <div style={{ height: 6, background: "var(--brand-soft)", borderRadius: 999, margin: "10px 0 14px", overflow: "hidden" }}>
         <div style={{ width: `${pct}%`, height: "100%", background: "var(--brand)", transition: "width .3s" }} />
@@ -136,7 +136,7 @@ function Sessions({ onChanged }) {
           {sessions.map((s) => (
             <div key={s._id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", border: "1px solid #F1F5F9", borderRadius: 8, fontSize: 13 }}>
               <strong style={{ minWidth: 70 }}>{s.name}</strong>
-              <span style={{ color: "#64748B", flex: 1 }}>{fmtDate(s.startDate)} – {fmtDate(s.endDate)}</span>
+              <span style={{ color: "#56657A", flex: 1 }}>{fmtDate(s.startDate)} – {fmtDate(s.endDate)}</span>
               <span style={badge(s.status)}>{s.status}</span>
               {s.status !== "current" && <button className="ea-btn ea-btn--ghost" disabled={busy} onClick={() => makeCurrent(s)}>Make current</button>}
             </div>
@@ -217,7 +217,7 @@ function ClassEditor({ initial, teachers, onSave, onCancel, busy }) {
       </div>
       {hasStudents && <p style={{ ...ui.hint, margin: "6px 0 0" }}>The class name is locked because students are in it.</p>}
 
-      <div style={{ fontSize: 11, color: "#64748B", fontWeight: 600, margin: "14px 0 6px" }}>SECTIONS AND CLASS TEACHERS</div>
+      <div style={{ fontSize: 11, color: "#56657A", fontWeight: 600, margin: "14px 0 6px" }}>SECTIONS AND CLASS TEACHERS</div>
       <div style={{ display: "grid", gap: 6 }}>
         {form.sections.map((s) => (
           <div key={s.name} style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
@@ -227,7 +227,7 @@ function ClassEditor({ initial, teachers, onSave, onCancel, busy }) {
               {teachers.map((t) => <option key={t._id} value={t._id}>{t.name}</option>)}
             </select>
             {s.students > 0
-              ? <span style={{ fontSize: 11, color: "#64748B" }}>{s.students} students</span>
+              ? <span style={{ fontSize: 11, color: "#56657A" }}>{s.students} students</span>
               : <button className="ea-btn ea-btn--ghost" onClick={() => removeSection(s.name)}>Remove</button>}
           </div>
         ))}
@@ -332,7 +332,7 @@ function Classes({ onChanged }) {
           <div key={cls._id} style={{ border: "1px solid #F1F5F9", borderRadius: 10, padding: "10px 12px", opacity: cls.isActive ? 1 : 0.55 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
               <strong style={{ fontSize: 14, color: "#0F172A", minWidth: 90 }}>{cls.displayName || `Class ${cls.name}`}</strong>
-              <span style={{ fontSize: 12, color: "#64748B" }}>{cls.students} students</span>
+              <span style={{ fontSize: 12, color: "#56657A" }}>{cls.students} students</span>
               {!cls.isActive && <span style={badge("closed")}>inactive</span>}
               <span style={{ flex: 1 }} />
               <button className="ea-btn ea-btn--ghost" onClick={() => setEditing(cls._id)}>Edit</button>
@@ -345,7 +345,7 @@ function Classes({ onChanged }) {
                 <span key={s.name} style={ui.chip} title={s.classTeacherName ? `Class teacher: ${s.classTeacherName}` : "No class teacher"}>
                   {s.name}
                   <span style={{ fontWeight: 500, color: s.classTeacherName ? "var(--brand-dark)" : "#B45309" }}>· {s.classTeacherName || "no class teacher"}</span>
-                  <span style={{ fontWeight: 500, color: "#64748B" }}>· {s.students}</span>
+                  <span style={{ fontWeight: 500, color: "#56657A" }}>· {s.students}</span>
                 </span>
               ))}
             </div>

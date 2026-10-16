@@ -22,8 +22,8 @@ const TYPE_STYLES = {
 const AI_STATUS = {
   pending:    { label: 'Queued', color: '#6B7280' },
   processing: { label: 'Processing', color: 'var(--brand-dark)' },
-  ready:      { label: 'Ready for students', color: '#059669' },
-  failed:     { label: 'Failed, will retry', color: '#DC2626' },
+  ready:      { label: 'Ready for students', color: '#047857' },
+  failed:     { label: 'Failed, will retry', color: '#B91C1C' },
   skipped:    { label: 'No readable text (scanned PDF)', color: '#B45309' },
 };
 
@@ -121,7 +121,7 @@ export default function TeacherUpload() {
   const subjects = teacher?.subjects || [];
 
   return (
-    <div className="ea-pd-narrow" style={styles.container}>
+    <div className="ea-pd-read" style={styles.container}>
       <PortalHeader title="Upload Materials" onBack={() => navigate('/teacher/home')} actions={uploads.length > 0 && <span className="ea-badge ea-badge--brand">{uploads.length}</span>} />
 
       <div className="ea-pd-body" style={styles.content}>
@@ -358,11 +358,11 @@ const styles = {
     whiteSpace: 'nowrap',
     flexShrink: 0,
   },
-  cardMeta: { fontSize: 12, color: 'var(--brand)', fontWeight: 500, margin: '0 0 4px' },
+  cardMeta: { fontSize: 12, color: 'var(--brand-dark)', fontWeight: 500, margin: '0 0 4px' },
   dueDateText: { fontSize: 12, color: 'var(--ea-on-card-warning)', fontWeight: 600, margin: '0 0 6px' },
   cardFooter: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   timeText: { fontSize: 11, color: 'var(--ea-muted)', fontWeight: 500 },
-  viewLink: { fontSize: 12, color: 'var(--brand)', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4, minHeight: 28 },
+  viewLink: { fontSize: 12, color: 'var(--brand-dark)', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4, minHeight: 28 },
   formCard: { padding: '20px 16px' },
   label: { display: 'block', marginBottom: 6 },
   input: { width: '100%', marginBottom: 14 },
@@ -377,7 +377,7 @@ const styles = {
     borderRadius: '50%',
     animation: 'spin 0.8s linear infinite',
   },
-  loadingText: { color: 'var(--brand)', fontSize: 13, marginTop: 10 },
+  loadingText: { color: 'var(--brand-dark)', fontSize: 13, marginTop: 10 },
   errorBox: {
     background: '#FFEBEE',
     color: '#C62828',

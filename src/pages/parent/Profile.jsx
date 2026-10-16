@@ -53,7 +53,7 @@ export default function ParentProfile() {
   };
 
   if (showHelp) return (
-    <div className="ea-pd-narrow" style={{ minHeight: "100vh", background: "var(--app-bg, #F4F6FB)", fontFamily: "inherit", paddingBottom: 80 }}>
+    <div className="ea-pd-read" style={{ minHeight: "100vh", background: "var(--app-bg, #F4F6FB)", fontFamily: "inherit", paddingBottom: 80 }}>
       <PortalHeader detail title="Help & Support" onBack={() => setShowHelp(false)} />
       <div className="ea-pd-body" style={{ padding: 16 }}>
         <SupportContent role="parent" />
@@ -63,10 +63,11 @@ export default function ParentProfile() {
   );
 
   return (
-    <div className="ea-pd-narrow" style={{ minHeight: "100vh", background: "var(--app-bg, #F4F6FB)", display: "flex", flexDirection: "column", fontFamily: "inherit" }}>
+    <div style={{ minHeight: "100vh", background: "var(--app-bg, #F4F6FB)", display: "flex", flexDirection: "column", fontFamily: "inherit" }}>
       <PortalHeader title="My Profile" onBack={() => navigate(-1)} />
 
-      <div className="ea-pd-body" style={{ flex: 1, overflowY: "auto", padding: "16px 16px 80px", display: "flex", flexDirection: "column", gap: 14 }}>
+      <div className="ea-pd-body" style={{ flex: 1, overflowY: "auto", padding: "16px 16px 80px" }}>
+        <div className="ea-profile"><div className="ea-profile__aside">
         <ProfileCard name={user?.name || "Parent"} photo={parentData?.photo} role="Parent"
           meta={[parentData?.occupation, parentData?.address].filter(Boolean).join(" • ") || null} />
 
@@ -77,6 +78,7 @@ export default function ParentProfile() {
           { label: "Occupation", value: parentData?.occupation },
           { label: "Address",    value: parentData?.address },
         ]} />
+        </div><div className="ea-profile__main">
 
         {showReset && (
           <section className="ea-card" style={{ padding: "12px 16px" }} aria-label="Reset your child's password">
@@ -107,6 +109,7 @@ export default function ParentProfile() {
         ]} />
 
         <p style={{ textAlign: "center", fontSize: 12, color: "var(--ea-faint)", margin: "0 0 8px" }}>EduAmigo v1.0.0</p>
+        </div></div>
       </div>
 
       <BottomNav role="parent" />

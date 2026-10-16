@@ -146,7 +146,7 @@ const s = {
   sub: { fontSize: 13, color: "var(--subtext)", margin: "0 0 16px", lineHeight: 1.55 },
   label: { fontSize: 12, fontWeight: 600, color: "var(--text)", display: "block", marginBottom: 5 },
   input: { width: "100%", padding: "11px 13px", border: "1.5px solid var(--border)", borderRadius: 10, fontSize: 14, color: "var(--text)", outline: "none", boxSizing: "border-box", background: "var(--input)", marginBottom: 14 },
-  err: { display: "flex", gap: 8, alignItems: "flex-start", background: "#fef2f2", border: "1px solid #fecaca", color: "#dc2626", borderRadius: 10, padding: "9px 13px", fontSize: 12, marginBottom: 14 },
+  err: { display: "flex", gap: 8, alignItems: "flex-start", background: "#fef2f2", border: "1px solid #fecaca", color: "#B91C1C", borderRadius: 10, padding: "9px 13px", fontSize: 12, marginBottom: 14 },
   btn: { width: "100%", padding: 13, color: "white", border: "none", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer" },
   linkBtn: { width: "100%", padding: 12, marginTop: 6, background: "none", border: "none", color: "var(--subtext)", fontSize: 13, fontWeight: 600, cursor: "pointer" },
   note: { fontSize: 12, color: "var(--subtext)", marginTop: 14, lineHeight: 1.5, textAlign: "center" },

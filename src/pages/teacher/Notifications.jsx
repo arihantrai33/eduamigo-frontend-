@@ -69,7 +69,7 @@ export default function TeacherNotifications() {
     : notifications.filter(n => n.type === filter);
 
   return (
-    <div className="ea-pd-narrow" style={styles.container}>
+    <div style={styles.container}>
       {/* Header */}
       <PortalHeader title="Notifications" onBack={() => navigate('/teacher/home')} actions={notifications.length > 0 && <span className="ea-badge ea-badge--brand">{notifications.length}</span>} />
 
@@ -255,7 +255,7 @@ const styles = {
   },
   targetBadge: {
     fontSize: 10,
-    color: 'var(--brand)',
+    color: 'var(--brand-dark)',
     background: '#EEF0FF',
     padding: '2px 8px',
     borderRadius: 20,
@@ -275,7 +275,7 @@ const styles = {
     borderRadius: '50%',
     animation: 'spin 0.8s linear infinite',
   },
-  loadingText: { color: 'var(--brand)', fontSize: 13, marginTop: 10 },
+  loadingText: { color: 'var(--brand-dark)', fontSize: 13, marginTop: 10 },
   errorBox: {
     background: '#FFEBEE',
     color: '#C62828',

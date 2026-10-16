@@ -162,7 +162,7 @@ const s = {
   label: { display: "block", marginBottom: 6 },
   input: { width: "100%", height: 44, fontSize: 15, marginBottom: 12 },
   muted: { fontSize: 12, color: "var(--subtext)", margin: "0 0 6px", lineHeight: 1.5, textAlign: "center" },
-  err: { display: "flex", gap: 8, alignItems: "flex-start", background: "#fef2f2", border: "1px solid #fecaca", color: "#dc2626", borderRadius: 10, padding: "9px 13px", fontSize: 12, marginBottom: 12 },
+  err: { display: "flex", gap: 8, alignItems: "flex-start", background: "#fef2f2", border: "1px solid #fecaca", color: "#B91C1C", borderRadius: 10, padding: "9px 13px", fontSize: 12, marginBottom: 12 },
   result: { display: "flex", alignItems: "center", gap: 12, width: "100%", padding: "10px 12px", border: "1.5px solid var(--border)", borderRadius: 12, background: "var(--input)", cursor: "pointer" },
   confirmCard: { display: "flex", flexDirection: "column", alignItems: "center", border: "2px solid", borderRadius: 18, padding: "24px 16px", marginBottom: 20 },
   btn: { width: "100%", minHeight: 48, fontSize: 15 },

@@ -1182,3 +1182,56 @@ The per-page checks in B15 (contrast, overflow, dead buttons) never compared pag
 2. Dark mode: icon chips and empty-state icons use the light `--brand-soft`, so they show as white squares. Changing `--brand-soft` and `--brand-dark` for dark mode affects buttons too, so it needs its own pass.
 3. Bus at 1024–1279 px: the stops panel covers part of the "Bus not on route yet" message. This was already so before the pass.
 4. 149 inline `#64748B` colours remain in page files. They are fine on white cards. Admin table headings are now covered by a shared rule.
+
+### Layout and appearance fix across all portals (2026-10-16, second pass)
+
+The owner reported two visible problems and asked for every screen to be checked at 390, 768, 1024, 1280 and 1440 px.
+
+**1. Notifications was shifted to one side (and so were 21 other pages).**
+- *Cause:* the frame pass made list pages a left-aligned 880 px column. At 1440 px that left a 268 px empty strip on the right against a 32 px gutter on the left.
+- *Fix:*
+  - List and overview pages now fill the frame (`--ea-w-wide`, 1280 px).
+  - The `ea-pd-narrow` class was removed from 22 pages.
+  - Forms and detail views keep a reading width through the new `ea-pd-read` class (1040 px, same left edge):
+    - the profile sub-views;
+    - the teacher upload page;
+    - the admin Add forms and School Setup.
+  - On a screen wider than the frame, the whole frame is centred (`--ea-pad-l`), so every page of a portal still starts on the same line (checked at 1920 px).
+  - Admin uses the same rule.
+- *Profile pages* (student, parent, teacher): from 1024 px the identity card and figures sit beside the menu. Before, one narrow column stretched down the page.
+
+**2. Learning AI: background, container, typing box.**
+- *Cause:* the typing box followed the last message, so on a wide screen it floated in the middle with half a screen empty below. The conversation log was meant to scroll inside (the code scrolls it), but no CSS made it do so.
+- *Fix:*
+  - The page is as tall as the screen.
+  - The tutor is one card: toolbar on top, a conversation that scrolls inside, and the typing box at the bottom of the card.
+  - The three other sections scroll inside their panel.
+  - Dark surfaces were added.
+  - A test checks the box position at 1440, 1280, 1024, 768 and 390 px.
+
+**3. Dark mode.**
+- In the dark portals `--brand-soft`, `--brand-border` and `--brand-dark` now resolve to dark tints and light text. Before, they were the school's near-white tint, which gave white squares behind icons and empty states, and teal text at 2.7:1.
+- Status icon chips and alerts use tokens mixed with the surface. Before, the cream warning box and the white "sign out" chip stood out.
+- Profile "sign out" chips, the Learning AI warning and the Notes subject icons were checked in dark.
+
+**4. Text contrast (stricter probe, light and dark, 1280 px).**
+- Findings fell from 561 to under 100:
+  - `--subtext` was `#888888` (3.5:1) and is now `#5B6B80`;
+  - brand colour used as text (55 inline uses and 10 CSS rules) now uses `--brand-dark`;
+  - 28 grey literals (`#888`, `#7B8099`, `#6b7280`) now use `--ea-muted`;
+  - small text in `#64748B`, `#DC2626`, `#16A34A`, `#059669` and `#6366F1` on tinted fills was darkened (169 places);
+  - the bus header is a deeper brand with raised text opacity.
+- About 90 findings remain: small text on hard-coded tinted fills in scattered places.
+
+**Verification:**
+- **Screens:** all 78 routes at 5 widths, 390 + 390 screenshots, before and after (saved in the session scratchpad, `fix2/before` and `fix2/after`, with pair sheets).
+- **Build:** passes.
+- **ESLint:** no changed file has more findings than at HEAD.
+- **Tests:**
+  - Layout-alignment spec: 32 tests (1024/1280/1440/1920 px, the phone gutter, and the typing box).
+  - Focused suites (layout, three Learning AI specs, screens, accessible names, UX regressions, interactions, workflows, scroll, sign-in): **113 passed**.
+- **Sweep:** automated findings are identical before and after (the known hidden-label and hidden-file-input false positives).
+
+**Not done:**
+- The remaining contrast findings, and teal text on white cards in the school's brand colour (a deeper per-school text token would be needed for very light brand colours).
+- The Bus page at 1024–1279 px: the stops panel overlaps part of the "Bus not on route yet" message (this was already so).

@@ -91,7 +91,7 @@ export default function ParentFee() {
   );
 
   return (
-    <div className="ea-pd-narrow" style={styles.page}>
+    <div style={styles.page}>
 
       {/* ── Header ── */}
       <PortalHeader title="Fee Overview" onBack={() => navigate(-1)}
@@ -138,7 +138,7 @@ export default function ParentFee() {
             <div style={{ fontSize: 22 }}></div>
             <div style={{ flex: 1 }}>
               <div style={{ fontWeight: 700, fontSize: 14, color: "#14532d" }}>All fees paid</div>
-              <div style={{ fontSize: 12, color: "#16a34a", marginTop: 2 }}>No outstanding dues.</div>
+              <div style={{ fontSize: 12, color: "#166534", marginTop: 2 }}>No outstanding dues.</div>
             </div>
           </div>
         )}
@@ -192,7 +192,7 @@ export default function ParentFee() {
                       ₹{(f.amount ?? 0).toLocaleString("en-IN")}
                     </div>
                     {f.status === "Partial" && (
-                      <div style={{ fontSize: 11, color: "#6b7280", marginTop: 2 }}>Balance ₹{balanceOf(f).toLocaleString("en-IN")}</div>
+                      <div style={{ fontSize: 11, color: "var(--ea-muted)", marginTop: 2 }}>Balance ₹{balanceOf(f).toLocaleString("en-IN")}</div>
                     )}
                     <div style={{
                       fontSize: 10, fontWeight: 700, color: cfg.color,
@@ -221,7 +221,7 @@ export default function ParentFee() {
                 FEE BREAKDOWN
               </span>
               <span style={{
-                color: "var(--brand)", fontSize: 16,
+                color: "var(--brand-dark)", fontSize: 16,
                 transform: showBreakdown ? "rotate(180deg)" : "rotate(0deg)",
                 transition: "transform 0.3s", display: "inline-block"
               }}>⌄</span>
@@ -251,7 +251,7 @@ export default function ParentFee() {
                 ))}
                 <div style={styles.breakdownTotal}>
                   <span style={{ fontWeight: 700, fontSize: 14 }}>Total</span>
-                  <span style={{ fontWeight: 900, fontSize: 15, color: "var(--brand)" }}>
+                  <span style={{ fontWeight: 900, fontSize: 15, color: "var(--brand-dark)" }}>
                     ₹{summary.total.toLocaleString("en-IN")}
                   </span>
                 </div>

@@ -137,7 +137,7 @@ export default function AttendanceReports() {
           <div style={{ fontSize:14, fontWeight:800, color:"#C2410C", marginBottom:8 }}><Glyph e="⚠" /> Low Attendance Alert</div>
           <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
             {lowAttendance.map((c,i) => (
-              <span key={i} style={{ fontSize:12, fontWeight:700, padding:"5px 14px", borderRadius:20, background:"#FEF2F2", color:"#DC2626", border:"1px solid #FECACA" }}>
+              <span key={i} style={{ fontSize:12, fontWeight:700, padding:"5px 14px", borderRadius:20, background:"#FEF2F2", color:"#B91C1C", border:"1px solid #FECACA" }}>
                 Class {c.cls} — {c.pct}%
               </span>
             ))}
@@ -165,7 +165,7 @@ export default function AttendanceReports() {
             <thead>
               <tr style={{ background:"var(--ea-hover)" }}>
                 {["Class","Students","Present","Absent","Late","Attendance Rate","Status"].map(h => (
-                  <th key={h} style={{ padding:"12px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#64748B", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
+                  <th key={h} style={{ padding:"12px 18px", textAlign:"left", fontSize:11, fontWeight:800, color:"#56657A", letterSpacing:"0.08em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
                 ))}
               </tr>
             </thead>

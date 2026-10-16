@@ -168,7 +168,7 @@ export default function ParentChat() {
 
   // ─── Main List Screen ────────────────────────────────────────────────────────
   return (
-    <div className="ea-pd-narrow" style={S.screen}>
+    <div style={S.screen}>
       <PortalHeader title="Messages" onBack={() => navigate('/parent/home')}
         subtitle={data.child ? `${data.child.name} · Class ${data.child.class}${data.child.section ? `-${data.child.section}` : ''}` : undefined} />
 

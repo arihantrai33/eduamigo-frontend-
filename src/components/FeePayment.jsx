@@ -74,7 +74,7 @@ export function PaymentInfo({ enabled }) {
       <div style={{ fontSize: 24 }} aria-hidden="true"><Glyph e="💳" /></div>
       <div>
         <div style={{ fontWeight: 700, fontSize: 14, color: "var(--text, var(--brand-deep))" }}>{enabled ? "Pay online" : "Paying fees"}</div>
-        <div style={{ fontSize: 12, color: "#6b7280", marginTop: 4, lineHeight: 1.6 }}>
+        <div style={{ fontSize: 12, color: "var(--ea-muted)", marginTop: 4, lineHeight: 1.6 }}>
           {enabled
             ? "Pay securely with UPI, debit or credit card, or net banking. A receipt is issued immediately."
             : "Your school has not enabled online payment yet. Please pay at the school office; the receipt will appear here."}

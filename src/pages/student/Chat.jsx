@@ -115,7 +115,7 @@ export default function Chat() {
     chatRow: { background: dm ? '#1e293b' : 'white', borderRadius: 14, padding: '14px', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10, boxShadow: dm ? '0 1px 6px rgba(0,0,0,0.3)' : '0 1px 6px rgba(0,0,0,0.06)', cursor: 'pointer' },
     avatar: { width: 46, height: 46, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 18, flexShrink: 0 },
     rowName: { fontSize: 14, fontWeight: 700, color: dm ? '#f1f5f9' : '#111', marginBottom: 3 },
-    rowSub: { fontSize: 12, color: dm ? 'var(--ea-muted)' : '#888' },
+    rowSub: { fontSize: 12, color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)' },
     chevron: { fontSize: 22, color: dm ? '#64748b' : 'var(--ea-muted)' },
     emptyBox: { textAlign: 'center', padding: '32px 0', color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)', fontSize: 13 },
     center: { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' },
@@ -176,7 +176,7 @@ export default function Chat() {
     </div>
   );
   return (
-    <div className="ea-pd-narrow" style={S.screen}>
+    <div style={S.screen}>
       <PortalHeader title="Messages" onBack={() => navigate('/student/home')} />
       <div className="ea-pd-row" style={{ padding: '12px 16px 0' }}>
         <Segmented label="Messages" value={tab} onChange={setTab} options={[{ value: 'chats', label: 'Chats' }, { value: 'broadcasts', label: 'Broadcasts' }]} />
@@ -221,7 +221,7 @@ export default function Chat() {
                 <div style={{ ...S.miniAvatar, background: avatarColor(b.teacherName) }}>{b.teacherName?.[0]}</div>
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 700, color: dm ? '#f1f5f9' : '#111' }}>{b.teacherName}</div>
-                  <div style={{ fontSize: 11, color: dm ? 'var(--ea-muted)' : '#888' }}>{formatDate(b.createdAt)} · {formatTime(b.createdAt)}</div>
+                  <div style={{ fontSize: 11, color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)' }}>{formatDate(b.createdAt)} · {formatTime(b.createdAt)}</div>
                 </div>
               </div>
               <div style={S.broadcastText}>{b.text}</div>

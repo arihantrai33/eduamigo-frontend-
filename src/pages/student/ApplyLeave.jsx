@@ -92,7 +92,7 @@ export default function ApplyLeave() {
     <div style={{ height: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "inherit", background: dm ? "#0f172a" : "#f5f6fa" }}>
       <div style={{ fontSize: "64px" }}><Glyph e="✅" /></div>
       <div style={{ fontWeight: "800", fontSize: "20px", marginTop: "16px", color: dm ? "#f1f5f9" : "#111" }}>Leave request sent</div>
-      <div style={{ color: dm ? "var(--ea-muted)" : "#888", fontSize: "13px", marginTop: "8px" }}>Your request has been submitted for approval.</div>
+      <div style={{ color: dm ? "var(--ea-muted)" : "var(--ea-muted)", fontSize: "13px", marginTop: "8px" }}>Your request has been submitted for approval.</div>
       <button type="button" className="ea-btn ea-btn--primary" onClick={() => navigate(-1)} style={{ marginTop: "32px", minHeight: 48, padding: "0 32px", fontSize: 15 }}>
         Go Back
       </button>
@@ -131,7 +131,7 @@ export default function ApplyLeave() {
             </div>
           </div>
           {days > 0 && (
-            <div style={{ marginBottom: "16px", padding: "8px 12px", background: dm ? "#1e3a5f" : "#f0f4ff", borderRadius: "8px", fontSize: "12px", color: "var(--brand)", fontWeight: "600" }}>
+            <div style={{ marginBottom: "16px", padding: "8px 12px", background: dm ? "#1e3a5f" : "#f0f4ff", borderRadius: "8px", fontSize: "12px", color: "var(--brand-dark)", fontWeight: "600" }}>
               Duration: {days} day{days > 1 ? "s" : ""}
             </div>
           )}
@@ -165,7 +165,7 @@ export default function ApplyLeave() {
                   <div style={{ fontWeight: "700", fontSize: "14px", color: dm ? "#f1f5f9" : "#111" }}>{leave.leaveType}</div>
                   <span style={{ fontSize: "11px", fontWeight: "700", color: statusColor, background: `color-mix(in srgb, ${statusColor} 9%, transparent)`, padding: "3px 10px", borderRadius: "20px" }}>{leave.status}</span>
                 </div>
-                <div style={{ fontSize: "12px", color: dm ? "var(--ea-muted)" : "#888", marginTop: "4px" }}>
+                <div style={{ fontSize: "12px", color: dm ? "var(--ea-muted)" : "var(--ea-muted)", marginTop: "4px" }}>
                   {new Date(leave.fromDate).toLocaleDateString("en-GB")} — {new Date(leave.toDate).toLocaleDateString("en-GB")} • {leaveDays} day{leaveDays > 1 ? "s" : ""}
                 </div>
                 {leave.reason && <div style={{ fontSize: "12px", color: dm ? "#64748b" : "var(--ea-muted)", marginTop: "4px" }}>{leave.reason}</div>}
