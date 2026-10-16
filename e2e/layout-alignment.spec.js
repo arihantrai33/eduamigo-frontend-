@@ -100,3 +100,25 @@ test('page titles sit at the same height across portals', async ({ page }) => {
   const odd = [...tops].filter(([, top]) => Math.abs(top - 28) > 2).map(([p, top]) => `${p}: title top ${top}`);
   expect(odd, odd.join('\n')).toEqual([]);
 });
+
+// Phones and tablets: no sidebar; every page's content starts on the same 16 px gutter (the app bar spans the width).
+for (const [role, routes] of Object.entries(ROUTES)) {
+  for (const width of [390, 768]) {
+    test(`${role} pages keep the phone gutter at ${width}px`, async ({ page }) => {
+      test.setTimeout(240_000);
+      await page.setViewportSize({ width, height: 900 });
+      await signIn(page, role);
+      const problems = [];
+      for (const [path, purpose] of Object.entries(routes)) {
+        if (purpose === 'map') continue;
+        await page.goto(`/${role}/${path}`.replace(/\/$/, ''));
+        await page.waitForLoadState('networkidle');
+        await page.waitForTimeout(400);
+        const m = await page.evaluate(measure);
+        if (Math.abs(m.left - 16) > 1) problems.push(`/${role}/${path}: content starts at x=${m.left}, expected 16`);
+        if (m.right > width - 16 + 1) problems.push(`/${role}/${path}: content ends at x=${m.right}, past the gutter (${width - 16})`);
+      }
+      expect(problems, problems.join('\n')).toEqual([]);
+    });
+  }
+}

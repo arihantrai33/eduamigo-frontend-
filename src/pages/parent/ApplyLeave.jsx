@@ -112,7 +112,7 @@ export default function ApplyLeave() {
       <PortalHeader title="Leave Application" subtitle="Apply leave for your child" onBack={() => navigate(-1)} />
 
       {/* Form */}
-      <div className="ea-pd-body ea-pd-cols" style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "16px" }}>
+      <div className="ea-pd-body ea-pd-cols" style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
         <div className="ea-pd-full">
           <SummaryCard title="Leave balance" items={[
             { label: "Total", value: total },

@@ -45,7 +45,7 @@ input, button, select, textarea {
   display: flex;
   min-height: var(--ea-vh);
   padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
-  background: var(--app-bg, #F4F6FB);
+  background: var(--app-bg, var(--ea-canvas));
 }
 .ea-sidebar { display: none; }
 .ea-main {
@@ -61,8 +61,14 @@ input, button, select, textarea {
   height: calc(var(--ea-vh) - env(safe-area-inset-top));
   overflow: hidden;
   transform: translateZ(0);
-  background: var(--app-bg, #F4F6FB);
+  background: var(--app-bg, var(--ea-canvas));
 }
+
+/* One canvas behind every signed-in page, in all four portals (--ea-canvas, as in admin; dark: --app-bg). Page roots
+   that paint their own near-canvas grey (#F3F5F9, #F5F6FA, #F8F9FB...) let it show through instead, so the colour
+   does not change from page to page or end in a band above the tab bar. Gradients and images are kept. */
+/* Only the page root (the routes' first child): the toast and the Ask button and panel after it keep their fills. */
+.ea-shell .ea-scroll > div > :first-child { background-color: transparent !important; }
 
 /* The page scrolls here. Fixed bars inside it stay put, because their containing block is the transformed stage. */
 .ea-scroll {
@@ -160,6 +166,12 @@ input, button, select, textarea {
   /* dense: a side card written before the main section still fills the top of the side column */
   .ea-pd-dash { display: grid !important; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); grid-auto-flow: row dense; gap: 4px 24px; align-content: start; }
   .ea-pd-dash > .ea-tile-grid { order: -1; grid-column: 1 / -1; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important; }
+  /* Where one row does not fit (1024-1279 px), the tiles split into even rows instead of leaving one alone (5 + 1). */
+  @media (max-width: 1279px) {
+    .ea-pd-dash > .ea-tile-grid:has(> :nth-child(6):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+    .ea-pd-dash > .ea-tile-grid:has(> :nth-child(7):last-child),
+    .ea-pd-dash > .ea-tile-grid:has(> :nth-child(8):last-child) { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+  }
   .ea-pd-hide { display: none !important; }
   /* Bus tracking: the route stops become a panel on the right of the map instead of a phone bottom sheet; the
      full-screen button sits at the bottom of the map, clear of the panel. */
@@ -292,7 +304,7 @@ input, button, select, textarea {
 .ea-solo {
   min-height: var(--ea-vh);
   padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
-  background: var(--app-bg, #F4F6FB);
+  background: var(--app-bg, var(--ea-canvas));
 }
 .ea-solo__stage {
   position: relative;
@@ -300,7 +312,7 @@ input, button, select, textarea {
   height: calc(var(--ea-vh) - env(safe-area-inset-top));
   overflow: hidden;
   transform: translateZ(0);
-  background: var(--app-bg, #F4F6FB);
+  background: var(--app-bg, var(--ea-canvas));
 }
 @media (min-width: 768px) {
   .ea-solo { display: grid; place-items: center; padding: 32px 16px; background: var(--ea-canvas); }
@@ -1337,7 +1349,7 @@ body:has(.ea-dialog-backdrop) .ea-ask-fab { display: none !important; }
 .ea-sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
 /* ───────────── Learning AI (pages/student/learn) ───────────── */
-.ea-learn { min-height: 100%; background: var(--app-bg, #F4F6FB); padding-bottom: 96px; color: var(--ea-body); }
+.ea-learn { min-height: 100%; background: var(--app-bg, var(--ea-canvas)); padding-bottom: 96px; color: var(--ea-body); }
 /* The four sections switch with the shared segmented control (.ea-seg), as every other set of views does. */
 .ea-learn__tabs { padding: 12px 16px 0; }
 /* Phones: the four tabs do not fit; fade the right edge so a cut-off label reads as "scroll for more", and pad the end so the last tab clears the fade. */
@@ -1413,7 +1425,7 @@ body:has(.ea-dialog-backdrop) .ea-ask-fab { display: none !important; }
 .ea-learn__failure-text strong { font-weight: 700; }
 .ea-learn__failure.is-network, .ea-learn__failure.is-timeout, .ea-learn__failure.is-busy { background: #FFFBEB; border-color: #FDE68A; color: #78350F; }
 @media (max-width: 640px) {
-  .ea-learn__panel { padding: 12px; gap: 10px; }
+  .ea-learn__panel { padding: 12px 16px; gap: 10px; }
   .ea-learn__hint, .ea-learn__btn-text { display: none; }
   .ea-learn__composer { padding: 10px 12px; border-radius: 16px; }
   .ea-learn__composer-actions { flex-wrap: nowrap; }

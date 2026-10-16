@@ -10,21 +10,24 @@ import { Inbox, Plus, SearchX, Sparkles } from "lucide-react";
 import EmptyState from "../../components/ui/EmptyState";
 import Skeleton from "../../components/ui/Skeleton";
 import Badge from "../../components/ui/Badge";
+import { catOf } from "../../components/ui/tone";
 import Segmented from "../../components/ui/Segmented";
 const API = import.meta.env.VITE_API_URL;
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
 });
+// The icon by subject; its colours are the shared category tints for that subject (they also work in dark mode).
 const subjectIcon = (subject = '') => {
   const s = subject.toLowerCase();
-  if (s.includes('math'))  return { icon: <Glyph e="📐" />, color: '#E8F0FE' };
-  if (s.includes('phys'))  return { icon: <Glyph e="⚡" />, color: '#FEF9E7' };
-  if (s.includes('chem'))  return { icon: <Glyph e="⚗" />, color: '#E6F4EA' };
-  if (s.includes('eng'))   return { icon: <Glyph e="📖" />, color: '#F3E8FF' };
-  if (s.includes('bio'))   return { icon: <Glyph e="🔬" />, color: '#E8F5E9' };
-  if (s.includes('hist'))  return { icon: <Glyph e="🌍" />, color: '#FBE9E7' };
-  if (s.includes('hindi')) return { icon: <Glyph e="📝" />, color: '#FFF8E1' };
-  return                          { icon: <Glyph e="📚" />, color: 'var(--brand-soft)' };
+  const cat = catOf(subject);
+  if (s.includes('math'))  return { icon: <Glyph e="📐" />, cat };
+  if (s.includes('phys'))  return { icon: <Glyph e="⚡" />, cat };
+  if (s.includes('chem'))  return { icon: <Glyph e="⚗" />, cat };
+  if (s.includes('eng'))   return { icon: <Glyph e="📖" />, cat };
+  if (s.includes('bio'))   return { icon: <Glyph e="🔬" />, cat };
+  if (s.includes('hist'))  return { icon: <Glyph e="🌍" />, cat };
+  if (s.includes('hindi')) return { icon: <Glyph e="📝" />, cat };
+  return                          { icon: <Glyph e="📚" />, cat };
 };
 const formatDate = (d) => {
   if (!d) return '—';
@@ -139,10 +142,10 @@ export default function Notes() {
                 ? <EmptyState icon={SearchX} title="Nothing matches your search" text="Try a different word, or clear the search." />
                 : <EmptyState icon={Inbox} title="No notes available yet" text="Notes will appear here once uploaded by your teacher." />
             ) : filtered.map(note => {
-              const { icon, color } = subjectIcon(note.subject);
+              const { icon, cat } = subjectIcon(note.subject);
               return (
                 <div key={note._id} style={{ background: dm ? '#1e293b' : '#fff', borderRadius: 14, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10, boxShadow: '0 1px 6px rgba(0,0,0,0.05)' }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0, background: color }}>{icon}</div>
+                  <div style={{ width: 44, height: 44, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0, background: `var(--ea-cat-${cat}-bg)`, color: `var(--ea-cat-${cat})` }}>{icon}</div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 14, fontWeight: 600, color: dm ? '#f1f5f9' : '#1A1A2E', marginBottom: 3 }}>{note.title}</div>
                     <div style={{ fontSize: 12, color: dm ? 'var(--ea-muted)' : '#888' }}>{note.teacherName} • {note.subject} • {formatDate(note.createdAt)}</div>
@@ -166,12 +169,12 @@ export default function Notes() {
               const isUrgent = task.status === 'Urgent' || (task.dueDate && new Date(task.dueDate) - new Date() < 86400000);
               const isDone = task.status === 'Submitted';
               const accentColor = isDone ? '#2E7D32' : isUrgent ? '#C2410C' : 'var(--brand-dark)';
-              const { icon, color } = subjectIcon(task.subject);
+              const { icon, cat } = subjectIcon(task.subject);
               return (
                 <div key={task._id} style={{ background: dm ? '#1e293b' : '#fff', borderRadius: 14, padding: '12px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, boxShadow: '0 1px 6px rgba(0,0,0,0.05)', gap: 8 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1 }}>
                     <div style={{ width: 4, height: 40, borderRadius: 4, flexShrink: 0, background: accentColor }} />
-                    <div style={{ width: 44, height: 44, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0, background: color }}>{icon}</div>
+                    <div style={{ width: 44, height: 44, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0, background: `var(--ea-cat-${cat}-bg)`, color: `var(--ea-cat-${cat})` }}>{icon}</div>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 14, fontWeight: 600, color: dm ? '#f1f5f9' : '#1A1A2E', marginBottom: 3 }}>{task.title}</div>
                       <div style={{ fontSize: 12, color: dm ? 'var(--ea-muted)' : '#888' }}>Due: {formatDate(task.dueDate)} • <span style={{ color: accentColor, fontWeight: 600 }}>{isDone ? 'Submitted' : isUrgent ? 'Urgent' : 'Pending'}</span></div>
@@ -197,10 +200,10 @@ export default function Notes() {
                 ? <EmptyState icon={SearchX} title="Nothing matches your search" text="Try a different word, or clear the search." />
                 : <EmptyState icon={Inbox} title="No resources available yet" text="Study resources will appear here once uploaded by your teacher." />
             ) : filtered.map(res => {
-              const { icon, color } = subjectIcon(res.subject);
+              const { icon, cat } = subjectIcon(res.subject);
               return (
                 <div key={res._id} style={{ background: dm ? '#1e293b' : '#fff', borderRadius: 14, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10, boxShadow: '0 1px 6px rgba(0,0,0,0.05)' }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0, background: color }}>{icon}</div>
+                  <div style={{ width: 44, height: 44, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0, background: `var(--ea-cat-${cat}-bg)`, color: `var(--ea-cat-${cat})` }}>{icon}</div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 14, fontWeight: 600, color: dm ? '#f1f5f9' : '#1A1A2E', marginBottom: 3 }}>{res.title}</div>
                     <div style={{ fontSize: 12, color: dm ? 'var(--ea-muted)' : '#888' }}>{res.type} • {res.fileSize || '—'}</div>

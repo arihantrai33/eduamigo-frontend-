@@ -101,7 +101,7 @@ export default function ApplyLeave() {
   return (
     <div style={{ minHeight: "100vh", background: dm ? "#0f172a" : "#f5f6fa", fontFamily: "inherit", paddingBottom: "32px" }}>
       <PortalHeader title="Leave Application" subtitle="Submit and track your leave requests" onBack={() => navigate(-1)} />
-      <div className="ea-pd-body ea-pd-cols" style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "16px" }}>
+      <div className="ea-pd-body ea-pd-cols" style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
         <div className="ea-pd-full">
           <SummaryCard title="Leave balance" caption={quotaLoading ? "Loading balance..." : undefined}
             items={quotaLoading ? [] : [
