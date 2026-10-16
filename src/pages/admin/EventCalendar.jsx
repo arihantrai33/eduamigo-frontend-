@@ -224,7 +224,7 @@ export default function EventCalendar() {
             <div style={{ fontSize:15, fontWeight:800, color:"#0F172A", display:"flex", alignItems:"center", gap:8 }}>
               Upcoming events in {MONTHS[currentMonth]}
             </div>
-            <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600 }}>{allUpcoming.length} events</div>
+            <div style={{ fontSize:12, color:"var(--ea-muted)", fontWeight:600 }}>{allUpcoming.length} events</div>
           </div>
 
           {loading ? (
@@ -252,7 +252,7 @@ export default function EventCalendar() {
                 {/* Info */}
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ fontSize:14, fontWeight:700, color:"#0F172A", marginBottom:3 }}>{ev.title}</div>
-                  {ev.description && <div style={{ fontSize:11, color:"#94A3B8", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{ev.description}</div>}
+                  {ev.description && <div style={{ fontSize:11, color:"var(--ea-muted)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{ev.description}</div>}
                   <div style={{ display:"flex", alignItems:"center", gap:6, marginTop:4 }}>
                     <span style={{ fontSize:10, fontWeight:700, color:tc.color, background:tc.light, padding:"2px 8px", borderRadius:6 }}>{tc.icon} {tc.label}</span>
                     {isEventToday && <span className="ea-badge ea-badge--brand">Today</span>}
@@ -263,7 +263,7 @@ export default function EventCalendar() {
                   style={{ width:32, height:32, borderRadius:10, border:"none", background:"rgba(239,68,68,0.08)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, transition:"all 0.15s" }}
                   onMouseEnter={e => e.currentTarget.style.background="rgba(239,68,68,0.18)"}
                   onMouseLeave={e => e.currentTarget.style.background="rgba(239,68,68,0.08)"}>
-                  <Trash2 size={13} color="#EF4444" />
+                  <Trash2 size={13} color="var(--ea-on-card-danger)" />
                 </button>
               </div>
             );
@@ -274,9 +274,9 @@ export default function EventCalendar() {
       {/* Day Modal */}
       <Modal show={showDayModal} onClose={() => setShowDayModal(false)} width={440}
         title={`${MONTHS[currentMonth]} ${selectedDate?.day}, ${currentYear}`}>
-            <div style={{ fontSize:12, color:"#94A3B8", margin:"-12px 0 16px" }}>{selectedDayEvents.length} event{selectedDayEvents.length!==1?"s":""}</div>
+            <div style={{ fontSize:12, color:"var(--ea-muted)", margin:"-12px 0 16px" }}>{selectedDayEvents.length} event{selectedDayEvents.length!==1?"s":""}</div>
             {selectedDayEvents.length===0 ? (
-              <div style={{ textAlign:"center", padding:"24px 0", color:"#CBD5E1" }}>
+              <div style={{ textAlign:"center", padding:"24px 0", color:"var(--ea-faint)" }}>
                 <div style={{ fontSize:36, marginBottom:8 }}><Glyph e="📅" /></div>
                 <div style={{ fontSize:14, fontWeight:600 }}>No events on this day</div>
               </div>
@@ -291,7 +291,7 @@ export default function EventCalendar() {
                     <div style={{ fontSize:10, fontWeight:700, color:tc.color, marginTop:6, textTransform:"uppercase" }}>{tc.label}</div>
                   </div>
                   <button type="button" aria-label={`Delete ${ev.title}`} onClick={() => handleDelete(ev._id)} style={{ width:30, height:30, borderRadius:8, border:"none", background:"rgba(239,68,68,0.1)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>
-                    <Trash2 size={12} color="#EF4444" />
+                    <Trash2 size={12} color="var(--ea-on-card-danger)" />
                   </button>
                 </div>
               );
@@ -310,7 +310,7 @@ export default function EventCalendar() {
               <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
                 {Object.entries(EVENT_TYPES).map(([key,val]) => (
                   <button key={key} onClick={() => setForm({...form, type:key})}
-                    style={{ padding:"6px 12px", borderRadius:10, border:`2px solid ${form.type===key ? val.color : "#E2E8F0"}`, background: form.type===key ? val.light : "white", color: form.type===key ? val.color : "#94A3B8", fontSize:11, fontWeight:700, cursor:"pointer", transition:"all 0.15s" }}>
+                    style={{ padding:"6px 12px", borderRadius:10, border:`2px solid ${form.type===key ? val.color : "#E2E8F0"}`, background: form.type===key ? val.light : "white", color: form.type===key ? val.color : "var(--ea-muted)", fontSize:11, fontWeight:700, cursor:"pointer", transition:"all 0.15s" }}>
                     {val.icon} {val.label}
                   </button>
                 ))}

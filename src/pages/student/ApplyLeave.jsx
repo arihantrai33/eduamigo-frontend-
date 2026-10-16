@@ -90,8 +90,8 @@ export default function ApplyLeave() {
   if (success) return (
     <div style={{ height: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "inherit", background: dm ? "#0f172a" : "#f5f6fa" }}>
       <div style={{ fontSize: "64px" }}><Glyph e="✅" /></div>
-      <div style={{ fontWeight: "800", fontSize: "20px", marginTop: "16px", color: dm ? "#f1f5f9" : "#111" }}>Leave Applied Successfully!</div>
-      <div style={{ color: dm ? "#94a3b8" : "#888", fontSize: "13px", marginTop: "8px" }}>Your request has been submitted for approval.</div>
+      <div style={{ fontWeight: "800", fontSize: "20px", marginTop: "16px", color: dm ? "#f1f5f9" : "#111" }}>Leave request sent</div>
+      <div style={{ color: dm ? "var(--ea-muted)" : "#888", fontSize: "13px", marginTop: "8px" }}>Your request has been submitted for approval.</div>
       <button type="button" className="ea-btn ea-btn--primary" onClick={() => navigate(-1)} style={{ marginTop: "32px", minHeight: 48, padding: "0 32px", fontSize: 15 }}>
         Go Back
       </button>
@@ -145,14 +145,14 @@ export default function ApplyLeave() {
               <span style={{ fontSize: "20px" }}><Glyph e="📎" /></span>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: "13px", fontWeight: "600", color: dm ? "#f1f5f9" : "#444" }}>{attachedFile ? attachedFile.name : "Attach Medical Report or Document"}</div>
-                <div style={{ fontSize: "11px", color: dm ? "#94a3b8" : "#888", marginTop: "2px" }}>{attachedFile ? `${(attachedFile.size / 1024).toFixed(1)} KB` : "PDF, JPG, PNG supported"}</div>
+                <div style={{ fontSize: "11px", color: dm ? "var(--ea-muted)" : "#888", marginTop: "2px" }}>{attachedFile ? `${(attachedFile.size / 1024).toFixed(1)} KB` : "PDF, JPG, PNG supported"}</div>
               </div>
-              {attachedFile && <button type="button" aria-label="Remove attachment" onClick={(e) => { e.stopPropagation(); setAttachedFile(null); }} style={{ background: "none", border: "none", padding: 0, lineHeight: 1, fontSize: "18px", color: dm ? "#94a3b8" : "#888", cursor: "pointer" }}><Glyph e="✕" /></button>}
+              {attachedFile && <button type="button" aria-label="Remove attachment" onClick={(e) => { e.stopPropagation(); setAttachedFile(null); }} style={{ background: "none", border: "none", padding: 0, lineHeight: 1, fontSize: "18px", color: dm ? "var(--ea-muted)" : "#888", cursor: "pointer" }}><Glyph e="✕" /></button>}
             </div>
             <input id="fileInputStudent" type="file" accept=".pdf,.jpg,.jpeg,.png" style={{ display: "none" }} onChange={(e) => setAttachedFile(e.target.files[0] || null)} />
           </div>
           {formError && (
-            <div style={{ marginBottom: "12px", padding: "10px 14px", background: dm ? "#2a0f0f" : "#fff5f5", borderRadius: "8px", border: "1px solid #fee2e2", fontSize: "13px", color: "#ef4444", fontWeight: "600" }}>{formError}</div>
+            <div style={{ marginBottom: "12px", padding: "10px 14px", background: dm ? "#2a0f0f" : "#fff5f5", borderRadius: "8px", border: "1px solid #fee2e2", fontSize: "13px", color: "var(--ea-on-card-danger)", fontWeight: "600" }}>{formError}</div>
           )}
           <button type="button" className="ea-btn ea-btn--primary" onClick={handleSubmit} disabled={loading} style={{ width: "100%", minHeight: 48, fontSize: 15 }}>
             {loading ? "Submitting..." : "Submit Leave Request"}
@@ -173,11 +173,11 @@ export default function ApplyLeave() {
                   <div style={{ fontWeight: "700", fontSize: "14px", color: dm ? "#f1f5f9" : "#111" }}>{leave.leaveType}</div>
                   <span style={{ fontSize: "11px", fontWeight: "700", color: statusColor, background: `color-mix(in srgb, ${statusColor} 9%, transparent)`, padding: "3px 10px", borderRadius: "20px" }}>{leave.status}</span>
                 </div>
-                <div style={{ fontSize: "12px", color: dm ? "#94a3b8" : "#888", marginTop: "4px" }}>
+                <div style={{ fontSize: "12px", color: dm ? "var(--ea-muted)" : "#888", marginTop: "4px" }}>
                   {new Date(leave.fromDate).toLocaleDateString("en-GB")} — {new Date(leave.toDate).toLocaleDateString("en-GB")} • {leaveDays} day{leaveDays > 1 ? "s" : ""}
                 </div>
-                {leave.reason && <div style={{ fontSize: "12px", color: dm ? "#64748b" : "#aaa", marginTop: "4px" }}>{leave.reason}</div>}
-                {leave.reviewNote && <div style={{ marginTop: "8px", fontSize: "11px", color: dm ? "#94a3b8" : "#666", background: dm ? "#1e3a5f" : "#f0f4ff", padding: "6px 10px", borderRadius: "6px" }}>Reviewer Note: {leave.reviewNote}</div>}
+                {leave.reason && <div style={{ fontSize: "12px", color: dm ? "#64748b" : "var(--ea-muted)", marginTop: "4px" }}>{leave.reason}</div>}
+                {leave.reviewNote && <div style={{ marginTop: "8px", fontSize: "11px", color: dm ? "var(--ea-muted)" : "#666", background: dm ? "#1e3a5f" : "#f0f4ff", padding: "6px 10px", borderRadius: "6px" }}>Reviewer Note: {leave.reviewNote}</div>}
               </div>
             );
           })}

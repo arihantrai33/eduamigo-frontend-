@@ -320,12 +320,12 @@ export default function Chat() {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
                     <span style={{ fontSize: 13, fontWeight: c.unread > 0 ? 800 : 500, color: c.unread > 0 ? "#0F172A" : "#475569", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 120 }}>{c.name}</span>
-                    <span style={{ fontSize: 10, color: "#94A3B8", flexShrink: 0 }}>{formatTime(c.lastTime)}</span>
+                    <span style={{ fontSize: 10, color: "var(--ea-muted)", flexShrink: 0 }}>{formatTime(c.lastTime)}</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 5, minWidth: 0 }}>
                       <span style={{ fontSize: 10, fontWeight: 700, padding: "1px 7px", borderRadius: 20, background: rcfg.badge.bg, color: rcfg.badge.color, flexShrink: 0 }}>{rcfg.label}</span>
-                      <span style={{ fontSize: 11, color: "#94A3B8", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      <span style={{ fontSize: 11, color: "var(--ea-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                         {c.lastMsg || c.sub}
                       </span>
                     </div>
@@ -345,7 +345,7 @@ export default function Chat() {
           <div style={{ width: 34, height: 34, borderRadius: 10, background: "var(--brand-soft)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: "var(--brand-dark)" }}>A</div>
           <div>
             <div style={{ fontSize: 12, fontWeight: 700, color: "#0F172A" }}>Admin</div>
-            <div style={{ fontSize: 10, color: "#22C55E", fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
+            <div style={{ fontSize: 10, color: "var(--ea-on-card-success)", fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#22C55E", display: "inline-block" }} /> Online
             </div>
           </div>
@@ -372,7 +372,7 @@ export default function Chat() {
                 <span style={{ fontSize: 11, color: "#64748B" }}>{getHeaderSub(selected)}</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <div className="is-hidden-phone" style={{ fontSize: 10, color: "#94A3B8", fontWeight: 500 }}>Click for details</div>
+                <div className="is-hidden-phone" style={{ fontSize: 10, color: "var(--ea-muted)", fontWeight: 500 }}>Click for details</div>
                 <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "5px 11px", borderRadius: 20, background: "#F0FDF4", border: "1px solid #BBF7D0" }}>
                   <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#22C55E", animation: "pulse 2s infinite" }} />
                   <span style={{ fontSize: 11, color: "#16A34A", fontWeight: 700 }}>Live</span>
@@ -390,12 +390,12 @@ export default function Chat() {
                 <div style={{ margin: "auto", textAlign: "center" }}>
                   <div style={{ width: 68, height: 68, borderRadius: 20, background: "white", border: "1px solid #E2E8F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, margin: "0 auto 14px", boxShadow: "0 4px 16px rgba(15,23,42,0.06)" }}><Glyph e="💬" /></div>
                   <div style={{ fontSize: 15, fontWeight: 700, color: "#0F172A", marginBottom: 4 }}>No messages yet</div>
-                  <div style={{ fontSize: 12, color: "#94A3B8" }}>Send the first message to {selected.name}</div>
+                  <div style={{ fontSize: 12, color: "var(--ea-muted)" }}>Send the first message to {selected.name}</div>
                 </div>
               ) : groupByDate(messages).map((item, i) => {
                 if (item.type === "date") return (
                   <div key={"d"+i} style={{ textAlign: "center", margin: "10px 0 6px" }}>
-                    <span style={{ fontSize: 11, color: "#94A3B8", fontWeight: 600, background: "white", border: "1px solid #E2E8F0", padding: "3px 14px", borderRadius: 20 }}>{item.label}</span>
+                    <span style={{ fontSize: 11, color: "var(--ea-muted)", fontWeight: 600, background: "white", border: "1px solid #E2E8F0", padding: "3px 14px", borderRadius: 20 }}>{item.label}</span>
                   </div>
                 );
                 const isMe = item.senderId?.toString() === adminId?.toString() || item.senderId === adminId;
@@ -412,11 +412,11 @@ export default function Chat() {
                         boxShadow: isMe ? "0 2px 12px color-mix(in srgb, var(--brand) 25%, transparent)" : "0 1px 4px rgba(15,23,42,0.06)" }}>
                         {item.fileUrl ? <FileMessage msg={item} isMe={isMe} /> : item.text}
                       </div>
-                      <div style={{ fontSize: 10, color: "#94A3B8", marginTop: 4, textAlign: isMe ? "right" : "left",
+                      <div style={{ fontSize: 10, color: "var(--ea-muted)", marginTop: 4, textAlign: isMe ? "right" : "left",
                         paddingRight: isMe ? 4 : 0, paddingLeft: isMe ? 0 : 4,
                         display: "flex", alignItems: "center", gap: 4, justifyContent: isMe ? "flex-end" : "flex-start" }}>
                         {formatTime(item.createdAt)}
-                        {isMe && <span style={{ color: item.read ? "var(--brand)" : "#94A3B8" }}>{item.read ? "✓✓" : "✓"}</span>}
+                        {isMe && <span style={{ color: item.read ? "var(--brand)" : "var(--ea-muted)" }}>{item.read ? "✓✓" : "✓"}</span>}
                       </div>
                     </div>
                     {isMe && <div style={{ width: 26 }} />}
@@ -451,7 +451,7 @@ export default function Chat() {
                   {sending ? <span style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.3)", borderTop: "2px solid white", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} /> : "➤"}
                 </button>
               </div>
-              <div style={{ fontSize: 10, color: "#CBD5E1", marginTop: 7, textAlign: "center" }}>Enter to send · Shift+Enter for new line · + to attach files</div>
+              <div style={{ fontSize: 10, color: "var(--ea-faint)", marginTop: 7, textAlign: "center" }}>Enter to send · Shift+Enter for new line · + to attach files</div>
             </div>
           </>
         ) : (
@@ -459,7 +459,7 @@ export default function Chat() {
             <div style={{ width: 88, height: 88, borderRadius: 26, background: "white", border: "1px solid #E2E8F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 40, boxShadow: "0 4px 24px rgba(15,23,42,0.07)" }}><Glyph e="💬" /></div>
             <div style={{ textAlign: "center" }}>
               <div style={{ fontSize: 18, fontWeight: 700, color: "#0F172A", marginBottom: 6 }}>Welcome to Messages</div>
-              <div style={{ fontSize: 13, color: "#94A3B8" }}>Select a contact from the sidebar to start a conversation</div>
+              <div style={{ fontSize: 13, color: "var(--ea-muted)" }}>Select a contact from the sidebar to start a conversation</div>
             </div>
             <div style={{ display: "flex", gap: 12, marginTop: 4 }}>
               {[[<Glyph e="🎓" />,"Students"],[<Glyph e="👨‍🏫" />,"Teachers"],[<Glyph e="👨‍👩‍👧" />,"Parents"]].map(([icon,label,color = "var(--ea-body)",bg = "var(--ea-hover)"]) => (

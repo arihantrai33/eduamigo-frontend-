@@ -95,7 +95,7 @@ export default function ParentAttendance() {
 
   if (error) return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "inherit" }}>
-      <div style={{ color: "#ef4444", fontSize: 14 }}>{error}</div>
+      <div style={{ color: "var(--ea-on-card-danger)", fontSize: 14 }}>{error}</div>
     </div>
   );
 
@@ -131,25 +131,25 @@ export default function ParentAttendance() {
                 background: !c
                   ? "transparent"
                   : c.status === "Present"
-                  ? "#e8f5e9"
+                  ? "color-mix(in srgb, var(--ea-on-card-success) 14%, transparent)"
                   : c.status === "Absent"
-                  ? "#ffebee"
+                  ? "color-mix(in srgb, var(--ea-on-card-danger) 14%, transparent)"
                   : c.status === "Leave"
-                  ? "#fef9c3"
+                  ? "color-mix(in srgb, var(--ea-on-card-warning) 16%, transparent)"
                   : c.today
                   ? "var(--brand)"
                   : "transparent",
                 color: !c
                   ? "transparent"
                   : c.status === "Present"
-                  ? "#2e7d32"
+                  ? "var(--ea-on-card-success)"
                   : c.status === "Absent"
-                  ? "#ef4444"
+                  ? "var(--ea-on-card-danger)"
                   : c.status === "Leave"
-                  ? "#854d0e"
+                  ? "var(--ea-on-card-warning)"
                   : c.today
                   ? "white"
-                  : "#ccc",
+                  : "var(--ea-faint)",
               }}>
                 {c?.d || ""}
               </div>
@@ -159,9 +159,9 @@ export default function ParentAttendance() {
           {/* Legend */}
           <div style={{ display: "flex", gap: 16, marginTop: 12, flexWrap: "wrap" }}>
             {[
-              { color: "#e8f5e9", label: "Present" },
-              { color: "#ffebee", label: "Absent"  },
-              { color: "#fef9c3", label: "Leave"   },
+              { color: "color-mix(in srgb, var(--ea-on-card-success) 14%, transparent)", label: "Present" },
+              { color: "color-mix(in srgb, var(--ea-on-card-danger) 14%, transparent)", label: "Absent"  },
+              { color: "color-mix(in srgb, var(--ea-on-card-warning) 16%, transparent)", label: "Leave"   },
               { color: "var(--brand)", label: "Today"   },
             ].map((l) => (
               <div key={l.label} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11 }}>
@@ -207,8 +207,8 @@ export default function ParentAttendance() {
                   </div>
                   <span style={{
                     fontSize: 11, fontWeight: 700,
-                    color:      isLeave ? "#22c55e" : "#ef4444",
-                    background: isLeave ? "#dcfce7" : "#fee2e2",
+                    color:      isLeave ? "var(--ea-on-card-success)" : "var(--ea-on-card-danger)",
+                    background: isLeave ? "color-mix(in srgb, var(--ea-on-card-success) 14%, transparent)" : "color-mix(in srgb, var(--ea-on-card-danger) 14%, transparent)",
                     padding: "4px 10px", borderRadius: 20,
                   }}>
                     {r.status}

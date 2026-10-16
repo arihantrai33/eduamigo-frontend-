@@ -15,7 +15,7 @@ const API = import.meta.env.VITE_API_URL;
 const LEAVE_TYPES = ['Sick Leave', 'Casual Leave', 'Emergency Leave', 'Personal Leave', 'Other'];
 
 const STATUS_STYLES = {
-  Pending:  { bg: '#FFF8E1', color: '#F9A825', label: 'Pending' },
+  Pending:  { bg: '#FFF8E1', color: 'var(--ea-on-card-warning)', label: 'Pending' },
   Approved: { bg: '#E8F5E9', color: '#2E7D32', label: 'Approved' },
   Rejected: { bg: '#FFEBEE', color: '#C62828', label: 'Rejected' },
 };
@@ -371,7 +371,7 @@ const styles = {
     margin: 0,
   },
   leaveDays: {
-    color: '#9E9E9E',
+    color: 'var(--ea-muted)',
     fontWeight: 400,
   },
   statusBadge: {
@@ -397,7 +397,7 @@ const styles = {
   },
   leaveApplied: {
     fontSize: 11,
-    color: '#BDBDBD',
+    color: 'var(--ea-muted)',
     margin: 0,
   },
   formCard: { padding: '20px 16px' },
@@ -444,5 +444,5 @@ const styles = {
   },
   emptyIcon: { fontSize: 48, margin: '0 0 8px' },
   emptyText: { fontSize: 15, fontWeight: 600, color: '#1A1A2E', margin: '0 0 4px' },
-  emptySubText: { fontSize: 13, color: '#9E9E9E', margin: 0 },
+  emptySubText: { fontSize: 13, color: 'var(--ea-muted)', margin: 0 },
 };

@@ -10,14 +10,15 @@ import Skeleton from "../../components/ui/Skeleton";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
+// Event types are categories (--ea-cat-*); a fee due date is a status (danger).
 const EVENT_STYLE = {
-  holiday: { icon: <Glyph e="🏖" />, bg: "#fce4ec", color: "#c2185b" },
-  exam:    { icon: <Glyph e="📝" />, bg: "#fff9c4", color: "#f57f17" },
-  ptm:     { icon: <Glyph e="👨‍👩‍👧" />, bg: "#e8f5e9", color: "#2e7d32" },
-  sports:  { icon: <Glyph e="🏃" />, bg: "#e8f5e9", color: "#2e7d32" },
-  event:   { icon: "", bg: "#ede9fe", color: "#6d28d9" },
-  other:   { icon: <Glyph e="📌" />, bg: "#f1f5f9", color: "#475569" },
-  fee:     { icon: <Glyph e="💳" />, bg: "#ffebee", color: "#ef4444" },
+  holiday: { icon: <Glyph e="🏖" />, bg: "var(--ea-cat-4-bg)", color: "var(--ea-cat-4)" },
+  exam:    { icon: <Glyph e="📝" />, bg: "var(--ea-cat-3-bg)", color: "var(--ea-cat-3)" },
+  ptm:     { icon: <Glyph e="👨‍👩‍👧" />, bg: "var(--ea-cat-2-bg)", color: "var(--ea-cat-2)" },
+  sports:  { icon: <Glyph e="🏃" />, bg: "var(--ea-cat-5-bg)", color: "var(--ea-cat-5)" },
+  event:   { icon: "", bg: "var(--ea-cat-1-bg)", color: "var(--ea-cat-1)" },
+  other:   { icon: <Glyph e="📌" />, bg: "var(--ea-cat-6-bg)", color: "var(--ea-cat-6)" },
+  fee:     { icon: <Glyph e="💳" />, bg: "color-mix(in srgb, var(--ea-on-card-danger) 10%, transparent)", color: "var(--ea-on-card-danger)" },
 };
 
 const today = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };

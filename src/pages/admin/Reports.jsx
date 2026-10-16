@@ -21,7 +21,7 @@ function ProgressBar({ label, value, total, color, bg }) {
     <div style={{ marginBottom:16 }}>
       <div style={{ display:"flex", justifyContent:"space-between", marginBottom:6 }}>
         <span style={{ fontSize:13, fontWeight:600, color:"#374151" }}>{label}</span>
-        <span style={{ fontSize:13, fontWeight:800, color }}>{value} <span style={{ fontSize:11, color:"#94A3B8", fontWeight:500 }}>({p}%)</span></span>
+        <span style={{ fontSize:13, fontWeight:800, color }}>{value} <span style={{ fontSize:11, color:"var(--ea-muted)", fontWeight:500 }}>({p}%)</span></span>
       </div>
       <div style={{ height:8, borderRadius:8, background:"#F1F5F9", overflow:"hidden" }}>
         <div style={{ width:`${p}%`, height:"100%", borderRadius:8, background:color, transition:"width 1s ease" }} />
@@ -167,7 +167,7 @@ export default function Reports() {
               { label:"Pending",        value:fmt(fees.pending), color:"#DC2626", bg:"#FEF2F2" },
             ].map((f,i) => (
               <div key={i} style={{ flex:"1 1 96px", minWidth:0, background:f.bg, borderRadius:12, padding:"14px 16px", textAlign:"center" }}>
-                <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>{f.label}</div>
+                <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6 }}>{f.label}</div>
                 <div style={{ fontSize:18, fontWeight:900, color:f.color }}>{f.value}</div>
               </div>
             ))}
@@ -182,7 +182,7 @@ export default function Reports() {
               <div style={{ width:`${collectionPct}%`, height:"100%", borderRadius:8, background:"var(--ea-success)", transition:"width 1s ease" }} />
             </div>
           </div>
-          <div style={{ fontSize:12, color:"#94A3B8", marginTop:8 }}>{fees.paidCount} of {fees.count} fee records paid</div>
+          <div style={{ fontSize:12, color:"var(--ea-muted)", marginTop:8 }}>{fees.paidCount} of {fees.count} fee records paid</div>
         </SectionCard>
 
         {/* Attendance */}
@@ -194,13 +194,13 @@ export default function Reports() {
               { label:"Absent",        value:attendance.absent,  color:"#DC2626", bg:"#FEF2F2" },
             ].map((a,i) => (
               <div key={i} style={{ flex:"1 1 96px", minWidth:0, background:a.bg, borderRadius:12, padding:"14px 16px", textAlign:"center" }}>
-                <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>{a.label}</div>
+                <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6 }}>{a.label}</div>
                 <div style={{ fontSize:18, fontWeight:900, color:a.color }}>{a.value}</div>
               </div>
             ))}
           </div>
-          <ProgressBar label="Present Rate" value={attendance.present} total={attendance.total} color="#10B981" />
-          <ProgressBar label="Absent Rate"  value={attendance.absent}  total={attendance.total} color="#EF4444" />
+          <ProgressBar label="Present Rate" value={attendance.present} total={attendance.total} color="var(--ea-on-card-success)" />
+          <ProgressBar label="Absent Rate"  value={attendance.absent}  total={attendance.total} color="var(--ea-on-card-danger)" />
         </SectionCard>
       </div>
 
@@ -212,12 +212,12 @@ export default function Reports() {
           <div style={{ display:"flex", gap:10, marginBottom:16 }}>
             {[
               { label:"Paid",    value:salary.paid,    color:"#15803D", bg:"#F0FDF4" },
-              { label:"Pending", value:salary.pending, color:"#D97706", bg:"#FFFBEB" },
+              { label:"Pending", value:salary.pending, color:"var(--ea-on-card-warning)", bg:"#FFFBEB" },
             ].map((s,i) => (
               <div key={i} style={{ flex:1, background:s.bg, borderRadius:12, padding:"12px 14px", textAlign:"center" }}>
-                <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:4 }}>{s.label}</div>
+                <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:4 }}>{s.label}</div>
                 <div style={{ fontSize:20, fontWeight:900, color:s.color }}>{s.value}</div>
-                <div style={{ fontSize:10, color:"#94A3B8" }}>teachers</div>
+                <div style={{ fontSize:10, color:"var(--ea-muted)" }}>teachers</div>
               </div>
             ))}
           </div>
@@ -225,14 +225,14 @@ export default function Reports() {
             <span style={{ fontSize:12, fontWeight:600, color:"#64748B" }}>Total Payroll</span>
             <span style={{ fontSize:16, fontWeight:900, color:"#059669" }}>{fmt(salary.totalAmt)}</span>
           </div>
-          <ProgressBar label="Paid" value={salary.paid} total={salary.paid+salary.pending} color="#10B981" />
+          <ProgressBar label="Paid" value={salary.paid} total={salary.paid+salary.pending} color="var(--ea-on-card-success)" />
         </SectionCard>
 
         {/* Leaves */}
         <SectionCard title="Leave Requests" icon={<Glyph e="📅" />} delay={0.35}>
           <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
             {[
-              { label:"Pending",  value:leaves.pending,  color:"#D97706", bg:"#FFFBEB", dot:"#F59E0B" },
+              { label:"Pending",  value:leaves.pending,  color:"var(--ea-on-card-warning)", bg:"#FFFBEB", dot:"#F59E0B" },
               { label:"Approved", value:leaves.approved, color:"#15803D", bg:"#F0FDF4", dot:"#22C55E" },
               { label:"Rejected", value:leaves.rejected, color:"#DC2626", bg:"#FEF2F2", dot:"#EF4444" },
             ].map((l,i) => (
@@ -244,7 +244,7 @@ export default function Reports() {
                 <span style={{ fontSize:16, fontWeight:900, color:l.color }}>{l.value}</span>
               </div>
             ))}
-            <div style={{ fontSize:12, color:"#94A3B8", textAlign:"center", marginTop:4 }}>Total {leaves.total} requests</div>
+            <div style={{ fontSize:12, color:"var(--ea-muted)", textAlign:"center", marginTop:4 }}>Total {leaves.total} requests</div>
           </div>
         </SectionCard>
 
@@ -256,13 +256,13 @@ export default function Reports() {
               { label:"Passed",        value:marks.passed,  color:"#15803D", bg:"#F0FDF4" },
             ].map((m,i) => (
               <div key={i} style={{ flex:1, background:m.bg, borderRadius:12, padding:"12px 14px", textAlign:"center" }}>
-                <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:4 }}>{m.label}</div>
+                <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:4 }}>{m.label}</div>
                 <div style={{ fontSize:20, fontWeight:900, color:m.color }}>{m.value}</div>
               </div>
             ))}
           </div>
           <div style={{ background:"var(--brand-soft)", borderRadius:12, padding:"14px 16px", textAlign:"center" }}>
-            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:4 }}>AVERAGE SCORE</div>
+            <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:4 }}>AVERAGE SCORE</div>
             <div style={{ fontSize:32, fontWeight:900, color:"var(--brand)" }}>{marks.avgScore}%</div>
           </div>
           <ProgressBar label="Pass Rate" value={marks.passed} total={marks.total} color="var(--brand)" />
@@ -286,7 +286,7 @@ export default function Reports() {
             <div key={i} style={{ textAlign:"center", padding:"14px 10px", background:"#F8FAFC", borderRadius:12 }}>
               <div style={{ fontSize:22, marginBottom:6 }}>{s.icon}</div>
               <div style={{ fontSize:17, fontWeight:900, color:"#0F172A" }}>{s.value}</div>
-              <div style={{ fontSize:10, color:"#94A3B8", fontWeight:600, marginTop:3 }}>{s.label}</div>
+              <div style={{ fontSize:10, color:"var(--ea-muted)", fontWeight:600, marginTop:3 }}>{s.label}</div>
             </div>
           ))}
         </div>

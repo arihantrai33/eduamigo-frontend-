@@ -270,7 +270,7 @@ export default function Settings() {
           <button type="button" onClick={addSubject} className="ea-btn ea-btn--ghost">Add</button>
         </div>
         {subjects.length === 0 ? (
-          <div style={{ fontSize: 12, color: "#94A3B8" }}>No custom subjects yet.</div>
+          <div style={{ fontSize: 12, color: "var(--ea-muted)" }}>No custom subjects yet.</div>
         ) : (
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             {subjects.map((s) => (

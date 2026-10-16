@@ -236,7 +236,7 @@ const S = {
   center:      { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' },
   msgList:     { flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column' },
   emptyChat:   { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 0' },
-  dateDivider: { textAlign: 'center', fontSize: 11, color: '#aaa', background: '#eee', borderRadius: 20, padding: '3px 12px', margin: '10px auto', width: 'fit-content' },
+  dateDivider: { textAlign: 'center', fontSize: 11, color: 'var(--ea-muted)', background: '#eee', borderRadius: 20, padding: '3px 12px', margin: '10px auto', width: 'fit-content' },
   miniAvatar:  { width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 12, marginRight: 8, flexShrink: 0, alignSelf: 'flex-end' },
   bubble:      { maxWidth: '75%', padding: '10px 14px', borderRadius: 18, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' },
   bubbleMe:    { background: 'var(--brand)', color: 'white', borderBottomRightRadius: 4 },

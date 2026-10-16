@@ -73,7 +73,7 @@ export default function Notifications() {
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: n.read ? "500" : "700", fontSize: "14px", color: "var(--text)" }}>{n.title}</div>
                   <div style={{ fontSize: "12px", color: "var(--subtext2)", marginTop: "4px" }}>{n.message}</div>
-                  <div style={{ fontSize: "11px", color: "#aaa", marginTop: "6px" }}>
+                  <div style={{ fontSize: "11px", color: "var(--ea-muted)", marginTop: "6px" }}>
                     {n.createdAt ? new Date(n.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : ""}
                   </div>
                 </div>

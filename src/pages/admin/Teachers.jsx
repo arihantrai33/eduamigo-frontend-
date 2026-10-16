@@ -20,7 +20,7 @@ const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("
 const STATUS_CONFIG = {
   Active:   { bg: "#F0FDF4", color: "#15803D", dot: "#22C55E" },
   Inactive: { bg: "#FEF2F2", color: "#DC2626", dot: "#EF4444" },
-  "On Leave": { bg: "#FFFBEB", color: "#D97706", dot: "#F59E0B" },
+  "On Leave": { bg: "#FFFBEB", color: "var(--ea-on-card-warning)", dot: "#F59E0B" },
 };
 
 
@@ -31,7 +31,7 @@ function TeacherForm({ form, setForm, onSave, loading, onClose }) {
   const f = (k, v) => setForm(p => ({ ...p, [k]: v }));
   const inp = (label, key, type="text", placeholder="") => (
     <div>
-      <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
+      <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
       <input type={type} value={form[key]||""} onChange={e => f(key, e.target.value)} placeholder={placeholder}
         style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", transition:"border 0.2s" }}
         onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
@@ -39,7 +39,7 @@ function TeacherForm({ form, setForm, onSave, loading, onClose }) {
   );
   const sel = (label, key, options) => (
     <div>
-      <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
+      <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
       <select value={form[key]||""} onChange={e => f(key, e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
         <option value="">Select</option>
         {options.map(o => <option key={o} value={o}>{o}</option>)}
@@ -48,7 +48,7 @@ function TeacherForm({ form, setForm, onSave, loading, onClose }) {
   );
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
-      <div style={{ fontSize:12, fontWeight:700, color:"#10B981", letterSpacing:"0.06em" }}>PERSONAL INFO</div>
+      <div style={{ fontSize:12, fontWeight:700, color:"var(--ea-on-card-success)", letterSpacing:"0.06em" }}>PERSONAL INFO</div>
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
         {inp("FULL NAME","name","text","e.g. Priya Sharma")}
         {inp("EMAIL","email","email","teacher@school.com")}
@@ -57,7 +57,7 @@ function TeacherForm({ form, setForm, onSave, loading, onClose }) {
       </div>
       {sel("GENDER","gender",["Male","Female","Other"])}
       <div style={{ height:1, background:"#F1F5F9", margin:"4px 0" }} />
-      <div style={{ fontSize:12, fontWeight:700, color:"#10B981", letterSpacing:"0.06em" }}>PROFESSIONAL INFO</div>
+      <div style={{ fontSize:12, fontWeight:700, color:"var(--ea-on-card-success)", letterSpacing:"0.06em" }}>PROFESSIONAL INFO</div>
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
         {inp("SUBJECTS","subjects","text","e.g. Math, Science")}
         {inp("QUALIFICATION","qualification","text","e.g. B.Ed, M.Sc")}
@@ -225,10 +225,10 @@ export default function Teachers() {
                       <div>
                         <div style={{ fontSize:14, fontWeight:700, color:"#0F172A", cursor:"pointer" }}
                           onClick={() => navigate(`/admin/teachers/${t._id}`)}
-                          onMouseEnter={e => e.target.style.color="#10B981"} onMouseLeave={e => e.target.style.color="#0F172A"}>
+                          onMouseEnter={e => e.target.style.color="var(--ea-on-card-success)"} onMouseLeave={e => e.target.style.color="#0F172A"}>
                           {t.name}
                         </div>
-                        <div style={{ fontSize:12, color:"#94A3B8", marginTop:1 }}>{t.email}</div>
+                        <div style={{ fontSize:12, color:"var(--ea-muted)", marginTop:1 }}>{t.email}</div>
                       </div>
                     </div>
                   </td>
@@ -240,7 +240,7 @@ export default function Teachers() {
                       {subjects.slice(0,3).map((s,j) => (
                         <CategoryBadge key={j}>{s}</CategoryBadge>
                       ))}
-                      {subjects.length > 3 && <span style={{ fontSize:11, color:"#94A3B8", fontWeight:600 }}>+{subjects.length-3}</span>}
+                      {subjects.length > 3 && <span style={{ fontSize:11, color:"var(--ea-muted)", fontWeight:600 }}>+{subjects.length-3}</span>}
                     </div>
                   </td>
                   <td style={{ padding:"14px 18px", fontSize:13, color:"#374151", fontWeight:600 }}>{t.qualification || "—"}</td>
@@ -276,7 +276,7 @@ export default function Teachers() {
         <div style={{ textAlign:"center", padding:"8px 0 24px" }}>
           <div style={{ fontSize:52, marginBottom:16 }}><Glyph e="🗑" /></div>
           <div style={{ fontSize:16, fontWeight:700, color:"#0F172A", marginBottom:8 }}>Are you sure?</div>
-          <div style={{ fontSize:13, color:"#94A3B8", marginBottom:24 }}>This teacher record will be permanently deleted.</div>
+          <div style={{ fontSize:13, color:"var(--ea-muted)", marginBottom:24 }}>This teacher record will be permanently deleted.</div>
           <div style={{ display:"flex", gap:10, justifyContent:"center" }}>
             <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
             <button onClick={() => handleDelete(deleteId)} className="ea-btn ea-btn--danger">Delete</button>

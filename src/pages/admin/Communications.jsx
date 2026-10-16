@@ -14,7 +14,7 @@ const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("
 
 const PRIORITY_CONFIG = {
   urgent:    { bg:"#FEF2F2", color:"#DC2626", border:"#FECACA", label:"Urgent" },
-  important: { bg:"#FFFBEB", color:"#D97706", border:"#FDE68A", label:"Important" },
+  important: { bg:"#FFFBEB", color:"var(--ea-on-card-warning)", border:"#FDE68A", label:"Important" },
   normal:    { bg:"#F0FDF4", color:"#15803D", border:"#BBF7D0", label:"Normal" },
 };
 
@@ -183,7 +183,7 @@ export default function Communications() {
           {/* Filters + Add Button */}
           <div className="ea-toolbar" style={{ marginBottom:12 }}>
             <div style={{ flex:"1 1 240px", position:"relative", minWidth:0 }}>
-              <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}><Glyph e="🔍" /></span>
+              <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"var(--ea-muted)" }}><Glyph e="🔍" /></span>
               <input value={search} onChange={e => setSearch(e.target.value)} aria-label="Search announcements" placeholder="Search announcements..."
                 style={{ width:"100%", padding:"11px 14px 11px 38px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
                 onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
@@ -212,7 +212,7 @@ export default function Communications() {
                   <button key={val} type="button" aria-pressed={filterPriority === val} onClick={() => setFilterPriority(filterPriority===val?"":val)}
                     style={{ display:"flex", alignItems:"center", gap:5, padding:"7px 13px", borderRadius:9, border:"none", cursor:"pointer", fontWeight:700, fontSize:12, transition:"all 0.2s",
                       background: isActive ? "white" : "transparent",
-                      color: isActive ? (dot ? PRIORITY_CONFIG[val]?.color : "var(--brand)") : "#94A3B8",
+                      color: isActive ? (dot ? PRIORITY_CONFIG[val]?.color : "var(--brand)") : "var(--ea-muted)",
                       boxShadow: isActive ? "0 2px 8px rgba(0,0,0,0.1)" : "none" }}>
                     {dot && <span style={{ width:7, height:7, borderRadius:"50%", background: isActive ? dot : "#CBD5E1", display:"inline-block", transition:"all 0.2s" }} />}
                     {lbl}
@@ -247,7 +247,7 @@ export default function Communications() {
                         </div>
                         <div style={{ fontSize:15, fontWeight:800, color:"#0F172A", marginBottom:6 }}>{a.title}</div>
                         <div style={{ fontSize:13, color:"#64748B", lineHeight:1.6 }}>{a.message}</div>
-                        <div style={{ fontSize:11, color:"#94A3B8", marginTop:8 }}>
+                        <div style={{ fontSize:11, color:"var(--ea-muted)", marginTop:8 }}>
                           {a.createdBy?.name || "Admin"} · {fmtDate(a.createdAt)}
                         </div>
                       </div>
@@ -304,7 +304,7 @@ export default function Communications() {
                         </div>
                         <div style={{ fontSize:15, fontWeight:800, color:"#0F172A", marginBottom:6 }}>{a.title}</div>
                         <div style={{ fontSize:13, color:"#64748B", lineHeight:1.6 }}>{a.message}</div>
-                        <div style={{ fontSize:11, color:"#94A3B8", marginTop:8 }}>{fmtDate(a.createdAt)}</div>
+                        <div style={{ fontSize:11, color:"var(--ea-muted)", marginTop:8 }}>{fmtDate(a.createdAt)}</div>
                       </div>
                       <button className="act-btn" onClick={() => handleDeleteAnn(a._id)}
                         style={{ width:32, height:32, borderRadius:8, border:"none", background:"#FEF2F2", cursor:"pointer", fontSize:14, marginLeft:16 }}>
@@ -346,7 +346,7 @@ export default function Communications() {
                         <div style={{ fontSize:12, color:"#64748B", marginTop:2 }}>{n.message}</div>
                         <div style={{ display:"flex", alignItems:"center", gap:8, marginTop:4 }}>
                           <span style={{ fontSize:11, fontWeight:700, padding:"2px 8px", borderRadius:20, background:tcfg.bg, color:tcfg.color }}>{tcfg.label}</span>
-                          <span style={{ fontSize:11, color:"#94A3B8" }}>{fmtDate(n.createdAt)}</span>
+                          <span style={{ fontSize:11, color:"var(--ea-muted)" }}>{fmtDate(n.createdAt)}</span>
                         </div>
                       </div>
                     </div>
@@ -366,26 +366,26 @@ export default function Communications() {
       <Modal show={showModal && modalType === "announcement"} onClose={() => setShowModal(false)} title={editItem ? "Edit Announcement" : "New Announcement"}>
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
           <div>
-            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TITLE</div>
+            <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>TITLE</div>
             <input value={annForm.title} onChange={e => setAnnForm(p=>({...p,title:e.target.value}))} placeholder="Announcement title..."
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
               onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
           </div>
           <div>
-            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>MESSAGE</div>
+            <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>MESSAGE</div>
             <textarea value={annForm.message} onChange={e => setAnnForm(p=>({...p,message:e.target.value}))} placeholder="Write your announcement..."
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", resize:"vertical", minHeight:100 }} />
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             <div>
-              <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TARGET</div>
+              <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>TARGET</div>
               <select value={annForm.targetRole} onChange={e => setAnnForm(p=>({...p,targetRole:e.target.value}))}
                 style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white" }}>
                 {[["all","Everyone"],["student","Students"],["teacher","Teachers"],["parent","Parents"],["admin","Admin"]].map(([v,l]) => <option key={v} value={v}>{l}</option>)}
               </select>
             </div>
             <div>
-              <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>PRIORITY</div>
+              <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>PRIORITY</div>
               <select value={annForm.priority} onChange={e => setAnnForm(p=>({...p,priority:e.target.value}))}
                 style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white" }}>
                 {["normal","important","urgent"].map(p => <option key={p} value={p}>{p.charAt(0).toUpperCase()+p.slice(1)}</option>)}
@@ -412,17 +412,17 @@ export default function Communications() {
             This will send a push notification to all selected users
           </div>
           <div>
-            <label htmlFor="notif-title" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TITLE</label>
+            <label htmlFor="notif-title" style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>TITLE</label>
             <input id="notif-title" value={notifForm.title} onChange={e => setNotifForm(p=>({...p,title:e.target.value}))} placeholder="Notification title..."
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />
           </div>
           <div>
-            <label htmlFor="notif-message" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>MESSAGE</label>
+            <label htmlFor="notif-message" style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>MESSAGE</label>
             <textarea id="notif-message" value={notifForm.message} onChange={e => setNotifForm(p=>({...p,message:e.target.value}))} placeholder="Notification message..."
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", resize:"vertical", minHeight:80 }} />
           </div>
           <div>
-            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TARGET</div>
+            <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>TARGET</div>
             <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
               {[["all","Everyone"],["student","Students"],["teacher","Teachers"],["parent","Parents"]].map(([v,l]) => (
                 <button key={v} type="button" aria-pressed={notifForm.targetRole===v} onClick={() => setNotifForm(p=>({...p,targetRole:v}))}

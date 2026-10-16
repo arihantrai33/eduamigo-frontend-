@@ -259,7 +259,7 @@ export default function DriverHome() {
               <Glyph e="✅" /> Reached {stops[currentStopIndex]?.name} — Next Stop →
             </button>
           )}
-          {isLastStop && <div style={{ marginTop: "16px", textAlign: "center", color: "#22c55e", fontWeight: "700", fontSize: "13px" }}>Reached School!</div>}
+          {isLastStop && <div style={{ marginTop: "16px", textAlign: "center", color: "#22c55e", fontWeight: "700", fontSize: "13px" }}>Reached school</div>}
         </div>
       )}
       {!tracking ? (

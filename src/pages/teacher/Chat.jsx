@@ -179,7 +179,7 @@ export default function TeacherChat() {
             ) : messages.length === 0 ? (
               <div style={styles.emptyChat}>
                 <p style={styles.emptyChatIcon}><Glyph e="💬" /></p>
-                <p style={styles.emptyChatText}>No messages yet. Say hello!</p>
+                <p style={styles.emptyChatText}>No messages yet. Write the first message below.</p>
               </div>
             ) : (
               messages.map(m => {
@@ -294,7 +294,7 @@ function ContactCard({ contact, onOpen }) {
       }}>
         <span style={{
           fontSize: 18,
-          color: contact.type === 'parent' ? '#F9A825' : 'var(--brand-dark)',
+          color: contact.type === 'parent' ? 'var(--ea-on-card-warning)' : 'var(--brand-dark)',
         }}>
           {contact.type === 'parent' ? <Glyph e="👨‍👩‍👧" /> : <Glyph e="🎓" />}
         </span>
@@ -347,7 +347,7 @@ const styles = {
   sectionLabel: {
     fontSize: 11,
     fontWeight: 700,
-    color: '#9E9E9E',
+    color: 'var(--ea-muted)',
     letterSpacing: 1,
     margin: '8px 0 8px 4px',
   },
@@ -387,13 +387,13 @@ const styles = {
   },
   contactSub: {
     fontSize: 12,
-    color: '#9E9E9E',
+    color: 'var(--ea-muted)',
     margin: '2px 0 0',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
-  chevron: { fontSize: 20, color: '#BDBDBD', flexShrink: 0 },
+  chevron: { fontSize: 20, color: 'var(--ea-muted)', flexShrink: 0 },
   msgArea: {
     flex: 1,
     padding: '16px',
@@ -473,7 +473,7 @@ const styles = {
   },
   emptyChat: { textAlign: 'center', padding: '60px 20px', flex: 1 },
   emptyChatIcon: { fontSize: 48, margin: '0 0 8px' },
-  emptyChatText: { fontSize: 14, color: '#9E9E9E', fontWeight: 500 },
+  emptyChatText: { fontSize: 14, color: 'var(--ea-muted)', fontWeight: 500 },
   centered: {
     display: 'flex',
     flexDirection: 'column',
@@ -500,5 +500,5 @@ const styles = {
   emptyBox: { textAlign: 'center', padding: '60px 20px' },
   emptyIcon: { fontSize: 52, margin: '0 0 8px' },
   emptyText: { fontSize: 15, fontWeight: 700, color: '#1A1A2E', margin: '0 0 6px' },
-  emptySubText: { fontSize: 13, color: '#9E9E9E', margin: 0 },
+  emptySubText: { fontSize: 13, color: 'var(--ea-muted)', margin: 0 },
 };

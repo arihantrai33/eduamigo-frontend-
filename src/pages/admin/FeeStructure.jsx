@@ -99,7 +99,7 @@ export default function FeeStructure() {
   // A <label> around the caption and the field, so the field takes the caption as its name.
   const inp = (label, key, type="text", placeholder="") => (
     <label style={{ display:"block" }}>
-      <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
+      <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
       <input id={`fee-${key}`} type={type} value={form[key]||""} onChange={e => f(key, e.target.value)} placeholder={placeholder} {...fe.invalid(key)}
         style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
         onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
@@ -108,7 +108,7 @@ export default function FeeStructure() {
   );
   const sel = (label, key, options) => (
     <label style={{ display:"block" }}>
-      <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
+      <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
       <select id={`fee-${key}`} value={form[key]||""} onChange={e => f(key, e.target.value)} {...fe.invalid(key)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
         <option value="">Select</option>
         {options.map(o => <option key={o} value={o}>{o}</option>)}
@@ -186,7 +186,7 @@ export default function FeeStructure() {
                     {s.applyHistory?.length > 0 && <div style={{ fontSize:11, color:"#64748B", marginTop:4 }}>Billed {s.applyHistory.reduce((n, h) => n + (h.created || 0), 0)} student(s)</div>}
                   </td>
                   <td style={{ padding:"14px 18px", fontSize:13, color:"#374151", fontWeight:600 }}>{s.dueDate ? (isNaN(new Date(s.dueDate)) ? s.dueDate : new Date(s.dueDate).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})) : 'Not set'}</td>
-                  <td style={{ padding:"14px 18px", fontSize:12, color:"#94A3B8", maxWidth:180 }}>{s.description || "No description"}</td>
+                  <td style={{ padding:"14px 18px", fontSize:12, color:"var(--ea-muted)", maxWidth:180 }}>{s.description || "No description"}</td>
                   <td style={{ padding:"14px 18px" }}>
                     <div style={{ display:"flex", gap:6 }}>
                       <button className="act-btn" onClick={() => handleApply(s)} disabled={applyingId === s._id}
@@ -220,7 +220,7 @@ export default function FeeStructure() {
           </div>
           <div style={{ fontSize:12, color:"#64748B" }}>For monthly or quarterly fees, add one structure per instalment (for example "Tuition Fee - April").</div>
           <div>
-            <label htmlFor="fee-description" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>DESCRIPTION</label>
+            <label htmlFor="fee-description" style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6 }}>DESCRIPTION</label>
             <textarea id="fee-description" value={form.description||""} onChange={e => f("description", e.target.value)} placeholder="Optional..."
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", resize:"vertical", minHeight:70 }} />
           </div>
@@ -237,7 +237,7 @@ export default function FeeStructure() {
         <div style={{ textAlign:"center", padding:"8px 0 24px" }}>
           <div style={{ fontSize:52, marginBottom:16 }}><Glyph e="🗑" /></div>
           <div style={{ fontSize:16, fontWeight:700, color:"#0F172A", marginBottom:8 }}>Are you sure?</div>
-          <div style={{ fontSize:13, color:"#94A3B8", marginBottom:24 }}>This fee structure will be permanently deleted.</div>
+          <div style={{ fontSize:13, color:"var(--ea-muted)", marginBottom:24 }}>This fee structure will be permanently deleted.</div>
           <div style={{ display:"flex", gap:10, justifyContent:"center" }}>
             <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
             <button onClick={() => handleDelete(deleteId)} className="ea-btn ea-btn--danger">Delete</button>

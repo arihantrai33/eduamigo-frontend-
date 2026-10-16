@@ -156,14 +156,14 @@ const AddParent = () => {
 
           {/* Loading state */}
           {studentsLoading && (
-            <div style={{ textAlign: "center", color: "#999", padding: "20px 0", fontSize: 13 }}>
+            <div style={{ textAlign: "center", color: "var(--ea-muted)", padding: "20px 0", fontSize: 13 }}>
               Loading students...
             </div>
           )}
 
           {/* Empty state */}
           {!studentsLoading && filteredStudents.length === 0 && (
-            <div style={{ textAlign: "center", color: "#ccc", padding: "20px 0", fontSize: 13 }}>
+            <div style={{ textAlign: "center", color: "var(--ea-faint)", padding: "20px 0", fontSize: 13 }}>
               {searchQuery ? "No students match your search" : "No students found in the system"}
             </div>
           )}

@@ -121,13 +121,13 @@ export default function AttendanceReports() {
       <div style={{ background:"white", borderRadius:16, padding:"20px 24px", marginBottom:24, boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0", animation:"fadeUp 0.4s ease 0.3s both" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
           <div style={{ fontSize:14, fontWeight:800, color:"#0F172A" }}>Overall Attendance Rate — {MONTHS[filterMonth-1]} {filterYear}</div>
-          <div style={{ fontSize:24, fontWeight:900, color: !hasData ? "#94A3B8" : overallPct >= 75 ? "#10B981" : "#EF4444" }}>{pctText(overallPct)}</div>
+          <div style={{ fontSize:24, fontWeight:900, color: !hasData ? "var(--ea-muted)" : overallPct >= 75 ? "var(--ea-on-card-success)" : "var(--ea-on-card-danger)" }}>{pctText(overallPct)}</div>
         </div>
         <ProgressBar value={overallPct || 0} color={overallPct >= 75 ? "var(--ea-success)" : "var(--ea-danger)"} />
         <div style={{ display:"flex", gap:16, marginTop:10 }}>
-          <span style={{ fontSize:12, color:"#10B981", fontWeight:700 }}>✓ {totalPresent} Present</span>
-          <span style={{ fontSize:12, color:"#EF4444", fontWeight:700 }}>✗ {totalAbsent} Absent</span>
-          <span style={{ fontSize:12, color:"#F59E0B", fontWeight:700 }}><Glyph e="⏰" /> {totalLate} Late</span>
+          <span style={{ fontSize:12, color:"var(--ea-on-card-success)", fontWeight:700 }}>✓ {totalPresent} Present</span>
+          <span style={{ fontSize:12, color:"var(--ea-on-card-danger)", fontWeight:700 }}>✗ {totalAbsent} Absent</span>
+          <span style={{ fontSize:12, color:"var(--ea-on-card-warning)", fontWeight:700 }}><Glyph e="⏰" /> {totalLate} Late</span>
         </div>
       </div>
 
@@ -150,7 +150,7 @@ export default function AttendanceReports() {
       <div style={{ background:"white", borderRadius:20, boxShadow:"0 4px 24px rgba(15,23,42,0.07)", border:"1px solid rgba(226,232,240,0.8)", overflow:"hidden", animation:"fadeUp 0.4s ease 0.4s both" }}>
         <div style={{ padding:"16px 24px", borderBottom:"1px solid #F1F5F9", background:"var(--ea-hover)" }}>
           <div style={{ fontSize:14, fontWeight:800, color:"#0F172A" }}>Class-wise Attendance Breakdown</div>
-          <div style={{ fontSize:12, color:"#94A3B8", marginTop:2 }}>{MONTHS[filterMonth-1]} {filterYear}</div>
+          <div style={{ fontSize:12, color:"var(--ea-muted)", marginTop:2 }}>{MONTHS[filterMonth-1]} {filterYear}</div>
         </div>
         {loading ? (
           <div style={{ padding:"60px 0", textAlign:"center" }}>
@@ -180,20 +180,20 @@ export default function AttendanceReports() {
                     </td>
                     <td style={{ padding:"14px 18px", fontSize:13, fontWeight:600, color:"#374151" }}>{c.students}</td>
                     <td style={{ padding:"14px 18px" }}>
-                      <span style={{ fontSize:13, fontWeight:700, color:"#10B981" }}>{c.present}</span>
+                      <span style={{ fontSize:13, fontWeight:700, color:"var(--ea-on-card-success)" }}>{c.present}</span>
                     </td>
                     <td style={{ padding:"14px 18px" }}>
-                      <span style={{ fontSize:13, fontWeight:700, color:"#EF4444" }}>{c.absent}</span>
+                      <span style={{ fontSize:13, fontWeight:700, color:"var(--ea-on-card-danger)" }}>{c.absent}</span>
                     </td>
                     <td style={{ padding:"14px 18px" }}>
-                      <span style={{ fontSize:13, fontWeight:700, color:"#F59E0B" }}>{c.late}</span>
+                      <span style={{ fontSize:13, fontWeight:700, color:"var(--ea-on-card-warning)" }}>{c.late}</span>
                     </td>
                     <td style={{ padding:"14px 18px", width:200 }}>
                       <div style={{ display:"flex", alignItems:"center", gap:10 }}>
                         <div style={{ flex:1 }}>
                           <ProgressBar value={c.pct || 0} color={good ? "var(--ea-success)" : "var(--ea-danger)"} />
                         </div>
-                        <span style={{ fontSize:13, fontWeight:800, color: noData ? "#94A3B8" : good ? "#10B981" : "#EF4444", minWidth:40 }}>{pctText(c.pct)}</span>
+                        <span style={{ fontSize:13, fontWeight:800, color: noData ? "var(--ea-muted)" : good ? "var(--ea-on-card-success)" : "var(--ea-on-card-danger)", minWidth:40 }}>{pctText(c.pct)}</span>
                       </div>
                     </td>
                     <td style={{ padding:"14px 18px" }}>

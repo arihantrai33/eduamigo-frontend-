@@ -23,7 +23,7 @@ const money = (n) => `₹${Number(n || 0).toLocaleString("en-IN")}`;
 function Field({ label, value }) {
   return (
     <div>
-      <div style={{ fontSize: 11, color: "#999" }}>{label}</div>
+      <div style={{ fontSize: 11, color: "var(--ea-muted)" }}>{label}</div>
       <div style={{ fontSize: 12, color: "#1a1a1a", fontWeight: 500, marginTop: 2, wordBreak: "break-word" }}>{value || "—"}</div>
     </div>
   );
@@ -98,7 +98,7 @@ export default function StudentProfile() {
             : <div style={{ width: 60, height: 60, borderRadius: "50%", background: "var(--brand-soft)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 500, color: "var(--brand)" }}>{s.name?.[0]?.toUpperCase()}</div>}
           <div>
             <div style={{ fontSize: 18, fontWeight: 600, color: "#1a1a1a" }}>{s.name}</div>
-            <div style={{ fontSize: 12, color: "#999", marginTop: 2 }}>Class {s.class} · Section {s.section} · Roll {s.rollNumber}</div>
+            <div style={{ fontSize: 12, color: "var(--ea-muted)", marginTop: 2 }}>Class {s.class} · Section {s.section} · Roll {s.rollNumber}</div>
             {feeStatus && <span style={{ fontSize: 10, padding: "3px 10px", borderRadius: 20, fontWeight: 500, background: feeColors[feeStatus].bg, color: feeColors[feeStatus].color, marginTop: 4, display: "inline-block" }}>Fees: {feeStatus}</span>}
           </div>
         </div>
@@ -132,7 +132,7 @@ export default function StudentProfile() {
               <Field label="Present" value={attendance.present} />
               <Field label="Absent" value={attendance.absent} />
             </div>
-          ) : <div style={{ fontSize: 12, color: "#999" }}>No attendance recorded yet.</div>}
+          ) : <div style={{ fontSize: 12, color: "var(--ea-muted)" }}>No attendance recorded yet.</div>}
         </div>
 
         <div style={card}>
@@ -144,7 +144,7 @@ export default function StudentProfile() {
               <Field label="Due" value={money(feeSummary.totalDue)} />
               <Field label="Fee records" value={fees.data.length} />
             </div>
-          ) : <div style={{ fontSize: 12, color: "#999" }}>No fees billed yet.</div>}
+          ) : <div style={{ fontSize: 12, color: "var(--ea-muted)" }}>No fees billed yet.</div>}
         </div>
 
         <div style={card}>
@@ -162,7 +162,7 @@ export default function StudentProfile() {
                 </div>
               ))}
             </>
-          ) : <div style={{ fontSize: 12, color: "#999" }}>No published results yet.</div>}
+          ) : <div style={{ fontSize: 12, color: "var(--ea-muted)" }}>No published results yet.</div>}
         </div>
       </div>
     </div>

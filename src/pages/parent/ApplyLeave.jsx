@@ -86,7 +86,7 @@ export default function ApplyLeave() {
       }}>
         <div style={{ fontSize: "64px" }}><Glyph e="✅" /></div>
         <div style={{ fontWeight: "800", fontSize: "20px", marginTop: "16px", color: "var(--text)" }}>
-          Leave Applied Successfully!
+          Leave request sent
         </div>
         <div style={{ color: "var(--subtext)", fontSize: "13px", marginTop: "8px" }}>
           Your request has been submitted for approval.
@@ -248,8 +248,8 @@ export default function ApplyLeave() {
             <h2 className="ea-form-section__title">Leave history</h2>
             {leaveHistory.map((leave, i) => {
               const statusColor =
-                leave.status === "Approved" ? "#16A34A" :
-                leave.status === "Rejected" ? "#DC2626" : "#D97706";
+                leave.status === "Approved" ? "var(--ea-on-card-success)" :
+                leave.status === "Rejected" ? "var(--ea-on-card-danger)" : "var(--ea-on-card-warning)";
               const days = leave.days || 1;
               const fmtDay = (d) => new Date(d).toLocaleDateString("en-IN", { timeZone: "UTC", day: "numeric", month: "short", year: "numeric" });
               return (

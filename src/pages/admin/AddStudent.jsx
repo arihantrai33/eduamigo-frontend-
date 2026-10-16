@@ -195,7 +195,7 @@ export default function AddStudent() {
             {photoPreview ? (
               <img src={photoPreview} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             ) : (
-              <span style={{ fontSize: 24, color: "#9CA3AF" }}><Glyph e="👤" /></span>
+              <span style={{ fontSize: 24, color: "var(--ea-muted)" }}><Glyph e="👤" /></span>
             )}
           </div>
           <div>
@@ -207,7 +207,7 @@ export default function AddStudent() {
               {photoFile ? "Change Photo" : "Upload Photo"}
               <input type="file" accept="image/*" onChange={handlePhotoChange} style={{ display: "none" }} />
             </label>
-            <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 6 }}>Optional. JPG or PNG, up to 5MB.</div>
+            <div style={{ fontSize: 11, color: "var(--ea-muted)", marginTop: 6 }}>Optional. JPG or PNG, up to 5MB.</div>
           </div>
         </div>
 

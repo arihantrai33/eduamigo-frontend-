@@ -169,7 +169,7 @@ export default function TeacherAttendance() {
                   color: `${filters.class}-${filters.section}` === cls ? "#fff" : "var(--brand)",
                 }}>Class {cls}</button>
             )) : (
-              <div style={{ fontSize: 13, color: "#9CA3AF" }}>No classes assigned. Contact admin.</div>
+              <div style={{ fontSize: 13, color: "var(--ea-muted)" }}>No classes assigned. Contact admin.</div>
             )}
           </div>
 

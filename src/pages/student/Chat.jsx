@@ -110,23 +110,23 @@ export default function Chat() {
   const S = {
     screen: { minHeight: '100vh', background: dm ? '#0f172a' : '#f5f6fa', fontFamily: 'inherit', display: 'flex', flexDirection: 'column' },
     tabRow: { display: 'flex', background: dm ? '#1e293b' : 'white', borderBottom: dm ? '1px solid #334155' : '1px solid var(--ea-line)', padding: '0 16px' },
-    tabBtn: { flex: 1, padding: '12px 0', border: 'none', background: 'none', fontSize: 13, fontWeight: 600, color: dm ? '#94a3b8' : '#888', cursor: 'pointer' },
+    tabBtn: { flex: 1, padding: '12px 0', border: 'none', background: 'none', fontSize: 13, fontWeight: 600, color: dm ? 'var(--ea-muted)' : '#888', cursor: 'pointer' },
     tabActive: { color: 'var(--brand)', borderBottom: '2px solid var(--brand)' },
     list: { flex: 1, overflowY: 'auto', padding: '12px 16px 80px' },
-    sectionLabel: { fontSize: 11, fontWeight: 700, color: dm ? '#94a3b8' : '#999', letterSpacing: 1, marginBottom: 8, marginTop: 4 },
+    sectionLabel: { fontSize: 11, fontWeight: 700, color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)', letterSpacing: 1, marginBottom: 8, marginTop: 4 },
     chatRow: { background: dm ? '#1e293b' : 'white', borderRadius: 14, padding: '14px', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10, boxShadow: dm ? '0 1px 6px rgba(0,0,0,0.3)' : '0 1px 6px rgba(0,0,0,0.06)', cursor: 'pointer' },
     avatar: { width: 46, height: 46, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 18, flexShrink: 0 },
     rowName: { fontSize: 14, fontWeight: 700, color: dm ? '#f1f5f9' : '#111', marginBottom: 3 },
-    rowSub: { fontSize: 12, color: dm ? '#94a3b8' : '#888' },
-    chevron: { fontSize: 22, color: dm ? '#64748b' : '#94a3b8' },
-    emptyBox: { textAlign: 'center', padding: '32px 0', color: dm ? '#94a3b8' : '#999', fontSize: 13 },
+    rowSub: { fontSize: 12, color: dm ? 'var(--ea-muted)' : '#888' },
+    chevron: { fontSize: 22, color: dm ? '#64748b' : 'var(--ea-muted)' },
+    emptyBox: { textAlign: 'center', padding: '32px 0', color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)', fontSize: 13 },
     center: { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' },
     broadcastCard: { background: dm ? '#1e293b' : 'white', borderRadius: 14, padding: 16, marginBottom: 10, boxShadow: dm ? '0 1px 6px rgba(0,0,0,0.3)' : '0 1px 6px rgba(0,0,0,0.06)' },
     broadcastTop: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 },
-    broadcastText: { fontSize: 14, color: dm ? '#cbd5e1' : '#333', lineHeight: 1.5 },
+    broadcastText: { fontSize: 14, color: dm ? 'var(--ea-faint)' : '#333', lineHeight: 1.5 },
     msgList: { flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column' },
     emptyChat: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 0' },
-    dateDivider: { textAlign: 'center', fontSize: 11, color: dm ? '#94a3b8' : '#aaa', background: dm ? '#334155' : '#eee', borderRadius: 20, padding: '3px 12px', margin: '10px auto', width: 'fit-content' },
+    dateDivider: { textAlign: 'center', fontSize: 11, color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)', background: dm ? '#334155' : '#eee', borderRadius: 20, padding: '3px 12px', margin: '10px auto', width: 'fit-content' },
     miniAvatar: { width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 12, marginRight: 8, flexShrink: 0, alignSelf: 'flex-end' },
     bubble: { maxWidth: '75%', padding: '10px 14px', borderRadius: 18, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' },
     bubbleMe: { background: 'var(--brand)', color: 'white', borderBottomRightRadius: 4 },
@@ -145,7 +145,7 @@ export default function Chat() {
         {messages.length === 0 && (
           <div style={S.emptyChat}>
             <div style={{ fontSize: 40, marginBottom: 8 }}><Glyph e="💬" /></div>
-            <div style={{ color: dm ? '#94a3b8' : '#999', fontSize: 13 }}>Start a conversation</div>
+            <div style={{ color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)', fontSize: 13 }}>Start a conversation</div>
           </div>
         )}
         {messages.map((m, i) => {
@@ -225,7 +225,7 @@ export default function Chat() {
                 <div style={{ ...S.miniAvatar, background: avatarColor(b.teacherName) }}>{b.teacherName?.[0]}</div>
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 700, color: dm ? '#f1f5f9' : '#111' }}>{b.teacherName}</div>
-                  <div style={{ fontSize: 11, color: dm ? '#94a3b8' : '#888' }}>{formatDate(b.createdAt)} · {formatTime(b.createdAt)}</div>
+                  <div style={{ fontSize: 11, color: dm ? 'var(--ea-muted)' : '#888' }}>{formatDate(b.createdAt)} · {formatTime(b.createdAt)}</div>
                 </div>
               </div>
               <div style={S.broadcastText}>{b.text}</div>

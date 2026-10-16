@@ -18,7 +18,8 @@ export default function ReportCard() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [params, setParams] = useSearchParams();
-  const studentId = params.get("studentId");
+  // A student's own card when the address names no one (the Results button passes studentId=me).
+  const studentId = params.get("studentId") || (user?.role === "student" ? "me" : null);
   const cls = params.get("class");
   const section = params.get("section");
   const term = params.get("term") || "Term 1";
@@ -29,7 +30,11 @@ export default function ReportCard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Without a student or a class there is nothing to load: say what to choose instead of asking the server.
+  const missing = !studentId && !cls;
+
   const load = useCallback(async () => {
+    if (missing) { setLoading(false); return; }
     try {
       setLoading(true);
       setError("");
@@ -44,7 +49,7 @@ export default function ReportCard() {
     } finally {
       setLoading(false);
     }
-  }, [studentId, cls, section, term, academicYear]);
+  }, [studentId, cls, section, term, academicYear, missing]);
 
   useEffect(() => { Promise.resolve().then(load); }, [load]);
 
@@ -69,8 +74,9 @@ export default function ReportCard() {
       </div>
 
       {loading && <div className="rc-msg no-print">Loading report card...</div>}
-      {!loading && error && <div className="rc-msg error no-print">{error}</div>}
-      {!loading && !error && report && report.cards.length === 0 && <div className="rc-msg no-print">No students found.</div>}
+      {!loading && missing && <div className="rc-msg no-print">Choose a student or a class first. Report cards open from the Results screen.</div>}
+      {!loading && error && <div className="rc-msg error no-print" role="alert">{error}</div>}
+      {!loading && !error && !missing && report && report.cards.length === 0 && <div className="rc-msg no-print">No students found.</div>}
       {!loading && !error && report?.cards?.map((card) => (
         <Card key={card.student._id} card={card} report={report} canEditRemarks={canEditRemarks} onSaved={load} />
       ))}

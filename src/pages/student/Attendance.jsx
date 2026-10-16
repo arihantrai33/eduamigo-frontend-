@@ -77,15 +77,15 @@ export default function StudentAttendance() {
               <div style={{ width: 10, height: 10, borderRadius: "50%", background: color }} />
               <div style={{ fontSize: 13, color: "var(--ea-body)" }}>
                 {pct >= 75
-                  ? "Good standing — Keep it up!"
+                  ? "Good standing — keep it up"
                   : pct >= 50
                   ? "Below average — Improvement needed"
                   : "Critical — Please attend regularly"}
               </div>
             </div>
             {pct < 75 && (
-              <div style={{ marginTop: 10, background: "#fff5f5", borderRadius: 10,
-                padding: "10px 12px", fontSize: 12, color: "#ef4444" }}>
+              <div style={{ marginTop: 10, background: "color-mix(in srgb, var(--ea-on-card-danger) 10%, transparent)", borderRadius: 10,
+                padding: "10px 12px", fontSize: 12, color: "var(--ea-on-card-danger)" }}>
                 Minimum 75% attendance required. You need{" "}
                 {Math.max(0, Math.ceil((0.75 * total - present) / 0.25))} more present days to reach 75%.
               </div>

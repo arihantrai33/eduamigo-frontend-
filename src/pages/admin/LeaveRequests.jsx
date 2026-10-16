@@ -13,7 +13,7 @@ const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 const STATUS_CONFIG = {
-  Pending:  { bg:"#FFFBEB", color:"#D97706", dot:"#F59E0B", border:"#FDE68A" },
+  Pending:  { bg:"#FFFBEB", color:"var(--ea-on-card-warning)", dot:"#F59E0B", border:"#FDE68A" },
   Approved: { bg:"#F0FDF4", color:"#15803D", dot:"#22C55E", border:"#BBF7D0" },
   Rejected: { bg:"#FEF2F2", color:"#DC2626", dot:"#EF4444", border:"#FECACA" },
 };
@@ -141,7 +141,7 @@ export default function LeaveRequests() {
                       <span className="ea-badge ea-badge--neutral" style={{ textTransform:"capitalize" }}>{l.role?.charAt(0).toUpperCase() + l.role?.slice(1) || "User"}</span>
                       <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:"#F1F5F9", color:"#64748B" }}>{l.leaveType || "Leave"}</span>
                     </div>
-                    <div style={{ fontSize:12, color:"#94A3B8" }}>
+                    <div style={{ fontSize:12, color:"var(--ea-muted)" }}>
                       {fmtDate(l.fromDate)} → {fmtDate(l.toDate)} · {daysDiff(l.fromDate, l.toDate)}{l.class ? ` · Class ${l.class}${l.section ? `-${l.section}` : ""}` : ""}
                     </div>
                   </div>
@@ -162,13 +162,13 @@ export default function LeaveRequests() {
                         </button>
                       </div>
                     )}
-                    <span style={{ fontSize:16, color:"#94A3B8", transition:"transform 0.2s", transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)" }}>▾</span>
+                    <span style={{ fontSize:16, color:"var(--ea-muted)", transition:"transform 0.2s", transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)" }}>▾</span>
                   </div>
                 </div>
                 {isExpanded && (
                   <div style={{ padding:"0 24px 20px", borderTop:"1px solid #F1F5F9" }}>
                     <div style={{ marginTop:16, background:"#F8FAFC", borderRadius:12, padding:"14px 18px" }}>
-                      <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>REASON</div>
+                      <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>REASON</div>
                       <div style={{ fontSize:13, color:"#374151", lineHeight:1.6 }}>{l.reason || "No reason provided"}</div>
                     </div>
                     {l.attachmentUrl && (

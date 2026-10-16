@@ -160,7 +160,7 @@ export default function Timetable() {
             </select>
           </div>
           <div style={{ display:"flex", alignItems:"flex-end" }}>
-            <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600 }}>
+            <div style={{ fontSize:12, color:"var(--ea-muted)", fontWeight:600 }}>
               {timetables.length} timetable entries in database
             </div>
           </div>
@@ -191,7 +191,7 @@ export default function Timetable() {
             <div style={{ fontSize:16, fontWeight:800, color:"#0F172A" }}>
               Class {selectedClass}-{selectedSection} · <span style={{ color: DAY_COLORS[selectedDay] }}>{selectedDay}</span>
             </div>
-            <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600 }}>
+            <div style={{ fontSize:12, color:"var(--ea-muted)", fontWeight:600 }}>
               {currentTimetable ? `${plural(currentTimetable.periods?.length || 0, "period")} scheduled` : "No timetable yet — add periods below"}
             </div>
           </div>
@@ -206,7 +206,7 @@ export default function Timetable() {
                   aria-label={period ? `Edit period ${pNo}: ${period.subject}` : `Add period ${pNo}`}
                   {...pressable(() => period ? openEditPeriod(period) : openAddPeriod(pNo))}>
                   <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
-                    <div style={{ width:28, height:28, borderRadius:8, background: period ? color : "#F1F5F9", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:800, color: period ? "white" : "#94A3B8" }}>
+                    <div style={{ width:28, height:28, borderRadius:8, background: period ? color : "#F1F5F9", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:800, color: period ? "white" : "var(--ea-muted)" }}>
                       {pNo}
                     </div>
                     {period && (

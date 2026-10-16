@@ -120,12 +120,12 @@ export default function FeeReports() {
       <div style={{ background:"white", borderRadius:16, padding:"20px 24px", marginBottom:24, boxShadow:"0 4px 20px rgba(15,23,42,0.07)", border:"1px solid #E2E8F0", animation:"fadeUp 0.4s ease 0.3s both" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
           <div style={{ fontSize:14, fontWeight:800, color:"#0F172A" }}>Overall Collection Rate</div>
-          <div style={{ fontSize:24, fontWeight:900, color: collectionPct >= 75 ? "#10B981" : "#EF4444" }}>{collectionPct}%</div>
+          <div style={{ fontSize:24, fontWeight:900, color: collectionPct >= 75 ? "var(--ea-on-card-success)" : "var(--ea-on-card-danger)" }}>{collectionPct}%</div>
         </div>
         <ProgressBar value={collectionPct} color={collectionPct >= 75 ? "var(--ea-success)" : "var(--ea-warning)"} />
         <div style={{ display:"flex", gap:20, marginTop:10 }}>
-          <span style={{ fontSize:12, color:"#10B981", fontWeight:700 }}>✓ Collected: {fmtAmt(collectedAmt)}</span>
-          <span style={{ fontSize:12, color:"#F59E0B", fontWeight:700 }}><Glyph e="⏳" /> Pending: {fmtAmt(pendingAmt)}</span>
+          <span style={{ fontSize:12, color:"var(--ea-on-card-success)", fontWeight:700 }}>✓ Collected: {fmtAmt(collectedAmt)}</span>
+          <span style={{ fontSize:12, color:"var(--ea-on-card-warning)", fontWeight:700 }}><Glyph e="⏳" /> Pending: {fmtAmt(pendingAmt)}</span>
         </div>
       </div>
 
@@ -162,21 +162,21 @@ export default function FeeReports() {
                     <td style={{ padding:"14px 18px", fontSize:13, color:"#64748B", fontWeight:600 }}>{c.count}</td>
                     <td style={{ padding:"14px 18px", fontSize:13, fontWeight:700, color:"#0F172A" }}>{fmtAmt(c.total)}</td>
                     <td style={{ padding:"14px 18px" }}>
-                      <span style={{ fontSize:13, fontWeight:700, color:"#10B981" }}>{fmtAmt(c.paid)}</span>
+                      <span style={{ fontSize:13, fontWeight:700, color:"var(--ea-on-card-success)" }}>{fmtAmt(c.paid)}</span>
                     </td>
                     <td style={{ padding:"14px 18px" }}>
-                      <span style={{ fontSize:13, fontWeight:700, color:"#F59E0B" }}>{fmtAmt(c.pending)}</span>
+                      <span style={{ fontSize:13, fontWeight:700, color:"var(--ea-on-card-warning)" }}>{fmtAmt(c.pending)}</span>
                     </td>
                     <td style={{ padding:"14px 18px", minWidth:180 }}>
                       <div style={{ display:"flex", alignItems:"center", gap:10 }}>
                         <div style={{ flex:1 }}>
                           <ProgressBar value={c.pct} color={good ? "var(--ea-success)" : "var(--ea-warning)"} />
                         </div>
-                        <span style={{ fontSize:13, fontWeight:800, color: good ? "#10B981" : "#F59E0B", minWidth:40 }}>{c.pct}%</span>
+                        <span style={{ fontSize:13, fontWeight:800, color: good ? "var(--ea-on-card-success)" : "var(--ea-on-card-warning)", minWidth:40 }}>{c.pct}%</span>
                       </div>
                     </td>
                     <td style={{ padding:"14px 18px" }}>
-                      <span style={{ fontSize:11, fontWeight:700, padding:"4px 12px", borderRadius:20, background: good ? "#F0FDF4" : "#FFFBEB", color: good ? "#15803D" : "#D97706", border:`1px solid ${good ? "#BBF7D0" : "#FDE68A"}` }}>
+                      <span style={{ fontSize:11, fontWeight:700, padding:"4px 12px", borderRadius:20, background: good ? "#F0FDF4" : "#FFFBEB", color: good ? "#15803D" : "var(--ea-on-card-warning)", border:`1px solid ${good ? "#BBF7D0" : "#FDE68A"}` }}>
                         {good ? "✓ Good" : "Low"}
                       </span>
                     </td>

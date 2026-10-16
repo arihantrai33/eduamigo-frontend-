@@ -12,7 +12,7 @@ const API = import.meta.env.VITE_API_URL;
 
 const TYPE_STYLES = {
   General:     { bg: '#EEF0FF', color: '#3949AB', icon: <Glyph e="📢" /> },
-  Exam:        { bg: '#FFF8E1', color: '#F9A825', icon: <Glyph e="📝" /> },
+  Exam:        { bg: '#FFF8E1', color: 'var(--ea-on-card-warning)', icon: <Glyph e="📝" /> },
   Fee:         { bg: '#E8F5E9', color: '#2E7D32', icon: <Glyph e="💰" /> },
   Holiday:     { bg: '#FCE4EC', color: '#C2185B', icon: '' },
   Attendance:  { bg: '#E3F2FD', color: '#1565C0', icon: <Glyph e="✅" /> },
@@ -169,7 +169,7 @@ const styles = {
     padding: '6px 14px',
     fontSize: 12,
     fontWeight: 600,
-    color: '#9E9E9E',
+    color: 'var(--ea-muted)',
     cursor: 'pointer',
     whiteSpace: 'nowrap',
     fontFamily: "inherit",
@@ -181,7 +181,7 @@ const styles = {
   },
   resultCount: {
     fontSize: 12,
-    color: '#9E9E9E',
+    color: 'var(--ea-muted)',
     fontWeight: 500,
     margin: '0 0 10px 2px',
   },
@@ -250,7 +250,7 @@ const styles = {
   },
   timeText: {
     fontSize: 11,
-    color: '#BDBDBD',
+    color: 'var(--ea-muted)',
     fontWeight: 500,
   },
   targetBadge: {
@@ -290,5 +290,5 @@ const styles = {
   },
   emptyIcon: { fontSize: 52, margin: '0 0 8px' },
   emptyText: { fontSize: 15, fontWeight: 700, color: '#1A1A2E', margin: '0 0 6px' },
-  emptySubText: { fontSize: 13, color: '#9E9E9E', margin: 0 },
+  emptySubText: { fontSize: 13, color: 'var(--ea-muted)', margin: 0 },
 };

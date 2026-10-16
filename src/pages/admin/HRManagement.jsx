@@ -21,7 +21,7 @@ const LEAVE_TYPES = ["Sick","Casual","Earned","Maternity","Other"];
 // message when a check failed.
 const field = (label, control, after = null) => (
   <label style={{ display:"block" }}>
-    <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6 }}>{label}</span>
+    <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6 }}>{label}</span>
     {control}
     {after}
   </label>
@@ -30,7 +30,7 @@ const field = (label, control, after = null) => (
 const FIELDS = Object.fromEntries(["teacher", "basicSalary", "leaveType", "fromDate", "toDate"].map((k) => [k, `hr-${k}`]));
 
 function StatusBadge({ status }) {
-  const map = { Paid:"#10B981", Pending:"#F59E0B", Approved:"#10B981", Rejected:"#EF4444" };
+  const map = { Paid:"var(--ea-on-card-success)", Pending:"var(--ea-on-card-warning)", Approved:"var(--ea-on-card-success)", Rejected:"var(--ea-on-card-danger)" };
   const bg = { Paid:"#F0FDF4", Pending:"#FFFBEB", Approved:"#F0FDF4", Rejected:"#FEF2F2" };
   return <span style={{ fontSize:11, fontWeight:700, padding:"4px 10px", borderRadius:20, background: bg[status]||"#F8FAFC", color: map[status]||"#64748B" }}>{status}</span>;
 }
@@ -173,9 +173,9 @@ export default function HRManagement() {
         <StatGrid>
           {[
             { label:"TOTAL TEACHERS", value: teachers.length, icon:<Glyph e="👩‍🏫" />, color:"var(--brand)" },
-            { label:"SALARY PAID", value: `₹${totalPaid.toLocaleString()}`, icon:<Glyph e="✅" />, color:"#10B981" },
-            { label:"SALARY PENDING", value: `₹${totalPending.toLocaleString()}`, icon:<Glyph e="⏳" />, color:"#F59E0B" },
-            { label:"LEAVE REQUESTS", value: pendingLeaves, icon:<Glyph e="📋" />, color: pendingLeaves ? "#F59E0B" : "var(--brand)" },
+            { label:"SALARY PAID", value: `₹${totalPaid.toLocaleString()}`, icon:<Glyph e="✅" />, color:"var(--ea-on-card-success)" },
+            { label:"SALARY PENDING", value: `₹${totalPending.toLocaleString()}`, icon:<Glyph e="⏳" />, color:"var(--ea-on-card-warning)" },
+            { label:"LEAVE REQUESTS", value: pendingLeaves, icon:<Glyph e="📋" />, color: pendingLeaves ? "var(--ea-on-card-warning)" : "var(--brand)" },
           ].map((s) => <StatCard key={s.label} label={s.label} value={s.value} icon={s.icon} tone={toneOf(s.color)} />)}
         </StatGrid>
       </div>
@@ -216,7 +216,7 @@ export default function HRManagement() {
               <thead>
                 <tr style={{ background:"#F8FAFC" }}>
                   {["Teacher","Emp ID","Basic","Allowances","Deductions","Net Salary","Status","Actions"].map(h => (
-                    <th key={h} style={{ padding:"10px 14px", textAlign:"left", fontSize:11, fontWeight:700, color:"#94A3B8", letterSpacing:"0.06em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
+                    <th key={h} style={{ padding:"10px 14px", textAlign:"left", fontSize:11, fontWeight:700, color:"var(--ea-muted)", letterSpacing:"0.06em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -277,7 +277,7 @@ export default function HRManagement() {
                       <div style={{ fontSize:12, color:"#64748B", marginTop:2 }}>
                         {l.leaveType} Leave · {new Date(l.fromDate).toLocaleDateString()} – {new Date(l.toDate).toLocaleDateString()} · {l.days} day{l.days!==1?"s":""}
                       </div>
-                      {l.reason && <div style={{ fontSize:12, color:"#94A3B8", marginTop:2 }}>"{l.reason}"</div>}
+                      {l.reason && <div style={{ fontSize:12, color:"var(--ea-muted)", marginTop:2 }}>"{l.reason}"</div>}
                     </div>
                   </div>
                   <div style={{ display:"flex", gap:8, alignItems:"center" }}>

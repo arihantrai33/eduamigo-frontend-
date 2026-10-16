@@ -16,7 +16,7 @@ const gradeColor = (grade) => {
   if (!grade) return { bg: "#f3f4f6", color: "#6b7280" };
   if (grade.startsWith("A")) return { bg: "#dcfce7", color: "#16a34a" };
   if (grade.startsWith("B")) return { bg: "#dbeafe", color: "#1d4ed8" };
-  return { bg: "#fef9c3", color: "#ca8a04" };
+  return { bg: "color-mix(in srgb, var(--ea-on-card-warning) 16%, transparent)", color: "var(--ea-on-card-warning)" };
 };
 export default function ParentResult() {
   const navigate = useNavigate();
@@ -60,7 +60,7 @@ export default function ParentResult() {
   );
   if (error) return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "inherit" }}>
-      <div style={{ color: "#ef4444", fontSize: 14 }}>{error}</div>
+      <div style={{ color: "var(--ea-on-card-danger)", fontSize: 14 }}>{error}</div>
     </div>
   );
   return (

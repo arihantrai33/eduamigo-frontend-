@@ -16,10 +16,10 @@ import { errorMessage } from "../../utils/toast";
 import Skeleton from "../../components/ui/Skeleton";
 // ── Utils ──────────────────────────────────────────────────────
 const getTrafficStatus = (speed) => {
-  if (!speed || speed === 0) return { color: "#9CA3AF", label: "Stationary" };
-  if (speed < 15)            return { color: "#EF4444",  label: "Heavy traffic — Delay possible" };
-  if (speed < 30)            return { color: "#F59E0B",  label: "Moderate traffic" };
-  return                            { color: "#10B981",  label: "Clear road" };
+  if (!speed || speed === 0) return { color: "var(--ea-muted)", label: "Stationary" };
+  if (speed < 15)            return { color: "var(--ea-on-card-danger)",  label: "Heavy traffic — Delay possible" };
+  if (speed < 30)            return { color: "var(--ea-on-card-warning)",  label: "Moderate traffic" };
+  return                            { color: "var(--ea-on-card-success)",  label: "Clear road" };
 };
 
 async function fetchETA(fromLat, fromLng, toLat, toLng) {
@@ -363,7 +363,7 @@ export default function ParentBus() {
       <div style={{ ...styles.pageShell, alignItems: "center", justifyContent: "center" }}>
         <div style={{ textAlign: "center", padding: "20px" }}>
           <div style={{ fontSize: "48px", marginBottom: "12px" }}><Glyph e="⚠" /></div>
-          <p style={{ color: "#EF4444", fontWeight: 600, marginBottom: "8px" }}>No bus assigned</p>
+          <p style={{ color: "var(--ea-on-card-danger)", fontWeight: 600, marginBottom: "8px" }}>No bus assigned</p>
           <p style={{ color: "var(--ea-muted)", fontSize: "13px", marginBottom: "20px" }}>
             {apiError || "No bus found for your child"}
           </p>
@@ -618,7 +618,7 @@ export default function ParentBus() {
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{
                           ...styles.stopName,
-                          color: isCompleted ? "var(--ea-muted)" : isCurrent ? "var(--brand)" : isSchool ? "#D97706" : "var(--ea-ink)",
+                          color: isCompleted ? "var(--ea-muted)" : isCurrent ? "var(--brand)" : isSchool ? "var(--ea-on-card-warning)" : "var(--ea-ink)",
                           textDecoration: isCompleted ? "line-through" : "none",
                           fontWeight: isCurrent || isSchool ? 600 : 400,
                         }}>{stop.name}</p>

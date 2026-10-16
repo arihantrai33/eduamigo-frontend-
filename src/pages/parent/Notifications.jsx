@@ -59,7 +59,7 @@ export default function ParentNotifications() {
           </div>
         )}
         {!loading && error && (
-          <div style={{ textAlign: "center", padding: 40, color: "#ef4444", fontSize: 14 }}>
+          <div style={{ textAlign: "center", padding: 40, color: "var(--ea-on-card-danger)", fontSize: 14 }}>
             {error}
           </div>
         )}

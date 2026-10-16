@@ -131,7 +131,7 @@ export default function Library() {
       {/* Category Chips + Search + Add */}
       <div style={{ display:"flex", gap:10, marginBottom:20, alignItems:"center", flexWrap:"wrap", animation:"fadeUp 0.4s ease 0.1s both" }}>
         <div style={{ position:"relative", flex:1, minWidth:200 }}>
-          <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#94A3B8" }}><Glyph e="🔍" /></span>
+          <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"var(--ea-muted)" }}><Glyph e="🔍" /></span>
           <input value={search} onChange={e => setSearch(e.target.value)} aria-label="Search books" placeholder="Search by title, author, ISBN..."
             style={{ width:"100%", padding:"11px 14px 11px 38px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
             onFocus={e=>e.target.style.borderColor="var(--brand)"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
@@ -180,12 +180,12 @@ export default function Library() {
                       <div style={{ width:38, height:38, borderRadius:10, background:cfg.bg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>{cfg.icon}</div>
                       <div>
                         <div style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>{b.title}</div>
-                        {b.publisher && <div style={{ fontSize:11, color:"#94A3B8" }}>{b.publisher}{b.year ? ` · ${b.year}` : ""}</div>}
+                        {b.publisher && <div style={{ fontSize:11, color:"var(--ea-muted)" }}>{b.publisher}{b.year ? ` · ${b.year}` : ""}</div>}
                       </div>
                     </div>
                   </td>
                   <td style={{ padding:"14px 18px", fontSize:13, color:"#374151", fontWeight:500 }}>{b.author || "—"}</td>
-                  <td style={{ padding:"14px 18px", fontSize:12, color:"#94A3B8", fontFamily:"monospace" }}>{b.isbn || "—"}</td>
+                  <td style={{ padding:"14px 18px", fontSize:12, color:"var(--ea-muted)", fontFamily:"monospace" }}>{b.isbn || "—"}</td>
                   <td style={{ padding:"14px 18px" }}>
                     <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20, background:cfg.bg, color:cfg.color }}>{b.category}</span>
                   </td>
@@ -195,11 +195,11 @@ export default function Library() {
                       <div style={{ flex:1, height:6, borderRadius:4, background:"#E2E8F0", overflow:"hidden", minWidth:50 }}>
                         <div style={{ width:`${availPct}%`, height:"100%", borderRadius:4, background: availPct>50?"#10B981":availPct>20?"#F59E0B":"#EF4444", transition:"width 0.3s ease" }} />
                       </div>
-                      <span style={{ fontSize:12, fontWeight:700, color: availPct>50?"#10B981":availPct>20?"#D97706":"#DC2626", minWidth:20 }}>{b.available}</span>
+                      <span style={{ fontSize:12, fontWeight:700, color: availPct>50?"var(--ea-on-card-success)":availPct>20?"var(--ea-on-card-warning)":"#DC2626", minWidth:20 }}>{b.available}</span>
                     </div>
                   </td>
                   <td style={{ padding:"14px 18px" }}>
-                    <span style={{ fontSize:13, fontWeight:700, color: b.issued>0?"#D97706":"#94A3B8" }}>{b.issued}</span>
+                    <span style={{ fontSize:13, fontWeight:700, color: b.issued>0?"var(--ea-on-card-warning)":"var(--ea-muted)" }}>{b.issued}</span>
                   </td>
                   <td style={{ padding:"14px 18px" }}>
                     <div style={{ display:"flex", gap:6 }}>
@@ -225,7 +225,7 @@ export default function Library() {
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
           {/* Each field is a <label> around its caption, so the field takes the caption as its name. */}
           <label style={{ display:"block" }}>
-            <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TITLE *</span>
+            <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>TITLE *</span>
             <input id="book-title" value={form.title} onChange={e=>f("title",e.target.value)} placeholder="Book title..." {...fe.invalid("title")}
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
               onFocus={e=>e.target.style.borderColor="var(--brand)"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
@@ -234,7 +234,7 @@ export default function Library() {
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             {[["AUTHOR","author"],["ISBN","isbn"],["PUBLISHER","publisher"],["YEAR","year"]].map(([label,key]) => (
               <label key={key} style={{ display:"block" }}>
-                <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
+                <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
                 <input value={form[key]||""} onChange={e=>f(key,e.target.value)}
                   style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
                   onFocus={e=>e.target.style.borderColor="var(--brand)"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
@@ -243,7 +243,7 @@ export default function Library() {
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             <label style={{ display:"block" }}>
-              <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>CATEGORY</span>
+              <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>CATEGORY</span>
               <select value={form.category} onChange={e=>f("category",e.target.value)}
                 style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white" }}>
                 {/* Plain text: an option cannot show an icon (it rendered as "[object Object]"). */}
@@ -251,7 +251,7 @@ export default function Library() {
               </select>
             </label>
             <label style={{ display:"block" }}>
-              <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TOTAL COPIES *</span>
+              <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>TOTAL COPIES *</span>
               <input id="book-totalCopies" type="number" value={form.totalCopies} onChange={e=>f("totalCopies",e.target.value)} min="1" {...fe.invalid("totalCopies")}
                 style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />
               <FieldError id="book-totalCopies-error">{fe.errors.totalCopies}</FieldError>

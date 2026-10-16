@@ -115,7 +115,7 @@ export default function UserManagement() {
       {/* Search + Filter */}
       <div className="ea-toolbar" style={{ marginBottom: 16 }}>
         <div style={{ position: "relative", flex: "1 1 240px", maxWidth: 360, minWidth: 0 }}>
-          <Search size={14} color="#94A3B8" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
+          <Search size={14} color="var(--ea-muted)" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
           <input value={search} onChange={e => setSearch(e.target.value)} aria-label="Search users" placeholder="Search by name or email..."
             style={{ ...inp, paddingLeft: 36 }} />
         </div>
@@ -154,14 +154,14 @@ export default function UserManagement() {
                 </div>
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 600, color: "#0F172A" }}>{u.name}</div>
-                  <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 1 }}>{u.email}</div>
+                  <div style={{ fontSize: 11, color: "var(--ea-muted)", marginTop: 1 }}>{u.email}</div>
                 </div>
               </div>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 11, padding: "4px 10px", borderRadius: 20, fontWeight: 600, background: meta.bg, color: meta.color, border: `1px solid ${meta.border}`, width: "fit-content", textTransform: "capitalize" }}>
                 <Icon size={10} /> {u.role}
               </span>
               <span className="ea-um-school" style={{ fontSize: 12, color: "#64748B" }}>{u.school?.name || u.school || "—"}</span>
-              <span className="ea-um-joined" style={{ fontSize: 12, color: "#94A3B8" }}>
+              <span className="ea-um-joined" style={{ fontSize: 12, color: "var(--ea-muted)" }}>
                 {new Date(u.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
               </span>
               <button type="button" role="switch" aria-checked={u.isActive !== false} aria-label={`Account active: ${u.name}`} className="ea-um-switch"

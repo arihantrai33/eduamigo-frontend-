@@ -247,7 +247,7 @@ function Detail({ record, next, onClose, onEdit, onStatus, onAdmit, onOpenStuden
           {record.student && <button style={btn("ghost")} onClick={onOpenStudent}>Open student profile</button>}
         </div>
 
-        <div style={{ fontSize: 12, fontWeight: 800, color: "#94A3B8", letterSpacing: .6, marginTop: 6 }}>APPLICANT</div>
+        <div style={{ fontSize: 12, fontWeight: 800, color: "var(--ea-muted)", letterSpacing: .6, marginTop: 6 }}>APPLICANT</div>
         {row("Class applied for", `Class ${record.classApplied}`)}
         {row("Academic year", record.academicYear)}
         {row("Gender", record.gender)}
@@ -257,7 +257,7 @@ function Detail({ record, next, onClose, onEdit, onStatus, onAdmit, onOpenStuden
         {record.followUpDate && row("Follow-up", fmtDate(record.followUpDate))}
         {record.student && row("Admitted as", `Class ${record.student.class}-${record.student.section}, Roll ${record.student.rollNumber}`)}
 
-        <div style={{ fontSize: 12, fontWeight: 800, color: "#94A3B8", letterSpacing: .6, marginTop: 18 }}>PARENT</div>
+        <div style={{ fontSize: 12, fontWeight: 800, color: "var(--ea-muted)", letterSpacing: .6, marginTop: 18 }}>PARENT</div>
         {row("Name", record.parentName)}
         {row("Mobile", record.parentPhone)}
         {row("Email", record.parentEmail)}
@@ -265,7 +265,7 @@ function Detail({ record, next, onClose, onEdit, onStatus, onAdmit, onOpenStuden
         {row("Source", record.source)}
         {record.notes && <div style={{ fontSize: 13, color: "#334155", background: "#F8FAFC", borderRadius: 8, padding: 10, marginTop: 10, whiteSpace: "pre-wrap" }}>{record.notes}</div>}
 
-        <div style={{ fontSize: 12, fontWeight: 800, color: "#94A3B8", letterSpacing: .6, marginTop: 18, marginBottom: 8 }}>HISTORY</div>
+        <div style={{ fontSize: 12, fontWeight: 800, color: "var(--ea-muted)", letterSpacing: .6, marginTop: 18, marginBottom: 8 }}>HISTORY</div>
         <ol style={{ listStyle: "none", margin: 0, padding: 0 }}>
           {[...(record.history || [])].reverse().map((h, i) => (
             <li key={i} style={{ display: "flex", gap: 10, padding: "8px 0", borderBottom: "1px solid #F1F5F9" }}>
@@ -273,7 +273,7 @@ function Detail({ record, next, onClose, onEdit, onStatus, onAdmit, onOpenStuden
               <div style={{ fontSize: 13 }}>
                 <div style={{ fontWeight: 700, color: "#0F172A" }}>{h.status}</div>
                 {h.note && <div style={{ color: "#475569", marginTop: 2 }}>{h.note}</div>}
-                <div style={{ color: "#94A3B8", fontSize: 11, marginTop: 2 }}>{fmtDate(h.at, true)}</div>
+                <div style={{ color: "var(--ea-muted)", fontSize: 11, marginTop: 2 }}>{fmtDate(h.at, true)}</div>
               </div>
             </li>
           ))}

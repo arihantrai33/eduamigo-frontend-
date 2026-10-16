@@ -105,14 +105,14 @@ function StudentCard({ student, animPhase }) {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 12 }}>
           {[{ label: "ROLL NO", value: student.rollNumber }, { label: "CLASS", value: `${student.class}-${student.section}` }, { label: "GENDER", value: student.gender || "—" }].map((item, i) => (
             <div key={i} style={{ background: "linear-gradient(135deg,#F8FAFC,#F1F5F9)", borderRadius: 10, padding: "6px 10px", border: "1px solid #E2E8F0" }}>
-              <div style={{ fontSize: 7, fontWeight: 800, color: "#94A3B8", letterSpacing: "0.08em" }}>{item.label}</div>
+              <div style={{ fontSize: 7, fontWeight: 800, color: "var(--ea-muted)", letterSpacing: "0.08em" }}>{item.label}</div>
               <div style={{ fontSize: 11, fontWeight: 800, color: "#0F172A", marginTop: 2 }}>{item.value}</div>
             </div>
           ))}
         </div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 10, paddingTop: 10, borderTop: "1px dashed #E2E8F0" }}>
           <div>
-            <div style={{ fontSize: 8, color: "#94A3B8", fontWeight: 700, letterSpacing: "0.06em" }}>PARENT / GUARDIAN</div>
+            <div style={{ fontSize: 8, color: "var(--ea-muted)", fontWeight: 700, letterSpacing: "0.06em" }}>PARENT / GUARDIAN</div>
             <div style={{ fontSize: 11, fontWeight: 700, color: "#374151", marginTop: 2 }}>{student.parentName || "—"}</div>
             <div style={{ fontSize: 10, color: "#64748B" }}>{student.parentPhone || student.phone}</div>
           </div>
@@ -145,14 +145,14 @@ function TeacherCard({ teacher, animPhase }) {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 12 }}>
           {[{ label: "EMP ID", value: teacher.employeeId }, { label: "SUBJECT", value: teacher.subjects?.[0] || "—" }, { label: "EXP", value: teacher.experience ? `${teacher.experience}y` : "—" }].map((item, i) => (
             <div key={i} style={{ background: "linear-gradient(135deg,#F8FAFC,#F1F5F9)", borderRadius: 10, padding: "6px 10px", border: "1px solid #E2E8F0" }}>
-              <div style={{ fontSize: 7, fontWeight: 800, color: "#94A3B8", letterSpacing: "0.08em" }}>{item.label}</div>
+              <div style={{ fontSize: 7, fontWeight: 800, color: "var(--ea-muted)", letterSpacing: "0.08em" }}>{item.label}</div>
               <div style={{ fontSize: 11, fontWeight: 800, color: "#0F172A", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.value}</div>
             </div>
           ))}
         </div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 10, paddingTop: 10, borderTop: "1px dashed #E2E8F0" }}>
           <div>
-            <div style={{ fontSize: 8, color: "#94A3B8", fontWeight: 700, letterSpacing: "0.06em" }}>CONTACT</div>
+            <div style={{ fontSize: 8, color: "var(--ea-muted)", fontWeight: 700, letterSpacing: "0.06em" }}>CONTACT</div>
             <div style={{ fontSize: 11, fontWeight: 700, color: "#374151", marginTop: 2 }}>{teacher.phone}</div>
             <div style={{ fontSize: 10, color: "#64748B" }}>{teacher.qualification || "—"}</div>
           </div>
@@ -253,7 +253,7 @@ export default function IDCardGenerator() {
       <div style={{ display: "flex", gap: 4, background: "white", borderRadius: 14, padding: 5, border: "1px solid #E2E8F0", width: "fit-content", marginBottom: "1.25rem", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
         {["student","teacher"].map(t => (
           <button key={t} type="button" aria-pressed={tab === t} onClick={() => setTab(t)}
-            style={{ padding: "9px 28px", borderRadius: 10, border: "none", fontSize: 13, fontWeight: 700, cursor: "pointer", transition: "all 0.2s", background: tab === t ? "var(--brand-gradient)" : "transparent", color: tab === t ? "white" : "#94A3B8", boxShadow: tab === t ? "0 4px 12px color-mix(in srgb, var(--brand) 30%, transparent)" : "none" }}>
+            style={{ padding: "9px 28px", borderRadius: 10, border: "none", fontSize: 13, fontWeight: 700, cursor: "pointer", transition: "all 0.2s", background: tab === t ? "var(--brand-gradient)" : "transparent", color: tab === t ? "white" : "var(--ea-muted)", boxShadow: tab === t ? "0 4px 12px color-mix(in srgb, var(--brand) 30%, transparent)" : "none" }}>
             {t === "student" ? "Students" : "Faculty"}
           </button>
         ))}
@@ -263,8 +263,8 @@ export default function IDCardGenerator() {
         {steps.map((step, i) => (
           <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 14px", borderRadius: 20, background: step.done ? "var(--brand-gradient)" : "white", border: step.done ? "none" : "1.5px solid #E2E8F0", boxShadow: step.done ? "0 4px 12px color-mix(in srgb, var(--brand) 25%, transparent)" : "none", transition: "all 0.3s" }}>
-              <div style={{ width: 20, height: 20, borderRadius: "50%", background: step.done ? "rgba(255,255,255,0.25)" : "#F1F5F9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: step.done ? "white" : "#94A3B8" }}>{step.done ? "✓" : step.num}</div>
-              <span style={{ fontSize: 11, fontWeight: 700, color: step.done ? "white" : "#94A3B8" }}>{step.label}</span>
+              <div style={{ width: 20, height: 20, borderRadius: "50%", background: step.done ? "rgba(255,255,255,0.25)" : "#F1F5F9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: step.done ? "white" : "var(--ea-muted)" }}>{step.done ? "✓" : step.num}</div>
+              <span style={{ fontSize: 11, fontWeight: 700, color: step.done ? "white" : "var(--ea-muted)" }}>{step.label}</span>
             </div>
             {i < steps.length - 1 && <div style={{ width: 20, height: 1, background: "#E2E8F0" }} />}
           </div>
@@ -292,10 +292,10 @@ export default function IDCardGenerator() {
             placeholder={`Search ${tab === "student" ? "students" : "faculty"}...`}
             style={{ padding: "10px 14px", borderRadius: 12, border: "1.5px solid #E2E8F0", fontSize: 13, outline: "none", fontFamily: "inherit", transition: "border 0.2s" }}
             onFocus={e => e.target.style.borderColor = "var(--brand)"} onBlur={e => e.target.style.borderColor = "#E2E8F0"} />
-          <div style={{ fontSize: 11, color: "#94A3B8", fontWeight: 600 }}>{filtered.length} {tab === "student" ? "students" : "faculty members"}</div>
+          <div style={{ fontSize: 11, color: "var(--ea-muted)", fontWeight: 600 }}>{filtered.length} {tab === "student" ? "students" : "faculty members"}</div>
           <div style={{ overflowY: "auto", flex: 1 }}>
             {loading ? <Skeleton rows={3} label="Loading" />
-              : filtered.length === 0 ? <div style={{ textAlign: "center", padding: "30px 0", color: "#CBD5E1" }}>No results found</div>
+              : filtered.length === 0 ? <div style={{ textAlign: "center", padding: "30px 0", color: "var(--ea-faint)" }}>No results found</div>
               : filtered.map((person, i) => {
                 const isActive = selectedId === person._id;
                 return (
@@ -306,7 +306,7 @@ export default function IDCardGenerator() {
                     <Avatar name={person.name} photo={person.photo} size={36} />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 13, fontWeight: 700, color: "#0F172A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{person.name}</div>
-                      <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 1 }}>
+                      <div style={{ fontSize: 11, color: "var(--ea-muted)", marginTop: 1 }}>
                         {tab === "student" ? `Class ${person.class}-${person.section} · Roll ${person.rollNumber}` : `${person.employeeId} · ${person.subjects?.[0] || "Faculty"}`}
                       </div>
                     </div>
@@ -321,10 +321,10 @@ export default function IDCardGenerator() {
           {animPhase === 0 && (
             <div style={{ textAlign: "center", padding: "60px 40px", background: "white", borderRadius: 24, border: "2px dashed #E2E8F0", width: "100%" }}>
               <div style={{ fontSize: 64, marginBottom: 16 }}><Glyph e="🪪" /></div>
-              <div style={{ fontSize: 18, fontWeight: 800, color: "#94A3B8", marginBottom: 8 }}>
+              <div style={{ fontSize: 18, fontWeight: 800, color: "var(--ea-muted)", marginBottom: 8 }}>
                 {tab === "student" ? "Select a Student" : "Select a Faculty Member"}
               </div>
-              <div style={{ fontSize: 13, color: "#CBD5E1", maxWidth: 300, margin: "0 auto", lineHeight: 1.6 }}>
+              <div style={{ fontSize: 13, color: "var(--ea-faint)", maxWidth: 300, margin: "0 auto", lineHeight: 1.6 }}>
                 {tab === "student"
                   ? "Filter by class and section, then click on a student to generate their ID card"
                   : "Click on a faculty member from the list to generate their identity card"}
@@ -341,7 +341,7 @@ export default function IDCardGenerator() {
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 24 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <div style={{ height: 1, width: 60, background: "#E2E8F0" }} />
-                <span style={{ fontSize: 11, color: "#94A3B8", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>ID Card Preview</span>
+                <span style={{ fontSize: 11, color: "var(--ea-muted)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>ID Card Preview</span>
                 <div style={{ height: 1, width: 60, background: "#E2E8F0" }} />
               </div>
               <div id="id-card-print">
@@ -366,7 +366,7 @@ export default function IDCardGenerator() {
                     { label: "Qualification", value: selected.qualification || "—" },
                   ]).map((item, i) => (
                     <div key={i} style={{ background: "#F8FAFC", borderRadius: 10, padding: "8px 12px" }}>
-                      <div style={{ fontSize: 10, fontWeight: 700, color: "#94A3B8", marginBottom: 2 }}>{item.label}</div>
+                      <div style={{ fontSize: 10, fontWeight: 700, color: "var(--ea-muted)", marginBottom: 2 }}>{item.label}</div>
                       <div style={{ fontSize: 12, fontWeight: 700, color: "#0F172A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.value}</div>
                     </div>
                   ))}

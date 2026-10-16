@@ -101,7 +101,7 @@ export default function StudentFee() {
             {pendingFees.length === 0 ? (
               <div style={{ textAlign: "center", padding: "48px 0" }}>
                 <div style={{ fontSize: 40, marginBottom: 12 }}><Glyph e="✅" /></div>
-                <div style={{ fontSize: 15, fontWeight: 700, color: "#22c55e" }}>All fees cleared</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "var(--ea-on-card-success)" }}>All fees paid</div>
                 <div style={{ fontSize: 13, color: "var(--subtext)", marginTop: 4 }}>No outstanding payments</div>
               </div>
             ) : (
@@ -112,7 +112,7 @@ export default function StudentFee() {
                       <div>
                         <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text)" }}>{f.feeType}</div>
                         {f.academicYear && <div style={{ fontSize: 12, color: "var(--subtext)", marginTop: 3 }}>{f.academicYear}</div>}
-                        <div style={{ fontSize: 12, color: "#ef4444", marginTop: 2 }}>Due: {formatDate(f.dueDate)}</div>
+                        <div style={{ fontSize: 12, color: "var(--ea-on-card-danger)", marginTop: 2 }}>Due: {formatDate(f.dueDate)}</div>
                       </div>
                       <div style={{ textAlign: "right" }}>
                         <div style={{ fontSize: 17, fontWeight: 800, color: "var(--text)" }}>{formatAmount(balanceOf(f))}</div>
@@ -126,7 +126,7 @@ export default function StudentFee() {
 
                 <div style={{ background: "var(--card)", borderRadius: 16, padding: 16, boxShadow: "0 2px 10px rgba(0,0,0,0.06)", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                   <div style={{ fontSize: 15, fontWeight: 700, color: "var(--text)" }}>Total Outstanding</div>
-                  <div style={{ fontSize: 20, fontWeight: 900, color: "#ef4444" }}>{formatAmount(summary.totalDue)}</div>
+                  <div style={{ fontSize: 20, fontWeight: 900, color: "var(--ea-on-card-danger)" }}>{formatAmount(summary.totalDue)}</div>
                 </div>
 
                 <PaymentInfo enabled={onlineEnabled} />
@@ -149,13 +149,13 @@ export default function StudentFee() {
                     <div>
                       <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text)" }}>{f.feeType}</div>
                       {f.academicYear && <div style={{ fontSize: 12, color: "var(--subtext)", marginTop: 3 }}>{f.academicYear}</div>}
-                      {f.paidDate && <div style={{ fontSize: 12, color: "#22c55e", marginTop: 2 }}>Last paid on {formatDate(f.paidDate)}</div>}
+                      {f.paidDate && <div style={{ fontSize: 12, color: "var(--ea-on-card-success)", marginTop: 2 }}>Last paid on {formatDate(f.paidDate)}</div>}
                       <ReceiptLinks fee={f} />
                     </div>
                     <div style={{ textAlign: "right" }}>
                       <div style={{ fontSize: 17, fontWeight: 800, color: "var(--text)" }}>{formatAmount(f.paidAmount)}</div>
                       {f.status !== "Paid" && <div style={{ fontSize: 11, color: "var(--subtext)" }}>of {formatAmount(f.amount)}</div>}
-                      <div style={{ fontSize: 11, fontWeight: 700, color: "#22c55e", background: "#dcfce7", padding: "3px 10px", borderRadius: 20, marginTop: 4 }}>{f.status === "Paid" ? "PAID" : "PART PAID"}</div>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: "var(--ea-on-card-success)", background: "color-mix(in srgb, var(--ea-on-card-success) 14%, transparent)", padding: "3px 10px", borderRadius: 20, marginTop: 4 }}>{f.status === "Paid" ? "PAID" : "PART PAID"}</div>
                     </div>
                   </div>
                 </div>

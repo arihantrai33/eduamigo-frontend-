@@ -28,9 +28,9 @@ const InfoField = ({ icon: Icon, label, value, accent = "var(--brand)" }) => (
       <Icon size={15} color={accent} />
     </div>
     <div>
-      <div style={{ fontSize: 11, color: "#94A3B8", fontWeight: 500, marginBottom: 3 }}>{label}</div>
+      <div style={{ fontSize: 11, color: "var(--ea-muted)", fontWeight: 500, marginBottom: 3 }}>{label}</div>
       <div style={{ fontSize: 13, color: "#0F172A", fontWeight: 600, lineHeight: 1.4 }}>
-        {value || <span style={{ color: "#CBD5E1", fontWeight: 400 }}>Not provided</span>}
+        {value || <span style={{ color: "var(--ea-faint)", fontWeight: 400 }}>Not provided</span>}
       </div>
     </div>
   </div>
@@ -39,7 +39,7 @@ const InfoField = ({ icon: Icon, label, value, accent = "var(--brand)" }) => (
 const SectionHeader = ({ title, subtitle }) => (
   <div style={{ marginBottom: 16 }}>
     <div style={{ fontSize: 13, fontWeight: 700, color: "#0F172A", letterSpacing: "-0.1px" }}>{title}</div>
-    {subtitle && <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>{subtitle}</div>}
+    {subtitle && <div style={{ fontSize: 11, color: "var(--ea-muted)", marginTop: 2 }}>{subtitle}</div>}
   </div>
 );
 
@@ -210,24 +210,24 @@ export default function TeacherProfile() {
                   <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 5, flexWrap: "wrap" }}>
                     {teacher.subjects?.length > 0 && (
                       <span style={{ fontSize: 12, color: "#64748B", display: "flex", alignItems: "center", gap: 4 }}>
-                        <BookOpen size={12} color="#94A3B8" />
+                        <BookOpen size={12} color="var(--ea-muted)" />
                         {teacher.subjects.join(", ")}
                       </span>
                     )}
                     {teacher.employeeId && (
                       <>
-                        <span style={{ color: "#CBD5E1", fontSize: 12 }}>·</span>
+                        <span style={{ color: "var(--ea-faint)", fontSize: 12 }}>·</span>
                         <span style={{ fontSize: 12, color: "#64748B", display: "flex", alignItems: "center", gap: 4 }}>
-                          <Hash size={11} color="#94A3B8" />
+                          <Hash size={11} color="var(--ea-muted)" />
                           {teacher.employeeId}
                         </span>
                       </>
                     )}
                     {teacher.experience > 0 && (
                       <>
-                        <span style={{ color: "#CBD5E1", fontSize: 12 }}>·</span>
+                        <span style={{ color: "var(--ea-faint)", fontSize: 12 }}>·</span>
                         <span style={{ fontSize: 12, color: "#64748B", display: "flex", alignItems: "center", gap: 4 }}>
-                          <Clock size={11} color="#94A3B8" />
+                          <Clock size={11} color="var(--ea-muted)" />
                           {teacher.experience} {teacher.experience === 1 ? "year" : "years"} experience
                         </span>
                       </>
@@ -270,7 +270,7 @@ export default function TeacherProfile() {
                           <div style={{ fontSize: stat.small ? 11 : 18, fontWeight: stat.small ? 600 : 800, color: stat.color, lineHeight: 1.2 }}>
                             {stat.value}
                           </div>
-                          <div style={{ fontSize: 10, color: "#94A3B8", marginTop: 1 }}>{stat.label}</div>
+                          <div style={{ fontSize: 10, color: "var(--ea-muted)", marginTop: 1 }}>{stat.label}</div>
                         </div>
                       </div>
                     ))}
@@ -334,7 +334,7 @@ export default function TeacherProfile() {
                 ) : (
                   <div style={{
                     textAlign: "center", padding: "24px 0",
-                    color: "#94A3B8", fontSize: 13,
+                    color: "var(--ea-muted)", fontSize: 13,
                   }}>
                     No classes assigned yet
                   </div>
@@ -365,7 +365,7 @@ export default function TeacherProfile() {
                 ) : (
                   <div style={{
                     textAlign: "center", padding: "24px 0",
-                    color: "#94A3B8", fontSize: 13,
+                    color: "var(--ea-muted)", fontSize: 13,
                   }}>
                     No subjects assigned yet
                   </div>

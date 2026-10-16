@@ -85,7 +85,7 @@ export default function ParentFee() {
   if (error) return (
     <div style={styles.centered}>
       <div style={{ fontSize: 40, marginBottom: 12 }}></div>
-      <div style={{ color: "#ef4444", fontSize: 14, fontWeight: 600 }}>{error}</div>
+      <div style={{ color: "var(--ea-on-card-danger)", fontSize: 14, fontWeight: 600 }}>{error}</div>
       <button onClick={fetchData} style={styles.retryBtn}>Try Again</button>
     </div>
   );
@@ -139,7 +139,7 @@ export default function ParentFee() {
           <div style={styles.allClear}>
             <div style={{ fontSize: 22 }}></div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 700, fontSize: 14, color: "#14532d" }}>All fees cleared!</div>
+              <div style={{ fontWeight: 700, fontSize: 14, color: "#14532d" }}>All fees paid</div>
               <div style={{ fontSize: 12, color: "#16a34a", marginTop: 2 }}>No outstanding dues.</div>
             </div>
           </div>

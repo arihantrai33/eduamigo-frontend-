@@ -118,7 +118,7 @@ export default function ExamSchedule() {
   // A <label> around the caption and the field, so the field takes the caption as its name.
   const inp = (label, key, type="text", placeholder="") => (
     <label style={{ display:"block" }}>
-      <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
+      <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
       <input id={`exam-${key}`} type={type} value={form[key]||""} onChange={e => f(key, e.target.value)} placeholder={placeholder} {...fe.invalid(key)}
         style={{ width:"100%", height:42, padding:"0 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white", color:"#0F172A" }}
         onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
@@ -127,7 +127,7 @@ export default function ExamSchedule() {
   );
   const sel = (label, key, options) => (
     <label style={{ display:"block" }}>
-      <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
+      <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
       <select value={form[key]||""} onChange={e => f(key, e.target.value)} style={SELECT_STYLE}>
         <option value="">Select</option>
         {options.map(o => <option key={o} value={o}>{o}</option>)}
@@ -177,7 +177,7 @@ export default function ExamSchedule() {
           <option value="">All Classes</option>
           {classes.map(c => <option key={c} value={c}>Class {c}</option>)}
         </select>
-        <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600 }}>{filtered.length} exams</div>
+        <div style={{ fontSize:12, color:"var(--ea-muted)", fontWeight:600 }}>{filtered.length} exams</div>
       </div>
 
       {/* Exam Cards */}
@@ -228,7 +228,7 @@ export default function ExamSchedule() {
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             {sel("EXAM TYPE","examType",examTypes)}
             <div>
-              <label htmlFor="exam-subject" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>SUBJECT</label>
+              <label htmlFor="exam-subject" style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>SUBJECT</label>
               <input id="exam-subject" list="exam-subjects" value={form.subject||""} onChange={e => f("subject", e.target.value)} placeholder="e.g. Mathematics" {...fe.invalid("subject")}
                 style={{ width:"100%", height:42, padding:"0 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white", color:"#0F172A" }} />
               <FieldError id="exam-subject-error">{fe.errors.subject}</FieldError>
@@ -238,7 +238,7 @@ export default function ExamSchedule() {
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             {inp("CLASS","class","text","e.g. 10")}
             {inp("SECTION","section","text","e.g. A")}
-            <div style={{ gridColumn:"1 / -1", fontSize:11, color:"#94A3B8", marginTop:-4 }}>Leave section empty to schedule the exam for every section of the class.</div>
+            <div style={{ gridColumn:"1 / -1", fontSize:11, color:"var(--ea-muted)", marginTop:-4 }}>Leave section empty to schedule the exam for every section of the class.</div>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:12 }}>
             {inp("DATE","date","date","")}
@@ -250,15 +250,15 @@ export default function ExamSchedule() {
             {inp("VENUE","venue","text","e.g. Room 101")}
           </div>
           <div>
-            <label htmlFor="exam-term" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>TERM</label>
+            <label htmlFor="exam-term" style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>TERM</label>
             <select id="exam-term" value={form.term||""} onChange={e => f("term", e.target.value)} style={SELECT_STYLE}>
               <option value="">Set from the exam date (Apr–Sep: Term 1, Oct–Mar: Term 2)</option>
               {terms.map(t => <option key={t} value={t}>{t}</option>)}
             </select>
-            <div style={{ fontSize:11, color:"#94A3B8", marginTop:6 }}>Report cards group results by term.</div>
+            <div style={{ fontSize:11, color:"var(--ea-muted)", marginTop:6 }}>Report cards group results by term.</div>
           </div>
           <div>
-            <label htmlFor="exam-instructions" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>INSTRUCTIONS</label>
+            <label htmlFor="exam-instructions" style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>INSTRUCTIONS</label>
             <textarea id="exam-instructions" value={form.instructions||""} onChange={e => f("instructions", e.target.value)} placeholder="Special instructions..."
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", resize:"vertical", minHeight:70 }} />
           </div>
@@ -275,7 +275,7 @@ export default function ExamSchedule() {
         <div style={{ textAlign:"center", padding:"8px 0 24px" }}>
           <div style={{ fontSize:52, marginBottom:16 }}><Glyph e="🗑" /></div>
           <div style={{ fontSize:16, fontWeight:700, color:"#0F172A", marginBottom:8 }}>Delete this exam?</div>
-          <div style={{ fontSize:13, color:"#94A3B8", marginBottom:24 }}>This exam will be permanently removed. Exams that already have marks cannot be deleted.</div>
+          <div style={{ fontSize:13, color:"var(--ea-muted)", marginBottom:24 }}>This exam will be permanently removed. Exams that already have marks cannot be deleted.</div>
           <div style={{ display:"flex", gap:10, justifyContent:"center" }}>
             <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
             <button onClick={() => handleDelete(deleteId)} className="ea-btn ea-btn--danger">Delete</button>

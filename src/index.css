@@ -400,6 +400,11 @@ input, button, select, textarea {
    admin layout and the teacher pages have no dark theme, so overriding them on :root would darken some cards there
    and not their inline-styled siblings. */
 [data-theme="dark"] .ea-shell--themed {
+  /* Category colours, lighter so they read on dark cards (the tints mix 10% of these into the card). */
+  --ea-cat-1: #5EEAD4; --ea-cat-2: #A5B4FC; --ea-cat-3: #FCD34D; --ea-cat-4: #FDA4AF; --ea-cat-5: #7DD3FC; --ea-cat-6: #CBD5E1;
+  --ea-cat-1-bg: color-mix(in srgb, #5EEAD4 12%, transparent); --ea-cat-2-bg: color-mix(in srgb, #A5B4FC 12%, transparent);
+  --ea-cat-3-bg: color-mix(in srgb, #FCD34D 12%, transparent); --ea-cat-4-bg: color-mix(in srgb, #FDA4AF 12%, transparent);
+  --ea-cat-5-bg: color-mix(in srgb, #7DD3FC 12%, transparent); --ea-cat-6-bg: color-mix(in srgb, #CBD5E1 12%, transparent);
   --app-bg: #0f172a;
   --ea-canvas: #0f172a;
   --ea-surface: #1e293b;
@@ -937,6 +942,8 @@ td .ea-skeleton { box-sizing: border-box; padding: 0 20px; }
 /* Exactly four cards: 2 × 2 up to 1099 px and one row from 1100 px, never 3 + 1. */
 .ea-stats:has(> :nth-child(4):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (min-width: 1100px) { .ea-stats:has(> :nth-child(4):last-child) { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+/* Exactly five cards: one row of five from 1100 px (the shared auto-fit gave 4 + 1); phones scroll them (.ea-stats--many). */
+@media (min-width: 1100px) { .ea-stats:has(> :nth-child(5):last-child) { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
 .ea-stat--row { flex-direction: row; align-items: center; gap: 14px; padding: 16px 18px; min-width: 0; }
 .ea-stat.is-static { cursor: default; }
 .ea-stat.is-selected, .ea-stat.is-selected:hover { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-soft); }

@@ -111,13 +111,13 @@ export default function Notes() {
       {/* Search */}
       <div className="ea-pd-bar ea-search-pill" style={{ display: 'flex', alignItems: 'center', background: dm ? '#0f172a' : '#F0F2F5', borderRadius: 12, margin: '12px 16px', padding: '8px 14px', gap: 8 }}>
         <span style={{ fontSize: 16, opacity: 0.5 }}><Glyph e="🔍" /></span>
-        <input style={{ border: 'none', background: 'transparent', fontSize: 14, color: dm ? '#cbd5e1' : '#333', outline: 'none', width: '100%', colorScheme: dm ? 'dark' : 'light' }} aria-label="Search notes" placeholder="Search notes, subjects..." value={search} onChange={(e) => setSearch(e.target.value)} />
+        <input style={{ border: 'none', background: 'transparent', fontSize: 14, color: dm ? 'var(--ea-faint)' : '#333', outline: 'none', width: '100%', colorScheme: dm ? 'dark' : 'light' }} aria-label="Search notes" placeholder="Search notes, subjects..." value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
       {/* Tabs */}
       <div className="ea-pd-row" style={{ display: 'flex', gap: 8, padding: '0 16px 12px' }}>
         {tabs.map(tab => (
           <button key={tab.key} type="button" aria-pressed={activeTab === tab.key}
-            style={{ padding: '8px 16px', borderRadius: 20, border: activeTab === tab.key ? '1.5px solid var(--brand)' : `1.5px solid ${dm ? '#334155' : '#E0E0E0'}`, background: activeTab === tab.key ? (dm ? '#1e3a5f' : 'var(--brand-soft)') : (dm ? '#1e293b' : '#fff'), fontSize: 13, fontWeight: activeTab === tab.key ? 700 : 500, cursor: 'pointer', color: activeTab === tab.key ? (dm ? 'var(--brand-light)' : 'var(--brand)') : (dm ? '#94a3b8' : '#666') }}
+            style={{ padding: '8px 16px', borderRadius: 20, border: activeTab === tab.key ? '1.5px solid var(--brand)' : `1.5px solid ${dm ? '#334155' : '#E0E0E0'}`, background: activeTab === tab.key ? (dm ? '#1e3a5f' : 'var(--brand-soft)') : (dm ? '#1e293b' : '#fff'), fontSize: 13, fontWeight: activeTab === tab.key ? 700 : 500, cursor: 'pointer', color: activeTab === tab.key ? (dm ? 'var(--brand-light)' : 'var(--brand)') : (dm ? 'var(--ea-muted)' : '#666') }}
             onClick={() => setActiveTab(tab.key)}>
             {tab.label}
           </button>
@@ -137,7 +137,7 @@ export default function Notes() {
         {/* NOTES TAB */}
         {activeTab === 'Notes' && (
           <>
-            <div style={{ fontSize: 11, fontWeight: 700, color: dm ? '#64748b' : '#999', letterSpacing: 1, marginBottom: 10, marginTop: 4 }}>RECENT NOTES</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: dm ? '#64748b' : 'var(--ea-muted)', letterSpacing: 1, marginBottom: 10, marginTop: 4 }}>RECENT NOTES</div>
             {filtered.length === 0 ? (
               search
                 ? <EmptyState icon={SearchX} title="Nothing matches your search" text="Try a different word, or clear the search." />
@@ -149,11 +149,11 @@ export default function Notes() {
                   <div style={{ width: 44, height: 44, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0, background: color }}>{icon}</div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 14, fontWeight: 600, color: dm ? '#f1f5f9' : '#1A1A2E', marginBottom: 3 }}>{note.title}</div>
-                    <div style={{ fontSize: 12, color: dm ? '#94a3b8' : '#888' }}>{note.teacherName} • {note.subject} • {formatDate(note.createdAt)}</div>
+                    <div style={{ fontSize: 12, color: dm ? 'var(--ea-muted)' : '#888' }}>{note.teacherName} • {note.subject} • {formatDate(note.createdAt)}</div>
                   </div>
                   {note.fileUrl
-                    ? <a href={note.fileUrl} target="_blank" rel="noreferrer" style={{ background: dm ? '#0f172a' : '#F0F2F5', border: 'none', borderRadius: 10, width: 34, height: 34, fontSize: 16, cursor: 'pointer', color: dm ? '#94a3b8' : '#555', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, textDecoration: 'none' }}>↓</a>
-                    : <button style={{ background: dm ? '#0f172a' : '#F0F2F5', border: 'none', borderRadius: 10, width: 34, height: 34, fontSize: 16, color: dm ? '#94a3b8' : '#555', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, opacity: 0.4 }} disabled>↓</button>
+                    ? <a href={note.fileUrl} target="_blank" rel="noreferrer" style={{ background: dm ? '#0f172a' : '#F0F2F5', border: 'none', borderRadius: 10, width: 34, height: 34, fontSize: 16, cursor: 'pointer', color: dm ? 'var(--ea-muted)' : '#555', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, textDecoration: 'none' }}>↓</a>
+                    : <button style={{ background: dm ? '#0f172a' : '#F0F2F5', border: 'none', borderRadius: 10, width: 34, height: 34, fontSize: 16, color: dm ? 'var(--ea-muted)' : '#555', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, opacity: 0.4 }} disabled>↓</button>
                   }
                 </div>
               );
@@ -163,7 +163,7 @@ export default function Notes() {
         {/* TASKS TAB */}
         {activeTab === 'Tasks' && (
           <>
-            <div style={{ fontSize: 11, fontWeight: 700, color: dm ? '#64748b' : '#999', letterSpacing: 1, marginBottom: 10, marginTop: 4 }}>MY ASSIGNMENTS</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: dm ? '#64748b' : 'var(--ea-muted)', letterSpacing: 1, marginBottom: 10, marginTop: 4 }}>MY ASSIGNMENTS</div>
             {assignments.length === 0 ? (
               <EmptyState icon={Inbox} title="No assignments yet" text="Assignments will appear here once assigned by your teacher." />
             ) : assignments.map(task => {
@@ -178,7 +178,7 @@ export default function Notes() {
                     <div style={{ width: 44, height: 44, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0, background: color }}>{icon}</div>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 14, fontWeight: 600, color: dm ? '#f1f5f9' : '#1A1A2E', marginBottom: 3 }}>{task.title}</div>
-                      <div style={{ fontSize: 12, color: dm ? '#94a3b8' : '#888' }}>Due: {formatDate(task.dueDate)} • <span style={{ color: accentColor, fontWeight: 600 }}>{isDone ? 'Submitted' : isUrgent ? 'Urgent' : 'Pending'}</span></div>
+                      <div style={{ fontSize: 12, color: dm ? 'var(--ea-muted)' : '#888' }}>Due: {formatDate(task.dueDate)} • <span style={{ color: accentColor, fontWeight: 600 }}>{isDone ? 'Submitted' : isUrgent ? 'Urgent' : 'Pending'}</span></div>
                     </div>
                   </div>
                   {isDone
@@ -193,7 +193,7 @@ export default function Notes() {
         {/* RESOURCES TAB */}
         {activeTab === 'Resources' && (
           <>
-            <div style={{ fontSize: 11, fontWeight: 700, color: dm ? '#64748b' : '#999', letterSpacing: 1, marginBottom: 10, marginTop: 4 }}>STUDY RESOURCES</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: dm ? '#64748b' : 'var(--ea-muted)', letterSpacing: 1, marginBottom: 10, marginTop: 4 }}>STUDY RESOURCES</div>
             {filtered.length === 0 ? (
               search
                 ? <EmptyState icon={SearchX} title="Nothing matches your search" text="Try a different word, or clear the search." />
@@ -205,11 +205,11 @@ export default function Notes() {
                   <div style={{ width: 44, height: 44, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0, background: color }}>{icon}</div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 14, fontWeight: 600, color: dm ? '#f1f5f9' : '#1A1A2E', marginBottom: 3 }}>{res.title}</div>
-                    <div style={{ fontSize: 12, color: dm ? '#94a3b8' : '#888' }}>{res.type} • {res.fileSize || '—'}</div>
+                    <div style={{ fontSize: 12, color: dm ? 'var(--ea-muted)' : '#888' }}>{res.type} • {res.fileSize || '—'}</div>
                   </div>
                   {res.fileUrl
-                    ? <a href={res.fileUrl} target="_blank" rel="noreferrer" style={{ background: dm ? '#0f172a' : '#F0F2F5', border: 'none', borderRadius: 10, width: 34, height: 34, fontSize: 16, cursor: 'pointer', color: dm ? '#94a3b8' : '#555', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, textDecoration: 'none' }}>↓</a>
-                    : <button style={{ background: dm ? '#0f172a' : '#F0F2F5', border: 'none', borderRadius: 10, width: 34, height: 34, fontSize: 16, color: dm ? '#94a3b8' : '#555', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, opacity: 0.4 }} disabled>↓</button>
+                    ? <a href={res.fileUrl} target="_blank" rel="noreferrer" style={{ background: dm ? '#0f172a' : '#F0F2F5', border: 'none', borderRadius: 10, width: 34, height: 34, fontSize: 16, cursor: 'pointer', color: dm ? 'var(--ea-muted)' : '#555', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, textDecoration: 'none' }}>↓</a>
+                    : <button style={{ background: dm ? '#0f172a' : '#F0F2F5', border: 'none', borderRadius: 10, width: 34, height: 34, fontSize: 16, color: dm ? 'var(--ea-muted)' : '#555', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, opacity: 0.4 }} disabled>↓</button>
                   }
                 </div>
               );
@@ -229,19 +229,19 @@ export default function Notes() {
               { label: 'TYPE',    key: 'type',    options: ['Notes','Assignment','Resource','Question Paper'] },
             ].map(f => (
               <div key={f.key}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: dm ? '#94a3b8' : '#999', letterSpacing: 1, marginBottom: 8, marginTop: 16 }}>{f.label}</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)', letterSpacing: 1, marginBottom: 8, marginTop: 16 }}>{f.label}</div>
                 <select style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: `1.5px solid ${dm ? '#334155' : '#E8E8F0'}`, background: dm ? '#0f172a' : '#F8F8FF', fontSize: 14, color: dm ? '#f1f5f9' : '#1A1A2E', outline: 'none', cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', colorScheme: dm ? 'dark' : 'light' }} value={form[f.key]} onChange={e => setForm({ ...form, [f.key]: e.target.value })}>
                   {f.options.map(o => <option key={o}>{o}</option>)}
                 </select>
               </div>
             ))}
-            <div style={{ fontSize: 11, fontWeight: 700, color: dm ? '#94a3b8' : '#999', letterSpacing: 1, marginBottom: 8, marginTop: 16 }}>TITLE</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)', letterSpacing: 1, marginBottom: 8, marginTop: 16 }}>TITLE</div>
             <input style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: `1.5px solid ${dm ? '#334155' : '#E8E8F0'}`, background: dm ? '#0f172a' : '#fff', fontSize: 14, color: dm ? '#f1f5f9' : '#1A1A2E', outline: 'none', boxSizing: 'border-box' }} placeholder="e.g. Trigonometry Chapter 8" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
-            <div style={{ fontSize: 11, fontWeight: 700, color: dm ? '#94a3b8' : '#999', letterSpacing: 1, marginBottom: 8, marginTop: 16 }}>FILE URL</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)', letterSpacing: 1, marginBottom: 8, marginTop: 16 }}>FILE URL</div>
             <input style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: `1.5px solid ${dm ? '#334155' : '#E8E8F0'}`, background: dm ? '#0f172a' : '#fff', fontSize: 14, color: dm ? '#f1f5f9' : '#1A1A2E', outline: 'none', boxSizing: 'border-box' }} placeholder="https://..." value={form.fileUrl} onChange={e => setForm({ ...form, fileUrl: e.target.value })} />
             {form.type === 'Assignment' && (
               <>
-                <div style={{ fontSize: 11, fontWeight: 700, color: dm ? '#94a3b8' : '#999', letterSpacing: 1, marginBottom: 8, marginTop: 16 }}>DUE DATE</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: dm ? 'var(--ea-muted)' : 'var(--ea-muted)', letterSpacing: 1, marginBottom: 8, marginTop: 16 }}>DUE DATE</div>
                 <input style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: `1.5px solid ${dm ? '#334155' : '#E8E8F0'}`, background: dm ? '#0f172a' : '#fff', fontSize: 14, color: dm ? '#f1f5f9' : '#1A1A2E', outline: 'none', boxSizing: 'border-box', colorScheme: dm ? 'dark' : 'light' }} type="date" value={form.dueDate} onChange={e => setForm({ ...form, dueDate: e.target.value })} />
               </>
             )}

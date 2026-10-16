@@ -1008,3 +1008,56 @@ Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B14 (risk H). Layout only: the s
 - After removing the sticky rule: the attendance workflow test again (1/1) and a phone recapture.
 - Sweep 390/1280: 156 screens, 0 findings.
 - The build passes; ESLint on `teacher/Attendance.jsx` has one fewer error than HEAD (the now-unused `STATUS_COLORS` and an unused index variable are gone).
+
+### Redesign batch B15: final verification (2026-10-16)
+Plan: `docs/EDUAMIGO_DESIGN_SYSTEM_PLAN.md` §4 B15. Every batch B0–B14 is committed. This batch fixes what the final review found, then records one definitive run on the finished code.
+
+**Fixed in this batch:**
+- **Text contrast (light mode, all roles).** The first light-mode probe across all four roles found faint text on 29 screens. Two kinds:
+  - grey text (#94A3B8, #9CA3AF, #999, #ccc, #BDBDBD…), about 1.5–2.9:1;
+  - status text in the light 500 shades (#10B981, #F59E0B, #EF4444…), about 2.1–2.5:1.
+
+  A scripted pass changed only the text-colour property (`color:` in style objects, `color=` on icons, `color:` in CSS strings) to the tokens: `--ea-muted` (4.6:1), `--ea-faint` and the `--ea-on-card-success/warning/danger` status tokens. That is 302 changes in 54 files, which also follow dark mode now. Light-on-dark colours and the dark driver screen were left out.
+- **Status text set through variables:** HR status badge, parent leave history, parent attendance calendar and list badge.
+- **Badges with a hard-coded light fill under a status token:** these would have turned light-on-light in dark mode (parent attendance, parent results grade C, student attendance warning, student fee "Paid"). Their fill is now the status colour mixed into a transparent tint, so it works in both themes.
+- **Category colours in dark mode:** `--ea-cat-1..6` and their tints have lighter values under `.ea-shell--themed` dark.
+- **Parent School Calendar:** event types use the category palette (B8 had done only the admin calendar); fee due dates stay a status (danger).
+- **Five-card KPI rows** (Fee Collection, Reports, User Management) were 4 + 1 at 1280. They are now one row of five from 1100 px; phones keep the sideways row from B6.
+- **Report card opened without a student or class** showed "You do not have permission to perform this action":
+  - a student now gets their own card (as the Results button does with `studentId=me`);
+  - anyone else sees "Choose a student or a class first. Report cards open from the Results screen." and no request is made.
+- **Copy:**
+  - Exclamation marks removed: "Leave request sent" (was "Leave Applied Successfully!"), "All fees paid" (was "All fees cleared!" and "All fees cleared"), "Copied", "Reached school", "Good standing — keep it up", "No messages yet. Write the first message below." (was "Say hello!").
+  - **Bulk Operations → Fee Reminder** said "send reminders via SMS/Email (integration coming soon)". The feature only lists students with pending fees and their parents' contacts, so it now says exactly that. Its error reads "Could not load the students with pending fees" (was "…send the fee reminders").
+  - "STUDENTS WITH PENDING FEES" is in sentence case.
+  - A scan for developer or placeholder wording ("API", "undefined", "TODO", "Lorem", "click here", "coming soon") found nothing else in visible text.
+
+**Definitive run on the final code (ports 8130/5194):**
+- Full Playwright suite with the opt-in sweep and crawl switched on: **133 passed, 0 failed, 0 skipped**.
+- **Sweep at four widths** (390, 768, 1024, 1280): 312 screens, **0 findings**. No sideways scroll, no JavaScript errors, nothing cut off or covered by the tab bar.
+- **Contrast** (text under 3:1): light mode admin (32 routes), teacher (10), student (13) and parent (10); dark mode student and parent: **0 in all six runs**. The probe was also fixed: it used to misread `color(srgb …)` backgrounds from `color-mix()` as near-black.
+- **Dead-click crawl:** 206 clicks across the four roles, 1 flagged: School Setup "Go to: Assign class teachers". A separate check shows it works (the page scrolls 379 px and focus moves to the Classes section). The crawl only compares a DOM snapshot, so it does not see scrolling; a false positive.
+- **Build:** passes. **ESLint:** the counts on every changed file match HEAD (one fewer on `teacher/Attendance.jsx`).
+- **Contact sheets:** all 78 routes at 1280 and 390 were reviewed from the four-width sweep. One sheet was double-checked against the original screenshot after a misreading of a scaled-down tile.
+
+**Route inventory (78 routes, every one opened and inspected at 390 and 1280; the sweep also covers 768 and 1024):**
+
+| Group | Routes | Status |
+|---|---|---|
+| Sign-in and platform | `/`, `/select-school`, `/s/:code`, `/login`, `/forgot-password`, `/support`, `/driver` (token entry) | PASS |
+| Student (15) | home, attendance, result, fee, bus, timetable, notes, learn, revise, apply-leave, notifications, chat, profile, change-password, report-card | PASS |
+| Teacher (10) | home, students, attendance, marks, upload, timetable, leave, notifications, profile, chat | PASS |
+| Parent (10) | home, chat, apply-leave, notifications, attendance, calendar, fee, result, bus, profile | PASS |
+| Admin (35) | dashboard, students (+add, profile), parents (+add), teachers (+add, profile), attendance reports (both routes), chat, exams, fees, fee reports, fee structure, leaves, library, admissions, communications, reports, results, salaries, settings, academic, activity, ask, year end, TC, timetable, transport, user management, event calendar, bulk operations, HR | PASS |
+| Admin, partly | `/admin/id-card-generator` | PARTIAL: the page UI follows the system; the printed ID card designs keep their own colours on purpose |
+| Admin, partly | `/admin/teachers/:id` on a phone | PARTIAL: the three header figures stack vertically (readable, but not the StatCard layout) |
+
+**Not a route (outside the 78):**
+- The driver trip screen (`/driver` after a valid token) keeps its dark design.
+- `pages/admin/Attendance.jsx`, `NoticeBoard.jsx` and `Notifications.jsx` are not imported anywhere, so they are unreachable (see B8). Removing them is the owner's decision.
+
+**Known open items (functional, not redesign):**
+- Notes → assignment "Submit" has no handler (since B3).
+- Push notifications are stored but not sent.
+- The leave forms' attachment drop zone is not keyboard-reachable (nested buttons; needs restructuring).
+- The test suite writes records ("Edit Me", "Imported Pupil", activity rows) into the local 8130 test database; the owner's demo on 8000/5173 was never used.

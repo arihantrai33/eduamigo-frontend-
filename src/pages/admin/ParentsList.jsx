@@ -137,7 +137,7 @@ export default function ParentsList() {
                     </div>
                     <div>
                       <div style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>{p.name}</div>
-                      {p.gender && <div style={{ fontSize:11, color:"#94A3B8" }}>{p.gender}</div>}
+                      {p.gender && <div style={{ fontSize:11, color:"var(--ea-muted)" }}>{p.gender}</div>}
                     </div>
                   </div>
                 </td>
@@ -154,7 +154,7 @@ export default function ParentsList() {
                       ))}
                     </div>
                   ) : (
-                    <span style={{ fontSize:12, color:"#CBD5E1", fontWeight:600 }}>No student linked</span>
+                    <span style={{ fontSize:12, color:"var(--ea-faint)", fontWeight:600 }}>No student linked</span>
                   )}
                 </td>
                 <td style={{ padding:"14px 18px" }}>
@@ -192,7 +192,7 @@ export default function ParentsList() {
                 ["Address", selectedParent.address],
               ].map(([label, value]) => value ? (
                 <div key={label} style={{ background:"#F8FAFC", borderRadius:10, padding:"12px 14px" }}>
-                  <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:4 }}>{label}</div>
+                  <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:4 }}>{label}</div>
                   <div style={{ fontSize:13, fontWeight:600, color:"#374151" }}>{value}</div>
                 </div>
               ) : null)}
@@ -218,7 +218,7 @@ export default function ParentsList() {
                   ))}
                 </div>
               ) : (
-                <div style={{ padding:"20px", textAlign:"center", background:"#F8FAFC", borderRadius:12, color:"#94A3B8", fontSize:13 }}>
+                <div style={{ padding:"20px", textAlign:"center", background:"#F8FAFC", borderRadius:12, color:"var(--ea-muted)", fontSize:13 }}>
                   No students linked yet
                 </div>
               )}
@@ -230,13 +230,13 @@ export default function ParentsList() {
       {/* Add Parent Modal */}
       <Modal show={showAddModal} onClose={() => setShowAddModal(false)} title="Add New Parent">
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
-          <div style={{ background:"#FFFBEB", borderRadius:10, padding:"10px 14px", fontSize:12, color:"#D97706", fontWeight:600 }}>
+          <div style={{ background:"#FFFBEB", borderRadius:10, padding:"10px 14px", fontSize:12, color:"var(--ea-on-card-warning)", fontWeight:600 }}>
             A temporary password will be generated and shown after saving
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             {[["FULL NAME","name","text"],["PHONE","phone","tel"],["EMAIL","email","email"],["OCCUPATION","occupation","text"]].map(([label,key,type]) => (
               <div key={key}>
-                <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
+                <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
                 <input type={type} value={form[key]||""} onChange={e => f(key, e.target.value)}
                   style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
                   onFocus={e => e.target.style.borderColor="#F59E0B"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
@@ -244,7 +244,7 @@ export default function ParentsList() {
             ))}
           </div>
           <div>
-            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>GENDER</div>
+            <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>GENDER</div>
             <select value={form.gender} onChange={e => f("gender", e.target.value)}
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white" }}>
               <option value="">Select Gender</option>
@@ -252,12 +252,12 @@ export default function ParentsList() {
             </select>
           </div>
           <div>
-            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>ADDRESS</div>
+            <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>ADDRESS</div>
             <input value={form.address||""} onChange={e => f("address", e.target.value)}
               style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />
           </div>
           <div>
-            <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:8, letterSpacing:"0.06em" }}>LINK STUDENTS</div>
+            <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:8, letterSpacing:"0.06em" }}>LINK STUDENTS</div>
             <div style={{ maxHeight:160, overflowY:"auto", display:"flex", flexDirection:"column", gap:6 }}>
               {students.map(s => (
                 <label key={s._id} style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 12px", borderRadius:10, background: form.childrenIds.includes(s._id) ? "var(--brand-soft)" : "#F8FAFC", cursor:"pointer", border:`1px solid ${form.childrenIds.includes(s._id) ? "var(--brand-border)" : "#E2E8F0"}` }}>

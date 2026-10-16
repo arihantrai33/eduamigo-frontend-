@@ -34,7 +34,7 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
   const f = (k,v) => setForm(p => ({ ...p, [k]:v }));
   const inp = (label, key, type="text", placeholder="") => (
     <div>
-      <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
+      <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
       <input type={type} value={type === "date" ? String(form[key]||"").slice(0, 10) : form[key]||""} onChange={e=>f(key,e.target.value)} placeholder={placeholder}
         max={type === "date" ? todayLocal() : undefined}
         style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", transition:"border 0.2s" }}
@@ -43,7 +43,7 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
   );
   const sel = (label, key, options) => (
     <div>
-      <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
+      <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>{label}</div>
       <select value={form[key]||""} onChange={e=>f(key,e.target.value)} style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", background:"white", fontFamily:"inherit" }}>
         <option value="">Select</option>
         {options.map(o => <option key={o} value={o}>{o}</option>)}
@@ -68,7 +68,7 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
           {(form.photoPreview || form.photo) ? (
             <img src={form.photoPreview || form.photo} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }} />
           ) : (
-            <span style={{ fontSize: 22, color: "#94A3B8" }}><Glyph e="👤" /></span>
+            <span style={{ fontSize: 22, color: "var(--ea-muted)" }}><Glyph e="👤" /></span>
           )}
         </div>
         <div>
@@ -80,7 +80,7 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
             {form.photoFile ? "Change Photo" : "Upload Photo"}
             <input type="file" accept="image/*" onChange={handlePhotoChange} style={{ display: "none" }} />
           </label>
-          <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 6 }}>Optional. JPG or PNG, up to 5MB.</div>
+          <div style={{ fontSize: 11, color: "var(--ea-muted)", marginTop: 6 }}>Optional. JPG or PNG, up to 5MB.</div>
         </div>
       </div>
       <div style={{ height:1, background:"#F1F5F9", margin:"4px 0" }} />
@@ -101,7 +101,7 @@ function StudentForm({ form, setForm, onSave, loading, onClose }) {
       </div>
       <div>
         {inp("DATE OF ADMISSION","admittedOn","date")}
-        <div style={{ fontSize:11, color:"#94A3B8", marginTop:5 }}>The day the school admitted the student. Leave empty if not known; it is printed on the transfer certificate.</div>
+        <div style={{ fontSize:11, color:"var(--ea-muted)", marginTop:5 }}>The day the school admitted the student. Leave empty if not known; it is printed on the transfer certificate.</div>
       </div>
       <div style={{ height:1, background:"#F1F5F9", margin:"4px 0" }} />
       <div style={{ fontSize:12, fontWeight:700, color:"var(--brand)", marginBottom:2, letterSpacing:"0.06em" }}>PARENT INFO</div>
@@ -286,7 +286,7 @@ export default function Students() {
                           onMouseEnter={e=>e.target.style.color="var(--brand)"} onMouseLeave={e=>e.target.style.color="#0F172A"}>
                           {s.name}
                         </div>
-                        <div style={{ fontSize:12, color:"#94A3B8", marginTop:1 }}>{s.email}</div>
+                        <div style={{ fontSize:12, color:"var(--ea-muted)", marginTop:1 }}>{s.email}</div>
                       </div>
                     </div>
                   </td>
@@ -300,7 +300,7 @@ export default function Students() {
                   </td>
                   <td style={{ padding:"14px 18px" }}>
                     <div style={{ fontSize:13, fontWeight:600, color:"#374151" }}>{s.parentName || "—"}</div>
-                    <div style={{ fontSize:11, color:"#94A3B8", marginTop:1 }}>{s.parentEmail}</div>
+                    <div style={{ fontSize:11, color:"var(--ea-muted)", marginTop:1 }}>{s.parentEmail}</div>
                   </td>
                   <td style={{ padding:"14px 18px", fontSize:13, color:"#374151", fontWeight:600 }}>{s.phone}</td>
                   <td style={{ padding:"14px 18px" }}>
@@ -336,7 +336,7 @@ export default function Students() {
         <div style={{ textAlign:"center", padding:"8px 0 24px" }}>
           <div style={{ fontSize:52, marginBottom:16 }}><Glyph e="🗑" /></div>
           <div style={{ fontSize:16, fontWeight:700, color:"#0F172A", marginBottom:8 }}>Are you sure?</div>
-          <div style={{ fontSize:13, color:"#94A3B8", marginBottom:24 }}>This action cannot be undone.</div>
+          <div style={{ fontSize:13, color:"var(--ea-muted)", marginBottom:24 }}>This action cannot be undone.</div>
           <div style={{ display:"flex", gap:10, justifyContent:"center" }}>
             <button onClick={() => setDeleteId(null)} style={{ padding:"10px 28px", borderRadius:12, border:"1.5px solid #E2E8F0", background:"white", fontWeight:700, fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
             <button onClick={() => handleDelete(deleteId)} className="ea-btn ea-btn--danger">Delete</button>

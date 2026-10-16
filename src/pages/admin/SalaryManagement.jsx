@@ -20,7 +20,7 @@ const MONTHS = ["January","February","March","April","May","June","July","August
 // message when a check failed.
 const field = (label, control, key, after = null) => (
   <label key={key} style={{ display:"block" }}>
-    <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
+    <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
     {control}
     {after}
   </label>
@@ -28,7 +28,7 @@ const field = (label, control, key, after = null) => (
 const FIELDS = { teacherId: "salary-teacherId", basicSalary: "salary-basicSalary" };
 const STATUS_CONFIG = {
   Paid:    { bg:"#F0FDF4", color:"#15803D", dot:"#22C55E", border:"#BBF7D0" },
-  Pending: { bg:"#FFFBEB", color:"#D97706", dot:"#F59E0B", border:"#FDE68A" },
+  Pending: { bg:"#FFFBEB", color:"var(--ea-on-card-warning)", dot:"#F59E0B", border:"#FDE68A" },
 };
 
 export default function SalaryManagement() {
@@ -171,7 +171,7 @@ export default function SalaryManagement() {
           <option value="Paid">Paid</option>
           <option value="Pending">Pending</option>
         </select>
-        <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600, alignSelf:"center" }}>{filtered.length} records</div>
+        <div style={{ fontSize:12, color:"var(--ea-muted)", fontWeight:600, alignSelf:"center" }}>{filtered.length} records</div>
       </div>
 
       {/* Table */}
@@ -204,7 +204,7 @@ export default function SalaryManagement() {
                       </div>
                       <div>
                         <div style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>{s.teacher?.name || "Teacher"}</div>
-                        {s.teacher?.employeeId && <div style={{ fontSize:11, color:"#94A3B8" }}>{s.teacher.employeeId}</div>}
+                        {s.teacher?.employeeId && <div style={{ fontSize:11, color:"var(--ea-muted)" }}>{s.teacher.employeeId}</div>}
                       </div>
                     </div>
                   </td>

@@ -58,7 +58,7 @@ function getNearestStopIndex(stops, lat, lng) {
 }
 
 function getTrafficStatus(speed) {
-  if (!speed || speed === 0) return { color: "#9CA3AF", label: "Stationary" };
+  if (!speed || speed === 0) return { color: "var(--ea-muted)", label: "Stationary" };
   if (speed < 15) return { color: COLOR.danger,  label: "Heavy traffic — Delay possible" };
   if (speed < 30) return { color: COLOR.warning, label: "Moderate traffic" };
   return { color: COLOR.safe, label: "Clear road" };
@@ -178,7 +178,7 @@ function CallModal({ onClose, name, phone }) {
           onClick={() => { navigator.clipboard.writeText(phone); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
           style={{ marginTop:"10px", width:"100%", padding:"10px", borderRadius:"12px", border:"1px solid #E2E8F0", background: copied?"#F0FDF4":"#F8FAFC", color: copied?"#16A34A":"#64748B", fontSize:"13px", fontWeight:600, cursor:"pointer" }}
         >
-          {copied ? "Copied!" : "Copy Number"}
+          {copied ? "Copied" : "Copy Number"}
         </button>
       </div>
     </div>
@@ -599,7 +599,7 @@ export default function ParentBus() {
                   <div style={{ flex:1, minWidth:0, paddingBottom: isLast ? 4 : "18px" }}>
                     <div style={styles.stopContent}>
                       <div style={{ flex:1, minWidth:0 }}>
-                        <p style={{ ...styles.stopName, color: isCompleted ? "var(--ea-muted)" : isCurrent ? COLOR.primary : isSchool ? "#D97706" : "var(--ea-ink)", textDecoration: isCompleted ? "line-through" : "none", fontWeight: isCurrent || isSchool ? 600 : 400 }}>{stop.name}</p>
+                        <p style={{ ...styles.stopName, color: isCompleted ? "var(--ea-muted)" : isCurrent ? COLOR.primary : isSchool ? "var(--ea-on-card-warning)" : "var(--ea-ink)", textDecoration: isCompleted ? "line-through" : "none", fontWeight: isCurrent || isSchool ? 600 : 400 }}>{stop.name}</p>
                         <p style={styles.stopSub}>
                           {isCompleted ? `Departed at ${getDepartureTime(i)}`
                             : isCurrent ? "Bus is here now"

@@ -13,7 +13,7 @@ const NOTE_TYPES = ['Notes', 'Assignment', 'Resource', 'Question Paper'];
 
 const TYPE_STYLES = {
   Notes:           { bg: '#EEF0FF', color: '#3949AB', icon: <Glyph e="📄" /> },
-  Assignment:      { bg: '#FFF8E1', color: '#F9A825', icon: <Glyph e="📝" /> },
+  Assignment:      { bg: '#FFF8E1', color: 'var(--ea-on-card-warning)', icon: <Glyph e="📝" /> },
   Resource:        { bg: '#E8F5E9', color: '#2E7D32', icon: <Glyph e="📚" /> },
   'Question Paper':{ bg: '#FCE4EC', color: '#C2185B', icon: <Glyph e="📋" /> },
 };
@@ -359,15 +359,15 @@ const styles = {
     flexShrink: 0,
   },
   cardMeta: { fontSize: 12, color: 'var(--brand)', fontWeight: 500, margin: '0 0 4px' },
-  dueDateText: { fontSize: 12, color: '#F9A825', fontWeight: 600, margin: '0 0 6px' },
+  dueDateText: { fontSize: 12, color: 'var(--ea-on-card-warning)', fontWeight: 600, margin: '0 0 6px' },
   cardFooter: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  timeText: { fontSize: 11, color: '#BDBDBD', fontWeight: 500 },
+  timeText: { fontSize: 11, color: 'var(--ea-muted)', fontWeight: 500 },
   viewLink: { fontSize: 12, color: 'var(--brand)', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4, minHeight: 28 },
   formCard: { padding: '20px 16px' },
   label: { display: 'block', marginBottom: 6 },
   input: { width: '100%', marginBottom: 14 },
   select: { width: '100%', marginBottom: 14 },
-  hintText: { fontSize: 11, color: '#9E9E9E', margin: '-10px 0 14px', lineHeight: 1.5 },
+  hintText: { fontSize: 11, color: 'var(--ea-muted)', margin: '-10px 0 14px', lineHeight: 1.5 },
   centered: { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 0' },
   spinner: {
     width: 32,
@@ -390,5 +390,5 @@ const styles = {
   emptyBox: { textAlign: 'center', padding: '60px 20px' },
   emptyIcon: { fontSize: 52, margin: '0 0 8px' },
   emptyText: { fontSize: 15, fontWeight: 700, color: '#1A1A2E', margin: '0 0 6px' },
-  emptySubText: { fontSize: 13, color: '#9E9E9E', margin: 0 },
+  emptySubText: { fontSize: 13, color: 'var(--ea-muted)', margin: 0 },
 };

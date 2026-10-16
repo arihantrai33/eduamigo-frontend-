@@ -79,7 +79,7 @@ export default function TeacherTimetable() {
   }
 
   const statusStyle = {
-    done:     { bg: '#F3F4F6', color: '#9CA3AF', label: 'Done',     dot: '#D1D5DB' },
+    done:     { bg: '#F3F4F6', color: 'var(--ea-muted)', label: 'Done',     dot: '#D1D5DB' },
     now:      { bg: 'var(--brand-soft)', color: 'var(--brand-dark)', label: 'Now',      dot: 'var(--brand)' },
     upcoming: { bg: '#F0FDF4', color: '#15803D', label: 'Upcoming', dot: '#22C55E' },
     other:    { bg: '#F9FAFB', color: '#6B7280', label: '',         dot: '#9CA3AF' },
@@ -99,7 +99,7 @@ export default function TeacherTimetable() {
   if (error) return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#F4F6FB', gap: 12, padding: 24 }}>
       <div style={{ fontSize: 40 }}><Glyph e="⚠" /></div>
-      <p style={{ color: '#EF5350', fontWeight: 600, textAlign: 'center' }}>{error}</p>
+      <p style={{ color: 'var(--ea-on-card-danger)', fontWeight: 600, textAlign: 'center' }}>{error}</p>
       <button onClick={fetchData} style={{ padding: '10px 24px', background: 'var(--brand)', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>Retry</button>
     </div>
   )
@@ -229,7 +229,7 @@ export default function TeacherTimetable() {
         </>}
 
         {timetable.length === 0 && !loading && (
-          <div style={{ background: '#FEF9C3', border: '1px solid #FDE047', borderRadius: 16, padding: '14px 16px', marginTop: 8, fontSize: 13, color: '#CA8A04', fontWeight: 500 }}>
+          <div style={{ background: '#FEF9C3', border: '1px solid #FDE047', borderRadius: 16, padding: '14px 16px', marginTop: 8, fontSize: 13, color: 'var(--ea-on-card-warning)', fontWeight: 500 }}>
             No timetable assigned yet. Ask admin to set up your schedule.
           </div>
         )}

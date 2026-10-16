@@ -217,18 +217,18 @@ export default function FeeCollection() {
         {selectedFee && (
           <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
             <div style={{ background:"#F8FAFC", borderRadius:12, padding:"14px 18px" }}>
-              <div style={{ fontSize:12, color:"#94A3B8", fontWeight:700 }}>STUDENT</div>
+              <div style={{ fontSize:12, color:"var(--ea-muted)", fontWeight:700 }}>STUDENT</div>
               <div style={{ fontSize:16, fontWeight:800, color:"#0F172A", marginTop:4 }}>{selectedFee.studentName}</div>
               <div style={{ fontSize:12, color:"#64748B", marginTop:2 }}>{selectedFee.feeType} — Due: {fmtDate(selectedFee.dueDate)}</div>
             </div>
             <div>
-              <label htmlFor="collect-amount" style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>AMOUNT (₹)</label>
+              <label htmlFor="collect-amount" style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>AMOUNT (₹)</label>
               <input id="collect-amount" type="number" inputMode="decimal" value={payAmount} onChange={e => setPayAmount(e.target.value)}
                 style={{ width:"100%", padding:"12px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:15, fontWeight:700, outline:"none", boxSizing:"border-box" }}
                 onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
             </div>
             <div>
-              <div style={{ fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>PAYMENT METHOD</div>
+              <div style={{ fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>PAYMENT METHOD</div>
               <Segmented label="Payment method" value={payMethod} onChange={setPayMethod}
                 options={["Cash","UPI","Online","Cheque"].map((m) => ({ value: m, label: m }))} />
             </div>

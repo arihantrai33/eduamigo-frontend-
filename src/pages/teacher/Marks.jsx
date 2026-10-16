@@ -146,7 +146,7 @@ export default function TeacherMarks() {
                 <div>
                   <div style={{ fontSize: 16, fontWeight: 700, color: '#1A1A2E' }}>{sheet.exam.subject}</div>
                   <div style={{ fontSize: 13, color: '#64748B', marginTop: 2 }}>{sheet.exam.examName} · Class {classKey}</div>
-                  <div style={{ fontSize: 12, color: '#94A3B8', marginTop: 2 }}>{sheet.exam.term} · {fmtDate(sheet.exam.date)} · Out of {max}</div>
+                  <div style={{ fontSize: 12, color: 'var(--ea-muted)', marginTop: 2 }}>{sheet.exam.term} · {fmtDate(sheet.exam.date)} · Out of {max}</div>
                 </div>
                 <Badge status={sheet.status} />
               </div>
@@ -164,7 +164,7 @@ export default function TeacherMarks() {
                   const bad = !r.absent && r.marks !== '' && (Number(r.marks) < 0 || Number(r.marks) > max)
                   return (
                     <div key={s.studentId} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 0', borderTop: i ? '1px solid #F1F5F9' : 'none' }}>
-                      <div style={{ width: 28, fontSize: 12, color: '#94A3B8', fontWeight: 600 }}>{s.rollNumber || '—'}</div>
+                      <div style={{ width: 28, fontSize: 12, color: 'var(--ea-muted)', fontWeight: 600 }}>{s.rollNumber || '—'}</div>
                       <div style={{ flex: 1, fontSize: 14, fontWeight: 600, color: '#1A1A2E', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.name}</div>
                       <input
                         type="number" inputMode="decimal" min="0" max={max} step="0.5"
@@ -269,7 +269,7 @@ const styles = {
   headerTitle: { fontSize: 18, fontWeight: 700, color: 'var(--text, #1A1A2E)', margin: 0 },
   scroll: { flex: 1, overflowY: 'auto', padding: 16 },
   card: { background: 'var(--card, #fff)', borderRadius: 16, padding: 16, marginBottom: 14, boxShadow: '0 2px 12px rgba(0,0,0,0.06)', fontFamily: 'inherit' },
-  label: { fontSize: 11, fontWeight: 700, color: '#999', letterSpacing: 1, margin: '4px 0 8px', textTransform: 'uppercase' },
+  label: { fontSize: 11, fontWeight: 700, color: 'var(--ea-muted)', letterSpacing: 1, margin: '4px 0 8px', textTransform: 'uppercase' },
   empty: { textAlign: 'center', padding: 40, color: '#7B8099', fontSize: 14 },
   markInput: { width: 72, padding: '9px 10px', borderRadius: 10, border: '1.5px solid #E2E8F0', fontSize: 15, fontWeight: 600, textAlign: 'center', outline: 'none', fontFamily: 'inherit' },
   absentBtn: { border: 'none', borderRadius: 10, padding: '9px 10px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' },

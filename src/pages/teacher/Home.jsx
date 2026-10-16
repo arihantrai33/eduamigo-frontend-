@@ -108,7 +108,7 @@ export default function TeacherHome() {
     const map = {
       done:     { bg: theme.soft, color: theme.primary, label: 'Done' },
       now:      { bg: theme.primary, color: '#fff',    label: 'Now' },
-      next:     { bg: '#FFF9C4', color: '#F57F17', label: 'Next' },
+      next:     { bg: '#FFF9C4', color: 'var(--ea-on-card-warning)', label: 'Next' },
       upcoming: { bg: '#F4F6FB', color: '#7B8099', label: 'Upcoming' },
     }
     const s = map[status] || map.upcoming
@@ -141,7 +141,7 @@ export default function TeacherHome() {
   if (error) return (
     <div style={styles.centered}>
       <div style={{ fontSize: 40 }}><Glyph e="⚠" /></div>
-      <p style={{ color: '#EF5350', fontWeight: 600, textAlign: 'center', padding: '0 20px' }}>{error}</p>
+      <p style={{ color: 'var(--ea-on-card-danger)', fontWeight: 600, textAlign: 'center', padding: '0 20px' }}>{error}</p>
       <button style={styles.retryBtn} onClick={fetchDashboard}>Retry</button>
       <button style={{ ...styles.retryBtn, background: '#EF5350', marginTop: 8 }} onClick={logout}>Logout</button>
     </div>
@@ -307,7 +307,7 @@ const styles = {
   periodMeta:    { fontSize: 11.5, color: '#7B8099', fontWeight: 500, marginTop: 1 },
   emptySchedule: {
     textAlign: 'center', padding: '30px 20px',
-    color: '#999', fontSize: 14, fontWeight: 500,
+    color: 'var(--ea-muted)', fontSize: 14, fontWeight: 500,
   },
   centered: {
     display: 'flex', flexDirection: 'column',

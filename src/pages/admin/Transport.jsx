@@ -226,9 +226,9 @@ export default function Transport() {
                           <div style={{ width:24, height:24, borderRadius:"50%", background:"var(--brand-soft)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:10, fontWeight:800, color:"var(--brand-dark)", flexShrink:0 }}>{si+1}</div>
                           <div style={{ flex:1 }}>
                             <span style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>{stop.name}</span>
-                            {stop.estimatedTime && <span style={{ fontSize:11, color:"#94A3B8", marginLeft:8 }}><Glyph e="⏱" /> {stop.estimatedTime}</span>}
+                            {stop.estimatedTime && <span style={{ fontSize:11, color:"var(--ea-muted)", marginLeft:8 }}><Glyph e="⏱" /> {stop.estimatedTime}</span>}
                           </div>
-                          <span style={{ fontSize:11, padding:"2px 8px", borderRadius:20, background: stop.status==="Live"?"#F0FDF4":stop.status==="Departed"?"var(--brand-soft)":"#F1F5F9", color: stop.status==="Live"?"#15803D":stop.status==="Departed"?"var(--brand)":"#94A3B8", fontWeight:700 }}>{stop.status}</span>
+                          <span style={{ fontSize:11, padding:"2px 8px", borderRadius:20, background: stop.status==="Live"?"#F0FDF4":stop.status==="Departed"?"var(--brand-soft)":"#F1F5F9", color: stop.status==="Live"?"#15803D":stop.status==="Departed"?"var(--brand)":"var(--ea-muted)", fontWeight:700 }}>{stop.status}</span>
                         </div>
                       ))}
                     </div>
@@ -246,7 +246,7 @@ export default function Transport() {
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             {[["BUS NUMBER","busNumber","text"],["DRIVER NAME","driverName","text"],["DRIVER PHONE","driverPhone","tel"],["ROUTE NAME","routeName","text"],["CAPACITY","capacity","number"],["SERVICE AREA","serviceArea","text"]].map(([label,key,type]) => (
               <label key={key} style={{ display:"block" }}>
-                <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
+                <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>{label}</span>
                 <input id={`bus-${key}`} type={type} value={form[key]||""} onChange={e => f(key,e.target.value)} {...fe.invalid(key)}
                   style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }}
                   onFocus={e=>e.target.style.borderColor="#F59E0B"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
@@ -272,17 +272,17 @@ export default function Transport() {
                 <div key={i} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", background:"#F8FAFC", borderRadius:10 }}>
                   <div style={{ width:22, height:22, borderRadius:"50%", background:"#F59E0B", display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:800, color:"white" }}>{i+1}</div>
                   <span style={{ fontSize:13, fontWeight:600, color:"#0F172A", flex:1 }}>{s.name}</span>
-                  {s.estimatedTime && <span style={{ fontSize:11, color:"#94A3B8" }}><Glyph e="⏱" /> {s.estimatedTime}</span>}
+                  {s.estimatedTime && <span style={{ fontSize:11, color:"var(--ea-muted)" }}><Glyph e="⏱" /> {s.estimatedTime}</span>}
                 </div>
               ))}
             </div>
           )}
           <div style={{ borderTop:"1px solid #E2E8F0", paddingTop:14 }}>
-            <div style={{ fontSize:12, fontWeight:800, color:"#94A3B8", marginBottom:10 }}>ADD NEW STOP</div>
+            <div style={{ fontSize:12, fontWeight:800, color:"var(--ea-muted)", marginBottom:10 }}>ADD NEW STOP</div>
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
               {[["STOP NAME","name","text"],["EST. TIME","estimatedTime","text"],["LATITUDE","latitude","number"],["LONGITUDE","longitude","number"]].map(([label,key,type]) => (
                 <label key={key} style={{ display:"block" }}>
-                  <span style={{ display:"block", fontSize:10, fontWeight:700, color:"#94A3B8", marginBottom:4 }}>{label}</span>
+                  <span style={{ display:"block", fontSize:10, fontWeight:700, color:"var(--ea-muted)", marginBottom:4 }}>{label}</span>
                   <input id={`stop-${key}`} type={type} value={newStop[key]||""} onChange={e => { setNewStop(p=>({...p,[key]:e.target.value})); stopErrors.clear(key); }} {...stopErrors.invalid(key)}
                     style={{ width:"100%", padding:"9px 12px", borderRadius:9, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit" }} />
                   <FieldError id={`stop-${key}-error`}>{stopErrors.errors[key]}</FieldError>
@@ -299,13 +299,13 @@ export default function Transport() {
       {/* Students Modal */}
       <Modal show={showStudentsModal} onClose={() => setShowStudentsModal(false)} title={`Assign Students — ${selectedBus?.busNumber}`}>
         <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-          <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600 }}>{selectedStudents.length} students selected</div>
+          <div style={{ fontSize:12, color:"var(--ea-muted)", fontWeight:600 }}>{selectedStudents.length} students selected</div>
           <div style={{ maxHeight:320, overflowY:"auto", display:"flex", flexDirection:"column", gap:6 }}>
             {allStudents.map(s => (
               <label key={s._id} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", borderRadius:10, background: selectedStudents.includes(s._id) ? "#FFFBEB" : "#F8FAFC", cursor:"pointer", border:`1px solid ${selectedStudents.includes(s._id)?"#FDE68A":"#E2E8F0"}` }}>
                 <input type="checkbox" checked={selectedStudents.includes(s._id)} onChange={() => toggleStudent(s._id)} style={{ accentColor:"#F59E0B", width:16, height:16 }} />
                 <span style={{ fontSize:13, fontWeight:600, color:"#0F172A", flex:1 }}>{s.name}</span>
-                <span style={{ fontSize:11, color:"#F59E0B", fontWeight:700 }}>Class {s.class}{s.section?`-${s.section}`:""}</span>
+                <span style={{ fontSize:11, color:"var(--ea-on-card-warning)", fontWeight:700 }}>Class {s.class}{s.section?`-${s.section}`:""}</span>
               </label>
             ))}
           </div>

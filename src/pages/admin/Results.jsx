@@ -131,7 +131,7 @@ export default function Results() {
           style={{ whiteSpace:"nowrap" }}>
           Report Cards
         </button>
-        <div style={{ fontSize:12, color:"#94A3B8", fontWeight:600, whiteSpace:"nowrap" }}>{filtered.length} records</div>
+        <div style={{ fontSize:12, color:"var(--ea-muted)", fontWeight:600, whiteSpace:"nowrap" }}>{filtered.length} records</div>
       </div>
 
       {/* Table */}
@@ -173,19 +173,19 @@ export default function Results() {
                   </td>
                   <td style={{ padding:"14px 18px", fontSize:13, color:"#374151", fontWeight:600 }}>
                     {r.examName || "—"}
-                    {r.term && <div style={{ fontSize:11, color:"#94A3B8", fontWeight:500 }}>{r.term}</div>}
+                    {r.term && <div style={{ fontSize:11, color:"var(--ea-muted)", fontWeight:500 }}>{r.term}</div>}
                   </td>
                   <td style={{ padding:"14px 18px", fontSize:13, color:"#374151", fontWeight:600 }}>{r.subject || "—"}</td>
                   <td style={{ padding:"14px 18px" }}>
                     <span style={{ fontSize:13, fontWeight:800, color:"#0F172A" }}>{r.absent ? "Absent" : (r.marksObtained ?? "—")}</span>
-                    {!r.absent && <span style={{ fontSize:12, color:"#94A3B8" }}>/{r.totalMarks || "—"}</span>}
+                    {!r.absent && <span style={{ fontSize:12, color:"var(--ea-muted)" }}>/{r.totalMarks || "—"}</span>}
                   </td>
                   <td style={{ padding:"14px 18px" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                       <div style={{ width:60, height:6, borderRadius:999, background:"#F1F5F9", overflow:"hidden" }}>
                         <div style={{ width:`${r.pct}%`, height:"100%", background: r.pct >= 60 ? "var(--ea-success)" : "var(--ea-warning)", borderRadius:999 }} />
                       </div>
-                      <span style={{ fontSize:13, fontWeight:700, color: r.pct >= 60 ? "#10B981" : "#F59E0B" }}>{r.pct}%</span>
+                      <span style={{ fontSize:13, fontWeight:700, color: r.pct >= 60 ? "var(--ea-on-card-success)" : "var(--ea-on-card-warning)" }}>{r.pct}%</span>
                     </div>
                   </td>
                   <td style={{ padding:"14px 18px" }}>

@@ -51,7 +51,7 @@ export default function SupportContent({ role = "student", dark = false }) {
       ))}
       <div style={{ ...card, textAlign: "center" }}>
         <div style={{ fontSize: "16px", fontWeight: "700", marginBottom: "4px", color: dark ? "#f1f1f1" : "#111" }}>Still need help?</div>
-        <div style={{ fontSize: "13px", color: dark ? "#aaa" : "#777", marginBottom: "12px" }}>
+        <div style={{ fontSize: "13px", color: dark ? "var(--ea-muted)" : "#777", marginBottom: "12px" }}>
           {school ? `Contact ${school.name}` : "Contact your school office"}
           {school?.address ? ` • ${school.address}` : ""}
         </div>
@@ -60,7 +60,7 @@ export default function SupportContent({ role = "student", dark = false }) {
           {school?.email && <a href={`mailto:${school.email}`} style={{ ...btn, background: "var(--brand-soft)", color: "var(--brand-dark)" }}>Email</a>}
         </div>
         {school && !school.phone && !school.email && (
-          <div style={{ fontSize: 12, color: dark ? "#aaa" : "#888" }}>Your school has not added contact details yet.</div>
+          <div style={{ fontSize: 12, color: dark ? "var(--ea-muted)" : "#888" }}>Your school has not added contact details yet.</div>
         )}
       </div>
     </>

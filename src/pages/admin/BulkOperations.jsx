@@ -29,9 +29,9 @@ function ResultBanner({ result, onClose }) {
     <div style={{ padding:"14px 20px", borderRadius:14, background: ok ? "#F0FDF4" : "#FEF2F2", border:`1.5px solid ${ok?"#86EFAC":"#FCA5A5"}`, display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
       <div>
         <div style={{ fontWeight:700, fontSize:14, color: ok?"#15803D":"#DC2626" }}>{ok?<Glyph e="✅" />:<Glyph e="❌" />} {result.message}</div>
-        {result.errors?.length > 0 && <div style={{ fontSize:12, color:"#94A3B8", marginTop:4 }}>{result.errors.length} errors — check console</div>}
+        {result.errors?.length > 0 && <div style={{ fontSize:12, color:"var(--ea-muted)", marginTop:4 }}>{result.errors.length} errors — check console</div>}
       </div>
-      <button type="button" aria-label="Close" onClick={onClose} style={{ border:"none", background:"none", cursor:"pointer", fontSize:18, color:"#94A3B8" }}><Glyph e="×" /></button>
+      <button type="button" aria-label="Close" onClick={onClose} style={{ border:"none", background:"none", cursor:"pointer", fontSize:18, color:"var(--ea-muted)" }}><Glyph e="×" /></button>
     </div>
   );
 }
@@ -108,7 +108,7 @@ export default function BulkOperations() {
       const r = await axios.post(`${API}/bulk/fee-reminder`, {}, auth());
       setFeeStudents(r.data.data || []);
       setResult({ success: true, message: r.data.message });
-    } catch(e) { setResult({ success: false, message: errorMessage(e, "Could not send the fee reminders") }); }
+    } catch(e) { setResult({ success: false, message: errorMessage(e, "Could not load the students with pending fees") }); }
     setLoading(false);
   };
 
@@ -173,7 +173,7 @@ export default function BulkOperations() {
   );
 
   // A field is a <label> wrapping this caption and its control, so the control takes the caption as its name.
-  const label = (text) => <span style={{ display:"block", fontSize:11, fontWeight:700, color:"#94A3B8", marginBottom:6, letterSpacing:"0.06em" }}>{text}</span>;
+  const label = (text) => <span style={{ display:"block", fontSize:11, fontWeight:700, color:"var(--ea-muted)", marginBottom:6, letterSpacing:"0.06em" }}>{text}</span>;
   const fieldStyle = { display:"block" };
 
   // `key`: the field's name for its message under it (and its id, "bulk-<key>").
@@ -253,18 +253,18 @@ export default function BulkOperations() {
         <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
           <div style={{ fontSize:15, fontWeight:800, color:"#0F172A" }}><Glyph e="💰" /> Fee Reminder</div>
           <div style={{ fontSize:13, color:"#64748B", lineHeight:1.6 }}>
-            Fetch all students with pending or partial fee status. You can then download the list or send reminders via SMS/Email (integration coming soon).
+            Lists every student whose fee is pending or partly paid, with the parent's phone and email, so the office can follow up.
           </div>
           {btn("Fetch Pending Students", handleFeeReminder, "#EF4444")}
           {feeStudents.length > 0 && (
             <div style={{ marginTop:8 }}>
-              <div style={{ fontSize:12, fontWeight:700, color:"#94A3B8", marginBottom:8 }}>{feeStudents.length} STUDENTS WITH PENDING FEES</div>
+              <div style={{ fontSize:13, fontWeight:700, color:"var(--ea-muted)", marginBottom:8 }}>{feeStudents.length} students with pending fees</div>
               <div style={{ maxHeight:300, overflowY:"auto", display:"flex", flexDirection:"column", gap:6 }}>
                 {feeStudents.map((s,i) => (
                   <div key={i} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 14px", borderRadius:10, background:"#FEF2F2", border:"1px solid #FECACA" }}>
                     <div>
                       <div style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>{s.name}</div>
-                      <div style={{ fontSize:11, color:"#94A3B8" }}>{s.phone || s.parentPhone}</div>
+                      <div style={{ fontSize:11, color:"var(--ea-muted)" }}>{s.phone || s.parentPhone}</div>
                     </div>
                     <span style={{ fontSize:11, fontWeight:700, padding:"4px 10px", borderRadius:20, background:"#FEE2E2", color:"#DC2626" }}>{s.feeStatus}</span>
                   </div>
@@ -281,7 +281,7 @@ export default function BulkOperations() {
           <div style={{ display:"flex", gap:6, background:"#F8FAFC", borderRadius:10, padding:4, width:"fit-content" }}>
             {["students","teachers"].map(t => (
               <button key={t} onClick={() => { setCsvTab(t); setCsvData(null); setCsvPreview([]); setCsvFileName(""); }}
-                style={{ padding:"7px 20px", borderRadius:8, border:"none", fontSize:12, fontWeight:700, cursor:"pointer", background: csvTab===t ? "white" : "transparent", color: csvTab===t ? "var(--brand)" : "#94A3B8", boxShadow: csvTab===t ? "0 2px 8px rgba(0,0,0,0.06)" : "none" }}>
+                style={{ padding:"7px 20px", borderRadius:8, border:"none", fontSize:12, fontWeight:700, cursor:"pointer", background: csvTab===t ? "white" : "transparent", color: csvTab===t ? "var(--brand)" : "var(--ea-muted)", boxShadow: csvTab===t ? "0 2px 8px rgba(0,0,0,0.06)" : "none" }}>
                 {t === "students" ? "Students" : "Teachers"}
               </button>
             ))}
@@ -289,7 +289,7 @@ export default function BulkOperations() {
 
           <div style={{ padding:16, borderRadius:12, background:"#F8FAFC", border:"1px solid #E2E8F0" }}>
             <div style={{ fontSize:12, fontWeight:700, color:"#64748B", marginBottom:8 }}>REQUIRED CSV COLUMNS:</div>
-            <div style={{ fontSize:12, color:"#94A3B8", fontFamily:"monospace", lineHeight:2 }}>
+            <div style={{ fontSize:12, color:"var(--ea-muted)", fontFamily:"monospace", lineHeight:2 }}>
               {csvTab === "students"
                 ? "name, email, rollNumber, class, section, phone, gender, parentName, parentPhone"
                 : "name, email, employeeId, phone, subjects, qualification, experience"}
@@ -304,13 +304,13 @@ export default function BulkOperations() {
           <label style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:10, padding:"32px 20px", borderRadius:14, border:"2px dashed var(--brand-border)", background:"var(--brand-soft)", cursor:"pointer" }}>
             <span style={{ fontSize:32 }}><Glyph e="📁" /></span>
             <span style={{ fontSize:13, fontWeight:700, color:"var(--brand)" }}>{csvFileName || "Click to select CSV file"}</span>
-            <span style={{ fontSize:11, color:"#94A3B8" }}>Only .csv files supported</span>
+            <span style={{ fontSize:11, color:"var(--ea-muted)" }}>Only .csv files supported</span>
             <input type="file" accept=".csv" onChange={handleCSVUpload} style={{ display:"none" }} />
           </label>
 
           {csvPreview.length > 0 && (
             <div>
-              <div style={{ fontSize:12, fontWeight:700, color:"#94A3B8", marginBottom:8 }}>PREVIEW (first 5 rows) — {csvData.length} total rows</div>
+              <div style={{ fontSize:12, fontWeight:700, color:"var(--ea-muted)", marginBottom:8 }}>PREVIEW (first 5 rows) — {csvData.length} total rows</div>
               <div style={{ overflowX:"auto", borderRadius:10, border:"1px solid #E2E8F0" }}>
                 <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12 }}>
                   <thead>
