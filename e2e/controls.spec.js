@@ -103,3 +103,42 @@ test('the same search field is used on every list screen', async ({ page }) => {
   }
   expect([...shapes]).toHaveLength(1);
 });
+
+// Cards, tiles, list rows and buttons have a clear edge (not only a soft shadow): the border or outline is at least
+// 1.5:1 against what is behind it, in the light and the dark portal.
+function edges() {
+  const parse = (c) => { const m = c.match(/[\d.]+/g).map(Number); return c.startsWith('color(') ? m.slice(0, 3).map((v) => v * 255).concat(m[3] ?? 1) : m.length === 3 ? m.concat(1) : m; };
+  const lum = ([r, g, b]) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b); };
+  const ratio = (a, b) => (Math.max(lum(a), lum(b)) + 0.05) / (Math.min(lum(a), lum(b)) + 0.05);
+  const backdrop = (el) => { for (let e = el.parentElement; e; e = e.parentElement) { const c = parse(getComputedStyle(e).backgroundColor); if (c[3] >= 0.99) return c; } return [255, 255, 255, 1]; };
+  const out = [];
+  const seen = new Set();
+  const pick = (el, kind) => {
+    const r = el.getBoundingClientRect(); if (r.width < 60 || r.height < 28 || r.top > innerHeight || seen.has(el)) return; seen.add(el);
+    const s = getComputedStyle(el); const fill = parse(s.backgroundColor); if (fill[3] < 0.5) return;
+    const back = backdrop(el);
+    const b = parseFloat(s.borderTopWidth) > 0 && s.borderTopStyle !== 'none' ? ratio(parse(s.borderTopColor).slice(0, 3), back.slice(0, 3)) : 1;
+    const o = parseFloat(s.outlineWidth) > 0 && s.outlineStyle !== 'none' ? ratio(parse(s.outlineColor).slice(0, 3), back.slice(0, 3)) : 1;
+    out.push({ kind, text: (el.textContent || '').trim().slice(0, 24), edge: +Math.max(b, o).toFixed(2) });
+  };
+  document.querySelectorAll('.ea-card, .ea-stat').forEach((e) => pick(e, 'card'));
+  document.querySelectorAll('.ea-scroll button, .ea-admin-main button').forEach((e) => { const s = getComputedStyle(e); if (parse(s.backgroundColor)[3] > 0.5 && getComputedStyle(e).display !== 'none') pick(e, 'button'); });
+  document.querySelectorAll('.ea-tile-grid > *').forEach((e) => pick(e, 'tile'));
+  return out;
+}
+
+for (const [role, path, dark] of [['student', 'home', 0], ['student', 'home', 1], ['teacher', 'home', 0], ['parent', 'fee', 1], ['admin', '', 0], ['admin', 'students', 0]]) {
+  test(`cards, tiles and buttons have a clear edge: ${role}/${path || 'dashboard'} in ${dark ? 'dark' : 'light'} mode`, async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await signIn(page, role);
+    if (dark) await page.evaluate(() => { localStorage.setItem('themeVer', '2'); localStorage.setItem('darkMode', 'true'); });
+    await page.goto(`/${role}/${path}`.replace(/\/$/, ''));
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(500);
+    const items = await page.evaluate(edges);
+    expect(items.length).toBeGreaterThan(2);
+    // Buttons that are filled with the brand colour carry their own weight; every other card, tile and button needs an edge.
+    const weak = items.filter((i) => i.edge < 1.5 && !/^(Collect|Mark Paid|Add |Update|Submit|Save|\+|Continue|Log in|Send|Open|Show)/.test(i.text));
+    expect(weak.map((i) => `${i.kind} "${i.text}" ${i.edge}:1`), 'weak edges').toEqual([]);
+  });
+}

@@ -1296,3 +1296,13 @@ The owner reported two visible problems and asked for every screen to be checked
 - New `e2e/controls.spec.js` (16 tests): student and parent in light and dark at 1280, 390 and 768 px; teacher and admin at 1440, 1024 and 390 px. Every control on 19 pages is measured. It also checks the hover, focus and disabled states and that all search fields share one shape. It fails with the old faint border.
 - 126 tests passed in the suites that exercise forms, search, accessible names, workflows and the Learning AI.
 - Build passes; ESLint is no worse than at HEAD.
+
+### Clear edges on cards, tiles and buttons (2026-10-16, fifth pass)
+
+The owner looked at the running app and said the borders of options and buttons were not clear. A tour of 24 screens in a visible browser showed it: white cards, home tiles, stat cards and list rows relied on a soft shadow and a 1.2:1 border (`--ea-line`, the divider colour); the attendance status buttons had no edge; the current sidebar item was only tinted.
+
+- New token `--ea-edge` (light #B3BECD, 1.8:1 on white and 1.6:1 on the canvas; dark #475569). The 20 full borders of cards, panels, tiles, ghost buttons and portal header buttons use it; dividers inside a card keep `--ea-line`.
+- Cards and tiles that pages draw inline (a shadow and no border: the home tiles, exam and fee rows, notification cards) get the same edge as an inset outline, so nothing moves.
+- `--ea-control-border-soft` is #8E9BB0 (2.8:1): ghost buttons, chips, the segmented control and the attendance status options. Each status option shows its edge on hover. The current sidebar item has a 1 px brand outline. The setup callout, the "leave pending" pill and the receipt chip have clear edges too.
+- `e2e/controls.spec.js` gained 6 tests that measure the edge of every card, tile and button on six screens (light and dark). They fail with a faint edge token; before the receipt chip, the setup callout and the pending pill were fixed, they caught those three too.
+- Checked in a visible browser: 24 screens at 1280 px (student 8, parent 4, teacher 5, admin 7), plus dark mode and 390/768 px on 7 more.
