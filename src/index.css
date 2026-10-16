@@ -544,8 +544,8 @@ body.admin-body #root {
   --ea-line: #E3E7EE;        /* borders and dividers */
   --ea-ink: #0F172A;         /* headings */
   --ea-body: #334155;        /* body text */
-  --ea-muted: #64748B;       /* secondary text (4.6:1 on white) */
-  --ea-faint: #68778C;       /* section labels (4.5:1 on white: they are small text) */
+  --ea-muted: #5B6B80;       /* secondary text: 4.8:1 on the canvas, 5.4:1 on white (subtitles sit on the canvas) */
+  --ea-faint: #5F6F85;       /* section and group labels: 4.5:1 on the canvas (small text) */
   --ea-success: #15803D;
   --ea-warning: #B45309;
   --ea-danger: #B91C1C;
@@ -745,6 +745,8 @@ input:-webkit-autofill:focus {
 .ea-alert--warning { background: #FFFBEB; border-color: #FDE68A; color: #92400E; }
 /* Week view of a timetable (desktop): one column per day, today outlined, the current class highlighted. */
 .ea-week { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; align-items: start; }
+/* Six days do not fit a subject name below 1280 px ("Mathem-atics" broke mid-word): two rows of three days there. */
+@media (max-width: 1279px) { .ea-week { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .ea-week__day { background: var(--card, #fff); border: 1px solid var(--ea-line); border-radius: 14px; padding: 12px; min-width: 0; }
 .ea-week__day.is-today { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand); }
 .ea-week__head { display: flex; flex-direction: column; gap: 2px; margin: 0 0 10px; font-size: 14px; font-weight: 700; color: var(--ea-ink); }
@@ -756,7 +758,7 @@ input:-webkit-autofill:focus {
 .ea-week__slot.is-done { opacity: 0.6; }
 .ea-week__slot.is-break { border-left-color: #E9D5FF; }
 .ea-week__time { font-size: 11px; font-weight: 700; color: var(--brand); }
-.ea-week__subject { font-size: 13px; color: var(--ea-ink); overflow-wrap: anywhere; }
+.ea-week__subject { font-size: 13px; color: var(--ea-ink); overflow-wrap: break-word; }
 .ea-week__slot.is-break .ea-week__subject { color: #6B21A8; font-weight: 600; }
 .ea-week__meta { font-size: 11px; color: var(--ea-muted); overflow-wrap: anywhere; }
 .ea-week__now { align-self: flex-start; margin-top: 4px; font-size: 10px; font-weight: 700; color: #fff; background: var(--brand); border-radius: 6px; padding: 2px 6px; }
@@ -1242,6 +1244,8 @@ input.ea-input-bare[aria-invalid="true"], input.ea-input-bare[aria-invalid="true
 /* Tables scroll sideways inside their card instead of squeezing or clipping columns. */
 .ea-admin-main div:has(> table) { overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
 .ea-admin-main table { min-width: 100%; }
+/* Column headings: the shared muted text on every admin table (pages wrote #64748B inline: 4.4:1 on the header fill). */
+.ea-admin-main th { color: var(--ea-muted) !important; }
 @media (max-width: 1023px) {
   .ea-admin-main [style*="grid-template-columns: repeat(4"],
   .ea-admin-main [style*="grid-template-columns: repeat(5"],

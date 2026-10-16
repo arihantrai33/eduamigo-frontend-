@@ -121,15 +121,13 @@ export default function ParentFee() {
 
         {/* Overdue Alert */}
         {overdueFees.length > 0 && (
-          <div style={styles.alert}>
-            <div style={{ fontSize: 22 }}><Glyph e="⚠" /></div>
+          <div className="ea-note ea-note--warning ea-note--row" style={{ marginBottom: 16 }}>
+            <span className="ea-note__icon"><Glyph e="⚠" /></span>
             <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 700, fontSize: 14, color: "#92400e" }}>
+              <div className="ea-note__title">
                 {overdueFees.length} Overdue Payment{overdueFees.length > 1 ? "s" : ""}
               </div>
-              <div style={{ fontSize: 12, color: "#b45309", marginTop: 2 }}>
-                Please clear your dues at the school office.
-              </div>
+              <div>Please clear your dues at the school office.</div>
             </div>
           </div>
         )}
@@ -310,13 +308,6 @@ const styles = {
     transition: "width 0.8s ease",
   },
   body: { padding: "16px 16px 0" },
-  alert: {
-    background: "#fffbeb",
-    border: "1px solid #fde68a",
-    borderRadius: 14, padding: "14px 16px",
-    display: "flex", alignItems: "center",
-    gap: 12, marginBottom: 14,
-  },
   allClear: {
     background: "#f0fdf4",
     border: "1px solid #bbf7d0",
