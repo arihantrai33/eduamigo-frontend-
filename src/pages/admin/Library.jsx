@@ -14,6 +14,7 @@ import PageHeader from "../../components/ui/PageHeader";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import { toneOf } from "../../components/ui/tone";
 import Skeleton from "../../components/ui/Skeleton";
+import SearchField from "../../components/ui/SearchField";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -130,12 +131,7 @@ export default function Library() {
 
       {/* Category Chips + Search + Add */}
       <div style={{ display:"flex", gap:10, marginBottom:20, alignItems:"center", flexWrap:"wrap", animation:"fadeUp 0.4s ease 0.1s both" }}>
-        <div style={{ position:"relative", flex:1, minWidth:200 }}>
-          <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"var(--ea-muted)" }}><Glyph e="🔍" /></span>
-          <input value={search} onChange={e => setSearch(e.target.value)} aria-label="Search books" placeholder="Search by title, author, ISBN..."
-            style={{ width:"100%", padding:"11px 14px 11px 38px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
-            onFocus={e=>e.target.style.borderColor="var(--brand)"} onBlur={e=>e.target.style.borderColor="#E2E8F0"} />
-        </div>
+        <SearchField value={search} onChange={setSearch} label="Search books" placeholder="Search by title, author, ISBN..." style={{ flex: "1 1 200px" }} />
         <div className="ea-chips" role="group" aria-label="Filter by category" style={{ flex:"1 1 100%", minWidth:0 }}>
           <button type="button" className="ea-chip" aria-pressed={!filterCat} onClick={() => setFilterCat("")}>All</button>
           {CATEGORIES.map(cat => {

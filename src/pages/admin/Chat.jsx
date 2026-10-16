@@ -3,8 +3,9 @@ import axios from "axios";
 import { toast, errorMessage } from "../../utils/toast";
 
 import Glyph from "../../components/Glyph";
-import { ArrowLeft, RefreshCw, Search } from "lucide-react";
+import { ArrowLeft, RefreshCw } from "lucide-react";
 import Skeleton from "../../components/ui/Skeleton";
+import SearchField from "../../components/ui/SearchField";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -276,10 +277,7 @@ export default function Chat() {
             </button>
           </div>
 
-          <div className="ea-search" style={{ marginBottom: 12 }}>
-            <Search aria-hidden="true" />
-            <input className="ea-input" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search contacts..." aria-label="Search contacts" />
-          </div>
+          <SearchField value={search} onChange={setSearch} label="Search contacts" placeholder="Search contacts..." style={{ marginBottom: 12 }} />
 
           <div style={{ display: "flex", gap: 4, background: "#F1F5F9", borderRadius: 10, padding: 3 }}>
             {[["", "All"], ["student", "Students"], ["teacher", "Teachers"], ["parent", "Parents"]].map(([val, lbl]) => (

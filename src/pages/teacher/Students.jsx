@@ -6,6 +6,7 @@ import { showCredentials, toast, errorMessage } from "../../utils/toast";
 import PortalHeader from "../../components/ui/PortalHeader";
 
 import { plural } from "../../utils/plural";
+import SearchField from "../../components/ui/SearchField";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -46,7 +47,7 @@ export default function TeacherStudents() {
 
       <div className="ea-pd-body" style={{ padding: 16 }}>
         <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-          <input value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search students" placeholder="Search by name or admission no" style={{ ...s.input, flex: 1 }} />
+          <SearchField value={query} onChange={setQuery} label="Search students" placeholder="Search by name or admission no" style={{ flex: 1 }} />
           {classes.length > 1 && (
             <select value={cls} onChange={(e) => setCls(e.target.value)} style={s.input}>
               <option value="">All classes</option>

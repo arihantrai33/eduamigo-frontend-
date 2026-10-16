@@ -3,12 +3,13 @@ import axios from "axios";
 import { toast, errorMessage } from "../../utils/toast";
 import EmptyState from "../../components/ui/EmptyState";
 
-import { Search, CalendarOff } from "lucide-react";
+import { CalendarOff } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import { toneOf } from "../../components/ui/tone";
 import Skeleton from "../../components/ui/Skeleton";
+import SearchField from "../../components/ui/SearchField";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -97,10 +98,7 @@ export default function LeaveRequests() {
 
       {/* Filters */}
       <div className="ea-toolbar" style={{ marginBottom:20 }}>
-        <div className="ea-search">
-          <Search aria-hidden="true" />
-          <input className="ea-input" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by name or reason..." aria-label="Search leave requests" />
-        </div>
+        <SearchField value={search} onChange={setSearch} label="Search leave requests" placeholder="Search by name or reason..." />
         <select className="ea-select" value={filterStatus} onChange={e => setFilterStatus(e.target.value)} aria-label="Status">
           <option value="">All Status</option>
           {["Pending","Approved","Rejected"].map(s => <option key={s} value={s}>{s}</option>)}

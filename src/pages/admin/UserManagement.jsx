@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { Calculator, GraduationCap, Plus, RefreshCw, Search, SearchX, Shield, UserCheck, Users } from "lucide-react";
+import { Calculator, GraduationCap, Plus, RefreshCw, SearchX, Shield, UserCheck, Users } from "lucide-react";
 import { toast, showCredentials, confirmAction, errorMessage } from "../../utils/toast";
 import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
@@ -9,6 +9,7 @@ import FieldError from "../../components/ui/FieldError";
 import { useFieldErrors } from "../../utils/fieldErrors";
 import EmptyState from "../../components/ui/EmptyState";
 import Skeleton from "../../components/ui/Skeleton";
+import SearchField from "../../components/ui/SearchField";
 
 const FIELDS = { name: "user-name", email: "user-email" };
 
@@ -114,11 +115,7 @@ export default function UserManagement() {
 
       {/* Search + Filter */}
       <div className="ea-toolbar" style={{ marginBottom: 16 }}>
-        <div style={{ position: "relative", flex: "1 1 240px", maxWidth: 360, minWidth: 0 }}>
-          <Search size={14} color="var(--ea-muted)" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
-          <input value={search} onChange={e => setSearch(e.target.value)} aria-label="Search users" placeholder="Search by name or email..."
-            style={{ ...inp, paddingLeft: 36 }} />
-        </div>
+        <SearchField value={search} onChange={setSearch} label="Search users" placeholder="Search by name or email..." style={{ flex: "1 1 240px", maxWidth: 360 }} />
         <div className="ea-chips" role="group" aria-label="Filter by role" style={{ minWidth: 0 }}>
           {["all", ...Object.keys(ROLE_META)].map(r => (
             <button key={r} type="button" className="ea-chip" aria-pressed={filter === r} onClick={() => setFilter(r)} style={{ textTransform: "capitalize" }}>

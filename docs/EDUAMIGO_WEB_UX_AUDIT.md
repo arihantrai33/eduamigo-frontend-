@@ -1262,3 +1262,37 @@ The owner reported two visible problems and asked for every screen to be checked
 **3. Notification unread colour.**
 - Student notifications used `#eff6ff` and `#1e3a5f` inline. The unread card is now `.ea-notice.is-unread`: a 7% tint of the school colour on the surface, with a brand bar on the left. Student and parent share it.
 - `e2e/notice-theme.spec.js` (4 tests: student and parent, light and dark) checks that the bar is the brand colour, that the card is light in light mode and dark in dark mode, that text keeps 4.5:1, that the old blues are not used, and that opening a notice still marks it read.
+
+### Shared form controls (2026-10-16, fourth pass)
+
+**Problem (the Student Notes search box in the owner's screenshot, and the same everywhere).**
+- A probe of all 135 text fields, dropdowns, dates and text areas on 78 routes found 37 different looks.
+- Their border was `--ea-line`, the colour of card dividers: 1.2:1 against white and 1.0:1 on the Notes search box. That is why they looked invisible.
+- Notes and Teacher Chat used a "pill" search with no border, drawn in a grey that matched the page.
+- 16 search boxes were built 4 different ways.
+- Dark mode used the card colour (1.36:1 edge), and placeholders were 3.6–3.8:1.
+
+**Root cause.** Each page styled its own fields inline, and the shared `.ea-input` used the divider colour.
+
+**Fix (index.css, tokens and one rule set).**
+- Tokens: `--ea-control-bg`, `-border` (#8494AA, 3.1:1 on white), `-border-hover`, `-border-soft` (buttons, chips, the segmented track), `-placeholder` (4.7:1), `-disabled-bg`, `-track`, `-h` (40 px) and `-radius` (10 px). The dark portals and sign-in pages get their own values (#162033 fill, #64748B edge, #94A3B8 placeholder).
+- `.ea-input` and `.ea-select` use them, with distinct hover, focus (brand ring), disabled and error states.
+- One rule set applies the same look to every other field in the portals, admin and dialogs, including the ones styled inline. It leaves alone fields that draw no box of their own (a bare input inside a card), fields in tables and roster rows, and file inputs, checkboxes and radios.
+- `ea-btn--ghost`, `ea-chip` and the segmented control use the soft edge. The segmented control sits in a darker track, so the selected option reads as raised. Primary hover is a darkening of the brand (it used `--brand-dark`, which is light in the dark portal).
+- The Learning AI typing box, its placeholder and the dark placeholder rule use the same tokens.
+- Sign-in, forgot password and school search use the same border and radius (48 px tall, 14 px text).
+
+**Shared component.** New `components/ui/SearchField.jsx`, used by all 16 search boxes (student Notes, teacher Chat and Students, and admin Students, Teachers, Parents, Fees, Results, Leaves, Chat, Library, Users, Communications, Admissions, Add Parent). The two pill styles and the four hand-made variants are gone.
+
+**Still custom:**
+- Login's icon-in-field box (a wrapper draws the edge; it uses the same tokens).
+- The Learning AI composer (an auto-growing text area inside a card).
+- Compact fields in tables and the attendance roster.
+- Admin dialogs with their own inline fields (they take the global rule).
+- Native date and time fields (they take the same box; the picker icon is the browser's).
+
+**Verification.**
+- All routes: the 135 controls were probed again. Looks fell from 37 to 12; the weakest edge is 3.09:1; no placeholder is below 4.5:1.
+- New `e2e/controls.spec.js` (16 tests): student and parent in light and dark at 1280, 390 and 768 px; teacher and admin at 1440, 1024 and 390 px. Every control on 19 pages is measured. It also checks the hover, focus and disabled states and that all search fields share one shape. It fails with the old faint border.
+- 126 tests passed in the suites that exercise forms, search, accessible names, workflows and the Learning AI.
+- Build passes; ESLint is no worse than at HEAD.

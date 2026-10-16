@@ -99,8 +99,8 @@ export default function Login() {
   // component, so the input keeps focus while typing).
   const inputBox = (name, Icon, input, trailing, invalid) => (
     <div style={{
-      display: "flex", alignItems: "center", gap: 10, padding: "0 12px", height: 50, borderRadius: 14,
-      background: "var(--input)", border: `1.5px solid ${invalid ? "var(--ea-danger)" : focused === name ? theme.primary : "var(--border)"}`,
+      display: "flex", alignItems: "center", gap: 10, padding: "0 12px", height: 48, borderRadius: 10,
+      background: "var(--ea-control-bg)", border: `1px solid ${invalid ? "var(--ea-danger)" : focused === name ? theme.primary : "var(--ea-control-border)"}`,
       boxShadow: focused === name ? `0 0 0 4px ${theme.ring}` : "none", transition: "border-color .15s, box-shadow .15s",
     }}>
       <Icon aria-hidden size={18} strokeWidth={2} style={{ color: focused === name ? theme.primary : "var(--subtext)", flexShrink: 0 }} />
@@ -218,7 +218,7 @@ const s = {
   roles: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, marginBottom: 20 },
   roleBtn: { padding: "9px 2px 8px", border: "none", borderRadius: 14, background: "var(--input)", color: "var(--subtext)", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, transition: "all .18s ease" },
   label: { fontSize: 12, fontWeight: 700, color: "var(--text)", display: "block", marginBottom: 6, letterSpacing: 0.2 },
-  input: { flex: 1, minWidth: 0, height: "100%", border: "none", outline: "none", background: "transparent", fontSize: 15, color: "var(--text)", colorScheme: "dark light" },
+  input: { flex: 1, minWidth: 0, height: "100%", border: "none", outline: "none", background: "transparent", fontSize: 14, color: "var(--text)", colorScheme: "dark light" },
   showBtn: { background: "none", border: "none", fontSize: 12, fontWeight: 800, cursor: "pointer", padding: "7px 8px" },
   forgot: { fontSize: 12.5, cursor: "pointer", fontWeight: 700, background: "none", border: "none", padding: "6px 0", fontFamily: "inherit" },
   err: { display: "flex", gap: 8, alignItems: "flex-start", background: "#fef2f2", border: "1px solid #fecaca", color: "#B91C1C", borderRadius: 12, padding: "10px 13px", fontSize: 12.5, marginBottom: 14 },

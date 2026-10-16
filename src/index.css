@@ -615,6 +615,17 @@ body.admin-body #root {
      the whole area. Widths differ by purpose; the left edge and the title position never do. */
   --ea-gutter: 16px;
   --ea-page-top: 16px;
+  /* Form controls (search, inputs, dropdowns, dates, text areas). One set of values for every portal; the edge is a real
+     boundary (3.1:1 on white, 2.7:1 on the canvas), not the card divider (--ea-line, 1.2:1) the fields used before. */
+  --ea-control-bg: #FFFFFF;
+  --ea-control-border: #8494AA;
+  --ea-control-border-hover: #5F6F85;
+  --ea-control-border-soft: #A5B1C3;        /* buttons, chips, the segmented track: they carry a label, so a quieter edge */
+  --ea-control-placeholder: #66758B;        /* 4.7:1 on white */
+  --ea-control-disabled-bg: #E8ECF2;
+  --ea-control-track: #DDE3EC;              /* the track a segmented control sits in */
+  --ea-control-h: 40px;
+  --ea-control-radius: 10px;
   --ea-w-read: 1040px;
   --ea-w-wide: 1280px;
   /* Left edge of the content column: one gutter from the navigation; on a very wide screen the whole frame (width
@@ -657,7 +668,7 @@ body.admin-body #root {
   background: #0f172a;
 }
 [data-theme="dark"] ::placeholder {
-  color: rgba(255,255,255,0.4) !important;
+  color: var(--ea-control-placeholder) !important; opacity: 1;
 }
 
 /* Autofill */
@@ -809,7 +820,7 @@ input:-webkit-autofill:focus {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; padding: 0 14px;
   border-radius: 10px; font-size: 13px; font-weight: 650; cursor: pointer; border: 1px solid transparent;
 }
-.ea-btn--ghost { background: var(--ea-surface); border-color: var(--ea-line); color: var(--ea-ink); }
+.ea-btn--ghost { background: var(--ea-surface); border-color: var(--ea-control-border-soft); color: var(--ea-ink); }
 
 .ea-grid { display: grid; gap: 16px; }
 .ea-grid--2, .ea-grid--3 { grid-template-columns: 1fr; }
@@ -910,7 +921,7 @@ input:-webkit-autofill:focus {
 
 /* Segmented control (components/ui/Segmented): 2–4 views inside a card or page section. The chosen option is a raised
    surface, not a filled colour. Unselected text is --ea-body: --ea-muted would be 4.4:1 on the track. */
-.ea-seg { display: inline-flex; gap: 4px; padding: 4px; max-width: 100%; overflow-x: auto; scrollbar-width: none; background: var(--ea-hover); border: 1px solid var(--ea-line); border-radius: var(--ea-radius); }
+.ea-seg { display: inline-flex; gap: 4px; padding: 4px; max-width: 100%; overflow-x: auto; scrollbar-width: none; background: var(--ea-control-track); border: 1px solid var(--ea-control-border-soft); border-radius: var(--ea-radius); }
 .ea-seg__opt {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 32px; padding: 0 14px; flex: none;
   border: 1px solid transparent; border-radius: var(--ea-radius-sm); background: transparent; color: var(--ea-body);
@@ -918,17 +929,17 @@ input:-webkit-autofill:focus {
 }
 .ea-seg__icon { display: inline-flex; }
 .ea-seg__opt:hover { color: var(--ea-ink); }
-.ea-seg__opt[aria-pressed="true"], .ea-seg__opt[aria-selected="true"] { background: var(--ea-surface); color: var(--ea-ink); border-color: var(--ea-line); box-shadow: var(--ea-shadow); }
+.ea-seg__opt[aria-pressed="true"], .ea-seg__opt[aria-selected="true"] { background: var(--ea-surface); color: var(--ea-ink); border-color: var(--ea-control-border-soft); box-shadow: var(--ea-shadow); }
 .ea-seg__opt:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
 
 /* Filter chips (components/ui/Chips): one line; on phones the row scrolls sideways instead of wrapping. */
 .ea-chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .ea-chip {
   display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; flex: none; border-radius: 999px;
-  border: 1px solid var(--ea-line); background: var(--ea-surface); color: var(--ea-body);
+  border: 1px solid var(--ea-control-border-soft); background: var(--ea-surface); color: var(--ea-body);
   font: inherit; font-size: 13px; font-weight: 600; white-space: nowrap; cursor: pointer;
 }
-.ea-chip:hover { border-color: var(--ea-muted); color: var(--ea-ink); }
+.ea-chip:hover { border-color: var(--ea-control-border-hover); color: var(--ea-ink); }
 .ea-chip[aria-pressed="true"] { background: var(--brand-soft); border-color: var(--brand); color: var(--brand-text); }
 .ea-chip:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 .ea-chip__count { font-size: 12px; font-weight: 700; color: var(--ea-muted); font-variant-numeric: tabular-nums; }
@@ -964,7 +975,7 @@ td .ea-skeleton { box-sizing: border-box; padding: 0 20px; }
 }
 .ea-back:hover { background: var(--ea-hover); }
 .ea-btn--primary { background: var(--brand); color: #fff; }
-.ea-btn--primary:hover { background: var(--brand-dark); }
+.ea-btn--primary:hover { background: color-mix(in srgb, var(--brand) 84%, #000); }
 .ea-btn--danger { background: var(--ea-danger); color: #fff; }
 /* Button roles (design plan §2.6): primary (solid brand, one per region), ghost = secondary (surface + line), tertiary
    (text only, brand), danger (solid, only in the confirm dialog), danger-ghost (red text, no fill: Delete, Reject in
@@ -973,7 +984,7 @@ td .ea-skeleton { box-sizing: border-box; padding: 0 20px; }
 .ea-btn--ghost:hover { background: var(--ea-hover); }
 .ea-btn--tertiary { background: transparent; color: var(--brand-text); padding-inline: 8px; }
 .ea-btn--tertiary:hover { background: var(--brand-soft); }
-.ea-btn--danger-ghost { background: var(--ea-surface); border-color: var(--ea-line); color: var(--ea-danger); }
+.ea-btn--danger-ghost { background: var(--ea-surface); border-color: color-mix(in srgb, var(--ea-danger) 45%, var(--ea-surface)); color: var(--ea-on-card-danger); }
 .ea-btn--danger-ghost:hover { background: #FEF2F2; border-color: #FECACA; }
 .ea-btn--sm { min-height: 32px; padding: 0 12px; border-radius: var(--ea-radius-sm); font-size: 12.5px; white-space: nowrap; }  /* row actions never wrap ("Mark / Paid") */
 .ea-btn--icon { padding: 0; width: 36px; }
@@ -1074,18 +1085,50 @@ td .ea-skeleton { box-sizing: border-box; padding: 0 20px; }
 /* Search and filter row above a list. Wraps on narrow screens; the search box keeps a usable width. */
 .ea-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .ea-search { position: relative; flex: 1 1 260px; min-width: 0; }
-.ea-search > svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--ea-faint); pointer-events: none; }
+.ea-search > svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--ea-muted); pointer-events: none; }
+.ea-search:focus-within > svg { color: var(--brand-text); }
 .ea-input, .ea-select {
-  height: 40px; padding: 0 12px; border: 1px solid var(--ea-line); border-radius: 10px; background: var(--ea-surface);
-  color: var(--ea-ink); font: inherit; font-size: 14px; outline: none; min-width: 0;
+  height: var(--ea-control-h); padding: 0 12px; border: 1px solid var(--ea-control-border); border-radius: var(--ea-control-radius);
+  background: var(--ea-control-bg); color: var(--ea-ink); font: inherit; font-size: 14px; outline: none; min-width: 0;
 }
+.ea-input:hover:not(:focus, :disabled), .ea-select:hover:not(:focus, :disabled) { border-color: var(--ea-control-border-hover); }
 .ea-input:focus, .ea-select:focus { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-soft); }
+.ea-input::placeholder { color: var(--ea-control-placeholder); opacity: 1; }
+.ea-input:disabled, .ea-select:disabled { background: var(--ea-control-disabled-bg); border-color: var(--ea-control-border-soft); color: var(--ea-muted); cursor: not-allowed; }
 .ea-search .ea-input { width: 100%; padding-left: 36px; }
 .ea-select { cursor: pointer; flex: 0 1 170px; }
-/* A search field drawn as a pill around a bare input (the input has no outline of its own): the pill shows the
-   focus, and the input fills its height so a tap anywhere on the pill's text line lands in it. */
-.ea-search-pill:focus-within { outline: 2px solid var(--brand); outline-offset: 1px; }
-.ea-search-pill > input { min-height: 24px; }
+/* Controls on the dark surfaces (the student and parent portals, and the sign-in pages' dark mode): a field slightly
+   darker than its card, with a 3:1 edge. */
+[data-theme="dark"] .ea-shell--themed, [data-theme="dark"] .ea-solo {
+  --ea-control-bg: #162033;
+  --ea-control-border: #64748B;
+  --ea-control-border-hover: #94A3B8;
+  --ea-control-border-soft: #475569;
+  --ea-control-placeholder: #94A3B8;
+  --ea-control-disabled-bg: #131C2E;
+  --ea-control-track: #0B1220;
+}
+
+/* ───────────── Form controls ─────────────
+   Every text field, dropdown, date, number and text area in the app gets one look: a control surface that differs from
+   the page, a real boundary (--ea-control-border), one height, one radius, one text size, readable placeholders and
+   distinct hover, focus, disabled and error states. Most pages style their fields inline, so these rules are
+   !important; a field that draws no box of its own (it has "border: none" or a transparent fill: a bare input inside a
+   card that supplies the box, like the Learning AI typing box) is left alone, as is anything in a table or a roster
+   row (compact editing). */
+:is(.ea-shell, .ea-admin-frame, .ea-solo, .ea-dialog-backdrop) :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="hidden"], [type="color"], [type="submit"], [type="button"], [type="reset"], [type="image"]), select, textarea):not(.ea-input-bare, .ea-learn__input, [style*="border: none"], [style*="border:none"], [style*="border: 0"], [style*="background: transparent"], [style*="background:transparent"], [style*="background: none"]) {
+  background-color: var(--ea-control-bg) !important; border: 1px solid var(--ea-control-border) !important;
+  border-radius: var(--ea-control-radius) !important; font-size: 14px !important; box-sizing: border-box; color: var(--ea-ink);
+}
+:is(.ea-shell, .ea-admin-frame, .ea-solo, .ea-dialog-backdrop) :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="hidden"], [type="color"], [type="submit"], [type="button"], [type="reset"], [type="image"]), select, textarea):not(.ea-input-bare, .ea-learn__input, [style*="border: none"], [style*="border:none"], [style*="border: 0"], [style*="background: transparent"], [style*="background:transparent"], [style*="background: none"]):is(input, select):not(:is(table, .ea-roster) *) { min-height: var(--ea-control-h) !important; }
+:is(.ea-shell, .ea-admin-frame, .ea-dialog-backdrop) :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="hidden"], [type="color"], [type="submit"], [type="button"], [type="reset"], [type="image"]), select, textarea):not(.ea-input-bare, .ea-learn__input, [style*="border: none"], [style*="border:none"], [style*="border: 0"], [style*="background: transparent"], [style*="background:transparent"], [style*="background: none"]):is(input, select):not(:is(table, .ea-roster) *) { height: var(--ea-control-h) !important; }
+:is(.ea-shell, .ea-admin-frame, .ea-solo, .ea-dialog-backdrop) :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="hidden"], [type="color"], [type="submit"], [type="button"], [type="reset"], [type="image"]), select, textarea):not(.ea-input-bare, .ea-learn__input, [style*="border: none"], [style*="border:none"], [style*="border: 0"], [style*="background: transparent"], [style*="background:transparent"], [style*="background: none"]):hover:not(:focus, :disabled) { border-color: var(--ea-control-border-hover) !important; }
+:is(.ea-shell, .ea-admin-frame, .ea-solo, .ea-dialog-backdrop) :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="hidden"], [type="color"], [type="submit"], [type="button"], [type="reset"], [type="image"]), select, textarea):not(.ea-input-bare, .ea-learn__input, [style*="border: none"], [style*="border:none"], [style*="border: 0"], [style*="background: transparent"], [style*="background:transparent"], [style*="background: none"]):focus { border-color: var(--brand) !important; box-shadow: 0 0 0 3px var(--brand-soft) !important; outline: none; }
+:is(.ea-shell, .ea-admin-frame, .ea-solo, .ea-dialog-backdrop) :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="hidden"], [type="color"], [type="submit"], [type="button"], [type="reset"], [type="image"]), select, textarea):not(.ea-input-bare, .ea-learn__input, [style*="border: none"], [style*="border:none"], [style*="border: 0"], [style*="background: transparent"], [style*="background:transparent"], [style*="background: none"]):disabled { background-color: var(--ea-control-disabled-bg) !important; border-color: var(--ea-control-border-soft) !important; color: var(--ea-muted) !important; -webkit-text-fill-color: var(--ea-muted); cursor: not-allowed; }
+:is(.ea-shell, .ea-admin-frame, .ea-solo, .ea-dialog-backdrop) :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="hidden"], [type="color"], [type="submit"], [type="button"], [type="reset"], [type="image"]), select, textarea):not(.ea-input-bare, .ea-learn__input, [style*="border: none"], [style*="border:none"], [style*="border: 0"], [style*="background: transparent"], [style*="background:transparent"], [style*="background: none"])[aria-invalid="true"] { border-color: var(--ea-danger) !important; }
+:is(.ea-shell, .ea-admin-frame, .ea-solo, .ea-dialog-backdrop) :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="hidden"], [type="color"], [type="submit"], [type="button"], [type="reset"], [type="image"]), select, textarea):not(.ea-input-bare, .ea-learn__input, [style*="border: none"], [style*="border:none"], [style*="border: 0"], [style*="background: transparent"], [style*="background:transparent"], [style*="background: none"])[aria-invalid="true"]:focus { box-shadow: 0 0 0 3px color-mix(in srgb, var(--ea-danger) 22%, transparent) !important; }
+:is(.ea-shell, .ea-admin-frame, .ea-solo, .ea-dialog-backdrop) :is(input, textarea)::placeholder { color: var(--ea-control-placeholder); opacity: 1; }
+[data-theme="dark"] :is(.ea-shell--themed) :is(input, select, textarea) { color-scheme: dark; }
 .ea-toolbar__count { font-size: 12px; font-weight: 650; color: var(--ea-faint); white-space: nowrap; }
 
 /* A list card's header row (admin Leave Requests, Transport): on a phone the status and the row actions move under the
@@ -1452,10 +1495,10 @@ body:has(.ea-dialog-backdrop) .ea-ask-fab { display: none !important; }
 .ea-learn__sources summary { cursor: pointer; color: var(--brand-text); font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
 .ea-learn__sources ul { list-style: none; padding: 6px 0 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
 
-.ea-learn__composer { flex: none; display: flex; flex-direction: column; gap: 8px; margin: 0 16px 16px; padding: 12px 14px; border: 1px solid var(--ea-line); border-radius: 16px; background: var(--ea-surface); }
+.ea-learn__composer { flex: none; display: flex; flex-direction: column; gap: 8px; margin: 0 16px 16px; padding: 12px 14px; border: 1px solid var(--ea-control-border); border-radius: 16px; background: var(--ea-control-bg); }
 .ea-learn__composer:focus-within { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-soft); }
 .ea-learn__input { width: 100%; box-sizing: border-box; resize: none; border: none; outline: none; background: transparent; font: inherit; font-size: 16px; line-height: 1.5; color: var(--ea-ink); min-height: 28px; max-height: 160px; padding: 2px 0; }
-.ea-learn__input::placeholder { color: var(--ea-faint, var(--ea-muted)); }
+.ea-learn__input::placeholder { color: var(--ea-control-placeholder); opacity: 1; }
 .ea-learn__composer-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .ea-learn__composer-actions > .ea-btn[type="submit"], .ea-learn__composer-actions > .ea-btn[aria-label="Stop the answer"] { margin-left: auto; border-radius: 999px; padding-inline: 18px; }
 .ea-learn__composer-actions > .ea-btn[aria-label*="voice"], .ea-learn__composer-actions > .ea-btn[aria-label*="listening"], .ea-learn__composer-actions > .ea-btn[aria-label*="spoken"] { width: 40px; height: 40px; padding: 0; border-radius: 50%; justify-content: center; }
@@ -1571,10 +1614,10 @@ body:has(.ea-dialog-backdrop) .ea-ask-fab { display: none !important; }
 .ea-diagram__table th, .ea-diagram__table td { border: 1px solid var(--ea-line); padding: 6px 8px; text-align: left; }
 
 /* Learning AI in dark mode: the design tokens are light, so the surfaces are set here. */
+[data-theme="dark"] .ea-learn__composer { background: var(--ea-control-bg); border-color: var(--ea-control-border); }
 [data-theme="dark"] .ea-learn { background: var(--bg); color: var(--subtext2); }
 [data-theme="dark"] .ea-learn__tutor,
 [data-theme="dark"] .ea-learn__bubble.is-ai,
-[data-theme="dark"] .ea-learn__composer,
 [data-theme="dark"] .ea-learn__history,
 [data-theme="dark"] .ea-learn__consent,
 [data-theme="dark"] .ea-learn__q,

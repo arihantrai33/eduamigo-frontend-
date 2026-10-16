@@ -10,6 +10,7 @@ import PageHeader from "../../components/ui/PageHeader";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import { toneOf } from "../../components/ui/tone";
 import Segmented from "../../components/ui/Segmented";
+import SearchField from "../../components/ui/SearchField";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -176,12 +177,7 @@ export default function Communications() {
         <div style={{ animation:"fadeUp 0.3s ease" }}>
           {/* Filters + Add Button */}
           <div className="ea-toolbar" style={{ marginBottom:12 }}>
-            <div style={{ flex:"1 1 240px", position:"relative", minWidth:0 }}>
-              <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"var(--ea-muted)" }}><Glyph e="🔍" /></span>
-              <input value={search} onChange={e => setSearch(e.target.value)} aria-label="Search announcements" placeholder="Search announcements..."
-                style={{ width:"100%", padding:"11px 14px 11px 38px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", boxSizing:"border-box", fontFamily:"inherit", background:"white" }}
-                onFocus={e => e.target.style.borderColor="var(--brand)"} onBlur={e => e.target.style.borderColor="#E2E8F0"} />
-            </div>
+            <SearchField value={search} onChange={setSearch} label="Search announcements" placeholder="Search announcements..." style={{ flex: "1 1 240px" }} />
             <button type="button" onClick={openAddAnnouncement} className="ea-btn ea-btn--primary" style={{ whiteSpace:"nowrap" }}>
               + Add
             </button>

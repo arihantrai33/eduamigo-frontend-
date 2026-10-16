@@ -5,6 +5,7 @@ import PageHeader from "../../components/ui/PageHeader";
 import { hasEntries, useUnsavedChanges } from "../../utils/unsavedChanges";
 import FieldError from "../../components/ui/FieldError";
 import { useFieldErrors } from "../../utils/fieldErrors";
+import SearchField from "../../components/ui/SearchField";
 
 const API = import.meta.env.VITE_API_URL;
 // Fields checked before saving; each input's id is "add-parent-<name>".
@@ -144,13 +145,7 @@ const AddParent = () => {
           Link Children ({form.children.length} selected)
         </h2>
 
-        <input
-          className="ea-input" style={{ width: "100%", marginBottom: 12 }}
-          aria-label="Search students to link"
-          placeholder="Search student by name or roll number..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
+        <SearchField value={searchQuery} onChange={setSearchQuery} label="Search students to link" placeholder="Search student by name or roll number..." style={{ marginBottom: 12 }} />
 
         <div style={{ display: "flex", flexDirection: "column", gap: 8, maxHeight: 300, overflowY: "auto" }}>
 

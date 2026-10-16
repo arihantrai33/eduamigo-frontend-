@@ -5,12 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { toast, confirmAction, errorMessage } from "../../utils/toast";
 import EmptyState from "../../components/ui/EmptyState";
 
-import { Search, Trophy } from "lucide-react";
+import { Trophy } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import { toneOf } from "../../components/ui/tone";
 import Skeleton from "../../components/ui/Skeleton";
+import SearchField from "../../components/ui/SearchField";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -105,10 +106,7 @@ export default function Results() {
 
       {/* Filters */}
       <div className="ea-toolbar" style={{ marginBottom:20 }}>
-        <div className="ea-search">
-          <Search aria-hidden="true" />
-          <input className="ea-input" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search student name..." aria-label="Search results" />
-        </div>
+        <SearchField value={search} onChange={setSearch} label="Search results" placeholder="Search student name..." />
         <select className="ea-select" value={filterClass} onChange={e => { setFilterClass(e.target.value); setFilterSection(""); }} aria-label="Class">
           <option value="">All Classes</option>
           {classes.map(c => <option key={c} value={c}>Class {c}</option>)}

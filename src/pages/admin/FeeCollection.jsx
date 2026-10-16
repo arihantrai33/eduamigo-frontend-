@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast, confirmAction, errorMessage } from "../../utils/toast";
 import EmptyState from "../../components/ui/EmptyState";
 
-import { Search, CreditCard } from "lucide-react";
+import { CreditCard } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
@@ -13,6 +13,7 @@ import { toneOf } from "../../components/ui/tone";
 import Badge from "../../components/ui/Badge";
 import Segmented from "../../components/ui/Segmented";
 import Skeleton from "../../components/ui/Skeleton";
+import SearchField from "../../components/ui/SearchField";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -135,10 +136,7 @@ export default function FeeCollection() {
 
       {/* Filters */}
       <div className="ea-toolbar" style={{ marginBottom:20 }}>
-        <div className="ea-search">
-          <Search aria-hidden="true" />
-          <input className="ea-input" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by student name or fee type..." aria-label="Search fees" />
-        </div>
+        <SearchField value={search} onChange={setSearch} label="Search fees" placeholder="Search by student name or fee type..." />
         <select className="ea-select" value={filterStatus} onChange={e => setFilterStatus(e.target.value)} aria-label="Status">
           <option value="">All Status</option>
           {["Paid","Partial","Pending","Overdue"].map(s => <option key={s} value={s}>{s}</option>)}

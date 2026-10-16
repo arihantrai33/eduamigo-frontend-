@@ -7,7 +7,7 @@ import { can } from "../../utils/permissions";
 import { todayLocal } from "../../utils/dates";
 import EmptyState from "../../components/ui/EmptyState";
 
-import { Plus, Search, SearchX } from "lucide-react";
+import { Plus, SearchX } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
@@ -15,6 +15,7 @@ import { StatCard as SharedStat, StatGrid } from "../../components/ui/StatCard";
 import { toneOf } from "../../components/ui/tone";
 import Avatar from "../../components/ui/Avatar";
 import Skeleton from "../../components/ui/Skeleton";
+import SearchField from "../../components/ui/SearchField";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -237,10 +238,7 @@ export default function Students() {
         </StatGrid>
 
         <div className="ea-toolbar">
-          <div className="ea-search">
-            <Search aria-hidden="true" />
-            <input className="ea-input" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search by name, email or roll number..." aria-label="Search students" />
-          </div>
+          <SearchField value={search} onChange={setSearch} label="Search students" placeholder="Search by name, email or roll number..." />
           <select className="ea-select" value={filterClass} onChange={e=>setFilterClass(e.target.value)} aria-label="Class">
             <option value="">All Classes</option>
             {classes.map(c => <option key={c} value={c}>Class {c}</option>)}

@@ -8,6 +8,7 @@ import Glyph from "../../components/Glyph";
 import PageHeader from "../../components/ui/PageHeader";
 import Chips from "../../components/ui/Chips";
 import Skeleton from "../../components/ui/Skeleton";
+import SearchField from "../../components/ui/SearchField";
 
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
@@ -343,7 +344,7 @@ export default function Admissions() {
       </div>
 
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
-        <input style={{ ...input, flex: "1 1 260px" }} aria-label="Search enquiries" placeholder="Search by student, parent, mobile or application no." value={search} onChange={(e) => setSearch(e.target.value)} />
+        <SearchField value={search} onChange={setSearch} label="Search enquiries" placeholder="Search by student, parent, mobile or application no." style={{ flex: "1 1 260px" }} />
         <select style={input} value={klass} onChange={(e) => setKlass(e.target.value)} aria-label="Filter by class">
           <option value="">All classes</option>
           {[...new Set([...classes, ...(klass ? [klass] : [])])].map((c) => <option key={c} value={c}>Class {c}</option>)}

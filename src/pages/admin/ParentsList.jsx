@@ -5,13 +5,14 @@ import { useAuth } from "../../context/AuthContext";
 import { can } from "../../utils/permissions";
 import EmptyState from "../../components/ui/EmptyState";
 
-import { Plus, Search, Users } from "lucide-react";
+import { Plus, Users } from "lucide-react";
 import Glyph from "../../components/Glyph";
 import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
 import { StatCard, StatGrid } from "../../components/ui/StatCard";
 import { toneOf } from "../../components/ui/tone";
 import Skeleton from "../../components/ui/Skeleton";
+import SearchField from "../../components/ui/SearchField";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
@@ -102,10 +103,7 @@ export default function ParentsList() {
 
       {/* Search */}
       <div className="ea-toolbar" style={{ marginBottom:20 }}>
-        <div className="ea-search">
-          <Search aria-hidden="true" />
-          <input className="ea-input" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by parent name, email, phone or child name..." aria-label="Search parents" />
-        </div>
+        <SearchField value={search} onChange={setSearch} label="Search parents" placeholder="Search by parent name, email, phone or child name..." />
       </div>
 
       {/* Table */}

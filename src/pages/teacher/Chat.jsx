@@ -6,6 +6,7 @@ import BottomNav from "../../layout/BottomNav";
 import PortalHeader from "../../components/ui/PortalHeader";
 import { errorMessage } from "../../utils/toast";
 import Skeleton from "../../components/ui/Skeleton";
+import SearchField from "../../components/ui/SearchField";
 const API = import.meta.env.VITE_API_URL;
 
 const getUser = () => JSON.parse(localStorage.getItem('eduamigo_user'));
@@ -231,16 +232,7 @@ export default function TeacherChat() {
 
           <div className="ea-pd-body" style={styles.content}>
             {/* Search */}
-            <div className="ea-search-pill" style={styles.searchBox}>
-              <span style={styles.searchIcon}><Glyph e="🔍" /></span>
-              <input
-                style={styles.searchInput}
-                aria-label="Search conversations"
-                placeholder="Search students or parents..."
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-              />
-            </div>
+            <SearchField value={search} onChange={setSearch} label="Search conversations" placeholder="Search students or parents..." style={{ marginBottom: 16 }} />
 
             {loading ? (
               <div style={styles.centered}>
@@ -324,26 +316,6 @@ const styles = {
     flexDirection: 'column',
   },
   content: { padding: '16px', flex: 1 },
-  searchBox: {
-    display: 'flex',
-    alignItems: 'center',
-    background: '#fff',
-    borderRadius: 12,
-    padding: '8px 14px',
-    marginBottom: 16,
-    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-    gap: 8,
-  },
-  searchIcon: { fontSize: 16 },
-  searchInput: {
-    border: 'none',
-    outline: 'none',
-    flex: 1,
-    fontSize: 14,
-    fontFamily: "inherit",
-    color: '#1A1A2E',
-    background: 'transparent',
-  },
   sectionLabel: {
     margin: '8px 0 8px 4px',
   },
