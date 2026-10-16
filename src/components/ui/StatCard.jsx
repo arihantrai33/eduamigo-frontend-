@@ -5,6 +5,18 @@ import { TONES } from "./tone";
 // Colour is kept for meaning only (the chip's tone: success, warning, danger, info), never for decoration.
 //   <StatGrid><StatCard label="Fee pending" value={2} icon={<Hourglass />} tone="warning" /></StatGrid>
 // With onClick it is a button (for example a filter); `selected` marks the active filter.
+// Labels read in sentence case everywhere ("Total students"), also where a page passes "TOTAL STUDENTS" or
+// "Total Students"; an acronym inside a mixed label ("AI usage") stays as it is.
+const sentence = (s) => {
+  if (typeof s !== "string") return s;
+  const caps = s === s.toUpperCase();
+  return s.split(" ").map((w, i) => {
+    if (!caps && w.length > 1 && w === w.toUpperCase()) return w;
+    const low = w.toLowerCase();
+    return i === 0 ? low.charAt(0).toUpperCase() + low.slice(1) : low;
+  }).join(" ");
+};
+
 export function StatCard({ label, value, icon, tone = "brand", sub, onClick, selected }) {
   const Tag = onClick ? "button" : "div";
   return (
@@ -12,7 +24,7 @@ export function StatCard({ label, value, icon, tone = "brand", sub, onClick, sel
       className={`ea-stat ea-stat--row${onClick ? "" : " is-static"}${selected ? " is-selected" : ""}`}>
       {icon && <span className={`ea-icon-chip ea-icon-chip--${TONES.includes(tone) ? tone : "brand"}`} aria-hidden="true">{icon}</span>}
       <span className="ea-stat__text">
-        <span className="ea-stat__caption">{label}</span>
+        <span className="ea-stat__caption">{sentence(label)}</span>
         <span className="ea-stat__number">{value}</span>
         {sub && <span className="ea-stat__sub">{sub}</span>}
       </span>

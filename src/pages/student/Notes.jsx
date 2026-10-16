@@ -122,11 +122,11 @@ export default function Notes() {
       {/* Content */}
       <div className="ea-pd-body" style={{ flex: 1, padding: '0 16px', overflowY: 'auto' }}>
         {activeTab === 'Notes' && urgentTask && (
-          <div style={{ background: '#FFF7ED', border: '1px solid #FED7AA', borderRadius: 14, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-            <span style={{ fontSize: 20, color: '#C2410C', display: 'flex' }}><Glyph e="⚠" /></span>
+          <div className="ea-note ea-note--warning ea-note--row" style={{ marginBottom: 20 }}>
+            <span className="ea-note__icon"><Glyph e="⚠" /></span>
             <div>
-              <div style={{ color: '#7C2D12', fontWeight: 700, fontSize: 14 }}>{urgentTask.title}: due soon</div>
-              <div style={{ color: '#9A3412', fontSize: 12, marginTop: 2 }}>Submit before {formatDate(urgentTask.dueDate)}</div>
+              <div className="ea-note__title">{urgentTask.title}: due soon</div>
+              <div>Submit before {formatDate(urgentTask.dueDate)}</div>
             </div>
           </div>
         )}

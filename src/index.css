@@ -570,6 +570,9 @@ body.admin-body #root {
   --ea-text-xs: 500 12px/16px var(--ea-font);
   --ea-text-overline: 650 11px/16px var(--ea-font); /* with uppercase and --ea-tracking-overline; table headers and sidebar sections only */
   --ea-tracking-overline: 0.06em;
+  /* A labelled figure (stat cards, the figures in a summary card): the same label and number everywhere. */
+  --ea-figure-label: 650 12px/16px var(--ea-font);
+  --ea-figure-value: 750 22px/28px var(--ea-font);
   --ea-radius-sm: 8px;
   --ea-radius: 12px;
   --ea-radius-lg: 16px;
@@ -603,6 +606,7 @@ body.admin-body #root {
   :root {
     --ea-text-display: 750 28px/36px var(--ea-font);
     --ea-text-h1: 700 20px/28px var(--ea-font);
+    --ea-figure-value: 750 20px/26px var(--ea-font);
   }
 }
 
@@ -970,9 +974,9 @@ td .ea-skeleton { box-sizing: border-box; padding: 0 20px; }
 .ea-stat.is-selected, .ea-stat.is-selected:hover { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-soft); }
 .ea-stat.is-static:hover { border-color: var(--ea-line); }
 .ea-stat__text { display: flex; flex-direction: column; min-width: 0; }
-.ea-stat__caption { font-size: 12px; font-weight: 650; color: var(--ea-muted); letter-spacing: 0.02em; overflow-wrap: break-word; }
+.ea-stat__caption { font: var(--ea-figure-label); color: var(--ea-muted); overflow-wrap: break-word; }
 /* A number never breaks inside itself ("₹31,50" / "0"); it scales down a little on narrower screens instead. */
-.ea-stat__number { font-size: clamp(18px, 2vw, 24px); font-weight: 750; color: var(--ea-ink); letter-spacing: -0.02em; line-height: 1.2; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ea-stat__number { font: var(--ea-figure-value); color: var(--ea-ink); letter-spacing: -0.01em; white-space: nowrap; font-variant-numeric: tabular-nums; }
 /* Portal page header (components/ui/PortalHeader, design plan §2.5).
    Below 1024 px: a 56 px app bar in the solid brand colour (no gradient): back, title, up to two actions.
    From 1024 px: the admin PageHeader look: the title on the page background, lined up with the content column, no back
@@ -1022,8 +1026,8 @@ td .ea-skeleton { box-sizing: border-box; padding: 0 20px; }
 .ea-summary__subtitle { margin: -10px 0 0; font-size: 13px; color: var(--ea-muted); }
 .ea-summary__items { display: grid; grid-template-columns: repeat(auto-fit, minmax(84px, 1fr)); gap: 8px; margin: 0; }
 .ea-summary__item { padding: 10px 12px; border-radius: var(--ea-radius); background: var(--ea-hover); min-width: 0; }
-.ea-summary__item dt { font-size: 12px; font-weight: 600; color: var(--ea-muted); }
-.ea-summary__item dd { margin: 2px 0 0; font-size: 18px; font-weight: 750; color: var(--ea-ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ea-summary__item dt { font: var(--ea-figure-label); color: var(--ea-muted); }
+.ea-summary__item dd { margin: 2px 0 0; font: var(--ea-figure-value); letter-spacing: -0.01em; color: var(--ea-ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .ea-summary .ea-seg { align-self: flex-start; }
 
 /* Search and filter row above a list. Wraps on narrow screens; the search box keeps a usable width. */
@@ -1126,6 +1130,11 @@ td .ea-skeleton { box-sizing: border-box; padding: 0 20px; }
   .ea-roster__row { grid-template-columns: minmax(170px, 1.1fr) minmax(300px, 2fr) minmax(150px, 1.1fr); align-items: center; gap: 14px; }
 }
 .ea-note--warning { background: color-mix(in srgb, var(--ea-warning) 8%, var(--ea-surface)); border-color: color-mix(in srgb, var(--ea-warning) 30%, var(--ea-surface)); border-left-color: var(--ea-warning); }
+/* A note with an icon and a short title (payment due, assignment due): the same tones, in every portal and theme. */
+.ea-note--row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; }
+.ea-note__icon { flex: none; display: flex; font-size: 20px; color: var(--ea-on-card-info); }
+.ea-note__title { font-weight: 700; color: var(--ea-ink); }
+.ea-note--warning .ea-note__icon, .ea-note--warning .ea-note__title { color: var(--ea-on-card-warning); }
 
 /* Forms (design plan §2.6, B7): a section title, a grid of fields (one column on phones, two from 768 px), each field
    a 13 px sentence-case label over a white 40 px input (.ea-input / .ea-select above), an optional hint, and the
@@ -1179,10 +1188,8 @@ input.ea-input-bare[aria-invalid="true"], input.ea-input-bare[aria-invalid="true
   .ea-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   /* Icon above the caption, so a long caption (ANNOUNCEMENTS) gets the card's full width. */
   .ea-stat--row { flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px; }
-  .ea-stat__caption { font-size: 11px; letter-spacing: 0.01em; }
   .ea-stat--row .ea-icon-chip { width: 32px; height: 32px; border-radius: 10px; }
   .ea-stat--row .ea-icon-chip svg { width: 16px; height: 16px; }
-  .ea-stat__number { font-size: 20px; }
   /* Five or more cards (StatGrid): one row that scrolls sideways, so the list or table below starts high on the
      screen. About two and a half cards show; the cut card at the edge says there is more. */
   .ea-stats--many {

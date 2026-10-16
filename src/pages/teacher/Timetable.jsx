@@ -229,7 +229,7 @@ export default function TeacherTimetable() {
         </>}
 
         {timetable.length === 0 && !loading && (
-          <div style={{ background: '#FEF9C3', border: '1px solid #FDE047', borderRadius: 16, padding: '14px 16px', marginTop: 8, fontSize: 13, color: 'var(--ea-on-card-warning)', fontWeight: 500 }}>
+          <div className="ea-note ea-note--warning" style={{ marginTop: 8 }}>
             No timetable assigned yet. Ask admin to set up your schedule.
           </div>
         )}

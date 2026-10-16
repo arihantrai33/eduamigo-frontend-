@@ -76,11 +76,11 @@ export default function StudentFee() {
 
       {/* Due Alert */}
       {nearestDue && (
-        <div className="ea-pd-bar" style={{ margin: "16px 16px 0", background: "#FFF8E1", borderRadius: 14, padding: "14px 16px", borderLeft: "4px solid #f59e0b", display: "flex", gap: 12, alignItems: "center" }}>
-          <div style={{ fontSize: 22 }}><Glyph e="⚠" /></div>
+        <div className="ea-pd-bar ea-note ea-note--warning ea-note--row" style={{ margin: "16px 16px 0" }}>
+          <span className="ea-note__icon"><Glyph e="⚠" /></span>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#92400e" }}>Payment Due: {formatDate(nearestDue.dueDate)}</div>
-            <div style={{ fontSize: 12, color: "#78716c", marginTop: 2 }}>Please clear outstanding dues to avoid late charges.</div>
+            <div className="ea-note__title">Payment Due: {formatDate(nearestDue.dueDate)}</div>
+            <div>Please clear outstanding dues to avoid late charges.</div>
           </div>
         </div>
       )}
