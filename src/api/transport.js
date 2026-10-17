@@ -44,8 +44,8 @@ export const getStudentsForBus = async () => {
   return res.data;
 };
 
-export const assignStudents = async (busId, studentIds) => {
-  const res = await axios.put(`${API}/transport/${busId}/assign-students`, { studentIds }, authHeader());
+export const assignStudents = async (busId, studentIds, stopIds = {}) => {
+  const res = await axios.put(`${API}/transport/${busId}/assign-students`, { studentIds, stopIds }, authHeader());
   return res.data;
 };
 
@@ -55,8 +55,8 @@ export const getDriverBus = async (token) => {
   return res.data;
 };
 
-export const startTrip = async (token) => {
-  const res = await axios.patch(`${API}/transport/driver/${token}/start-trip`);
+export const startTrip = async (token, direction = "pickup") => {
+  const res = await axios.patch(`${API}/transport/driver/${token}/start-trip`, { direction });
   return res.data;
 };
 
@@ -70,7 +70,8 @@ export const markStopDone = async (token) => {
   return res.data;
 };
 
-export const updateDriverLocation = async (token, lat, lng) => {
-  const res = await axios.post(`${API}/transport/driver/${token}/update-location`, { lat, lng });
+// A batch of GPS readings: [{ lat, lng, accuracy, speed, heading, at }]. The reply says how far the trip has got.
+export const sendLocations = async (token, points) => {
+  const res = await axios.post(`${API}/transport/driver/${token}/location`, { points }, { timeout: 15000 });
   return res.data;
 };

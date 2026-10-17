@@ -44,6 +44,7 @@ export default function Transport() {
   const [newStop, setNewStop] = useState({ name:"", latitude:"", longitude:"", estimatedTime:"", order:1 });
   const stopErrors = useFieldErrors(STOP_FIELDS);
   const [selectedStudents, setSelectedStudents] = useState([]);
+  const [stopFor, setStopFor] = useState({}); // student id -> the stop where that student gets on and off
 
   useEffect(() => { fetchAll(); }, []);
 
@@ -108,12 +109,13 @@ export default function Transport() {
   const openStudents = (bus) => {
     setSelectedBus(bus);
     setSelectedStudents((bus.assignedStudents||[]).map(s => s._id || s));
+    setStopFor(Object.fromEntries(allStudents.filter(s => String(s.bus?._id || s.bus) === String(bus._id) && s.busStopId).map(s => [s._id, s.busStopId])));
     setShowStudentsModal(true);
   };
 
   const handleAssignStudents = async () => {
     try {
-      await axios.put(`${API}/transport/${selectedBus._id}/assign-students`, { studentIds: selectedStudents }, auth());
+      await axios.put(`${API}/transport/${selectedBus._id}/assign-students`, { studentIds: selectedStudents, stopIds: stopFor }, auth());
       setShowStudentsModal(false);
       fetchAll();
     } catch(e) { toast.error(errorMessage(e, "Could not assign the students")); }
@@ -306,6 +308,12 @@ export default function Transport() {
                 <input type="checkbox" checked={selectedStudents.includes(s._id)} onChange={() => toggleStudent(s._id)} style={{ accentColor:"#F59E0B", width:16, height:16 }} />
                 <span style={{ fontSize:13, fontWeight:600, color:"#0F172A", flex:1 }}>{s.name}</span>
                 <span style={{ fontSize:11, color:"var(--ea-on-card-warning)", fontWeight:700 }}>Class {s.class}{s.section?`-${s.section}`:""}</span>
+                {selectedStudents.includes(s._id) && (selectedBus?.stops||[]).length > 0 && (
+                  <select className="ea-select" aria-label={`Stop for ${s.name}`} value={stopFor[s._id] || ""} onChange={(e) => setStopFor(p => ({ ...p, [s._id]: e.target.value }))} style={{ width:150, minHeight:32, height:32, fontSize:12 }}>
+                    <option value="">Stop: not set</option>
+                    {[...selectedBus.stops].sort((a,b) => a.order-b.order).map(st => <option key={st._id} value={st._id}>{st.name}</option>)}
+                  </select>
+                )}
               </label>
             ))}
           </div>

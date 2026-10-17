@@ -1,10 +1,10 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { db } from "../../firebase";
-import { ref, onValue } from "firebase/database";
+import { useBusLive, signalLabel, formatEta } from "../bus/liveBus";
+import { AnimatedBusMarker, FollowBus } from "../bus/AnimatedBusMarker";
 import {
   MapContainer, TileLayer, Marker, Popup,
-  Polyline, useMap,
+  Polyline,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -22,68 +22,6 @@ const getTrafficStatus = (speed) => {
   return                            { color: "var(--ea-on-card-success)",  label: "Clear road" };
 };
 
-async function fetchETA(fromLat, fromLng, toLat, toLng) {
-  try {
-    const url  = `https://router.project-osrm.org/route/v1/driving/${fromLng},${fromLat};${toLng},${toLat}?overview=false`;
-    const data = await (await fetch(url)).json();
-    if (data.routes?.[0]) {
-      const m = Math.round(data.routes[0].duration / 60);
-      return m <= 1 ? "< 1 min" : `${m} min`;
-    }
-  } catch {}
-  return null;
-}
-
-async function fetchRoadRoute(fromLat, fromLng, toStops) {
-  try {
-    const waypoints = [{ lat: fromLat, lng: fromLng }, ...toStops];
-    const coords    = waypoints.map(s => `${s.lng},${s.lat}`).join(";");
-    const ctrl      = new AbortController();
-    const timer     = setTimeout(() => ctrl.abort(), 8000);
-    const data      = await (await fetch(
-      `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`,
-      { signal: ctrl.signal }
-    )).json();
-    clearTimeout(timer);
-    if (data.routes?.[0]) return data.routes[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
-  } catch {}
-  return toStops.map(s => [s.lat, s.lng]);
-}
-
-async function fetchFullRoute(allStops) {
-  try {
-    const coords = allStops.map(s => `${s.lng},${s.lat}`).join(";");
-    const ctrl   = new AbortController();
-    const timer  = setTimeout(() => ctrl.abort(), 8000);
-    const data   = await (await fetch(
-      `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`,
-      { signal: ctrl.signal }
-    )).json();
-    clearTimeout(timer);
-    if (data.routes?.[0]) return data.routes[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
-  } catch {}
-  return allStops.map(s => [s.lat, s.lng]);
-}
-
-function getNearestPointIndex(routePoints, lat, lng) {
-  let minDist = Infinity, minIdx = 0;
-  routePoints.forEach(([pLat, pLng], i) => {
-    const d = (pLat - lat) ** 2 + (pLng - lng) ** 2;
-    if (d < minDist) { minDist = d; minIdx = i; }
-  });
-  return minIdx;
-}
-
-function getNearestStopIndex(stops, lat, lng) {
-  let minDist = Infinity, minIdx = 0;
-  stops.forEach((stop, i) => {
-    const d = (stop.lat - lat) ** 2 + (stop.lng - lng) ** 2;
-    if (d < minDist) { minDist = d; minIdx = i; }
-  });
-  return minIdx;
-}
-
-// ── Icons ──────────────────────────────────────────────────────
 const busIcon = L.divIcon({
   className: "",
   html: `<div style="width:52px;height:52px;background:var(--brand-gradient);border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px color-mix(in srgb, var(--brand) 60%, transparent);border:3px solid white;">
@@ -107,47 +45,6 @@ function makeStopIcon(type) {
 }
 
 // ── Sub-components ─────────────────────────────────────────────
-function SmoothBusMarker({ position, driverName, busLabel }) {
-  const markerRef  = useRef(null);
-  const currentPos = useRef(position);
-  const animFrame  = useRef(null);
-  useEffect(() => {
-    if (!markerRef.current || !position) return;
-    const start = { ...currentPos.current };
-    const end   = position;
-    let startTime = null;
-    const animate = (ts) => {
-      if (!startTime) startTime = ts;
-      const t     = Math.min((ts - startTime) / 2000, 1);
-      const eased = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
-      markerRef.current?.setLatLng([
-        start.lat + (end.lat - start.lat) * eased,
-        start.lng + (end.lng - start.lng) * eased,
-      ]);
-      if (t < 1) animFrame.current = requestAnimationFrame(animate);
-      else currentPos.current = end;
-    };
-    if (animFrame.current) cancelAnimationFrame(animFrame.current);
-    animFrame.current = requestAnimationFrame(animate);
-    return () => { if (animFrame.current) cancelAnimationFrame(animFrame.current); };
-  }, [position]);
-  if (!position) return null;
-  return (
-    <Marker ref={markerRef} position={[position.lat, position.lng]} icon={busIcon}>
-      <Popup><strong>{busLabel}</strong><br />Driver: {driverName}</Popup>
-    </Marker>
-  );
-}
-
-function MapAutoCenter({ position }) {
-  const map = useMap();
-  useEffect(() => {
-    if (position) map.setView([position.lat, position.lng], 16, { animate: true, duration: 1.5 });
-  }, [position, map]);
-  return null;
-}
-
-
 function CallModal({ onClose, driverName, driverPhone }) {
   return (
     <div style={styles.modalOverlay}>
@@ -174,14 +71,16 @@ export default function ParentBus() {
   const [loading,        setLoading]        = useState(true);
   const [apiError,       setApiError]       = useState(null);
 
-  const [busLocation,    setBusLocation]    = useState(null);
-  const [busSpeed,       setBusSpeed]       = useState(0);
-  const [eta,            setEta]            = useState("—");
-  const [tripActive,     setTripActive]     = useState(false);
-  const [currentStopIdx, setCurrentStopIdx] = useState(0);
-  const [fullRoute,      setFullRoute]      = useState([]);
-  const [remainingRoute, setRemainingRoute] = useState([]);
-  const [completedRoute, setCompletedRoute] = useState([]);
+  // The live bus comes from the server (position on the road, stops reached, ETAs); see pages/bus/liveBus.js.
+  const live = useBusLive(busInfo?.busId);
+  const busLocation    = live.active && live.position ? { lat: live.position.lat, lng: live.position.lng } : null;
+  const busSpeed       = live.speedKmh;
+  const eta            = live.etaSchool;
+  const tripActive     = live.active;
+  const currentStopIdx = live.active ? live.currentStopIdx : (busInfo?.currentStopIndex || 0);
+  const fullRoute      = live.full;
+  const remainingRoute = live.remaining;
+  const completedRoute = live.completed;
 
   const [isFullscreen,  setIsFullscreen]  = useState(false);
   const [panelExpanded, setPanelExpanded] = useState(false);
@@ -190,7 +89,6 @@ export default function ParentBus() {
   const [headerHeight,  setHeaderHeight]  = useState(0);
 
   const headerRef     = useRef(null);
-  const lastUpdateRef = useRef(null);
 
   // ── 1. Fetch bus info ──
   useEffect(() => {
@@ -220,101 +118,6 @@ export default function ParentBus() {
     return () => ro.disconnect();
   }, []);
 
-  // ── 3. Full road route ──
-  useEffect(() => {
-    if (!busInfo?.stops?.length) return;
-    const mapped = busInfo.stops
-      .sort((a, b) => a.order - b.order)
-      .map(s => ({ lat: s.latitude, lng: s.longitude, name: s.name }));
-    fetchFullRoute(mapped).then(setFullRoute);
-  }, [busInfo]);
-
-  // ── 4. Firebase live tracking — FIXED ──
-  useEffect(() => {
-    if (!busInfo?.firebasePath) return;
-
-    // Status listener: decides whether a trip is active
-    const statusRef = ref(db, `transport/${busInfo.firebasePath}/busStatus`);
-    const unsubscribeStatus = onValue(statusRef, (snap) => {
-      const status = snap.val();
-      if (status === 'Idle' || status === 'Completed' || !status) {
-        setTripActive(false);
-        setBusLocation(null);
-        setBusSpeed(0);
-        setEta("—");
-        setRemainingRoute([]);
-        setCompletedRoute([]);
-      }
-    });
-    // currentStopIndex synced from the driver
-    const stopIndexRef = ref(db, `transport/${busInfo.firebasePath}/currentStopIndex`);
-    const unsubscribeStopIndex = onValue(stopIndexRef, (snap) => {
-      const idx = snap.val();
-      if (idx !== null && idx !== undefined) setCurrentStopIdx(idx);
-    });
-    // Location listener — live GPS updates
-    const busRef = ref(db, `transport/${busInfo.firebasePath}/location`);
-    const unsubscribeLocation = onValue(busRef, async (snapshot) => {
-      const data = snapshot.val();
-
-      if (!data?.lat || !data?.lng || (data.lat === 0 && data.lng === 0)) {
-        setTripActive(false);
-        setBusLocation(null);
-        setBusSpeed(0);
-        setEta("—");
-        setCurrentStopIdx(busInfo.currentStopIndex || 0);
-        setRemainingRoute([]);
-        setCompletedRoute([]);
-        return;
-      }
-
-      // Speed calculation
-      const now = Date.now();
-      if (lastUpdateRef.current) {
-        const { lat: pLat, lng: pLng, time: pTime } = lastUpdateRef.current;
-        const timeDelta = (now - pTime) / 1000;
-        if (timeDelta > 0) {
-          const distance = Math.sqrt(
-            ((data.lat - pLat) * 111_000) ** 2 +
-            ((data.lng - pLng) * 111_000 * Math.cos(data.lat * (Math.PI / 180))) ** 2
-          );
-          setBusSpeed(Math.round((distance / timeDelta) * 3.6));
-        }
-      }
-      lastUpdateRef.current = { lat: data.lat, lng: data.lng, time: now };
-
-      setTripActive(true);
-      setBusLocation({ lat: data.lat, lng: data.lng });
-
-      if (busInfo.stops?.length) {
-        const stops = busInfo.stops
-          .sort((a, b) => a.order - b.order)
-          .map(s => ({ lat: s.latitude, lng: s.longitude }));
-        const nearestIdx = getNearestStopIndex(stops, data.lat, data.lng);
-        setCurrentStopIdx(nearestIdx);
-
-        const remainingStops = stops.slice(nearestIdx);
-        const remaining = await fetchRoadRoute(data.lat, data.lng, remainingStops);
-        setRemainingRoute(remaining);
-
-        if (fullRoute.length > 0) {
-          const splitIdx = getNearestPointIndex(fullRoute, data.lat, data.lng);
-          setCompletedRoute(fullRoute.slice(0, splitIdx + 1));
-        }
-
-        const lastStop = stops[stops.length - 1];
-        const etaResult = await fetchETA(data.lat, data.lng, lastStop.lat, lastStop.lng);
-        if (etaResult) setEta(etaResult);
-      }
-    });
-
-    // Dono listeners ka cleanup
-    return () => {
-      unsubscribeStatus();
-      unsubscribeLocation();
-    };
-  }, [busInfo, fullRoute]);
-
   // ── 5. ESC key ──
   useEffect(() => {
     const onKey = (e) => {
@@ -325,10 +128,12 @@ export default function ParentBus() {
   }, []);
 
   // ── Derived values ──
-  const stops = busInfo?.stops
-    ? [...busInfo.stops].sort((a, b) => a.order - b.order)
-        .map(s => ({ id: s._id, name: s.name, lat: s.latitude, lng: s.longitude }))
-    : [];
+  // In the order of the current run (a drop run goes the other way); before the first snapshot, the stored order.
+  const stops = live.stops.length
+    ? live.stops.map(s => ({ id: s.id, name: s.name, lat: s.lat, lng: s.lng, etaMin: s.etaMin }))
+    : busInfo?.stops
+      ? [...busInfo.stops].sort((a, b) => a.order - b.order).map(s => ({ id: s._id, name: s.name, lat: s.latitude, lng: s.longitude }))
+      : [];
 
   const traffic        = getTrafficStatus(busSpeed);
   const completedCount = stops.filter((_, i) => i < currentStopIdx).length;
@@ -379,9 +184,10 @@ export default function ParentBus() {
   }
 
   // ── Map content ──
-  const mapContent = busLocation ? (
+  const mapStart = busLocation;
+  const mapContent = mapStart ? (
     <MapContainer
-      center={[busLocation.lat, busLocation.lng]}
+      center={[mapStart.lat, mapStart.lng]}
       zoom={16}
       style={{ height: "100%", width: "100%" }}
       zoomControl={false}
@@ -405,8 +211,10 @@ export default function ParentBus() {
       {fullRoute.length > 1 && (
         <Polyline positions={fullRoute} color={cssVar("--brand", "#0EA5E9")} weight={2} opacity={0.18} dashArray="8 10" />
       )}
-      <SmoothBusMarker position={busLocation} driverName={busInfo.driverName} busLabel={busLabel} />
-      <MapAutoCenter   position={busLocation} />
+      <AnimatedBusMarker position={live.active ? live.position : null} route={live.route} icon={busIcon}>
+        <strong>{busLabel}</strong><br />Driver: {busInfo.driverName}
+      </AnimatedBusMarker>
+      <FollowBus position={busLocation} />
       {stops.map((stop, i) => {
         const type = getStopType(i);
         return (
@@ -425,8 +233,8 @@ export default function ParentBus() {
   ) : (
     <div className="ea-bus-empty" style={styles.mapPlaceholder}>
       <div style={{ fontSize: "56px" }}><Glyph e="🚌" /></div>
-      <p style={styles.busEmptyTitle}>Bus not on route yet</p>
-      <p style={styles.busEmptySub}>Trip has not started</p>
+      <p style={styles.busEmptyTitle}>{tripActive ? "The bus has started: waiting for its location" : "Bus not on route yet"}</p>
+      <p style={styles.busEmptySub}>{tripActive ? "The driver's GPS will appear on the map in a moment" : "Trip has not started"}</p>
     </div>
   );
 
@@ -490,9 +298,9 @@ export default function ParentBus() {
               <p style={styles.navSub}>{busLabel} · {routeLabel}</p>
             </div>
             {tripActive && (
-              <div style={styles.livePill}>
-                <span style={styles.liveDot} />
-                <span style={styles.liveText}>LIVE</span>
+              <div style={styles.livePill} data-testid="bus-live-badge" role="status" aria-live="polite">
+                <span style={{ ...styles.liveDot, background: signalLabel(live).color }} />
+                <span style={styles.liveText}>{signalLabel(live).text}</span>
               </div>
             )}
           </div>
@@ -626,14 +434,14 @@ export default function ParentBus() {
                           {isCompleted ? "Departed"
                            : isCurrent ? "Bus is here now"
                            : isSchool  ? `Est. arrival — ${eta}`
-                           : "Upcoming stop"}
+                           : stop.etaMin != null ? `Arriving in about ${formatEta(stop.etaMin)}` : "Upcoming stop"}{stop.id === busInfo.myStopId ? " · Your stop" : ""}
                         </p>
                       </div>
                       <div style={{ flexShrink: 0 }}>
                         {isCompleted && <span style={{ ...styles.badge, background: "#F0FDF4", color: "#166534", border: "0.5px solid #BBF7D0" }}>Done</span>}
                         {isCurrent   && <span style={{ ...styles.badge, background: "var(--brand-soft)", color: "var(--brand-text)", border: "0.5px solid var(--brand-border)" }}>Live</span>}
                         {isSchool    && <span style={{ ...styles.badge, background: "color-mix(in srgb, var(--ea-warning) 5%, var(--ea-surface))", color: "var(--ea-on-card-warning)", border: "0.5px solid #FED7AA" }}>{eta}</span>}
-                        {type === "upcoming" && <span style={{ fontSize: "10px", color: "var(--ea-faint)" }}>—</span>}
+                        {type === "upcoming" && <span style={{ fontSize: "11px", color: "var(--ea-muted)", fontWeight: 600 }}>{stop.etaMin != null ? formatEta(stop.etaMin) : "—"}</span>}
                       </div>
                     </div>
                   </div>

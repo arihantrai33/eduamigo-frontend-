@@ -10,12 +10,12 @@ for (const role of ['student', 'parent']) {
       await page.setViewportSize({ width, height: 800 });
       await signIn(page, role);
       await page.goto(`/${role}/bus`);
-      const message = page.getByText(/Bus (is )?not on route yet/);
+      const message = page.getByText(/Bus (is )?not on route yet|waiting for its location/);
       await expect(message).toBeVisible();
       const panel = page.locator('.ea-bus-panel');
       await expect(panel).toBeVisible();
       const m = await message.boundingBox();
-      const sub = await page.getByText('Trip has not started').boundingBox();
+      const sub = await page.getByText(/Trip has not started|GPS will appear on the map/).boundingBox();
       const p = await panel.boundingBox();
       const area = await page.locator('.ea-scroll').boundingBox();
 
