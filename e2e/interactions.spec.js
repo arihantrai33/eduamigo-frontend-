@@ -100,13 +100,12 @@ test('sign-in: an empty field is named under that field, focus goes to it, and t
   await page.getByLabel('School code or name').fill('GVPS');
   await page.getByRole('button', { name: 'Continue' }).click();
   await page.getByRole('button', { name: 'Yes, this is my school' }).click();
-  await page.getByRole('tab', { name: 'Admin' }).click();
-  await page.getByRole('button', { name: 'Log in as Admin' }).click();
-  const id = page.getByLabel('Email address');
+  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+  const id = page.getByLabel('Email, mobile number or admission number');
   const password = page.getByLabel('Password', { exact: true });
   await expect(id).toBeFocused();
   await expect(id).toHaveAttribute('aria-invalid', 'true');
-  await expect(id).toHaveAccessibleDescription('Enter your email address');
+  await expect(id).toHaveAccessibleDescription('Enter your email, mobile number or admission number');
   await expect(password).toHaveAccessibleDescription('Enter your password');
   await id.fill('admin@gvps.demo');
   await expect(id).not.toHaveAttribute('aria-invalid', 'true');
@@ -124,7 +123,8 @@ test('portal on a phone: Tab reaches the tab bar, Enter opens the screen, and th
   await page.setViewportSize({ width: 390, height: 844 });
   await signIn(page, 'parent');
   const nav = page.getByRole('navigation', { name: 'Main' });
-  await expect(page.getByRole('button', { name: /Fee Status/ })).toBeVisible(); // the home screen has loaded
+  await expect(page.getByRole('heading', { level: 1, name: /Welcome back/ })).toBeVisible();
+  await expect(page.getByRole('status', { name: /^Loading/ })).toHaveCount(0); // the home screen has loaded (sections replace themselves as they load)
   let reached = false;
   for (let i = 0; i < 80 && !reached; i++) {
     await page.keyboard.press('Tab');
@@ -196,11 +196,12 @@ test('change password: a weak, then a mismatched new password is named under its
 test('student chat: a contact can be opened with the keyboard and the tabs say which is selected', async ({ page }) => {
   await signIn(page, 'student');
   await page.goto('/student/chat');
-  await expect(page.getByRole('button', { name: 'Chats', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByRole('tab', { name: /Chats/ })).toHaveAttribute('aria-selected', 'true');
   const contact = page.getByRole('button', { name: /Anita Verma/ }).first();
   await contact.focus();
   await page.keyboard.press('Enter');
-  await expect(page.getByRole('button', { name: 'Back to contacts' })).toBeVisible();
+  await expect(contact).toHaveAttribute('aria-current', 'true');
+  await expect(page.getByRole('heading', { name: 'Anita Verma' })).toBeVisible();
 });
 
 test('filters and tabs say which option is selected (library, users, teacher upload)', async ({ page }) => {

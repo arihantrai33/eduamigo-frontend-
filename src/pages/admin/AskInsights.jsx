@@ -62,14 +62,14 @@ export default function AskInsights() {
   return (
     <div style={s.page}>
       <PageHeader title="EduAmigo Ask" subtitle="How the assistant routes and resolves questions, and what it handed to staff."
-        actions={<>
+        actions={<div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
           <select className="ea-select" value={days} onChange={(e) => setDays(Number(e.target.value))} aria-label="Period">
             {[7, 30, 90].map((d) => <option key={d} value={d}>Last {d} days</option>)}
           </select>
           <button type="button" className="ea-btn ea-btn--ghost" onClick={refresh} disabled={loading}>
             {loading ? <Loader2 size={16} className="ins-spin" aria-hidden="true" /> : <RefreshCw size={16} aria-hidden="true" />} Refresh
           </button>
-        </>} />
+        </div>} />
       <div className="ea-seg" role="tablist" aria-label="Ask sections" style={{ justifySelf: "start" }}>
         {[["insights", "Insights and tickets"], ["usage", "AI usage and cost"], ["knowledge", "School documents"]].map(([k, l]) => (
           <button key={k} type="button" role="tab" aria-selected={tab === k} className="ea-seg__opt" onClick={() => setTab(k)}>{l}</button>

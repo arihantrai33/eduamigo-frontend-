@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getSavedSchool } from "../utils/school";
 import { homeFor } from "../utils/home";
 import PlatformHero from "../components/PlatformHero";
+import { isTenantHost } from "../utils/tenantHost";
 
 export default function Splash() {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ export default function Splash() {
       try { return stored && token ? JSON.parse(stored) : null; } catch { return null; }
     })();
     if (user?.role) navigate(homeFor(user.role), { replace: true });
-    else navigate(getSavedSchool() ? "/login" : "/select-school", { replace: true });
+    else navigate(isTenantHost() || getSavedSchool() ? "/login" : "/select-school", { replace: true });
   }, [done, navigate]);
 
   // EduAmigo brand over the whole window (no centred frame on a desktop), with the same logo as "Find your school".

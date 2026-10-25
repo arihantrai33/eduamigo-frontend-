@@ -6,6 +6,8 @@ import PageHeader from "../../components/ui/PageHeader";
 import FieldError from "../../components/ui/FieldError";
 import { useFieldErrors } from "../../utils/fieldErrors";
 import Skeleton from "../../components/ui/Skeleton";
+import AvatarPicker from "../../components/ui/AvatarPicker";
+import { useAuth } from "../../context/AuthContext";
 
 const FIELDS = { name: "school-name" };
 
@@ -171,7 +173,7 @@ export default function Settings() {
     try {
       const payload = {
         name: school.name, email: school.email, phone: school.phone, address: school.address,
-        principal: school.principal, workingDays: school.workingDays,
+        principal: school.principal, workingDays: school.workingDays, size: school.size || "",
         ...(hasLocation ? { location: { lat: Number(school.lat), lng: Number(school.lng) } } : {}),
       };
       const res = await axios.put(`${API}/schools/me`, payload, auth());
@@ -207,9 +209,14 @@ export default function Settings() {
     }
   };
 
+  const { user: me } = useAuth();
   const header = (
     <div style={{ marginBottom: "1.5rem" }}>
       <PageHeader title="Settings" subtitle="School profile, academic year and subjects" />
+      <div className="ea-card" style={{ ...card, display: "flex", alignItems: "center", gap: 18, marginTop: 16, marginBottom: 0 }}>
+        <AvatarPicker name={me?.name} />
+        <div><strong>My profile photo</strong><p className="ea-page-subtitle" style={{ margin: "2px 0 0" }}>Shown next to your name across the app and in chats.</p></div>
+      </div>
     </div>
   );
 
@@ -235,6 +242,14 @@ export default function Settings() {
         <h2 className="ea-form-section__title">Academic Year</h2>
         <div className="ea-form-grid">
           <Field text="Current session (April to March)"><input className="ea-input" style={{ color: "var(--ea-muted)", background: "var(--ea-hover)" }} value={school.academicYear} readOnly /></Field>
+          <Field text="School size (used to suggest roles)">
+            <select className="ea-select" value={school.size || ""} onChange={set("size")}>
+              <option value="">Not set</option>
+              <option value="small">Small: a few staff share the office</option>
+              <option value="medium">Medium: separate office, fees and academics</option>
+              <option value="large">Large: departments and coordinators</option>
+            </select>
+          </Field>
           <Field text="Working days">
             <select className="ea-select" value={school.workingDays} onChange={set("workingDays")}>
               <option>Monday - Saturday</option>

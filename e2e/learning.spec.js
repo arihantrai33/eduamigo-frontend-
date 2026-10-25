@@ -311,7 +311,10 @@ test.describe('Practice & Assessment and Revision Planner screens', () => {
     const calls = await mockPractice(page);
     await page.goto('/student/learn?tab=planner');
     await page.getByLabel('I will enter the date').check();
-    await page.getByLabel('Exam date').fill('2026-10-17');
+    // Two days from now (a fixed date goes stale: the test once used 2026-10-17 and began to fail when that day passed).
+    const soon = new Date(Date.now() + 2 * 86400000);
+    const examDate = `${soon.getFullYear()}-${String(soon.getMonth() + 1).padStart(2, '0')}-${String(soon.getDate()).padStart(2, '0')}`;
+    await page.getByLabel('Exam date').fill(examDate);
     await page.getByLabel('Subject 1', { exact: true }).fill('Maths');
     await page.getByLabel('Topic 1', { exact: true }).fill('Fractions');
     await page.getByRole('button', { name: 'Make my plan' }).click();
@@ -320,6 +323,6 @@ test.describe('Practice & Assessment and Revision Planner screens', () => {
     await page.getByLabel(/Study Maths: Fractions/).click();
     await expect(page.getByLabel(/Study Maths: Fractions/)).toBeChecked();
     await expect(page.getByText('1 of 2 done')).toBeVisible();
-    expect(calls.find((c) => c.path === '/plan' && c.method === 'POST').body).toMatchObject({ examDate: '2026-10-17', topics: [{ subject: 'Maths', topic: 'Fractions' }], minutesPerDay: 60, restDays: [0] });
+    expect(calls.find((c) => c.path === '/plan' && c.method === 'POST').body).toMatchObject({ examDate, topics: [{ subject: 'Maths', topic: 'Fractions' }], minutesPerDay: 60, restDays: [0] });
   });
 });

@@ -194,7 +194,7 @@ test('a parent messages the class teacher and the teacher replies', async ({ pag
   await page.goto('/teacher/chat');
   await page.getByRole('button', { name: /Meera Sharma/ }).first().click();
   await expect(page.getByText(question)).toBeVisible();
-  await page.getByLabel('Message', { exact: true }).fill(answer);
+  await page.getByLabel('Message to Meera Sharma').fill(answer);
   await page.getByRole('button', { name: 'Send message' }).click();
   await expect(page.getByText(answer)).toBeVisible();
 

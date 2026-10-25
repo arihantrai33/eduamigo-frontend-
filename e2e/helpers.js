@@ -18,10 +18,10 @@ export async function signIn(page, role, { school = 'GVPS', password = PASSWORD,
   // A typed code shows a confirmation card first (the name and city of the school).
   if (await confirm.waitFor({ state: 'visible', timeout: 5000 }).then(() => true, () => false)) await confirm.click();
   await expect(page).toHaveURL(/\/login/);
-  await page.getByRole('tab', { name: u.tab }).click();
-  await page.getByLabel(/Admission number|Email|Mobile/).fill(u.id);
+  // One sign-in for every role: the role comes back from the server with the session.
+  await page.getByLabel('Email, mobile number or admission number').fill(u.id);
   await page.getByLabel('Password', { exact: true }).fill(password);
-  await page.getByRole('button', { name: `Log in as ${u.tab}` }).click();
+  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
   if (expectSuccess) await page.waitForURL((url) => !/\/(login|select-school)/.test(url.pathname));
 }
 

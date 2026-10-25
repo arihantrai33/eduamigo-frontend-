@@ -1,3 +1,4 @@
+import Avatar from "../components/ui/Avatar";
 import { NavLink, useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
@@ -59,7 +60,7 @@ export default function PortalShell({ role, children }) {
 
         <div className="ea-sidebar__footer">
           <div className="ea-sidebar__user">
-            <span className="ea-avatar" aria-hidden="true">{(user?.name || "?").trim().charAt(0).toUpperCase()}</span>
+            <Avatar name={user?.name} photo={user?.avatar} size="sm" />
             <span className="ea-sidebar__user-text">
               <strong title={user?.name}>{user?.name}</strong>
               <small>{user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : ""}</small>

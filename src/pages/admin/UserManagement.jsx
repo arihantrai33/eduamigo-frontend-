@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { Calculator, GraduationCap, Plus, RefreshCw, SearchX, Shield, UserCheck, Users } from "lucide-react";
+import { Briefcase, Calculator, GraduationCap, KeyRound, Plus, RefreshCw, SearchX, Shield, UserCheck, Users } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
+import { can } from "../../utils/permissions";
 import { toast, showCredentials, confirmAction, errorMessage } from "../../utils/toast";
 import Modal from "../../components/Dialog";
 import PageHeader from "../../components/ui/PageHeader";
@@ -18,7 +20,11 @@ const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("
 
 // Staff logins created here. Students, parents and teachers are added from their own screens so
 // their school records (class, children, subjects) are created together with the login.
-const STAFF_ROLES = ["accountant", "admin"];
+const STAFF_ROLES = ["staff", "accountant", "admin"];
+// Accounts that can be given extra roles (administrators already hold everything).
+// Accountants and other staff share one summary card, so the five cards stay in one row.
+const OFFICE = ["accountant", "staff"];
+const ROLE_HOLDERS = ["teacher", "accountant", "staff"];
 
 // A role is a label, not a status: every role has the same neutral badge; the icon tells them apart.
 const ROLE_META = {
@@ -27,6 +33,7 @@ const ROLE_META = {
   student: { color: "#475569", bg: "#F1F5F9", border: "#E2E8F0", icon: GraduationCap },
   parent:  { color: "#475569", bg: "#F1F5F9", border: "#E2E8F0", icon: Users },
   accountant: { color: "#475569", bg: "#F1F5F9", border: "#E2E8F0", icon: Calculator },
+  staff: { color: "#475569", bg: "#F1F5F9", border: "#E2E8F0", icon: Briefcase },
 };
 
 const inp = {
@@ -42,7 +49,12 @@ export default function UserManagement() {
   const [search, setSearch]     = useState("");
   const [showModal, setShowModal] = useState(false);
   const [saving, setSaving]     = useState(false);
-  const [form, setForm]         = useState({ name: "", email: "", password: "", role: "accountant" });
+  const [form, setForm]         = useState({ name: "", email: "", password: "", role: "staff" });
+  const { user: me } = useAuth();
+  const [assigning, setAssigning] = useState(null); // the person whose roles are being set
+  const [allRoles, setAllRoles] = useState([]);
+  const [picked, setPicked] = useState([]);
+  const [rolesError, setRolesError] = useState("");
   const v = useFieldErrors(FIELDS);
 
   const fetchUsers = useCallback(async () => {
@@ -73,14 +85,30 @@ export default function UserManagement() {
       if (res.data.credentials) showCredentials([{ label: form.role, ...res.data.credentials }], "User created");
       else toast.success("User created. They will be asked to change the password at first login.");
       setShowModal(false);
-      setForm({ name: "", email: "", password: "", role: "accountant" });
+      setForm({ name: "", email: "", password: "", role: "staff" });
       fetchUsers();
     } catch (e) { toast.error(e?.response?.data?.message || "Failed to create user"); }
     setSaving(false);
   };
 
+  const openRoles = async (u) => {
+    setRolesError(""); setPicked((u.extraRoles || []).map(String)); setAssigning(u);
+    try {
+      const r = await axios.get(`${API}/roles`, auth());
+      setAllRoles(r.data.data.roles || []);
+    } catch (e) { setRolesError(errorMessage(e, "Could not load roles")); }
+  };
+  const saveRoles = async () => {
+    setSaving(true); setRolesError("");
+    try {
+      await axios.put(`${API}/users/${assigning._id}/roles`, { roleIds: picked }, auth());
+      toast.success("Roles updated"); setAssigning(null); fetchUsers();
+    } catch (e) { setRolesError(errorMessage(e, "Could not update roles")); }
+    setSaving(false);
+  };
+
   const filtered = users.filter(u => {
-    const matchRole = filter === "all" || u.role === filter;
+    const matchRole = filter === "all" || u.role === filter || (filter === "office" && OFFICE.includes(u.role));
     const matchSearch = u.name?.toLowerCase().includes(search.toLowerCase()) || u.email?.toLowerCase().includes(search.toLowerCase());
     return matchRole && matchSearch;
   });
@@ -103,12 +131,13 @@ export default function UserManagement() {
 
       {/* Role Stats (each card filters the list by that role) */}
       <StatGrid label="Users by role" style={{ marginBottom: 20 }}>
-        {Object.entries(ROLE_META).map(([role, meta]) => {
-          const Icon = meta.icon;
+        {[["admin", "Admin"], ["teacher", "Teacher"], ["student", "Student"], ["parent", "Parent"], ["office", "Office staff"]].map(([key, label]) => {
+          const Icon = (ROLE_META[key] || ROLE_META.staff).icon;
+          const n = key === "office" ? OFFICE.reduce((t, r) => t + (counts[r] || 0), 0) : counts[key];
           return (
-            <StatCard key={role} label={role.charAt(0).toUpperCase() + role.slice(1)} value={loading ? "—" : counts[role]}
-              icon={<Icon aria-hidden="true" />} selected={filter === role}
-              onClick={() => setFilter(role === filter ? "all" : role)} />
+            <StatCard key={key} label={label} value={loading ? "—" : n}
+              icon={<Icon aria-hidden="true" />} selected={filter === key}
+              onClick={() => setFilter(key === filter ? "all" : key)} />
           );
         })}
       </StatGrid>
@@ -152,6 +181,11 @@ export default function UserManagement() {
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 600, color: "#0F172A" }}>{u.name}</div>
                   <div style={{ fontSize: 11, color: "var(--ea-muted)", marginTop: 1 }}>{u.email}</div>
+                  {can(me, "roles.manage") && ROLE_HOLDERS.includes(u.role) && String(u._id) !== String(me?._id) && (
+                    <button type="button" className="ea-btn ea-btn--ghost" style={{ padding: "2px 8px", fontSize: 11, marginTop: 4 }} onClick={() => openRoles(u)}>
+                      <KeyRound size={11} aria-hidden="true" /> Roles{u.extraRoles?.length ? ` (${u.extraRoles.length})` : ""}
+                    </button>
+                  )}
                 </div>
               </div>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 11, padding: "4px 10px", borderRadius: 20, fontWeight: 600, background: meta.bg, color: meta.color, border: `1px solid ${meta.border}`, width: "fit-content", textTransform: "capitalize" }}>
@@ -170,6 +204,24 @@ export default function UserManagement() {
           );
         })}
       </div>
+
+      <Modal show={!!assigning} onClose={() => setAssigning(null)} width={480} title={assigning ? `Roles for ${assigning.name}` : "Roles"}>
+        <p style={{ margin: "0 0 12px", fontSize: 13, color: "var(--ea-muted)" }}>Their {assigning?.role} account stays as it is. Roles ticked here add to it; where they overlap, the widest access applies.</p>
+        <div style={{ display: "grid", gap: 8, maxHeight: 320, overflowY: "auto" }}>
+          {allRoles.filter((r) => !r.isSystem && r.isActive).map((r) => (
+            <label key={r._id} style={{ display: "flex", gap: 8, fontSize: 13, alignItems: "flex-start" }}>
+              <input type="checkbox" checked={picked.includes(String(r._id))} onChange={() => setPicked((p) => p.includes(String(r._id)) ? p.filter((i) => i !== String(r._id)) : [...p, String(r._id)])} style={{ marginTop: 3 }} />
+              <span><b>{r.name}</b><br /><small style={{ color: "var(--ea-muted)" }}>{r.description || `${r.permissions.length} permissions`}</small></span>
+            </label>
+          ))}
+          {allRoles.filter((r) => !r.isSystem && r.isActive).length === 0 && <p style={{ fontSize: 13 }}>No extra roles exist yet. Make one in Roles &amp; Access first.</p>}
+        </div>
+        <FieldError id="roles-error">{rolesError}</FieldError>
+        <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 20 }}>
+          <button type="button" className="ea-btn ea-btn--ghost" onClick={() => setAssigning(null)}>Cancel</button>
+          <button type="button" className="ea-btn ea-btn--primary" onClick={saveRoles} disabled={saving}>{saving ? "Saving…" : "Save roles"}</button>
+        </div>
+      </Modal>
 
       {/* Add User Modal */}
       <Modal show={showModal} onClose={() => { setShowModal(false); v.setErrors({}); }} width={440} title="Add New User">

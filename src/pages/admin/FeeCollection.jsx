@@ -16,6 +16,8 @@ import Skeleton from "../../components/ui/Skeleton";
 import SearchField from "../../components/ui/SearchField";
 const API = import.meta.env.VITE_API_URL;
 const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+// randomUUID needs a secure page (https or localhost); the fallback covers a plain-http address on the school network.
+const newPaymentKey = () => globalThis.crypto?.randomUUID?.() ?? `k${Date.now().toString(36)}${Math.random().toString(36).slice(2, 12)}`;
 
 // Fee status → badge tone (components/ui/Badge).
 const STATUS_TONE = { Paid: "success", Pending: "warning", Overdue: "danger", Partial: "info" };
@@ -34,6 +36,8 @@ export default function FeeCollection() {
   const [saving, setSaving] = useState(false);
   const [payAmount, setPayAmount] = useState("");
   const [payMethod, setPayMethod] = useState("Cash");
+  // One key per payment dialog: if the request is repeated (slow network, a second try after an error), the server records the payment once.
+  const [payKey, setPayKey] = useState("");
 
   useEffect(() => { fetchAll(); }, []);
 
@@ -52,13 +56,16 @@ export default function FeeCollection() {
     setLoading(false);
   };
 
-  const openCollect = (fee) => { setSelectedFee(fee); setPayAmount(String(fee.balance ?? fee.amount ?? "")); setPayMethod("Cash"); setShowModal(true); };
+  const openCollect = (fee) => {
+    setSelectedFee(fee); setPayAmount(String(fee.balance ?? fee.amount ?? "")); setPayMethod("Cash"); setShowModal(true);
+    setPayKey(newPaymentKey());
+  };
 
   const handleCollect = async () => {
     if (!(Number(payAmount) > 0)) return toast.error("Enter a valid amount");
     setSaving(true);
     try {
-      const res = await axios.patch(`${API}/fees/${selectedFee._id}/pay`, { amount: Number(payAmount), mode: payMethod }, auth());
+      const res = await axios.patch(`${API}/fees/${selectedFee._id}/pay`, { amount: Number(payAmount), mode: payMethod }, { headers: { ...auth().headers, "Idempotency-Key": payKey } });
       const receiptNo = res.data.payment?.receiptNo;
       setShowModal(false);
       fetchAll();
@@ -175,7 +182,7 @@ export default function FeeCollection() {
                     <div style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>{f.studentName}</div>
                   </td>
                   <td style={{ padding:"14px 18px" }}>
-                    <span style={{ fontSize:12, fontWeight:700, padding:"3px 10px", borderRadius:8, background:"var(--brand-soft)", color:"var(--brand-text)" }}>
+                    <span style={{ fontSize:12, fontWeight:700, whiteSpace:"nowrap", padding:"3px 10px", borderRadius:8, background:"var(--brand-soft)", color:"var(--brand-text)" }}>
                       {f.studentClass}{f.studentSection ? `-${f.studentSection}` : ""}
                     </span>
                   </td>

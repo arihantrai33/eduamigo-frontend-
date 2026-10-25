@@ -219,19 +219,6 @@ export default function IDCardGenerator() {
       )
     : teachers.filter(t => !search || t.name.toLowerCase().includes(search.toLowerCase()));
 
-  const steps = tab === "student"
-    ? [
-        { num: 1, label: "Select Tab", done: true },
-        { num: 2, label: "Filter Class", done: !!selectedClass },
-        { num: 3, label: "Choose Student", done: !!selectedId },
-        { num: 4, label: "ID Card Ready", done: animPhase === 2 },
-      ]
-    : [
-        { num: 1, label: "Select Tab", done: true },
-        { num: 2, label: "Choose Faculty", done: !!selectedId },
-        { num: 3, label: "ID Card Ready", done: animPhase === 2 },
-      ];
-
   return (
     <div style={{ fontFamily: "inherit" }}>
       <style>{`
@@ -253,18 +240,6 @@ export default function IDCardGenerator() {
 
       <div style={{ marginBottom: "1.25rem" }}>
         <Segmented label="Card type" value={tab} onChange={setTab} options={[{ value: "student", label: "Students" }, { value: "teacher", label: "Faculty" }]} />
-      </div>
-
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: "1.25rem" }}>
-        {steps.map((step, i) => (
-          <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 14px", borderRadius: 20, background: step.done ? "var(--brand-gradient)" : "white", border: step.done ? "none" : "1.5px solid #E2E8F0", boxShadow: step.done ? "0 4px 12px color-mix(in srgb, var(--brand) 25%, transparent)" : "none", transition: "all 0.3s" }}>
-              <div style={{ width: 20, height: 20, borderRadius: "50%", background: step.done ? "rgba(255,255,255,0.25)" : "#F1F5F9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: step.done ? "white" : "var(--ea-muted)" }}>{step.done ? "✓" : step.num}</div>
-              <span style={{ fontSize: 11, fontWeight: 700, color: step.done ? "white" : "var(--ea-muted)" }}>{step.label}</span>
-            </div>
-            {i < steps.length - 1 && <div style={{ width: 20, height: 1, background: "#E2E8F0" }} />}
-          </div>
-        ))}
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "340px 1fr", gap: 24 }}>
@@ -324,11 +299,6 @@ export default function IDCardGenerator() {
                 {tab === "student"
                   ? "Filter by class and section, then click on a student to generate their ID card"
                   : "Click on a faculty member from the list to generate their identity card"}
-              </div>
-              <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 24 }}>
-                {(tab === "student" ? ["Filter by Class →", "Select Section →", "Click Student →", "Print Card ✓"] : ["Click Faculty →", "Preview Card →", "Print Card ✓"]).map((s, i) => (
-                  <div key={i} style={{ fontSize: 11, fontWeight: 700, color: "var(--brand-text)", background: "var(--brand-soft)", padding: "6px 12px", borderRadius: 8 }}>{s}</div>
-                ))}
               </div>
             </div>
           )}

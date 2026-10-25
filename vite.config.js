@@ -49,7 +49,9 @@ export default defineConfig(({ mode }) => {
       strictPort: true,
       allowedHosts: [
         'shrine-switch-pushover.ngrok-free.dev',
-        'localhost'
+        'localhost',
+        // gvps.localhost: a school's own address on this machine (see docs/audit/AUTH_AUDIT.md, local subdomains)
+        '.localhost'
       ],
       // Local development: the app calls /api on its own origin and Vite forwards it to the
       // backend, so the browser never makes a cross-origin request. Production builds use

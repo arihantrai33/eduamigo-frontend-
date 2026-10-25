@@ -190,12 +190,12 @@ export default function ExamSchedule() {
           <EmptyState plain icon={CalendarDays} title="No exams scheduled" text={`Click "Schedule Exam" to add your first exam`} />
         </div>
       ) : (
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }}>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(280px, 1fr))", gap:16 }}>
           {filtered.map((exam, i) => {
             const isUpcoming = exam.date && new Date(exam.date) >= new Date();
             return (
               <div key={exam._id} className="exam-card"
-                style={{ background:"var(--ea-surface)", borderRadius:16, padding:"20px", boxShadow:"var(--ea-shadow)", border:"1px solid var(--ea-edge)", animation:`fadeUp 0.3s ease ${i*0.05}s both` }}>
+                style={{ display:"flex", flexDirection:"column", background:"var(--ea-surface)", borderRadius:16, padding:"18px", boxShadow:"var(--ea-shadow)", border:"1px solid var(--ea-edge)", animation:`fadeUp 0.3s ease ${i*0.05}s both` }}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:12 }}>
                   <CategoryBadge>{exam.examType}</CategoryBadge>
                   {isUpcoming && <Badge tone="success">Upcoming</Badge>}
@@ -210,7 +210,7 @@ export default function ExamSchedule() {
                   {exam.term && <div style={{ fontSize:12, color:"var(--ea-muted)" }}><Glyph e="🗂" /> {exam.term} · {exam.academicYear}</div>}
                   {exam.venue && <div style={{ fontSize:12, color:"var(--ea-muted)" }}><Glyph e="📍" /> {exam.venue}</div>}
                 </div>
-                <div style={{ display:"flex", gap:8, borderTop:"1px solid #F1F5F9", paddingTop:12 }}>
+                <div style={{ display:"flex", gap:8, borderTop:"1px solid #F1F5F9", paddingTop:12, marginTop:"auto" }}>
                   <button className="act-btn" onClick={() => openEdit(exam)}
                     style={{ flex:1, padding:"8px", borderRadius:10, border:"1px solid var(--ea-edge)", background:"white", color:"#374151", fontSize:12, fontWeight:700, cursor:"pointer" }}>Edit</button>
                   <button type="button" className="act-btn" onClick={() => setDeleteId(exam._id)} aria-label={`Delete ${exam.subject} exam`} title="Delete"

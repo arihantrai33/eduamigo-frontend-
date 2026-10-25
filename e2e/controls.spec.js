@@ -122,9 +122,9 @@ function edges() {
     const o = parseFloat(s.outlineWidth) > 0 && s.outlineStyle !== 'none' ? ratio(parse(s.outlineColor).slice(0, 3), back.slice(0, 3)) : 1;
     out.push({ kind, text: (el.textContent || '').trim().slice(0, 24), edge: +Math.max(b, o).toFixed(2) });
   };
-  document.querySelectorAll('.ea-card, .ea-stat').forEach((e) => pick(e, 'card'));
+  document.querySelectorAll('.ea-card, .ea-stat, .dx-panel, .dx-metric').forEach((e) => pick(e, 'card')); // .dx-*: the home dashboards (components/dash)
   document.querySelectorAll('.ea-scroll button, .ea-admin-main button').forEach((e) => { const s = getComputedStyle(e); if (parse(s.backgroundColor)[3] > 0.5 && getComputedStyle(e).display !== 'none') pick(e, 'button'); });
-  document.querySelectorAll('.ea-tile-grid > *').forEach((e) => pick(e, 'tile'));
+  document.querySelectorAll('.ea-tile-grid > *, .dx-qa > *').forEach((e) => pick(e, 'tile'));
   return out;
 }
 

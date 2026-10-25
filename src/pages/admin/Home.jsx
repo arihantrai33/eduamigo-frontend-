@@ -1,3 +1,4 @@
+import Avatar from "../../components/ui/Avatar";
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { useStackedTables } from "../../utils/stackTables";
 import { confirmLeave } from "../../utils/unsavedChanges";
@@ -8,8 +9,7 @@ import {
   Bell, MessageCircle, BarChart2, Settings as SettingsIcon, Menu, X,
   BookOpen, LogOut, TrendingUp,
   Shield, FileText, GraduationCap, History, CalendarRange,
-  MessageSquareText,
-} from "lucide-react";
+  MessageSquareText, KeyRound, UserCheck, Briefcase, LifeBuoy, BookOpenCheck } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import Dashboard from "./Dashboard";
 import { can, ROLE_LABELS } from "../../utils/permissions";
@@ -29,6 +29,7 @@ const FeeReports = lazy(() => import('./FeeReports'))
 const FeeStructure = lazy(() => import('./FeeStructure'))
 const LeaveRequests = lazy(() => import('./LeaveRequests'))
 const Library = lazy(() => import('./Library'))
+const OfficeHomework = lazy(() => import('../homework/TeacherHomework'))
 const Communications = lazy(() => import('./Communications'))
 const Reports = lazy(() => import('./Reports'))
 const Results = lazy(() => import('./Results'))
@@ -43,6 +44,9 @@ const TeacherProfile = lazy(() => import('./TeacherProfile'))
 const Timetable = lazy(() => import('./Timetable'))
 const Transport = lazy(() => import('./Transport'))
 const UserManagement = lazy(() => import('./UserManagement'))
+const Roles = lazy(() => import('./Roles'))
+const OfficeStaff = lazy(() => import('./OfficeStaff'))
+const Support = lazy(() => import('./Support'))
 const ParentsList = lazy(() => import('./ParentsList'))
 const EventCalendar = lazy(() => import('./EventCalendar'))
 const IDCardGenerator = lazy(() => import('./IDCardGenerator'))
@@ -50,6 +54,7 @@ const BulkOperations = lazy(() => import('./BulkOperations'))
 const HRManagement = lazy(() => import('./HRManagement'))
 const Admissions = lazy(() => import('./Admissions'))
 const AskInsights = lazy(() => import('./AskInsights'))
+const Inbox = lazy(() => import('./Inbox'))
 
 
 // Shown when a staff member opens a screen their role does not include.
@@ -80,6 +85,7 @@ const NAV = [
   { label: "All Students",       icon: Users,           path: "/admin/students", perm: "students.read" },
   { label: "All Teachers",       icon: School,          path: "/admin/teachers", perm: "teachers.manage" },
   { label: "Timetable",          icon: Clock,           path: "/admin/timetable", perm: "timetable.manage" },
+  { label: "Homework",           icon: BookOpenCheck,   path: "/admin/homework", perm: "notes.upload" },
   { label: "Exam Schedule",      icon: BookOpen,        path: "/admin/exams", perm: "exams.manage" },
   { label: "Results",            icon: FileBadge,       path: "/admin/results", perm: "results.read" },
   { label: "Attendance Reports", icon: CalendarCheck,   path: "/admin/attendance-reports", perm: "attendance.reports" },
@@ -93,6 +99,7 @@ const NAV = [
   { section: "HR & STAFF" },
   { label: "Leave Management",   icon: Notebook,        path: "/admin/leaves", perm: "leaves.all" },
   { label: "HR & Payroll",       icon: BadgeDollarSign, path: "/admin/hr-management", perm: "hr.manage" },
+  { label: "Office staff",       icon: Briefcase,       path: "/admin/staff", perm: "hr.manage" },
 
   { section: "PARENTS" },
   { label: "All Parents",        icon: UserCircle,      path: "/admin/parents", perm: "parents.read" },
@@ -110,10 +117,12 @@ const NAV = [
 
   { section: "SYSTEM" },
   { label: "User Management",    icon: Shield,          path: "/admin/user-management", perm: "users.manage" },
+  { label: "Roles & Access",     icon: KeyRound,        path: "/admin/roles", perm: "roles.view" },
   { label: "Reports",            icon: BarChart2,       path: "/admin/reports", perm: "attendance.reports" },
   { label: "Activity Log",       icon: History,         path: "/admin/activity", perm: "audit.read" },
   { label: "EduAmigo Ask",       icon: MessageSquareText, path: "/admin/ask", perm: "assistant.insights" },
   { label: "Settings",           icon: SettingsIcon,    path: "/admin/settings", perm: "settings.manage" },
+  { label: "Help & support",     icon: LifeBuoy,        path: "/admin/support", perm: "settings.manage" },
 ];
 
 export default function AdminHome() {
@@ -196,12 +205,13 @@ export default function AdminHome() {
       </nav>
       <div className="ea-sidebar__footer">
         <div className="ea-sidebar__user">
-          <span className="ea-avatar" aria-hidden="true">{user?.name?.[0]?.toUpperCase() || "A"}</span>
+          <Avatar name={user?.name || "Admin"} photo={user?.avatar} size="sm" />
           <span className="ea-sidebar__user-text">
             <strong>{user?.name || "Admin"}</strong>
             <small>{ROLE_LABELS[user?.role] || "Staff"}</small>
           </span>
         </div>
+        {user?.role === "teacher" && <Link to="/teacher/home" className="ea-sidebar__signout" style={{ textDecoration: "none" }}><UserCheck size={16} aria-hidden="true" />Teacher portal</Link>}
         <button type="button" className="ea-sidebar__signout" onClick={async () => { if (!(await confirmLeave())) return; logout(); navigate("/login"); }}>
           <LogOut size={16} aria-hidden="true" />Log Out
         </button>
@@ -258,6 +268,7 @@ export default function AdminHome() {
           <Route path="fee-structure" element={<Gate user={user} perm="fees.structure"><FeeStructure /></Gate>} />
           <Route path="leaves" element={<Gate user={user} perm="leaves.all"><LeaveRequests /></Gate>} />
           <Route path="library" element={<Gate user={user} perm="library.manage"><Library /></Gate>} />
+          <Route path="homework" element={<Gate user={user} perm="notes.upload"><OfficeHomework office /></Gate>} />
           <Route path="marks" element={<Navigate to="/admin/results" replace />} />
           {/* Announcements live under Communications; old links to the notice board land there. */}
           <Route path="notice-board" element={<Navigate to="/admin/communications" replace />} />
@@ -276,10 +287,14 @@ export default function AdminHome() {
           <Route path="timetable" element={<Gate user={user} perm="timetable.manage"><Timetable /></Gate>} />
           <Route path="transport" element={<Gate user={user} perm="transport.manage"><Transport /></Gate>} />
           <Route path="user-management" element={<Gate user={user} perm="users.manage"><UserManagement /></Gate>} />
+          <Route path="staff" element={<Gate user={user} perm="hr.manage"><OfficeStaff /></Gate>} />
+          <Route path="support" element={<Gate user={user} perm="settings.manage"><Support /></Gate>} />
+          <Route path="roles" element={<Gate user={user} perm="roles.view"><Roles /></Gate>} />
           <Route path="parents" element={<Gate user={user} perm="parents.read"><ParentsList /></Gate>} />
           <Route path="event-calendar" element={<Gate user={user} perm="communication.manage"><EventCalendar /></Gate>} />
           <Route path="id-card-generator" element={<Gate user={user} perm="students.manage"><IDCardGenerator /></Gate>} />
           <Route path="bulk-operations" element={<Gate user={user} perm="bulk.manage"><BulkOperations /></Gate>} />
+          <Route path="inbox" element={<Inbox />} />
           <Route path="hr-management" element={<Gate user={user} perm="hr.manage"><HRManagement /></Gate>} />
         </Routes>
         </Suspense>

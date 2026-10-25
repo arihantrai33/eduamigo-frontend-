@@ -1,0 +1,197 @@
+/* Sign-in, school selection and forgot password. One look, shared with the public website (same type, radii and shadows).
+   Colours: the school's own brand colour once a school is known (set as --au-* on .au by AuthShell), EduAmigo indigo before.
+   Light on purpose, like the website: these are brand surfaces. The dark-mode switch stays in the student profile. */
+.au {
+  --au-brand: #4f46e5; --au-dark: #4338ca; --au-deep: #1e1b4b; --au-soft: #eef2ff; --au-ring: rgba(79, 70, 229, .22);
+  --au-text-brand: #4338ca; --au-button: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%); --au-button-shadow: none; --au-glow: rgba(79, 70, 229, .32);
+  --au-edge: #7c8ba1; --au-ink: #0f172a; --au-text: #334155; --au-muted: #475569; --au-line: #e2e8f0; --au-bad: #b91c1c; --au-ok: #047857;
+  --au-radius: 16px; --au-shadow: 0 1px 2px rgba(15, 23, 42, .05), 0 24px 56px rgba(30, 27, 75, .12);
+  color-scheme: light;
+  min-height: 100vh; min-height: 100dvh;
+  display: flex; flex-direction: column;
+  background: #f6f7fd; color: var(--au-text); font-family: inherit; line-height: 1.55;
+  overflow-x: clip;
+}
+.au *, .au *::before, .au *::after { box-sizing: border-box; }
+:where(.au) :is(h1, h2, h3, p, ul) { margin: 0; padding: 0; }
+:where(.au) ul { list-style: none; }
+:where(.au) a { color: inherit; }
+.au :focus-visible { outline: 3px solid var(--au-brand); outline-offset: 3px; border-radius: 8px; }
+.au-brand :focus-visible { outline-color: #fff; }
+
+.au-skip { position: absolute; left: 12px; top: -60px; z-index: 10; background: var(--au-ink); color: #fff; padding: 10px 16px; border-radius: 10px; font-weight: 600; text-decoration: none; }
+.au-skip:focus { top: 12px; }
+
+/* One full-screen stage: a light bluish gradient with slow drifting light, a card in the middle, and sample product cards
+   (attendance, chat, live bus, notices) floating beside it on wide screens. The school's own colour is only the accent:
+   logo, button, links, the line on top of the card and the rings behind the logo. Only transforms and opacity animate. */
+@property --au-n { syntax: "<integer>"; inherits: false; initial-value: 0; }
+@property --au-e { syntax: "<integer>"; inherits: false; initial-value: 9; }
+.au { --au-sub: #34507c; --au-navy: #0b2a5b; color: var(--au-navy); position: relative; isolation: isolate; height: 100vh; height: 100dvh; min-height: 560px; overflow: hidden auto; }
+.au-bg { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: linear-gradient(165deg, #f2f8ff 0%, #d6e8ff 42%, #a9cdf7 100%); }
+.au-bl { position: absolute; border-radius: 50%; will-change: transform; }
+.au-bl1 { width: 75vmax; height: 75vmax; left: -20vmax; top: -38vmax; background: radial-gradient(closest-side, rgba(255, 255, 255, .95), transparent); animation: auM1 15s ease-in-out infinite alternate; }
+.au-bl2 { width: 65vmax; height: 65vmax; right: -22vmax; bottom: -34vmax; background: radial-gradient(closest-side, rgba(70, 130, 230, .5), transparent); animation: auM2 17s ease-in-out infinite alternate; }
+.au-bl3 { width: 48vmax; height: 48vmax; left: 30vw; top: 28vh; background: radial-gradient(closest-side, rgba(255, 255, 255, .65), transparent); animation: auM3 19s ease-in-out infinite alternate; }
+@keyframes auM1 { to { transform: translate3d(40vw, 26vh, 0) scale(1.15); } }
+@keyframes auM2 { to { transform: translate3d(-44vw, -26vh, 0) scale(1.12); } }
+@keyframes auM3 { from { transform: translate3d(-24vw, -14vh, 0); } to { transform: translate3d(26vw, 16vh, 0) scale(1.2); } }
+.au-grid { position: absolute; inset: 0; background-image: radial-gradient(rgba(30, 80, 160, .14) 1px, transparent 1px); background-size: 30px 30px; -webkit-mask-image: radial-gradient(70% 60% at 50% 50%, #000 10%, transparent 100%); mask-image: radial-gradient(70% 60% at 50% 50%, #000 10%, transparent 100%); }
+.au-skip { position: absolute; left: 12px; top: -60px; z-index: 10; background: #fff; color: #0f172a; padding: 10px 16px; border-radius: 10px; font-weight: 600; text-decoration: none; }
+.au-skip:focus { top: 12px; }
+.au :focus-visible { outline-color: var(--au-brand); }
+
+.au-top { position: relative; z-index: 3; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: calc(14px + env(safe-area-inset-top)) clamp(16px, 4vw, 40px) 0; }
+.au-logo { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; font-size: 19px; letter-spacing: -.01em; color: var(--au-navy); text-decoration: none; }
+.au-logo__mark { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 10px; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; box-shadow: 0 6px 16px rgba(37, 99, 235, .35); }
+.au-back { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 999px; font-size: 14px; font-weight: 600; color: var(--au-navy); text-decoration: none; border: 1px solid #b3cdee; background: rgba(255, 255, 255, .8); }
+.au-back:hover { background: #fff; }
+
+.au-hero { text-align: center; max-width: 780px; margin: 0 auto 16px; animation: auIn .8s cubic-bezier(.2, .8, .2, 1) both; }
+.au-kicker { font-size: 12.5px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--au-sub); }
+.au-headline { margin-top: 4px; font-size: clamp(30px, 5vw, 44px); font-weight: 800; letter-spacing: -.03em; line-height: 1.08; text-wrap: balance; color: var(--au-navy); }
+.au-crest { position: relative; display: grid; place-items: center; width: 64px; height: 64px; margin: 0 auto 8px; }
+.au-crest > :last-child { position: relative; z-index: 2; box-shadow: 0 8px 22px rgba(30, 70, 140, .22); }
+.au-ring { position: absolute; left: 50%; top: 50%; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; border: 2px solid var(--au-brand); opacity: 0; animation: auRing 4.8s ease-out infinite; }
+.au-ring:nth-child(2) { animation-delay: 1.6s; } .au-ring:nth-child(3) { animation-delay: 3.2s; }
+@keyframes auRing { 0% { transform: scale(1); opacity: .5; } 100% { transform: scale(3.6); opacity: 0; } }
+.au-school__name { font-size: clamp(24px, 4vw, 36px); font-weight: 800; letter-spacing: -.02em; line-height: 1.1; overflow-wrap: anywhere; text-wrap: balance; color: var(--au-navy); }
+.au-school__tag { display: none; margin-top: 2px; font-size: 14.5px; color: var(--au-sub); overflow-wrap: anywhere; }
+.au-rotor { margin-top: 8px; min-height: 26px; font-size: clamp(14.5px, 2.2vw, 16.5px); color: var(--au-sub); animation: auRotor .5s ease both; }
+@keyframes auRotor { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (max-height: 800px) { .au-rotor, .au-kicker { display: none; } }
+@media (max-height: 780px) { .au-hero { margin-bottom: 10px; } .au-ring { display: none; } .au-crest { margin-bottom: 4px; } }
+.au-trust { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 22px; margin-top: 14px; font-size: 13px; color: var(--au-sub); animation: auIn .6s 1s ease-out both; }
+.au-trust span { display: inline-flex; align-items: center; gap: 7px; }
+
+/* Floating sample cards (wide screens only) */
+.au-art { position: absolute; inset: 0; z-index: 1; pointer-events: none; display: none; }
+@media (min-width: 1180px) { .au-art { display: block; } }
+.au-gw { position: absolute; animation: auIn .9s cubic-bezier(.2, .8, .2, 1) both; }
+.au-gl1 { left: 5vw; top: 17vh; animation-delay: .5s; } .au-gl2 { left: 9vw; top: 50vh; animation-delay: .8s; }
+.au-gr1 { right: 5vw; top: 15vh; animation-delay: .65s; } .au-gr2 { right: 9vw; top: 60vh; animation-delay: .95s; }
+.au-gc { position: relative; width: 260px; padding: 16px 18px; border-radius: 18px; background: rgba(255, 255, 255, .92); border: 1px solid #fff; box-shadow: 0 18px 40px rgba(30, 70, 140, .18), 0 2px 6px rgba(30, 70, 140, .06); animation: auFloat 8s ease-in-out infinite alternate; }
+.au-gl2 .au-gc { animation-delay: -3s; } .au-gr1 .au-gc { animation-delay: -2s; width: 280px; } .au-gr2 .au-gc { animation-delay: -5s; width: 280px; }
+@keyframes auFloat { from { transform: translateY(-9px); } to { transform: translateY(11px); } }
+.au-gc small { display: flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 700; color: var(--au-sub); letter-spacing: .02em; }
+.au-gc small i { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; animation: auLive 1.8s infinite; }
+@keyframes auLive { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, .5); } 70%, 100% { box-shadow: 0 0 0 7px rgba(34, 197, 94, 0); } }
+.au-ringw { display: flex; align-items: center; gap: 14px; margin-top: 8px; }
+.au-ringw svg { transform: rotate(-90deg); filter: drop-shadow(0 3px 6px rgba(37, 99, 235, .25)); }
+.au-ringw circle { fill: none; stroke-width: 9; stroke-linecap: round; } .au-ringw .bg { stroke: #e3ecf8; }
+.au-ringw .fg { stroke: url(#au-g1); stroke-dasharray: 157.1; animation: auRg 7s cubic-bezier(.4, 0, .2, 1) infinite; }
+@keyframes auRg { 0% { stroke-dashoffset: 157.1; } 45%, 88% { stroke-dashoffset: 9.4; } 100% { stroke-dashoffset: 157.1; } }
+.au-pc { font-size: 30px; font-weight: 800; letter-spacing: -.02em; color: var(--au-navy); animation: auPc 7s cubic-bezier(.4, 0, .2, 1) infinite; counter-reset: au-n var(--au-n); }
+.au-pc::after { content: counter(au-n) "%"; }
+@keyframes auPc { 0% { --au-n: 0; } 45%, 88% { --au-n: 94; } 100% { --au-n: 0; } }
+.au-days { display: flex; gap: 8px; margin-top: 12px; }
+.au-days span { flex: 1; text-align: center; font-size: 11px; font-weight: 700; color: var(--au-sub); }
+.au-days i { display: block; width: 22px; height: 22px; margin: 0 auto 4px; border-radius: 50%; background: #e3ecf8; animation: auDy 7s ease-out infinite; animation-delay: calc(var(--k) * .35s); }
+@keyframes auDy { 0% { background: #e3ecf8; transform: scale(.8); } 8% { background: #22c55e; transform: scale(1.15); } 14%, 88% { background: #22c55e; transform: scale(1); } 100% { background: #e3ecf8; transform: scale(.8); } }
+.au-map { position: relative; height: 100px; margin-top: 10px; border-radius: 12px; background: linear-gradient(180deg, #eef5ff, #e1edfc); overflow: hidden; }
+.au-map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.au-map .trail { stroke: var(--au-brand); stroke-dasharray: 100; animation: auTr 9s linear infinite; }
+@keyframes auTr { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+.au-dot { position: absolute; left: 0; top: 0; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; background: var(--au-brand); border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, .3); offset-path: path("M16 76 C64 76 74 22 128 44 S200 66 256 26"); animation: auBus 9s linear infinite; }
+.au-dot::after { content: ""; position: absolute; inset: -8px; border-radius: 50%; border: 2px solid var(--au-brand); animation: auPu 1.6s ease-out infinite; }
+@keyframes auPu { from { transform: scale(.6); opacity: .8; } to { transform: scale(1.8); opacity: 0; } }
+@keyframes auBus { from { offset-distance: 0%; } to { offset-distance: 100%; } }
+.au-eta { display: flex; justify-content: space-between; align-items: baseline; margin-top: 10px; font-size: 13px; color: var(--au-sub); font-weight: 600; }
+.au-eta b { font-size: 19px; color: var(--au-navy); animation: auEta 9s steps(1) infinite; counter-reset: au-e var(--au-e); }
+.au-eta b::after { content: counter(au-e) " min"; }
+@keyframes auEta { 0% { --au-e: 9; } 20% { --au-e: 8; } 40% { --au-e: 7; } 60% { --au-e: 6; } 80% { --au-e: 5; } }
+.au-chat { height: 116px; position: relative; margin-top: 10px; }
+.au-chat > * { position: absolute; opacity: 0; animation-duration: 10s; animation-iteration-count: infinite; animation-fill-mode: both; animation-timing-function: ease-out; }
+.au-bub { padding: 8px 12px; border-radius: 14px; font-size: 13px; font-weight: 600; max-width: 84%; line-height: 1.35; }
+.au-b1 { left: 0; top: 0; background: #eaf1fb; color: #1e3a66; border-bottom-left-radius: 4px; animation-name: auC1; }
+.au-tp { right: 0; top: 52px; background: var(--au-brand); padding: 11px 14px; border-radius: 14px; border-bottom-right-radius: 4px; display: flex; gap: 4px; animation-name: auC2; }
+.au-tp i { width: 6px; height: 6px; border-radius: 50%; background: #fff; animation: auDt 1s ease-in-out infinite; } .au-tp i:nth-child(2) { animation-delay: .15s; } .au-tp i:nth-child(3) { animation-delay: .3s; }
+@keyframes auDt { 0%, 80%, 100% { transform: translateY(0); opacity: .6; } 40% { transform: translateY(-4px); opacity: 1; } }
+.au-b2 { right: 0; top: 52px; background: var(--au-brand); color: #fff; border-bottom-right-radius: 4px; animation-name: auC3; }
+@keyframes auC1 { 0% { opacity: 0; transform: translateY(10px) scale(.96); } 6%, 90% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; } }
+@keyframes auC2 { 0%, 28% { opacity: 0; transform: translateY(8px); } 33%, 50% { opacity: 1; transform: none; } 54%, 100% { opacity: 0; } }
+@keyframes auC3 { 0%, 52% { opacity: 0; transform: translateY(10px) scale(.96); } 58%, 90% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; } }
+.au-nt { height: 68px; padding: 0; }
+.au-toast { position: absolute; left: 16px; right: 16px; top: 14px; display: flex; gap: 11px; align-items: center; font-size: 13.5px; font-weight: 700; color: var(--au-navy); opacity: 0; animation: auTs 10s cubic-bezier(.2, .8, .2, 1) infinite both; }
+.au-toast i { flex: none; width: 32px; height: 32px; border-radius: 50%; background: var(--au-soft); color: var(--au-brand); display: grid; place-items: center; font-style: normal; font-weight: 800; animation: auPop 10s infinite both; }
+.au-toast em { display: block; font-style: normal; font-weight: 500; font-size: 12px; color: var(--au-sub); }
+.au-toast:nth-child(2), .au-toast:nth-child(2) i { animation-delay: 5s; }
+@keyframes auTs { 0% { opacity: 0; transform: translateX(34px); } 6%, 40% { opacity: 1; transform: none; } 48%, 100% { opacity: 0; transform: translateX(-20px); } }
+@keyframes auPop { 0%, 5% { transform: scale(.4); } 12% { transform: scale(1.2); } 18%, 100% { transform: scale(1); } }
+
+/* Form side */
+.au-main { position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 16px calc(14px + env(safe-area-inset-bottom)); }
+.au-card { width: 100%; max-width: 460px; color: var(--au-text); background: rgba(255, 255, 255, .97); border: 0; border-top: 4px solid var(--au-brand); border-radius: 18px; box-shadow: 0 30px 60px rgba(30, 70, 140, .22), 0 2px 6px rgba(30, 70, 140, .08); padding: clamp(18px, 2.6vw, 26px); animation: auIn .45s cubic-bezier(.2, .8, .2, 1) both; }
+.au-card--wide { max-width: 640px; }
+@keyframes auIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.au-h1 { font-size: clamp(24px, 4.5vw, 30px); font-weight: 800; letter-spacing: -.02em; line-height: 1.15; color: var(--au-ink); }
+.au-sub { margin-top: 8px; font-size: 15px; color: var(--au-muted); }
+.au-foot { margin-top: 8px; font-size: 13px; color: var(--au-sub); text-align: center; }
+.au-foot a { color: var(--au-text-brand); font-weight: 700; }
+.au-card .au-foot { color: var(--au-muted); }
+.au-card .au-foot a { color: var(--au-text-brand); }
+
+.au-chip { display: flex; align-items: center; gap: 12px; margin-top: 14px; padding: 10px 12px; border-radius: 14px; background: var(--au-soft); border: 1px solid var(--au-line); }
+.au-chip__text { flex: 1; min-width: 0; font-size: 14px; }
+.au-chip__text strong { display: block; color: var(--au-ink); overflow-wrap: anywhere; line-height: 1.25; }
+.au-chip__text span { color: var(--au-muted); font-size: 12.5px; }
+
+.au-form { display: grid; gap: 12px; margin-top: 14px; }
+.au-field { display: grid; gap: 6px; min-width: 0; }
+.au-label { font-size: 14px; font-weight: 700; color: var(--au-ink); }
+.au-box { position: relative; display: flex; align-items: center; }
+.au-box > svg { position: absolute; left: 14px; color: var(--au-muted); pointer-events: none; }
+.au-input { width: 100%; min-height: 48px; padding: 8px 14px 8px 44px; border-radius: 12px; border: 1.5px solid var(--au-edge); background: #fff; font: inherit; font-size: 16px; color: var(--au-ink); }
+.au-input--plain { padding-left: 14px; }
+.au-input--end { padding-right: 76px; }
+.au-input:hover { border-color: #64748b; }
+.au-input:focus-visible { outline: none; border-color: var(--au-brand); box-shadow: 0 0 0 4px var(--au-ring); border-radius: 12px; }
+.au-input[aria-invalid="true"] { border-color: var(--au-bad); }
+.au-toggle { position: absolute; right: 6px; min-height: 44px; min-width: 60px; padding: 0 10px; border: 0; background: none; font: inherit; font-weight: 700; font-size: 14px; color: var(--au-text-brand); cursor: pointer; border-radius: 10px; }
+.au-toggle:hover { background: var(--au-soft); }
+.au-err { font-size: 13.5px; font-weight: 600; color: var(--au-bad); }
+.au-row { display: flex; justify-content: flex-end; margin-top: -6px; }
+.au-link { display: inline-flex; align-items: center; min-height: 44px; padding: 0 2px; background: none; border: 0; font: inherit; font-size: 14px; font-weight: 700; color: var(--au-text-brand); text-decoration: none; cursor: pointer; }
+.au-link:hover { text-decoration: underline; }
+
+.au-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 50px; padding: 0 22px; border-radius: 14px; border: 0; background: var(--au-button); color: #fff; font: inherit; font-weight: 800; font-size: 16px; cursor: pointer; box-shadow: 0 10px 24px var(--au-glow); text-shadow: var(--au-button-shadow); transition: transform .15s ease, box-shadow .15s ease, opacity .15s; position: relative; overflow: hidden; }
+.au-btn::after { content: ""; position: absolute; top: 0; bottom: 0; left: -40%; width: 30%; background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .4), transparent); transform: skewX(-18deg); animation: auShine 5s ease-in-out 2s infinite; pointer-events: none; }
+@keyframes auShine { 0% { left: -40%; } 35%, 100% { left: 140%; } }
+.au-btn:hover { transform: translateY(-1px); }
+.au-btn[disabled] { opacity: .7; cursor: not-allowed; transform: none; }
+.au-btn--ghost { background: #fff; color: var(--au-ink); border: 1.5px solid var(--au-edge); box-shadow: none; text-shadow: none; font-weight: 700; }
+.au-btn--ghost:hover { border-color: var(--au-brand); }
+.au-spin { width: 18px; height: 18px; border-radius: 50%; border: 2.5px solid rgba(255, 255, 255, .45); border-top-color: #fff; animation: auSpin .8s linear infinite; }
+@keyframes auSpin { to { transform: rotate(360deg); } }
+
+.au-alert { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 12px; font-size: 14px; font-weight: 600; }
+.au-alert svg { flex: none; margin-top: 2px; }
+.au-alert--bad { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+.au-alert--info { background: var(--au-soft); color: var(--au-ink); border: 1px solid var(--au-line); font-weight: 500; }
+.au-alert--ok { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+
+/* Schools */
+.au-schools { display: grid; gap: 8px; margin-top: 14px; }
+.au-school-btn { display: flex; align-items: center; gap: 14px; width: 100%; padding: 12px 14px; text-align: left; border: 1.5px solid var(--au-edge); border-radius: 16px; background: #fff; font: inherit; color: inherit; cursor: pointer; min-height: 60px; transition: border-color .15s, box-shadow .15s, transform .15s; }
+.au-school-btn:hover { border-color: var(--au-brand); box-shadow: 0 8px 22px rgba(15, 23, 42, .08); transform: translateY(-1px); }
+.au-school-btn[disabled] { opacity: .6; cursor: wait; transform: none; }
+.au-school-btn__text { flex: 1; min-width: 0; }
+.au-school-btn__text strong { display: block; color: var(--au-ink); font-size: 15.5px; line-height: 1.25; overflow-wrap: anywhere; }
+.au-school-btn__text span { font-size: 13px; color: var(--au-muted); overflow-wrap: anywhere; }
+.au-school-btn svg { color: var(--au-muted); flex: none; }
+.au-confirm { display: grid; justify-items: center; text-align: center; gap: 6px; margin-top: 22px; padding: 26px 16px; border: 2px solid var(--au-brand); border-radius: 20px; background: var(--au-soft); }
+.au-confirm h2 { font-size: 22px; font-weight: 800; color: var(--au-ink); letter-spacing: -.01em; margin-top: 10px; overflow-wrap: anywhere; }
+.au-confirm p { color: var(--au-muted); font-size: 14px; overflow-wrap: anywhere; }
+.au-help { margin-top: 14px; padding: 12px 14px; border-radius: 14px; border: 1px dashed #cbd5e1; font-size: 14px; color: var(--au-muted); }
+.au-help strong { color: var(--au-ink); }
+.au-stack { display: grid; gap: 10px; margin-top: 14px; }
+.au-code { letter-spacing: .5em; text-align: center; font-size: 22px; font-weight: 700; padding-left: 14px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .au *, .au *::before, .au *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  /* Under reduced motion the sample cards show their finished state instead of playing */
+  .au-art *, .au-art *::before, .au-art *::after, .au-bl, .au-ring, .au-btn::after { animation: none !important; }
+  .au-ringw .fg { stroke-dashoffset: 9.4; } .au-pc::after { content: "94%"; } .au-eta b::after { content: "6 min"; }
+  .au-days i { background: #22c55e; } .au-b1, .au-b2 { opacity: 1; } .au-toast:first-child { opacity: 1; }
+  .au-dot { offset-distance: 55%; } .au-map .trail { stroke-dashoffset: 45; }
+}

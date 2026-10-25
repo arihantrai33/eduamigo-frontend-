@@ -1,32 +1,19 @@
-import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
+import PlatformNotices from "../../components/PlatformNotices";
+import { Link } from "react-router-dom";
 import {
-  Backpack, Presentation, Users, Bus, CreditCard, BarChart3, FileText, Clock, Umbrella,
-  CalendarCheck, BadgeIndianRupee, Notebook, GraduationCap, AlertCircle, History, ChevronRight, RefreshCw,
+  Backpack, BadgeIndianRupee, BarChart3, Bell, Bus, CalendarCheck, Clock, CreditCard, FileText, GraduationCap, History, Notebook, Percent, Presentation, Umbrella, Users,
 } from "lucide-react";
 import { can } from "../../utils/permissions";
 import { hasFeature } from "../../utils/features";
 import { activityLabel } from "../../utils/activity";
 import { plural } from "../../utils/plural";
-import { StatCard, StatGrid } from "../../components/ui/StatCard";
+import { Loading, Metric, MetricGrid, Note, NoticeRows, Panel, Pill, TopBar, Welcome, BarList } from "../../components/dash/Dash";
+import { greeting, rupees, useLoad, firstName } from "../../components/dash/helpers";
+import { QuickActions } from "../../components/dash/sections";
 
 const API = import.meta.env.VITE_API_URL;
-const authHeader = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
-
-// Same modules, names and permissions as before; colours now come from the school's brand.
-const MODULES = [
-  { icon: Backpack, name: "Students", path: "/admin/students", perm: "students.read" },
-  { icon: Presentation, name: "Teachers", path: "/admin/teachers", perm: "teachers.manage" },
-  { icon: Users, name: "Parents", path: "/admin/parents", perm: "parents.read" },
-  { icon: CreditCard, name: "Fee Mgmt", path: "/admin/fees", perm: "fees.collect", feature: "fees" },
-  { icon: BarChart3, name: "Att. Reports", path: "/admin/attendance-reports", perm: "attendance.reports" },
-  { icon: FileText, name: "Exams", path: "/admin/exams", perm: "exams.manage", feature: "exams" },
-  { icon: Clock, name: "Timetable", path: "/admin/timetable", perm: "timetable.manage" },
-  { icon: Umbrella, name: "Leaves", path: "/admin/leaves", perm: "leaves.all" },
-  { icon: Bus, name: "Transport", path: "/admin/transport", perm: "transport.manage", feature: "transport" },
-];
-
-const money = (n) => `₹${Math.round(n || 0).toLocaleString("en-IN")}`;
+const get = async (path) => (await axios.get(`${API}${path}`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } })).data;
 const pct = (part, whole) => (whole > 0 ? Math.round((part / whole) * 100) : 0);
 const ago = (d) => {
   const mins = Math.round((Date.now() - new Date(d).getTime()) / 60000);
@@ -35,226 +22,143 @@ const ago = (d) => {
   if (mins < 24 * 60) return `${Math.round(mins / 60)} h ago`;
   return new Date(d).toLocaleDateString("en-IN", { day: "numeric", month: "short" });
 };
-const greetingNow = () => {
-  const h = new Date().getHours();
-  return h < 12 ? "Good Morning" : h < 17 ? "Good Afternoon" : "Good Evening";
-};
 
+// Same modules and permissions as the menu; a module only appears when the role may open it and the school's plan has it.
+const MODULES = [
+  { icon: Backpack, name: "Students", path: "/admin/students", perm: "students.read" },
+  { icon: Presentation, name: "Teachers", path: "/admin/teachers", perm: "teachers.manage" },
+  { icon: Users, name: "Parents", path: "/admin/parents", perm: "parents.read" },
+  { icon: CreditCard, name: "Fee collection", path: "/admin/fees", perm: "fees.collect", feature: "fees" },
+  { icon: BarChart3, name: "Attendance reports", path: "/admin/attendance-reports", perm: "attendance.reports" },
+  { icon: FileText, name: "Exams", path: "/admin/exams", perm: "exams.manage", feature: "exams" },
+  { icon: Clock, name: "Timetable", path: "/admin/timetable", perm: "timetable.manage" },
+  { icon: Umbrella, name: "Leaves", path: "/admin/leaves", perm: "leaves.all" },
+  { icon: Bus, name: "Transport", path: "/admin/transport", perm: "transport.manage", feature: "transport" },
+];
 
-function Card({ title, subtitle, icon: Icon, action, onClick, children, className = "" }) {
-  return (
-    <section className={`ea-card ${onClick ? "is-clickable" : ""} ${className}`} onClick={onClick}>
-      <header className="ea-card__head">
-        <div>
-          <h2 className="ea-card__title">{title}</h2>
-          {subtitle && <p className="ea-card__subtitle">{subtitle}</p>}
-        </div>
-        {action || (Icon && <span className="ea-icon-chip ea-icon-chip--sm" aria-hidden="true"><Icon size={16} /></span>)}
-      </header>
-      {children}
-    </section>
-  );
-}
+// The school office's home. Numbers are counted by the server for this school and this role; a section the role may not see is
+// simply not sent by the server and not drawn here.
+export default function Dashboard({ user }) {
+  const dash = useLoad(() => get("/schools/me/dashboard"), "dash");
+  const setupLoad = useLoad(() => (can(user, "academics.manage") ? get("/academic/setup-status") : null), "setup");
+  const notes = useLoad(() => get("/notifications/my"), "notes");
 
-const Bar = ({ value }) => (
-  <div className="ea-bar" role="progressbar" aria-valuenow={value} aria-valuemin={0} aria-valuemax={100}>
-    <span style={{ width: `${Math.min(100, Math.max(0, value))}%` }} />
-  </div>
-);
-
-export default function Dashboard({ navigate, user }) {
-  const [data, setData] = useState(null);
-  const [failed, setFailed] = useState(false);
-  const [setup, setSetup] = useState(null);
-
-  const load = useCallback(() => {
-    setFailed(false);
-    axios.get(`${API}/schools/me/dashboard`, authHeader())
-      .then((r) => setData(r.data.data))
-      .catch(() => setFailed(true));
-  }, []);
-
-  useEffect(() => { load(); }, [load]);
-  useEffect(() => {
-    if (!can(user, "academics.manage")) return;
-    axios.get(`${API}/academic/setup-status`, authHeader()).then((r) => setSetup(r.data.data)).catch(() => {});
-  }, [user]);
-
-  const loading = !data && !failed;
-  const counts = data?.counts || {};
-  const att = data?.attendance;
-  const fees = data?.fees;
-  const pendingLeaves = data?.pendingLeaves || 0;
-  const attPresent = att ? (att.present || 0) + (att.late || 0) : 0;
-  const attPct = att ? pct(attPresent, att.total) : 0;
-  const feePct = fees ? pct(fees.collected, fees.billed) : 0;
-  const totalInClasses = (data?.classes || []).reduce((t, c) => t + c.count, 0) || 1;
-
-  const stats = [
-    { icon: Backpack, key: "students", label: "Total Students", sub: "Enrolled this year", path: "/admin/students" },
-    { icon: Presentation, key: "teachers", label: "Total Teachers", sub: "Active staff members", path: "/admin/teachers" },
-    { icon: Users, key: "parents", label: "Linked Parents", sub: "Connected families", path: "/admin/parents" },
-    { icon: Bus, key: "buses", label: "Total Buses", sub: "Active fleet", path: "/admin/transport" },
-  ].filter((s) => loading || counts[s.key] !== undefined);
-
-  const modules = MODULES.filter((m) => can(user, m.perm) && hasFeature(user, m.feature));
+  const d = dash.state === "ok" ? dash.data.data : null;
+  const setup = setupLoad.state === "ok" ? setupLoad.data.data : null;
+  const counts = d?.counts || {};
+  const att = d?.attendance;
+  const fees = d?.fees;
+  const pending = d?.pendingLeaves || 0;
+  const present = att ? (att.present || 0) + (att.late || 0) : 0;
+  const attPct = att?.total ? pct(present, att.total) : null;
+  const feePct = fees?.billed ? pct(fees.collected, fees.billed) : null;
+  const totalInClasses = (d?.classes || []).reduce((t, c) => t + c.count, 0) || 1;
+  const bars = (d?.classes || []).map((c) => ({ label: `Class ${c.class}-${c.section} · ${c.count}`, value: pct(c.count, totalInClasses) }));
+  const modules = MODULES.filter((m) => can(user, m.perm) && hasFeature(user, m.feature)).map((m) => [m.path, m.name, m.icon]);
+  const unread = notes.state === "ok" ? notes.data.unread || 0 : 0;
+  const first = firstName(user?.name) || "there";
+  const loading = dash.state === "loading";
 
   return (
-    <div className="ea-dash">
+    <div className="dx dx-page">
+      <TopBar title="Dashboard" />
+      <PlatformNotices />
+
       {setup && !setup.complete && (
-        <button type="button" className="ea-callout" onClick={() => navigate("/admin/academic")}>
-          <GraduationCap size={20} aria-hidden="true" />
-          <span className="ea-callout__text">
-            <strong>Finish setting up your school</strong>
-            <span>{setup.done} of {setup.total} steps done. Next: {setup.steps.find((x) => !x.done)?.label}</span>
-          </span>
-          <span className="ea-callout__action">Continue <ChevronRight size={14} aria-hidden="true" /></span>
-        </button>
+        <Link className="dx-note" to="/admin/academic" style={{ textDecoration: "none", color: "inherit", background: "var(--dx-orange-bg)" }}>
+          <GraduationCap size={20} aria-hidden />
+          <div><strong>Finish setting up your school</strong>{setup.done} of {setup.total} steps done. Next: {setup.steps.find((x) => !x.done)?.label}. <b style={{ color: "var(--dx-orange)" }}>Continue</b></div>
+        </Link>
       )}
 
-      <div className="ea-page-head">
-        <div>
-          <h1 className="ea-page-title">Dashboard</h1>
-          <p className="ea-page-subtitle">{new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</p>
-        </div>
-        <div className="ea-page-actions">
-          {pendingLeaves > 0 && (
-            <button type="button" className="ea-pill ea-pill--warning" onClick={() => navigate("/admin/leaves")}>
-              <AlertCircle size={13} aria-hidden="true" />{pendingLeaves} leave{pendingLeaves > 1 ? "s" : ""} pending
-            </button>
-          )}
-          <span className="ea-userchip">
-            <span className="ea-avatar ea-avatar--brand" aria-hidden="true">{user?.name?.[0]?.toUpperCase() || "A"}</span>
-            <span>{user?.name || "Admin"}</span>
-          </span>
-        </div>
-      </div>
+      <Welcome user={user} eyebrow={greeting()} title={`Welcome back, ${first}`}
+        lead={d?.counts ? <>{plural(counts.students, "student")}{counts.teachers !== undefined && <> and {plural(counts.teachers, "teacher")}</>} enrolled{pending > 0 && <>, <b>{plural(pending, "leave")}</b> waiting for approval</>}.</> : loading ? "Loading your school…" : undefined}>
+        {dash.state === "error" && <Note tone="bad" title="The dashboard could not be loaded" action={<button type="button" onClick={dash.reload}>Try again</button>}>Please check your connection.</Note>}
+      </Welcome>
 
-      <section className="ea-hero">
-        <span className="ea-hero__school">{user?.school || "EduAmigo School"}</span>
-        <h2 className="ea-hero__title">{greetingNow()}, {user?.name || "Admin"}</h2>
-        {data?.counts && (
-          <p className="ea-hero__text">
-            You have <strong>{plural(counts.students, "student")}</strong>
-            {counts.teachers !== undefined && <> and <strong>{plural(counts.teachers, "teacher")}</strong></>} enrolled.
-            {pendingLeaves > 0 && <> <strong>{plural(pendingLeaves, "leave")}</strong> awaiting approval.</>}
-          </p>
-        )}
-      </section>
-
-      {failed && (
-        <div className="ea-alert" role="alert">
-          <AlertCircle size={18} aria-hidden="true" />
-          <span>The dashboard could not be loaded. Check your connection and try again.</span>
-          <button type="button" className="ea-btn ea-btn--ghost" onClick={load}><RefreshCw size={14} aria-hidden="true" /> Retry</button>
-        </div>
+      {(loading || d) && (
+        <MetricGrid label="School summary">
+          {(loading || counts.students !== undefined) && <Metric icon={Backpack} label="Students" to="/admin/students" value={loading ? "…" : counts.students} sub="Enrolled" />}
+          {(loading || counts.teachers !== undefined) && <Metric icon={Presentation} label="Teachers" to="/admin/teachers" value={loading ? "…" : counts.teachers} sub="Active staff" />}
+          {att && <Metric icon={Percent} label="Attendance today" to="/admin/attendance-reports" value={attPct === null ? "—" : `${attPct}%`}
+            sub={att.marked ? `${att.marked} of ${att.totalStudents} students marked` : "Not marked yet today"} meter={attPct ?? undefined} tone={attPct === null ? undefined : attPct >= 85 ? "good" : attPct >= 75 ? "warn" : "bad"} />}
+          {fees && <Metric icon={BadgeIndianRupee} label="Fees collected" to="/admin/fee-reports" value={feePct === null ? "—" : `${feePct}%`}
+            sub={`${rupees(fees.collected)} of ${rupees(fees.billed)}`} meter={feePct ?? undefined} tone="orange" />}
+          {d?.pendingLeaves !== undefined && <Metric icon={Notebook} label="Leave requests" to="/admin/leaves" value={pending} tone={pending ? "orange" : "good"} sub={pending ? "waiting for approval" : "All caught up"} />}
+          {counts.buses !== undefined && <Metric icon={Bus} label="Buses" to="/admin/transport" value={counts.buses} sub="Active fleet" />}
+        </MetricGrid>
       )}
 
-      {stats.length > 0 && (
-        <StatGrid label="School totals">
-          {stats.map(({ icon: Icon, ...s }) => (
-            <StatCard key={s.key} icon={<Icon />} label={s.label} sub={s.sub} onClick={() => navigate(s.path)}
-              value={loading ? <span className="skeleton" style={{ display: "inline-block", width: 48, height: 22 }} aria-label="Loading" /> : counts[s.key]} />
-          ))}
-        </StatGrid>
-      )}
-
-      {modules.length > 0 && (
-        <Card title="Quick Access" subtitle="Jump to any module">
-          {/* Columns chosen from the number of modules, so no tile sits alone on the last row. */}
-          <div className="ea-quick" style={{ "--quick-cols": [3, 4].find((c) => modules.length % c === 0) ?? (modules.length % 3 === 1 ? 4 : 3), "--quick-n": Math.min(modules.length, 9) }}>
-            {modules.map(({ icon: Icon, name, path }) => (
-              <button key={path} type="button" className="ea-quick__tile" onClick={() => navigate(path)}>
-                <Icon size={20} aria-hidden="true" />
-                <span>{name}</span>
-              </button>
-            ))}
-          </div>
-        </Card>
-      )}
-
-      {(att || fees || data?.pendingLeaves !== undefined) && (
-        <div className="ea-grid ea-grid--3">
+      <div className="dx-grid">
+        <div className="dx-col">
           {att && (
-            <Card title="Today's Attendance" icon={CalendarCheck} onClick={() => navigate("/admin/attendance-reports")}
-              subtitle={att.marked ? `${att.marked} of ${att.totalStudents} students marked` : "Not marked yet today"}>
-              <div className="ea-metric">{att.total ? <>{attPct}<small>%</small></> : <span className="ea-muted">—</span>}</div>
-              <Bar value={attPct} />
-              <div className="ea-metric__foot">
-                <span className="ea-text-success">{attPresent} Present</span>
-                <span className="ea-text-danger">{att.absent || 0} Absent</span>
-              </div>
-            </Card>
+            <Panel id="p-att" title="Today's attendance" icon={CalendarCheck} to="/admin/attendance-reports" action="Reports">
+              <p className="dx-lead" style={{ margin: "0 0 12px", fontSize: 13.5 }}>{att.marked ? `${att.marked} of ${att.totalStudents} students marked so far` : "Attendance has not been marked yet today."}</p>
+              {att.total > 0 && (
+                <ul className="dx-list">
+                  <li className="dx-row"><div className="dx-row__body"><div className="dx-row__title">Present</div></div><Pill tone="good">{present}</Pill></li>
+                  <li className="dx-row"><div className="dx-row__body"><div className="dx-row__title">Absent</div></div><Pill tone={att.absent ? "bad" : undefined}>{att.absent || 0}</Pill></li>
+                </ul>
+              )}
+            </Panel>
           )}
           {fees && (
-            <Card title="Fee Collection" subtitle="Collected against billed" icon={BadgeIndianRupee} onClick={() => navigate("/admin/fee-reports")}>
-              <div className="ea-metric">{feePct}<small>%</small></div>
-              <Bar value={feePct} />
-              <div className="ea-metric__foot">
-                <span className="ea-text-success">{money(fees.collected)} collected</span>
-                <span className="ea-text-warning">{money(fees.due)} due</span>
-              </div>
-            </Card>
+            <Panel id="p-fee" title="Fee collection" icon={BadgeIndianRupee} to="/admin/fee-reports" action="Fee reports">
+              {fees.billed ? (
+                <ul className="dx-list">
+                  <li className="dx-row"><div className="dx-row__body"><div className="dx-row__title">Collected</div></div><Pill tone="good">{rupees(fees.collected)}</Pill></li>
+                  <li className="dx-row"><div className="dx-row__body"><div className="dx-row__title">Outstanding</div></div><Pill tone={fees.due ? "warn" : "good"}>{rupees(fees.due)}</Pill></li>
+                  <li className="dx-row"><div className="dx-row__body"><div className="dx-row__title">Billed</div></div><Pill>{rupees(fees.billed)}</Pill></li>
+                </ul>
+              ) : <Note title="No fees billed yet">Assign a fee structure to start collecting.</Note>}
+            </Panel>
           )}
-          {data?.pendingLeaves !== undefined && (
-            <Card title="Leave Requests" subtitle="Needs your approval" icon={Notebook} onClick={() => navigate("/admin/leaves")}>
-              <div className={`ea-metric ${pendingLeaves ? "ea-text-danger" : "ea-text-success"}`}>{pendingLeaves}</div>
-              <div className={`ea-metric__note ${pendingLeaves ? "ea-text-danger" : "ea-text-success"}`}>
-                {pendingLeaves ? `${pendingLeaves} ${pendingLeaves === 1 ? "request" : "requests"} pending` : "All caught up"}
-              </div>
-            </Card>
+          {d?.classes && (
+            <Panel id="p-classes" title="Students by class" icon={Users} to="/admin/students">
+              {bars.length === 0 ? <Note title="No students yet">Add students from the Students screen.</Note> : <BarList items={bars} label="Share of students by class" />}
+            </Panel>
           )}
         </div>
-      )}
 
-      {data?.classes && (
-        <div className="ea-grid ea-grid--2">
-          <Card title="Students by Class" subtitle="Distribution across grades"
-            action={<button type="button" className="ea-link" onClick={() => navigate("/admin/students")}>View all</button>}>
-            {data.classes.length === 0 ? <p className="ea-empty-line">No students yet</p> : data.classes.map((c) => {
-              const share = pct(c.count, totalInClasses);
-              return (
-                <div key={`${c.class}-${c.section}`} className="ea-row-bar">
-                  <div className="ea-row-bar__label"><span>Class {c.class}-{c.section}</span><span>{c.count} students ({share}%)</span></div>
-                  <Bar value={share} />
-                </div>
-              );
-            })}
-          </Card>
-          <Card title="Recently Enrolled" subtitle="Latest student additions"
-            action={<button type="button" className="ea-link" onClick={() => navigate("/admin/students")}>View all</button>}>
-            {data.recentStudents.length === 0 ? <p className="ea-empty-line">No students yet</p> : (
-              <ul className="ea-list">
-                {data.recentStudents.map((s) => (
-                  <li key={s._id}>
-                    <button type="button" className="ea-list__item" onClick={() => navigate(`/admin/students/${s._id}`)}>
-                      {s.photo ? <img src={s.photo} alt="" className="ea-avatar ea-avatar--img" /> : <span className="ea-avatar" aria-hidden="true">{s.name?.[0]?.toUpperCase()}</span>}
-                      <span className="ea-list__text"><strong>{s.name}</strong><small>Class {s.class}-{s.section} · Roll {s.rollNumber}</small></span>
-                      <span className={`ea-badge ${s.feeStatus === "Paid" ? "ea-badge--success" : "ea-badge--warning"}`}>{s.feeStatus || "Not billed"}</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </Card>
-        </div>
-      )}
-
-      {data?.activity && (
-        <Card title="Recent Activity" subtitle="Who changed what in the school"
-          action={<button type="button" className="ea-link" onClick={() => navigate("/admin/activity")}>View all</button>}>
-          {data.activity.length === 0 ? <p className="ea-empty-line">No activity yet</p> : (
-            <ul className="ea-list">
-              {data.activity.map((a, i) => (
-                <li key={i} className="ea-list__item ea-list__item--static">
-                  <span className="ea-icon-chip ea-icon-chip--sm" aria-hidden="true"><History size={15} /></span>
-                  <span className="ea-list__text"><strong>{activityLabel(a.action)}</strong><small>{a.by || "System"} · {ago(a.at)}</small></span>
-                </li>
-              ))}
-            </ul>
+        <div className="dx-col">
+          <Panel id="p-inbox" title="Alerts for you" icon={Bell} to="/admin/inbox" action={unread ? `${unread} unread` : "Open inbox"}>
+            {notes.state === "loading" ? <Loading label="Loading alerts" />
+              : notes.state === "error" ? <Note tone="bad" title="Could not load alerts" action={<button type="button" onClick={notes.reload}>Try again</button>} />
+                : (notes.data.data || []).length === 0 ? <Note title="No alerts at the moment">Safety alerts from parents and other messages for the school office appear here.</Note>
+                  : <NoticeRows items={(notes.data.data || []).slice(0, 4)} />}
+          </Panel>
+          {d?.recentStudents && (
+            <Panel id="p-recent" title="Recently enrolled" icon={Backpack} to="/admin/students">
+              {d.recentStudents.length === 0 ? <Note title="No students yet" /> : (
+                <ul className="dx-list">
+                  {d.recentStudents.map((s) => (
+                    <li key={s._id} className="dx-row">
+                      <span className="dx-avatar" aria-hidden="true" style={{ flex: "none" }}>{s.name?.[0]?.toUpperCase()}</span>
+                      <div className="dx-row__body">
+                        <Link className="dx-row__title" to={`/admin/students/${s._id}`} style={{ color: "inherit", textDecoration: "none" }}>{s.name}</Link>
+                        <div className="dx-row__sub">Class {s.class}-{s.section} · Roll {s.rollNumber}</div>
+                      </div>
+                      <Pill tone={s.feeStatus === "Paid" ? "good" : "warn"}>{s.feeStatus || "Not billed"}</Pill>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </Panel>
           )}
-        </Card>
-      )}
+          {d?.activity && (
+            <Panel id="p-activity" title="Recent activity" icon={History} to="/admin/activity">
+              {d.activity.length === 0 ? <Note title="No activity yet" /> : (
+                <ul className="dx-list">
+                  {d.activity.slice(0, 5).map((a, i) => (
+                    <li key={i} className="dx-row"><div className="dx-row__body"><div className="dx-row__title">{activityLabel(a.action)}</div><div className="dx-row__sub">{a.by || "System"} · {ago(a.at)}</div></div></li>
+                  ))}
+                </ul>
+              )}
+            </Panel>
+          )}
+          {modules.length > 0 && <QuickActions items={modules} title="Go to" />}
+        </div>
+      </div>
     </div>
   );
 }

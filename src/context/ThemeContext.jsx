@@ -9,7 +9,8 @@ export function ThemeProvider({ children }) {
 
   useEffect(() => {
     localStorage.setItem("darkMode", darkMode);
-    if (darkMode) {
+    const p = window.location.pathname // dark mode is a student-portal feature (see AppLayout in App.jsx)
+    if (darkMode && (p.startsWith("/student") || p.startsWith("/parent") || p === "/change-password" || p === "/report-card")) {
       document.documentElement.setAttribute("data-theme", "dark");
     } else {
       document.documentElement.removeAttribute("data-theme");

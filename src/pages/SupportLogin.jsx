@@ -3,9 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { saveSchool, findSchoolByCode } from "../utils/school";
 import { homeFor } from "../utils/home";
-import { LifeBuoy, AlertCircle } from "lucide-react";
-import PlatformHero from "../components/PlatformHero";
-import EmptyState from "../components/ui/EmptyState";
+import { AlertCircle } from "lucide-react";
+import AuthShell from "./auth/AuthShell";
 import { errorMessage } from "../utils/toast";
 
 // /support#token=... — opened from the EduAmigo owner console. Signs in as the school's admin for the
@@ -38,15 +37,11 @@ export default function SupportLogin() {
   }, [token, login, navigate]);
 
   return (
-    <div className="ea-auth ea-platform" style={{ minHeight: "100vh", height: "100vh", display: "flex", flexDirection: "column", background: "var(--card)", fontFamily: "inherit", overflowY: "auto" }}>
-      <PlatformHero icon={LifeBuoy} subtitle="Support session" />
-      <div style={{ flex: 1, background: "var(--card)", padding: "8px 22px 40px" }}>
-        {error ? (
-          <EmptyState role="alert" tone="danger" icon={AlertCircle} title="EduAmigo support" text={error} plain />
-        ) : (
-          <EmptyState role="status" icon={LifeBuoy} title="EduAmigo support" text="Opening the school…" plain />
-        )}
-      </div>
-    </div>
+    <AuthShell>
+      <h1 className="au-h1">EduAmigo support</h1>
+      {error
+        ? <div className="au-alert au-alert--bad" role="alert" style={{ marginTop: 16 }}><AlertCircle size={18} aria-hidden />{error}</div>
+        : <p className="au-sub" role="status">Opening the school…</p>}
+    </AuthShell>
   );
 }

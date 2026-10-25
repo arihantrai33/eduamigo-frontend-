@@ -1,0 +1,12 @@
+# The public website is open to search engines. The signed-in portals are not worth indexing.
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /student
+Disallow: /teacher
+Disallow: /parent
+Disallow: /driver
+Disallow: /support
+Disallow: /report-card
+Disallow: /receipt
+Disallow: /change-password

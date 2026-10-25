@@ -48,3 +48,43 @@ export const searchSchools = (query) => getJson(`/public/schools?search=${encode
 
 export const schoolColor = (school, fallback = "#4f8ef7") =>
   (/^#[0-9a-fA-F]{6}$/.test(school?.primaryColor || "") ? school.primaryColor : fallback);
+
+// ---------------- Signing in ----------------
+// One answer shape for the screens: { ok, status, data } or a thrown Error with a plain-language message.
+async function postJson(path, body) {
+  let res;
+  try {
+    res = await fetch(`${API}${path}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  } catch {
+    throw Object.assign(new Error(OFFLINE), { status: 0 });
+  }
+  if (res.status >= 502) throw Object.assign(new Error(SERVER_DOWN), { status: res.status });
+  const data = await res.json().catch(() => ({}));
+  return { ok: res.ok && data.success !== false, status: res.status, data };
+}
+
+// { identifier, password, schoolCode? } -> a session, or { requiresSchoolChoice, ticket, schools } when a mobile number is
+// linked to accounts in several schools. The role and the school come back from the server; none is sent.
+export const signInRequest = (body) => postJson("/users/login", body);
+export const requestCodeRequest = (body) => postJson("/users/otp/request", body);
+export const codeSignInRequest = (body) => postJson("/users/otp/verify", body);
+export const chooseSchoolRequest = (ticket, schoolCode) => postJson("/users/login/school", { ticket, schoolCode });
+
+// The device remembers the school it signed in to (so the next visit opens its sign-in page).
+export function rememberSchoolOf(user) {
+  if (!user?.schoolCode) return;
+  const before = getSavedSchool();
+  const b = user.branding || {};
+  saveSchool({
+    ...(before?.code === user.schoolCode ? before : {}),
+    code: user.schoolCode, name: user.school || b.appName || "", appName: b.appName || user.school || "",
+    logoUrl: b.logoUrl || "", primaryColor: b.primaryColor || "", accentColor: b.accentColor || "", heroStyle: b.heroStyle || "bold",
+  });
+}
+
+// A page to return to after signing in, only if it is inside the portal of the role that signed in.
+export function safeNext(next, role) {
+  if (typeof next !== "string" || !next.startsWith("/") || next.startsWith("//")) return null;
+  const portal = role === "accountant" || role === "staff" ? "admin" : role;
+  return new RegExp(`^/${portal}(/|$|\\?)`).test(next) ? next : null;
+}

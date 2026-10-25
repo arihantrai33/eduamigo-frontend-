@@ -79,8 +79,8 @@ test('the student watches the bus start, move along the road, pass stops, lose s
 
   // The trip ends: the map gives way to the "not on route" message.
   await t.end();
-  await expect(page.getByText(/not on route yet/)).toBeVisible({ timeout: 15_000 });
-  await expect(page.getByTestId('bus-live-badge')).toHaveCount(0);
+  await expect(page.getByTestId('bus-live-badge')).toContainText(/not on route/i, { timeout: 15_000 });
+  await expect(page.locator('.ea-bus-leaflet')).toBeVisible(); // the route stays on the map
 });
 
 test('the parent sees the same bus, with the stops in order and a real ETA instead of made-up times', async ({ page, request }) => {

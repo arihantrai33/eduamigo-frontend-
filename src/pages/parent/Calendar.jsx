@@ -48,7 +48,7 @@ export default function ParentCalendar() {
           .map((e) => ({ key: e._id, date: e.date, title: e.title, sub: `${fmt(e.date)}${e.description ? ` • ${e.description}` : ""}`, style: EVENT_STYLE[e.type] || EVENT_STYLE.other }));
         const dues = (fees.status === "fulfilled" ? fees.value.data.data : [])
           .filter((f) => f.status !== "Paid" && new Date(f.dueDate) >= from)
-          .map((f) => ({ key: f._id, date: f.dueDate, title: `${f.feeType} due`, sub: `${fmt(f.dueDate)} • Balance Rs ${(f.amount - (f.paidAmount || 0)).toLocaleString("en-IN")}`, style: EVENT_STYLE.fee }));
+          .map((f) => ({ key: f._id, date: f.dueDate, title: `${f.feeType} due`, sub: `${fmt(f.dueDate)} • Balance ₹${(f.amount - (f.paidAmount || 0)).toLocaleString("en-IN")}`, style: EVENT_STYLE.fee }));
         setItems([...events, ...dues].sort((a, b) => new Date(a.date) - new Date(b.date)));
         setExams((ex.status === "fulfilled" ? ex.value.data.data : []).filter((e) => new Date(e.date) >= from));
       } catch (err) {

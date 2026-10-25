@@ -68,7 +68,7 @@ export default function ParentProfile() {
 
       <div className="ea-pd-body" style={{ flex: 1, overflowY: "auto", padding: "16px 16px 80px" }}>
         <div className="ea-profile"><div className="ea-profile__aside">
-        <ProfileCard name={user?.name || "Parent"} photo={parentData?.photo} role="Parent"
+        <ProfileCard name={user?.name || "Parent"} photo={parentData?.photo} editablePhoto role="Parent"
           meta={[parentData?.occupation, parentData?.address].filter(Boolean).join(" • ") || null} />
 
         <InfoList title="Contact details" rows={[

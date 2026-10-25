@@ -23,7 +23,7 @@ export default defineConfig({
   },
   webServer: [
     // ASSISTANT_AI=off: routine tests never call a paid AI provider; AI paths are tested with mocked answers.
-    { command: 'npm run demo', cwd: '../eduamigo-backend', env: { PORT: String(API_PORT), ASSISTANT_AI: 'off', LEARNING_VECTOR_SEARCH: 'off', BUS_STALE_MS: '6000', ROUTING_URL: 'off' }, url: `http://localhost:${API_PORT}/api/health`, reuseExistingServer: true, timeout: 180_000 },
-    { command: `npx vite --port ${WEB_PORT} --strictPort`, env: { VITE_DEV_API_TARGET: `http://localhost:${API_PORT}` }, url: `http://localhost:${WEB_PORT}`, reuseExistingServer: true, timeout: 60_000 },
+    { command: 'npm run demo', cwd: '../eduamigo-backend', env: { PORT: String(API_PORT), ASSISTANT_AI: 'off', LEARNING_VECTOR_SEARCH: 'off', BUS_STALE_MS: '6000', ROUTING_URL: 'off', PLATFORM_BASE_DOMAIN: 'localhost' }, url: `http://localhost:${API_PORT}/api/health`, reuseExistingServer: true, timeout: 180_000 },
+    { command: `npx vite --port ${WEB_PORT} --strictPort`, env: { VITE_DEV_API_TARGET: `http://localhost:${API_PORT}`, VITE_TENANT_ROUTING: 'on', VITE_PLATFORM_BASE_DOMAIN: 'localhost' }, url: `http://localhost:${WEB_PORT}`, reuseExistingServer: true, timeout: 60_000 },
   ],
 });

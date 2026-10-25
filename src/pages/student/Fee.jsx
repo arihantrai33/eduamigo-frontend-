@@ -79,7 +79,7 @@ export default function StudentFee() {
         <div className="ea-pd-bar ea-note ea-note--warning ea-note--row" style={{ margin: "16px 16px 0" }}>
           <span className="ea-note__icon"><Glyph e="⚠" /></span>
           <div>
-            <div className="ea-note__title">Payment Due: {formatDate(nearestDue.dueDate)}</div>
+            <div className="ea-note__title">{new Date(nearestDue.dueDate) < new Date(new Date().toDateString()) ? "Payment overdue since" : "Payment due"} {formatDate(nearestDue.dueDate)}</div>
             <div>Please clear outstanding dues to avoid late charges.</div>
           </div>
         </div>

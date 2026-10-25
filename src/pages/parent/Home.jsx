@@ -1,209 +1,124 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import { visibleFor } from "../../utils/features";
-import { userTheme, brandLook } from "../../utils/theme";
-import SchoolStrip from "../../components/SchoolStrip";
+import { useState } from "react";
 import axios from "axios";
-import { pickChild, childQuery } from "../../utils/selectedChild";
-import ChildSwitcher from "../../components/ChildSwitcher";
-import UpcomingExams from "../../components/UpcomingExams";
-
-import Glyph from "../../components/Glyph";
-import HeroStat from "../../components/HeroStat";
+import { CalendarCheck, CalendarDays, CreditCard, GraduationCap, LineChart, MessageCircle, NotebookPen, Percent, Trophy, Bus, BookOpenCheck } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
+import { FEATURE_OF_PATH, hasFeature } from "../../utils/features";
+import { childQuery, pickChild, setSelectedChildId } from "../../utils/selectedChild";
 import BottomNav from "../../layout/BottomNav";
+import { AssistantCard, ChildTabs, Metric, MetricGrid, Note, TopBar, Welcome } from "../../components/dash/Dash";
+import { busState, DAYS, greeting, latestResult, rupees, useLoad, firstName } from "../../components/dash/helpers";
+import { BusPanel, HomeworkPanel, NoticesPanel, QuickActions, ResultsPanel, SchedulePanel, UpcomingPanel } from "../../components/dash/sections";
+
 const API = import.meta.env.VITE_API_URL;
-const authHeader = () => ({
-  headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-});
+const auth = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+const get = async (path) => (await axios.get(`${API}${path}`, auth())).data;
 
-function getGreeting() {
-  const h = new Date().getHours();
-  if (h < 12) return "Good Morning";
-  if (h < 17) return "Good Afternoon";
-  return "Good Evening";
-}
-
+// The parent's home: everything below comes from the server for the selected child, and a section whose data is missing or
+// failed says so instead of showing a made-up number. The server checks every request against the parent's own children.
 export default function ParentHome() {
-  const navigate = useNavigate();
   const { user } = useAuth();
-  // School branding, in the same style (light or bold) as the school's sign-in page.
-  const theme = userTheme(user);
-  const look = brandLook(theme);
-  const [child,      setChild]      = useState(null);
-  const [attendance, setAttendance] = useState(null);
-  const [results,    setResults]    = useState(null);
-  const [notices,    setNotices]    = useState([]);
-  const [busInfo,    setBusInfo]    = useState(null);
-  const [loading,    setLoading]    = useState(true);
-  const [children,   setChildren]   = useState([]);
+  const [, setPicked] = useState(0); // re-render after the child is changed (the choice lives in selectedChild.js)
 
-  useEffect(() => { fetchAll(); }, []);
+  const kids = useLoad(() => get("/parents/my-child"), "kids");
+  const list = kids.state === "ok" ? kids.data.data.children || [] : [];
+  const child = pickChild(list); // read on every render: the choice lives in localStorage (selectedChild.js)
+  const cid = child?._id;
+  const q = childQuery();
+  const allowed = (path) => hasFeature(user, FEATURE_OF_PATH[path]);
 
-  const fetchAll = async () => {
-    try {
-      const [childRes, noticesRes] = await Promise.allSettled([
-        axios.get(`${API}/parents/my-child`, authHeader()),
-        axios.get(`${API}/notifications/my`, authHeader()),
-      ]);
+  const att = useLoad(() => (cid ? get(`/attendance/student/${cid}/summary`) : null), cid);
+  const res = useLoad(() => (cid && allowed("/parent/result") ? get(`/exams/student/${cid}/results`) : null), cid);
+  const fees = useLoad(() => (cid && allowed("/parent/fee") ? get(`/fees/my${q}`) : null), cid);
+  const bus = useLoad(() => (cid && allowed("/parent/bus") ? get(`/transport/my-child-bus${q}`) : null), cid);
+  const day = DAYS[new Date().getDay()];
+  const table = useLoad(() => (cid && day !== "Sunday" ? get(`/timetable/class/${encodeURIComponent(child.class)}/${day}?section=${encodeURIComponent(child.section)}`) : null), cid);
+  const exams = useLoad(() => (cid ? get(`/exams${q}`) : null), cid);
+  const hw = useLoad(() => (cid ? get(`/homework/child${q}`) : null), cid);
+  const events = useLoad(() => get("/events"), "events");
+  const notes = useLoad(() => get("/notifications/my"), "notes");
 
-      if (childRes.status === "fulfilled" && childRes.value.data.success) {
-        const kids = childRes.value.data.data.children || [];
-        const s = pickChild(kids);
-        setChildren(kids);
-        setChild(s);
+  const pick = (k) => { setSelectedChildId(String(k._id)); setPicked((n) => n + 1); };
+  const first = firstName(user?.name) || "there";
 
-        if (s?._id) {
-          const [attRes, resRes, busRes] = await Promise.allSettled([
-            axios.get(`${API}/attendance/student/${s._id}/summary`, authHeader()),
-            axios.get(`${API}/exams/student/${s._id}/results`,      authHeader()),
-            axios.get(`${API}/transport/my-child-bus${childQuery()}`, authHeader()),
-          ]);
-          if (attRes.status === "fulfilled" && attRes.value.data.success) {
-            const summary = attRes.value.data.summary || {};
-            // Percentage is only meaningful once at least one school day has been marked.
-            setAttendance(summary.total ? { ...summary, percentage: parseFloat(summary.percentage) } : null);
-          }
-          if (resRes.status === "fulfilled" && resRes.value.data.success)
-            setResults(resRes.value.data.data?.[0] ?? null);
-          if (busRes.status === "fulfilled" && busRes.value.data.success)
-            setBusInfo(busRes.value.data.data);
-        }
-      }
-
-      if (noticesRes.status === "fulfilled" && noticesRes.value.data.success)
-        setNotices(noticesRes.value.data.data?.slice(0, 3) ?? []);
-
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const tiles = [
-    { icon: <Glyph e="💬" />, label: "Chat Teachers", sub: "Message directly",                                                          path: "/parent/chat"          },
-    { icon: <Glyph e="💳" />, label: "Fee Status",    sub: child?.feeStatus ?? "Check status",                                          path: "/parent/fee"           },
-    { icon: <Glyph e="📊" />, label: "Results",       sub: results ? `${results.examName} • ${results.percentage ?? "—"}%` : "View results", path: "/parent/result"   },
-    { icon: <Glyph e="🚌" />, label: "Track Bus",     sub: busInfo ? `${busInfo.busNumber} • ${busInfo.status ?? "Active"}` : "Not assigned", path: "/parent/bus"     },
-    { icon: <Glyph e="✅" />, label: "Attendance",    sub: attendance ? `${attendance.percentage}% present` : "View attendance", path: "/parent/attendance" },
-    { icon: <Glyph e="📅" />, label: "School Calendar", sub: "Upcoming events",                                                         path: "/parent/calendar"      },
-  ];
+  // Attendance
+  const a = att.state === "ok" ? att.data.summary : null;
+  const attPct = a?.total ? parseFloat(a.percentage) : null;
+  const r = latestResult(res.state === "ok" ? res.data.data : []);
+  const { latest, overall } = r;
+  // Fees
+  const f = fees.state === "ok" ? fees.data : null;
+  const due = f?.summary?.totalDue ?? 0;
+  const feeTotal = f?.summary?.total ?? 0;
+  // Bus
+  const b = bus.state === "ok" ? bus.data.data : null;
+  const actions = [
+    ["/parent/homework", "Homework", BookOpenCheck], ["/parent/chat", "Chat with teachers", MessageCircle], ["/parent/apply-leave", "Apply for leave", NotebookPen],
+    ["/parent/fee", "Fee Status", CreditCard], ["/parent/result", "Results", Trophy],
+    ["/parent/attendance", "Attendance", CalendarCheck], ["/parent/calendar", "School calendar", CalendarDays],
+  ].filter(([path]) => allowed(path));
 
   return (
-    <div className="ea-home" style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", fontFamily: "inherit" }}>
+    <div className="ea-home dx dx-page">
+      <TopBar title="Home" />
 
-      {/* Header */}
-      <div className="ea-pd-band" style={{ background: look.header, padding: "20px 20px 20px", flexShrink: 0 }}>
-        <SchoolStrip user={user} theme={theme} look={look} />
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div>
-            <div style={{ fontSize: 12, color: look.muted, fontWeight: 600 }}>
-              {getGreeting()}
-            </div>
-            <h1 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: look.text }}>
-              {user?.name ?? "Parent"}
-            </h1>
+      <Welcome user={user} eyebrow={greeting()} title={`Welcome back, ${first}`}
+        lead={kids.state === "loading" ? "Loading your children…" : child ? `Here is how ${child.name.split(" ")[0]} is doing.` : undefined}>
+        {kids.state === "error" && <Note tone="bad" title="Could not load your children" action={<button type="button" onClick={kids.reload}>Try again</button>}>Please check your connection.</Note>}
+        {kids.state === "missing" && <Note title="No child is linked to this account yet">Please ask the school office to link your child to your mobile number or email.</Note>}
+        {child && (list.length > 1
+          ? <ChildTabs kids={list} current={child} onPick={pick} />
+          : <p className="dx-child-line"><b>{child.name}</b> · Class {child.class}-{child.section}{child.rollNumber ? ` · Roll ${child.rollNumber}` : ""}</p>)}
+      </Welcome>
+
+      {child && (
+        <MetricGrid label={`Summary for ${child.name}`}>
+          <Metric icon={Percent} label="Attendance" to="/parent/attendance"
+            value={att.state === "loading" ? "…" : attPct === null ? "—" : `${attPct}%`}
+            sub={att.state === "error" ? "Could not load" : a?.total ? `${a.present + (a.late || 0)} of ${a.total} school days` : "No attendance marked yet"}
+            meter={attPct ?? undefined} tone={attPct === null ? undefined : attPct >= 85 ? "good" : attPct >= 75 ? "warn" : "bad"} />
+          {allowed("/parent/result") && (
+            <Metric icon={LineChart} label="Academic performance" to="/parent/result"
+              value={res.state === "loading" ? "…" : overall === null ? "—" : `${overall}%`}
+              sub={res.state === "error" ? "Could not load" : overall === null ? "No results published yet" : latest} meter={overall ?? undefined} />
+          )}
+          {allowed("/parent/result") && (
+            <Metric icon={GraduationCap} label="Current grade" to="/parent/result" tone="orange"
+              value={res.state === "loading" ? "…" : overall === null ? "—" : r.grade} sub={overall === null ? undefined : `Overall in ${latest}`} />
+          )}
+          {allowed("/parent/fee") && (
+            <Metric icon={CreditCard} label="Fees" to="/parent/fee"
+              value={fees.state === "loading" ? "…" : fees.state === "error" ? "—" : !feeTotal ? "—" : due > 0 ? `${rupees(due)} due` : "All paid"}
+              sub={fees.state === "error" ? "Could not load" : !feeTotal ? "No fees assigned yet" : `of ${rupees(feeTotal)} this year`}
+              tone={!feeTotal ? undefined : due > 0 ? "warn" : "good"} />
+          )}
+          {b && (
+            <Metric icon={Bus} label="School bus" to="/parent/bus" tone={busState(b).live ? "orange" : undefined} value={busState(b).text} sub={[b.busNumber, b.routeName].filter(Boolean).join(" · ")} />
+          )}
+        </MetricGrid>
+      )}
+
+      {child && (
+        <div className="dx-grid">
+          <div className="dx-col">
+            <SchedulePanel load={table} sunday={day === "Sunday"} title={`Today's schedule${day === "Sunday" ? "" : ` · ${day}`}`} to="/parent/calendar" action="School calendar"
+              empty={`The school has not published periods for Class ${child.class}-${child.section} on ${day}.`} />
+            <HomeworkPanel load={hw} to="/parent/homework" title="Homework" />
+            <ResultsPanel load={res} result={r} to="/parent/result" />
+            <UpcomingPanel events={events} exams={exams} fees={fees} to="/parent/calendar" />
           </div>
-          <button type="button" aria-label={notices.length > 0 ? `Notifications, ${notices.length} new` : "Notifications"}
-            onClick={() => navigate("/parent/notifications")}
-            style={{ width: 38, height: 38, borderRadius: "50%", background: look.glass, border: look.border, cursor: "pointer", fontSize: 16, position: "relative" }}>
-            <Glyph e="🔔" />
-            {notices.length > 0 && (
-              <div style={{ position: "absolute", top: -4, right: -4, minWidth: 18, height: 18, background: "#FF5252", borderRadius: "50%", border: "2px solid white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: "white", padding: "0 4px" }}>{notices.length}</div>
+          <div className="dx-col">
+            <QuickActions items={actions} />
+            {hasFeature(user, "ai_assistant") && (
+              <AssistantCard title="Ask EduAmigo" text={`Ask about ${child.name.split(" ")[0]}'s attendance, fees, results or timetable, in your own words.`}
+                prompts={["How is attendance this month?", "Are any fees pending?", "When is the next exam?"]} />
             )}
-          </button>
+            <BusPanel bus={b} to="/parent/bus" />
+            <NoticesPanel load={notes} to="/parent/notifications" />
+          </div>
         </div>
-
-        <ChildSwitcher children={children} current={child} theme={theme} onChange={() => { setLoading(true); fetchAll(); }} />
-
-        {/* Child Card */}
-        <div className="ea-pd-childcard" style={{ background: look.glass, border: look.border, borderRadius: 16, padding: 14, marginTop: 14, backdropFilter: "blur(10px)" }}>
-          <div style={{ fontSize: 12, color: look.muted, marginBottom: 2 }}>Monitoring</div>
-
-          {loading ? (
-            <div style={{ fontSize: 16, color: look.muted }}>Loading...</div>
-          ) : child ? (
-            <>
-              <div>
-                <div style={{ fontSize: 17, fontWeight: 800, color: look.text }}>{child.name}</div>
-                <div style={{ fontSize: 12, color: look.muted, marginTop: 2 }}>
-                  Class {child.class}-{child.section} • Roll #{child.rollNumber}
-                </div>
-              </div>
-
-              {/* Clickable Stats */}
-              <div className="ea-pd-idstats" style={{ display: "flex", gap: 8, marginTop: 12 }}>
-                {[
-                  { val: attendance ? `${attendance.percentage}%` : "—", label: "Attendance", path: "/parent/attendance" },
-                  { val: results?.percentage    ? `${results.percentage}%`    : "—", label: "Marks",      path: "/parent/result"     },
-                  { val: results?.grade         ?? "—",                               label: "Grade",      path: "/parent/result"     },
-                  { val: child.feeStatus        ?? "—",                               label: "Fee",        path: "/parent/fee"        },
-                ].filter(visibleFor(user)).map((s) => (
-                  <HeroStat key={s.label} value={s.val} label={s.label} look={look} onClick={() => navigate(s.path)} />
-                ))}
-              </div>
-            </>
-          ) : (
-            <div style={{ fontSize: 14, color: look.muted }}>
-              No child linked to this account
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Body */}
-      <div className="ea-home__body ea-pd-body ea-pd-dash" style={{ flex: 1, overflowY: "auto", padding: "16px 16px 80px" }}>
-
-        {/* Quick Tiles */}
-        <div className="ea-tile-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
-          {tiles.filter(visibleFor(user)).map((t) => (
-            <button key={t.label} onClick={() => navigate(t.path)}
-              style={{ background: "var(--card)", borderRadius: 14, padding: 14, border: "none", cursor: "pointer", textAlign: "left", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-              <div style={{ width: 40, height: 40, borderRadius: 12, background: "var(--brand-soft)", color: "var(--brand-text)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, marginBottom: 10 }}>{t.icon}</div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text)" }}>{t.label}</div>
-              <div style={{ fontSize: 11, color: "var(--subtext)", marginTop: 2 }}>{t.sub}</div>
-            </button>
-          ))}
-        </div>
-
-        {/* Upcoming Exams for the selected child (desktop: the main column) */}
-        <section className="ea-pd-main">
-          {child && <UpcomingExams query={childQuery()} reloadKey={child._id} />}
-        </section>
-
-        {/* Notices (desktop: the side column) */}
-        <section className="ea-pd-side">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-          <h3 className="ea-section-title"><Glyph e="🔔" /> Notices</h3>
-          <span onClick={() => navigate("/parent/notifications")}
-            style={{ fontSize: 13, color: "var(--brand-text)", fontWeight: 700, cursor: "pointer" }}>View all →</span>
-        </div>
-
-        <div style={{ background: "var(--card)", borderRadius: 14, padding: "4px 12px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-          {notices.length === 0 ? (
-            <div style={{ padding: "16px 0", textAlign: "center", color: "var(--subtext)", fontSize: 13 }}>
-              No notices at the moment
-            </div>
-          ) : (
-            notices.map((n, i) => (
-              <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "12px 0", borderBottom: i < notices.length - 1 ? "1px solid var(--ea-line)" : "none" }}>
-                <div style={{ width: 8, height: 8, borderRadius: "50%", background: theme.primary, marginTop: 5, flexShrink: 0 }} />
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text)" }}>{n.title}</div>
-                  <div style={{ fontSize: 11, color: "var(--subtext)", marginTop: 2 }}>
-                    {n.createdAt ? new Date(n.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : ""}
-                  </div>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-        </section>
-      </div>
+      )}
 
       <BottomNav role="parent" />
-
     </div>
   );
 }

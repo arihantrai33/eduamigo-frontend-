@@ -130,7 +130,7 @@ export default function YearEnd() {
       {tab === "year" && (
         <>
           <div style={{ ...card, display: "flex", gap: 12, alignItems: "flex-end", flexWrap: "wrap" }}>
-            <div style={{ fontSize: 13, color: "#475569" }}>Current session: <strong>{current || "—"}</strong></div>
+            <div style={lbl}>Current session<div style={{ ...input, display: "flex", alignItems: "center", background: "var(--ea-hover)", fontWeight: 700 }}>{current || "—"}</div></div>
             <label style={lbl}>Move students into
               <select style={input} value={toSession} onChange={(e) => { setToSession(e.target.value); setPreview(null); }}>
                 <option value="">Choose a session</option>
@@ -138,7 +138,7 @@ export default function YearEnd() {
               </select>
             </label>
             <button style={btn} disabled={!toSession || busy} onClick={loadPreview}>Show students</button>
-            {!upcoming.length && <span style={{ fontSize: 12, color: "#B45309" }}>Create next year's session in <a href="/admin/academic" onClick={(e) => { e.preventDefault(); navigate("/admin/academic"); }}>School Setup</a> first.</span>}
+            {!upcoming.length && <span style={{ fontSize: 12.5, color: "#B45309", alignSelf: "center" }}>Create next year's session in <a style={{ color: "var(--brand-text)", fontWeight: 600 }} href="/admin/academic" onClick={(e) => { e.preventDefault(); navigate("/admin/academic"); }}>School Setup</a> first.</span>}
           </div>
 
           {result && <div style={{ ...card, borderColor: "#86EFAC", background: "#F0FDF4", color: "#166534", fontSize: 13 }}><Glyph e="✅" /> {result.message}{result.data.skipped ? `; ${result.data.skipped} were already in ${toSession}` : ""}. New roll numbers were given in every class.</div>}

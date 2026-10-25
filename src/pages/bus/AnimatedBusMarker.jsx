@@ -53,52 +53,60 @@ export function AnimatedBusMarker({ position, route, icon, children, onMove }) {
   );
 }
 
-// Keeps the bus in view like a navigation app: the map moves only when the bus nears the edge, stops following when the person
-// drags the map, and a button brings it back.
-export function FollowBus({ position, zoom = 16 }) {
+// Keeps the bus in view like a navigation app: the map moves only when the bus leaves the free part of the map (the part not under
+// the title bar or the stops panel, given as `inset` in pixels), puts it in the middle of that free part, stops following when the
+// person drags the map, and a button brings it back.
+export function FollowBus({ position, inset = { top: 0, right: 0, bottom: 0, left: 0 }, zoom = 16 }) {
   const map = useMap();
   const following = useRef(true);
   const programmatic = useRef(false);
   const lastPos = useRef(null);
-
   const buttonRef = useRef(null);
   const syncButton = () => { if (buttonRef.current) buttonRef.current.style.display = following.current ? "none" : "flex"; };
+
+  // The map centre that puts `p` in the middle of the free part.
+  const centreFor = (p, z) => {
+    const dx = (inset.left - inset.right) / 2;
+    const dy = (inset.top - inset.bottom) / 2;
+    return map.unproject(map.project([p.lat, p.lng], z).subtract([dx, dy]), z);
+  };
+  const go = (p, z, animate = true) => {
+    programmatic.current = true;
+    map.setView(centreFor(p, z), z, { animate, duration: 1 });
+    setTimeout(() => { programmatic.current = false; }, 1300);
+  };
 
   useEffect(() => {
     const stop = () => { if (!programmatic.current) following.current = false; syncButton(); };
     map.on("dragstart", stop);
     map.on("zoomstart", stop);
     return () => { map.off("dragstart", stop); map.off("zoomstart", stop); };
-  }, [map]);
+  }, [map]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!position) return;
+    const first = !lastPos.current;
     lastPos.current = position;
     if (!following.current) return;
-    const bounds = map.getBounds().pad(-0.3);
-    if (!bounds.contains([position.lat, position.lng]) || map.getZoom() < 14) {
-      programmatic.current = true;
-      map.setView([position.lat, position.lng], Math.max(map.getZoom(), zoom), { animate: true, duration: 1 });
-      setTimeout(() => { programmatic.current = false; }, 1300);
-    }
+    const size = map.getSize();
+    const pt = map.latLngToContainerPoint([position.lat, position.lng]);
+    const margin = 48;
+    const inside = pt.x > inset.left + margin && pt.x < size.x - inset.right - margin && pt.y > inset.top + margin && pt.y < size.y - inset.bottom - margin;
+    if (first || !inside || map.getZoom() < 14) go(position, Math.max(map.getZoom(), zoom), !first);
   }, [position?.lat, position?.lng]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const recenter = () => {
     const p = lastPos.current;
     if (!p) return;
     following.current = true;
-    programmatic.current = true;
-    map.setView([p.lat, p.lng], Math.max(map.getZoom(), zoom), { animate: true });
-    setTimeout(() => { programmatic.current = false; }, 900);
+    go(p, Math.max(map.getZoom(), zoom));
     syncButton();
   };
 
   return createPortal(
-    <button ref={buttonRef} type="button" onClick={recenter} aria-label="Follow the bus"
-      style={{ display: "none", position: "absolute", right: 12, bottom: 96, zIndex: 1000, width: 44, height: 44, borderRadius: "50%", border: "1px solid var(--ea-edge)", background: "var(--ea-surface)", color: "var(--brand)", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 10px rgba(0,0,0,0.2)", cursor: "pointer" }}>
+    <button ref={buttonRef} type="button" onClick={recenter} aria-label="Follow the bus" className="ea-bus-follow" style={{ display: "none" }}>
       <LocateFixed size={20} aria-hidden="true" />
     </button>,
     map.getContainer(),
   );
 }
-

@@ -331,6 +331,19 @@ export default function AskWidget() {
     setBusy(false);
   }, [busy, user]);
 
+  // "Ask EduAmigo" buttons elsewhere (the home dashboards) open this panel, optionally with a first question typed as the person's own.
+  useEffect(() => {
+    const onAsk = (e) => {
+      if (!enabled) return;
+      setTab("chat");
+      setOpen(true);
+      const prompt = e.detail?.prompt;
+      if (prompt) setTimeout(() => send(prompt), 60);
+    };
+    window.addEventListener("eduamigo:ask", onAsk);
+    return () => window.removeEventListener("eduamigo:ask", onAsk);
+  }, [enabled, send]);
+
   const scrollEnd = useCallback(() => endRef.current?.scrollIntoView({ block: "end" }), []);
   const revealNext = useCallback((id, total) => setTurns((t) => t.map((x) => {
     if (x.id !== id) return x;

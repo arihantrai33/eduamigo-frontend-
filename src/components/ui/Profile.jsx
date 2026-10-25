@@ -1,5 +1,6 @@
 import { ChevronRight } from "lucide-react";
 import Avatar from "./Avatar";
+import AvatarPicker from "./AvatarPicker";
 
 // The parts of a profile screen (student, teacher, parent; design plan §2.6, B12): a header card on the surface,
 // a list of details and a menu of actions. The same on every portal and in light and dark mode.
@@ -7,10 +8,10 @@ import Avatar from "./Avatar";
 //   <InfoList rows={[{ label: "Email", value: "riya@school.in" }]} />
 //   <MenuList items={[{ icon: <Bell />, label: "Notifications", sub: "View all notifications", onClick }]} />
 
-export function ProfileCard({ name, photo, meta, role, children }) {
+export function ProfileCard({ name, photo, meta, role, editablePhoto = false, children }) {
   return (
     <section className="ea-card ea-profile-card" aria-label="Profile">
-      <Avatar name={name} photo={photo} size="lg" />
+      {editablePhoto ? <AvatarPicker name={name} photo={photo} /> : <Avatar name={name} photo={photo} size="lg" />}
       <h2 className="ea-profile-card__name">{name}</h2>
       {meta && <p className="ea-profile-card__meta">{meta}</p>}
       {role && <span className="ea-badge ea-badge--brand">{role}</span>}

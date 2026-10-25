@@ -1,6 +1,6 @@
 import {
   House, Bus, BookOpen, MessageCircle, User, CalendarCheck, BarChart3, CreditCard, CalendarDays,
-  Bell, Sparkles, Upload, ClipboardList, GraduationCap, Clock, Users, Calendar,
+  Bell, Sparkles, Upload, ClipboardList, GraduationCap, Clock, Users, Calendar, BookOpenCheck,
 } from "lucide-react";
 
 // One place for each portal's navigation. The bottom bar (phones and tablets) keeps the five tabs and labels
@@ -14,7 +14,7 @@ export const PORTAL_NAV = {
       { icon: House, label: "Home", path: "/student/home" },
       { icon: Bus, label: "Bus", path: "/student/bus" },
       // Results and Learning AI are part of Learning (see the sidebar), so the Learn tab is the current one on those screens.
-      { icon: BookOpen, label: "Learn", path: "/student/notes", also: ["/student/result", "/student/learn"] },
+      { icon: BookOpen, label: "Learn", path: "/student/notes", also: ["/student/result", "/student/learn", "/student/homework"] },
       { icon: MessageCircle, label: "Chat", path: "/student/chat" },
       { icon: User, label: "Me", path: "/student/profile" },
     ],
@@ -25,6 +25,7 @@ export const PORTAL_NAV = {
       ] },
       { title: "Learning", items: [
         { icon: Clock, label: "Timetable", path: "/student/timetable" },
+        { icon: BookOpenCheck, label: "Homework", path: "/student/homework" },
         { icon: BookOpen, label: "Notes", path: "/student/notes" },
         { icon: Sparkles, label: "Learning AI", path: "/student/learn" },
         { icon: BarChart3, label: "Results", path: "/student/result" },
@@ -57,6 +58,7 @@ export const PORTAL_NAV = {
       { title: "Classes", items: [
         { icon: CalendarCheck, label: "Take Attendance", path: "/teacher/attendance" },
         { icon: ClipboardList, label: "Enter Marks", path: "/teacher/marks" },
+        { icon: BookOpenCheck, label: "Homework", path: "/teacher/homework" },
         { icon: Upload, label: "Upload Notes", path: "/teacher/upload" },
         { icon: Clock, label: "My Timetable", path: "/teacher/timetable" },
         { icon: GraduationCap, label: "My Students", path: "/teacher/students" },
@@ -84,6 +86,7 @@ export const PORTAL_NAV = {
         { icon: Bell, label: "Alerts", path: "/parent/notifications" },
       ] },
       { title: "My child", items: [
+        { icon: BookOpenCheck, label: "Homework", path: "/parent/homework" },
         { icon: CalendarCheck, label: "Attendance", path: "/parent/attendance" },
         { icon: BarChart3, label: "Results", path: "/parent/result" },
         { icon: CreditCard, label: "Fee Status", path: "/parent/fee" },

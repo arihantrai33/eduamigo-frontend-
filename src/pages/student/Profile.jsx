@@ -127,7 +127,7 @@ export default function Profile() {
       <PortalHeader title="My Profile" onBack={() => navigate(-1)} />
       <div className="ea-pd-body" style={{ padding: 16 }}>
         <div className="ea-profile"><div className="ea-profile__aside">
-        <ProfileCard name={name} photo={profile?.photo} meta={[classText, profile?.email].filter(Boolean).join(" • ")} role="Student" />
+        <ProfileCard name={name} photo={profile?.photo} editablePhoto meta={[classText, profile?.email].filter(Boolean).join(" • ")} role="Student" />
         <StatGrid label="My figures">
           <StatCard label="Attendance" value={attendance?.percentage ? `${attendance.percentage}%` : "—"} />
           <StatCard label="Marks" value={avgMarks ? `${avgMarks}%` : "—"} />

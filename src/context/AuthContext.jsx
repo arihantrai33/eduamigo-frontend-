@@ -16,12 +16,15 @@ function readStoredUser() {
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(readStoredUser);
-  const loading = false;
+  // A stored session is checked with the server once at start (permissions may have changed since the last visit); screens that
+  // decide access wait for that answer instead of acting on what was saved. No stored session: nothing to wait for.
+  const [settled, setSettled] = useState(() => !readStoredUser());
 
   const login = useCallback((userData, token) => {
     localStorage.setItem("eduamigo_user", JSON.stringify({ ...userData, token }));
     localStorage.setItem("token", token);
     setUser({ ...userData, token });
+    setSettled(true);
   }, []);
 
   const updateUser = useCallback((patch, token) => {
@@ -37,10 +40,11 @@ export function AuthProvider({ children }) {
   // Plan, features, permissions, billing state and branding can change after sign-in (the school
   // buys an add-on, renews, changes its logo), so they are refreshed from the server on every app start.
   const hasSession = !!user?.token;
+  const loading = hasSession && !settled;
   useEffect(() => {
     if (!hasSession) return;
     const API = import.meta.env.VITE_API_URL;
-    fetch(`${API}/users/profile`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } })
+    fetch(`${API}/users/profile`, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }, signal: AbortSignal.timeout(6000) })
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
         const p = data?.data;
@@ -48,10 +52,11 @@ export function AuthProvider({ children }) {
         updateUser({
           permissions: p.permissions, features: p.features, plan: p.plan, subscription: p.subscription,
           branding: p.branding, schoolCode: p.schoolCode, school: p.school, mustChangePassword: p.mustChangePassword,
-          supportSession: !!p.supportSession,
+          supportSession: !!p.supportSession, avatar: p.avatar,
         });
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setSettled(true));
   }, [hasSession, updateUser]);
 
   const logout = useCallback(() => {

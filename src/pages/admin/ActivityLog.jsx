@@ -78,7 +78,7 @@ export default function ActivityLog() {
 
       <div style={{ ...card, padding: 0, overflow: "hidden" }}>
         {loading && <Skeleton rows={3} label="Loading" />}
-        {!loading && rows.length === 0 && <EmptyState plain icon={History} title="No activity found" text="Nothing matches these filters. Clear them or choose other dates." />}
+        {!loading && rows.length === 0 && <EmptyState plain icon={History} title="No activity found" text="Nothing has been recorded for this selection yet. Widen the dates or choose all activity." />}
         {!loading && rows.map((r) => (
           <div key={r._id} style={{ borderBottom: "1px solid #F1F5F9" }}>
             <button onClick={() => setOpen(open === r._id ? null : r._id)} style={rowBtn}>

@@ -7,9 +7,11 @@ import BrandTheme from './components/BrandTheme'
 import AskWidget from './components/AskWidget'
 import ErrorBoundary from './components/ErrorBoundary'
 import { hasFeature, FEATURE_OF_PATH } from './utils/features'
+import { usesOfficePortal } from './utils/permissions'
 import PortalShell from './layout/PortalShell'
 import NativeBridge from './native/NativeBridge'
 import { portalOf } from './layout/portalNav'
+import { wantsLanding } from './pages/landing/wantsLanding'
 
 import Glyph from "./components/Glyph";
 
@@ -20,6 +22,9 @@ function ScreenLoading() {
 
 // Screens load when first opened, so a parent does not download the admin screens (and so on).
 const Splash = lazy(() => import('./pages/Splash'))
+// The public website: opens at "/" for first-time visitors in a browser (see pages/landing/wantsLanding.js).
+const Landing = lazy(() => import('./pages/landing/Landing'))
+const Privacy = lazy(() => import('./pages/landing/Privacy'))
 const Login = lazy(() => import('./pages/Login'))
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'))
 const SupportLogin = lazy(() => import('./pages/SupportLogin'))
@@ -33,6 +38,8 @@ const StudentFee = lazy(() => import('./pages/student/Fee'))
 const StudentBus = lazy(() => import('./pages/student/Bus'))
 const Timetable = lazy(() => import('./pages/student/Timetable'))
 const Notes = lazy(() => import('./pages/student/Notes'))
+const StudentHomework = lazy(() => import('./pages/homework/StudentHomework'))
+const TeacherHomework = lazy(() => import('./pages/homework/TeacherHomework'))
 const Learn = lazy(() => import('./pages/student/learn/Learn'))
 const StudentApplyLeave = lazy(() => import('./pages/student/ApplyLeave'))
 const StudentNotifications = lazy(() => import('./pages/student/Notifications'))
@@ -108,7 +115,7 @@ function LoadingScreen() {
 }
 
 // Where each role starts. Opening another role's URL sends the user back to their own portal.
-const HOME_FOR_ROLE = { student: '/student/home', teacher: '/teacher/home', parent: '/parent/home', admin: '/admin', accountant: '/admin' }
+const HOME_FOR_ROLE = { student: '/student/home', teacher: '/teacher/home', parent: '/parent/home', admin: '/admin', accountant: '/admin', staff: '/admin' }
 
 function Protected({ children, role }) {
   const { user, loading } = useAuth()
@@ -116,9 +123,11 @@ function Protected({ children, role }) {
   if (loading) return <LoadingScreen />
   if (!user) return <Navigate to="/login" replace />
   // The admin portal is shared by all school staff roles; menus inside it are permission-filtered.
-  const allowed = role === 'admin' ? ['admin', 'accountant'] : [role]
-  if (role && !allowed.includes(user.role)) return <Navigate to={HOME_FOR_ROLE[user.role] || '/login'} replace />
-  if (user.mustChangePassword) return <Navigate to="/change-password" replace />
+  const allowed = role === 'admin' ? ['admin', 'accountant', 'staff'] : [role]
+  const viaExtraDuties = role === 'admin' && usesOfficePortal(user) // a teacher given office duties
+  if (role && !allowed.includes(user.role) && !viaExtraDuties) return <Navigate to={HOME_FOR_ROLE[user.role] || '/login'} replace />
+  // A support session looks at the school as its admin does; it never has to (or can) set that person's password.
+  if (user.mustChangePassword && !user.supportSession) return <Navigate to="/change-password" replace />
   if (!hasFeature(user, FEATURE_OF_PATH[pathname])) return <FeatureUnavailable home={HOME_FOR_ROLE[user.role] || '/'} />
   return children
 }
@@ -156,6 +165,9 @@ function AppRoutes() {
         <Route path="/student/bus"           element={<Protected role="student"><StudentBus /></Protected>} />
         <Route path="/student/timetable"     element={<Protected role="student"><Timetable /></Protected>} />
         <Route path="/student/notes"         element={<Protected role="student"><Notes /></Protected>} />
+        <Route path="/student/homework"      element={<Protected role="student"><StudentHomework /></Protected>} />
+        <Route path="/parent/homework"       element={<Protected role="parent"><StudentHomework role="parent" /></Protected>} />
+        <Route path="/teacher/homework"      element={<Protected role="teacher"><TeacherHomework /></Protected>} />
         <Route path="/student/learn"         element={<Protected role="student"><Learn /></Protected>} />
         {/* The old "Revise with AI" screen is now the AI Tutor in Learning AI; old links keep working. */}
         <Route path="/student/revise"        element={<Navigate to="/student/learn" replace />} />
@@ -205,8 +217,19 @@ function AppRoutes() {
   )
 }
 
+const AUTH_PAGE = /^\/(login|select-school|forgot-password|change-password|support|driver|s\/[^/]+)\/?$/
+
 function AppLayout() {
   const location2 = useLocation()
+  // Dark mode is switched on in the student portal's settings and the parent screens are dark-ready; the teacher and school-office screens are not. A saved dark choice must not leak into the other
+  // portals, where it would draw a half-dark page, so the theme attribute is applied on student pages and removed elsewhere.
+  useEffect(() => {
+    const p = location2.pathname
+    let dark = false
+    try { dark = localStorage.getItem('darkMode') === 'true' } catch { /* storage blocked: stay light */ }
+    if (dark && (p.startsWith('/student') || p.startsWith('/parent') || p === '/change-password' || p === '/report-card')) document.documentElement.setAttribute('data-theme', 'dark')
+    else document.documentElement.removeAttribute('data-theme')
+  }, [location2.pathname])
   useEffect(() => {
     if (location2.pathname.startsWith("/admin")) {
       document.body.classList.add("admin-body")
@@ -216,6 +239,24 @@ function AppLayout() {
   }, [location2.pathname])
   const location = useLocation()
   const isAdmin = location.pathname.startsWith('/admin')
+  // The public website scrolls with the page and uses the full width, so it is outside the centred sign-in column.
+  // "/welcome" is the website for anyone (the sign-in screens link to it); "/" shows it only to first-time web visitors.
+  if (location.pathname === '/privacy') {
+    return (
+      <Suspense fallback={<div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}><span className="ea-spinner" role="status" aria-label="Loading" /></div>}>
+        <Privacy />
+      </Suspense>
+    )
+  }
+  if (location.pathname === '/welcome' || (location.pathname === '/' && wantsLanding())) {
+    return (
+      <Suspense fallback={<div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}><span className="ea-spinner" role="status" aria-label="Loading" /></div>}>
+        <Landing />
+      </Suspense>
+    )
+  }
+  // Sign-in, school selection and forgot password lay themselves out over the whole page (pages/auth/AuthShell).
+  if (AUTH_PAGE.test(location.pathname)) return <AppRoutes />
   if (isAdmin) {
     // One frame inside the screen's safe area (below the iPhone status bar); see .ea-admin-frame.
     return (

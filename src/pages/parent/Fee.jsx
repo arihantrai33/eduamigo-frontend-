@@ -181,8 +181,8 @@ export default function ParentFee() {
                       {[
                         f.academicYear,
                         f.status === "Paid"
-                          ? `Paid on ${f.paidDate ? new Date(f.paidDate).toLocaleDateString("en-IN") : "—"}`
-                          : `Due: ${f.dueDate ? new Date(f.dueDate).toLocaleDateString("en-IN") : "—"}`,
+                          ? `Paid on ${f.paidDate ? new Date(f.paidDate).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "—"}`
+                          : `Due: ${f.dueDate ? new Date(f.dueDate).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "—"}`,
                       ].filter(Boolean).join(" · ")}
                     </div>
                     <ReceiptLinks fee={f} />

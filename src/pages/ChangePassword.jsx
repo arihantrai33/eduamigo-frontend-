@@ -4,9 +4,8 @@ import { useAuth } from "../context/AuthContext";
 import { toast, errorMessage } from "../utils/toast";
 import FieldError from "../components/ui/FieldError";
 import { useFieldErrors } from "../utils/fieldErrors";
-import SchoolHero from "../components/SchoolHero";
+import AuthShell from "./auth/AuthShell";
 import { getSavedSchool } from "../utils/school";
-import { userTheme } from "../utils/theme";
 
 const API = import.meta.env.VITE_API_URL;
 const FIELDS = { currentPassword: "cp-current", newPassword: "cp-new", confirm: "cp-confirm" };
@@ -42,7 +41,7 @@ export default function ChangePassword() {
       if (!res.ok || !data.success) throw new Error(data.message || "Could not update password");
       updateUser({ mustChangePassword: false }, data.token);
       toast.success("Password updated");
-      navigate(["admin", "accountant"].includes(user.role) ? "/admin/home" : user.role === "driver" ? "/driver" : `/${user.role}/home`, { replace: true });
+      navigate(["admin", "accountant", "staff"].includes(user.role) ? "/admin/home" : user.role === "driver" ? "/driver" : `/${user.role}/home`, { replace: true });
     } catch (err) {
       setError(errorMessage(err));
     } finally {
@@ -54,14 +53,12 @@ export default function ChangePassword() {
   const input = { width: "100%" };
   const label = { display: "block", margin: "14px 0 6px" };
 
-  // The sign-in split in the school's colours, like "Forgot password".
+  // The same frame as sign-in, in the school's own colours.
   return (
-    <div className="ea-auth" style={{ minHeight: "100vh", height: "100vh", display: "flex", flexDirection: "column", background: "var(--card)", fontFamily: "inherit", overflowY: "auto" }}>
-      <SchoolHero school={getSavedSchool()} theme={userTheme(user)} compact />
-      <div style={{ flex: 1, background: "var(--card)", padding: "4px 22px 32px" }}>
+    <AuthShell school={getSavedSchool()}>
       <form onSubmit={submit} noValidate>
-        <h2 style={{ fontSize: 19, fontWeight: 700, margin: "0 0 6px", color: "var(--text)" }}>{forced ? "Set a new password" : "Change password"}</h2>
-        <p style={{ fontSize: 13, color: "var(--subtext)", margin: 0, lineHeight: 1.55 }}>
+        <h1 className="au-h1">{forced ? "Set a new password" : "Change password"}</h1>
+        <p className="au-sub">
           {forced ? "Your account uses a temporary password. Please choose your own password to continue." : "Choose a strong password you do not use elsewhere."}
         </p>
 
@@ -77,16 +74,15 @@ export default function ChangePassword() {
         <input id="cp-confirm" type="password" autoComplete="new-password" className="ea-input" style={input} value={form.confirm} onChange={set("confirm")} required {...v.invalid("confirm")} />
         <FieldError id={v.errorId("confirm")}>{v.errors.confirm}</FieldError>
 
-        {error && <div role="alert" style={{ marginTop: 12, fontSize: 13, color: "#B91C1C" }}>{error}</div>}
+        {error && <div className="au-alert au-alert--bad" role="alert" style={{ marginTop: 12 }}>{error}</div>}
 
-        <button type="submit" disabled={saving} className="ea-btn ea-btn--primary" style={{ marginTop: 18, width: "100%", minHeight: 48, fontSize: 15 }}>
+        <button type="submit" disabled={saving} className="au-btn" style={{ marginTop: 18 }}>
           {saving ? "Saving..." : "Update password"}
         </button>
-        <button type="button" onClick={() => { logout(); navigate("/login", { replace: true }); }} style={{ marginTop: 10, width: "100%", padding: 10, border: "none", background: "none", color: "var(--subtext)", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+        <button type="button" className="au-btn au-btn--ghost" onClick={() => { logout(); navigate("/login", { replace: true }); }} style={{ marginTop: 10 }}>
           Sign out
         </button>
       </form>
-      </div>
-    </div>
+    </AuthShell>
   );
 }

@@ -125,7 +125,7 @@ export default function EventCalendar() {
     <div style={{ fontFamily: "inherit" }}>
       {/* Header */}
       <div style={{ marginBottom:"1.25rem" }}>
-        <PageHeader title="Event Calendar" subtitle={`${events.length} events this month`}
+        <PageHeader title="Event Calendar" subtitle={`${events.length} ${events.length === 1 ? "event" : "events"} this month`}
           actions={<button type="button" className="ea-btn ea-btn--primary" onClick={() => setShowForm(true)}><Plus size={16} aria-hidden="true" /> Add Event</button>} />
       </div>
 
@@ -224,7 +224,7 @@ export default function EventCalendar() {
             <div style={{ fontSize:15, fontWeight:800, color:"#0F172A", display:"flex", alignItems:"center", gap:8 }}>
               Upcoming events in {MONTHS[currentMonth]}
             </div>
-            <div style={{ fontSize:12, color:"var(--ea-muted)", fontWeight:600 }}>{allUpcoming.length} events</div>
+            <div style={{ fontSize:12, color:"var(--ea-muted)", fontWeight:600 }}>{allUpcoming.length} {allUpcoming.length === 1 ? "event" : "events"}</div>
           </div>
 
           {loading ? (

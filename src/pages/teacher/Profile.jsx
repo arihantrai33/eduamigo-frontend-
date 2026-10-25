@@ -107,7 +107,7 @@ export default function TeacherProfile() {
       <PortalHeader title="My Profile" onBack={() => navigate(-1)} />
       <div className="ea-pd-body" style={{ padding: 16 }}>
         <div className="ea-profile"><div className="ea-profile__aside">
-        <ProfileCard name={name} photo={teacher?.photo} meta={[teacher?.subjects?.join(" • "), teacher?.email].filter(Boolean).join(" • ")} role="Faculty" />
+        <ProfileCard name={name} photo={teacher?.photo} editablePhoto meta={[teacher?.subjects?.join(" • "), teacher?.email].filter(Boolean).join(" • ")} role="Faculty" />
         <StatGrid columns={3} label="My figures">
           <StatCard label="Classes" value={teacher?.assignedClasses?.length || "—"} />
           <StatCard label="Subjects" value={teacher?.subjects?.length || "—"} />

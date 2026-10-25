@@ -161,7 +161,7 @@ export default function Timetable() {
           </div>
           <div style={{ display:"flex", alignItems:"flex-end" }}>
             <div style={{ fontSize:12, color:"var(--ea-muted)", fontWeight:600 }}>
-              {timetables.length} timetable entries in database
+              {timetables.length} {timetables.length === 1 ? "period" : "periods"} saved
             </div>
           </div>
         </div>

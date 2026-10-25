@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import TeachingAssignments from "../../components/TeachingAssignments";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
@@ -38,7 +39,7 @@ const InfoField = ({ icon: Icon, label, value, accent = "var(--brand)" }) => (
 
 const SectionHeader = ({ title, subtitle }) => (
   <div style={{ marginBottom: 16 }}>
-    <div style={{ fontSize: 13, fontWeight: 700, color: "#0F172A", letterSpacing: "-0.1px" }}>{title}</div>
+    <h2 style={{ margin: 0, fontSize: 13, fontWeight: 700, color: "#0F172A", letterSpacing: "-0.1px" }}>{title}</h2>
     {subtitle && <div style={{ fontSize: 11, color: "var(--ea-muted)", marginTop: 2 }}>{subtitle}</div>}
   </div>
 );
@@ -339,6 +340,12 @@ export default function TeacherProfile() {
                     No classes assigned yet
                   </div>
                 )}
+              </div>
+
+              {/* Teaching assignments */}
+              <div style={{ background: "#fff", border: "1px solid var(--ea-edge)", borderRadius: 16, padding: "24px", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+                <SectionHeader title="Teaching assignments" subtitle="Which subject this teacher teaches in which class" />
+                <TeachingAssignments teacherId={teacher._id} onSaved={fetchTeacher} />
               </div>
 
               {/* Subjects */}

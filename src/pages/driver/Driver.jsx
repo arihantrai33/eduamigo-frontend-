@@ -3,8 +3,8 @@ import { getDriverBus, startTrip as apiStartTrip, endTrip as apiEndTrip, markSto
 import { useDriverTracker } from "./useDriverTracker";
 
 import Glyph from "../../components/Glyph";
-import PlatformHero from "../../components/PlatformHero";
-import { Bus, AlertCircle } from "lucide-react";
+import AuthShell from "../auth/AuthShell";
+import { AlertCircle } from "lucide-react";
 export default function DriverHome() {
   const [token, setToken] = useState(localStorage.getItem("driverToken") || "");
   const [tokenInput, setTokenInput] = useState("");
@@ -116,37 +116,32 @@ export default function DriverHome() {
   // Sign-in with the driver token: the EduAmigo split like "Find your school". The trip screen below keeps its own look.
   if (!token || !busData) {
     return (
-      <div className="ea-auth ea-platform" style={{ minHeight: "100vh", height: "100vh", display: "flex", flexDirection: "column", background: "var(--card)", fontFamily: "inherit", overflowY: "auto" }}>
-        <PlatformHero icon={Bus} title="EduAmigo Driver" subtitle="Enter your driver token to continue" />
-        <div style={{ flex: 1, background: "var(--card)", padding: "16px 22px 40px" }}>
-          <label htmlFor="driver-token" style={{ fontSize: 12, fontWeight: 600, color: "var(--text)", display: "block", marginBottom: 5 }}>Driver token</label>
-          <input
-            id="driver-token" aria-invalid={error ? true : undefined} aria-describedby={error ? "driver-token-error" : undefined}
-            value={tokenInput}
-            onChange={e => setTokenInput(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && handleTokenSubmit()}
-            placeholder="e.g. BUS_01-257868" autoCapitalize="characters" autoComplete="off" spellCheck={false}
-            style={{ width: "100%", padding: "12px 13px", border: "1.5px solid var(--border)", borderRadius: 10, fontSize: 15, color: "var(--text)", boxSizing: "border-box", background: "var(--input)", marginBottom: 12, letterSpacing: 1, fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}
-          />
-          {error && (
-            <div id="driver-token-error" role="alert" style={{ display: "flex", gap: 8, alignItems: "flex-start", background: "#fef2f2", border: "1px solid #fecaca", color: "#B91C1C", borderRadius: 10, padding: "9px 13px", fontSize: 12, marginBottom: 12 }}>
-              <AlertCircle aria-hidden size={16} style={{ flexShrink: 0 }} />{error}
+      <AuthShell>
+        <h1 className="au-h1">Driver sign-in</h1>
+        <p className="au-sub">Enter the driver token the school gave you.</p>
+        <form className="au-form" onSubmit={(e) => { e.preventDefault(); handleTokenSubmit(); }} noValidate>
+          <div className="au-field">
+            <label className="au-label" htmlFor="driver-token">Driver token</label>
+            <div className="au-box">
+              <input id="driver-token" className="au-input" aria-invalid={error ? true : undefined} aria-describedby={error ? "driver-token-error" : undefined}
+                value={tokenInput} onChange={(e) => setTokenInput(e.target.value)}
+                placeholder="e.g. BUS_01-257868" autoCapitalize="characters" autoComplete="off" spellCheck={false}
+                style={{ letterSpacing: 1, fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }} />
             </div>
-          )}
-          <button onClick={handleTokenSubmit} disabled={loading} className="ea-btn ea-btn--primary" style={{ width: "100%", minHeight: 48, fontSize: 15 }}>
-            {loading ? "Verifying..." : "Continue →"}
-          </button>
-        </div>
-      </div>
+          </div>
+          {error && <div id="driver-token-error" className="au-alert au-alert--bad" role="alert"><AlertCircle size={18} aria-hidden />{error}</div>}
+          <button type="submit" className="au-btn" disabled={loading}>{loading ? "Verifying…" : "Continue"}</button>
+        </form>
+      </AuthShell>
     );
   }
 
   return (
     <div style={{ minHeight: "100vh", background: "linear-gradient(160deg, #0f172a 0%, #1e3a5f 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "inherit", padding: "24px" }}>
-      <div style={{ width: "80px", height: "80px", background: "rgba(255,255,255,0.08)", borderRadius: "24px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "40px", marginBottom: "16px", border: "1px solid rgba(255,255,255,0.1)" }}><Glyph e="🚌" /></div>
+      <div style={{ width: "80px", height: "80px", background: "rgba(255,255,255,0.08)", borderRadius: "24px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "40px", marginBottom: "16px", color: "#fff", border: "1px solid rgba(255,255,255,0.1)" }}><Glyph e="🚌" /></div>
       <div style={{ color: "white", fontSize: "22px", fontWeight: "800", marginBottom: "4px" }}>EduAmigo Driver</div>
-      <div style={{ color: "rgba(255,255,255,0.4)", fontSize: "13px", marginBottom: "8px" }}>{busData.busNumber} — {busData.routeName}</div>
-      <button onClick={forgetToken} disabled={tracking} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.3)", fontSize: "11px", cursor: tracking ? "default" : "pointer", marginBottom: "24px", opacity: tracking ? 0.4 : 1 }}>
+      <div style={{ color: "rgba(255,255,255,0.75)", fontSize: "13px", marginBottom: "8px" }}>{busData.busNumber} — {busData.routeName}</div>
+      <button onClick={forgetToken} disabled={tracking} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.7)", fontSize: "12.5px", textDecoration: "underline", cursor: tracking ? "default" : "pointer", marginBottom: "24px", opacity: tracking ? 0.4 : 1 }}>
         Change Token
       </button>
       <div style={{ background: s.bg, border: `1px solid ${s.dot}40`, borderRadius: "16px", padding: "16px 24px", width: "100%", maxWidth: "320px", marginBottom: "24px", display: "flex", alignItems: "center", gap: "12px" }}>
@@ -215,7 +210,7 @@ export default function DriverHome() {
           End Trip
         </button>
       )}
-      <div style={{ color: "rgba(255,255,255,0.25)", fontSize: "11px", marginTop: "24px", textAlign: "center", maxWidth: "260px" }}>
+      <div style={{ color: "rgba(255,255,255,0.7)", fontSize: "12.5px", lineHeight: 1.5, marginTop: "24px", textAlign: "center", maxWidth: "300px" }}>
         Keep this app open and the phone unlocked during the trip. Your location is shared with the school and the parents of the students on this bus.
       </div>
       <style>{`@keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.4); } }`}</style>

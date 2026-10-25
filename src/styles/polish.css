@@ -1,0 +1,31 @@
+/* Layout refinements applied on top of index.css (kept separate so the shared stylesheet stays as it is).
+   Each rule says what it fixes. Added during the whole-product visual pass. */
+
+/* Desktop sidebar: slightly denser rows, so the whole admin menu (eight groups) is visible without scrolling on a 900 px screen. */
+@media (min-width: 1024px) {
+  .ea-sidebar__nav { padding: 8px 12px 12px; }
+  .ea-sidebar__link { min-height: 34px; font-size: 13.5px; }
+  .ea-sidebar__heading { padding: 2px 12px 4px; }
+}
+
+/* A set of views is as wide as its options, never stretched across the page. */
+.ea-seg { width: fit-content; max-width: 100%; }
+
+/* Website: the hero ends sooner so the next section starts inside the first screen on a laptop (a 96 px gap sat under the buttons). */
+.lp .lp-hero { padding-block-end: clamp(32px, 5vw, 56px); }
+
+/* Profile: three summary cards sit in one row (two plus one left the last card alone on a second row). */
+.ea-profile__aside .ea-stats:has(> :nth-child(3):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+
+/* Dark mode: the "now" period row had a light orange tint, so its light text washed out. A dark tint keeps the text readable. */
+[data-theme="dark"] .dx-row.is-now { background: linear-gradient(90deg, rgba(249, 115, 22, 0.22), transparent 70%); }
+
+/* Contrast: warning text on the tinted warning background measured just under 4.5:1 in a browser audit (axe); a darker amber passes. */
+:root:not([data-theme="dark"]) { --ea-on-card-warning: #92400E; }
+
+/* Tablet widths: a data table wider than its card scrolls sideways inside the card instead of being cut off at the right edge
+   (Actions and Status columns were clipped on Students, Salaries and HR at 768 px). */
+@media (min-width: 641px) and (max-width: 1180px) {
+  #admin-main :where(div):has(> table) { overflow-x: auto !important; max-width: 100%; }
+  #admin-main table :is(th, td) { padding-inline: 10px !important; }
+}

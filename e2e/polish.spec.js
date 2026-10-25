@@ -1,26 +1,36 @@
 import { test, expect } from '@playwright/test';
 import { signIn } from './helpers';
 
-// The shared canvas, the sign-in role tabs and the Learning AI Send button.
+// The shared canvas, the sign-in controls and the Learning AI Send button.
 
 const rgb = (c) => c.match(/[\d.]+/g).slice(0, 3).map(Number);
 const lum = ([r, g, b]) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b); };
 const ratio = (a, b) => (Math.max(lum(a), lum(b)) + 0.05) / (Math.min(lum(a), lum(b)) + 0.05);
 
-test('the sign-in role tabs each have a clear border, in light and dark', async ({ page }) => {
+test('the sign-in and school-selection fields and buttons each have a clear border (the role tabs they replaced had one too)', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  // These screens are light whatever the device's dark-mode setting is.
   for (const dark of [0, 1]) {
-    await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto('/s/GVPS');
+    await page.goto('/login');
     await page.evaluate((d) => { localStorage.setItem('themeVer', '2'); localStorage.setItem('darkMode', d ? 'true' : 'false'); }, dark);
     await page.reload();
-    const tabs = page.getByRole('tab');
-    await expect(tabs).toHaveCount(4);
-    for (const name of ['Parent', 'Teacher', 'Admin']) {
-      const tab = page.getByRole('tab', { name });
-      const s = await tab.evaluate((e) => { const c = getComputedStyle(e); let back = [255, 255, 255]; for (let p = e.parentElement; p; p = p.parentElement) { const bg = getComputedStyle(p).backgroundColor; if (!/rgba\(0, 0, 0, 0\)|transparent/.test(bg)) { back = bg.match(/[\d.]+/g).slice(0, 3).map(Number); break; } } return { w: c.borderTopWidth, color: c.borderTopColor, back }; });
-      expect(s.w, `${name} border width`).toBe('1px');
-      expect(ratio(rgb(s.color), s.back), `${name} border contrast (${dark ? 'dark' : 'light'})`).toBeGreaterThanOrEqual(2.5);
-    }
+    const edge = (locator) => locator.evaluate((e) => {
+      const c = getComputedStyle(e); let back = [255, 255, 255];
+      for (let p = e.parentElement; p; p = p.parentElement) { const bg = getComputedStyle(p).backgroundColor; const m = bg.match(/[\d.]+/g); if (m && (m[3] === undefined || +m[3] > 0.9)) { back = m.slice(0, 3).map(Number); break; } }
+      return { w: c.borderTopWidth, color: c.borderTopColor, back };
+    });
+    const check = async (name, locator) => {
+      const s = await edge(locator);
+      expect(parseFloat(s.w), `${name} border width`).toBeGreaterThanOrEqual(1);
+      expect(ratio(rgb(s.color), s.back), `${name} border contrast (${dark ? 'dark' : 'light'} setting)`).toBeGreaterThanOrEqual(3);
+    };
+    await check('ID field', page.getByLabel('Email, mobile number or admission number'));
+    await check('password field', page.getByLabel('Password', { exact: true }));
+    await page.goto('/select-school');
+    await check('school field', page.getByLabel('School code or name'));
+    await page.getByLabel('School code or name').fill('green');
+    await expect(page.getByRole('button', { name: /Green Valley Public School/ })).toBeVisible();
+    await check('school card', page.getByRole('button', { name: /Green Valley Public School/ }));
   }
 });
 

@@ -213,7 +213,7 @@ export default function TeacherMarks() {
           ))}
         </div>
         <button onClick={() => navigate(`/report-card?class=${cls}&section=${section}`)}
-          style={{ marginTop: 12, width: '100%', padding: '10px', borderRadius: 10, border: '1.5px solid var(--brand-border)', background: 'var(--brand-soft)', color: 'var(--brand-text)', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>
+          style={{ marginTop: 12, width: 'fit-content', maxWidth: '100%', padding: '9px 16px', borderRadius: 10, border: '1.5px solid var(--brand-border)', background: 'var(--brand-soft)', color: 'var(--brand-text)', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>
           Report cards for Class {classKey}
         </button>
       </div>

@@ -42,10 +42,13 @@ function measure() {
     const bordered = parseFloat(s.borderLeftWidth) > 0 && parseFloat(s.borderRightWidth) > 0;
     if (filled || bordered || s.backgroundImage !== 'none') blocks.push([Math.round(r.left), Math.round(r.right)]);
   }
-  // On a home dashboard the title is inside the coloured band: the band is what starts on the line.
-  const t = (title?.closest('.ea-pd-band') || title)?.getBoundingClientRect();
+  // On a home dashboard the title is inside the welcome card (earlier: the coloured band): that block is what starts on the line.
+  const t = (title?.closest('.dx-welcome, .ea-pd-band, .ea-learn__head') || title)?.getBoundingClientRect();
+  // The header starts with the screen's icon chip: that is the line the title block starts on (the title itself sits after it).
+  const chip = title?.closest('.dx-welcome, .ea-pd-band, .ea-learn__head') ? null : title?.closest('header')?.querySelector('.ea-head-chip');
+  const chipLeft = chip && getComputedStyle(chip).display !== 'none' ? chip.getBoundingClientRect().left : null;
   return {
-    title: t ? [Math.round(t.left), Math.round(t.top)] : null,
+    title: t ? [Math.round(chipLeft ?? t.left), Math.round(t.top)] : null,
     left: Math.min(...blocks.map((b) => b[0])),
     right: Math.max(...blocks.map((b) => b[1])),
     area: Math.round(root.getBoundingClientRect().right),
@@ -62,7 +65,9 @@ for (const [role, routes] of Object.entries(ROUTES)) {
       const problems = [];
       for (const [path, purpose] of Object.entries(routes)) {
         await page.goto(`/${role}/${path}`.replace(/\/$/, ''));
-        await page.waitForLoadState('networkidle');
+        // The live bus page keeps its stream open, so the network never goes idle there: wait for its header card instead.
+        if (purpose === 'map') await page.locator('.ea-bus-head').waitFor();
+        else await page.waitForLoadState('networkidle');
         await page.waitForTimeout(400);
         const m = await page.evaluate(measure);
         const where = `/${role}/${path}`;
@@ -83,14 +88,15 @@ for (const [role, routes] of Object.entries(ROUTES)) {
   }
 }
 
-// The title sits at the same height on every header page of a portal (the home dashboards open with their band).
+// The title sits at the same height on every header page of a portal (the home dashboards open with their band, and Learning AI
+// with its header panel that holds the title and the four sections; both are checked by the shared-frame tests above).
 test('page titles sit at the same height across portals', async ({ page }) => {
   test.setTimeout(240_000);
   await page.setViewportSize({ width: 1280, height: 900 });
   const tops = new Map();
   for (const [role, routes] of Object.entries(ROUTES)) {
     await signIn(page, role);
-    for (const path of Object.keys(routes).filter((p) => !['', 'home', 'bus'].includes(p))) {
+    for (const path of Object.keys(routes).filter((p) => !['', 'home', 'bus', 'learn'].includes(p))) {
       await page.goto(`/${role}/${path}`);
       await page.waitForLoadState('networkidle');
       const m = await page.evaluate(measure);
@@ -98,7 +104,7 @@ test('page titles sit at the same height across portals', async ({ page }) => {
     }
     await page.evaluate(() => { localStorage.removeItem('eduamigo_user'); localStorage.removeItem('token'); });
   }
-  const odd = [...tops].filter(([, top]) => Math.abs(top - 28) > 2).map(([p, top]) => `${p}: title top ${top}`);
+  const odd = [...tops].filter(([, top]) => Math.abs(top - 22) > 2).map(([p, top]) => `${p}: title top ${top}`);
   expect(odd, odd.join('\n')).toEqual([]);
 });
 
