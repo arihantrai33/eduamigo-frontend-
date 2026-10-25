@@ -1,0 +1,74 @@
+<!doctype html><html lang="hi"><head><meta charset="utf-8"><title>EduAmigo: pehle vs ab</title>
+<style>
+:root{--ink:#0f172a;--mut:#475569;--line:#d6deea;--navy:#1e3a8a;--bg:#f3f6fb;--ok:#15803d;--bad:#b91c1c}
+*{box-sizing:border-box}body{font:15px/1.65 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);margin:0}
+.page{max-width:860px;margin:0 auto;padding:30px 28px}
+h1{font-size:28px;color:var(--navy);margin:0 0 4px}h2{font-size:19px;color:var(--navy);margin:26px 0 8px;border-top:1px solid var(--line);padding-top:12px}
+.sub{color:var(--mut);margin:0 0 14px}
+.box{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:13px 16px;margin:12px 0}
+table{border-collapse:collapse;width:100%;margin:8px 0 14px;font-size:14px}th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--bg)}td.b{background:#fef2f2}td.a{background:#f0fdf4}
+.ok{color:var(--ok);font-weight:700}.bad{color:var(--bad);font-weight:700}
+ul{margin:6px 0 10px 20px;padding:0}li{margin:4px 0}.small{color:var(--mut);font-size:12.5px}
+@media print{.page{padding:0}tr,.box{break-inside:avoid}h2{break-after:avoid}}
+</style></head><body><div class="page">
+<h1>EduAmigo: pehle kya tha, ab kya hai</h1>
+<p class="sub">Testing ka saar, aasaan bhasha mein. Tareekh: 25 October 2026. Testing aapke Mac par hui, 10 se 1,000 nakli users ke saath.</p>
+
+<div class="box"><b>Seedha saar</b><ul>
+<li>Testing mein <b>1 badi dikkat</b> mili: jab 1,000 log ek minute ke andar login karte the, login mein <b>lagbhag 4 second</b> lagte the. Ab sirf <b>0.06 second</b> lagta hai. Ye <b class="ok">theek ho gaya</b>.</li>
+<li><b>4 chhoti-badi galtiyan</b> app mein mili (phone par buttons chhup rahe the, vagairah). Sab <b class="ok">theek ho gayi</b>.</li>
+<li>Ek school ka data doosre school ko <b>kabhi nahi dikha</b>, kisi bhi test mein.</li>
+<li>Abhi <b>2,500, 5,000 aur 10,000 users</b> ka test <b class="bad">nahi hua</b>. To ye kehna sahi nahi hoga ki EduAmigo 10,000 users sambhal lega. Abhi pakka sirf <b>1,000 tak</b> hai, wo bhi sirf test setup mein.</li></ul></div>
+
+<h2>1. Login ki dikkat: pehle vs ab (1,000 users par)</h2>
+<p><b>Dikkat kya thi, ek example se:</b> socho dukaan mein ek hi counter hai. Sab ka saaman billing bhi wahi karta hai aur password check bhi wahi karta hai. Jab 1,000 log ek saath password check karwane aaye, counter par line lag gayi aur baaki sab kaam bhi ruk gaye. Ab password check ke liye <b>alag counters</b> hain, to baaki kaam nahi rukta.</p>
+<table><tr><th>Cheez</th><th>Pehle</th><th>Ab</th></tr>
+<tr><td>Login mein kitna time (zyadatar logon ko)</td><td class="b">4.1 second</td><td class="a"><b>0.06 second</b></td></tr>
+<tr><td>Baaki pages ka time (zyadatar logon ko)</td><td class="b">0.16 second</td><td class="a"><b>0.007 second</b></td></tr>
+<tr><td>Sabse dheema ek request</td><td class="b">4.3 second</td><td class="a">0.3 second</td></tr>
+<tr><td>Login ke dauran baaki pages</td><td class="b">3 second tak ruk jaate the</td><td class="a">normal chalte hain</td></tr>
+<tr><td>Errors</td><td>1,24,000 mein se 4 fail</td><td class="a">0 fail</td></tr>
+<tr><td>Server ka kaam (CPU)</td><td>~41%</td><td>~41% (kaam wahi hai, bas alag jagah hota hai, isliye rukawat nahi)</td></tr>
+<tr><td>Password ki suraksha</td><td colspan="2">Dono mein <b>same</b>. Kisi ka password reset nahi hua, kamzor nahi kiya gaya. Purane passwords waise hi chalte hain.</td></tr>
+<tr><td>Login ka zyada bhid mein</td><td>Bina hadd ke line lagti thi</td><td class="a">Ek saath 3 check, 300 tak line. Usse zyada bhid par saaf message: "Sign-in abhi busy hai, thodi der baad try karo". "Galat password" kabhi nahi dikhega.</td></tr></table>
+
+<h2>2. App ki galtiyan jo mili: pehle vs ab</h2>
+<table><tr><th>Jagah</th><th>Pehle</th><th>Ab</th></tr>
+<tr><td>Teacher ka Homework (phone par)</td><td class="b">"Send homework" button neeche wali bar ke peeche chhup jaata tha. Teacher dabba nahi paata tha.</td><td class="a">Button dikhta hai aur dabta hai</td></tr>
+<tr><td>Chat (phone par)</td><td class="b">"Send" button neeche wali bar ke peeche chhupa tha</td><td class="a">Theek</td></tr>
+<tr><td>Student ka Chat</td><td class="b">Student ko "Concerns" tab dikhta tha (wo sirf parents aur staff ke liye hai)</td><td class="a">Student ko nahi dikhta</td></tr>
+<tr><td>Office ka Homework page</td><td class="b">Har baar khulne par andar error (403) aata tha</td><td class="a">Error nahi</td></tr></table>
+
+<h2>3. Kitne users par kya hua</h2>
+<table><tr><th>Users ek saath</th><th>Nateeja</th><th>Dikkat?</th></tr>
+<tr><td>10</td><td class="ok">Pass</td><td>Pehli baar galat "pass" aaya tha, kyunki test mein saare users student the. Test theek kiya, phir dobara pass.</td></tr>
+<tr><td>50</td><td class="ok">Pass</td><td>Ek jhoothi alarm aayi ("dusre school ka data dikha"). Jaanch ki: sirf khali list aayi thi, koi data nahi. Test theek kiya.</td></tr>
+<tr><td>100</td><td class="ok">Pass</td><td>Koi nahi</td></tr>
+<tr><td>250</td><td class="ok">Pass</td><td>Koi nahi</td></tr>
+<tr><td>500</td><td class="ok">Pass</td><td>Koi nahi</td></tr>
+<tr><td>1,000</td><td class="ok">Pass</td><td>Login 4 second tak dheema: <b>ab theek</b></td></tr>
+<tr><td>2,500 / 5,000 / 10,000</td><td class="bad">Test nahi hua</td><td>Mac par itne nakli users banana mushkil hai (memory kam padegi). Alag machine chahiye.</td></tr></table>
+
+<h2>4. Baaki testing ka nateeja</h2>
+<ul>
+<li><b>Live test, 4 Chrome windows mein</b> (admin, teacher, student, parent ek saath): 37 mein se <b>37 pass</b>. Matlab admin ne notice bheja to sirf wahi logon ko mila jinko milna tha. Homework, attendance, fee, chat, bus sab sahi logon tak pahunche, galat logon tak nahi.</li>
+<li><b>70 pages</b> desktop aur phone dono par kholkar dekhe: ek ko chhodkar (upar ki galti) koi error nahi.</li>
+<li><b>Permissions:</b> 22 mein se <b>22 pass</b>. Student, parent aur teacher doosre ke features nahi khol sakte. Save kiya hua data refresh aur logout/login ke baad bhi bacha raha.</li>
+<li><b>Automatic tests:</b> backend ke <b>1,294 pass</b>.</li></ul>
+
+<h2>5. Abhi kya pakka nahi hai</h2>
+<ul>
+<li>2,500 se 10,000 users abhi nahi chale.</li>
+<li>Fee payment, chat attachments, bus ki live location aur AI features load test mein abhi shaamil nahi hain. Bus ki location sabse bhaari ho sakti hai.</li>
+<li>Ye test aapke Mac par hua, database bhi usi Mac par hai. Asli server aur asli internet par numbers alag honge.</li>
+<li>Sirf Chrome par test hua. Safari, Firefox aur asli phone par nahi.</li>
+<li>Kuch bhi <b>commit, push ya deploy nahi</b> kiya gaya. Saare badlav sirf aapke folders mein hain.</li></ul>
+
+<h2>6. Aage kya karein</h2>
+<ol><li>Fee, chat aur bus-location load test mein jodkar 10 se 1,000 users dobara chalana.</li>
+<li>2,500 users ka test (isme aapki "haan" chahiye).</li>
+<li>5,000 aur 10,000 ke liye alag machine kiraye par aur asli jaisa test server.</li>
+<li>Live jaane se pehle badlav ko groups mein review karke commit karna.</li></ol>
+<p class="small">Poori technical report: EduAmigo_Testing_Report_2026-10-25.pdf (English, zyada detail).</p>
+</div></body></html>

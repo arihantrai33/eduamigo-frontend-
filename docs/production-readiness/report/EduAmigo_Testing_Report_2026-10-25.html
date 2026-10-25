@@ -1,0 +1,90 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>EduAmigo testing report</title>
+<style>
+:root{--ink:#0f172a;--mut:#475569;--line:#dbe3ee;--navy:#1e3a8a;--bg:#f4f7fc;--ok:#15803d;--bad:#b91c1c;--warn:#b45309}
+*{box-sizing:border-box}body{font:14px/1.55 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);margin:0;background:#fff}
+.page{max-width:880px;margin:0 auto;padding:32px 28px}
+header{border-bottom:3px solid var(--navy);padding-bottom:14px;margin-bottom:18px}
+h1{font-size:26px;margin:0 0 4px;color:var(--navy)}.sub{color:var(--mut);margin:0}
+h2{font-size:18px;color:var(--navy);margin:28px 0 8px;padding-top:6px;border-top:1px solid var(--line)}h3{font-size:15px;margin:18px 0 6px}
+table{border-collapse:collapse;width:100%;margin:8px 0 12px;font-size:12.5px}th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:var(--bg);font-weight:600}td,th{} .num td{white-space:nowrap}.num td:last-child{white-space:normal}
+.num td:nth-child(n+2):nth-child(-n+10){text-align:right}
+.box{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:10px 0}
+.ok{color:var(--ok);font-weight:600}.bad{color:var(--bad);font-weight:600}.warn{color:var(--warn);font-weight:600}
+.bar{display:flex;align-items:center;gap:10px;margin:5px 0}.bl{width:230px;font-size:12.5px}.bt{flex:1;background:var(--bg);height:16px;border-radius:4px;overflow:hidden}.bt i{display:block;height:100%}i.bad{background:#dc2626}i.ok{background:#16a34a}.bv{width:90px;text-align:right;font-size:12.5px}
+ul{margin:6px 0 10px 20px;padding:0}li{margin:3px 0}.small{color:var(--mut);font-size:12px}
+@media print{.page{padding:0}h2{break-after:avoid}table,.box{break-inside:avoid}}
+</style></head><body><div class="page">
+<header><h1>EduAmigo: testing report</h1><p class="sub">What was tested, at how many users, what went wrong, and what was changed. Local testing on one MacBook, 25 October 2026.</p></header>
+
+<div class="box"><b>In one paragraph.</b> EduAmigo was tested with simulated users from 10 up to 1,000 at the same time, and every screen of every role was opened and used. The system stayed up and never showed one school's data to another. Errors were essentially zero: 4 requests out of about 124,000 failed in one Stage F run, and none failed in any other run. Testing found <b>one performance problem</b> (signing in was slow when about 1,000 people signed in within a minute, up to 4 seconds), which is now <b>fixed</b> (about 60 milliseconds), and <b>four real product bugs</b>, also fixed. <b>Not yet tested:</b> 2,500, 5,000 and 10,000 users, and several heavy features. Nothing here proves EduAmigo can carry 10,000 users.</div>
+
+<h2>1. How many users, and what happened</h2>
+<p>Simulated users signed in and then used the app the way a school would: 40 % students, 25 % parents, 20 % teachers, 15 % school office. Each paused 2 to 6 seconds between actions. Times are in milliseconds (ms); p95 means 95 out of 100 requests were faster than this.</p>
+<table class="num"><tr><th>Stage</th><th>Users</th><th>Requests</th><th>p50</th><th>p95</th><th>p99</th><th>Slowest</th><th>Errors</th><th>App CPU peak</th><th>DB connections</th><th>Outcome</th></tr><tr><td><b>A</b></td><td>10</td><td>555</td><td>4</td><td>13</td><td>74</td><td>108</td><td>0.00 %</td><td>16 %</td><td>28</td><td>Passed (first attempt gave a false pass; see section 3)</td></tr><tr><td><b>B</b></td><td>50</td><td>3,893</td><td>3</td><td>9</td><td>73</td><td>102</td><td>0.00 %</td><td>28 %</td><td>30</td><td>Passed (a false cross-school alarm on the first attempt; see section 3)</td></tr><tr><td><b>C</b></td><td>100</td><td>12,520</td><td>3</td><td>8</td><td>52</td><td>108</td><td>0.00 %</td><td>29 %</td><td>29</td><td>Passed</td></tr><tr><td><b>D</b></td><td>250</td><td>31,325</td><td>2</td><td>8</td><td>59</td><td>133</td><td>0.00 %</td><td>50 %</td><td>38</td><td>Passed</td></tr><tr><td><b>E</b></td><td>500</td><td>62,634</td><td>2</td><td>8</td><td>55</td><td>129</td><td>0.00 %</td><td>100 %</td><td>39</td><td>Passed</td></tr><tr><td><b>F</b></td><td>1,000</td><td>123,649</td><td>2</td><td>164</td><td>525</td><td>4335</td><td>0.003 %</td><td>117 %</td><td>82</td><td>Passed on the numbers, but sign-in was very slow: first problem found</td></tr></table>
+<p class="small">Target used: p95 at most 500 ms, p99 at most 1,000 ms, errors below 1 %, no sustained server errors, no data from one school visible to another. Stages G (2,500), H (5,000) and I (10,000) have <b>not</b> been run.</p>
+
+<h3>The one real performance problem: signing in at 1,000 users</h3>
+<p>At 1,000 users all signing in within about a minute (roughly 17 sign-ins per second), signing in took <b>about 4 seconds</b>, and ordinary pages also slowed to 3 seconds during that minute. Nothing failed, but it would feel broken.</p>
+<p><b>Cause (measured, not guessed):</b> passwords were checked by a library written in plain JavaScript that runs on the same single thread that answers every request. Each check takes about 50 ms, so 17 per second used most of that thread and everything else waited. The machine overall was only 11 to 17 % busy and the database was fine, so the limit was that one thread, not the hardware or MongoDB.</p>
+<p><b>Fix:</b> use the native version of the same password library, which does the checking on separate worker threads. Existing passwords keep working, nobody has to reset anything, and password strength was not reduced.</p>
+<div style="margin:10px 0"><div class="bar"><span class="bl">Before the fix (original run)</span><span class="bt"><i class="bad" style="width:100.0%"></i></span><span class="bv">4,139 ms</span></div><div class="bar"><span class="bl">Before the fix (repeat)</span><span class="bt"><i class="bad" style="width:90.0%"></i></span><span class="bv">3,724 ms</span></div><div class="bar"><span class="bl">After the fix</span><span class="bt"><i class="ok" style="width:1.5%"></i></span><span class="bv">63 ms</span></div></div>
+<table><tr><th>Stage F, same workload</th><th>Before the fix</th><th>Before the fix (repeat)</th><th>After the fix (final)</th></tr><tr><td>Sign-in p95 / p99</td><td>4,139 / 4,248 ms</td><td>3,724 / 3,935 ms</td><td>63 / 72 ms</td></tr><tr><td>Everything: p95</td><td>164 ms</td><td>156 ms</td><td>7 ms</td></tr><tr><td>Everything: p99</td><td>525 ms</td><td>443 ms</td><td>28 ms</td></tr><tr><td>Slowest single request</td><td>4,335 ms</td><td>4,019 ms</td><td>324 ms</td></tr><tr><td>Requests per second</td><td>299</td><td>301</td><td>304</td></tr><tr><td>Errors (HTTP)</td><td>0.003 % (4 requests)</td><td>0.00 %</td><td>0.00 %</td></tr><tr><td>App CPU average / peak</td><td>43 % / 117 %</td><td>41 % / 113 %</td><td>41 % / 127 %</td></tr><tr><td>MongoDB connections (peak)</td><td>82</td><td>87</td><td>44</td></tr><tr><td>Event-loop windows with p99 over 100 ms</td><td>not measured</td><td>21 of 211</td><td>0 of 212</td></tr><tr><td>Data checks and school separation</td><td>pass / pass</td><td>pass / pass</td><td>pass / pass</td></tr></table>
+<p class="small">CPU use is the same before and after (about 41 % average): the work moved off the main thread, it did not disappear. Requests per second are the same because the simulated users pause for a fixed time, so this is <b>not</b> a sign of more capacity.</p>
+
+<h2>2. Product bugs found by testing (all fixed)</h2>
+<table><tr><th>Where</th><th>Problem</th><th>Found by</th></tr>
+<tr><td>Phone layout: Homework</td><td>The "Send homework" button was covered by the bottom navigation bar, so a teacher on a phone could not tap it.</td><td>Live multi-role test</td></tr>
+<tr><td>Phone layout: Chat</td><td>The chat "Send" button was hidden behind the bottom navigation bar.</td><td>Live multi-role test</td></tr>
+<tr><td>Student chat</td><td>Students saw a "Concerns" tab, which is only for parents and staff.</td><td>Live multi-role test</td></tr>
+<tr><td>Office: Homework page</td><td>The office page asked the server for a "teacher profile". The office has none, so every visit produced a 403 error in the browser.</td><td>Page-by-page check (70 pages)</td></tr></table>
+
+<h2>3. Problems in the tests themselves (found and corrected, so the numbers can be trusted)</h2>
+<ul>
+<li><b>A false pass.</b> The first Stage A run reported success, but the first 10 simulated users were all students, so parent, teacher and office traffic was never sent. The assignment was changed to spread roles evenly and the run was repeated.</li>
+<li><b>A false alarm.</b> Stage B flagged "one cross-school response". Investigation showed the server answered 200 with an <b>empty</b> list and zero totals when asked for another school's student: no data from another school was exposed. The test now counts a response as a leak only when it contains records, and logs what it received. (It would be tidier for the server to answer 404 there.)</li>
+<li>Two functional checks were found to always report success, regardless of what happened. They were replaced with real checks before the results below were recorded.</li>
+</ul>
+
+<h2>4. Other testing done</h2>
+<table><tr><th>Test</th><th>Result</th></tr>
+<tr><td>Live multi-role test, on screen in four Chrome windows (admin, teacher, student, parent): notices, homework, attendance, fees, chat, concerns, profile photo, live bus, and a second school</td><td class="ok">37 of 37 checks passed (after several mistakes in the test script itself were corrected). It confirmed that what one role saves reaches exactly the right people and nobody else.</td></tr>
+<tr><td>Page-by-page check: 70 pages, each at desktop and phone width</td><td class="ok">No console errors, failed API calls, blank pages or sideways scrolling (after the one fix above).</td></tr>
+<tr><td>Permissions and saved data</td><td class="ok">22 of 22. Student, parent and teacher are refused other roles' features and screens; a forged or missing sign-in is refused; a leave request, a notice and a new student are still there after a reload and after logging out and in.</td></tr>
+<tr><td>Backend automated tests</td><td class="ok">67 test files, 1,294 tests, all passed (after the sign-in change).</td></tr>
+<tr><td>Frontend sign-in and workflow tests</td><td class="ok">50 of 50 passed after the sign-in change. The last full frontend run (336 tests: 316 passed, 20 skipped by design) was before the sign-in change and was not repeated in full.</td></tr>
+<tr><td>Owner console automated tests</td><td class="ok">24 of 24 (last run, earlier in the project).</td></tr></table>
+
+<h2>5. What was changed</h2>
+<h3>In the product</h3>
+<ul>
+<li>Sign-in now uses the native bcrypt password library (new file <code>src/services/passwordHash.js</code>, used by the user model and the password service). If it cannot load on some server, it automatically falls back to the old library, with one warning in the log.</li>
+<li>Sign-in concurrency limit: at most 3 password checks at the same time, up to 300 waiting. Beyond that a sign-in gets a clear "Sign-in is very busy, try again in a few seconds" message (503), never "wrong password". Reason: in a measurement, 250 sign-ins at once made an unrelated file read wait 3.4 seconds; with the limit it waited under 1 millisecond. Cost: a pure sign-in flood is served about 30 % slower. Settings: <code>PASSWORD_CHECK_CONCURRENCY</code> and <code>PASSWORD_CHECK_QUEUE</code>.</li>
+<li>One new dependency: <code>bcrypt</code> (version 6) and two small helpers. Ready-made binaries are included for macOS, Linux and Windows.</li>
+<li>Frontend: the four fixes in section 2.</li>
+</ul>
+<h3>Not changed, on purpose</h3>
+<ul><li>No password was reset or re-hashed, the password strength setting (cost 10) was not lowered, who may sign in did not change, and the sign-in and password-reset rate limits are as before. No extra server instances were added.</li></ul>
+<h3>In the testing tools (backend <code>loadtests/</code>)</h3>
+<ul><li>A one-command staged runner for Stages A to I. It uses a throw-away database on this Mac, never touches any real database, blanks every external-service key (no real email, SMS, payment or AI calls), and stops by itself on sustained server errors, any cross-school data, low memory, or if the app or database stops. Stages above 1,000 users need an explicit flag; Stage I also needs Stage H to have passed.</li>
+<li>Realistic user journeys for the four roles, after-run data checks, a cross-school check, a record of the test records created (with a separate, opt-in cleanup command), and an event-loop delay probe.</li></ul>
+
+<h2>6. What is still unknown or unproven</h2>
+<ul>
+<li><b>Not run:</b> 2,500, 5,000 and 10,000 users. The load generator (k6) used about 3.4 to 5 GB of memory at 1,000 users, so 5,000 or more cannot be generated reliably from this Mac; a separate machine is needed.</li>
+<li><b>Not in the load test yet:</b> fee payments, chat with attachments, concerns, profile-photo upload, the school bus GPS updates and live map, reports, year-end, and the AI features. Bus updates are likely the heaviest write load in real use.</li>
+<li><b>The database in these tests is in memory on the same Mac.</b> A real hosted database over a network, with real data volumes, will behave differently. These figures show where the application itself becomes slow, not what production will do.</li>
+<li>Only one application instance was tested. The sign-in ceiling for one instance is now roughly 60 sign-ins per second; beyond that, more instances are the answer.</li>
+<li>One 361 ms pause was seen once in one run after the fix (120 ms in the other); its cause was not found.</li>
+<li>Browsers other than Chrome, and real phones, have not been tested.</li>
+<li>Live-test data on the local demo: the tests added notices, homework, attendance, a part-payment, chat messages and a bus trip to the local demo school only. Nothing was changed in any real school.</li>
+<li>Nothing has been committed, pushed or deployed. All changes are in the working folders.</li></ul>
+
+<h2>7. Suggested next steps</h2>
+<ol><li>Add fee, chat and bus-update journeys to the load test and re-run Stages B to F.</li>
+<li>Run Stage G (2,500 users) after closing other apps; this needs an explicit go-ahead.</li>
+<li>Rent a separate load-generator machine for 5,000 and 10,000 users, and point it at a test copy of the real hosting setup (same server size and database tier), not at production.</li>
+<li>Before any of that goes live, review and commit the changes in groups.</li></ol>
+
+<p class="small">Source files: backend <code>docs/production-readiness/LOAD_TEST_REPORT.md</code>, frontend <code>docs/production-readiness/LIVE_CHECK.md</code> and <code>FUNCTIONAL_CHECK.md</code>, and the run folders under backend <code>loadtests/results/</code>.</p>
+</div></body></html>
